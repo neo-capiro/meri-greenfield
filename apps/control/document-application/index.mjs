@@ -43,7 +43,7 @@ export function createDocumentApplication(options){
    life=createOperationLifetime({deadlineMs,now:config.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
    const current=requestCurrent(config,info,life,deadlineMs);let call;
    let body;try{body=await jsonBody(info,config.limits.maxRequestBytes,life,current.check);}catch(error){return bodyErrorResponse(error,{});}
-   try{call=input(body,info.intent,admission);if(['create','revise'].includes(info.intent))config.briefGuard?.(call);}catch(error){current.check();fail('INVALID_REQUEST');}
+   try{call=input(body,info.intent,admission);}catch(error){current.check();fail('INVALID_REQUEST');}
    await current.fresh();let result;
    if(info.intent==='create'||info.intent==='revise'){
     const writes=createPostgresArtifactService({...config.options,authority:current.authority,authorize:current.authorize});

@@ -5,7 +5,6 @@ import {admitDocumentDescriptor} from './format-admission.mjs';
 import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createRequestCurrent,same} from '../action-host/current.mjs';
 import {fail} from './http.mjs';
-import {admitPreparedBrief} from './research-brief/compose.mjs';
 export {data,own,same,v};
 const portCodes=new Set(['ACCESS_DENIED','SESSION_REFUSED','DEADLINE','CANCELLED','UNAVAILABLE','ARTIFACT_DEADLINE','ARTIFACT_CANCELLED','ARTIFACT_EFFECT_UNKNOWN','ARTIFACT_BUDGET_RESERVATION_UNKNOWN','ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN']);
 function portError(error){
@@ -22,7 +21,7 @@ function method(value,key){
  return asyncPort(d.value.bind(value));
 }
 export function configuration(value){
- const c=own(value,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled','researchBrief']);
+ const c=own(value,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);
  const o=own(c.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled']);
  const limits=data(c.limits);own(limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']);
  if(Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216||typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean')fail('DOCUMENT_CONFIGURATION',500);
@@ -32,9 +31,7 @@ export function configuration(value){
  const options={...o,authorize:asyncPort(o.authorize),ids:syncPort(o.ids),newReservationId:syncPort(o.newReservationId),context,descriptor,producerContext:data(o.producerContext),limits:data(o.limits),
   authority:{check:method(o.authority,'check')},versions:{read:method(o.versions,'read'),commit:method(o.versions,'commit')},
   objects:{get:method(o.objects,'get'),put:method(o.objects,'put')},executor:{execute:method(o.executor,'execute')}};
- const briefGuard=c.researchBrief===undefined?null:admitPreparedBrief(c.researchBrief,context);
- if(briefGuard&&descriptor.operation.id!=='create_word')fail('DOCUMENT_CONFIGURATION',500);
- return {briefGuard,sessions:{authenticateSession:method(c.sessions,'authenticateSession'),readCurrentState:method(c.sessions,'readCurrentState')},
+ return {sessions:{authenticateSession:method(c.sessions,'authenticateSession'),readCurrentState:method(c.sessions,'readCurrentState')},
   options,formatAdmission,limits,now:c.now,credential:c.credential,selectedClientId:c.selectedClientId,enabled:c.enabled??false};
 }
 export function requestCurrent(config,info,life,deadlineMs){

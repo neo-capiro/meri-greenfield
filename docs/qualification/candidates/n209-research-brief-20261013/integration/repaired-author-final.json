@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/test/research-brief.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209",
+  "sourceHead": "a30790b910482e6673b02c16432b13c4c9b4616a",
+  "sourceDiffSha256": "4718c99e8b3e89fc9ecb42d7797200c571c01d976e0d67f74e277c895d66e29a",
+  "sourceDiffBytes": 14819,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T09:08:38.605015+00:00",
+  "durationSeconds": 2.179,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 30783,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/repaired-author-final.stdout.bin",
+      "bytes": 1139,
+      "sha256": "29b7552509e172b3d0b60f464b4a868bf53f43748a2d01fd11c7938f8464dfa9"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/repaired-author-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

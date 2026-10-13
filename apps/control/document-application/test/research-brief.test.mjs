@@ -50,7 +50,7 @@ test('actual canonical routes guard approved full request, retain original and r
   let app=mountLocalDocumentApplication({...f,artifactOptions:{...f.artifactOptions,context:first.context}},{researchBrief:first});
   const session=await f.sessions.issue({identityCredential:f.nativeCredential});
   const call=(route,body)=>app.handle(new Request('https://fixture.invalid/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));
-  const bad=structuredClone(first.request);bad.content.blocks[0].runs[0].text='Unapproved';assert.equal((await call('create',{deliveryId:'forged',request:bad})).status,400);assert.equal(f.stats().generations,0);
+  const bad=structuredClone(first.request);bad.content.blocks[0].runs[0].text='Unapproved';assert.equal((await call('create',{deliveryId:'forged',request:bad})).status,403);assert.equal(f.stats().generations,0);assert.equal(f.stats().versionCharges,0);
   const response=await call('create',{deliveryId:'first',request:first.request});assert.equal(response.status,200);const a=await response.json();
   const original=Buffer.from(await (await call('download',{versionId:a.version.versionId})).arrayBuffer()),snapshot=await f.artifactOptions.versions.read(a.version.versionId);
   const next=syntheticInput(new Date(f.now()).toISOString());next.proposedLanguage=['Revised proposal: require appropriations confirmation and independent source review.'];

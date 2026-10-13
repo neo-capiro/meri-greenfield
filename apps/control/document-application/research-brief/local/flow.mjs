@@ -28,7 +28,7 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
   const input=syntheticInput(new Date(fixture.now()).toISOString()),first=await compiler.prepare(input,fixture.artifactOptions.context);await reconfigure(first);
   const forged=await call('create',{deliveryId:'brief-forged-context',request:first.request,context:first.context});assert.equal(forged.status,400);
   const changed=structuredClone(first.request);changed.content.blocks[0].runs[0].text='Substituted draft';
-  assert.equal((await call('create',{deliveryId:'brief-substitution',request:changed})).status,400);assert.equal(fixture.stats().generations,0);
+  assert.equal((await call('create',{deliveryId:'brief-substitution',request:changed})).status,403);assert.equal(fixture.stats().generations,0);assert.equal(fixture.stats().versionCharges,0);
   const original=await json(await call('create',{deliveryId:'brief-original',request:first.request}));
   assert.equal(original.execution.nativeQualified,false);assert.equal(original.version.parentVersionId,null);assert.deepEqual(original.version.evidence,first.context.evidence);
   const baseSnapshot=await fixture.artifactOptions.versions.read(original.version.versionId);
@@ -36,7 +36,7 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
   const next=syntheticInput(new Date(fixture.now()).toISOString());next.proposedLanguage=['Revised proposal: Require independent confirmation of the authorization and appropriations basis before seeking a congressional research demonstration.'];
   await assert.rejects(compiler.prepare(next,first.context,{base:{versionId:original.version.versionId,specSha256:'a'.repeat(64)}}));
   const second=await compiler.prepare(next,first.context,{base:{versionId:original.version.versionId,specSha256:baseSnapshot.specSha256}});await reconfigure(second);
-  assert.equal((await call('revise',{deliveryId:'wrong-base',baseVersionId:'00000000-0000-4000-8000-000000000077',request:second.request})).status,400);
+  assert.equal((await call('revise',{deliveryId:'wrong-base',baseVersionId:'00000000-0000-4000-8000-000000000077',request:second.request})).status,403);
   const revision=await json(await call('revise',{deliveryId:'brief-revision',baseVersionId:original.version.versionId,request:second.request}));
   assert.equal(revision.version.artifactId,original.version.artifactId);assert.equal(revision.version.parentVersionId,original.version.versionId);assert.notEqual(revision.version.versionId,original.version.versionId);
   assert.equal(second.provenance.parent.objectSha256,original.version.object.sha256);assert.deepEqual(revision.version.evidence,second.context.evidence);

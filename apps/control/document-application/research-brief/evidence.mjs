@@ -14,7 +14,10 @@ export function bindRead(value,call,asOf){
     e.sources.length!==1||e.sources[0].sourceId!==call.sourceId||
     v.hash(briefReadOperation(call.sourceId))!==v.hash(e.operation)||e.subject.kind!=='client'||
     !call.scopes.some(x=>x.kind==='client'&&x.resourceId===e.subject.entityIds[0])||
-    !Object.entries(call.selector.subject).every(([name,val])=>e.appliedFilters.some(f=>f.name===filterName(name)&&f.valueSha256===v.hash(val)))||
+    !Object.entries(call.selector.subject).every(([name,val])=>{
+      const matches=e.appliedFilters.filter(f=>f.name===filterName(name));
+      return matches.length===1&&matches[0].valueSha256===v.hash(val);
+    })||
     Date.parse(e.sources[0].retrievedAt)>Date.parse(asOf)||
     !Array.isArray(r.evidence)||r.evidence.length>40)fail('BRIEF_READ_BINDING');
   const records=e.data?.records??[];if(records.length!==r.evidence.length||records.length>40)fail('BRIEF_READ_BINDING');
