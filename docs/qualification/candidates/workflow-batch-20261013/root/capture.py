@@ -6,6 +6,10 @@ root = here.parents[4]
 label, *command = sys.argv[1:]
 assert re.fullmatch(r'[a-z0-9-]+', label) and command
 assert not (here / (label + '.json')).exists(), 'Never overwrite a check receipt'
+if command[0] == 'node' and '--test' in command:
+    for argument in command[1:]:
+        if argument.endswith('.mjs'):
+            assert (root / argument).is_file(), 'Nonexistent Node test selector: ' + argument
 started = datetime.datetime.now(datetime.timezone.utc).isoformat()
 pin = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
 tree = subprocess.check_output(['git', 'rev-parse', 'HEAD^{tree}'], cwd=root, text=True).strip()

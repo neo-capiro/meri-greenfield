@@ -11,11 +11,14 @@ import {clientEvidenceFixture,credentialReceipt,operations,endpoints,NOW,clientI
 import {createIdentityContactsHttpAdapter} from '../sources/identity-contacts/http-adapter.mjs';
 import {createIdentityContactsReadHandler} from '../sources/identity-contacts/handler.mjs';
 import {createIdentityContactsFixture} from '../sources/identity-contacts/test/fixtures.mjs';
-const ids=['get_client_context','read_client_documents','resolve_entity','find_contacts'];
+import {createClientKnowledgeHttpAdapter} from '../sources/client-knowledge/http-adapter.mjs';
+import {createClientKnowledgeReadHandler} from '../sources/client-knowledge/handler.mjs';
+import {createClientKnowledgeFixture} from '../sources/client-knowledge/test/fixtures.mjs';
+const ids=['get_client_context','read_client_documents','resolve_entity','find_contacts','search_memory','read_monday_client_boards'];
 function integration(id,configuration={}) {
- const evidence=id==='get_client_context'||id==='read_client_documents';
+ const evidence=id==='get_client_context'||id==='read_client_documents',knowledge=id==='search_memory'||id==='read_monday_client_boards';
  const fixture=evidence?clientEvidenceFixture(id===operations.profile.id?operations.profile:operations.documents,
-  id===operations.profile.id?{clientId,section:'people'}:{clientId,documentId}):createIdentityContactsFixture(id,{linked:id==='find_contacts'});
+  id===operations.profile.id?{clientId,section:'people'}:{clientId,documentId}):knowledge?createClientKnowledgeFixture(id):createIdentityContactsFixture(id,{linked:id==='find_contacts'});
  const auth=fixture.authority,binding=auth.binding,subject=auth.subject,claims=auth.claims,contract=fixture.contract,op=contract.descriptor.operation;
  const args=evidence?fixture.request:fixture.args,state={now:evidence?NOW:fixture.state.now,revoked:false},calls=[],wire=[];
  const ports={async verifyCapability(){calls.push('capability');if(state.revoked)throw Error('SYNTHETIC_REVOKED');return JSON.stringify(claims);},
@@ -28,10 +31,11 @@ function integration(id,configuration={}) {
  const config={endpoints:evidence?endpoints:fixture.config.endpoints,now:()=>state.now,maxRequestMs:1000,maxResponseBytes:1048576,
   async getCredentials(pins){calls.push('credentials');state.pins=pins;const receipt=evidence?credentialReceipt(pins):fixture.credentials(pins);state.changeReceipt?.(receipt);return receipt;},
   async fetchImpl(url,options){calls.push('fetch');wire.push({url,options,body:JSON.parse(options.body)});
-   const page=evidence?structuredClone(fixture.page):fixture.page(state.pins.input,auth,state.pins.metadata);
+   const page=evidence?structuredClone(fixture.page):knowledge?fixture.page(state.pins.input):fixture.page(state.pins.input,auth,state.pins.metadata);
    state.changePage?.(page);state.afterRead?.();return new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});}};
- const adapter=(evidence?createClientEvidenceHttpAdapter:createIdentityContactsHttpAdapter)(config);
- const entry={contract,descriptor:contract.descriptor,execute:(evidence?createClientEvidenceReadHandler:createIdentityContactsReadHandler)({operation:op,adapter,now:()=>state.now})};
+ if(knowledge)config.readMemoryEligibility=async pins=>{calls.push('eligibility');const receipt=fixture.eligibility(pins);state.changeEligibility?.(receipt);return receipt;};
+ const adapter=(evidence?createClientEvidenceHttpAdapter:knowledge?createClientKnowledgeHttpAdapter:createIdentityContactsHttpAdapter)(config);
+ const entry={contract,descriptor:contract.descriptor,execute:(evidence?createClientEvidenceReadHandler:knowledge?createClientKnowledgeReadHandler:createIdentityContactsReadHandler)({operation:op,adapter,now:()=>state.now})};
  const gateway=createToolDispatch({catalog:{entry:()=>entry,discoverable:()=>[]},authority:createCurrentToolAuthority({ports,now:()=>state.now,maxFactBytes:1048576}),budget,
   limits:{maxRequestBytes:65536,maxResponseBytes:1048576,maxRequestMs:1000,maxCleanupMs:100},now:()=>state.now,newId:()=>binding.workerId,sourceEnabled:true,defaultCongress:119,...configuration});
  return {fixture,state,calls,wire,args,run:async(value=args)=>JSON.parse(await gateway.execute(JSON.stringify({operation:op,arguments:value}),'SYNTHETIC_OPAQUE'))};
@@ -69,4 +73,14 @@ test('profile observation survives elapsed transport time and Decimal precision 
 test('caller normalizationContext cannot supply authority or override trusted Congress',async()=>{
  const f=integration('resolve_entity');await assert.rejects(f.run({...f.args,normalizationContext:{defaultCongress:120}}),/INVALID_ARGUMENTS/);
  assert.deepEqual(f.calls,[]);
+});
+
+test('memory refused by exact current eligibility receipt never releases or settles',async()=>{
+ const f=integration('search_memory');f.state.changeEligibility=r=>{r.records[0].eligibleForRecall=false;};
+ await assert.rejects(f.run(),/INVALID_RESULT/);assert.equal(f.wire.length,1);assert.equal(f.calls.includes('settle'),false);
+ assert.equal(f.calls.filter(x=>x==='uncertain').length,1);
+});
+test('Monday unmanaged board mapping refuses before source bytes',async()=>{
+ const f=integration('read_monday_client_boards');f.state.changeReceipt=r=>{r.managedBoardMapping.clientId=f.fixture.binding.workerId;};
+ await assert.rejects(f.run(),/INVALID_RESULT/);assert.equal(f.wire.length,0);assert.equal(f.calls.includes('settle'),false);
 });
