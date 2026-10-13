@@ -1,0 +1,25 @@
+{
+  "checkedVia": "supported GitHub connector read-only API",
+  "records": [
+    {
+      "resource": "PR38",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/38",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "head": {
+        "ref": "task/meri-vertical-source-20261012",
+        "sha": "77cedb126d57a0223d2df42ad2f3fe988eb51759"
+      },
+      "base": {
+        "ref": "task/meri-backend-execution-20261012",
+        "sha": "e5fb3963de787bbd7b7663316c368f15814897da"
+      }
+    },
+    {
+      "resource": "main",
+      "sha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "tree": "f1133b2190cf67acd782c00debfa82501fa71c43"
+    }
+  ]
+}

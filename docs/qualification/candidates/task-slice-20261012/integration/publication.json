@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-13T00:08:46.011Z",
+  "repository": "neo-capiro/meri-greenfield",
+  "pullRequest": "https://github.com/neo-capiro/meri-greenfield/pull/39",
+  "number": 39,
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "headBranch": "task/meri-task-slice-20261012",
+  "publishedSourceHead": "4f47a8a76814698a92601df817ec3955f1fa8983",
+  "baseBranch": "task/meri-vertical-source-20261012",
+  "baseHead": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "mainHead": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "mergeable": true,
+  "mergeableState": "clean",
+  "acceptedSource": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "independentReview": "511acbc30183ea0fa1c6cb8e5fce1804486296ee",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeQualified": false,
+  "receiptCommitNote": "This receipt is a later documentation-only commit; final remote head is verified after push. Root packet manifest explicitly excludes publication.json."
+}

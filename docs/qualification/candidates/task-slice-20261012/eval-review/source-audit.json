@@ -1,0 +1,187 @@
+{
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "source": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+  "tree": "6c6683778d4dde8890139f7884ae25c532549c79",
+  "passed": 13,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all original mode/blob entries exact",
+      "passed": true,
+      "details": {
+        "originalCount": 9667,
+        "differences": []
+      }
+    },
+    {
+      "name": "source additions stay in exclusive author paths",
+      "passed": true,
+      "details": [
+        "apps/control/task-lookup/binding.mjs",
+        "apps/control/task-lookup/delivery.mjs",
+        "apps/control/task-lookup/delivery.test.mjs",
+        "apps/control/task-lookup/fixtures.mjs",
+        "apps/control/task-lookup/index.mjs",
+        "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+        "apps/control/task-lookup/postgres-fixture.mjs",
+        "apps/control/task-lookup/postgres-results.mjs",
+        "apps/control/task-lookup/postgres-results.test.mjs",
+        "docs/coordination/tasks/CODEX-TASK-LOOKUP-CONTROL-20261012.md",
+        "docs/coordination/tasks/CODEX-TASK-LOOKUP-EVAL-20261012.md",
+        "docs/qualification/candidates/task-slice-20261012/control-author/capture-reaped.py",
+        "docs/qualification/candidates/task-slice-20261012/control-author/discovery-notes.json",
+        "docs/qualification/candidates/task-slice-20261012/control-author/fixture-correction.json",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/control-before.json",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/control-before.stderr.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/control-before.stdout.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/first.json",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/first.stderr.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/first.stdout.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/outcome-before.json",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/outcome-before.stderr.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/outcome-before.stdout.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/repaired.json",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/repaired.stderr.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/repaired.stdout.txt",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/run-focused.py",
+        "docs/qualification/candidates/task-slice-20261012/eval-author/setup-failure.json",
+        "evals/task-lookup/README.md",
+        "evals/task-lookup/cli.mjs",
+        "evals/task-lookup/contracts.mjs",
+        "evals/task-lookup/corpus.mjs",
+        "evals/task-lookup/score.mjs",
+        "evals/task-lookup/test/actual-control.test.mjs",
+        "evals/task-lookup/test/cli.test.mjs",
+        "evals/task-lookup/test/corpus.test.mjs",
+        "evals/task-lookup/test/fixtures.mjs",
+        "evals/task-lookup/test/result-fixture.mjs",
+        "evals/task-lookup/test/score.test.mjs"
+      ]
+    },
+    {
+      "name": "baseline immutable evals/retrieval-r2/manifest.json",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "baseline immutable docs/ROUTING-EVALUATION.md",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "baseline immutable docs/coordination/r2/gates.json",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "baseline immutable docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "baseline immutable packages/contracts/meri.schema.json",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "baseline immutable packages/contracts/validate.mjs",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "canonical real corpus remains zero",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "seed75 expanded200 preserved",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "optional components disabled",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "accepted control prerequisite bytes exact",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "actual new tooling source present",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "evals/task-lookup/README.md",
+      "bytes": 5061,
+      "sha256": "e900df2e358f10c84e63359e2457b8fa2cf2a17c26a71c23d4a56562a19f32c6",
+      "modeBlob": "100644 blob b9b58b9b42212d4c02c476520006474946c7741d"
+    },
+    {
+      "path": "evals/task-lookup/cli.mjs",
+      "bytes": 4326,
+      "sha256": "a5b01a38dda1edef56d4e2d87d2be5c7663c3dc85d35f810e818da273a389a4f",
+      "modeBlob": "100644 blob ee8afffba20012e65eaaad62f5932da5626e2499"
+    },
+    {
+      "path": "evals/task-lookup/contracts.mjs",
+      "bytes": 2598,
+      "sha256": "f116022bc0f70f7c77e7770c98ff95367dda8b880e4412ba27e622c2c798256f",
+      "modeBlob": "100644 blob 1ce42f9043b197cc7f28eb44c06b77a05e131bbe"
+    },
+    {
+      "path": "evals/task-lookup/corpus.mjs",
+      "bytes": 5224,
+      "sha256": "226b2280acd17937d35302ebe256f7a07e4e86b0d1c92acb2b30a2736da388f8",
+      "modeBlob": "100644 blob e81dfef9e613405828a6350880e893f562179ce7"
+    },
+    {
+      "path": "evals/task-lookup/score.mjs",
+      "bytes": 11169,
+      "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414",
+      "modeBlob": "100644 blob 2fefb31ea4f6b0bd3c8ee73afd3ab7e378c7f1ba"
+    },
+    {
+      "path": "evals/task-lookup/test/actual-control.test.mjs",
+      "bytes": 4263,
+      "sha256": "264e66ffd3fee8830a7f5c694c090a8bc4c90aef3eee72fb669d89b05287f466",
+      "modeBlob": "100644 blob cd86d99782c01fcd8188d70c8631b0f7145211c3"
+    },
+    {
+      "path": "evals/task-lookup/test/cli.test.mjs",
+      "bytes": 4236,
+      "sha256": "634ab8cb9a1616ff997dd275eb6bf7d25aa746622c27d8b83db61435819d0058",
+      "modeBlob": "100644 blob 5584ca3cc0418161f70596cd586fc7a20c4ae64f"
+    },
+    {
+      "path": "evals/task-lookup/test/corpus.test.mjs",
+      "bytes": 4248,
+      "sha256": "5fcc98b529ecfd3114885abf14f6d8b3d32aa905c8b4333e0d70bfeb4a355c1c",
+      "modeBlob": "100644 blob ad6787a4fd7134d3a8f5c855550f5e459b12ab04"
+    },
+    {
+      "path": "evals/task-lookup/test/fixtures.mjs",
+      "bytes": 2843,
+      "sha256": "bcc253d6f22636c1d6b6f2c5426a5d3d918eacc3890bbddf24fec85f471c729e",
+      "modeBlob": "100644 blob 2cdb45d6bac1375f7bb4d9f4dd9f3f40caea59e8"
+    },
+    {
+      "path": "evals/task-lookup/test/result-fixture.mjs",
+      "bytes": 5520,
+      "sha256": "41e50b7f3e911756ecea92a6d3047fd88129e0a32f5fc1f25b4fa0c7e1f7925d",
+      "modeBlob": "100644 blob e4247b2ec2df1d39f6c5b2a226d01205ad73b909"
+    },
+    {
+      "path": "evals/task-lookup/test/score.test.mjs",
+      "bytes": 8432,
+      "sha256": "5a6f0a371a3dcef7b5512815ac3775450d9979e000a13657a4c2b1a97a2bcac0",
+      "modeBlob": "100644 blob 79ab4b789c36beb5ad1ede1bf218d6f0557de0bc"
+    }
+  ],
+  "controlPrerequisite": "6f14d780a40e878fa62bc928c4d520286313f56c",
+  "scope": "SOURCE_METADATA_ONLY"
+}

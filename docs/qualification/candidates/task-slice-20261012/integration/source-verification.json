@@ -1,0 +1,124 @@
+{
+  "sourceHead": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "originalEntries": 9667,
+  "originalEntriesUnchanged": 9663,
+  "changedOriginals": [
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/dispatch/read-result-envelope.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/test/vertical-source-expectations.mjs"
+  ],
+  "originalTestModulesChanged": 0,
+  "originalTestHelperChange": {
+    "path": "packages/contracts/test/vertical-source-expectations.mjs",
+    "change": "One explicit expected actions.query/actions-complete/1 entry; all prior expectations retained."
+  },
+  "reviewedProductionFiles": [
+    {
+      "path": "apps/gateway/dispatch/action-read-context.mjs",
+      "reviewedSource": "84a9313735ec9fb079e35a92adb074f6afaf32e7",
+      "sha256": "6fd65759d8557d35152e258e316d9ff9863e9ade65fd95b99cb433651c3d5519"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "reviewedSource": "84a9313735ec9fb079e35a92adb074f6afaf32e7",
+      "sha256": "484c9f53ec6f18b57af82f6267df98f2504432ab7aa551106daa9a35cd424bb0"
+    },
+    {
+      "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+      "reviewedSource": "84a9313735ec9fb079e35a92adb074f6afaf32e7",
+      "sha256": "d69827d3e46c53c544af183cbb43ca21bc932be4aa4c6c1bacec93fede7e7bfb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "reviewedSource": "84a9313735ec9fb079e35a92adb074f6afaf32e7",
+      "sha256": "e9e654dd1ad2dcaa666dd04996d72adc8c157e735cfbf5c8535cd2aa2849f0cc"
+    },
+    {
+      "path": "apps/gateway/sources/action-items/handler.mjs",
+      "reviewedSource": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e",
+      "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453"
+    },
+    {
+      "path": "apps/gateway/sources/action-items/http-adapter.mjs",
+      "reviewedSource": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e",
+      "sha256": "937f24e55f9c2a981f54eea7124899d091cc4ac24e38839333eed6621a3a1db6"
+    },
+    {
+      "path": "apps/gateway/sources/action-items/projection.mjs",
+      "reviewedSource": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e",
+      "sha256": "aace23939d1fae09ae69979642157f09a8bd0823ad8dba1ee8f87d5ae27d0382"
+    },
+    {
+      "path": "apps/gateway/sources/action-items/request-context.mjs",
+      "reviewedSource": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e",
+      "sha256": "a8c5ed754bcd9115fac8413f14a5606a01b9df5d7438b0be8d11e3e87929b2c2"
+    },
+    {
+      "path": "apps/control/task-lookup/binding.mjs",
+      "reviewedSource": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "sha256": "eeb2cb69e3f20eacf123206d0faa2da7170ef53e8bdea624e7947bc9e81a1aeb"
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "reviewedSource": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "sha256": "014e0a5520861ddbf87f315d8a57fdf124c2a5536df582189fa3d543a5bf8df2"
+    },
+    {
+      "path": "apps/control/task-lookup/index.mjs",
+      "reviewedSource": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "sha256": "114e25b9a2973823dc4b1d17009cb32b377bc08e93f1b32963404cfef5e28440"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.mjs",
+      "reviewedSource": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "sha256": "741ff9ffb81b2245c836ea4b010272394a0e194028519d2685f17b016be4e98b"
+    },
+    {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "reviewedSource": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "sha256": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f"
+    },
+    {
+      "path": "evals/task-lookup/cli.mjs",
+      "reviewedSource": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+      "sha256": "a5b01a38dda1edef56d4e2d87d2be5c7663c3dc85d35f810e818da273a389a4f"
+    },
+    {
+      "path": "evals/task-lookup/contracts.mjs",
+      "reviewedSource": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+      "sha256": "f116022bc0f70f7c77e7770c98ff95367dda8b880e4412ba27e622c2c798256f"
+    },
+    {
+      "path": "evals/task-lookup/corpus.mjs",
+      "reviewedSource": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+      "sha256": "226b2280acd17937d35302ebe256f7a07e4e86b0d1c92acb2b30a2736da388f8"
+    },
+    {
+      "path": "evals/task-lookup/score.mjs",
+      "reviewedSource": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+      "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414"
+    }
+  ],
+  "protectedTreesUnchanged": [
+    "apps/worker",
+    "apps/proxy",
+    "packages/runtime",
+    "apps/control/qualification-sdk-fixture"
+  ],
+  "nativeProbeTree": "8944e41425d73d517fb84b3632465792ffd9716b",
+  "catalog": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "unavailable": 97
+  },
+  "wholeRequirements": {
+    "requirements": 53,
+    "completedSourceDiscovery": 2,
+    "wholePending": 51,
+    "wholeRuntimeQualified": 0
+  },
+  "runtimeQualified": false
+}

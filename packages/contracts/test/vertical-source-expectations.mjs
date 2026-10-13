@@ -22,6 +22,7 @@ export function priorVerticalDescriptor(row){
  return {...row,limitations:[...row.limitations.slice(0,-1),portfolioLimitationBefore]};
 }
 export const verticalDispatchProfiles=Object.freeze([
+ ['actions.query','actions-complete/1'],
  ...['schedule_task','list_scheduled_tasks','cancel_scheduled_task','update_scheduled_task'].map(id=>[id,'schedule-execution/1']),
  ...['create_task','update_task','save_memory','save_chat_attachments'].map(id=>[id,'command-execution/1']),
  ...['create_word','create_excel','create_powerpoint','run_analysis'].map(id=>[id,'artifact-execution/1']),

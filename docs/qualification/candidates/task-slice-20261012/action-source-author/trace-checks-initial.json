@@ -1,0 +1,11 @@
+{
+  "controllerClio": true,
+  "controllerToolRoute": true,
+  "controllerStandardRole": true,
+  "controllerServiceGuard": true,
+  "wrapperOperation": true,
+  "wrapperClientResolver": true,
+  "wrapperExactReader": true,
+  "scopedHelperBuilder": true,
+  "unscopedListParallelCount": true
+}

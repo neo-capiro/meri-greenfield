@@ -1,0 +1,159 @@
+{
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "source": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+  "sourceTree": "6c6683778d4dde8890139f7884ae25c532549c79",
+  "originalEntries": 9667,
+  "changedOrMissingOriginals": [],
+  "sourceFiles": [
+    {
+      "path": "evals/task-lookup/README.md",
+      "gitBlob": "b9b58b9b42212d4c02c476520006474946c7741d",
+      "sha256": "e900df2e358f10c84e63359e2457b8fa2cf2a17c26a71c23d4a56562a19f32c6"
+    },
+    {
+      "path": "evals/task-lookup/cli.mjs",
+      "gitBlob": "ee8afffba20012e65eaaad62f5932da5626e2499",
+      "sha256": "a5b01a38dda1edef56d4e2d87d2be5c7663c3dc85d35f810e818da273a389a4f"
+    },
+    {
+      "path": "evals/task-lookup/contracts.mjs",
+      "gitBlob": "1ce42f9043b197cc7f28eb44c06b77a05e131bbe",
+      "sha256": "f116022bc0f70f7c77e7770c98ff95367dda8b880e4412ba27e622c2c798256f"
+    },
+    {
+      "path": "evals/task-lookup/corpus.mjs",
+      "gitBlob": "e81dfef9e613405828a6350880e893f562179ce7",
+      "sha256": "226b2280acd17937d35302ebe256f7a07e4e86b0d1c92acb2b30a2736da388f8"
+    },
+    {
+      "path": "evals/task-lookup/score.mjs",
+      "gitBlob": "2fefb31ea4f6b0bd3c8ee73afd3ab7e378c7f1ba",
+      "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414"
+    },
+    {
+      "path": "evals/task-lookup/test/actual-control.test.mjs",
+      "gitBlob": "cd86d99782c01fcd8188d70c8631b0f7145211c3",
+      "sha256": "264e66ffd3fee8830a7f5c694c090a8bc4c90aef3eee72fb669d89b05287f466"
+    },
+    {
+      "path": "evals/task-lookup/test/cli.test.mjs",
+      "gitBlob": "5584ca3cc0418161f70596cd586fc7a20c4ae64f",
+      "sha256": "634ab8cb9a1616ff997dd275eb6bf7d25aa746622c27d8b83db61435819d0058"
+    },
+    {
+      "path": "evals/task-lookup/test/corpus.test.mjs",
+      "gitBlob": "ad6787a4fd7134d3a8f5c855550f5e459b12ab04",
+      "sha256": "5fcc98b529ecfd3114885abf14f6d8b3d32aa905c8b4333e0d70bfeb4a355c1c"
+    },
+    {
+      "path": "evals/task-lookup/test/fixtures.mjs",
+      "gitBlob": "2cdb45d6bac1375f7bb4d9f4dd9f3f40caea59e8",
+      "sha256": "bcc253d6f22636c1d6b6f2c5426a5d3d918eacc3890bbddf24fec85f471c729e"
+    },
+    {
+      "path": "evals/task-lookup/test/result-fixture.mjs",
+      "gitBlob": "e4247b2ec2df1d39f6c5b2a226d01205ad73b909",
+      "sha256": "41e50b7f3e911756ecea92a6d3047fd88129e0a32f5fc1f25b4fa0c7e1f7925d"
+    },
+    {
+      "path": "evals/task-lookup/test/score.test.mjs",
+      "gitBlob": "79ab4b789c36beb5ad1ede1bf218d6f0557de0bc",
+      "sha256": "5a6f0a371a3dcef7b5512815ac3775450d9979e000a13657a4c2b1a97a2bcac0"
+    }
+  ],
+  "controlPrerequisite": "6f14d780",
+  "controlSourceEditedByEvaluationAuthor": false,
+  "referenceIdentities": [
+    {
+      "ref": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+      "path": "AGENTS.md",
+      "gitBlob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "ref": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "gitBlob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "ref": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+      "path": "docs/ROUTING-EVALUATION.md",
+      "gitBlob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+    },
+    {
+      "ref": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+      "path": "docs/coordination/r2/gates.json",
+      "gitBlob": "72126e3b1ba7c8ee453520311a55012802ccb8bd",
+      "bytes": 8743,
+      "sha256": "edb425d2bb70e346bf2006ad62748f93f1bc8cfc63b16d3ffba7ce5b6159f887"
+    },
+    {
+      "ref": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "gitBlob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "ref": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+      "path": "evals/retrieval-r2/manifest.json",
+      "gitBlob": "fdfde41dbf67cbcfc6eec372a2679647f70182c9",
+      "bytes": 568,
+      "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f"
+    },
+    {
+      "ref": "1e95f5b8158e17458b223e2b2f03c4a0806c977b",
+      "path": "docs/coordination/tasks/CODEX-TASK-SLICE-20261012.md",
+      "gitBlob": "c082cd8340e5ec14ebae46bfadc7eb7cbd82e9e9",
+      "bytes": 6694,
+      "sha256": "7290f8a7b1bf4212a303f0e3fe5a3f6645e5fac599280e68584f9f210dad448c"
+    },
+    {
+      "ref": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "path": "apps/control/task-lookup/index.mjs",
+      "gitBlob": "c3443288b9624c445ace541d1b1a447438323add",
+      "bytes": 334,
+      "sha256": "114e25b9a2973823dc4b1d17009cb32b377bc08e93f1b32963404cfef5e28440"
+    },
+    {
+      "ref": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "path": "apps/control/task-lookup/binding.mjs",
+      "gitBlob": "5337c05f73a7535b0564da15f6f819b56409fa37",
+      "bytes": 8086,
+      "sha256": "eeb2cb69e3f20eacf123206d0faa2da7170ef53e8bdea624e7947bc9e81a1aeb"
+    },
+    {
+      "ref": "6f14d780a40e878fa62bc928c4d520286313f56c",
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "gitBlob": "ed95692d75a0c4d028e6afaa5106d31d5d1cb6f6",
+      "bytes": 4418,
+      "sha256": "014e0a5520861ddbf87f315d8a57fdf124c2a5536df582189fa3d543a5bf8df2"
+    },
+    {
+      "ref": "a4d9a53fbe6c122366ce3d6b88dc7df6c8a4a553",
+      "path": "docs/coordination/reports/CODEX-TASK-LOOKUP-EVAL-REVIEW-20261012.md",
+      "gitBlob": "59331af675905423194d43bea8b439f3dcc85226",
+      "bytes": 3881,
+      "sha256": "25f7845ab9ec53e665e1f4745e1102977e554a5189d21b98f388ac99f08b39fa"
+    },
+    {
+      "ref": "a4d9a53fbe6c122366ce3d6b88dc7df6c8a4a553",
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/repaired.json",
+      "gitBlob": "5194fb1c61e35e1facc06455e94b311231c5f85c",
+      "bytes": 1441,
+      "sha256": "d0fa03bf2f1d3974912fbe35307bd6f1e6c665e96b9842714b2d6d740fbec274"
+    },
+    {
+      "ref": "a4d9a53fbe6c122366ce3d6b88dc7df6c8a4a553",
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/repaired.stdout.bin",
+      "gitBlob": "9b4a678a0466651e6e489c949ee2d863992dab35",
+      "bytes": 9169,
+      "sha256": "01b3c68587d249e33207461e41971a94f7949acdd9d28e2abcc175b8b4bfd4bf"
+    }
+  ]
+}

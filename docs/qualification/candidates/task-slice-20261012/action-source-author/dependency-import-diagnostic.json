@@ -1,0 +1,8 @@
+{
+  "attempt": "git cherry-pick 84a9313735ec9fb079e35a92adb074f6afaf32e7",
+  "exitCode": 1,
+  "reason": "Git directory rename detection moved three root integration evidence files toward author directory, causing file-location conflicts. No source conflict.",
+  "resolution": "Aborted own cherry-pick; restored only exact two allocated root source dependency files and committed them. Root evidence remains in original immutable root commit.",
+  "finalProfileCapture": "Ran during staged source-only dependency application; 22/22 passed but metadata conflict meant it was not a clean source freeze. Preserved; final exact replay follows.",
+  "dependencySourceCommit": "926c3cfe250f6e2cb3a171e194f087e1444b9f44"
+}

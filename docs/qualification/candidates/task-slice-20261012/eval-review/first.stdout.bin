@@ -1,0 +1,164 @@
+✔ CLI help is handled without input files or network (1.016499ms)
+✔ CLI freezes, projects withheld runner and scores exact local input (44.253201ms)
+✔ CLI refuses overwritten output, external corpus pin mismatch and symlink input (12.599433ms)
+✔ CLI keeps missing cases as failure exit with report, not successful empty pass (7.503783ms)
+✔ CLI rejects duplicate/unknown flags before creating output (0.413813ms)
+✔ freeze binds entire approved input with real corpus still unqualified (10.331789ms)
+✔ separate approval pin cannot be changed inside dataset (1.417112ms)
+✔ gold/source/config changes invalidate approval coverage before freeze (2.735707ms)
+✔ unkeyed internal freeze tampering is detected and not called authentication (2.412661ms)
+✔ declared real provenance remains separate from qualified real count (0.85065ms)
+✔ empty supplied corpus is valid with zero real/synthetic counts (1.329791ms)
+✔ held-out runner preserves executable inputs but excludes gold and approval (1.937516ms)
+✔ related cases cannot cross split boundaries (1.148188ms)
+✔ same source request cannot escape group leakage through group renaming (1.36871ms)
+✔ duplicate cases/sources and unknown snapshot refs refuse (1.353116ms)
+✔ selected client scope only; no clientless or actor rebinding (1.669953ms)
+✔ missing semantic gold and unsupported absence/exhaustiveness are refused (1.207448ms)
+✔ hostile getters and extra authority cannot execute during input admission (0.276656ms)
+✔ independent approved-input shape freezes synthetic corpus without modifying input (6.382876ms)
+✔ wrong externally pinned approval hash refuses (0.945352ms)
+✔ case/source/config substitutions after approval refuse (1.981893ms)
+✔ changing synthetic to real without changing approval refuses (0.6846ms)
+✔ duplicate case IDs refuse instead of reducing denominator (0.462346ms)
+✔ one related group across two splits refuses (0.950841ms)
+✔ related oracle variants may remain in same split without losing cases (2.921747ms)
+✔ runner projection retains prompt/request but withholds expected gold (1.694721ms)
+✔ held-out projection is split-specific and omits gold (2.390037ms)
+✔ unknown split cannot silently select or omit cases (1.581691ms)
+✔ freeze detaches caller references (1.216881ms)
+✔ freeze refuses unknown schema/input authority flags (1.286777ms)
+✔ hostile accessors never execute during freeze (0.395405ms)
+✔ non-JSON scalar and unsafe case counts cannot produce frozen evidence (0.977421ms)
+✔ case referencing absent source cannot be admitted as covered (0.666633ms)
+✔ duplicate source snapshot IDs refuse instead of selecting arbitrary version (2.090867ms)
+✔ empty corpus remains unqualified with no fabricated real request count (0.309105ms)
+✔ even operator-pinned real label cannot manufacture qualified provenance (1.551094ms)
+✔ runner envelope pins source/config/case identities without approval body (1.571826ms)
+✖ actual closed returned observation and matching frozen gold score (14.462496ms)
+✔ expected denied and clarify remain independently observable (5.717866ms)
+✔ wrong route and wrong client argument are visible failures (5.093225ms)
+✔ wrong case/config/source/run identities cannot score (9.632186ms)
+✖ wrong run envelope corpus/config/source pin refuses batch (2.163446ms)
+✔ altered source records or missing coverage fails (6.689357ms)
+✔ current authorization actor/scope/receipt/denial cannot release success (11.716513ms)
+✖ current read attempt may change while original scope/binding remains (2.901317ms)
+✔ delivery/result reference and UI event correlation are required (7.223381ms)
+✔ task acceptance/completion assertions cannot pass recommendation lookup (6.055183ms)
+✔ page-only empty result does not prove whole-source absence or exhaustive coverage (3.775102ms)
+✔ missing observations stay in denominator (1.431133ms)
+✔ skipped/ineligible do not improve all-case denominator (3.541019ms)
+✔ failed observations stay failed even when expected branch is denied (1.396552ms)
+✔ duplicate known observations fail their case and remain diagnostic (3.348269ms)
+✔ foreign observation is diagnosed without displacing missing known case (2.396917ms)
+✔ malformed observation cannot silently disappear (2.559312ms)
+✔ zero corpus rates are null with no measured qualification (0.65138ms)
+✔ run time reversal refuses rather than reporting negative measurement (2.170947ms)
+✔ score result is detached from subsequent observation mutation (2.929168ms)
+✔ semantic gold removes only fresh transport entropy (1.640599ms)
+✔ semantic gold retains actual source/coverage/record/selected authority meaning (4.161283ms)
+✔ tampered freeze counts/pins/gold cannot be used by runner/scorer (11.539795ms)
+✔ run binding complete membership and stable identity are mandatory (10.075682ms)
+✔ expired authorization cannot be replayed as current release proof (5.283149ms)
+✔ skipped outcome cannot conceal returned bytes or false absence claims (2.298208ms)
+✔ returned observation requires both distinct ordered authorization phases (7.890554ms)
+✔ UI event ordering and distinct identity cannot be forged with shape-valid events (10.616364ms)
+✔ optional exact replay pin is independent from semantic match (3.316831ms)
+✔ actual canonical recommendation result and callback traces score without runtime qualification (38.080367ms)
+✔ fresh run/attempt/event/decision/time entropy preserves semantic gold with full byte audit (6.502444ms)
+✔ optional exact replay pin rejects changed transport even when semantics match (17.615297ms)
+✔ changed semantic source cannot pass frozen gold (4.633182ms)
+✔ changed semantic coverage cannot pass frozen gold (4.321813ms)
+✔ changed semantic record cannot pass frozen gold (4.43873ms)
+✔ changed semantic content cannot pass frozen gold (5.011521ms)
+✔ semantic projection retains source asOf/version/content/freshness and scopes (2.202104ms)
+✔ wrong route identity is a failed case (2.746854ms)
+✔ wrong arguments identity is a failed case (3.014135ms)
+✔ wrong source identity is a failed case (2.278549ms)
+✔ wrong config identity is a failed case (2.201032ms)
+✔ wrong case identity is a failed case (2.581514ms)
+✔ wrong hash identity is a failed case (6.285989ms)
+✔ invalid current expiry trace refuses local satisfaction (6.88413ms)
+✔ invalid current missing trace refuses local satisfaction (3.960029ms)
+✔ invalid current denied trace refuses local satisfaction (6.103253ms)
+✔ invalid current binding trace refuses local satisfaction (5.285854ms)
+✔ invalid current reference trace refuses local satisfaction (7.156268ms)
+✔ current reader may recover to a fresh attempt without rebinding original version (6.658179ms)
+✔ failed stays denominator and cannot hide unsupported claims (2.048112ms)
+✔ skipped stays denominator and cannot hide unsupported claims (1.656683ms)
+✔ ineligible stays denominator and cannot hide unsupported claims (1.757795ms)
+✔ missing, duplicate and foreign observations remain explicit (2.201603ms)
+✔ denied and clarify are meaningful frozen outcomes, not accepted tasks (4.919392ms)
+✔ empty score has null rates and no qualified real cases (0.504178ms)
+✔ fresh run binding requires all cases exactly once and stable principal (15.047934ms)
+✔ tool completed is never run completion and scopes/ref must match (10.652389ms)
+ℹ tests 94
+ℹ suites 0
+ℹ pass 91
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5921.355436
+
+✖ failing tests:
+
+test at evals/task-lookup/test/eval-independent.test.mjs:82:1
+✖ actual closed returned observation and matching frozen gold score (14.462496ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:82:119)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/eval-independent.test.mjs:86:1
+✖ wrong run envelope corpus/config/source pin refuses batch (2.163446ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:86:200)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/eval-independent.test.mjs:89:1
+✖ current read attempt may change while original scope/binding remains (2.901317ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:89:313)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

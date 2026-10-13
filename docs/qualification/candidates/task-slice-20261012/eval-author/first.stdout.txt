@@ -1,0 +1,340 @@
+✔ CLI help is handled without input files or network (0.955356ms)
+✔ CLI freezes, projects withheld runner and scores exact local input (24.097983ms)
+✔ CLI refuses overwritten output, external corpus pin mismatch and symlink input (7.077928ms)
+✔ CLI keeps missing cases as failure exit with report, not successful empty pass (5.76143ms)
+✔ CLI rejects duplicate/unknown flags before creating output (0.237517ms)
+✔ freeze binds entire approved input with real corpus still unqualified (7.259742ms)
+✔ separate approval pin cannot be changed inside dataset (0.910959ms)
+✔ gold/source/config changes invalidate approval coverage before freeze (1.825694ms)
+✔ unkeyed internal freeze tampering is detected and not called authentication (1.721187ms)
+✔ declared real provenance remains separate from qualified real count (0.7118ms)
+✔ empty supplied corpus is valid with zero real/synthetic counts (0.686492ms)
+✔ held-out runner preserves executable inputs but excludes gold and approval (1.593765ms)
+✔ related cases cannot cross split boundaries (0.977149ms)
+✔ same source request cannot escape group leakage through group renaming (0.853513ms)
+✔ duplicate cases/sources and unknown snapshot refs refuse (1.239132ms)
+✔ selected client scope only; no clientless or actor rebinding (1.448457ms)
+✔ missing semantic gold and unsupported absence/exhaustiveness are refused (1.315337ms)
+✔ hostile getters and extra authority cannot execute during input admission (0.258148ms)
+✖ actual canonical recommendation result and callback traces score without runtime qualification (4.800207ms)
+✖ fresh run/attempt/event/decision/time entropy preserves semantic gold with full byte audit (0.524979ms)
+✖ optional exact replay pin rejects changed transport even when semantics match (0.44541ms)
+✖ changed semantic source cannot pass frozen gold (0.435254ms)
+✖ changed semantic coverage cannot pass frozen gold (0.391709ms)
+✖ changed semantic record cannot pass frozen gold (0.83827ms)
+✖ changed semantic content cannot pass frozen gold (0.709216ms)
+✖ semantic projection retains source asOf/version/content/freshness and scopes (0.557759ms)
+✖ wrong route identity is a failed case (0.466371ms)
+✖ wrong arguments identity is a failed case (0.483447ms)
+✖ wrong source identity is a failed case (0.77124ms)
+✖ wrong config identity is a failed case (0.455685ms)
+✖ wrong case identity is a failed case (0.434272ms)
+✖ wrong hash identity is a failed case (0.2865ms)
+✖ invalid current expiry trace refuses local satisfaction (0.381494ms)
+✖ invalid current missing trace refuses local satisfaction (0.31285ms)
+✖ invalid current denied trace refuses local satisfaction (0.25936ms)
+✖ invalid current binding trace refuses local satisfaction (0.234963ms)
+✖ invalid current reference trace refuses local satisfaction (0.271578ms)
+✖ current reader may recover to a fresh attempt without rebinding original version (0.40544ms)
+✔ failed stays denominator and cannot hide unsupported claims (4.898424ms)
+✔ skipped stays denominator and cannot hide unsupported claims (2.575612ms)
+✔ ineligible stays denominator and cannot hide unsupported claims (2.514771ms)
+✔ missing, duplicate and foreign observations remain explicit (3.495145ms)
+✔ denied and clarify are meaningful frozen outcomes, not accepted tasks (4.515738ms)
+✔ empty score has null rates and no qualified real cases (0.615986ms)
+✖ fresh run binding requires all cases exactly once and stable principal (0.347493ms)
+✖ tool completed is never run completion and scopes/ref must match (0.327792ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 24
+ℹ fail 22
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7880.493148
+
+✖ failing tests:
+
+test at evals/task-lookup/test/score.test.mjs:3:1
+✖ actual canonical recommendation result and callback traces score without runtime qualification (4.800207ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:3:116)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at evals/task-lookup/test/score.test.mjs:4:1
+✖ fresh run/attempt/event/decision/time entropy preserves semantic gold with full byte audit (0.524979ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:4:112)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at evals/task-lookup/test/score.test.mjs:5:1
+✖ optional exact replay pin rejects changed transport even when semantics match (0.44541ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:5:99)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:6:59
+✖ changed semantic source cannot pass frozen gold (0.435254ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:6:127)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:6:59
+✖ changed semantic coverage cannot pass frozen gold (0.391709ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:6:127)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:6:59
+✖ changed semantic record cannot pass frozen gold (0.83827ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:6:127)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:6:59
+✖ changed semantic content cannot pass frozen gold (0.709216ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:6:127)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:7:1
+✖ semantic projection retains source asOf/version/content/freshness and scopes (0.557759ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:7:98)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:8:72
+✖ wrong route identity is a failed case (0.466371ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:8:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:8:72
+✖ wrong arguments identity is a failed case (0.483447ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:8:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:8:72
+✖ wrong source identity is a failed case (0.77124ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:8:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:8:72
+✖ wrong config identity is a failed case (0.455685ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:8:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:8:72
+✖ wrong case identity is a failed case (0.434272ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:8:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:8:72
+✖ wrong hash identity is a failed case (0.2865ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:8:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:9:70
+✖ invalid current expiry trace refuses local satisfaction (0.381494ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:9:146)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:9:70
+✖ invalid current missing trace refuses local satisfaction (0.31285ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:9:146)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:9:70
+✖ invalid current denied trace refuses local satisfaction (0.25936ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:9:146)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:9:70
+✖ invalid current binding trace refuses local satisfaction (0.234963ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:9:146)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:9:70
+✖ invalid current reference trace refuses local satisfaction (0.271578ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:9:146)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:10:1
+✖ current reader may recover to a fresh attempt without rebinding original version (0.40544ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:10:102)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:15:1
+✖ fresh run binding requires all cases exactly once and stable principal (0.347493ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:15:280)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at evals/task-lookup/test/score.test.mjs:16:1
+✖ tool completed is never run completion and scopes/ref must match (0.327792ms)
+  ReferenceError: snapshot is not defined
+      at semanticResult (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/contracts.mjs:22:17)
+      at returned (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/result-fixture.mjs:9:53)
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:16:246)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

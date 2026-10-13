@@ -1,0 +1,43 @@
+{
+  "sourceHead": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "manifests": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/manifest.json",
+      "sha256": "ee935094175c0f9d1a57e9273cbdde17d7c55e5838058f8225408349635fa09c",
+      "members": 43,
+      "failures": []
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-review/manifest.json",
+      "sha256": "dba7373fb5c7f7ab1bfd7d8f980e94dac3c327e21734721eb43e6c5b659be224",
+      "members": 45,
+      "failures": []
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-author/manifest.json",
+      "sha256": "584290782636caaf2b009220b310d4b98bfc7f7ce6f198e7678745e87af18b34",
+      "members": 53,
+      "failures": []
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/manifest.json",
+      "sha256": "1fa631f21ece9f5ba7a2d546a46b9b44093983d84a9756e311734b1717656bb8",
+      "members": 67,
+      "failures": []
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-author/manifest.json",
+      "sha256": "59f56adea20a0cc6b9264dc97dd5cea81ca558f3f8e11808097445383e2aefda",
+      "members": 35,
+      "failures": []
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/manifest.json",
+      "sha256": "5a97c21a816d3075a14974a93ff41a308b5797d079a5dbdc29d1480444b52181",
+      "members": 50,
+      "failures": []
+    }
+  ],
+  "passed": true,
+  "runtimeQualified": false
+}

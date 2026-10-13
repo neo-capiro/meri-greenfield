@@ -1,0 +1,123 @@
+{
+  "candidate": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeQualified": false,
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "apps/gateway/test/action-lookup-slice-independent.test.mjs",
+      "bytes": 12475,
+      "sha256": "6466820d4ecd8892f93ada9e8285910777012438a2deab3c17ebd6936c5e6ef2"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-TASK-SLICE-REVIEW-20261012.md",
+      "bytes": 5080,
+      "sha256": "3c7665694b73e85c43470b5e3b6e98b9a88e683e6acbd1c57a2d68841413bb19"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-TASK-SLICE-REVIEW-20261012.md",
+      "bytes": 2503,
+      "sha256": "7dd1fcfc164b682650a4c2a0bd61aa1b4ae772d66fbec5794ecb2f13b6352982"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/audit-before.json",
+      "bytes": 225,
+      "sha256": "bf766689fb24979a29289370d3a4708042ed9b78f3a4c0d9a39aed873696fa61"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/audit-before.py",
+      "bytes": 5416,
+      "sha256": "f08f3f22ea7d5fff7c1c3c4b91a0d7303c4332e4611a0845a72c1e445b05a591"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/audit-before.stderr.bin",
+      "bytes": 727,
+      "sha256": "ede135f273242da2ebffb99965d7f1935ebc30524c2e53919b1b1c375f73f7af"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/audit-before.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/audit.py",
+      "bytes": 6110,
+      "sha256": "b3d74b3d642dd9cdcbf711e0a35f00581e7290572fb03110f85a95818a578ca3"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/cleanup.json",
+      "bytes": 715,
+      "sha256": "f388f8c1e21ed6205d8297160f8ddcd390e980eeb053ff96199486f7c1b6459f"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/final-audit.json",
+      "bytes": 6610,
+      "sha256": "8f350a2ca1018643246613938d82d41db4e541b2968fba8795e8ca1fd9ea5e3a"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/owners-eval-independent.json",
+      "bytes": 1313,
+      "sha256": "052ce60a077fbfb997e3400dd229f127add81465ae67bc2884456beae52e7680"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/owners-eval-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/owners-eval-independent.stdout.bin",
+      "bytes": 1966,
+      "sha256": "b3af71c6e0e9dd030e81266fb78dd01310ad7d8c8edebf4e8c14e6be06e1e95a"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/owners-independent.json",
+      "bytes": 1303,
+      "sha256": "863cfb073708b5490fa024fd2795db351aee1f93dd44de4874e83ec6de45cead"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/owners-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/owners-independent.stdout.bin",
+      "bytes": 1698,
+      "sha256": "31cd1bba6adc903c5631ad0b41f57f8abf042dbcd9a669ecaa496d393d623ab4"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/root-corrected-original.json",
+      "bytes": 1472,
+      "sha256": "05414b8e5652e29560c9f9332a956947e20b7e42a42498e54d7c08a734b4fb06"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/root-corrected.json",
+      "bytes": 1701,
+      "sha256": "51a8ed7c98733c43d2a1aa8ef4294ea71838bc4bed9048a9cc1504fb2ad726a5"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/root-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/root-corrected.stdout.bin",
+      "bytes": 4479,
+      "sha256": "6e8b1a0f2427271175bf0f4b30533b2b3a3d46e84b184c567a0ee2d34a507581"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/source-audit-before.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/source-audit-current.json",
+      "bytes": 4994,
+      "sha256": "3e108963fbd359d9aeefb8a8cf5abd4708f33e34466ace640fd570fd7700e436"
+    }
+  ]
+}

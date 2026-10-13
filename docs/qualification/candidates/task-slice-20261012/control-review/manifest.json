@@ -1,0 +1,351 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "6f14d780a40e878fa62bc928c4d520286313f56c",
+  "behavioralSource": "6eec40b28bd7f10fd163108ea13e75a0ced477b2",
+  "authorPacket": "e2242bb113b2f9adc2028fc5cef005e36c07fb2e",
+  "scope": "control delivery source and concrete scripted store; actual root gateway join and runtime remain separate HOLD",
+  "independentPassed": 49,
+  "combinedEarlierPassed": 84,
+  "sourceAuditPassed": 57,
+  "packetAuditPassed": 66,
+  "originalsPreserved": 9667,
+  "runtimeAccepted": false,
+  "members": [
+    {
+      "path": "docs/coordination/tasks/CODEX-TASK-LOOKUP-CONTROL-REVIEW-20261012.md",
+      "bytes": 4057,
+      "sha256": "842db6e8535bebfb21033e1989d0c5431af656c710b9d25faaa2fd73b5d26c8e"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-TASK-LOOKUP-CONTROL-REVIEW-20261012.md",
+      "bytes": 5755,
+      "sha256": "dc96928cdfed3b3816907f5adb5dafa256702e10dfc99fdd6f45b63cccaf3082"
+    },
+    {
+      "path": "apps/control/task-lookup/test/delivery-independent.test.mjs",
+      "bytes": 14048,
+      "sha256": "eb0c7072fc4c993f8bc111b8f1d8b8c49cbda7810bb0996643b33a4a3a41cf55"
+    },
+    {
+      "path": "apps/control/task-lookup/test/store-independent.test.mjs",
+      "bytes": 5331,
+      "sha256": "e709c8ce23cc637a77699c347c2c8f75b60bf10085867949786b9865ea96e7d8"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/author-packet-audit.json",
+      "bytes": 1304,
+      "sha256": "cbac72f9470afd71c30984d5927dbb23220c8044af1805760a69cd1325c10391"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/author-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/author-packet-audit.stdout.bin",
+      "bytes": 136,
+      "sha256": "6f175af17e0d1f9aab60097ae2edf5236333445e1cb52767dc72c6088a095e8a"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/check-fixture.mjs",
+      "bytes": 309,
+      "sha256": "37406b4a921fcd88265d6632a5636e34b813e8216c58f45ec50d25b76f5cf5b5"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/cleanup.json",
+      "bytes": 2269,
+      "sha256": "2ec8f7a99a84d40f976c0c4943cc2e6a6ecf3179f0229f4ae3241e055930a49b"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-baseline-corrected.json",
+      "bytes": 1309,
+      "sha256": "ad40d0cce54d16805fbd029bd385ea2535a186b51edf626c47c50b02b310d973"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-baseline-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-baseline-corrected.stdout.bin",
+      "bytes": 3329,
+      "sha256": "ad8996ecf8bd3227f86dcc8f58bcc6b9f0e8bab306b12159544ff870da5989eb"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-final.json",
+      "bytes": 1346,
+      "sha256": "49d337ee4094ffd35a6f6e3c89d246d445f727f40357e959e9f747610f195fa4"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-final.stdout.bin",
+      "bytes": 4919,
+      "sha256": "49f0edb9f0b30a316d138c07e9a482bf7b22884f637f09d03ebdfaa500dec9e6"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-first.json",
+      "bytes": 1288,
+      "sha256": "3e05f36a34a4badb9d2c243974dfd6635c440efdc8f423c17f59b1cd2c9e3547"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-first.stdout.bin",
+      "bytes": 24809,
+      "sha256": "e2ed519640239425acd4d7c8e04ffb9a030a85be811584667b722e767f5b81b1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.json",
+      "bytes": 1461,
+      "sha256": "d975660f1d3820731bd275cff79060604b0322b1a2b3493f0eee2a4d358ce0c7"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.stdout.bin",
+      "bytes": 7356,
+      "sha256": "50dc26815f431b1bf35a915d33670a37af15f88e6e7f7bd0ae3fb06b1dc93607"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.json",
+      "bytes": 1301,
+      "sha256": "352df41f3e165a129b41331aa1a46f40e33a7618316078d7fa69246c5ac3b177"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.stdout.bin",
+      "bytes": 4312,
+      "sha256": "fbedea62b57a0cc4b27ca785c11df8495d68c042bed0b2bc737f1cdddf4c4944"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/criteria.json",
+      "bytes": 417,
+      "sha256": "e51478415b5bc28779b26bee78957d812aab6ae67dce257b2217420728f078c1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/delivery-shape-fixture-correction.json",
+      "bytes": 1443,
+      "sha256": "ca76ac5ba3e63d5ac217141808930d254fbaa01ffed3ed5f63de6c67b4cc3323"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/dependency-setup.json",
+      "bytes": 1784,
+      "sha256": "2a63a31597b45ac4a71e6c1d19a8508fa19abf964251b64fbc758088c20f452b"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-frozen-audit.json",
+      "bytes": 1302,
+      "sha256": "a3d7f45179bb970edf57d49021552dab776af39252b777192de3788e0999e3f1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-frozen-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-frozen-audit.stdout.bin",
+      "bytes": 177,
+      "sha256": "178a64153f50afbeedd3c3e866887b3d2404f541a806d6c9f4c0670890583167"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-source-audit.json",
+      "bytes": 1302,
+      "sha256": "8a6ea99ce085cce3d3b24f1f12944a537c131c3d54be2afb79143cc7a2c69d14"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-source-audit.stdout.bin",
+      "bytes": 177,
+      "sha256": "ab2a181bc4070a3d627877e1a0fe0a9d3c9d1f14d029e4d22b32600e5820f423"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-before-delivery-shape.mjs.txt",
+      "bytes": 2302,
+      "sha256": "ac268250edcbb53a13ed094a1b37858950afaa0f0bd4f38bf4605e533bbc5488"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.json",
+      "bytes": 1296,
+      "sha256": "a70ee64217d22148b2c3bf1b206f5b6ba783f2bd19ae2190b4cd8afb20995068"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.mjs.txt",
+      "bytes": 2305,
+      "sha256": "14b80224bfc448fbb63c82c9184d81da90c0435acbb561853ca611b041f05d31"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.stderr.bin",
+      "bytes": 1314,
+      "sha256": "8dda9b2b44fd3ebea029f5b240bc3298a7d335e22a7a39419d0b6c8c5c41407c"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-repaired.json",
+      "bytes": 1297,
+      "sha256": "f45b52782a5e56c1675755a751efe894e38685bae047dbb5406eac4036982669"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-repaired.stdout.bin",
+      "bytes": 121,
+      "sha256": "5c74544b3f6a5ec7a2c59046c2d83ec83377d106aa5b1b8358566f04e1550e94"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-setup-correction.json",
+      "bytes": 694,
+      "sha256": "71046cddbc85139b968d70ef1fcc48fb9261776eebe9c252e9cd460a08676cc6"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture.mjs",
+      "bytes": 2388,
+      "sha256": "d248cf1e8ea58b6d752c54e7e0f002eace5ab067ab86bd359697f5bd4980bd74"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/packet-audit.json",
+      "bytes": 8823,
+      "sha256": "7dfb12798dcc73dc4b8dcb649dc9236efadec0a693498aa2e94743e0a5934b0b"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/packet-audit.py",
+      "bytes": 1736,
+      "sha256": "715e761db00eac75c92d70d59465f750d7671000ec513ee6546f6b17e4e00549"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/pre-replay-harness-correction.json",
+      "bytes": 500,
+      "sha256": "5df3b36ee013c0da66ed98f8e3e7f05cfd903b35225df4fe93ecb8aef6b7aaad"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/review-only-commits.json",
+      "bytes": 1077,
+      "sha256": "fa09ce94c2915744e1b2dd09b5039ed44a93c804719543207af895fe355562a1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/scope-trace-correction.json",
+      "bytes": 823,
+      "sha256": "94f2f8043cc40279b274eb8e46b4324150fe87d7548d6201649d445b778ffb45"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/scripted-pool.mjs",
+      "bytes": 1970,
+      "sha256": "7819ebde8abfd6ef4c2d2a8dfee06bfa80ee7baee892ef82e69d16c24e6da543"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/setup.json",
+      "bytes": 568,
+      "sha256": "b2ef2be75c44fe8ec3b4d357c05dc594ceaec1d2b3a60b38b638b36a05ba8eb5"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/source-audit-initial.json",
+      "bytes": 9872,
+      "sha256": "ed23cfc4192293e068fa7d4d548322611dc7dae3e6c866b0bfe6e20d59b9a6b4"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/source-audit.json",
+      "bytes": 11204,
+      "sha256": "76abb47c27a4fb7287593c520c13c460231330d2e421fb371b2f9f80021b78fd"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/source-audit.py",
+      "bytes": 3734,
+      "sha256": "a7c60ee4a2b50c47198edafd83dd04b8dfc36ceba05be4cd09f4cf9e621e659d"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-baseline-corrected.json",
+      "bytes": 1302,
+      "sha256": "beca344e9928f0ff9627a73475ec8c934a24928a65f916eba4bfade0df16e4a6"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-baseline-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-baseline-corrected.stdout.bin",
+      "bytes": 3975,
+      "sha256": "c09a671a2b59f623421f84b85947cf5ab5eed50130391bd756f56f267c055cae"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-control-before-clone.mjs.txt",
+      "bytes": 4535,
+      "sha256": "eb76bcd5c58972824e06974f089f42a0e027e8144f24ada4d80ed9c18ffd72a1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-fixture-correction.json",
+      "bytes": 443,
+      "sha256": "99bb08dddf72ac4429ef46c98720c827cfcc127c22731a6051c9ea1f47ba1143"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-original-negative.json",
+      "bytes": 1300,
+      "sha256": "f1a12d38726c4e888b254eca07dd23fecef47fc601ad396b4f202ef8ec5d939e"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-original-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-original-negative.stdout.bin",
+      "bytes": 4189,
+      "sha256": "b6c65c3686b4eeab9364af4c192a231fbafc923251047bc0f372ba2ca1fa71a9"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/whitespace-full.stdout.bin",
+      "bytes": 738,
+      "sha256": "5d176acb689966ec32a9d97135ad8303f2a0fe9d7d8459bc8fec039bb7739d29"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/whitespace.json",
+      "bytes": 171,
+      "sha256": "489a11e0bb3b02a5dad02359dd25ba166fac5c7120aed43cd0102dd27ad9596d"
+    }
+  ],
+  "manifestExcludes": "only itself"
+}

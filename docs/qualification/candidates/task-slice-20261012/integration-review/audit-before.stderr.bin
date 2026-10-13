@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/workspace/meri-task-slice-integration-review-20261012/docs/qualification/candidates/task-slice-20261012/integration-review/audit.py", line 96, in <module>
+    main()
+  File "/workspace/meri-task-slice-integration-review-20261012/docs/qualification/candidates/task-slice-20261012/integration-review/audit.py", line 65, in main
+    assert all(x['handler'] is None and x['qualification']=='pending' and x['availability']=='unavailable' and x['retry']['maxRetries']==0 for x in catalog['operations'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

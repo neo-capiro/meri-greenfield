@@ -1,0 +1,25 @@
+✔ slice independent: real SQL transitions and canonical accounting precede public delivery (84.585515ms)
+✔ slice independent: model cannot inject alias client, authority or supplied result identity (27.319737ms)
+✔ slice independent: actual gateway denies removed grant despite permissive control receipt (10.395813ms)
+✔ slice independent: changing request under stable lookup never mints another source invocation (25.669416ms)
+✔ slice independent: UUID case alias retains stable database lookup identity (25.7857ms)
+✔ slice independent: recovered read binds old result to fresh task B without redispatch after original expiry (32.913703ms)
+✔ slice independent: narrowed fresh read authority cannot return retained source data (21.487992ms)
+✔ slice independent: retained digest or original binding corruption refuses recovered read (83.640745ms)
+✔ slice independent: prepare acknowledgement loss cannot dispatch or retry (19.021245ms)
+✔ slice independent: reserve acknowledgement loss cannot dispatch or retry (12.402739ms)
+✔ slice independent: marker ambiguity keeps liability until explicit accounting-only reconciliation (18.223606ms)
+✔ slice independent: committed claim lost ACK cannot reach HTTP (7.039289ms)
+✔ slice independent: committed dispatch marker lost ACK cannot reach HTTP (9.078493ms)
+✔ slice independent: committed result lost ACK is read-recoverable but never automatically redispatched (29.908897ms)
+✔ slice independent: cancellation while marker commit acknowledgement parks prevents later settlement/result ports (20.644975ms)
+✔ slice independent: scorer consumes actual denied recovered-read callback and exception, never a denial label alone (24.776934ms)
+✔ slice independent: marker uncertainty remains a failed evaluation and retained liability, not a synthetic denied pass (27.862762ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3313.943739

@@ -1,0 +1,54 @@
+{
+  "ownedGroups": [
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/exact-source.json",
+      "pidAndPgid": 409925,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-audit-v2.json",
+      "pidAndPgid": 412110,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-audit.json",
+      "pidAndPgid": 411866,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-profile.json",
+      "pidAndPgid": 411214,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-source.json",
+      "pidAndPgid": 411664,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/initial.json",
+      "pidAndPgid": 409068,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/resolver-repair.json",
+      "pidAndPgid": 409396,
+      "captureAbsent": true,
+      "freshAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/action-source-author/source-audit.json",
+      "pidAndPgid": 410684,
+      "captureAbsent": true,
+      "freshAbsent": true
+    }
+  ],
+  "allAbsent": true,
+  "nativeServicesStarted": false
+}

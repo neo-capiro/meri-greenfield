@@ -1,0 +1,26 @@
+{
+  "source": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+  "capture": "consolidated.json",
+  "captureHead": "7666e3b230027f97dbac31de0fedc789f3f2416a",
+  "captureSourceDiffMatchesExactSourceDelta": true,
+  "sourceDiffSha256": "4e4ba651e0b6ebc8fe2fb81d3877eef5349dd01a043f5096796caa86c4b3d487",
+  "tests": 54,
+  "pass": 54,
+  "fail": 0,
+  "skipped": 0,
+  "durationSeconds": 11.561,
+  "group": 418505,
+  "groupAbsent": true,
+  "independentReplayReported": {
+    "source": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+    "tests": 111,
+    "independent": 57,
+    "author": 54,
+    "sourceDiff": 0,
+    "group": 418869,
+    "groupAbsent": true,
+    "receiptOwner": "native_supervisor_author",
+    "provenance": "Exact committed reviewer report/raw receipt now read at a4d9a53fbe6c122366ce3d6b88dc7df6c8a4a553; identities in source-preservation.json",
+    "verdict": "ACCEPT_SOURCE"
+  }
+}

@@ -1,0 +1,78 @@
+✖ actual control-produced immutable refs, source envelope and two read receipts satisfy scorer (33.905686ms)
+✔ CLI help is handled without input files or network (1.007185ms)
+✔ CLI freezes, projects withheld runner and scores exact local input (20.093788ms)
+✔ CLI refuses overwritten output, external corpus pin mismatch and symlink input (6.047345ms)
+✔ CLI keeps missing cases as failure exit with report, not successful empty pass (4.868942ms)
+✔ CLI rejects duplicate/unknown flags before creating output (0.279921ms)
+✔ freeze binds entire approved input with real corpus still unqualified (8.761698ms)
+✔ separate approval pin cannot be changed inside dataset (0.868507ms)
+✔ gold/source/config changes invalidate approval coverage before freeze (2.104105ms)
+✔ unkeyed internal freeze tampering is detected and not called authentication (1.905906ms)
+✔ declared real provenance remains separate from qualified real count (0.723518ms)
+✔ empty supplied corpus is valid with zero real/synthetic counts (0.779753ms)
+✔ held-out runner preserves executable inputs but excludes gold and approval (1.234136ms)
+✔ related cases cannot cross split boundaries (0.895467ms)
+✔ same source request cannot escape group leakage through group renaming (0.860435ms)
+✔ duplicate cases/sources and unknown snapshot refs refuse (1.843403ms)
+✔ selected client scope only; no clientless or actor rebinding (1.850553ms)
+✔ missing semantic gold and unsupported absence/exhaustiveness are refused (1.436481ms)
+✔ hostile getters and extra authority cannot execute during input admission (0.255094ms)
+✔ actual canonical recommendation result and callback traces score without runtime qualification (27.99766ms)
+✔ fresh run/attempt/event/decision/time entropy preserves semantic gold with full byte audit (5.748126ms)
+✔ optional exact replay pin rejects changed transport even when semantics match (5.193621ms)
+✔ changed semantic source cannot pass frozen gold (4.06273ms)
+✔ changed semantic coverage cannot pass frozen gold (4.633399ms)
+✔ changed semantic record cannot pass frozen gold (4.312676ms)
+✔ changed semantic content cannot pass frozen gold (4.189671ms)
+✔ semantic projection retains source asOf/version/content/freshness and scopes (2.256805ms)
+✔ wrong route identity is a failed case (2.926291ms)
+✔ wrong arguments identity is a failed case (2.910858ms)
+✔ wrong source identity is a failed case (2.43985ms)
+✔ wrong config identity is a failed case (2.549795ms)
+✔ wrong case identity is a failed case (2.209523ms)
+✔ wrong hash identity is a failed case (2.687242ms)
+✔ invalid current expiry trace refuses local satisfaction (4.23508ms)
+✔ invalid current missing trace refuses local satisfaction (3.936671ms)
+✔ invalid current denied trace refuses local satisfaction (3.818453ms)
+✔ invalid current binding trace refuses local satisfaction (3.678102ms)
+✔ invalid current reference trace refuses local satisfaction (3.760235ms)
+✔ current reader may recover to a fresh attempt without rebinding original version (4.144975ms)
+✔ failed stays denominator and cannot hide unsupported claims (2.059127ms)
+✔ skipped stays denominator and cannot hide unsupported claims (1.632866ms)
+✔ ineligible stays denominator and cannot hide unsupported claims (1.690653ms)
+✔ missing, duplicate and foreign observations remain explicit (2.122712ms)
+✔ denied and clarify are meaningful frozen outcomes, not accepted tasks (3.508227ms)
+✔ empty score has null rates and no qualified real cases (0.457338ms)
+✔ fresh run binding requires all cases exactly once and stable principal (7.711248ms)
+✔ tool completed is never run completion and scopes/ref must match (11.319275ms)
+ℹ tests 47
+ℹ suites 0
+ℹ pass 46
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10282.786206
+
+✖ failing tests:
+
+test at evals/task-lookup/test/actual-control.test.mjs:14:1
+✖ actual control-produced immutable refs, source envelope and two read receipts satisfy scorer (33.905686ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'EVAL_RELEASE_INTENT'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/actual-control.test.mjs:14:300)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'EVAL_RELEASE_INTENT' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

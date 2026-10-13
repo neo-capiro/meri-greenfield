@@ -1,0 +1,13 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "stdoutBytes": 728,
+  "stdoutSha256": "51f1c9b71eca751e9bc37dce29e01f80a4e3949df69d486ef84726a3f75533c8",
+  "stderrBytes": 0,
+  "rawPreserved": true
+}

@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-13T00:06:34.311512+00:00",
+  "sourceHead": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "removedOwnedDependencyLinks": [
+    "/workspace/meri-task-slice-20261012/node_modules",
+    "/workspace/meri-task-slice-20261012/packages/contracts/node_modules"
+  ],
+  "donorPreserved": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/action-contracts.json",
+      "pgid": 412550,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/actual-slice.json",
+      "pgid": 417718,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-repairs.json",
+      "pgid": 421029,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/consolidated.json",
+      "pgid": 419799,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile-repaired.json",
+      "pgid": 408955,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile.json",
+      "pgid": 408616,
+      "absent": true
+    }
+  ],
+  "otherOwnerProcessesTouched": false
+}

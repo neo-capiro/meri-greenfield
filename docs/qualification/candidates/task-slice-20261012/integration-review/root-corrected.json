@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/test/action-lookup-eval.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "9377ffed70b5cae6f8d1a485855929dae61347b9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:01:31.078036+00:00",
+  "durationSeconds": 6.289,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 421029,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/root-corrected.stdout.bin",
+      "bytes": 4479,
+      "sha256": "6e8b1a0f2427271175bf0f4b30533b2b3a3d46e84b184c567a0ee2d34a507581"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration-review/root-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Resolve three preserved consolidated expectation failures: freeze complete reference source set and explicitly include the reviewed action dispatch profile; production code unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "originalReceiptSha256": "05414b8e5652e29560c9f9332a956947e20b7e42a42498e54d7c08a734b4fb06",
+  "receiptCopyNote": "Exact original receipt and raw streams copied from root; only stream locators rebased in this review index."
+}

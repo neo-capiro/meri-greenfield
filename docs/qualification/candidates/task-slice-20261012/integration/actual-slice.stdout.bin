@@ -1,0 +1,14 @@
+✔ actual lookup delivery, durable gateway, fixed HTTP adapter and SQL result owner compose once (95.101243ms)
+✔ duplicate stable lookup never redispatches or charges a second time (39.870073ms)
+✔ current control denial before claim performs no source or lookup SQL (4.257882ms)
+✔ revocation after HTTP observation prevents result retention and release (17.019688ms)
+✔ unknown durable completion acknowledgement never yields a control result or source retry (17.7258ms)
+✔ fresh read denial blocks previously retained result after successful lookup (22.740861ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3056.975321

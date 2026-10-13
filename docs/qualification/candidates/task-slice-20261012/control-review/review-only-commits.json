@@ -1,0 +1,26 @@
+{
+  "through": "c93c2f28eab904ecd9062beb45affa095db6b9f2",
+  "reviewOnly": [
+    "9bb2369fa3013dab439d977f8fb3c56f6c881bdd",
+    "a6effd88199139f73df9df0f341f6daa2ced58e6",
+    "92ab6218a914db865820e5b733630b4ddeb7e868",
+    "13afff6bc0c45d0bd9c0c1551b2e40a5a127681c",
+    "8be3a5f0add6d106a4d235bc77b4ecfcc06c9fca",
+    "d02ea370752a134639a35259f610b9e4e946af3f",
+    "3ac3e71d9826ecf0ca28113db9f456d57a60441e",
+    "e61274f4849117f0ca22860884f73ef0d654fbe4",
+    "9ff8d9fb4268a752394b72e4d523b4cca397a29c",
+    "627a69fc72b18bdc80c8f53be28fe7a3f91e789a",
+    "bb05e3800e3539712a8bf6cae1f2adbcf4a980e0",
+    "76df1284efec05796f17f2dbf2e4e66dba633af4",
+    "162d3e9d6242671e0c19aad33642cb1dbd8faf6f",
+    "27eb7da3c85a791fdbbc283749376ce0e9e80715",
+    "c93c2f28eab904ecd9062beb45affa095db6b9f2"
+  ],
+  "excludeAuthorDependencies": [
+    "019b47fc5444f853f52e7e1b031d576bd10d4d64",
+    "40d85f2eed36b8895f806b71e958881ced57fc24",
+    "a89083f4934ee6369d9a227b7c1567ecb8431d24"
+  ],
+  "note": "The final manifest commit follows this list and also contains review-only paths."
+}

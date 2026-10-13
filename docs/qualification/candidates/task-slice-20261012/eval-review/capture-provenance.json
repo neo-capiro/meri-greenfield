@@ -1,0 +1,5 @@
+{
+  "priorSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "currentSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "change": "Include evals in source diff identity; original120s timeout stays under240s allocation."
+}

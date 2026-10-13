@@ -1,0 +1,97 @@
+{
+  "groups": [
+    {
+      "receipt": "author-packet-audit.json",
+      "pgid": 417553,
+      "absent": true
+    },
+    {
+      "receipt": "control-baseline-corrected.json",
+      "pgid": 412766,
+      "absent": true
+    },
+    {
+      "receipt": "control-final.json",
+      "pgid": 416918,
+      "absent": true
+    },
+    {
+      "receipt": "control-first.json",
+      "pgid": 410222,
+      "absent": true
+    },
+    {
+      "receipt": "control-repaired.json",
+      "pgid": 415326,
+      "absent": true
+    },
+    {
+      "receipt": "control-scope-negative.json",
+      "pgid": 412978,
+      "absent": true
+    },
+    {
+      "receipt": "final-frozen-audit.json",
+      "pgid": 417279,
+      "absent": true
+    },
+    {
+      "receipt": "final-source-audit.json",
+      "pgid": 416759,
+      "absent": true
+    },
+    {
+      "receipt": "fixture-initial.json",
+      "pgid": 408233,
+      "absent": true
+    },
+    {
+      "receipt": "fixture-repaired.json",
+      "pgid": 408399,
+      "absent": true
+    },
+    {
+      "receipt": "store-baseline-corrected.json",
+      "pgid": 414349,
+      "absent": true
+    },
+    {
+      "receipt": "store-original-negative.json",
+      "pgid": 413865,
+      "absent": true
+    }
+  ],
+  "removedOwnedDependencies": [
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/ajv",
+      "bytes": 1033496
+    },
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/ajv-formats",
+      "bytes": 56763
+    },
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/canonicalize",
+      "bytes": 24474
+    },
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/fast-deep-equal",
+      "bytes": 12966
+    },
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/fast-uri",
+      "bytes": 220886
+    },
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/json-schema-traverse",
+      "bytes": 22220
+    },
+    {
+      "path": "/workspace/meri-task-lookup-control-review-20261012/node_modules/require-from-string",
+      "bytes": 3422
+    }
+  ],
+  "bytesRemoved": 1374227,
+  "donorModified": false,
+  "sourceEvidenceBranchesPreserved": true
+}

@@ -1,0 +1,142 @@
+✔ independent approved-input shape freezes synthetic corpus without modifying input (6.518163ms)
+✔ wrong externally pinned approval hash refuses (0.909097ms)
+✔ case/source/config substitutions after approval refuse (1.849181ms)
+✔ changing synthetic to real without changing approval refuses (3.667134ms)
+✔ duplicate case IDs refuse instead of reducing denominator (0.482726ms)
+✔ one related group across two splits refuses (2.076513ms)
+✔ related oracle variants may remain in same split without losing cases (2.875394ms)
+✔ runner projection retains prompt/request but withholds expected gold (1.515019ms)
+✔ held-out projection is split-specific and omits gold (1.907849ms)
+✔ unknown split cannot silently select or omit cases (1.318343ms)
+✔ freeze detaches caller references (1.198112ms)
+✔ freeze refuses unknown schema/input authority flags (0.852772ms)
+✔ hostile accessors never execute during freeze (0.37893ms)
+✔ non-JSON scalar and unsafe case counts cannot produce frozen evidence (1.121717ms)
+✔ case referencing absent source cannot be admitted as covered (0.554243ms)
+✔ duplicate source snapshot IDs refuse instead of selecting arbitrary version (0.528325ms)
+✔ empty corpus remains unqualified with no fabricated real request count (0.274623ms)
+✔ even operator-pinned real label cannot manufacture qualified provenance (0.651389ms)
+✔ runner envelope pins source/config/case identities without approval body (1.448438ms)
+✔ actual closed returned observation and matching frozen gold score (23.424628ms)
+✔ expected denied and clarify remain independently observable (3.04472ms)
+✔ wrong route and wrong client argument are visible failures (5.059559ms)
+✔ wrong case/config/source/run identities cannot score (9.443332ms)
+✔ wrong run envelope corpus/config/source pin fails entire cohort (7.037634ms)
+✔ altered source records or missing coverage fails (10.880454ms)
+✔ current authorization actor/scope/receipt/denial cannot release success (20.1475ms)
+✔ current read attempt may change while original scope/binding remains (4.576453ms)
+✔ delivery/result reference and UI event correlation are required (9.824485ms)
+✔ task acceptance/completion assertions cannot pass recommendation lookup (7.377846ms)
+✔ page-only empty result does not prove whole-source absence or exhaustive coverage (4.697575ms)
+✔ missing observations stay in denominator (1.769ms)
+✔ skipped/ineligible do not improve all-case denominator (3.626744ms)
+✔ failed observations stay failed even when expected branch is denied (1.593727ms)
+✔ duplicate known observations fail their case and remain diagnostic (2.538018ms)
+✔ foreign observation is diagnosed without displacing missing known case (2.359829ms)
+✔ malformed observation cannot silently disappear (2.546615ms)
+✔ zero corpus rates are null with no measured qualification (0.556928ms)
+✔ run time reversal refuses rather than reporting negative measurement (2.08764ms)
+✔ score result is detached from subsequent observation mutation (4.307829ms)
+✔ semantic gold removes only fresh transport entropy (5.255775ms)
+✔ semantic gold retains actual source/coverage/record/selected authority meaning (4.593018ms)
+✔ tampered freeze counts/pins/gold cannot be used by runner/scorer (4.022019ms)
+✔ run binding complete membership and stable identity are mandatory (9.821621ms)
+✔ expired authorization cannot be replayed as current release proof (7.891138ms)
+✔ skipped outcome cannot conceal returned bytes or false absence claims (2.253889ms)
+✔ returned observation requires both distinct ordered authorization phases (11.223831ms)
+✔ UI event ordering and distinct identity cannot be forged with shape-valid events (7.26709ms)
+✔ optional exact replay pin is independent from semantic match (4.915593ms)
+✖ actual control lookup/read callback observations score without invented DTOs (12.980482ms)
+✖ denied label without captured denied callback cannot satisfy expected denial (1.417221ms)
+✖ all-authorized callback cannot establish a read denial (1.611644ms)
+✖ clarify label alone stays ineligible until actual clarification contract exists (1.161947ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 48
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2735.194962
+
+✖ failing tests:
+
+test at evals/task-lookup/test/eval-independent.test.mjs:125:1
+✖ actual control lookup/read callback observations score without invented DTOs (12.980482ms)
+  AssertionError [ERR_ASSERTION]: [{"caseId":"case-a","status":"failed","reasons":["EVAL_RELEASE_INTENT"],"observationSha256":"a7921907272d14e26c84792bedb48a228b7ca8e5f0129f3a3e0e056031adeee9"}]
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:125:303)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/eval-independent.test.mjs:127:1
+✖ denied label without captured denied callback cannot satisfy expected denial (1.417221ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:127:147)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/eval-independent.test.mjs:128:1
+✖ all-authorized callback cannot establish a read denial (1.611644ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:128:149)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/eval-independent.test.mjs:129:1
+✖ clarify label alone stays ineligible until actual clarification contract exists (1.161947ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:129:138)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

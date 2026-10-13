@@ -1,0 +1,68 @@
+✔ independent concrete store composition persists exact result/events and reconnect never redispatches (39.135488ms)
+✔ independent lost complete COMMIT acknowledgment retains RESULT and never rewrites ERROR (14.031051ms)
+✖ independent direct claim rejects forged public event before pool acquisition (0.848535ms)
+✖ independent direct recordError rejects forged public event before pool acquisition (0.636275ms)
+✖ independent direct store refuses changed binding digest before pool acquisition (1.202536ms)
+✔ independent late borrowed pool acquisition is evicted and begins no SQL (0.928554ms)
+✔ independent BEGIN uncertainty evicts borrowed connection (0.953692ms)
+✔ independent ROLLBACK uncertainty evicts borrowed connection (0.726401ms)
+✔ independent COMMIT uncertainty evicts borrowed connection (1.025389ms)
+✔ independent release failure cannot replace uncertain commit classification (1.125851ms)
+✖ independent read reference case equivalence preserves immutable original reference/event spelling (10.222741ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 7
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2659.18349
+
+✖ failing tests:
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:11:44
+✖ independent direct claim rejects forged public event before pool acquisition (0.848535ms)
+  TypeError: Cannot assign to read only property 'sequence' of object '#<Object>'
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:11:234)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:11:44
+✖ independent direct recordError rejects forged public event before pool acquisition (0.636275ms)
+  TypeError: Cannot assign to read only property 'sequence' of object '#<Object>'
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:11:234)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:12:1
+✖ independent direct store refuses changed binding digest before pool acquisition (1.202536ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:12:169)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/test/store-independent.test.mjs:16:1
+✖ independent read reference case equivalence preserves immutable original reference/event spelling (10.222741ms)
+  Error: ACCESS_DENIED
+      at Object.read (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/delivery.mjs:42:144)
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-review-20261012/apps/control/task-lookup/test/store-independent.test.mjs:16:217)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ACCESS_DENIED',
+    outcome: 'NOT_DISPATCHED'
+  }

@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/action-lookup-dispatch.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "51fc1ee9869bb837d1f2a6115084d3a18d4c50b2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:41:06.592602+00:00",
+  "durationSeconds": 6.102,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 408955,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile-repaired.stdout.bin",
+      "bytes": 8544,
+      "sha256": "eb81de3a233b5844dc203ef7e2331ca8d918f61c726bb0d79219bc52316b3f69"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Materialized exact unchanged tracked independent fixture omitted by sparse checkout; no source or assertion change.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

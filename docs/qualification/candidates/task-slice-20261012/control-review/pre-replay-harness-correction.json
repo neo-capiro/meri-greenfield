@@ -1,0 +1,9 @@
+{
+  "beforeSha256": "09c97b92074b186272d701d6534b30c3d95dcf0190af9aca43c52dbdb41b1cdb",
+  "afterSha256": "b9bdb16094a902c9edbeca6eb825f182467ab8baba728156fc9fcfdc16702467",
+  "reason": "Pre-replay review caught override delegation referring to the mutable port table; give override builders an immutable-by-separation original shallow table so their base method cannot recurse.",
+  "candidateInspected": false,
+  "candidateExecuted": false,
+  "assertionsChanged": false,
+  "runtimeAccepted": false
+}

@@ -1,0 +1,162 @@
+{
+  "sourceHead": "8591fe3fc2ccdd5197669f9438e1292f17b9b135",
+  "acceptedSource": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeQualified": false,
+  "members": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/action-contracts.json",
+      "bytes": 1545,
+      "sha256": "4603010ad02ff049efb398e210a810eda557a5ab81a3c4380b1adaa9d1418129"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/action-contracts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/action-contracts.stdout.bin",
+      "bytes": 7859,
+      "sha256": "4f3f92ff02df915bcb169d19ec84f1af1fa70d70d10d08ff19bc4c52c6fc3378"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/actual-slice.json",
+      "bytes": 1245,
+      "sha256": "9592feafb7f650e652da8e09f6b721361ec14c0835c32fe96557cc52e0f984b7"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/actual-slice.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/actual-slice.stdout.bin",
+      "bytes": 689,
+      "sha256": "97edc1a690b53e3495b22bb9d7d390f01d69d83d8767da1dbd32c4eac4ea6745"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/cleanup.json",
+      "bytes": 1404,
+      "sha256": "36a44d9668f7cbce3e7bd580934c23d2e958910b67b45fd7ad44908f416fdd34"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/component-packet-verification.json",
+      "bytes": 1547,
+      "sha256": "c55a3ce1c42e5dc697820e9f31bc860276728e2feb830cd4087729a24f1a68d1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-repairs.json",
+      "bytes": 1472,
+      "sha256": "05414b8e5652e29560c9f9332a956947e20b7e42a42498e54d7c08a734b4fb06"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-repairs.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-repairs.stdout.bin",
+      "bytes": 4479,
+      "sha256": "6e8b1a0f2427271175bf0f4b30533b2b3a3d46e84b184c567a0ee2d34a507581"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated.json",
+      "bytes": 2987,
+      "sha256": "5026790007c5efba54826f73e2064da899b8e14e502df1a19f5155392089b1c1"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated.stdout.bin",
+      "bytes": 65986,
+      "sha256": "353fa9a2dbc171904b0c97632ab860357ed22de3bb4783169fa50a13365f1970"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile-repaired.json",
+      "bytes": 1544,
+      "sha256": "12b24ec8a16fb9f941cb3dcaf05856ac80eaffff41e2154d6f76e491d1c40498"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile-repaired.stdout.bin",
+      "bytes": 8544,
+      "sha256": "eb81de3a233b5844dc203ef7e2331ca8d918f61c726bb0d79219bc52316b3f69"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile.json",
+      "bytes": 1472,
+      "sha256": "227bad9ac8092e1413c48836b3cee0a86629043901e8da218fd4127957d43101"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/dispatch-profile.stdout.bin",
+      "bytes": 8764,
+      "sha256": "0496338ecd9014df2034e5411960db4f2d376d3cddfef044edc133e756ba5d86"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/final-source-binding.json",
+      "bytes": 612,
+      "sha256": "54090d95e8f99315a047b60e607f306ea8fcd302d715b57d01c8f71bb9d7b085"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/packet-check-correction.json",
+      "bytes": 458,
+      "sha256": "c220bd8015a1058d62dbee4455cb92ce09d0c3bf4b953fc220d45ff0427c3104"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/remote-base-refresh.json",
+      "bytes": 684,
+      "sha256": "8d0efb785abbc2478b83616df28e6f5dee2f8ce4d14bceb84d74f6d7c2f96b8a"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/source-verification.json",
+      "bytes": 5011,
+      "sha256": "4817012a302854406406bdabb8f55cb30a8e7451daa12eb93892a9f16a01b0e5"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/test-expectation.patch",
+      "bytes": 892,
+      "sha256": "80c6583a818f0a32017bc130cc116ca42e8783b32a4de58dd3da91f15dabdee7"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/verify-source.py",
+      "bytes": 4214,
+      "sha256": "980a388518c99c7abdb0f0ecd2bf8142c79d92a11e38f8a66c5b2e2d80c87556"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-TASK-SLICE-20261012.md",
+      "bytes": 7647,
+      "sha256": "7a834d92378deaf33493724e02a9516ba793dd628d7091de5d9cc418c015e675"
+    }
+  ],
+  "exclusions": [
+    "manifest.json: self-reference",
+    "publication.json: later remote receipt"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=CLI reads bounded",
+    "evals/task-lookup/test/eval-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-eval-review-20261012",
+  "sourceHead": "d35d81d1237371c0c30d28af68c8ffe1d1004a6a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-12T23:50:41.651682+00:00",
+  "durationSeconds": 2.525,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 416468,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/bounded-read-before.stdout.bin",
+      "bytes": 944,
+      "sha256": "9546cadbf13f186741b9602fbcab5563990f8edfaf2924f14069115d52a2c2b5"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/bounded-read-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,49 @@
+✔ action source independent: actual canonical dispatch reaches fixed adapter and validated scoped projection (46.765368ms)
+✔ action source independent: actual production catalog remains disabled before any ports (8.941097ms)
+✔ action source independent: model cannot supply authority/context or transport options (3.352057ms)
+✔ action source independent: connected unscoped and names refuse, UUID must equal current selected subject (9.959057ms)
+✔ action source independent: exact origin admission precedes allocation (0.666311ms)
+✔ action source independent: credential full binding, expiry, header admission and closed shape (35.444185ms)
+✔ action source independent: credential getters and proxies are inert at admission (4.269456ms)
+✔ action source independent: HTTP status, redirect, media and encoding refuse without retry (14.503305ms)
+✔ action source independent: bounded bytes and fatal UTF8 JSON decoding (20.246045ms)
+✔ action source independent: acquired response cancelled when outer lifetime loses same-turn race (10.766955ms)
+✔ action source independent: parked credentials abort refuses and cancels owned late body (3.863116ms)
+✔ action source independent: parked fetch abort refuses and cancels owned late body (2.772817ms)
+✔ action source independent: parked body abort refuses and cancels owned late body (2.455069ms)
+✔ action source independent: parked credentials expiry refuses and cancels owned late body (3.595303ms)
+✔ action source independent: parked fetch expiry refuses and cancels owned late body (3.257445ms)
+✔ action source independent: parked body expiry refuses and cancels owned late body (3.89238ms)
+✔ action source independent: credential deadline shrinks original authority during body read (2.676452ms)
+✔ action source independent: raw page substitution, scope, proof and recommendation truth refuse (44.667936ms)
+✔ action source independent: revocation and source/fence/subject drift after fetch prevents release (25.145448ms)
+✔ action source independent: final fresh authority after settlement denies late success (15.784491ms)
+✔ action source independent: direct handler checks exact normalized digest and caller cancellation (3.660861ms)
+✔ action source independent: outer operation/digest/full lineage cannot be replaced by handler result (21.524076ms)
+✔ action source independent: opaque continuation and degraded coverage preserve native limits (4.638911ms)
+✔ action source independent: direct adapter unscoped count race survives but connected handler is unavailable (5.004982ms)
+✔ action source independent: clock callback cancellation prevents direct late handler release (0.949658ms)
+✔ action source independent: callback cancellation after trace allocation cannot release direct result (1.068355ms)
+✔ action source independent: fresh decision IDs may rotate without changing policy selection (4.856229ms)
+✔ action source independent: normalized authority cannot switch selected client after preflight (1.031019ms)
+✔ action source independent: shortened release deadline bounds parked settlement with no late output (27.788901ms)
+✖ action source independent: every actual policy call receives the same canonical normalized action input (2.650353ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2938.998768
+
+✖ failing tests:
+
+test at apps/gateway/test/action-items-source-independent.test.mjs:65:1
+✖ action source independent: every actual policy call receives the same canonical normalized action input (2.650353ms)
+  GatewayDenied: ACCESS_DENIED
+      at safeFailure (file:///workspace/meri-action-items-source-review-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-action-items-source-review-20261012/apps/gateway/dispatch/tool-dispatch.mjs:100:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-action-items-source-review-20261012/apps/gateway/test/action-items-source-independent.test.mjs:65:474)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

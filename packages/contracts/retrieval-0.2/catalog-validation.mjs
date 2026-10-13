@@ -101,7 +101,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     normalize: (v, request, context, binding) => (v.normalizeResearchLegalLegislationInput(binding.id, request, clock(context, binding.contextKeys))),
     outputAssert: (v, page, request, context, binding) => v.assertResearchLegalLegislationOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'actions.query', nativeId: 'query_action_items', group: 'action-items-complete', input: 'ActionItemsCompleteInput', output: 'ActionItemsCompleteResult', version: '0.2.0',
-    contextKeys: Object.freeze(["binding", "clientResolution"]),
+    contextKeys: Object.freeze(["binding", "clientResolution"]), dispatchProfile: 'actions-complete/1',
     normalize: (v, request, context, binding) => ({input: v.normalizeActionItemsCompleteInput(request, clock(context, binding.contextKeys))}),
     outputAssert: (v, page, request, context, binding) => v.assertActionItemsCompleteResult(page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'search_legiwatch_news', nativeId: 'search_legiwatch_news', group: 'research-legal-news', input: 'ResearchLegalNewsRequest', output: 'ResearchLegalNewsOutput', version: '0.2.0',

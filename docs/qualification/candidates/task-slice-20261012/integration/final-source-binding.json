@@ -1,0 +1,12 @@
+{
+  "sourceHead": "8591fe3fc2ccdd5197669f9438e1292f17b9b135",
+  "acceptedSource": "a82543fcff94e4ed31c27185408e3e6f0ae3ece6",
+  "independentReview": "511acbc30183ea0fa1c6cb8e5fce1804486296ee",
+  "productionAndTestsUnchangedSinceAcceptance": true,
+  "reviewManifest": "docs/qualification/candidates/task-slice-20261012/integration-review/manifest.json",
+  "reviewManifestSha256": "17f5864929bbbcd6dfd201543f94abad6d49d4776a01418250bc0051ef5a9a71",
+  "reviewPacketMembersVerified": 23,
+  "componentPacketVerification": "component-packet-verification.json",
+  "whitespaceExitCode": 0,
+  "runtimeQualified": false
+}

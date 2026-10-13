@@ -1,0 +1,15 @@
+{
+  "beforeRepairReplay": true,
+  "preimage": "before-callback-repair-independent.test.mjs.txt",
+  "changes": [
+    "Synthetic successful release fixture now carries actual prepared context/request/argument/binding fields, replacing disproven RunBinding shorthand.",
+    "New required failure/error trace fields come from explicit author interface agreement; existing negative mutations remain.",
+    "Old expected-clarify-pass assertion superseded by root-approved ineligible/missing-contract expectation with full denominator.",
+    "Bounded file read probe recognizes effective buffer length in both Node read overloads."
+  ],
+  "originalFailureReceipts": [
+    "actual-control-before.json",
+    "outcomes-before.json",
+    "bounded-read-before.json"
+  ]
+}
