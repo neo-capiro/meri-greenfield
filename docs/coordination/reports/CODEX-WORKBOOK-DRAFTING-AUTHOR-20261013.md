@@ -1,0 +1,5 @@
+# Editable workbook application author
+
+Base bc8b65cc7186e449cf20b4956e4cd88684b35325. Exclusive application author; root owns local fixture/integration/rendering. Outline committed before implementation in apps/control/document-application/OUTLINE.md. Same routes and constructor, exact trusted Word or Excel descriptor, matching request and returned format family, existing immutable artifact service/accounting/session owners. No generator/schema/public contract or source activation changes.
+
+Planned checks: actual XLSX create/revise/inspect/download with unchanged original Word controls; cross-operation requests and descriptor mutations refused before effects; cross-family stored version/inspection release denied; current-session expiry/revocation and exact immutable bytes; no new authority or budget implementation. Root-supplied local fixture operation option will be an explicit dependency rather than duplicated fixture code. Source-only/local synthetic qualification, no model/provider/customer/native database action.
