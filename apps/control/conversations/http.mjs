@@ -14,11 +14,11 @@ export function createConversationApplication({service,now=Date.now,maxRequestBy
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||header('content-encoding'))return response({error:{code:'UNSUPPORTED_MEDIA_TYPE'}},415);
    const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))))fail('INVALID_REQUEST');
    life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal:info.signal,errorFactory:code=>Object.assign(new Error(code),{code})});const body=await jsonBody({body:info.body,length:length===null?null:Number(length)},maxRequestBytes,life,life.check);const credential=auth.slice(7),signal=life.signal;
-   if(route[1]==='submit')return response(await service.submit({credential,input:body,signal}),200);
-   if(route[1]==='cancel'){own(body,[]);return response(await service.cancel({credential,signal}),200);}
+   if(route[1]==='submit')return response(await life.run(signal=>service.submit({credential,input:body,signal})),200);
+   if(route[1]==='cancel'){own(body,[]);return response(await life.run(signal=>service.cancel({credential,signal})),200);}
    own(body,[],['after','limit']);const after=body.after??0,limit=body.limit??100;
-   if(route[1]==='history')return response(await service.history({credential,after,limit,signal}),200);
+   if(route[1]==='history')return response(await life.run(signal=>service.history({credential,after,limit,signal})),200);
    // Authenticate and validate the cursor before exposing a streaming response.
-   await service.history({credential,after,limit:1,signal});life.check();return meriLiveEventStreamResponse({messageId:randomUUID(),events:createConversationEventSource({service,credential,after,signal:info.signal,now})});
+   await life.run(signal=>service.history({credential,after,limit:1,signal}));life.check();return meriLiveEventStreamResponse({messageId:randomUUID(),events:createConversationEventSource({service,credential,after,signal:info.signal,now})});
   }catch(error){const code=error?.code??error?.message;const status=['SESSION_REFUSED','SCOPE_REFUSED','SESSION_CHANGED','STALE_WRITER'].includes(code)?403:['INVALID_REQUEST','INVALID_CURSOR','REQUEST_REPLAY_REFUSED'].includes(code)?400:['DEADLINE','CANCELLED'].includes(code)?408:code==='REQUEST_TOO_LARGE'?413:502;return response({error:{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status);}finally{life?.close();}}});
 }
