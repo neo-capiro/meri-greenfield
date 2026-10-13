@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "sourceHead": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "artifactDirectory": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16",
+  "docxLibrary": "1.2.0",
+  "pdfLibrary": "1.26.6",
+  "versions": [
+    {
+      "label": "original",
+      "versionId": "153f069b-edfc-4a4b-92d7-e95a34f2b1ac",
+      "artifactId": "17316962-caef-45fe-bde9-4b8db6449453",
+      "parentVersionId": null,
+      "docxSha256": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+      "docxBytes": 39074,
+      "editableParagraphs": 39,
+      "pdfSha256": "b1fe48d30c38c6d4ca4d4f85540e96045e5890747e45242e7196db833def922c",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/original-preview-1.png",
+          "sha256": "307a51d9de176baaf4e9600fb9228b07c01f8393d79f742dede98c7f8d6636d8",
+          "textCharacters": 1670
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/original-preview-2.png",
+          "sha256": "729842b726df73af1f24f17dfe1ecc8ba6c0c04e325e9c4f7e89198b09c875c2",
+          "textCharacters": 2164
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/original-preview-3.png",
+          "sha256": "4091d88239ae574a87e9135cb8f586482917d5dae4cf30fc0446400241ae1843",
+          "textCharacters": 2548
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/original-preview-4.png",
+          "sha256": "f78091b3da11b88a4d2821df8fee8cb945bc796d9eb07c8ff9c7d0004b6ab416",
+          "textCharacters": 430
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-v1",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "5ac429ad12e9e3d5a04bc704c941b170745179665d9962941444e9ef73133bdc",
+      "nativeQualified": false
+    },
+    {
+      "label": "revision",
+      "versionId": "54f12b4b-0949-45a5-a5b2-0a0fb3ccd3c6",
+      "artifactId": "17316962-caef-45fe-bde9-4b8db6449453",
+      "parentVersionId": "153f069b-edfc-4a4b-92d7-e95a34f2b1ac",
+      "docxSha256": "60ba27df722d1b57dbf6651b7f7b47f3ad0b6c2a3e3183ffb18d7fb75917d5e8",
+      "docxBytes": 39274,
+      "editableParagraphs": 39,
+      "pdfSha256": "065be5c4495a5d378993db84f7b1fc8be170b90ad3f4280661dd7aad993d599a",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/revision-preview-1.png",
+          "sha256": "de6c9edf5e6443f5e66a610f9c2ccb2afbde0c695c8938afe80179b4af9474e7",
+          "textCharacters": 1695
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/revision-preview-2.png",
+          "sha256": "ba189b20b2a5bd11a991640c8d2728f8955c9f8dca962aeb26374f4a3c3b1aa5",
+          "textCharacters": 2164
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/revision-preview-3.png",
+          "sha256": "9ebc883a2657717881616ed144d84cdbc6f67aadd5c8c4394c736abe14d5a2c9",
+          "textCharacters": 2550
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-utf16/revision-preview-4.png",
+          "sha256": "42a0c9f35b28d0f9ce541bcf177907443f6cd41ac5663ec08b78cced39b162f7",
+          "textCharacters": 728
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-v1",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "cb4521d9ee65c110e77bacbf956613a8e7b5fcb6b879b0027dd29b1847b18a1a",
+      "nativeQualified": false
+    }
+  ],
+  "everyPageRendered": true,
+  "visualInspectionRequiredSeparately": true,
+  "nativeQualified": false
+}

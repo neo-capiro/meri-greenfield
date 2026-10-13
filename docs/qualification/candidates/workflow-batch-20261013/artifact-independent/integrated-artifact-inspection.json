@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "sourceHead": "5e673db81bd8eda7b0a4b27972a948981429a7b6",
+  "artifactDirectory": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts",
+  "docxLibrary": "1.2.0",
+  "pdfLibrary": "1.26.6",
+  "versions": [
+    {
+      "label": "original",
+      "versionId": "665751c1-d51e-4b19-9c59-e2fd145e42eb",
+      "artifactId": "127ba6ab-c23a-4613-a181-91dedab63800",
+      "parentVersionId": null,
+      "docxSha256": "8b888675d339b0ffe92948f9a2e130539b2e0e4e574c314deed24add6900d146",
+      "docxBytes": 39144,
+      "editableParagraphs": 41,
+      "pdfSha256": "820fed2cf9afe8a207c2c61f3b2b877da8ca683d87051d94a5bd084f9db50ef8",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/original-preview-1.png",
+          "sha256": "2fc477a3517760a5cec741ae93283a008b36095952233174bf32ccd29ef53f5c",
+          "textCharacters": 1676
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/original-preview-2.png",
+          "sha256": "15d7ec9b3205775464b28a1b4c9ee220e7a584ab1b0d8bf7a1de048c36f466aa",
+          "textCharacters": 2287
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/original-preview-3.png",
+          "sha256": "ee8e805784dcc6459075d652cefa65b22f36988fb842c1f31c3cd8233b31010e",
+          "textCharacters": 2353
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/original-preview-4.png",
+          "sha256": "8eaf8cf4351bfaf68a713d3ffd5822b4b9f55c04551d77e6cbca84eeb15ccb27",
+          "textCharacters": 814
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "96c0a3d54282bbd1f87db35baa32e6d87daa43510eafee0c5466c634b9953381",
+      "nativeQualified": false
+    },
+    {
+      "label": "revision",
+      "versionId": "54106e07-1956-4625-88b1-744642b752ed",
+      "artifactId": "127ba6ab-c23a-4613-a181-91dedab63800",
+      "parentVersionId": "665751c1-d51e-4b19-9c59-e2fd145e42eb",
+      "docxSha256": "ba91eeeba2dc6af3986ee82adfc568366896c8d8aa9846c950885f9c34ccddff",
+      "docxBytes": 39343,
+      "editableParagraphs": 41,
+      "pdfSha256": "300a56b4275160292ee2cbc4feeecdad1cbedf80c83976147989dd36291c91a0",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/revision-preview-1.png",
+          "sha256": "bb56a3bfb708726f94a8091405be4b4066502f2cd6173b7a2a83e8bd867fbddc",
+          "textCharacters": 1701
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/revision-preview-2.png",
+          "sha256": "741ca1e2f0fa2ffceff22807aefc1fa7398089dc6d9f774e3ee0e4326cac8bc8",
+          "textCharacters": 2287
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/revision-preview-3.png",
+          "sha256": "e872be8ba749da8c65a41c33888828543eee86d7afa2f020dab961cc229c5fb0",
+          "textCharacters": 2353
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/root/gateway-artifacts/revision-preview-4.png",
+          "sha256": "87882866c2708cc74e7b011599ab02b53ec87aa4cdcfc13c3023348e161be133",
+          "textCharacters": 1114
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "f942f5dadd1e3964d3b669c1928e72b6a1142b883129627eda48865f767cf5aa",
+      "nativeQualified": false
+    }
+  ],
+  "everyPageRendered": true,
+  "visualInspectionRequiredSeparately": true,
+  "nativeQualified": false
+}

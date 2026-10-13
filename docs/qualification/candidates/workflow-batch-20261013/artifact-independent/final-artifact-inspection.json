@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "sourceHead": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "artifactDirectory": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts",
+  "docxLibrary": "1.2.0",
+  "pdfLibrary": "1.26.6",
+  "versions": [
+    {
+      "label": "original",
+      "versionId": "071e4036-3f6c-405b-9094-85c84f3e77f2",
+      "artifactId": "50a1a42a-30b5-4b7e-b15e-155dfd482f27",
+      "parentVersionId": null,
+      "docxSha256": "34a5f6bf4a523c8c7ff36087e59e148b9cc6bca3752139d81176be7008ed66f3",
+      "docxBytes": 39141,
+      "editableParagraphs": 41,
+      "pdfSha256": "48601fb90225da6c2a0c85b8ca3cf99d8b2ba8767c1443a51b8ae7e76254f49d",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/original-preview-1.png",
+          "sha256": "c42047c928f402c6ed75c44603508fa7767511ff2e690fcd9f60113f43381e55",
+          "textCharacters": 1676
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/original-preview-2.png",
+          "sha256": "b6275fb46b6eb5e354deb208ced690b08e3bad72a4e1caf2717a1b8fcd74deb7",
+          "textCharacters": 2287
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/original-preview-3.png",
+          "sha256": "359406d970d6dd7fe26a3763d98b3621d82b5abaa4c295f80ee014599e55fb16",
+          "textCharacters": 2353
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/original-preview-4.png",
+          "sha256": "170c07aa9924b62bbc6656a93fdeef35de421176a22b2d547a28da6be8bef7d1",
+          "textCharacters": 814
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "760a4dcbadb1f5e89ddfde5c104b25b518e99c0201216d5a4171eea6428bc580",
+      "nativeQualified": false
+    },
+    {
+      "label": "revision",
+      "versionId": "a9c45e37-c219-40eb-a064-bae699f163c5",
+      "artifactId": "50a1a42a-30b5-4b7e-b15e-155dfd482f27",
+      "parentVersionId": "071e4036-3f6c-405b-9094-85c84f3e77f2",
+      "docxSha256": "3a62fada8dba1b600c0bd30af4e29b92c6b64e010d3ea44e05cf96587dbdea3e",
+      "docxBytes": 39347,
+      "editableParagraphs": 41,
+      "pdfSha256": "b46772bcfc4095e9662e12172c2bea6d6caa054e3e1924fc58b887c586768236",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/revision-preview-1.png",
+          "sha256": "13513bc77aadefe25f7dfe8b87e208d2147b822d510930cd8777c2005d628a2a",
+          "textCharacters": 1701
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/revision-preview-2.png",
+          "sha256": "8b0a604c2d2e2efe51fc3c33dd98f0084f9cab7e7ca216fc6430240611bd6a86",
+          "textCharacters": 2287
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/revision-preview-3.png",
+          "sha256": "2427c2af51635a8b8f1ee840efb98030bf53a139b5a74c6bc61045ae3e926db4",
+          "textCharacters": 2353
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/docs/qualification/candidates/workflow-batch-20261013/artifact-independent/independent-artifacts/revision-preview-4.png",
+          "sha256": "eb6a3ec0582a9f071b58b7b91b5570d8244f57c1682e415676796d0471e1b8d1",
+          "textCharacters": 1114
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "041c6f8d052170fec0c74b22ec0d6e93794d5370449e3a2aa2b16b09018d88eb",
+      "nativeQualified": false
+    }
+  ],
+  "everyPageRendered": true,
+  "visualInspectionRequiredSeparately": true,
+  "nativeQualified": false
+}
