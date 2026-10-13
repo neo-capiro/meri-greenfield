@@ -1,0 +1,56 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "readOnly": true,
+  "importedOrExecuted": false,
+  "sources": [
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "blob": "a102d9242292ed818f0c27ab55a392947379dcde",
+      "bytes": 5188,
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5"
+    },
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "blob": "940d52e8027f8e2769541c3ebac05b76008930c6",
+      "bytes": 10707,
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9"
+    },
+    {
+      "path": "apps/control/action-followthrough/index.mjs",
+      "blob": "e46d749d7c3295b00a091395955a50777ca94742",
+      "bytes": 5861,
+      "sha256": "7ce5567c4c505904eaa0a39d1fbb96dfe4941bda7f5709c653afdd840672d042"
+    },
+    {
+      "path": "apps/control/action-followthrough/selection.mjs",
+      "blob": "6b9faf95c0431c0efb0cd6f29d27cf9afce1c604",
+      "bytes": 4505,
+      "sha256": "6cb431744db5fc69749be6ee49cc0505835bd771e80c384b78981e4a9c7e33a3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures-fetch.json",
+      "blob": "b2b795d2f321b1cba9f8de8e8135a6a21ac25edb",
+      "bytes": 32825,
+      "sha256": "a9c795ea12314018fa2bb708d22492c48aeb2ce1ace874d91b678d1ef3cf0ff9"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs",
+      "blob": "ecbacb3e4dc776fb371ca5a051598643d79a73ce",
+      "bytes": 4554,
+      "sha256": "6b1159e2a6be46ee37ce54abef4270f47d20a7d3cabeb7ed01e67a9f63f21095"
+    }
+  ],
+  "findings": [
+    "query is actual canonical lookup followed by current-authorized read",
+    "draft retains selected result/hash/action and recommendation-only source",
+    "prepare returns approval_required with immutable proposal, no approval grant",
+    "execute requires separate current approval; no HTTP approve route",
+    "synthetic fixture contains exactly one recommendation Issue/Recommend, with linked evidence empty",
+    "historical wire fixture shows unapproved refusal and separate explicitly approved effect/replay; it does not authorize a new pilot"
+  ],
+  "readCorrection": {
+    "initialMissingLocator": "apps/control/action-followthrough/workflow.mjs",
+    "actualLocator": "apps/control/action-followthrough/index.mjs",
+    "effect": "read-only lookup corrected; no source change"
+  }
+}

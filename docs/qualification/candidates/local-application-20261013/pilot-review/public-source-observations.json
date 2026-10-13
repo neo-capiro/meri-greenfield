@@ -1,0 +1,52 @@
+{
+  "observedOn": "2026-10-13",
+  "captureKind": "authored short observations from rendered public documentation, not raw HTML or full tool response",
+  "providerApiCalls": 0,
+  "accountApiCalls": 0,
+  "sources": [
+    {
+      "url": "https://aws.amazon.com/bedrock/pricing/",
+      "finding": "Retrieved page has Anthropic pricing headings but no matched numeric Sonnet4.6 US-geographic standard input/output row; no matching rate established.",
+      "status": "UNRESOLVED_RATE"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
+      "finding": "Model card identifies us.anthropic.claude-sonnet-4-6 geographic route; us-east-1 and standard tier supported, bedrock-runtime Count tokens supported, bedrock-mantle unsupported. Public compatibility does not prove account access or successful request.",
+      "status": "PUBLIC_DOCUMENTATION_ONLY"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
+      "finding": "Public documentation states CountTokens has no charge. This does not remove operation slots or prove a particular request succeeds.",
+      "status": "PUBLIC_FEE_ZERO"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "finding": "Data residency section limits its 1.1x US-only multiplier to first-party Claude API/Claude Platform on AWS and specified Foundry routing. Bedrock and Google Cloud have independent regional pricing. A first-party multiplier cannot establish the requested Bedrock rate.",
+      "status": "DO_NOT_EXTRAPOLATE"
+    },
+    {
+      "url": "https://aws.amazon.com/blogs/machine-learning/global-cross-region-inference-for-latest-anthropic-claude-opus-sonnet-and-haiku-models-on-amazon-bedrock-in-thailand-malaysia-singapore-indonesia-and-taiwan/",
+      "finding": "Public global-routing discussion does not supply the requested numeric US-geographic Sonnet4.6 standard rate.",
+      "status": "NO_MATCHED_RATE"
+    }
+  ],
+  "lookupLimits": [
+    "Bounded quoted/domain searches did not locate a matched official numeric rate; unrelated/third-party results not used.",
+    "No duplicate raw/static feed probes, proxy bypass or account queries performed by reviewer.",
+    "Author reports ordinary raw documentation GET403; final packet must retain exact failure rather than claim raw body hash."
+  ],
+  "arithmetic": {
+    "inferences": 18,
+    "countTokens": 18,
+    "operations": 36,
+    "maxInputPerInference": 8000,
+    "maxOutputPerInference": 256,
+    "maxInputTokens": 144000,
+    "maxOutputTokens": 4608,
+    "usdFormula": "0.144 * input_usd_per_million + 0.004608 * output_usd_per_million",
+    "proposedUsdCap": "0.75",
+    "capApproved": false,
+    "verifiedExactRate": false
+  },
+  "unpaidSyntheticTestsBlockedByPaidPilot": false
+}
