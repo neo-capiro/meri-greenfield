@@ -1,0 +1,20 @@
+{
+  "supersedes": "50a186ecb723e89e496bbc4c60bf3831b5527176",
+  "scope": "Docs/JSON only; no source or behavioral checks changed",
+  "changes": [
+    "Corrected final local entrypoint from cli.mjs to run.mjs.",
+    "Separated implemented local API/session composition from qualified native host/session/source admission."
+  ],
+  "readOnlyLookupFailures": [
+    {
+      "query": "git show --stat --oneline 5fed",
+      "result": "Ambiguous short object ID: commit5fed7fcf versus tree5fed281d; resolved exact commit without mutation."
+    },
+    {
+      "query": "git show 5fed7fcf:apps/control/action-application/local/README.md",
+      "result": "Path does not exist in commit; did not infer missing implementation. Inspected exact run.mjs and repaired application README instead."
+    }
+  ],
+  "localExecution": false,
+  "paidCalls": 0
+}

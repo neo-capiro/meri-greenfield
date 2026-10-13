@@ -7,14 +7,19 @@
   ],
   "members": [
     {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/correction.json",
+      "bytes": 839,
+      "sha256": "285f25ded3c79db21df5aeb01a15be5ea290693d634d73b2724e5442372775ec"
+    },
+    {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/frontend-reference-identities.json",
       "bytes": 6166,
       "sha256": "3eade72e4327af60da5ea0692a85512abe1b863cbfda80ea2df44deef81af676"
     },
     {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/local-reference-identities.json",
-      "bytes": 3770,
-      "sha256": "e9f5cf12134335bbcdf673a916a6cf0d17bc4714c4b97d1e5bbc518476b68bf7"
+      "bytes": 4352,
+      "sha256": "7c45adf467aeba3336159d8f5775935a9d42bf067eae990292b359795cdb7385"
     },
     {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/official-reference-evidence.json",
@@ -28,8 +33,8 @@
     },
     {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/pilot-proposal.json",
-      "bytes": 10435,
-      "sha256": "620a578f5b464a6dfdd726a3ec0151c2e7205d98bff32563a1a0452756a538e2"
+      "bytes": 10976,
+      "sha256": "27e914dcd61209254dab03baa1fac217b500094e4d325ba6d6ff184b40dac73c"
     },
     {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/superseded-preliminary-proposal.json",
@@ -38,8 +43,8 @@
     },
     {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/verification.json",
-      "bytes": 2537,
-      "sha256": "e38055299a2300faf16c7652fc94c3dd4bb2ac134b8a5663dc7af45bd1fdda4d"
+      "bytes": 2737,
+      "sha256": "901d22811173d137c863d6ee1fbbf23a72e90026940504ea79f80cd51ee43671"
     },
     {
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/verify.py",
@@ -48,8 +53,8 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-ACTION-WIRING-EVAL-PROPOSAL-20261013.md",
-      "bytes": 12267,
-      "sha256": "e550432b1fa2b2c01a0f737e25cb0171af6b28f6f873df41c6b03fef88f88971"
+      "bytes": 12779,
+      "sha256": "716349051c9920dd93c3442918899c78ed582de34aaa5f53572575db80a37e29"
     }
   ]
 }

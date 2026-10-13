@@ -98,6 +98,14 @@
       "passed": true
     },
     {
+      "name": "reference:scripts/local-followthrough/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "reference:apps/control/action-application/README.md",
+      "passed": true
+    },
+    {
       "name": "exclusive allocated paths",
       "passed": true
     },
@@ -106,7 +114,7 @@
       "passed": true
     }
   ],
-  "passed": 26,
+  "passed": 28,
   "failed": 0,
   "baselineEntriesVerified": 10378,
   "paidCalls": 0,

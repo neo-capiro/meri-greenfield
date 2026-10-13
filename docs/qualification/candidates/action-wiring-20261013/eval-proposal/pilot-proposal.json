@@ -169,7 +169,13 @@
     },
     {
       "owner": "Application/control owner",
-      "required": "Bind new unactivated API to current host-owned sessions/authorizers and immutable synthetic stores; no approval grant from model or payload."
+      "required": "For paid pilot activation, supply qualified native host session/current-authority/source bindings to the implemented application/control seam. Local synthetic wiring already exists; this requirement does not classify that source implementation as unfinished. No model/payload approval authority.",
+      "implementedSource": {
+        "application": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+        "localComposition": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+        "entrypoint": "node scripts/local-followthrough/run.mjs --run",
+        "scope": "Implemented local API/session wiring over synthetic/inert boundaries; inspected read-only, not executed in this lane."
+      }
     },
     {
       "owner": "Infrastructure owner",
