@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-13T00:41:59.855218+00:00",
+  "sourceHead": "f8ee0a61577dcb332559f9c0a152f521846b5331",
+  "removedOwnedDependencyLinks": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "donorUnchanged": true,
+  "ownedGroups": [
+    {
+      "receipt": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-final-pr39.json",
+      "pgid": 422913,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/integration/admission-first.json",
+      "pgid": 424901,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/integration/combined.json",
+      "pgid": 431058,
+      "absent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/integration/executable-imports.json",
+      "pgid": 431419,
+      "absent": true
+    }
+  ],
+  "otherOwnersTouched": false,
+  "runtimeQualified": false
+}

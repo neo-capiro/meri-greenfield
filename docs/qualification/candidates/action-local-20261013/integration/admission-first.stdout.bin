@@ -1,0 +1,18 @@
+✔ private exact source-bound fixture input yields a nonsecret descriptor without opening a pool (11.89312ms)
+✔ admission refuses remote host (6.095344ms)
+✔ admission refuses another database (4.377922ms)
+✔ admission refuses stale lifetime (5.203543ms)
+✔ admission refuses source migration substitution (3.481314ms)
+✔ admission refuses driver lock substitution (4.04384ms)
+✔ admission refuses extra wrapper field (2.544085ms)
+✔ admission refuses wrong input digest, public modes, symlinks and oversized files (4.608118ms)
+✔ CLI help and missing/bad arguments are inert bounded outcomes with no private path disclosure (118.079759ms)
+✔ CLI requires every named persistence case and explicit known cleanup before reporting success (0.574173ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.319773

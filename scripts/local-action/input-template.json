@@ -1,0 +1,24 @@
+{
+  "schema": "meri-local-action-input/1",
+  "native": {
+    "host": "127.0.0.1",
+    "port": null,
+    "database": "meri_qualification_test",
+    "user": "qualification_owner",
+    "password": null,
+    "systemIdentifier": null,
+    "serverStartTime": null,
+    "serverVersion": null,
+    "t0Ms": null,
+    "workDeadlineMs": null,
+    "cleanupDeadlineMs": null,
+    "stateLockSha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a",
+    "migrationSha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809"
+  },
+  "migrationSha256": {
+    "qualification": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+    "budget": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+    "invocation": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+    "lookup": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f"
+  }
+}

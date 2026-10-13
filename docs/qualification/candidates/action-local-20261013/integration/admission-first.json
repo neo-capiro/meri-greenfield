@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "scripts/local-action/admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "ca8bc1697961787fce767ac7f91f894b61ba6d71",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:21:01.258256+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 424901,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/admission-first.stdout.bin",
+      "bytes": 878,
+      "sha256": "736da7f46f9a66c9e15b24e099368061b4907a73c340ed795d2f82cc9e7a0292"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/admission-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Offline CLI and private admission checks before integrated author freeze; no database connection or service start",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

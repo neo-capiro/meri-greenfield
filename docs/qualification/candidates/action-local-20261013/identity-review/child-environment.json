@@ -1,0 +1,9 @@
+{
+  "removedVariableNames": [
+    "NODE_PATH",
+    "OPENAI_CLUSTER"
+  ],
+  "parentEnvironmentMutated": false,
+  "valuesRecorded": false,
+  "reason": "Unchanged native parser requires a clean child; independent test then injects PGOPTIONS itself."
+}

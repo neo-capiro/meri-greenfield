@@ -1,0 +1,70 @@
+{
+  "ownedDependencyCopies": [
+    {
+      "path": "node_modules/ajv",
+      "files": 466,
+      "bytes": 1033496,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "files": 15,
+      "bytes": 56763,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "files": 6,
+      "bytes": 24474,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "files": 44,
+      "bytes": 220886,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "files": 11,
+      "bytes": 12966,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "files": 12,
+      "bytes": 22220,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "files": 4,
+      "bytes": 3422,
+      "copySource": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "removedOwnedCopy": true,
+      "donorTouched": false
+    }
+  ],
+  "ownedGroupsAbsent": [
+    427218,
+    426374,
+    424789
+  ],
+  "databaseConnections": 0,
+  "containersLaunched": 0,
+  "SQLExecuted": false,
+  "otherOwnersTouched": false,
+  "noBackgroundWorkOrNativeProcessesLaunched": true
+}

@@ -1,0 +1,47 @@
+{
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "sourceHead": "bd3de7dd9f522ef1da8bc055b9f9147e3c9d8dda",
+  "originalEntriesPreserved": 10030,
+  "changedOriginalEntries": [],
+  "source": [
+    {
+      "path": "apps/control/task-lookup/local-integration/README.md",
+      "blob": "f3a4934645f0c275151f4ab7bb4170f373d928d4",
+      "sha256": "0a2b571b0f65b3bc0b9da6bc104840559137646127e0af97ccc4686595ea2dd7"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+      "blob": "61c157afae5dbcb56daad4ba7144915869f147cf",
+      "sha256": "316c37407a49ebf1968a84e40471f14850ab62cbb394433ba6219c2c072eb256"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "blob": "ee926206a372a73dc7cd626c63862c79bea89161",
+      "sha256": "924f012927182e7d9152f13b879c1f952ca478e0f5cd373351850b9fc54be46e"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "blob": "9d9e851a72c0bb7f890beb930fa708d454744e37",
+      "sha256": "0b0b2967b645ca37bddded12f5f1b1d4d2cf0c1e2cde65dbf13623d08d12c7b8"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "blob": "bb719228eb5b322a4277ac0a58893ca734a3eb60",
+      "sha256": "643e3401a661fa33cb47638f367bc8f82b2efe96557e0dda4f07ada625636a80"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+      "blob": "e0e0774b9751cb7a5cda564f0f1f5704a610c1d6",
+      "sha256": "02c67ef6b48381b148d2d6ae6dcf8125851e27cbac2849a4e752418f0a0ed999"
+    }
+  ],
+  "referencesVerified": 9,
+  "ownedCapturedGroupsAbsent": [
+    427218,
+    426374,
+    424789
+  ],
+  "actualNativeCases": "UNRUN",
+  "SQLExecution": "UNRUN",
+  "realDurabilityClaim": false
+}

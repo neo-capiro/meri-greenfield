@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/task-lookup/local-integration/commit-ack-fault-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/fresh-pool-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/result-rows-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/admission-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-local-persistence-review-20261013",
+  "sourceHead": "d31cd7c60a01d91033ba2e3972cfa894042d1bf2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:26:44.831430+00:00",
+  "durationSeconds": 5.53,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 427542,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stdout.bin",
+      "bytes": 3305,
+      "sha256": "2ae773ce5c786227bfb770ba4abe320d4864b41df3607acbddcc7598c2df35a8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

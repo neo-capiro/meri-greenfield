@@ -1,0 +1,149 @@
+✔ independent descriptor is detached closed correlation and never an admission capability (1.82919ms)
+✔ independent bad host refuses before any pool or case port (2.323843ms)
+✔ independent bad database refuses before any pool or case port (0.45246ms)
+✔ independent bad user refuses before any pool or case port (0.383527ms)
+✔ independent bad mode refuses before any pool or case port (0.379ms)
+✔ independent bad deadlineMs refuses before any pool or case port (3.927204ms)
+✔ independent descriptor getters and Proxy have no effects (0.455525ms)
+✔ independent wrong local migration hash holds before any SQL without closing borrowed pool (10.030099ms)
+✔ independent wrong cluster identity stops after read-only identity query before any case (2.955744ms)
+✔ independent native query rejection is sanitized and never closes borrowed owner (1.991003ms)
+✔ independent claim loses only post-successful COMMIT acknowledgment once (1.6032ms)
+✔ independent dispatch loses only post-successful COMMIT acknowledgment once (0.392841ms)
+✔ independent result loses only post-successful COMMIT acknowledgment once (0.250587ms)
+✔ independent claim ignores other lookup and budget transaction commits (0.333681ms)
+✔ independent dispatch ignores other lookup and budget transaction commits (0.273381ms)
+✔ independent result ignores other lookup and budget transaction commits (0.211538ms)
+✔ independent native COMMIT rejection remains original and does not consume synthetic loss (0.521434ms)
+✔ independent rollback clears phase and cannot fault a later unrelated transaction (0.218308ms)
+✔ independent forwarding preserves SQL argument and returned object identity (0.250407ms)
+✔ independent concurrent clients share one fault but preserve each native COMMIT (0.386051ms)
+✔ independent borrowed release error is not swallowed by fault forwarding (0.287793ms)
+✔ independent unknown fault phase refuses before borrowing a connection (0.150517ms)
+✔ independent receipt snapshot cannot change subsequent one-shot state (0.254222ms)
+✔ independent owned reconnect closes once and never calls borrowed pool end (2.295661ms)
+✔ independent late fresh acquisition after owner closure closes once without yielding pool (0.695396ms)
+✔ independent cancelled pending acquisition retains cleanup ownership (0.515375ms)
+✔ independent malformed owned wrapper retains known close despite extra field (0.510066ms)
+✔ independent malformed borrowed wrapper never invokes its close (0.297728ms)
+✔ independent expired acquisition refuses before creating an owned pool (0.35281ms)
+✔ independent pre-cancelled acquisition refuses before creating an owned pool (0.402545ms)
+✔ independent close rejection stays uncertain and cannot trigger a second close attempt (0.614814ms)
+✖ independent exact correlated local result rows remain admissible as source observations (16.011962ms)
+✔ independent contradictory output bytes cannot pass persistence evidence (2.028539ms)
+✔ independent contradictory completion invocation cannot pass persistence evidence (1.935259ms)
+✔ independent contradictory completion reservation cannot pass persistence evidence (1.914017ms)
+✔ independent full invocation delivery contradiction refuses (2.025976ms)
+✔ independent full invocation facts contradiction refuses (1.399985ms)
+✔ independent full invocation raw request contradiction refuses (1.340315ms)
+✔ independent full invocation operation contradiction refuses (1.397641ms)
+✔ independent full invocation completion facts contradiction refuses (1.497701ms)
+✔ independent full invocation completion request contradiction refuses (1.58286ms)
+✔ independent full invocation completion operation contradiction refuses (1.38396ms)
+✔ offline claim fault forwards actual call then loses only one selected COMMIT ACK (4.201117ms)
+✔ offline dispatch fault forwards actual call then loses only one selected COMMIT ACK (0.248083ms)
+✔ offline result fault forwards actual call then loses only one selected COMMIT ACK (0.245519ms)
+✔ offline failed COMMIT does not become injected ACK loss or get retried (0.395665ms)
+✔ offline rollback clears fault selection and separate client transactions do not inherit it (0.291759ms)
+✔ offline invalid phase refuses before connect (0.235024ms)
+✔ offline valid local descriptor is detached and source hashes are not authority (0.863128ms)
+✔ offline descriptor refuses host before pool work (1.264421ms)
+✔ offline descriptor refuses mode before pool work (0.344698ms)
+✔ offline descriptor refuses database before pool work (0.311158ms)
+✔ offline descriptor refuses user before pool work (0.21946ms)
+✔ offline descriptor refuses deadlineMs before pool work (3.503227ms)
+✔ offline descriptor refuses port before pool work (0.421885ms)
+✔ offline descriptor getter is not executed (0.214012ms)
+✔ offline mismatched migration bytes HOLD before any SQL or case producer (13.347657ms)
+✔ offline fresh pool is closed exactly once and initial borrowed pool untouched (0.489086ms)
+✔ offline late acquisition after owner close is cleaned once without returning a pool (0.248063ms)
+✔ offline cancelled acquisition cleans its eventual wrapper without borrowed queries (0.358448ms)
+✔ offline returning borrowed pool refuses and does not close it (0.137567ms)
+✔ offline close failure is retained as cleanup UNKNOWN (0.255324ms)
+✔ offline malformed extra/missing-field fresh wrapper still closes known owned resource (0.327944ms)
+✔ offline expired fresh acquisition never calls factory (0.157577ms)
+✔ offline aborted fresh acquisition never calls factory (0.111647ms)
+✔ offline actual retained-row assertion accepts coherent canonical result/events/accounting (13.058742ms)
+✔ offline actual retained-row assertion rejects contradictory completion invocationId (2.088029ms)
+✔ offline actual retained-row assertion rejects contradictory completion reservationId (2.529463ms)
+✔ offline actual retained-row assertion rejects contradictory completion outputBytes (2.369512ms)
+✔ offline retained invocation provenance contradiction is rejected (2.372517ms)
+✔ offline retained invocation provenance contradiction is rejected (1.46353ms)
+✔ offline retained invocation provenance contradiction is rejected (1.532384ms)
+✔ offline retained invocation provenance contradiction is rejected (1.308527ms)
+ℹ tests 73
+ℹ suites 0
+ℹ pass 72
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5637.358361
+
+✖ failing tests:
+
+test at apps/control/task-lookup/local-integration/result-rows-independent.test.mjs:10:1
+✖ independent exact correlated local result rows remain admissible as source observations (16.011962ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Values have same structure but are not reference-equal:
+  
+  {
+    context: {
+      binding: {
+        actorId: 'actor',
+        attemptId: '00000000-0000-4000-8000-000000000003',
+        conversationId: '00000000-0000-4000-8000-000000000001',
+        runId: '00000000-0000-4000-8000-000000000002',
+        tenantId: 'tenant',
+        workerId: '00000000-0000-4000-8000-000000000004',
+        writerFence: 1
+      }
+    },
+    deliveryId: 'lookup',
+    producer: {
+      executionId: 'task',
+      namespace: 'fixture'
+    }
+  }
+  "
+      at TestContext.<anonymous> (file:///tmp/meri-action-local-persistence-review-20261013/apps/control/task-lookup/local-integration/result-rows-independent.test.mjs:10:137)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+    
+    {
+      context: {
+        binding: {
+          actorId: 'actor',
+          attemptId: '00000000-0000-4000-8000-000000000003',
+          conversationId: '00000000-0000-4000-8000-000000000001',
+          runId: '00000000-0000-4000-8000-000000000002',
+          tenantId: 'tenant',
+          workerId: '00000000-0000-4000-8000-000000000004',
+          writerFence: 1
+        }
+      },
+      deliveryId: 'lookup',
+      producer: {
+        executionId: 'task',
+        namespace: 'fixture'
+      }
+    }
+    
+        at assertResultRows (evalmachine.<anonymous>:19:9)
+        at file:///tmp/meri-action-local-persistence-review-20261013/apps/control/task-lookup/local-integration/result-rows-independent.test.mjs:10:154
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///tmp/meri-action-local-persistence-review-20261013/apps/control/task-lookup/local-integration/result-rows-independent.test.mjs:10:137)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.start (node:internal/test_runner/test:1242:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

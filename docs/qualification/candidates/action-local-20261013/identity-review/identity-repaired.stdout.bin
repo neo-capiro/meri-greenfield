@@ -1,0 +1,32 @@
+✔ local case independent: begin uncertainty evicts the owned borrowed connection (22.412025ms)
+✔ local case independent: rollback uncertainty evicts the owned borrowed connection (13.618197ms)
+✔ local case independent: release failure after committed seed prevents later grant-binding ports (5.492776ms)
+✔ local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read (121.36442ms)
+✔ local gateway independent: narrowing client after real source acquisition blocks release and result retention (27.544299ms)
+✔ local gateway independent: narrowing grants after real source acquisition blocks release and result retention (42.202945ms)
+✔ local gateway independent: narrowing sources after real source acquisition blocks release and result retention (32.251574ms)
+✔ local gateway independent: local capability cannot override canonical durable grant revocation (17.880674ms)
+✔ local gateway independent: historical result survives exact task replacement but requires newly issued current credential (48.219643ms)
+✔ local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch (27.545731ms)
+✔ local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports (8.501789ms)
+✔ local identity independent: actual canonical authority consumes owned facts and exposes no token in status (11.263029ms)
+✔ local identity independent: random opaque credential is not caller-supplied claims or portable across owners (3.062073ms)
+✔ local identity independent: even valid credential text cannot be issued through raw claims/extra fields (0.85784ms)
+✔ local identity independent: direct policy port rejects altered retained claims and normalized foreign scope (2.118855ms)
+✔ local identity independent: current client change refuses old execution (2.231193ms)
+✔ local identity independent: current grants change refuses old execution (1.805073ms)
+✔ local identity independent: current source change refuses old execution (2.128338ms)
+✔ local identity independent: current revision change refuses old execution (1.456048ms)
+✔ local identity independent: expiry and explicit revoke are exact and close cannot resurrect a token (1.816531ms)
+✔ local identity independent: run replacement requires exact old binding and invalidates task A (1.490069ms)
+✔ local identity independent: reentrant policy narrowing between real owned ports cannot become release authority (0.808635ms)
+✔ local identity independent: abort remains active through actual policy/source ports (0.611158ms)
+✔ local identity independent: bounded token owner refuses overflow and frees only expired or revoked issuance (15.552144ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3099.457699

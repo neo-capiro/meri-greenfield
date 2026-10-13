@@ -1,0 +1,63 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "apps/gateway/test/action-items-source-independent.test.mjs",
+    "apps/gateway/test/action-items-source.test.mjs",
+    "apps/gateway/test/action-lookup-dispatch.test.mjs",
+    "apps/gateway/test/action-lookup-eval.test.mjs",
+    "apps/gateway/test/action-lookup-slice.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/mail-context.test.mjs",
+    "apps/gateway/test/dataset-metadata-handler-independent.test.mjs",
+    "apps/gateway/test/dataset-metadata-handler.test.mjs",
+    "apps/gateway/test/research-evidence-source.test.mjs",
+    "apps/gateway/test/research-evidence-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+    "apps/control/task-lookup/delivery.test.mjs",
+    "apps/control/task-lookup/postgres-results.test.mjs",
+    "apps/control/task-lookup/test/delivery-independent.test.mjs",
+    "apps/control/task-lookup/test/store-independent.test.mjs",
+    "evals/task-lookup/test/actual-control.test.mjs",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/eval-independent.test.mjs",
+    "evals/task-lookup/test/score.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:10:36.343557+00:00",
+  "durationSeconds": 85.373,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 422913,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-final-pr39.stdout.bin",
+      "bytes": 61803,
+      "sha256": "d57726eb45a19cba0513ba568708eb2f32e0057ebf318871dbd38d659a022ead"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated-final-pr39.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Parent explicitly requested the complete original 694-case consolidated command on corrected published PR39 source d68615c9. No test selection or source modification.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

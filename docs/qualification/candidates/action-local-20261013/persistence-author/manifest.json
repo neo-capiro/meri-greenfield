@@ -1,0 +1,106 @@
+{
+  "schema": "meri.author-packet/1",
+  "sourceCommit": "bd3de7dd9f522ef1da8bc055b9f9147e3c9d8dda",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/cleanup.json",
+      "bytes": 2016,
+      "sha256": "e3f6ebf0dabe29c05a239e4cb53d8293c6e8f48f56f708be0c929613d116d40f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/discovery-read-error.json",
+      "bytes": 596,
+      "sha256": "ec1f3fe0c16be56f84862b8c0f2dc417351bccc363b416f2ba907b89ba73b783"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/final-source-audit.json",
+      "bytes": 1789,
+      "sha256": "f665cd38188b36366973222226ab4565ad6c88af6c618ab157b13b92ad1a3e5c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-initial.json",
+      "bytes": 1299,
+      "sha256": "5fe905eacdb150a9f8c8a9d009d68d8d639aa2e4979c95a18957587cb2e07ac6"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-initial.stdout.bin",
+      "bytes": 1769,
+      "sha256": "c1910ab28543c5c6f97057b1152be2c80bd3da5cc6925addebd4eec93a8ed892"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-owner-linked.json",
+      "bytes": 1309,
+      "sha256": "f01f805f7526314cb40a3771d0798e59adbd208096b1fef667766025e98d6a11"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-owner-linked.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-owner-linked.stdout.bin",
+      "bytes": 2747,
+      "sha256": "1c338eaf40bd200077af25d763a479436d04d1dfe76ef4072bded5dc4935d0fa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-repaired.json",
+      "bytes": 1301,
+      "sha256": "eb80c2d618948d2ba0b6efd13ebb55399a290f68cd756ebc4bce1e11bbd2bb56"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/offline-repaired.stdout.bin",
+      "bytes": 2421,
+      "sha256": "c83871cc8a49d88d43792092d68d4a5a43b69b29ee775676e66826559d33597b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/preliminary-preservation.json",
+      "bytes": 2094,
+      "sha256": "4831337b1af39dcd733796965865a6ab4e1e1b1477807fa0d7047cbaa7f8e1a3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/review-findings.json",
+      "bytes": 711,
+      "sha256": "4321b6be3f41046b0ce7646a99a97636e688d1f7df9362b2392eff3c8996b1a0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/source-references.json",
+      "bytes": 2106,
+      "sha256": "f6d8d278dd75f2c36fe3d7040bda547a8ac69cabd696137d6d6b79189f751c6c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-author/verify-packet.py",
+      "bytes": 1720,
+      "sha256": "8be0455d92186de017465ba1baa83e115df95be571056852a1939ae874e5b29f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-PERSISTENCE-20261013.md",
+      "bytes": 4204,
+      "sha256": "dd0ea6024c221472d2670ea4968521bbad5494223c70cc3ca207bc6abead332b"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-LOCAL-PERSISTENCE-20261013.md",
+      "bytes": 3082,
+      "sha256": "997a95b3fcab57a5cd92aadd1ce9b5b0cac09537c2e98f1cb71b16efd0266bd8"
+    }
+  ],
+  "excludedSelfAndVerification": [
+    "manifest.json",
+    "packet-verification.json"
+  ],
+  "native": "UNRUN"
+}

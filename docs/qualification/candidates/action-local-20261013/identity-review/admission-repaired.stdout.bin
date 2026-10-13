@@ -1,0 +1,11 @@
+✔ local CLI independent: inherited native admission refuses ambient PGOPTIONS before driver/pool access (14.423157ms)
+✔ local CLI independent: missing private input cannot touch existing output or disclose its supplied path (43.13246ms)
+✔ local CLI independent: help and malformed argv finish without an admitted fixture (114.09195ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 232.162027

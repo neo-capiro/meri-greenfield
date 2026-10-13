@@ -1,0 +1,43 @@
+✔ independent descriptor is detached closed correlation and never an admission capability (1.70207ms)
+✔ independent bad host refuses before any pool or case port (2.104365ms)
+✔ independent bad database refuses before any pool or case port (0.514824ms)
+✔ independent bad user refuses before any pool or case port (0.245429ms)
+✔ independent bad mode refuses before any pool or case port (0.2658ms)
+✔ independent bad deadlineMs refuses before any pool or case port (3.531841ms)
+✔ independent descriptor getters and Proxy have no effects (0.370688ms)
+✔ independent wrong local migration hash holds before any SQL without closing borrowed pool (6.106173ms)
+✔ independent wrong cluster identity stops after read-only identity query before any case (5.249164ms)
+✔ independent native query rejection is sanitized and never closes borrowed owner (2.603515ms)
+✔ independent claim loses only post-successful COMMIT acknowledgment once (1.731204ms)
+✔ independent dispatch loses only post-successful COMMIT acknowledgment once (0.274293ms)
+✔ independent result loses only post-successful COMMIT acknowledgment once (0.316907ms)
+✔ independent claim ignores other lookup and budget transaction commits (0.331559ms)
+✔ independent dispatch ignores other lookup and budget transaction commits (0.46577ms)
+✔ independent result ignores other lookup and budget transaction commits (0.416827ms)
+✔ independent native COMMIT rejection remains original and does not consume synthetic loss (0.761516ms)
+✔ independent rollback clears phase and cannot fault a later unrelated transaction (0.291509ms)
+✔ independent forwarding preserves SQL argument and returned object identity (0.349726ms)
+✔ independent concurrent clients share one fault but preserve each native COMMIT (0.515155ms)
+✔ independent borrowed release error is not swallowed by fault forwarding (0.303426ms)
+✔ independent unknown fault phase refuses before borrowing a connection (0.224027ms)
+✔ independent receipt snapshot cannot change subsequent one-shot state (0.402355ms)
+✔ independent owned reconnect closes once and never calls borrowed pool end (2.271907ms)
+✔ independent late fresh acquisition after owner closure closes once without yielding pool (0.755947ms)
+✔ independent cancelled pending acquisition retains cleanup ownership (0.494204ms)
+✔ independent malformed owned wrapper retains known close despite extra field (0.549506ms)
+✔ independent malformed borrowed wrapper never invokes its close (0.31911ms)
+✔ independent expired acquisition refuses before creating an owned pool (0.290997ms)
+✔ independent pre-cancelled acquisition refuses before creating an owned pool (0.264218ms)
+✔ independent close rejection stays uncertain and cannot trigger a second close attempt (0.46543ms)
+✔ independent exact correlated local result rows remain admissible as source observations (15.155652ms)
+✔ independent contradictory output bytes cannot pass persistence evidence (2.798779ms)
+✔ independent contradictory completion invocation cannot pass persistence evidence (2.460901ms)
+✔ independent contradictory completion reservation cannot pass persistence evidence (2.424987ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5468.166186

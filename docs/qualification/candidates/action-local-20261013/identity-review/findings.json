@@ -1,0 +1,32 @@
+{
+  "scope": "source-only synthetic/inert ports; no driver, engine, server or native execution",
+  "initialSource": "8fd7c2027de29bbb0ea6e82fcd9676621c967962",
+  "identityBefore": {
+    "checks": 24,
+    "pass": 23,
+    "fail": 1,
+    "consequence": "Canonical GatewayDenied lacks an own code; control converts revoked/replaced-current-reader denial to LOOKUP_UNAVAILABLE instead of ACCESS_DENIED. Access remained denied.",
+    "repair": "author boundary translation pending exact freeze",
+    "capture": "identity-before.json"
+  },
+  "admissionBefore": {
+    "source": "f9c847a375d4ae60089512cf01ab7bac3a5a45c9",
+    "checks": 3,
+    "pass": 2,
+    "fail": 1,
+    "consequence": "Manufactured environment discarded native admission ambient PG/provider/Node guard. Valid private input plus PGOPTIONS was incorrectly admitted.",
+    "capture": "admission-before.json"
+  },
+  "admissionRepair": {
+    "source": "a51d30c9d388abef72a2a5808b4fe9dd7ed0cbda",
+    "checks": 3,
+    "pass": 3,
+    "capture": "admission-repaired.json",
+    "testRefinement": "Added clean baseline positive before unchanged PGOPTIONS negative. Child environment removes prohibited ambient names only; parent environment untouched."
+  },
+  "seedTransactionObservation": {
+    "kind": "static prefreeze source finding, not runtime reproduced",
+    "finding": "Initial draft handwritten transaction could reuse failed-BEGIN/rollback connection or swallow release error. Author concurrently replaced it with canonical PostgresBudgetStore before immutable8fd7.",
+    "currentChecks": "Three independent failed-BEGIN, failed-rollback and release-after-COMMIT controls passed."
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "source": "351b23190e61b459e94c910da013d1a0ea0a4518",
+  "originalEntriesUnchanged": 10030,
+  "allocatedOnly": true,
+  "sourceFiles": [
+    {
+      "path": "apps/gateway/local-action/case.mjs",
+      "bytes": 8047,
+      "sha256": "e800ce697982cc035044348f106d51fccf1b792e6128dae471d56e059786f0c6",
+      "gitBlob": "1b295e57a3a4b8b5636259ab8506885309365a3a"
+    },
+    {
+      "path": "apps/gateway/local-action/control-authorizer.mjs",
+      "bytes": 4003,
+      "sha256": "5c79923c56fd6999e82fdb2e633cc7478498490a7395acd1c82cb42f80ad3c98",
+      "gitBlob": "b964c79da4271ecb9670ab031a631463dbbeefb9"
+    },
+    {
+      "path": "apps/gateway/local-action/gateway.mjs",
+      "bytes": 3851,
+      "sha256": "a1c1c69b279ad4a2d7f72488e96c986bae9b536c96fd92fcb49661dac5fd34a6",
+      "gitBlob": "cb8b416cd5d73f21c5485b6d49f7b714b9149e4a"
+    },
+    {
+      "path": "apps/gateway/local-action/identity.mjs",
+      "bytes": 8799,
+      "sha256": "e66fd348e51b01dc76c7c9dfbdc7ea2ae6e7fb33800eba4bb4c64e45b0a06566",
+      "gitBlob": "568c870f80237f93a4c697e1687cd9764ebea481"
+    },
+    {
+      "path": "apps/gateway/local-action/test/identity.test.mjs",
+      "bytes": 14358,
+      "sha256": "4d51a7de7b5d4a2eefad8b7381636459101f6a5c98579ea25df6e81850db0562",
+      "gitBlob": "6886bb802e1de30e9a45f807ad3404b42924da0c"
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "initial",
+      "pgid": 425583,
+      "freshGroupAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "label": "setup-repaired",
+      "pgid": 426807,
+      "freshGroupAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "label": "denial-repaired",
+      "pgid": 429292,
+      "freshGroupAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "realEngineExecuted": false,
+  "networkExecuted": false,
+  "productionCatalogChanged": false
+}

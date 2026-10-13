@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import assert from 'node:assert/strict';\nimport {createLocalActionCaseFactory} from './apps/gateway/local-action/case.mjs';\nimport {runLocalActionPersistence} from './apps/control/task-lookup/local-integration/run-persistence.mjs';\nimport {assertTaskLookupStoredBinding} from './apps/control/task-lookup/index.mjs';\nimport {main} from './scripts/local-action/cli.mjs';\nconst createCase=createLocalActionCaseFactory({mode:'synthetic-local',assertStoredBinding:assertTaskLookupStoredBinding});\nassert.equal(typeof createCase,'function');assert.equal(typeof runLocalActionPersistence,'function');assert.equal(typeof main,'function');\nconsole.log(JSON.stringify({fixedExecutableImportsResolved:true,caseFactoryConstructed:true,poolOpened:false,nativeDatabaseCasesRun:0,runtimeQualified:false}));"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "f8ee0a61577dcb332559f9c0a152f521846b5331",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:38:37.276616+00:00",
+  "durationSeconds": 2.575,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 431419,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/executable-imports.stdout.bin",
+      "bytes": 141,
+      "sha256": "915d5e0280d62373715e6b275766595c37f5573a39d357a6853d43ad8b935cec"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/executable-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Fixed executable imports and cross-application public factory wiring after reviewed integration; no pool, driver or database execution.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

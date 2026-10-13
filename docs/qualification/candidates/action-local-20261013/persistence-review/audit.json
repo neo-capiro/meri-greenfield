@@ -1,0 +1,453 @@
+{
+  "schema": "meri.independent-source-audit/1",
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "source": "bd3de7dd9f522ef1da8bc055b9f9147e3c9d8dda",
+  "authorPacket": "3e62a3a97c887044e0d2ef70248f5ddb38b7e84a",
+  "authorManifestSha256": "bc7093756e04fc383dd440874f1f7a2e405a085fbf92c0bd9c924aa2844da620",
+  "originalEntries": 10030,
+  "changedOriginals": [],
+  "sources": [
+    {
+      "path": "apps/control/task-lookup/local-integration/README.md",
+      "bytes": 3568,
+      "sha256": "0a2b571b0f65b3bc0b9da6bc104840559137646127e0af97ccc4686595ea2dd7"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+      "bytes": 1392,
+      "sha256": "316c37407a49ebf1968a84e40471f14850ab62cbb394433ba6219c2c072eb256"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "bytes": 5345,
+      "sha256": "924f012927182e7d9152f13b879c1f952ca478e0f5cd373351850b9fc54be46e"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "bytes": 2110,
+      "sha256": "0b0b2967b645ca37bddded12f5f1b1d4d2cf0c1e2cde65dbf13623d08d12c7b8"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "bytes": 13572,
+      "sha256": "643e3401a661fa33cb47638f367bc8f82b2efe96557e0dda4f07ada625636a80"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+      "bytes": 10419,
+      "sha256": "02c67ef6b48381b148d2d6ae6dcf8125851e27cbac2849a4e752418f0a0ed999"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all PR39 original entries preserved at source",
+      "pass": true
+    },
+    {
+      "name": "all PR39 original entries preserved at packet",
+      "pass": true
+    },
+    {
+      "name": "exact six source/test/readme additions",
+      "pass": true
+    },
+    {
+      "name": "no added app/package files outside approved local module",
+      "pass": true
+    },
+    {
+      "name": "source packet identity apps/control/task-lookup/local-integration/README.md",
+      "pass": true
+    },
+    {
+      "name": "review worktree identity apps/control/task-lookup/local-integration/README.md",
+      "pass": true
+    },
+    {
+      "name": "source packet identity apps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+      "pass": true
+    },
+    {
+      "name": "review worktree identity apps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packet identity apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "pass": true
+    },
+    {
+      "name": "review worktree identity apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packet identity apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "pass": true
+    },
+    {
+      "name": "review worktree identity apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packet identity apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "pass": true
+    },
+    {
+      "name": "review worktree identity apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "pass": true
+    },
+    {
+      "name": "source packet identity apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "review worktree identity apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "only reviewer-owned additions outside author packet",
+      "pass": true
+    },
+    {
+      "name": "no review modifications to author or originals",
+      "pass": true
+    },
+    {
+      "name": "author exact manifest hash",
+      "pass": true
+    },
+    {
+      "name": "author manifest source",
+      "pass": true
+    },
+    {
+      "name": "author manifest unique paths",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/discovery-read-error.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/final-source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-initial.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-owner-linked.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-owner-linked.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-owner-linked.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/offline-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/preliminary-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/review-findings.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/source-references.json",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/action-local-20261013/persistence-author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/coordination/reports/CODEX-ACTION-LOCAL-PERSISTENCE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author manifest docs/coordination/tasks/CODEX-ACTION-LOCAL-PERSISTENCE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "original author test bytes intact with only three imports plus append",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary createTaskLookupDelivery({",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary createPostgresTaskLookupStore({",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary createCommitAckFault({",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary createFreshPoolOwner({",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary method(c.gateway,'readInvocationOutcome')",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary runtimeQualified:false",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary databaseRestartTested:false",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary ownedRowsDeleted:false",
+      "pass": true
+    },
+    {
+      "name": "actual runner boundary physicalStopProven:false",
+      "pass": true
+    },
+    {
+      "name": "fixed SQL readback provenance columns",
+      "pass": true
+    },
+    {
+      "name": "source-only migration identity disclaimer",
+      "pass": true
+    },
+    {
+      "name": "no schema/destructive SQL statements",
+      "pass": true
+    },
+    {
+      "name": "real query resolved before fault decision",
+      "pass": true
+    },
+    {
+      "name": "fault not retrying or closing pool",
+      "pass": true
+    },
+    {
+      "name": "owned close retained before strict wrapper admission",
+      "pass": true
+    },
+    {
+      "name": "preexpired acquisition before factory",
+      "pass": true
+    },
+    {
+      "name": "borrowed refusal before owned assignment",
+      "pass": true
+    },
+    {
+      "name": "shared lifetime reused",
+      "pass": true
+    },
+    {
+      "name": "fault-initial exact counts",
+      "pass": true
+    },
+    {
+      "name": "fault-initial raw source diff empty",
+      "pass": true
+    },
+    {
+      "name": "fault-initial capture no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "fault-initial raw stream docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "fault-initial raw stream docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fault-initial current group absent",
+      "pass": true
+    },
+    {
+      "name": "ownership-evidence-initial exact counts",
+      "pass": true
+    },
+    {
+      "name": "ownership-evidence-initial raw source diff empty",
+      "pass": true
+    },
+    {
+      "name": "ownership-evidence-initial capture no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "ownership-evidence-initial raw stream docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "ownership-evidence-initial raw stream docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "ownership-evidence-initial current group absent",
+      "pass": true
+    },
+    {
+      "name": "admission-initial exact counts",
+      "pass": true
+    },
+    {
+      "name": "admission-initial raw source diff empty",
+      "pass": true
+    },
+    {
+      "name": "admission-initial capture no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "admission-initial raw stream docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "admission-initial raw stream docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "admission-initial current group absent",
+      "pass": true
+    },
+    {
+      "name": "first-repair exact counts",
+      "pass": true
+    },
+    {
+      "name": "first-repair raw source diff empty",
+      "pass": true
+    },
+    {
+      "name": "first-repair capture no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "first-repair raw stream docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "first-repair raw stream docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "first-repair current group absent",
+      "pass": true
+    },
+    {
+      "name": "final-behavior exact counts",
+      "pass": true
+    },
+    {
+      "name": "final-behavior raw source diff empty",
+      "pass": true
+    },
+    {
+      "name": "final-behavior capture no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "final-behavior raw stream docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "final-behavior raw stream docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "final-behavior current group absent",
+      "pass": true
+    },
+    {
+      "name": "final-behavior-corrected exact counts",
+      "pass": true
+    },
+    {
+      "name": "final-behavior-corrected raw source diff empty",
+      "pass": true
+    },
+    {
+      "name": "final-behavior-corrected capture no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "final-behavior-corrected raw stream docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "final-behavior-corrected raw stream docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "final-behavior-corrected current group absent",
+      "pass": true
+    },
+    {
+      "name": "realm correction before hash",
+      "pass": true
+    },
+    {
+      "name": "realm correction after hash",
+      "pass": true
+    },
+    {
+      "name": "realm correction preserves all fixtures/assertions",
+      "pass": true
+    },
+    {
+      "name": "pure exported assertion loaded not runner invoked",
+      "pass": true
+    }
+  ],
+  "pass": 99,
+  "fail": 0,
+  "independentControls": 42,
+  "authorControls": 31,
+  "capturedGroups": [
+    425140,
+    425898,
+    426923,
+    427542,
+    427919,
+    428638
+  ],
+  "realPostgreSQLCases": "UNRUN",
+  "runtimeAccepted": false
+}
