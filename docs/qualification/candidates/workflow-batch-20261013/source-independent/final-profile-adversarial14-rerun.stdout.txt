@@ -1,0 +1,96 @@
+TAP version 13
+# (node:198966) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Actual inventory assertion admits exact metadata and checks every source-disabled catalog row
+ok 1 - Actual inventory assertion admits exact metadata and checks every source-disabled catalog row
+  ---
+  duration_ms: 1585.134101
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for search_memory
+ok 2 - Actual inventory assertion refuses missing metadata for search_memory
+  ---
+  duration_ms: 2.580734
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for search_memory
+ok 3 - Actual inventory assertion refuses wrong metadata for search_memory
+  ---
+  duration_ms: 1.409885
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for read_monday_client_boards
+ok 4 - Actual inventory assertion refuses missing metadata for read_monday_client_boards
+  ---
+  duration_ms: 1.489715
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for read_monday_client_boards
+ok 5 - Actual inventory assertion refuses wrong metadata for read_monday_client_boards
+  ---
+  duration_ms: 1.344878
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for get_client_context
+ok 6 - Actual inventory assertion refuses missing metadata for get_client_context
+  ---
+  duration_ms: 1.31247
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for get_client_context
+ok 7 - Actual inventory assertion refuses wrong metadata for get_client_context
+  ---
+  duration_ms: 1.249125
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for find_contacts
+ok 8 - Actual inventory assertion refuses missing metadata for find_contacts
+  ---
+  duration_ms: 1.191289
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for find_contacts
+ok 9 - Actual inventory assertion refuses wrong metadata for find_contacts
+  ---
+  duration_ms: 1.400381
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for resolve_entity
+ok 10 - Actual inventory assertion refuses missing metadata for resolve_entity
+  ---
+  duration_ms: 1.563525
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for resolve_entity
+ok 11 - Actual inventory assertion refuses wrong metadata for resolve_entity
+  ---
+  duration_ms: 1.315384
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for read_client_documents
+ok 12 - Actual inventory assertion refuses missing metadata for read_client_documents
+  ---
+  duration_ms: 1.182225
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for read_client_documents
+ok 13 - Actual inventory assertion refuses wrong metadata for read_client_documents
+  ---
+  duration_ms: 1.221153
+  type: 'test'
+  ...
+# Subtest: Actual inventory assertion refuses an additional profile on another registry entry
+ok 14 - Actual inventory assertion refuses an additional profile on another registry entry
+  ---
+  duration_ms: 1.153122
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1665.912786

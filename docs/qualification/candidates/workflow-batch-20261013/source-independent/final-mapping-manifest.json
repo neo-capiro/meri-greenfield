@@ -1,0 +1,130 @@
+{
+  "sourceCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/FINAL-TEST-MAPPING-REVIEW.md",
+      "bytes": 3596,
+      "sha256": "f838c165137f5bb372ca76dc1678ae7df9b482782f356029115a8652101ccdf2"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/audit-final-mapping.py",
+      "bytes": 8151,
+      "sha256": "7a77b2976a2ac1c101757c6d776462744d90fdb758043b5ddc2248e4bc3bd314"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/capture-final-mapping.py",
+      "bytes": 1717,
+      "sha256": "fd269c1d1ef809a890b82dcd49970933e5e7e8e73be8737100f462a664e87a64"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-focused75.json",
+      "bytes": 857,
+      "sha256": "d6b30207fee7c736ea3e137b96e3e1ba6fa7c26956c438affb42b657d10c8aea"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-focused75.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-focused75.stdout.txt",
+      "bytes": 15680,
+      "sha256": "c4d500508563cf746ff7ec061a40298a9e09d3be93ef7a905ab25f78463ba058"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-packet-verification.json",
+      "bytes": 1193,
+      "sha256": "b3655643326684aeb9042587c89ed23568d9cde3187e3a79d286b071a9c9e9f4"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-preservation-details.json",
+      "bytes": 8049,
+      "sha256": "c85de001f7438e8fca18429f97e1f47c1cd29b52c2e79f4d66a2c6f611703977"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-source-audit.json",
+      "bytes": 795,
+      "sha256": "d1a731b2b46c683c88361b7b60eca2ea8a42c407c738f31659e0f44eb5e5c764"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-source-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-source-audit.stdout.txt",
+      "bytes": 257,
+      "sha256": "fef04a145044db7dfe090be276f1d39288aec31ebecb08f978f568f0b84eda50"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-whitespace.json",
+      "bytes": 860,
+      "sha256": "f2f5fbe427310497b52fe40e26c705c74bcebd4258548867df10f3479460c6c1"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14-rerun.json",
+      "bytes": 880,
+      "sha256": "403bc0cc476898dc4e05f7e005d701abc855c7e3ab57fa9abac5b355dc3d1197"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14-rerun.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14-rerun.stdout.txt",
+      "bytes": 3388,
+      "sha256": "b61ed657bf61c035681d0ad8edb4c2b0f1d628469c17d7b5a0a8ca87768ec76b"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14.json",
+      "bytes": 881,
+      "sha256": "a8d2c4f045b9ba0c07405c29a913f3ef64e7918dab867698601068ffa5fb66ed"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-adversarial14.stdout.txt",
+      "bytes": 29922,
+      "sha256": "9c755daeee93b9fc4f8d988e9a7a85a781fa1e7066f0e7a53cf222ea5ca414dc"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs",
+      "bytes": 3013,
+      "sha256": "4a91c813d055a19ca23d005e440cd1ca442f99f9f97b57cdb9df41fdc69c7345"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-setup-preimage.mjs",
+      "bytes": 2729,
+      "sha256": "51df9694e8ed9c5252d2bbe582c5caabbb58c335ad9c44c59050f4e654328a12"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-unicode-carry-forward14.json",
+      "bytes": 848,
+      "sha256": "ddea73a56126991aeda55905da612ca12e2ea1b6ea9cf2d31e5fbfce7db4c552"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-unicode-carry-forward14.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-unicode-carry-forward14.stdout.txt",
+      "bytes": 3774,
+      "sha256": "2373c900ead7d93b533b4e4fd9f1f3486b80d000da5cb0e7afba00abb2d2f4c2"
+    }
+  ]
+}

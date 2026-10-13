@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/audit-final-mapping.py"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "worktreeHead": "4f545d6f63e267526bc22c5a5e3db7b177b79ac9",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.298,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 257,
+  "stderrBytes": 0,
+  "stdoutSha256": "fef04a145044db7dfe090be276f1d39288aec31ebecb08f978f568f0b84eda50",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

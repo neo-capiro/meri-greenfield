@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/mail-continuation-regression.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "worktreeHead": "4f545d6f63e267526bc22c5a5e3db7b177b79ac9",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 2.198,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 15680,
+  "stderrBytes": 0,
+  "stdoutSha256": "c4d500508563cf746ff7ec061a40298a9e09d3be93ef7a905ab25f78463ba058",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

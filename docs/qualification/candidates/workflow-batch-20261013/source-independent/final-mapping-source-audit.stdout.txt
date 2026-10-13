@@ -1,0 +1,1 @@
+{"decision": "ACCEPT_SOURCE", "passedAssertions": 44, "detailFile": "/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-mapping-preservation-details.json", "exactParentEntries": 13663}
