@@ -2,6 +2,7 @@
 import {serve} from '@hono/node-server';
 import {fault} from './config.mjs';
 export async function listenRuntime({configuration,application,readiness,signal}){
+ signal?.throwIfAborted();
  let stopping=false;const active=new Set(),sockets=new Set();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  const server=serve({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,fetch:async request=>{
   const path=new URL(request.url).pathname;if(path==='/health/live'||path==='/health/ready'){
@@ -19,5 +20,5 @@ export async function listenRuntime({configuration,application,readiness,signal}
  server.requestTimeout=configuration.limits.requestMs+1000;server.headersTimeout=configuration.limits.requestMs;server.keepAliveTimeout=1000;server.maxHeadersCount=100;
  await new Promise((resolve,reject)=>{if(server.listening)return resolve();server.once('listening',resolve);server.once('error',reject);});
  let closing;const close=()=>closing??=new Promise(resolve=>{stopping=true;for(const c of active)c.abort(fault('RUNTIME_STOPPING'));server.close(resolve);server.closeIdleConnections();const timer=setTimeout(()=>{for(const socket of sockets)socket.destroy();resolve();},configuration.limits.shutdownMs);timer.unref();server.once('close',()=>clearTimeout(timer));});
- const abort=()=>{void close();};signal?.addEventListener('abort',abort,{once:true});return Object.freeze({address:server.address(),async close(){signal?.removeEventListener('abort',abort);await close();}});
+ const abort=()=>{void close();};signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted){await close();signal.removeEventListener('abort',abort);throw fault('RUNTIME_STOPPED');}return Object.freeze({address:server.address(),async close(){signal?.removeEventListener('abort',abort);await close();}});
 }

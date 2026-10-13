@@ -27,7 +27,10 @@ export async function startControl(configuration,{signal}={}){
  let pool,connection,listener,assembly,closing;const close=()=>closing??=(async()=>{await listener?.close();assembly?.close();await connection?.close();await pool?.end();})();
  try{
   const [connectionBytes,capabilityBytes,tls]=await Promise.all([readSecret(configuration.database.connectionFile),readSecret(configuration.native.capabilityFile),temporalTls(configuration.temporal.tls)]);
-  const connectionString=connectionBytes.toString('utf8').trim();let u;try{u=new URL(connectionString);}catch{throw fault('DATABASE_CONFIGURATION');}if(!['postgres:','postgresql:'].includes(u.protocol)||u.searchParams.get('sslmode')!=='verify-full')throw fault('DATABASE_CONFIGURATION');
+  const connectionString=connectionBytes.toString('utf8').trim();let u;try{u=new URL(connectionString);}catch{throw fault('DATABASE_CONFIGURATION');}
+  // URL.get() selects the first duplicate; pg's adopted parser selects the
+  // last. Accept one closed TLS parameter before either client is allocated.
+  if(!['postgres:','postgresql:'].includes(u.protocol)||u.hash||u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='verify-full'||[...u.searchParams.keys()].some(key=>key!=='sslmode'))throw fault('DATABASE_CONFIGURATION');
   pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
   connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs});const client=new Client({connection,namespace:configuration.temporal.namespace});
   const native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});assembly=assembleControl({configuration,pool,client,native});
