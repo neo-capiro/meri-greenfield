@@ -81,3 +81,8 @@ test('post-DDL node overflow cannot commit or claim rollback success',async()=>{
 test('lost COMMIT acknowledgement preserves UNKNOWN and does not retry',async()=>{
  const s=fixture(complete(),{loseCommit:true});await assert.rejects(prepareOwnedApplicationSchema(s.call()),e=>e.stage==='commit'&&e.outcome==='UNKNOWN');assert.equal(writes(s).length,6);assert.equal(s.state.commits,1);assert.equal(s.log.filter(q=>q.text==='COMMIT').length,1);assert.equal(s.state.ended,0);
 });
+test('complete measured metadata independently passes the downstream snapshot choke point',async()=>{
+ const m=complete(),n=assertNamespaces(expectedNamespaces(),{schemaScope:scope,user:'qualification_owner'},false);
+ const result=await preservationSnapshot(async()=>envelope(m),{schemaScope:scope},n);
+ assert.equal(result.metadataSha256,digest({namespaces:n,metadata:m}));
+});
