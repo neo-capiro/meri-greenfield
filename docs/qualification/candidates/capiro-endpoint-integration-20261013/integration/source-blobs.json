@@ -1,0 +1,62 @@
+[
+  {
+    "path": "apps/control/action-host/application-adapters/README.md",
+    "gitEntry": "100644 blob 7853fdd90a39eedb60cc99ea374b3b420f52379f",
+    "bytes": 8043,
+    "sha256": "604cf7c255c9a6dcc0f44fff7d6a5f2a828c848a6d2bed7253c52f02f46d4608"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+    "gitEntry": "100644 blob 7c4a83004884bd32834496ede86af907e18d21d1",
+    "bytes": 4664,
+    "sha256": "ba9af89c706dc6bbb27f55e06c9e6331e5c655edabb3a22d2cc13269750ef993"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+    "gitEntry": "100644 blob a83121088f8440464c1c2ef2afbcfb901a0cc934",
+    "bytes": 12379,
+    "sha256": "87ab4ab2d6e72a4ea5e868f7d6aada632249a164faf257f8e8f87f718809b15a"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+    "gitEntry": "100644 blob 46c6c62b9b0836a4d678b76e7890e1c558592fbe",
+    "bytes": 5132,
+    "sha256": "ad7eaa94dc2a2747a23301cd66eb5d6662120ef3b22e18381ff6ff59eb2504e4"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+    "gitEntry": "100644 blob b09c32d1fc161de5f4c54f02290a118122d99442",
+    "bytes": 7316,
+    "sha256": "d30bdec8e81785eb4635e2e594964493e5cbf0976617470ae8e5f5923bdf390a"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+    "gitEntry": "100644 blob 6f0c96ec69437a6b6a2a065d6e6fba0ce9fd16cb",
+    "bytes": 4787,
+    "sha256": "cc7355212242320db096c9b7ec2b711ba7c73d1734dfe7f735170c826034fa9e"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+    "gitEntry": "100644 blob b6845b894c9d4a29b82c248a1e7d63e219f1a94f",
+    "bytes": 7514,
+    "sha256": "6d9ff918eab365695125f7e65e486123e9ac0c957bc68bd00a384e814e6099eb"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+    "gitEntry": "100644 blob 1593bbaad3064bf8d8b2fd08328cac5557e35927",
+    "bytes": 2696,
+    "sha256": "66a8fe272dab84bf551406f2c6451666b209caa244ea6be8b1f05630fea9eb6c"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+    "gitEntry": "100644 blob cbf403db3cca3f056d8007738882dc258e20994e",
+    "bytes": 4101,
+    "sha256": "3132dfe886d1b893602c48c63629471663156671d6093975e5a06130c207944f"
+  },
+  {
+    "path": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+    "gitEntry": "100644 blob b9e2ea84145bc0570c6dbe5127d5852c592aca70",
+    "bytes": 3668,
+    "sha256": "8d4f415450a215901322cef3714dcaab19a25611222a4532983607c48febd4fa"
+  }
+]

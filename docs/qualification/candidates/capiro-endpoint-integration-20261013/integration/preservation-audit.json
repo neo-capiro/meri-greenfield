@@ -1,0 +1,37 @@
+{
+  "command": [
+    "env",
+    "MERI_ENDPOINT_REVIEW_FREEZE=6e52e6abfdf7a41256febea83cc8b15262f6cd06",
+    "CAPIRO_SOURCE_REPOSITORY=/tmp/capiro-endpoint-integration-source-20261013.git",
+    "MERI_TYPESCRIPT_MODULE=/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/typescript/lib/typescript.js",
+    "python3",
+    "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/audit.py"
+  ],
+  "cwd": "/tmp/meri-capiro-endpoint-integration-20261013",
+  "sourceHead": "750c289bd1b94fce0e67c576e283f5b7927cf8e6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T06:56:30.292814+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 526887,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.stdout.bin",
+      "bytes": 330,
+      "sha256": "02dca8c61a3eb382f581158a3285eed87f251d16dfe0c4a049b5083b480d58ed"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

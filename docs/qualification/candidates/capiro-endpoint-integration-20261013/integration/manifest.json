@@ -1,0 +1,154 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "testedIntegrationHead": "750c289bd1b94fce0e67c576e283f5b7927cf8e6",
+  "authorSource": "9063f707e2ac618b0dcf5bb0c5165d13914748e6",
+  "reviewPacket": "6e52e6abfdf7a41256febea83cc8b15262f6cd06",
+  "members": [
+    {
+      "path": "apps/control/action-host/application-adapters/README.md",
+      "bytes": 8043,
+      "sha256": "604cf7c255c9a6dcc0f44fff7d6a5f2a828c848a6d2bed7253c52f02f46d4608"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+      "bytes": 4664,
+      "sha256": "ba9af89c706dc6bbb27f55e06c9e6331e5c655edabb3a22d2cc13269750ef993"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+      "bytes": 12379,
+      "sha256": "87ab4ab2d6e72a4ea5e868f7d6aada632249a164faf257f8e8f87f718809b15a"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+      "bytes": 5132,
+      "sha256": "ad7eaa94dc2a2747a23301cd66eb5d6662120ef3b22e18381ff6ff59eb2504e4"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+      "bytes": 7316,
+      "sha256": "d30bdec8e81785eb4635e2e594964493e5cbf0976617470ae8e5f5923bdf390a"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+      "bytes": 4787,
+      "sha256": "cc7355212242320db096c9b7ec2b711ba7c73d1734dfe7f735170c826034fa9e"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+      "bytes": 7514,
+      "sha256": "6d9ff918eab365695125f7e65e486123e9ac0c957bc68bd00a384e814e6099eb"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+      "bytes": 2696,
+      "sha256": "66a8fe272dab84bf551406f2c6451666b209caa244ea6be8b1f05630fea9eb6c"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+      "bytes": 4101,
+      "sha256": "3132dfe886d1b893602c48c63629471663156671d6093975e5a06130c207944f"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+      "bytes": 3668,
+      "sha256": "8d4f415450a215901322cef3714dcaab19a25611222a4532983607c48febd4fa"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-20261013.md",
+      "bytes": 6141,
+      "sha256": "7f2e52317dfc4c267c575facbb75027c628551e6a7d8e87f3c8d7d22730ed561"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-CAPIRO-ENDPOINT-INTEGRATION-20261013.md",
+      "bytes": 2775,
+      "sha256": "005d97842603750f11f000efcd7982080592b5f73b70d00c6fa8fd42f0e23933"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/manifest.json",
+      "bytes": 5451,
+      "sha256": "b6c6c1e9ff627ed4bae1d98f778c5ddf832e0d35c50be04889674c4ad13d5a01"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/audit.json",
+      "bytes": 13960,
+      "sha256": "d671cf7879e5469c8fcc0698baa617e8a710e864980f0a52f0456cc798f5a5fb"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/audit.py",
+      "bytes": 7577,
+      "sha256": "2466c9b58e4becc316cc1460b33ed145209bf4b7d54c7d1ff6b822c823742a16"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/backend-response-handoff.md",
+      "bytes": 3715,
+      "sha256": "f4eec7eaa903b13dbc3a6dd96f416ca606bc7453c6ec7ef516661ea3c208c3e0"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/cleanup.json",
+      "bytes": 2132,
+      "sha256": "8c4d4abe3b542b74e9de70cd61dd824973456c8d92e2dea1257458b3e5707b3a"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.json",
+      "bytes": 1667,
+      "sha256": "5f29e2cc94e258c7b973aad208bbe769ecb066d5efdfca403d477372fe196833"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.stdout.bin",
+      "bytes": 3261,
+      "sha256": "a0a599ea31e960cd62d55239f41df8162f6c83e5c1261a9f5cee9fc6f771d290"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.json",
+      "bytes": 2093,
+      "sha256": "f519b18c89af20f5d586ce09572f3b692931adb34693b0aa85e1f4a5beed8db2"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.stdout.bin",
+      "bytes": 10921,
+      "sha256": "7927ec26417218c5c1f2016bdaed4aca3481c5cc29ddc35d62b09eda37fb4ced"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.json",
+      "bytes": 1638,
+      "sha256": "fb5515a28819b761f958e4dccb592895a0837c13e6a271204cedfb3e2385474e"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.stdout.bin",
+      "bytes": 330,
+      "sha256": "02dca8c61a3eb382f581158a3285eed87f251d16dfe0c4a049b5083b480d58ed"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/source-blobs.json",
+      "bytes": 2680,
+      "sha256": "6716be6e8469bf0413683cef1ebde23bc0d894e2ea39e26a7f4b8daa70b05b71"
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/manifest.json",
+      "bytes": 3642,
+      "sha256": "323ad1c9fee97e9826bc66dde9dc0c8c0be1228d1381de1500ffaa4b4fc0f3db"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-10-13T06:57:30.364264+00:00",
+  "groups": [
+    {
+      "role": "author",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.json",
+      "pgid": 518232,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "author",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.json",
+      "pgid": 519379,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "author",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.json",
+      "pgid": 523074,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "review",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.json",
+      "pgid": 523284,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "review",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.json",
+      "pgid": 521708,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "integration",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.json",
+      "pgid": 525568,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "integration",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.json",
+      "pgid": 520600,
+      "freshlyAbsent": true
+    },
+    {
+      "role": "integration",
+      "capture": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.json",
+      "pgid": 526887,
+      "freshlyAbsent": true
+    }
+  ],
+  "dependencyLinks": [
+    {
+      "path": "node_modules",
+      "targetPreserved": "/workspace/meri-read-continuation-20261012/node_modules",
+      "ownLinkRemoved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "targetPreserved": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "ownLinkRemoved": true
+    }
+  ],
+  "otherOwnersUntouched": true,
+  "nativeOrCloudJobsStarted": false
+}
