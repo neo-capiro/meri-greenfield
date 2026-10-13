@@ -1,0 +1,55 @@
+{
+  "command": [
+    "node",
+    "-e",
+    "process.chdir('packages/contracts');const{spawnSync}=require('node:child_process');const r=spawnSync('npm',['run','check'],{stdio:'inherit'});process.exitCode=r.status??1"
+  ],
+  "cwd": "/tmp/meri-document-contract-author-20261013",
+  "sourceHead": "647fb4089fd8722f757952010fbd85c0bd069a70",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-13T07:31:08.095968+00:00",
+  "durationSeconds": 4.689,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 535771,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 535815,
+      "status": 0
+    },
+    {
+      "pid": 535834,
+      "status": 0
+    },
+    {
+      "pid": 535853,
+      "status": 0
+    },
+    {
+      "pid": 535990,
+      "status": 0
+    },
+    {
+      "pid": 536009,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stdout.bin",
+      "bytes": 6677,
+      "sha256": "4bb68b320d451e04ebb8201df5ab4743425b45a6d2815282c04991ebcb9af654"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

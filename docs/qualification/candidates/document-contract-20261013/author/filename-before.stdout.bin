@@ -1,0 +1,74 @@
+✔ public txt request/receipt/verified binary (32.400422ms)
+✔ public docx request/receipt/verified binary (3.252436ms)
+✔ public xlsx request/receipt/verified binary (2.428227ms)
+✔ revision parent and inspect current-byte receipt (2.232824ms)
+✔ refuse receipt extra (0.867122ms)
+✔ refuse receipt hash (0.560532ms)
+✔ refuse receipt bytes (0.402224ms)
+✔ refuse receipt mime (0.360151ms)
+✔ refuse receipt filename (0.357257ms)
+✔ refuse receipt parent (1.399072ms)
+✔ refuse receipt native (0.295974ms)
+✔ refuse receipt recalc (0.430487ms)
+✔ refuse receipt preview (0.374703ms)
+✔ refuse receipt scope (0.245018ms)
+✔ refuse receipt tenant (0.295084ms)
+✔ refuse receipt size (0.255143ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.913562ms)
+✔ typed-array overrides are not observed (0.183936ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.225079ms)
+✔ local request and version provenance cannot be reconstructed by shape (0.908434ms)
+✔ download header content-type refuses (0.417637ms)
+✔ download header content-length refuses (0.423556ms)
+✔ download header content-disposition refuses (0.293751ms)
+✔ download header cache-control refuses (0.446561ms)
+✔ download header x-content-type-options refuses (0.526821ms)
+✔ download header content-encoding refuses (0.321763ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (17.584265ms)
+✔ preabort/native Response brands and own getters (1.81771ms)
+✔ error status and uncertainty preserved without version or bytes (0.73916ms)
+✔ download JSON path accepts errors only (0.301203ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (68.506982ms)
+✔ isolated package consumer exposes document export without private files/dependencies (45.660752ms)
+✖ canonical 125-character docx filename remains usable (0.706651ms)
+✖ canonical 125-character xlsx filename remains usable (0.365999ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 32
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.460468
+
+✖ failing tests:
+
+test at packages/contracts/test/document-application-public.test.mjs:38:36
+✖ canonical 125-character docx filename remains usable (0.706651ms)
+  Error [DocumentResponseError]: INVALID_RESPONSE
+      at fail (file:///tmp/meri-document-contract-author-20261013/packages/contracts/dist/document-application.mjs:7261:9)
+      at receiveDocumentResponse (file:///tmp/meri-document-contract-author-20261013/packages/contracts/dist/document-application.mjs:7438:78)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-author-20261013/packages/contracts/test/document-application-public.test.mjs:38:159)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'INVALID_RESPONSE'
+  }
+
+test at packages/contracts/test/document-application-public.test.mjs:38:36
+✖ canonical 125-character xlsx filename remains usable (0.365999ms)
+  Error [DocumentResponseError]: INVALID_RESPONSE
+      at fail (file:///tmp/meri-document-contract-author-20261013/packages/contracts/dist/document-application.mjs:7261:9)
+      at receiveDocumentResponse (file:///tmp/meri-document-contract-author-20261013/packages/contracts/dist/document-application.mjs:7438:78)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-author-20261013/packages/contracts/test/document-application-public.test.mjs:38:159)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'INVALID_RESPONSE'
+  }

@@ -1,0 +1,42 @@
+✔ public txt request/receipt/verified binary (32.761847ms)
+✔ public docx request/receipt/verified binary (2.781418ms)
+✔ public xlsx request/receipt/verified binary (5.292871ms)
+✔ revision parent and inspect current-byte receipt (2.570852ms)
+✔ refuse receipt extra (0.828614ms)
+✔ refuse receipt hash (0.486611ms)
+✔ refuse receipt bytes (0.445299ms)
+✔ refuse receipt mime (0.344327ms)
+✔ refuse receipt filename (0.535544ms)
+✔ refuse receipt parent (1.691711ms)
+✔ refuse receipt native (0.304858ms)
+✔ refuse receipt recalc (0.313831ms)
+✔ refuse receipt preview (0.271648ms)
+✔ refuse receipt scope (0.266951ms)
+✔ refuse receipt tenant (0.289394ms)
+✔ refuse receipt size (0.239239ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.65231ms)
+✔ typed-array overrides are not observed (0.181863ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.230356ms)
+✔ local request and version provenance cannot be reconstructed by shape (1.032752ms)
+✔ download header content-type refuses (0.358258ms)
+✔ download header content-length refuses (0.343136ms)
+✔ download header content-disposition refuses (0.354172ms)
+✔ download header cache-control refuses (0.396575ms)
+✔ download header x-content-type-options refuses (0.341243ms)
+✔ download header content-encoding refuses (0.281893ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (15.708378ms)
+✔ preabort/native Response brands and own getters (1.312322ms)
+✔ error status and uncertainty preserved without version or bytes (0.713542ms)
+✔ download JSON path accepts errors only (0.320021ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (68.096149ms)
+✔ isolated package consumer exposes document export without private files/dependencies (50.436129ms)
+✔ canonical 125-character docx filename remains usable (1.636769ms)
+✔ canonical 125-character xlsx filename remains usable (1.154265ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262.480481
