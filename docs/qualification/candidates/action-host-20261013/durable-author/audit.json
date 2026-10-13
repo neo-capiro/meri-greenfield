@@ -1,6 +1,6 @@
 {
   "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
-  "sourceHead": "2e0bcd7275d2677bfd2f0e0731e623dc9790e44e",
+  "sourceHead": "c581c63764f67a9a7a5ee9090cba9e103aa486d7",
   "originalEntryCount": 10564,
   "passed": 21,
   "total": 21,
@@ -14,7 +14,7 @@
       "passed": true
     },
     {
-      "name": "production index unchanged from reviewed initial",
+      "name": "production tokens unchanged from reviewed initial (leading comment precision only)",
       "passed": true
     },
     {
