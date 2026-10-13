@@ -21,7 +21,7 @@ function setup({mapped=true,scoped=true,verifyMode=false,changeNamespaces,change
    changeNamespaces?.(rows,namespaceReads);
    // Narrow scripted SELECT projection. This deliberately does not fabricate an
    // OID observation when the actual production query does not request one.
-   if(!/\boid\s*::\s*text\s+AS\s+oid\b/i.test(q.text))for(const r of rows)delete r.oid;
+   if(!/\boid\s*::\s*pg_catalog\.text\s+AS\s+oid\b/i.test(q.text))for(const r of rows)delete r.oid;
    return{rows};
   }
   if(q.text===preservationSQL){metadataReads++;assert.deepEqual(q.values,[scope.namespaces.map(n=>n.name)]);const value=clone(body);changeMetadata?.(value,metadataReads);return{rows:[{unsupported,metadata:value}]};}
@@ -48,8 +48,8 @@ test('unsupported evidence catalog classes fail closed before DDL',async()=>{con
 for(const field of ['relations','columns','defaults','constraints','indexes','views','types','sequences','triggers','dependencies','comments','labels'])test(`changed preserved ${field} prevents success after DDL`,async()=>{const h=setup({changeMetadata:(m,n)=>{if(n===2)m[field].push({changed:'value'});}});await assert.rejects(prepare(h.args),denied('UNKNOWN'));assert.deepEqual(h.state.ddl,ddl);assert(queries(h).includes('ROLLBACK'));assert(!queries(h).includes('COMMIT'));});
 test('namespace ACL mutation is detected after DDL',async()=>{const h=setup({changeNamespaces:(r,n)=>{if(n>=2)r[0].acl='{changed}';}});await assert.rejects(prepare(h.args),denied('UNKNOWN'));});
 test('empty namespace recreation changes exact preserved identity',async()=>{const h=setup({changeNamespaces:(r,n)=>{if(n>=2)r[0].oid='99999';}});await assert.rejects(prepare(h.args),denied('UNKNOWN'));});
-test('actual namespace query projects namespace OID losslessly',()=>{assert.match(namespaceSQL,/\boid\s*::\s*text\s+AS\s+oid\b/i);});
-test('actual sequence catalog query preserves all bigint settings as text',()=>{for(const name of ['seqstart','seqincrement','seqmax','seqmin','seqcache'])assert.match(preservationSQL,new RegExp("'"+name+"'\\s*,\\s*s\\."+name+'::text'));});
+test('actual namespace query projects namespace OID losslessly',()=>{assert.match(namespaceSQL,/\boid\s*::\s*pg_catalog\.text\s+AS\s+oid\b/i);});
+test('actual sequence catalog query preserves all bigint settings as text',()=>{for(const name of ['seqstart','seqincrement','seqmax','seqmin','seqcache'])assert.match(preservationSQL,new RegExp("'"+name+"'\\s*,\\s*s\\."+name+'::pg_catalog\\.text'));});
 test('actual catalog query covers supported metadata and refuses unsupported owners',()=>{
  for(const c of ['pg_attribute','pg_attrdef','pg_constraint','pg_index','pg_rewrite','pg_type','pg_sequence','pg_trigger','pg_depend','pg_description','pg_seclabel'])assert(preservationSQL.includes('pg_catalog.'+c),c);
  for(const c of ['pg_proc','pg_extension','pg_policy','pg_inherits'])assert(preservationSQL.includes('pg_catalog.'+c),c);
@@ -62,4 +62,6 @@ for (const value of [undefined,null,0,'0','-1','1.0','4294967296']) test(`preser
 test('distinct int64 sequence settings retain distinct fingerprints',async()=>{const one=setup({changeMetadata:m=>m.sequences.push({seqrelid:42,seqstart:'9007199254740992'})}),two=setup({changeMetadata:m=>m.sequences.push({seqrelid:42,seqstart:'9007199254740993'})});const a=await prepare(one.args),b=await prepare(two.args);assert.notEqual(a.preservation.metadataSha256,b.preservation.metadataSha256);assert.notEqual(a.schemaSha256,b.schemaSha256);});
 test('reconstruction refuses changed preserved OID against trusted original signature',async()=>{const a=await prepare(setup().args),h=setup({verifyMode:true,changeNamespaces:r=>r[0].oid='99999'});h.args.fixture.schemaSha256=a.schemaSha256;await assert.rejects(verify(h.args),denied('READ_UNAVAILABLE'));noDDL(h);});
 test('reconstruction cannot substitute a newly matching server mapping under old hash',async()=>{const a=await prepare(setup().args),h=setup({verifyMode:true,identityChange:r=>r.address='192.0.2.3'});h.args.fixture.serverAddress='192.0.2.3';h.args.fixture.schemaSha256=a.schemaSha256;await assert.rejects(verify(h.args),denied('READ_UNAVAILABLE'));noDDL(h);});
-test('catalog relation identities remain fixed despite implicit pg_temp search precedence',()=>{const refs=[...preservationSQL.matchAll(/'([^']+)'::regclass/g)].map(m=>m[1]);assert.equal(refs.length,12);for(const name of refs)assert.match(name,/^pg_catalog\.pg_[a-z_]+$/);});
+test('catalog relation identities remain fixed despite implicit pg_temp search precedence',()=>{const refs=[...preservationSQL.matchAll(/'([^']+)'::pg_catalog\.regclass/g)].map(m=>m[1]);assert.equal(refs.length,12);for(const name of refs)assert.match(name,/^pg_catalog\.pg_[a-z_]+$/);});
+
+test('catalog metadata builtin cast types are independent of pg_temp',()=>{const casts=[...(namespaceSQL+' '+preservationSQL).matchAll(/::([A-Za-z_.]+(?:\[\])?)/g)].map(m=>m[1]);assert(casts.length>20);for(const type of casts)assert.match(type,/^pg_catalog\.(?:regclass|oid|text(?:\[\])?|int4|jsonb)$/);});
