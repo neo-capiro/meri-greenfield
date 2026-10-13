@@ -4,3 +4,6 @@ interface Binding {tenantId:string;actorId:string;conversationId:string;runId:st
 interface ConversationActivities {executeConversation(input:{binding:Binding}):Promise<{state:'completed'|'failed'|'cancelled'}>}
 const {executeConversation}=proxyActivities<ConversationActivities>({startToCloseTimeout:'30 minutes',heartbeatTimeout:'30 seconds',retry:{maximumAttempts:1}});
 export async function meriConversationWorkflow(input:{binding:Binding}):Promise<{state:'completed'|'failed'|'cancelled'}>{return executeConversation(input);}
+
+// Separate opt-in definition preserves legacy in-flight workflow history.
+export {meriConversationLifecycleWorkflow} from './lifecycle/workflow.ts';

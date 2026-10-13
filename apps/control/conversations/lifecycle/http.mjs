@@ -1,0 +1,17 @@
+/** Opt-in mount; frozen public routes use the existing HTTP owner with the facade. */
+import {types} from 'node:util';
+import {createConversationApplication} from '../http.mjs';
+import {jsonBody,response} from '../../action-application/http.mjs';
+import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+export function createConversationLifecycleApplication({service,now=Date.now,maxRequestMs=3000,maxRequestBytes=131072}){
+ if(typeof service?.control!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072)throw Error('LIFECYCLE_CONFIGURATION');const legacy=createConversationApplication({service,now,maxRequestMs,maxRequestBytes});
+ return Object.freeze({async handle(request){let life;try{
+  if(!request||types.isProxy(request))return response({error:{code:'LIFECYCLE_INPUT_REFUSED',outcome:'NOT_DISPATCHED'}},400);
+  let info;try{info=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get.call(request)]));}catch{return response({error:{code:'LIFECYCLE_INPUT_REFUSED',outcome:'NOT_DISPATCHED'}},400);}
+  const url=new URL(info.url);if(url.pathname!=='/api/conversations/control')return legacy.handle(request);if(url.search||url.hash)return response({error:{code:'NOT_FOUND',outcome:'NOT_DISPATCHED'}},404);if(info.method!=='POST')return response({error:{code:'METHOD_NOT_ALLOWED',outcome:'NOT_DISPATCHED'}},405);
+  const header=k=>Headers.prototype.get.call(info.headers,k),auth=header('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(auth??''))return response({error:{code:'SESSION_REFUSED',outcome:'NOT_DISPATCHED'}},401);
+  if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||header('content-encoding'))return response({error:{code:'UNSUPPORTED_MEDIA_TYPE',outcome:'NOT_DISPATCHED'}},415);
+  const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))))throw Error('LIFECYCLE_INPUT_REFUSED');
+  life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal:info.signal,errorFactory:code=>Object.assign(new Error(code),{code})});const input=await jsonBody({body:info.body,length:length===null?null:Number(length)},maxRequestBytes,life,life.check);return response(await life.run(signal=>service.control({credential:auth.slice(7),input,signal})),200);
+ }catch(error){const observed=error?.code??error?.message;const code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH','INVALID_COMMAND','LIFECYCLE_INPUT_REFUSED'].includes(observed)?'LIFECYCLE_INPUT_REFUSED':observed;const status=['SESSION_REFUSED','SESSION_CHANGED','SCOPE_REFUSED','STALE_WRITER'].includes(code)?403:code==='LIFECYCLE_INPUT_REFUSED'?400:code==='REQUEST_TOO_LARGE'?413:['LIFECYCLE_REPLAY_REFUSED','LIFECYCLE_STATE_REFUSED','CHECKPOINT_REFUSED','APPROVAL_REFUSED'].includes(code)?409:['CANCELLED','DEADLINE'].includes(code)?408:502;return response({error:{code:status===502?'LIFECYCLE_EFFECT_UNKNOWN':code,outcome:status===502?'UNKNOWN':'NOT_DISPATCHED'}},status);}finally{life?.close();}}});
+}

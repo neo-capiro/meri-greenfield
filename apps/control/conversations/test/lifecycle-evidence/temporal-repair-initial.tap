@@ -1,0 +1,21 @@
+✔ actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack (71.878812ms)
+✔ pause fences worker messages before checkpoint; exact readback publishes paused and immutable history (31.9113ms)
+✔ approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume (45.318083ms)
+✔ resume uses immutable checkpoint and fresh target, with retirement only resume (69.208864ms)
+✔ fork uses immutable checkpoint and fresh target, with retirement only resume (54.717347ms)
+✔ native retirement UNKNOWN is a durable barrier and identical replay performs no second effect (36.409945ms)
+✔ current revoke blocks control/claim/ack/checkpoint with no second effect (10.558188ms)
+✔ legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED (22.836752ms)
+✔ control redundant conversation_id cannot be relabelled even with untouched projection hash (11.571996ms)
+✔ control redundant run_id cannot be relabelled even with untouched projection hash (21.032011ms)
+✔ control redundant control_sequence cannot be relabelled even with untouched projection hash (11.821971ms)
+✔ private Fetch route strictness and uncertainty contain no raw credentials (10.770317ms)
+✔ upstream Temporal signal is wake-only and never directly sends SDK text (0.401862ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2385.473212

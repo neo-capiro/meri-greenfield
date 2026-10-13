@@ -1,0 +1,5 @@
+
+> @meri/conversations@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+../../worker/conversation/options.mjs(7,82): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.

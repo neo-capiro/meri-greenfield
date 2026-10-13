@@ -1,0 +1,15 @@
+# Source verification evidence
+
+Exact authored base a337ef93e386f5eb646e85f89f26b425546b1222 plus root private contract dependency e87c40e2db87fa0f2cda77ed2c2d8ab2f2ea2aea (local cherry-pick d39c0167). Synthetic inputs only; no native/Temporal/PostgreSQL/provider/cloud/auth configuration startup or private data calls.
+
+Final `timeout 180s npm test`, conversation package: **94 tests, 94 pass, 0 fail** (`subject-owner-final-all-repaired.tap`). Includes 60 existing tests, 30 new lifecycle store/facade/actual Fetch controls, and 4 actual upstream Temporal1.24.0 Activator activity/signal/query/condition/cancellation tests. Actual Activator composition proves deterministic source behavior; it does not prove a live server durable history or native retirement. `npm run typecheck` exited0 (`subject-owner-typecheck.txt`). `git diff --check` passed for product/test source. The full cached check reports one trailing blank line in retained raw typecheck-final.stdout.txt; raw output bytes remain intact. Base comparison for frozen service.mjs/http.mjs/events.mjs and all prior contract dist bytes was empty.
+
+Earlier focused final-controls files preserve 32/32 results before two exact selected-subject counterexamples were added. `all-conversation-regression.tap` preserves 92/92 before same-session selected-subject admission was tightened. Final fixture reuses the SAME actual existing opaque session owner; target old credential and other in-scope selected-client session both refuse execution load.
+
+`initial.tap`: 13 tests, 9 pass, 4 fail. One real issue permitted claim on a cancelled held source; claim now requires running source and tests cover legacy authenticated cancel plus worker USER_CANCELLED spoof refusal. Three initial corruption tests changed SQL selector columns and then expected an ordered selector query to return those now excluded rows; corrected tests use the known immutable controlId lookup to check the actual integrity boundary. No old assertion was weakened. `repaired.tap`:13/13.
+
+Initial/repaired typecheck stdout retain missing borrowed SDK donor failures. Correct donor was linked, then `typecheck-final.*` and subsequent final typechecks exited0. `subject-owner-edit-path-failure.txt` preserves a cwd edit invocation failure before any writes; corrected invocation added the intended two subject substitution controls. No failed evidence was removed.
+
+Native checkpoint read/capture/restore, physical retirement, target admission/current task session refresh, live PostgreSQL transaction/ambiguous commit behavior, live Temporal registration/replay and deployment remain unqualified. No target credential is minted or returned. Inherited approval is read-only context; any target mutation requires a fresh immutable proposal/current approval through the existing owner. Cross-run approval execution and public lifecycle export remain explicit source coordination gaps.
+
+Owned test/typecheck processes exited. Borrowed dependency symlinks are removed before commit; donors were not edited. Root independently reviews the exact integrated checkpoint and publishes the draft feature branch/PR.

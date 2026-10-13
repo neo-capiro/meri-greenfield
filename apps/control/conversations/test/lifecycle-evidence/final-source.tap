@@ -1,0 +1,40 @@
+✔ actual upstream condition durably holds paused, ignores foreign selector, resumes exact source once (3.205189ms)
+✔ actual upstream condition durably holds waiting-for-approval, ignores foreign selector, resumes exact source once (0.706456ms)
+✔ actual upstream cancellation rejects durable wait without restarting activity (0.593066ms)
+✔ actual upstream completed activity closes lifecycle workflow directly (0.279838ms)
+✔ actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack (58.294128ms)
+✔ pause fences worker messages before checkpoint; exact readback publishes paused and immutable history (38.582951ms)
+✔ approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume (44.057119ms)
+✔ resume uses immutable checkpoint and fresh target, with retirement only resume (61.894426ms)
+✔ fork uses immutable checkpoint and fresh target, with retirement only resume (42.57873ms)
+✔ native retirement UNKNOWN is a durable barrier and identical replay performs no second effect (41.227041ms)
+✔ current revoke blocks control/claim/ack/checkpoint with no second effect (9.950736ms)
+✔ legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED (21.478157ms)
+✔ control redundant conversation_id cannot be relabelled even with untouched projection hash (10.902988ms)
+✔ control redundant run_id cannot be relabelled even with untouched projection hash (10.824701ms)
+✔ control redundant control_sequence cannot be relabelled even with untouched projection hash (21.844825ms)
+✔ private Fetch route strictness and uncertainty contain no raw credentials (10.246548ms)
+✔ upstream Temporal signal is wake-only and never directly sends SDK text (0.366898ms)
+✔ fork reads trusted immutable checkpoint while original remains running and independently writable (24.527543ms)
+✔ resume target requires a fresh existing session; old credential cannot execute target (55.461235ms)
+✔ restart cannot redeliver a durable DISPATCHING/UNKNOWN steer and APPLIED cannot regress (33.234009ms)
+✔ checkpoint redundant conversation_id cannot select another originating owner (26.071449ms)
+✔ checkpoint redundant run_id cannot select another originating owner (35.243162ms)
+✔ checkpoint redundant checkpoint_id cannot select another originating owner (25.836468ms)
+✔ checkpoint redundant control_id cannot select another originating owner (25.88062ms)
+✔ control persisted sourceRequestSha256 must match immutable source even if projection hash is recomputed (10.189712ms)
+✔ control persisted contextSha256 must match immutable source even if projection hash is recomputed (16.25808ms)
+✔ control persisted commandSha256 must match immutable source even if projection hash is recomputed (11.514578ms)
+✔ resume refuses native target worker substitution before target publication (33.643972ms)
+✔ resume refuses native target fence substitution before target publication (33.291987ms)
+✔ resume refuses native target scope substitution before target publication (42.137434ms)
+✔ malformed UTF8/JSON and over-budget Fetch bytes are refused before durable control (5.568802ms)
+✔ dispatcher lifecycle is opt-in and preserves legacy start definition (0.194821ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2535.398593

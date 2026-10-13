@@ -1,0 +1,370 @@
+TAP version 13
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 1 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 33.945468
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 2 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 6.11716
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 3 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 4.85614
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 4 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 4.732576
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 5 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 3.349173
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 6 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 3.955016
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 7 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 4.021876
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 8 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 13.552334
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 9 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 3.997801
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 10 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 34.750838
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 11 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 12.172958
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 12 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 6.605758
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 13 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 4.269015
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 14 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.213959
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 15 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 21.382839
+  type: 'test'
+  ...
+# Subtest: actual Fetch JSON responses round-trip through public receivers without credential output
+ok 16 - actual Fetch JSON responses round-trip through public receivers without credential output
+  ---
+  duration_ms: 39.683051
+  type: 'test'
+  ...
+# Subtest: public POST view.subscribe uses exact authenticated conversation selector and existing AI stream
+ok 17 - public POST view.subscribe uses exact authenticated conversation selector and existing AI stream
+  ---
+  duration_ms: 37.784741
+  type: 'test'
+  ...
+# Subtest: DefaultChatTransport7.0.137 real reconnect GET emits only unacknowledged events
+ok 18 - DefaultChatTransport7.0.137 real reconnect GET emits only unacknowledged events
+  ---
+  duration_ms: 23.929525
+  type: 'test'
+  ...
+# Subtest: GET reconnect at terminal tip returns an ended subscription with no fabricated run event
+ok 19 - GET reconnect at terminal tip returns an ended subscription with no fabricated run event
+  ---
+  duration_ms: 8.369528
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses query selector
+ok 20 - Fetch reconnect refuses query selector
+  ---
+  duration_ms: 2.753074
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses Last-Event-ID
+ok 21 - Fetch reconnect refuses Last-Event-ID
+  ---
+  duration_ms: 2.857159
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses negative cursor
+ok 22 - Fetch reconnect refuses negative cursor
+  ---
+  duration_ms: 2.640136
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses fractional cursor
+ok 23 - Fetch reconnect refuses fractional cursor
+  ---
+  duration_ms: 2.546747
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses leading zero cursor
+ok 24 - Fetch reconnect refuses leading zero cursor
+  ---
+  duration_ms: 2.749649
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses unsafe cursor
+ok 25 - Fetch reconnect refuses unsafe cursor
+  ---
+  duration_ms: 2.357855
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses conflicting joined cursor
+ok 26 - Fetch reconnect refuses conflicting joined cursor
+  ---
+  duration_ms: 2.355241
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses future cursor
+ok 27 - Fetch reconnect refuses future cursor
+  ---
+  duration_ms: 3.761408
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses body content type
+ok 28 - Fetch reconnect refuses body content type
+  ---
+  duration_ms: 2.329563
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses claimed body length
+ok 29 - Fetch reconnect refuses claimed body length
+  ---
+  duration_ms: 2.246529
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses foreign conversation
+ok 30 - Fetch reconnect refuses foreign conversation
+  ---
+  duration_ms: 3.148494
+  type: 'test'
+  ...
+# Subtest: POST public selectors cannot smuggle cursor/auth commands; legacy after/limit remains explicit
+ok 31 - POST public selectors cannot smuggle cursor/auth commands; legacy after/limit remains explicit
+  ---
+  duration_ms: 10.985166
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current tenant authority refusal
+ok 32 - new GET reconnect preserves current tenant authority refusal
+  ---
+  duration_ms: 2.679305
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current actor authority refusal
+ok 33 - new GET reconnect preserves current actor authority refusal
+  ---
+  duration_ms: 2.875046
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current run authority refusal
+ok 34 - new GET reconnect preserves current run authority refusal
+  ---
+  duration_ms: 2.353759
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current attempt authority refusal
+ok 35 - new GET reconnect preserves current attempt authority refusal
+  ---
+  duration_ms: 2.178828
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current worker authority refusal
+ok 36 - new GET reconnect preserves current worker authority refusal
+  ---
+  duration_ms: 2.184487
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current fence authority refusal
+ok 37 - new GET reconnect preserves current fence authority refusal
+  ---
+  duration_ms: 2.298927
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current conversation authority refusal
+ok 38 - new GET reconnect preserves current conversation authority refusal
+  ---
+  duration_ms: 2.359958
+  type: 'test'
+  ...
+# Subtest: current protected scope revision and session revocation block new GET before bytes
+ok 39 - current protected scope revision and session revocation block new GET before bytes
+  ---
+  duration_ms: 6.318529
+  type: 'test'
+  ...
+# Subtest: missing session is401 and private runtime failures become content-free502
+ok 40 - missing session is401 and private runtime failures become content-free502
+  ---
+  duration_ms: 0.687285
+  type: 'test'
+  ...
+# Subtest: abort/reader cancellation cleans only subscription and does not call durable cancel
+ok 41 - abort/reader cancellation cleans only subscription and does not call durable cancel
+  ---
+  duration_ms: 5.049528
+  type: 'test'
+  ...
+# Subtest: DefaultChatTransport re-authenticates after disconnect and refuses revoked reconnect
+ok 42 - DefaultChatTransport re-authenticates after disconnect and refuses revoked reconnect
+  ---
+  duration_ms: 6.809091
+  type: 'test'
+  ...
+# Subtest: malformed JSON, UTF8, actual length and native Request brands are closed400 admissions
+ok 43 - malformed JSON, UTF8, actual length and native Request brands are closed400 admissions
+  ---
+  duration_ms: 1.396051
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 44 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 14.46188
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 45 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 2.710881
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 46 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 1.145638
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 47 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 3.592396
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 48 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.714625
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 49 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.543701
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 50 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.576279
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 51 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.66436
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 52 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.714545
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 53 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.7045
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 54 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.587626
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 55 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.588978
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 56 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 1.097016
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 57 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.132679
+  type: 'test'
+  ...
+# Subtest: live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+ok 58 - live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+  ---
+  duration_ms: 30.587902
+  type: 'test'
+  ...
+# Subtest: upstream reader cancellation reaches the owned live event source
+ok 59 - upstream reader cancellation reaches the owned live event source
+  ---
+  duration_ms: 0.773884
+  type: 'test'
+  ...
+# Subtest: live producer suppresses internal source error details
+ok 60 - live producer suppresses internal source error details
+  ---
+  duration_ms: 0.6235
+  type: 'test'
+  ...
+1..60
+# tests 60
+# suites 0
+# pass 60
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2682.521892

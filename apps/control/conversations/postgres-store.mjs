@@ -1,5 +1,6 @@
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
 import {assertRun,bounded,hash,same,fail,nextState,validateShape,uuid} from './boundary.mjs';
+import {createLifecycleJournal} from './lifecycle/journal.mjs';
 export function createPostgresConversationStore({pool}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body){let c,begun=false,committing=false,reusable=false,failure,result;
@@ -25,8 +26,9 @@ export function createPostgresConversationStore({pool}){
   });
  }
  async function findRequest(binding,requestId,check){const b=bounded(binding);validateShape('RunBinding',b);uuid(requestId);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND request_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,requestId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=rowRun(rows[0]);if(!same(r.projection.binding,b))fail('STALE_WRITER');return {run:r.projection,request:r.request,lastSequence:Number(r.last_sequence),replayed:true};});}
- async function append(binding,input,check,expectedScopes){const b=bounded(binding);validateShape('RunBinding',b);const i=bounded(input);uuid(i.eventId);
+ async function appendEvent(binding,input,check,expectedScopes,allowHeldCancel=false){const b=bounded(binding);validateShape('RunBinding',b);const i=bounded(input);uuid(i.eventId);
   return tx(b,check,async c=>{const r=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();if(!same(r.projection.binding,b))fail('STALE_WRITER');if(expectedScopes&&!same(r.projection.scopes,expectedScopes))fail('SCOPE_REFUSED');
+   if(r.hold_control_id&&!(allowHeldCancel&&i.type==='run.status'&&i.data?.state==='cancelled'&&i.data?.reasonCode==='USER_CANCELLED'))fail('RUN_HELD');
    const event={contractVersion:'0.1.0',eventId:i.eventId,binding:b,sequence:Number(r.last_sequence)+1,createdAt:i.createdAt,scopes:r.projection.scopes,type:i.type,data:i.data};validateShape('UIEvent',event);
    const old=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[b.tenantId,b.conversationId,b.runId,i.eventId])).rows[0];check();
    if(old){if(hash(old.event)!==old.event_sha256||old.event_id!==old.event.eventId||Number(old.sequence)!==old.event.sequence||!same({...event,sequence:old.event.sequence},old.event))fail('EVENT_REPLAY_REFUSED');return old.event;}
@@ -40,5 +42,6 @@ export function createPostgresConversationStore({pool}){
    for(const e of rows){validateShape('UIEvent',e.event);if(hash(e.event)!==e.event_sha256||e.event_id!==e.event.eventId||Number(e.sequence)!==e.event.sequence||e.event.sequence!==++sequence||!same(e.event.binding,b)||!same(e.event.scopes,r.projection.scopes))fail('STORE_CORRUPT');}
    if(rows.length===0&&after<Number(r.last_sequence))fail('STORE_CORRUPT');if(rows.length<limit+1&&sequence!==Number(r.last_sequence))fail('STORE_CORRUPT');const events=rows.slice(0,limit).map(e=>e.event);return {run:r.projection,request:r.request,events,nextSequence:events.at(-1)?.sequence??after,hasMore:rows.length>limit,lastSequence:Number(r.last_sequence)};});
  }
- return Object.freeze({accept,append,read,findRequest});
+ const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
+ return Object.freeze({accept,append,read,findRequest,lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
 }
