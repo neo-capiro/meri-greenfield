@@ -1,0 +1,48 @@
+{
+  "productionFreeze": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b",
+  "testMappingFreeze": "ac9d7cdb1fb870619148a81adb69ab6b7409636d",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "blob": "3bd5067559b09bd66911132282587d5b273c25cb",
+      "bytes": 12704,
+      "sha256": "c77eb34a00fdd22c34a81251a811dda6fa8b299ab1002bd51eda0e488b735657",
+      "acceptedAt": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "blob": "c4615dfc1ab3138ae59e554f3e2fcf252bb001ac",
+      "bytes": 7976,
+      "sha256": "a1a4ff8cf2c5a79f6423fadfeb873eb69eb18fee1d0f4b0427b0d051abea1430",
+      "acceptedAt": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "blob": "9009e421a2ed61c1f4ba5c929ec32cdb4f80533f",
+      "bytes": 6129,
+      "sha256": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5",
+      "acceptedAt": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-size.test.mjs",
+      "blob": "cc2c4f52c3b1fd818e8f2a29870a61d734b4f661",
+      "bytes": 5759,
+      "sha256": "2e06f9cb839537e4052d51b5b60c6664b03555f7e57932eede05e2daeb9051e2",
+      "acceptedAt": "ac9d7cdb1fb870619148a81adb69ab6b7409636d"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-size-independent.test.mjs",
+      "blob": "8a331dda45a4be0a834804e95f54c56830a5f5ec",
+      "bytes": 9108,
+      "sha256": "2f42018ad980db9d832e86a002014e53acfc4c72f83341dbadb9a607ca828e54",
+      "acceptedAt": "ac9d7cdb1fb870619148a81adb69ab6b7409636d"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-size-inventory.test.mjs",
+      "blob": "1df968fa0775d24accb00f7a5c28639b7b02d07a",
+      "bytes": 4023,
+      "sha256": "a76cd102b4b8b62c875d0d9344f9a0dd9d72dcf29e7525a3a1c8b4e7dab8942a",
+      "acceptedAt": "ac9d7cdb1fb870619148a81adb69ab6b7409636d"
+    }
+  ]
+}
