@@ -1,0 +1,471 @@
+TAP version 13
+# Subtest: search_memory: actual loopback Fetch bytes, canonical body hash, scoped broker and handler
+ok 1 - search_memory: actual loopback Fetch bytes, canonical body hash, scoped broker and handler
+  ---
+  duration_ms: 38.715833
+  type: 'test'
+  ...
+# Subtest: read_monday_client_boards: actual loopback Fetch bytes, canonical body hash, scoped broker and handler
+ok 2 - read_monday_client_boards: actual loopback Fetch bytes, canonical body hash, scoped broker and handler
+  ---
+  duration_ms: 11.718383
+  type: 'test'
+  ...
+# Subtest: memory exact nextRead retrieves late UTF16 material without changing approved record hash/version/scope
+ok 3 - memory exact nextRead retrieves late UTF16 material without changing approved record hash/version/scope
+  ---
+  duration_ms: 9.358859
+  type: 'test'
+  ...
+# Subtest: memory metadata-only event is preserved with fact limitation and unknown provenance
+ok 4 - memory metadata-only event is preserved with fact limitation and unknown provenance
+  ---
+  duration_ms: 4.211548
+  type: 'test'
+  ...
+# Subtest: memory approved stale or controlling conflict observation remains eligible only by current native receipt
+ok 5 - memory approved stale or controlling conflict observation remains eligible only by current native receipt
+  ---
+  duration_ms: 7.544932
+  type: 'test'
+  ...
+# Subtest: memory client scope permits firm rows without treating selected client as universal access
+ok 6 - memory client scope permits firm rows without treating selected client as universal access
+  ---
+  duration_ms: 3.843347
+  type: 'test'
+  ...
+# Subtest: memory preserves canonical normalized search {"cursor":"opaque-search-cursor"}
+ok 7 - memory preserves canonical normalized search {"cursor":"opaque-search-cursor"}
+  ---
+  duration_ms: 3.963306
+  type: 'test'
+  ...
+# Subtest: memory preserves canonical normalized search {"k":"3.7","query":"  café 😀  "}
+ok 8 - memory preserves canonical normalized search {"k":"3.7","query":"  café 😀  "}
+  ---
+  duration_ms: 3.801534
+  type: 'test'
+  ...
+# Subtest: memory pending eligibility receipt refuses whole unmodified response
+ok 9 - memory pending eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 2.922808
+  type: 'test'
+  ...
+# Subtest: memory unknown eligibility receipt refuses whole unmodified response
+ok 10 - memory unknown eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 2.596078
+  type: 'test'
+  ...
+# Subtest: memory missing eligibility receipt refuses whole unmodified response
+ok 11 - memory missing eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.743251
+  type: 'test'
+  ...
+# Subtest: memory additional eligibility receipt refuses whole unmodified response
+ok 12 - memory additional eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.535711
+  type: 'test'
+  ...
+# Subtest: memory duplicate eligibility receipt refuses whole unmodified response
+ok 13 - memory duplicate eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.617353
+  type: 'test'
+  ...
+# Subtest: memory item eligibility receipt refuses whole unmodified response
+ok 14 - memory item eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.41512
+  type: 'test'
+  ...
+# Subtest: memory recordHash eligibility receipt refuses whole unmodified response
+ok 15 - memory recordHash eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.501279
+  type: 'test'
+  ...
+# Subtest: memory resultHash eligibility receipt refuses whole unmodified response
+ok 16 - memory resultHash eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.549201
+  type: 'test'
+  ...
+# Subtest: memory context eligibility receipt refuses whole unmodified response
+ok 17 - memory context eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.458204
+  type: 'test'
+  ...
+# Subtest: memory actor eligibility receipt refuses whole unmodified response
+ok 18 - memory actor eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.629992
+  type: 'test'
+  ...
+# Subtest: memory fence eligibility receipt refuses whole unmodified response
+ok 19 - memory fence eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.304174
+  type: 'test'
+  ...
+# Subtest: memory client eligibility receipt refuses whole unmodified response
+ok 20 - memory client eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.494148
+  type: 'test'
+  ...
+# Subtest: memory source eligibility receipt refuses whole unmodified response
+ok 21 - memory source eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.341519
+  type: 'test'
+  ...
+# Subtest: memory policy eligibility receipt refuses whole unmodified response
+ok 22 - memory policy eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.299547
+  type: 'test'
+  ...
+# Subtest: memory stale eligibility receipt refuses whole unmodified response
+ok 23 - memory stale eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.331424
+  type: 'test'
+  ...
+# Subtest: memory future eligibility receipt refuses whole unmodified response
+ok 24 - memory future eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.378866
+  type: 'test'
+  ...
+# Subtest: memory expired eligibility receipt refuses whole unmodified response
+ok 25 - memory expired eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.396101
+  type: 'test'
+  ...
+# Subtest: memory extended eligibility receipt refuses whole unmodified response
+ok 26 - memory extended eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.313057
+  type: 'test'
+  ...
+# Subtest: memory extra eligibility receipt refuses whole unmodified response
+ok 27 - memory extra eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 1.399847
+  type: 'test'
+  ...
+# Subtest: memory missingReceipt eligibility receipt refuses whole unmodified response
+not ok 28 - memory missingReceipt eligibility receipt refuses whole unmodified response
+  ---
+  duration_ms: 2.106304
+  type: 'test'
+  location: '/workspace/meri-client-knowledge-adapters/apps/gateway/sources/client-knowledge/test/read-adapter.test.mjs:91:62'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    async TestContext.<anonymous> (file:///workspace/meri-client-knowledge-adapters/apps/gateway/sources/client-knowledge/test/read-adapter.test.mjs:93:3)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: memory healthy source and active DTO cannot promote pending proposal or expired/native-ineligible material
+ok 29 - memory healthy source and active DTO cannot promote pending proposal or expired/native-ineligible material
+  ---
+  duration_ms: 7.239194
+  type: 'test'
+  ...
+# Subtest: memory pending lifecycle label is refused by canonical DTO before eligibility port
+ok 30 - memory pending lifecycle label is refused by canonical DTO before eligibility port
+  ---
+  duration_ms: 1.686457
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping tenant refuses before Fetch
+ok 31 - Monday trusted managed mapping tenant refuses before Fetch
+  ---
+  duration_ms: 0.840178
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping actor refuses before Fetch
+ok 32 - Monday trusted managed mapping actor refuses before Fetch
+  ---
+  duration_ms: 0.701721
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping client refuses before Fetch
+ok 33 - Monday trusted managed mapping client refuses before Fetch
+  ---
+  duration_ms: 0.626448
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping board refuses before Fetch
+ok 34 - Monday trusted managed mapping board refuses before Fetch
+  ---
+  duration_ms: 0.704936
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping version refuses before Fetch
+ok 35 - Monday trusted managed mapping version refuses before Fetch
+  ---
+  duration_ms: 0.659167
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping duplicate refuses before Fetch
+ok 36 - Monday trusted managed mapping duplicate refuses before Fetch
+  ---
+  duration_ms: 0.614501
+  type: 'test'
+  ...
+# Subtest: Monday trusted managed mapping missing refuses before Fetch
+ok 37 - Monday trusted managed mapping missing refuses before Fetch
+  ---
+  duration_ms: 0.629533
+  type: 'test'
+  ...
+# Subtest: Monday source row board cannot escape current managed mapping
+ok 38 - Monday source row board cannot escape current managed mapping
+  ---
+  duration_ms: 1.36812
+  type: 'test'
+  ...
+# Subtest: Monday source row client cannot escape current managed mapping
+ok 39 - Monday source row client cannot escape current managed mapping
+  ---
+  duration_ms: 1.126618
+  type: 'test'
+  ...
+# Subtest: Monday source row actor cannot escape current managed mapping
+ok 40 - Monday source row actor cannot escape current managed mapping
+  ---
+  duration_ms: 1.08127
+  type: 'test'
+  ...
+# Subtest: Monday model boardContext stays a selector; exact broker mapping alone admits each item/subitem
+ok 41 - Monday model boardContext stays a selector; exact broker mapping alone admits each item/subitem
+  ---
+  duration_ms: 1.495781
+  type: 'test'
+  ...
+# Subtest: Monday explicit page/cursor and opaque inert provider columns survive without refresh/write
+ok 42 - Monday explicit page/cursor and opaque inert provider columns survive without refresh/write
+  ---
+  duration_ms: 1.403092
+  type: 'test'
+  ...
+# Subtest: knowledge credential context substitution refuses before Fetch
+ok 43 - knowledge credential context substitution refuses before Fetch
+  ---
+  duration_ms: 0.913007
+  type: 'test'
+  ...
+# Subtest: knowledge credential metadata substitution refuses before Fetch
+ok 44 - knowledge credential metadata substitution refuses before Fetch
+  ---
+  duration_ms: 0.645446
+  type: 'test'
+  ...
+# Subtest: knowledge credential actor substitution refuses before Fetch
+ok 45 - knowledge credential actor substitution refuses before Fetch
+  ---
+  duration_ms: 0.692688
+  type: 'test'
+  ...
+# Subtest: knowledge credential attempt substitution refuses before Fetch
+ok 46 - knowledge credential attempt substitution refuses before Fetch
+  ---
+  duration_ms: 0.664766
+  type: 'test'
+  ...
+# Subtest: knowledge credential fence substitution refuses before Fetch
+ok 47 - knowledge credential fence substitution refuses before Fetch
+  ---
+  duration_ms: 0.652858
+  type: 'test'
+  ...
+# Subtest: knowledge credential subject substitution refuses before Fetch
+ok 48 - knowledge credential subject substitution refuses before Fetch
+  ---
+  duration_ms: 0.677184
+  type: 'test'
+  ...
+# Subtest: knowledge credential operation substitution refuses before Fetch
+ok 49 - knowledge credential operation substitution refuses before Fetch
+  ---
+  duration_ms: 0.722632
+  type: 'test'
+  ...
+# Subtest: knowledge credential digest substitution refuses before Fetch
+ok 50 - knowledge credential digest substitution refuses before Fetch
+  ---
+  duration_ms: 0.723033
+  type: 'test'
+  ...
+# Subtest: knowledge credential bodyHash substitution refuses before Fetch
+ok 51 - knowledge credential bodyHash substitution refuses before Fetch
+  ---
+  duration_ms: 0.671847
+  type: 'test'
+  ...
+# Subtest: knowledge credential source substitution refuses before Fetch
+ok 52 - knowledge credential source substitution refuses before Fetch
+  ---
+  duration_ms: 0.615082
+  type: 'test'
+  ...
+# Subtest: knowledge credential policy substitution refuses before Fetch
+ok 53 - knowledge credential policy substitution refuses before Fetch
+  ---
+  duration_ms: 0.640359
+  type: 'test'
+  ...
+# Subtest: knowledge credential token substitution refuses before Fetch
+ok 54 - knowledge credential token substitution refuses before Fetch
+  ---
+  duration_ms: 0.699067
+  type: 'test'
+  ...
+# Subtest: knowledge full canonical authority rejects audience/actions/decision mismatch before broker
+ok 55 - knowledge full canonical authority rejects audience/actions/decision mismatch before broker
+  ---
+  duration_ms: 2.193826
+  type: 'test'
+  ...
+# Subtest: knowledge normalization context and normalized selection cannot be supplied by model/request
+ok 56 - knowledge normalization context and normalized selection cannot be supplied by model/request
+  ---
+  duration_ms: 1.797622
+  type: 'test'
+  ...
+# Subtest: knowledge handler preserves WeakMap-backed ordinary read receiver and original captured method
+ok 57 - knowledge handler preserves WeakMap-backed ordinary read receiver and original captured method
+  ---
+  duration_ms: 1.76905
+  type: 'test'
+  ...
+# Subtest: knowledge status response refuses boundedly without source diagnostics
+ok 58 - knowledge status response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.239296
+  type: 'test'
+  ...
+# Subtest: knowledge media response refuses boundedly without source diagnostics
+ok 59 - knowledge media response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.023873
+  type: 'test'
+  ...
+# Subtest: knowledge encoding response refuses boundedly without source diagnostics
+ok 60 - knowledge encoding response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.049813
+  type: 'test'
+  ...
+# Subtest: knowledge length response refuses boundedly without source diagnostics
+ok 61 - knowledge length response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.340258
+  type: 'test'
+  ...
+# Subtest: knowledge overflow response refuses boundedly without source diagnostics
+ok 62 - knowledge overflow response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.031275
+  type: 'test'
+  ...
+# Subtest: knowledge utf8 response refuses boundedly without source diagnostics
+ok 63 - knowledge utf8 response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.132356
+  type: 'test'
+  ...
+# Subtest: knowledge json response refuses boundedly without source diagnostics
+ok 64 - knowledge json response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 1.002542
+  type: 'test'
+  ...
+# Subtest: knowledge object response refuses boundedly without source diagnostics
+ok 65 - knowledge object response refuses boundedly without source diagnostics
+  ---
+  duration_ms: 0.845126
+  type: 'test'
+  ...
+# Subtest: knowledge deadline bounds parked credentials and cleans late response
+ok 66 - knowledge deadline bounds parked credentials and cleans late response
+  ---
+  duration_ms: 26.755698
+  type: 'test'
+  ...
+# Subtest: knowledge cancel bounds parked credentials and cleans late response
+ok 67 - knowledge cancel bounds parked credentials and cleans late response
+  ---
+  duration_ms: 1.630112
+  type: 'test'
+  ...
+# Subtest: knowledge deadline bounds parked fetch and cleans late response
+ok 68 - knowledge deadline bounds parked fetch and cleans late response
+  ---
+  duration_ms: 25.998414
+  type: 'test'
+  ...
+# Subtest: knowledge cancel bounds parked fetch and cleans late response
+ok 69 - knowledge cancel bounds parked fetch and cleans late response
+  ---
+  duration_ms: 1.74967
+  type: 'test'
+  ...
+# Subtest: knowledge deadline bounds parked body and cleans late response
+ok 70 - knowledge deadline bounds parked body and cleans late response
+  ---
+  duration_ms: 26.147876
+  type: 'test'
+  ...
+# Subtest: knowledge cancel bounds parked body and cleans late response
+ok 71 - knowledge cancel bounds parked body and cleans late response
+  ---
+  duration_ms: 1.747227
+  type: 'test'
+  ...
+# Subtest: knowledge deadline bounds parked eligibility and cleans late response
+ok 72 - knowledge deadline bounds parked eligibility and cleans late response
+  ---
+  duration_ms: 26.560156
+  type: 'test'
+  ...
+# Subtest: knowledge cancel bounds parked eligibility and cleans late response
+ok 73 - knowledge cancel bounds parked eligibility and cleans late response
+  ---
+  duration_ms: 2.195348
+  type: 'test'
+  ...
+# Subtest: knowledge inert admission never reads proxy/accessor authority/receipts/signals
+ok 74 - knowledge inert admission never reads proxy/accessor authority/receipts/signals
+  ---
+  duration_ms: 3.480684
+  type: 'test'
+  ...
+# Subtest: knowledge configured endpoints refuse missing/extra/nonHTTPS credentials/query/fragment before I/O
+ok 75 - knowledge configured endpoints refuse missing/extra/nonHTTPS credentials/query/fragment before I/O
+  ---
+  duration_ms: 0.404426
+  type: 'test'
+  ...
+1..75
+# tests 75
+# suites 0
+# pass 74
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1945.613143
