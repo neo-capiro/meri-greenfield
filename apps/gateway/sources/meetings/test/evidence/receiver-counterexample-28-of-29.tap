@@ -1,0 +1,48 @@
+✔ actual Fetch bytes and canonical handler preserve personal calendar (26.437582ms)
+✔ actual Fetch bytes and canonical handler preserve client calendar (2.498953ms)
+✔ actual Fetch bytes and canonical handler preserve debrief list (6.937863ms)
+✔ actual Fetch bytes and canonical handler preserve exact debrief (2.585563ms)
+✔ actual Fetch bytes and canonical handler preserve meeting inventory (5.974425ms)
+✔ actual Fetch bytes and canonical handler preserve exact note (5.342ms)
+✔ actual Fetch bytes and canonical handler preserve exact transcript (2.542929ms)
+✔ inventory contains source identity and hashes but never pretends bodies were read (2.307187ms)
+✔ UTF-16 windows preserve decisive late content and disclose the incomplete earlier window (6.347782ms)
+✔ opaque cursor stays in canonical metadata and is included in credential digest (1.985385ms)
+✔ calendar/debrief date basis and explicit bounded instants are preserved (2.087889ms)
+✔ configuration is inert, closed and limited to explicit trusted HTTPS endpoints (0.769409ms)
+✔ input, subject, scope, operation, capability and full authority binding drift refuse before credentials (3.986725ms)
+✔ correlated credentials reject every current binding, subject and protocol substitution (10.526976ms)
+✔ hostile configuration, source-call and credential getters do not run (0.984921ms)
+✔ canonical source binding, body hash, version, byte count and coverage corruption refuse (26.238734ms)
+✔ client calendar cannot substitute a foreign or absent row client (2.879121ms)
+✔ debrief body and exact version correlation remain canonical across UTF-16 pages (8.858493ms)
+✔ required decisive read cannot disappear from an incomplete body result (1.537567ms)
+✖ handler preserves an ordinary adapter method receiver and detached read refuses (0.737222ms)
+✔ handler repeats canonical validation for a non-HTTP source port (0.845593ms)
+✔ HTTP status, redirects, media and content encoding fail without body diagnostics (3.333289ms)
+✔ shared strict byte reader enforces UTF-8, JSON, byte budgets and exact content length (3.457244ms)
+✔ parked credentials ends at deadline and late completion cannot release data (21.694397ms)
+✔ parked fetch ends at deadline and late completion cannot release data (22.225591ms)
+✔ parked body ends at deadline and late completion cannot release data (21.109894ms)
+✔ abort during response acquisition cancels acquired body and suppresses release (2.106977ms)
+✔ pre-abort and expired credential never allocate transport (1.334804ms)
+✔ production descriptor stays unavailable and source implementation does not activate it (0.458455ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1990.180173
+
+✖ failing tests:
+
+test at apps/gateway/sources/meetings/test/adapter-handler.test.mjs:123:1
+✖ handler preserves an ordinary adapter method receiver and detached read refuses (0.737222ms)
+  GatewayDenied: INTERNAL_ERROR
+      at safeFailure (file:///workspace/meri-meeting-read-adapters/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at execute (file:///workspace/meri-meeting-read-adapters/apps/gateway/sources/meetings/handler.mjs:21:27)
+      at async TestContext.<anonymous> (file:///workspace/meri-meeting-read-adapters/apps/gateway/sources/meetings/test/adapter-handler.test.mjs:132:30)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

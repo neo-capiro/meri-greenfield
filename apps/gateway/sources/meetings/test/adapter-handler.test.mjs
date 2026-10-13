@@ -120,6 +120,17 @@ test('debrief body and exact version correlation remain canonical across UTF-16 
 test('required decisive read cannot disappear from an incomplete body result',async()=>{
  const f=setup(operations.read,{...exact,characterLimit:8});f.page.continuation.requiredReads=[];await assert.rejects(f.create()(f.call));
 });
+test('handler preserves an ordinary adapter method receiver and detached read refuses',async()=>{
+ const f=setup(operations.read,exact),state=new WeakMap();
+ const adapter={async read(call) {
+  if(!state.has(this))throw new Error('RECEIVER_REQUIRED');
+  const owned=state.get(this);assert.deepEqual(call.input,owned.input);return owned.page;
+ }};
+ state.set(adapter,{input:f.input,page:f.page});
+ const detached=adapter.read;await assert.rejects(detached({input:f.input}),/RECEIVER_REQUIRED/);
+ const handler=createMeetingReadHandler({operation:operations.read,adapter,now:()=>NOW});
+ assert.deepEqual(JSON.parse(await handler(f.call)),f.page);
+});
 test('handler repeats canonical validation for a non-HTTP source port',async()=>{
  const f=setup(operations.read,exact);f.page.source.body='preview';
  const handler=createMeetingReadHandler({operation:operations.read,adapter:{read:async()=>f.page},now:()=>NOW});await assert.rejects(handler(f.call),/INVALID_RESULT/);

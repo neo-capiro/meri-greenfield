@@ -14,7 +14,7 @@ export function createMeetingReadHandler(options) {
         ...(fields.signal===undefined?{}:{signal:fields.signal})},now);
       if(fields.argumentsSha256!==canonicalSha256(context.input))deny('INVALID_ARGUMENTS');
       context.active();
-      const result=frozenData(await read({operation,input:context.input,request:context.request,
+      const result=frozenData(await read.call(adapter,{operation,input:context.input,request:context.request,
         authority:context.authority,...(context.signal===undefined?{}:{signal:context.signal})}));
       assertMeetingResult(result,context);
       const output=JSON.stringify(result);context.active();return output;
