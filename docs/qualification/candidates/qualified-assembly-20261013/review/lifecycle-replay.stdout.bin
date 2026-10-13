@@ -1,0 +1,16 @@
+✔ actual fixed child creates pending then independently observes both grants before activation and reconstructs without writes (524.809091ms)
+✔ second worker refusal preserves one active and one pending grant, terminal unknown never compensates or retries (209.634844ms)
+✔ committed prepare with lost acknowledgement remains pending, content-free unknown and no automatic reattempt (73.151162ms)
+✔ short observation validity clips the actual activation child before delayed SQL can mutate (266.989541ms)
+✔ pre-aborted operation starts no child and consumes no worker observation (52.62544ms)
+✔ preflight is inert and rejects foreign connection, alias grants and fabricated observer (22.824076ms)
+✔ observer token is one-use and exact expected binding, never transferable approval (59.951202ms)
+✔ constructor snapshots grant and connection data before deferred child execution (278.936831ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4049.683093
