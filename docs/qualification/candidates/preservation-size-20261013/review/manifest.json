@@ -10,8 +10,8 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-PRESERVATION-SIZE-REVIEW-20261013.md",
-      "bytes": 1799,
-      "sha256": "2658339820304535e9b1aeb2d18dc5d0aa751180602a32c6ec543787b6929ce4"
+      "bytes": 2482,
+      "sha256": "db1a43f88ea996b946a66a4048a3b92caeda077876961e3c470371bfd39d786e"
     },
     {
       "path": "docs/qualification/candidates/preservation-size-20261013/review/.gitattributes",
@@ -32,6 +32,11 @@
       "path": "docs/qualification/candidates/preservation-size-20261013/review/audit.py",
       "bytes": 2473,
       "sha256": "0f87e3a4e3247ed5369c6895ecca241d9ecad3224b7517cb91495ce9c3700a99"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/author-packet-audit.json",
+      "bytes": 379,
+      "sha256": "e71c4dbb85de767164f71ef3c1b2fbe1b55fd7a299123037623d787d589a4d31"
     },
     {
       "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.json",
@@ -79,10 +84,26 @@
       "sha256": "bc40e5ec54fcf0d75417af86109b3ff21cc5d32c1e3180402b788a2085ebacb8"
     },
     {
-      "path": "docs/qualification/candidates/preservation-size-20261013/review/author-packet-audit.json",
-      "bytes": 379,
-      "sha256": "e71c4dbb85de767164f71ef3c1b2fbe1b55fd7a299123037623d787d589a4d31"
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory-audit.json",
+      "bytes": 768,
+      "sha256": "46cda963601f0747d6a64f59437f8b992d81b3338f48f30d628c37c1cb75d29a"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.json",
+      "bytes": 1270,
+      "sha256": "1376991f4473d1949e3b144dcc545dca371996a3e81f04626bf5442d2d2c1c5e"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.stdout.bin",
+      "bytes": 234,
+      "sha256": "e4ce3716b4053c6e09e4962529cb65e833044469687cb1c5f193706b04e91ad7"
     }
   ],
-  "authorPacket": "b5ee4a4c3d21dd0e3bb40067ff608bb06a0f8cc6"
+  "authorPacket": "b5ee4a4c3d21dd0e3bb40067ff608bb06a0f8cc6",
+  "supplement": "9e323dc1cfd061ff9da9ae2d234b70a6f4d3df7e"
 }
