@@ -1,10 +1,10 @@
 /** One explicitly owned reconnect pool; late acquisition is still owned cleanup work. */
 import assert from 'node:assert/strict';
-import {options} from '../binding.mjs';
+import {options,method} from '../binding.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 const failure=code=>Object.assign(new Error(code),{code});
 export function createFreshPoolOwner({openFreshPool,originalPool,deadlineMs,signal}){
- assert.equal(typeof openFreshPool,'function');let acquired,opening=false,closed=false,closing,closedCount=0,cleanupUnknown=false;
+ assert.equal(typeof openFreshPool,'function');let acquired,opening=false,attempted=false,closed=false,closing,closedCount=0,cleanupUnknown=false;
  async function closeOne(){
   if(!acquired)return;
   if(closing)return closing;
@@ -15,12 +15,18 @@ export function createFreshPoolOwner({openFreshPool,originalPool,deadlineMs,sign
  }
  return Object.freeze({
   async acquire(){
-   assert(!opening&&!acquired&&!closed,'fresh pool is single acquisition');opening=true;
+   assert(!attempted&&!closed,'fresh pool is single acquisition');
+   if(signal?.aborted||Date.now()>=deadlineMs)throw failure('DEADLINE');
+   attempted=true;opening=true;
    try{
     const value=await openFreshPool();
-    // An owned wrapper must expose close even when the other returned port is invalid.
-    acquired=options(value,['pool','close']);assert.equal(typeof acquired.close,'function');
-    if(acquired.pool===originalPool){acquired=null;throw failure('LOCAL_BORROWED_POOL');}
+    // Retain the safe cleanup callback before rejecting other wrapper fields.
+    const close=method(value,'close');
+    const port=Object.getOwnPropertyDescriptor(value,'pool');
+    if(port&&Object.hasOwn(port,'value')&&port.value===originalPool)throw failure('LOCAL_BORROWED_POOL');
+    acquired={pool:port&&Object.hasOwn(port,'value')?port.value:undefined,close};
+    try{const checked=options(value,['pool','close']);assert(checked.pool!==null&&typeof checked.pool==='object','fresh pool port required');}
+    catch(error){await closeOne();throw error;}
     if(closed||signal?.aborted||Date.now()>=deadlineMs){await closeOne();throw failure('DEADLINE');}
     return acquired.pool;
    }finally{opening=false;}
