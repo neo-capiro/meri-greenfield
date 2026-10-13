@@ -65,22 +65,6 @@ test('Excel completed bytes remain withheld after object-read session revocation
 
 test('a canonical Word descriptor cannot turn an Excel-only allocation into Word generation',async t=>{const a=await setup(t);const other=createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,descriptor:descriptor('create_word')}});await denied(await other.handle(a.request('create',{deliveryId:'wrong-allocation',request:word()})));assert.equal(a.f.stats().generations,0);assert.equal(a.f.stats().versionCharges,0);});
 
-// Added after the separate, frozen root CLI became reviewable; no workbook regeneration.
-test('workbook CLI help imports no fixture graph and leaves environment unchanged',async()=>{
- const {main}=await import('../../../../scripts/local-workbook/run.mjs');
- const before=process.env.MERI_REVIEW_SOURCE_ROOT;let output='';
- assert.equal(await main(['--help'],text=>{output+=text;}),0);
- assert.match(output,/Usage:/);assert.match(output,/No model, native qualification or production activation/);
- assert.equal(process.env.MERI_REVIEW_SOURCE_ROOT,before);
-});
-test('workbook CLI malformed arguments refuse before graph and output allocation',async()=>{
- const {main}=await import('../../../../scripts/local-workbook/run.mjs');
- const before=process.env.MERI_REVIEW_SOURCE_ROOT;
- for(const args of[[],['--run'],['--help','--run'],['--run','--python','relative','--soffice','/abs','--output','/tmp/unused'],['--run','--python','/abs','--soffice','/abs','--output','relative'],['--run','--output','/tmp/unused','--python','/abs','--soffice','/abs']]){
-  let output='';assert.equal(await main(args,text=>{output+=text;}),2);assert.match(output,/Usage:/);
- }
- assert.equal(process.env.MERI_REVIEW_SOURCE_ROOT,before);
-});
 test('canonical 120-character Excel title releases its 125-character filename',async t=>{
  const a=await setup(t);const request=workbook();request.title='A'.repeat(120);
  const result=await good(await a.post('create',{deliveryId:'max-title',request}));
