@@ -1,0 +1,66 @@
+✔ retained fixed input documents the original clipped PDF without modifying input bytes (10714.909733ms)
+✖ canonical creation and typed revision render complete labels while retaining formulas and literal text (10859.674525ms)
+✖ column bounds do not truncate long literals or turn formula-like strings into formulas (367.506631ms)
+✖ chart rebuild keeps chart and formulas while applying bounded table widths (389.838144ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 1
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22392.770639
+
+✖ failing tests:
+
+test at apps/artifacts/test/workbook-columns-independent.test.mjs:52:1
+✖ canonical creation and typed revision render complete labels while retaining formulas and literal text (10859.674525ms)
+  AssertionError [ERR_ASSERTION]: PDF does not contain complete Workstream
+      at readable (file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:43:92)
+      at file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:54:61
+      at async owned (file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:27:115)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/workbook-columns-independent.test.mjs:65:1
+✖ column bounds do not truncate long literals or turn formula-like strings into formulas (367.506631ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48)
+  
+      at file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:67:2
+      at async owned (file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:27:115)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/workbook-columns-independent.test.mjs:70:1
+✖ chart rebuild keeps chart and formulas while applying bounded table widths (389.838144ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48)
+  
+      at file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:72:204
+      at async owned (file:///tmp/meri-workbook-columns-review-20261013/apps/artifacts/test/workbook-columns-independent.test.mjs:27:115)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

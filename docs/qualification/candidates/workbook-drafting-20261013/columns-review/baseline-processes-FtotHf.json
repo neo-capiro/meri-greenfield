@@ -1,0 +1,22 @@
+[
+  {
+    "pid": 566689,
+    "exitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "stdoutBytes": 566,
+    "stderrBytes": 0,
+    "stdoutRetainedBytes": 566,
+    "stderrRetainedBytes": 0,
+    "hashScope": "retained bytes",
+    "stdoutSha256": "d4d39f36399aa49fc09cd23f9e3b345aaf5d6f6fde038a386dd52e5dd80aec07",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdoutEnded": true,
+    "stderrEnded": true,
+    "streamErrors": [],
+    "leaderClosed": true,
+    "groupKillAttempted": true,
+    "groupAbsent": true,
+    "sandboxQualified": false
+  }
+]
