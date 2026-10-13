@@ -1,0 +1,117 @@
+{
+  "base": "84c2ca01d0bce025a0003b6e724d675a05f2975a",
+  "source": "6b282c8cb57c0c95122be159e8ddd67f040d658c",
+  "productionSource": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/cleanup.json",
+      "bytes": 1018,
+      "sha256": "dae21670ccd6ca6a4e6060a76b6645d6ded5dd275833a45a615460e0e6efdb81"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/final-author.json",
+      "bytes": 1435,
+      "sha256": "157d2c43715f9525f309546e3b85843a99eb997812d00f9b2770c40f52d25447"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/final-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/final-author.stdout.bin",
+      "bytes": 1702,
+      "sha256": "8f0b73f653e2bc664765afd78bf36658aa9c6ba88853cb7e79f24128e348fb82"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/first-author.json",
+      "bytes": 1378,
+      "sha256": "f44f2fe7d244e590f4a2d3a9bf0085ce3930097a5f976e823d2dba4cf512510a"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/first-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/first-author.stdout.bin",
+      "bytes": 3449,
+      "sha256": "67123a8dc83e05a957ff7d81cde9ce8f2a4067bf42f7354106adb847a0d5eba8"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/focused-repaired.json",
+      "bytes": 1690,
+      "sha256": "0a7af30a87ac5f8e7947cb04bd1dcdeb63878d99c58ccdd07359e2977753e639"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/focused-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/focused-repaired.stdout.bin",
+      "bytes": 6098,
+      "sha256": "210c603307123d60252d694925fca735a2a1ebd4c3935ba98600a75f370678e2"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/host-receipt-repaired.json",
+      "bytes": 1700,
+      "sha256": "09b2ab291a993a2be706f49085a015abc30b4e12836c0747e02b72fb406c7ad9"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/host-receipt-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/host-receipt-repaired.stdout.bin",
+      "bytes": 7611,
+      "sha256": "61e2b1d6a9d927408bbc52e29aeed67e6105f6ada0918cf77cdd6122db33c109"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/initial-findings.json",
+      "bytes": 1724,
+      "sha256": "3fdbc6990555403ed6c4ebed9daa21992e2df6e20dda9df7ec1c2f5706f81e6d"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/repaired-author.json",
+      "bytes": 1387,
+      "sha256": "2fdcc926dfa6847a0e3aaa30a7619d9761c68d8503849649cc6dc5788e2505d8"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/repaired-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/repaired-author.stdout.bin",
+      "bytes": 2150,
+      "sha256": "7c0705ba9c0656c18881d7b84a844098dc83b20efbd59072758ec0136dea8540"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/report.md",
+      "bytes": 3731,
+      "sha256": "422bdb6f6297cc7232a4858c28ce05771f9af37178ceae178c01bac5f290093d"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/source-audit.json",
+      "bytes": 585,
+      "sha256": "008d953fc864f1fc9c0face5d56aeccc40bdacdcbc2f6581821ca6c03eedcf06"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/source-identities.json",
+      "bytes": 2939,
+      "sha256": "dd6a17bb2ea01076631e8a8dad2cffed7210a401f13f9428b48b88fbf7ec6a02"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ADMITTED-RUN-20261013.md",
+      "bytes": 4106,
+      "sha256": "394980d36176c6209f1c2dbaf595f8bf1fac978c717d8f940e9b2543de0589f3"
+    }
+  ]
+}

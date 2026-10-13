@@ -1,0 +1,16 @@
+{
+  "base": "84c2ca01d0bce025a0003b6e724d675a05f2975a",
+  "source": "6b282c8cb57c0c95122be159e8ddd67f040d658c",
+  "productionFreeze": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "baseEntries": 11160,
+  "unchangedBaseEntries": 11157,
+  "approvedOriginalChanges": [
+    "apps/gateway/budget/tool-budget-binding.mjs",
+    "apps/gateway/index.mjs",
+    "apps/gateway/local-action/control-authorizer.mjs"
+  ],
+  "productionUnchangedSinceReviewedFreeze": true,
+  "publicContractsAndCatalogUnchanged": true,
+  "diffCheck": "PASS",
+  "scope": "OFFLINE_SOURCE_ONLY_NO_NATIVE_QUALIFICATION"
+}
