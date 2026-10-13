@@ -1,0 +1,34 @@
+✔ thin canonical native join uses actual currentRun product owner without DTO expansion (15.467316ms)
+✔ default bridge disabled makes no native reads or current-run queries (3.331227ms)
+✔ current native selected-client substitution is refused by canonical join (3.825978ms)
+✔ actual product grant revoked during native context read cannot release joined authority (3.96757ms)
+✔ thin bridge rejects active nested configuration without executing getter (0.241481ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (7.340419ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.026276ms)
+✔ runner refuses missing observed registration before the single SDK query (19.06442ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (10.247391ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (15.938171ms)
+✔ already cancelled preparation and closed-before-microtask preparation allocate no factory resource (1.641848ms)
+✔ closing while initialization is pending retires the eventual mirror once without installing it (20.904185ms)
+✔ configured close bound returns UNKNOWN, aborts its work and does not claim physical stop (28.09181ms)
+✔ default close bound is1000ms, preserving the original70ms failure as a separately documented contract mismatch (1002.52103ms)
+✔ settlement cancellation stops result release and teardown still retires exactly once (1.26374ms)
+✔ captured resource close and settle preserve the factory result receiver even after method replacement (0.56159ms)
+✔ factory result getters are refused without executing accessor code (0.482171ms)
+✔ late parked retirement records UNKNOWN and cannot reopen or return the late store (36.490438ms)
+✔ owned factory configuration accessors and proxies are refused without execution (0.556292ms)
+✔ prepare input accessor and non-native signal refuse before any factory allocation (0.257235ms)
+✔ overlapping initialization cannot overwrite the first owned mirror (0.366178ms)
+✔ assembled runner cancellation uses configured100ms bound for a parked owned close (135.427666ms)
+✔ actual bounded native mirror append acknowledgement precedes durable completed status (19.397846ms)
+✔ actual control assembly forwards captured selected admission and governed output publication to canonical service (33.677376ms)
+✔ default service composition leaves selected output publication unavailable (0.587399ms)
+✔ new selected service ports refuse direct and inherited accessors and proxy prototypes inertly (0.346298ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4563.874925

@@ -1,0 +1,85 @@
+{
+  "sourceHead": "e383e84173a1311cef1b9099c673253b58c395f3",
+  "sourceTree": "6b4fe71185002e479f4ce3c507531f8fa76da5fb",
+  "base": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "files": [
+    {
+      "path": "apps/runtime/control.mjs",
+      "bytes": 6243,
+      "sha256": "2eb9e7298de1e997ec25ce0d8a3101ca0e15202845d62d8685b630a3d8c227eb",
+      "modeBlob": "100644 blob e2ac43179e6c06745a53d0b8d28c971bb018d1bd"
+    },
+    {
+      "path": "apps/runtime/product-applications.mjs",
+      "bytes": 3063,
+      "sha256": "b5ed5497de8a8c2a3304479bdf607d8bf0a045db1ad3078fdbadcb9885a8c506",
+      "modeBlob": "100644 blob 1e702ea838f352da170bd615d511f6a163704288"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 6179,
+      "sha256": "d8c86d2faa9b09a38c9927320451f459b2cacb0c900d728dcd3d6b92a6771f50",
+      "modeBlob": "100644 blob dc438bd5f677eb3f7061e547fa0bfc5fb09640a1"
+    },
+    {
+      "path": "apps/runtime/sdk-session-runtime.mjs",
+      "bytes": 3979,
+      "sha256": "c5c7d2bca36808346168332f8d3a835e0f0e2d044306998cd108be379a62666b",
+      "modeBlob": "100644 blob 66edc5aa1056b8f24738552d535b3e551d59fbb9"
+    },
+    {
+      "path": "apps/runtime/native-authority/identity-context.mjs",
+      "bytes": 1519,
+      "sha256": "df18bd9caaa0d1b4a4dbbe65dddf167c3d0c57874a7bcdcd56fe2e96c12a44ad",
+      "modeBlob": "100644 blob 75e8b83d86190673ef67aafc697a3e2f131e148f"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-client.mjs",
+      "bytes": 7668,
+      "sha256": "ad3ceb3567bfe2a56d620d0139f7bedbddbd2b3b9266e1d99480db3fb7994abb",
+      "modeBlob": "100644 blob b1848fe9679a5de37df8e89466460c49705234a1"
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "bytes": 1562,
+      "sha256": "a72918c37a8a54196fb43483e1e2f52741ce4578858e71feb989804cedd1c58e",
+      "modeBlob": "100644 blob 19b80f3d6bd3cedd61769b3e14f80be7beaaf0d4"
+    },
+    {
+      "path": ".dockerignore",
+      "bytes": 538,
+      "sha256": "acc4a063c308bbaf7f8ebf3acb5378b4c4483e83f868e7b41da9e0eca5b0cd97",
+      "modeBlob": "100644 blob 325c1e615487b9e9fac8e215c1914c556a69352c"
+    }
+  ],
+  "canonicalOwnersAndPureHelpersModeBlobExactToBase": [
+    "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+    "apps/worker/qualification/checkpoint/session-store-data.mjs",
+    "apps/control/action-host/application-adapters/authority-http.mjs",
+    "apps/control/action-host/application-adapters/context-adapter.mjs",
+    "apps/control/conversations/service.mjs"
+  ],
+  "independentTests": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs",
+      "bytes": 8201,
+      "sha256": "076e082d40c3c9242320cccb126b580bbf2558a18584da85cac6eaf29412752a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery.test.mjs",
+      "bytes": 8170,
+      "sha256": "691ef7ce3cf8fdbaffbf7d276c5f23c940cd8256cd6d3b0bf948be8cc4c0731a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-recovery.test.mjs",
+      "bytes": 4795,
+      "sha256": "ff548c0e3734361bd8bb6662ff3e8ae571c62c7d69b94aeb0791a7474b41270a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/service-join.test.mjs",
+      "bytes": 5441,
+      "sha256": "8991d8be45c8f3a2964bd08127c116d9306808b5e8122e1a0e807d3485b61383"
+    }
+  ],
+  "scope": "SOURCE_ONLY_NOT_RUNTIME_ACCEPTANCE"
+}

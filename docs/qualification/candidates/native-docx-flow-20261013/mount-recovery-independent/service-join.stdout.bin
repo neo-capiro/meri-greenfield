@@ -1,0 +1,11 @@
+✔ actual control assembly forwards captured selected admission and governed output publication to canonical service (35.863097ms)
+✔ default service composition leaves selected output publication unavailable (0.767919ms)
+✔ new selected service ports refuse direct and inherited accessors and proxy prototypes inertly (0.317996ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2295.80384

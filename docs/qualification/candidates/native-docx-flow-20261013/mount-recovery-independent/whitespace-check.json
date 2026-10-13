@@ -1,0 +1,14 @@
+{
+  "fullCachedCheckExit": 2,
+  "findings": "Eight trailing-space lines in retained raw Node assertion stdout .bin artifacts. Raw evidence was not edited.",
+  "nonRawCachedCheckCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    ":(exclude)**/*.bin"
+  ],
+  "nonRawCachedCheckExit": 0,
+  "sourceOrDocumentWhitespaceFindings": 0
+}

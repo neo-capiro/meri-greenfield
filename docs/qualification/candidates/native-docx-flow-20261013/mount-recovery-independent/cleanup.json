@@ -1,0 +1,127 @@
+{
+  "checkedAt": "2026-10-13T22:17:23.045980+00:00",
+  "sourceHead": "e383e84173a1311cef1b9099c673253b58c395f3",
+  "sourceDiffBytes": 0,
+  "captureGroups": [
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/final-focused.json",
+      "pidAndPgid": 404639,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/final-original.json",
+      "pidAndPgid": 404868,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/identity-configured.json",
+      "pidAndPgid": 403221,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-complete.json",
+      "pidAndPgid": 402017,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-resolved.json",
+      "pidAndPgid": 401861,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-unchanged.json",
+      "pidAndPgid": 401729,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery-controls.json",
+      "pidAndPgid": 402518,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery-followup.json",
+      "pidAndPgid": 402987,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/repaired-lifecycle.json",
+      "pidAndPgid": 403420,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-configured.json",
+      "pidAndPgid": 403761,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/service-join.json",
+      "pidAndPgid": 404371,
+      "physicalGroupAbsentAtFinalCheck": true,
+      "exitCode": 0
+    }
+  ],
+  "removedLinks": [
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/node_modules",
+      "target": "/workspace/meri-native-flow-integration/node_modules",
+      "borrowed": true,
+      "removedOwnedLink": true,
+      "donorPresentAtCleanup": true,
+      "donorStillPresent": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/apps/runtime/node_modules",
+      "target": "/workspace/meri-native-flow-integration/apps/runtime/node_modules",
+      "borrowed": true,
+      "removedOwnedLink": true,
+      "donorPresentAtCleanup": true,
+      "donorStillPresent": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/apps/worker/conversation/node_modules",
+      "target": "/workspace/meri-native-flow-integration/apps/worker/conversation/node_modules",
+      "borrowed": true,
+      "removedOwnedLink": true,
+      "donorPresentAtCleanup": true,
+      "donorStillPresent": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/apps/control/conversations/node_modules",
+      "target": "/workspace/meri-native-flow-integration/apps/control/conversations/node_modules",
+      "borrowed": true,
+      "removedOwnedLink": true,
+      "donorPresentAtCleanup": true,
+      "donorStillPresent": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/packages/window-resolution/node_modules",
+      "target": "/workspace/meri-native-flow-integration/packages/window-resolution/node_modules",
+      "borrowed": true,
+      "removedOwnedLink": true,
+      "donorPresentAtCleanup": true,
+      "donorStillPresent": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/packages/ui-stream/node_modules",
+      "target": "/workspace/meri-native-flow-integration/packages/ui-stream/node_modules",
+      "borrowed": true,
+      "removedOwnedLink": true,
+      "donorPresentAtCleanup": true,
+      "donorStillPresent": true
+    }
+  ],
+  "ownedTestGroupsAllAbsent": true,
+  "borrowedDonorsNotModified": true,
+  "noNativeDbModelAwsRemoteActions": true,
+  "scope": "REVIEW_PROCESS_CLEANUP_NOT_NATIVE_SDK_PHYSICAL_STOP_PROOF"
+}

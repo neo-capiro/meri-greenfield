@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-recovery.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/service-join.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs",
+    "apps/runtime/native-authority/test/identity-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-mount-recovery-independent",
+  "sourceHead": "e383e84173a1311cef1b9099c673253b58c395f3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:13:07.256726+00:00",
+  "durationSeconds": 4.597,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 404639,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/final-focused.stdout.bin",
+      "bytes": 2783,
+      "sha256": "7052706786238c43c7f35f5f6e8881a1b5ecfe1859c8aab13e437a9b419e023c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/final-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final e383 source freeze changes selected ports/control composition; focused combined mount/lifecycle/runner/native-join checks on exact tree, not a broad suite.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

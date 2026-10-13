@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/service-join.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-mount-recovery-independent",
+  "sourceHead": "e383e84173a1311cef1b9099c673253b58c395f3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:12:44.311217+00:00",
+  "durationSeconds": 2.35,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 404371,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/service-join.stdout.bin",
+      "bytes": 450,
+      "sha256": "93b4faed55908e95a9c39c79ac4701ce7ed7e31359663ea973de74db4d3ae94e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/service-join.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Review new e383 canonical selected service forwarding, original receivers, inert admission/publication configuration and source-disabled default.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

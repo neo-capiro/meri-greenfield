@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-recovery.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-mount-recovery-independent",
+  "sourceHead": "85473da1c70fd4a24695686687171dad9206ebeb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:11:10.579436+00:00",
+  "durationSeconds": 2.49,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 403761,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-configured.stdout.bin",
+      "bytes": 824,
+      "sha256": "518a9d73786f0035afc78f09af450a7bd66c7eb380eb1813b056d5a606cb1ea3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-configured.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Focused assembled runner controls for configured cleanup bound and actual observed native mirror settlement; synthetic protocol only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

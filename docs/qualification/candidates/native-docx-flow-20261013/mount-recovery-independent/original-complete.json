@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-mount-recovery-independent",
+  "sourceHead": "ac035d5751b6455dafd8ecd15a4d93accaa470af",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:07:40.052374+00:00",
+  "durationSeconds": 2.678,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 402017,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-complete.stdout.bin",
+      "bytes": 2301,
+      "sha256": "5aadd0819c5907105c10a6db9ae972bfe2a1ae513246f4d36325cd16a05600a1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-complete.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add omitted borrowed temporal/polyfill and UI dependency links; product source and original assertions byte exact.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

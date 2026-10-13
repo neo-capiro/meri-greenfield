@@ -1,0 +1,49 @@
+✔ already cancelled preparation and closed-before-microtask preparation allocate no factory resource (1.648889ms)
+✔ closing while initialization is pending retires the eventual mirror once without installing it (21.764229ms)
+✔ configured close bound returns UNKNOWN, aborts its work and does not claim physical stop (27.847248ms)
+✔ default close bound is1000ms, preserving the original70ms failure as a separately documented contract mismatch (1002.561646ms)
+✔ settlement cancellation stops result release and teardown still retires exactly once (0.940092ms)
+✖ captured resource close and settle preserve the factory result receiver even after method replacement (1.598112ms)
+✔ factory result getters are refused without executing accessor code (0.277053ms)
+✔ late parked retirement records UNKNOWN and cannot reopen or return the late store (35.383764ms)
+✔ owned factory configuration accessors and proxies are refused without execution (0.486626ms)
+✔ prepare input accessor and non-native signal refuse before any factory allocation (0.284324ms)
+✔ overlapping initialization cannot overwrite the first owned mirror (0.319457ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 10
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2892.962467
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery.test.mjs:47:1
+✖ captured resource close and settle preserve the factory result receiver even after method replacement (1.598112ms)
+  AssertionError [ERR_ASSERTION]: settle receiver must remain the owned factory resource
+  + actual - expected
+  
+    {
+  +   close: [AsyncFunction: close],
+  +   settle: [AsyncFunction: settle],
+  -   close: [Function (anonymous)],
+  -   settle: [Function (anonymous)],
+      store: {
+        append: [AsyncFunction: append],
+        load: [AsyncFunction: load]
+      }
+    }
+  
+      at Object.settle (file:///workspace/meri-native-docx-mount-recovery-independent/docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery.test.mjs:48:69)
+      at file:///workspace/meri-native-docx-mount-recovery-independent/apps/artifacts/storage/boundary.mjs:26:60
+      at file:///workspace/meri-native-docx-mount-recovery-independent/apps/runtime/sdk-session-runtime.mjs:28:210
+      at file:///workspace/meri-native-docx-mount-recovery-independent/packages/runtime/operation-lifetime.mjs:38:65 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

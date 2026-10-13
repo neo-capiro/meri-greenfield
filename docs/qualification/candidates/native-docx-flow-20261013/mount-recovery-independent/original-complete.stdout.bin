@@ -1,0 +1,40 @@
+✔ runtime missing current owners refuses fixed product routes without remote effects (8.285067ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.247695ms)
+✔ runner refuses missing observed registration before the single SDK query (20.699183ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (10.131291ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (9.842493ms)
+✔ all borrowed direct/inherited accessors and proxy prototypes are inertly refused (1.075739ms)
+✔ missing owners never use raw native context; route families remain unavailable with sourcesfalse (13.743331ms)
+✔ default actual CLI installs exact registered-session factory, missing key stops before any SDK query (20.964187ms)
+✔ genuine session factory preserves key and refuses another SDK project/session before transport (2.385256ms)
+✔ observed uncertain mirror settles BEFORE durable completed append and suppresses success (12.18843ms)
+✔ late factory result after cancellation is closed exactly once and never queries (24.075271ms)
+✖ parked owned close cannot extend caller cancellation indefinitely (79.113075ms)
+✔ Docker preserves ONLY two pure session helpers and includes native S3 dependency/public alias (2.377454ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2620.141707
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs:19:1
+✖ parked owned close cannot extend caller cancellation indefinitely (79.113075ms)
+  AssertionError [ERR_ASSERTION]: owned close must have a bounded cleanup lifetime
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-mount-recovery-independent/docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs:19:538)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
