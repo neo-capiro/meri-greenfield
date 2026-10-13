@@ -1,0 +1,2 @@
+apps/worker/conversation/continuation/options.mjs(27,41): error TS2339: Property 'window' does not exist on type 'unknown'.
+apps/worker/conversation/continuation/options.mjs(27,67): error TS2339: Property 'windowRequest' does not exist on type 'unknown'.

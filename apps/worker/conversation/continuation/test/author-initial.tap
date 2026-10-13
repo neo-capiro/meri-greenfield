@@ -1,0 +1,232 @@
+TAP version 13
+# Subtest: SDK resume: exact supported option delta, immutable request/skill/scopes, independent target
+ok 1 - SDK resume: exact supported option delta, immutable request/skill/scopes, independent target
+  ---
+  duration_ms: 15.805335
+  type: 'test'
+  ...
+# Subtest: SDK fork: exact supported option delta, immutable request/skill/scopes, independent target
+ok 2 - SDK fork: exact supported option delta, immutable request/skill/scopes, independent target
+  ---
+  duration_ms: 0.904693
+  type: 'test'
+  ...
+# Subtest: exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback
+ok 3 - exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback
+  ---
+  duration_ms: 0.98996
+  type: 'test'
+  ...
+# Subtest: continuation checkpointHash substitution refuses
+ok 4 - continuation checkpointHash substitution refuses
+  ---
+  duration_ms: 0.736952
+  type: 'test'
+  ...
+# Subtest: continuation requestHash substitution refuses
+ok 5 - continuation requestHash substitution refuses
+  ---
+  duration_ms: 0.609872
+  type: 'test'
+  ...
+# Subtest: continuation window substitution refuses
+ok 6 - continuation window substitution refuses
+  ---
+  duration_ms: 0.747288
+  type: 'test'
+  ...
+# Subtest: continuation skill substitution refuses
+ok 7 - continuation skill substitution refuses
+  ---
+  duration_ms: 0.764794
+  type: 'test'
+  ...
+# Subtest: continuation scope substitution refuses
+ok 8 - continuation scope substitution refuses
+  ---
+  duration_ms: 0.631614
+  type: 'test'
+  ...
+# Subtest: continuation sdk substitution refuses
+ok 9 - continuation sdk substitution refuses
+  ---
+  duration_ms: 0.570423
+  type: 'test'
+  ...
+# Subtest: continuation cli substitution refuses
+ok 10 - continuation cli substitution refuses
+  ---
+  duration_ms: 0.616192
+  type: 'test'
+  ...
+# Subtest: continuation image substitution refuses
+ok 11 - continuation image substitution refuses
+  ---
+  duration_ms: 0.47487
+  type: 'test'
+  ...
+# Subtest: continuation tenant substitution refuses
+ok 12 - continuation tenant substitution refuses
+  ---
+  duration_ms: 0.554158
+  type: 'test'
+  ...
+# Subtest: continuation actor substitution refuses
+ok 13 - continuation actor substitution refuses
+  ---
+  duration_ms: 0.629551
+  type: 'test'
+  ...
+# Subtest: continuation run substitution refuses
+ok 14 - continuation run substitution refuses
+  ---
+  duration_ms: 0.493929
+  type: 'test'
+  ...
+# Subtest: continuation attempt substitution refuses
+ok 15 - continuation attempt substitution refuses
+  ---
+  duration_ms: 0.50778
+  type: 'test'
+  ...
+# Subtest: continuation worker substitution refuses
+ok 16 - continuation worker substitution refuses
+  ---
+  duration_ms: 0.428461
+  type: 'test'
+  ...
+# Subtest: continuation fence substitution refuses
+ok 17 - continuation fence substitution refuses
+  ---
+  duration_ms: 0.610012
+  type: 'test'
+  ...
+# Subtest: continuation conversation substitution refuses
+ok 18 - continuation conversation substitution refuses
+  ---
+  duration_ms: 0.427379
+  type: 'test'
+  ...
+# Subtest: continuation sourceSessionAlias substitution refuses
+ok 19 - continuation sourceSessionAlias substitution refuses
+  ---
+  duration_ms: 0.377454
+  type: 'test'
+  ...
+# Subtest: continuation workspaceBinding substitution refuses
+ok 20 - continuation workspaceBinding substitution refuses
+  ---
+  duration_ms: 0.376834
+  type: 'test'
+  ...
+# Subtest: continuation opaqueScope substitution refuses
+ok 21 - continuation opaqueScope substitution refuses
+  ---
+  duration_ms: 0.396994
+  type: 'test'
+  ...
+# Subtest: fork cannot reuse original conversation/session and does not retire original task
+ok 22 - fork cannot reuse original conversation/session and does not retire original task
+  ---
+  duration_ms: 0.830863
+  type: 'test'
+  ...
+# Subtest: workspace paths and exact object scopes use canonical validation
+ok 23 - workspace paths and exact object scopes use canonical validation
+  ---
+  duration_ms: 1.411671
+  type: 'test'
+  ...
+# Subtest: request/context accessor and proxy refusal is inert
+ok 24 - request/context accessor and proxy refusal is inert
+  ---
+  duration_ms: 0.238687
+  type: 'test'
+  ...
+# Subtest: single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded
+ok 25 - single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded
+  ---
+  duration_ms: 1.094537
+  type: 'test'
+  ...
+# Subtest: input invalid/mutating messages cannot inject SDK authority or configuration
+ok 26 - input invalid/mutating messages cannot inject SDK authority or configuration
+  ---
+  duration_ms: 0.229473
+  type: 'test'
+  ...
+# Subtest: steer preserves exact UUID; local duplicate never redispatches nor claims durable success
+ok 27 - steer preserves exact UUID; local duplicate never redispatches nor claims durable success
+  ---
+  duration_ms: 1.298141
+  type: 'test'
+  ...
+# Subtest: pause: owned interrupt receiver, honest still-queued receipt and one close
+ok 28 - pause: owned interrupt receiver, honest still-queued receipt and one close
+  ---
+  duration_ms: 0.979335
+  type: 'test'
+  ...
+# Subtest: waitForApproval: owned interrupt receiver, honest still-queued receipt and one close
+ok 29 - waitForApproval: owned interrupt receiver, honest still-queued receipt and one close
+  ---
+  duration_ms: 0.461991
+  type: 'test'
+  ...
+# Subtest: older interrupt API undefined receipt never becomes proof of empty queue or physical retirement
+ok 30 - older interrupt API undefined receipt never becomes proof of empty queue or physical retirement
+  ---
+  duration_ms: 0.417854
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 31 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.46181
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 32 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.444925
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 33 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.375311
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 34 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.392287
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 35 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.398586
+  type: 'test'
+  ...
+# Subtest: parked interrupt deadline is bounded and late receipt cannot rerun SDK
+ok 36 - parked interrupt deadline is bounded and late receipt cannot rerun SDK
+  ---
+  duration_ms: 25.997817
+  type: 'test'
+  ...
+# Subtest: parked interrupt cancellation is bounded and late receipt cannot rerun SDK
+ok 37 - parked interrupt cancellation is bounded and late receipt cannot rerun SDK
+  ---
+  duration_ms: 0.864042
+  type: 'test'
+  ...
+1..37
+# tests 37
+# suites 0
+# pass 37
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1862.416936
