@@ -1,0 +1,1418 @@
+✖ independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources (1.655078ms)
+✖ independent current actor substitution refuses before generation (0.221733ms)
+✖ independent current tenant substitution refuses before generation (0.091428ms)
+✖ independent current attempt substitution refuses before generation (0.081943ms)
+✖ independent current fence substitution refuses before generation (0.126741ms)
+✖ independent current client substitution refuses before generation (0.090006ms)
+✖ independent current scope revision substitution refuses before generation (0.093941ms)
+✖ independent full canonical descriptor cannot omit grants or source requirements (0.211969ms)
+✖ independent constructor snapshots caller context, scopes, limits and descriptor (0.260582ms)
+✖ independent create replay and changed intent cannot generate or charge again (0.255154ms)
+✖ independent stale revision leaves both committed versions unchanged and preserves uncertain effect (0.182424ms)
+✖ independent completed download withheld on final session denial remains RESULT_NOT_RELEASED (0.236886ms)
+✖ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (0.210937ms)
+✖ independent original cutoff aborts parked current-state receipt before effects (0.133651ms)
+✖ independent newly shortened artifact expiry bounds the next parked executor (0.127502ms)
+✖ independent cancellation during response acquisition denies exact old version (0.13331ms)
+✖ independent raw binding injection has no authority/effect (0.113521ms)
+✖ independent raw scopes injection has no authority/effect (0.09334ms)
+✖ independent raw credential injection has no authority/effect (0.057826ms)
+✖ independent raw path injection has no authority/effect (0.07982ms)
+✖ independent raw baseVersionId injection has no authority/effect (0.056726ms)
+✖ independent hostile errors and request objects execute no getters or proxy traps (0.150607ms)
+✖ independent oversized and malformed UTF8 bodies refuse before source work (0.191628ms)
+✖ independent parked incoming body aborts under original deadline (0.129405ms)
+✖ independent no activation by default and separate tool/native credentials refused (0.180771ms)
+✔ independent CLI help and invalid arguments remain inert and preserve environment (0.50508ms)
+✖ independent hostile rejected authority port cannot trigger reflection or erase uncertainty (0.224327ms)
+✖ independent hostile rejected session-late port cannot trigger reflection or erase uncertainty (0.0727ms)
+✖ independent hostile rejected executor port cannot trigger reflection or erase uncertainty (0.136846ms)
+✖ independent hostile rejected version-read port cannot trigger reflection or erase uncertainty (0.154392ms)
+✖ independent hostile rejected object-get port cannot trigger reflection or erase uncertainty (0.090506ms)
+✖ independent hostile rejected object-put port cannot trigger reflection or erase uncertainty (0.058167ms)
+✖ independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty (0.050967ms)
+✖ independent hostile rejected ids port cannot trigger reflection or erase uncertainty (0.083305ms)
+✖ independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty (0.07944ms)
+✖ independent hostile own error getters remain untouched (0.162965ms)
+✖ independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch (0.18599ms)
+INDEPENDENT_WORKBOOK_PROCESSES []
+✖ actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes (1.711844ms)
+✖ Word txt remains in its original grant family (0.283886ms)
+✖ Word docx remains in its original grant family (0.140902ms)
+✖ create_word cannot dispatch create_excel/xlsx through create (0.253441ms)
+✖ create_word cannot dispatch create_excel/xlsx through revise (0.208454ms)
+✖ create_excel cannot dispatch create_word/txt through create (0.247342ms)
+✖ create_excel cannot dispatch create_word/txt through revise (0.184777ms)
+✖ create_excel cannot dispatch create_word/docx through create (0.121592ms)
+✖ create_excel cannot dispatch create_word/docx through revise (0.22622ms)
+✖ create_excel cannot dispatch create_excel/pdf through create (0.192399ms)
+✖ create_excel cannot dispatch create_excel/pdf through revise (0.205369ms)
+✖ create_excel cannot dispatch create_powerpoint/xlsx through create (0.174873ms)
+✖ create_excel cannot dispatch create_powerpoint/xlsx through revise (0.132018ms)
+✖ Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format (0.240371ms)
+✖ raw context cannot choose workbook authority (0.143366ms)
+✖ raw credential cannot choose workbook authority (0.065819ms)
+✖ raw scopes cannot choose workbook authority (0.124167ms)
+✖ raw descriptor cannot choose workbook authority (0.095724ms)
+✖ raw operation cannot choose workbook authority (0.062444ms)
+✖ Word application cannot release an Excel version through inspect or download (0.131658ms)
+✖ Excel application cannot release a Word version through inspect or download (0.122954ms)
+✖ separate workbook stores and session tokens cannot release another instance version (0.180291ms)
+✖ Excel current tenant substitution refuses before accounting (0.262424ms)
+✖ Excel current actor substitution refuses before accounting (0.105128ms)
+✖ Excel current fence substitution refuses before accounting (0.081042ms)
+✖ Excel current client substitution refuses before accounting (0.088784ms)
+✖ Excel remains unavailable by default without closing borrowed session (0.230637ms)
+✖ Excel original deadline aborts parked current authority before dispatch (0.197086ms)
+✖ Excel completed bytes remain withheld after object-read session revocation (0.224888ms)
+✖ a canonical Word descriptor cannot turn an Excel-only allocation into Word generation (0.222424ms)
+✖ canonical 120-character Excel title releases its 125-character filename (0.249745ms)
+✖ create/revise/inspect/download use immutable storage and one shared canonical ledger (1.432733ms)
+✖ actual DOCX produces truthful draft/preview metadata and exact ZIP bytes (0.217477ms)
+✖ default disabled allocates no document effect; borrowed session remains open (0.228283ms)
+✖ reject body authority before generation (0.261263ms)
+✖ reject wrong operation before generation (0.218759ms)
+✖ reject PDF before generation (0.213772ms)
+✖ native identity/tool tokens cannot authenticate application routes (0.219941ms)
+✖ revoked session denies older-version read without another reservation (0.176075ms)
+✖ post-object revocation preserves uncertainty without regeneration (0.274763ms)
+✖ strict native Request admission ignores hostile own url and rejects Proxy without traps (0.422966ms)
+✖ bounded body and fixed path/media handling preserve safe no-store errors (0.2994ms)
+✖ constructor snapshots data and rejects authority getters without invocation (0.198368ms)
+✖ canonical descriptor rejects accidental grant or source redefinition (0.19964ms)
+✖ shorter artifact receipt clips outer lifetime before the next parked session call (0.230947ms)
+✖ fresh session with changed full binding refuses before accounting (0.190055ms)
+✖ hostile authorize rejection is inert before canonical owner catches (0.233721ms)
+✖ hostile authority rejection is inert before canonical owner catches (0.171308ms)
+✖ hostile executor rejection is inert before canonical owner catches (0.138318ms)
+✖ hostile objects rejection is inert before canonical owner catches (0.125148ms)
+✖ Excel create/revise/read preserves both immutable XLSX versions and canonical accounting (1.359855ms)
+✖ create_word refuses opposite-family create and revise before authority/accounting (0.179289ms)
+✖ create_excel refuses opposite-family create and revise before authority/accounting (0.091077ms)
+✖ canonical workbook errors and caller authority fields refuse before allocation (0.155955ms)
+✖ only the exact canonical Excel descriptor is admitted, without arbitrary registry expansion (0.267502ms)
+✖ create_word read cannot release an otherwise valid opposite-family stored version (0.243225ms)
+✖ create_excel read cannot release an otherwise valid opposite-family stored version (0.112649ms)
+✖ fresh revocation blocks XLSX read without another generation or debit (0.180161ms)
+✖ Excel descriptor is detached from later caller mutation (0.293681ms)
+✖ Excel application remains disabled by default with no allocation (0.310236ms)
+✖ canonical xlsx title length120 releases exact125-character filename (0.261543ms)
+✖ canonical xlsx title length200 releases exact125-character filename (0.209546ms)
+✖ canonical docx title length120 releases exact125-character filename (0.155584ms)
+✖ canonical docx title length200 releases exact125-character filename (0.092559ms)
+✖ forged126-character stored filename cannot be inspected or downloaded (0.178218ms)
+ℹ tests 102
+ℹ suites 0
+ℹ pass 1
+ℹ fail 101
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5970.801896
+
+✖ failing tests:
+
+test at apps/control/document-application/independent/application-independent.test.mjs:24:1
+✖ independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources (1.655078ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:25:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:31:3
+✖ independent current actor substitution refuses before generation (0.221733ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:32:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:31:3
+✖ independent current tenant substitution refuses before generation (0.091428ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:32:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:31:3
+✖ independent current attempt substitution refuses before generation (0.081943ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:32:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:31:3
+✖ independent current fence substitution refuses before generation (0.126741ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:32:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:31:3
+✖ independent current client substitution refuses before generation (0.090006ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:32:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:31:3
+✖ independent current scope revision substitution refuses before generation (0.093941ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:32:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:34:1
+✖ independent full canonical descriptor cannot omit grants or source requirements (0.211969ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:35:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:37:1
+✖ independent constructor snapshots caller context, scopes, limits and descriptor (0.260582ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:38:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:41:1
+✖ independent create replay and changed intent cannot generate or charge again (0.255154ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:42:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:44:1
+✖ independent stale revision leaves both committed versions unchanged and preserves uncertain effect (0.182424ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:45:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:49:1
+✖ independent completed download withheld on final session denial remains RESULT_NOT_RELEASED (0.236886ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:50:62)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:53:1
+✖ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (0.210937ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:54:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:56:1
+✖ independent original cutoff aborts parked current-state receipt before effects (0.133651ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:57:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:59:1
+✖ independent newly shortened artifact expiry bounds the next parked executor (0.127502ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:60:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:62:1
+✖ independent cancellation during response acquisition denies exact old version (0.13331ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:63:45)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:65:75
+✖ independent raw binding injection has no authority/effect (0.113521ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:65:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:65:75
+✖ independent raw scopes injection has no authority/effect (0.09334ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:65:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:65:75
+✖ independent raw credential injection has no authority/effect (0.057826ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:65:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:65:75
+✖ independent raw path injection has no authority/effect (0.07982ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:65:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:65:75
+✖ independent raw baseVersionId injection has no authority/effect (0.056726ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:65:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:66:1
+✖ independent hostile errors and request objects execute no getters or proxy traps (0.150607ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:68:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:70:1
+✖ independent oversized and malformed UTF8 bodies refuse before source work (0.191628ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:71:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:73:1
+✖ independent parked incoming body aborts under original deadline (0.129405ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:73:116)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:74:1
+✖ independent no activation by default and separate tool/native credentials refused (0.180771ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:74:114)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected authority port cannot trigger reflection or erase uncertainty (0.224327ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected session-late port cannot trigger reflection or erase uncertainty (0.0727ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected executor port cannot trigger reflection or erase uncertainty (0.136846ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected version-read port cannot trigger reflection or erase uncertainty (0.154392ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected object-get port cannot trigger reflection or erase uncertainty (0.090506ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected object-put port cannot trigger reflection or erase uncertainty (0.058167ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty (0.050967ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected ids port cannot trigger reflection or erase uncertainty (0.083305ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty (0.07944ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:78:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:94:1
+✖ independent hostile own error getters remain untouched (0.162965ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:96:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/application-independent.test.mjs:98:1
+✖ independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch (0.18599ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:15:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/application-independent.test.mjs:99:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:43:1
+✖ actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes (1.711844ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:44:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:54:36
+✖ Word txt remains in its original grant family (0.283886ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:54:119)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:54:36
+✖ Word docx remains in its original grant family (0.140902ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:54:119)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_word cannot dispatch create_excel/xlsx through create (0.253441ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_word cannot dispatch create_excel/xlsx through revise (0.208454ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_word/txt through create (0.247342ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_word/txt through revise (0.184777ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_word/docx through create (0.121592ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_word/docx through revise (0.22622ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_excel/pdf through create (0.192399ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_excel/pdf through revise (0.205369ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_powerpoint/xlsx through create (0.174873ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:55:259
+✖ create_excel cannot dispatch create_powerpoint/xlsx through revise (0.132018ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:55:368)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:56:1
+✖ Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format (0.240371ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:56:138)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:57:77
+✖ raw context cannot choose workbook authority (0.143366ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:57:152)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:57:77
+✖ raw credential cannot choose workbook authority (0.065819ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:57:152)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:57:77
+✖ raw scopes cannot choose workbook authority (0.124167ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:57:152)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:57:77
+✖ raw descriptor cannot choose workbook authority (0.095724ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:57:152)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:57:77
+✖ raw operation cannot choose workbook authority (0.062444ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:57:152)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:58:1
+✖ Word application cannot release an Excel version through inspect or download (0.131658ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:58:109)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:59:1
+✖ Excel application cannot release a Word version through inspect or download (0.122954ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:59:108)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:60:1
+✖ separate workbook stores and session tokens cannot release another instance version (0.180291ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:60:116)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:61:55
+✖ Excel current tenant substitution refuses before accounting (0.262424ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:61:148)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:61:55
+✖ Excel current actor substitution refuses before accounting (0.105128ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:61:148)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:61:55
+✖ Excel current fence substitution refuses before accounting (0.081042ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:61:148)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:61:55
+✖ Excel current client substitution refuses before accounting (0.088784ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:61:148)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:62:1
+✖ Excel remains unavailable by default without closing borrowed session (0.230637ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:62:102)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:63:1
+✖ Excel original deadline aborts parked current authority before dispatch (0.197086ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:63:122)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:64:1
+✖ Excel completed bytes remain withheld after object-read session revocation (0.224888ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:64:127)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:66:1
+✖ a canonical Word descriptor cannot turn an Excel-only allocation into Word generation (0.222424ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:66:118)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/independent/workbook-independent.test.mjs:68:1
+✖ canonical 120-character Excel title releases its 125-character filename (0.249745ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:21:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/independent/workbook-independent.test.mjs:69:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:17:1
+✖ create/revise/inspect/download use immutable storage and one shared canonical ledger (1.432733ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:18:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/control/document-application/test/application.test.mjs:30:1
+✖ actual DOCX produces truthful draft/preview metadata and exact ZIP bytes (0.217477ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:31:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/document-application/test/application.test.mjs:35:1
+✖ default disabled allocates no document effect; borrowed session remains open (0.228283ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:36:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:38:277
+✖ reject body authority before generation (0.261263ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:39:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:38:277
+✖ reject wrong operation before generation (0.218759ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:39:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:38:277
+✖ reject PDF before generation (0.213772ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:39:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:41:1
+✖ native identity/tool tokens cannot authenticate application routes (0.219941ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:42:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:44:1
+✖ revoked session denies older-version read without another reservation (0.176075ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:45:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:47:1
+✖ post-object revocation preserves uncertainty without regeneration (0.274763ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:48:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:51:1
+✖ strict native Request admission ignores hostile own url and rejects Proxy without traps (0.422966ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:52:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:55:1
+✖ bounded body and fixed path/media handling preserve safe no-store errors (0.2994ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:56:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:59:1
+✖ constructor snapshots data and rejects authority getters without invocation (0.198368ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:60:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:63:1
+✖ canonical descriptor rejects accidental grant or source redefinition (0.19964ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:64:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:68:1
+✖ shorter artifact receipt clips outer lifetime before the next parked session call (0.230947ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:70:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:73:1
+✖ fresh session with changed full binding refuses before accounting (0.190055ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:74:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:77:68
+✖ hostile authorize rejection is inert before canonical owner catches (0.233721ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:79:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:77:68
+✖ hostile authority rejection is inert before canonical owner catches (0.171308ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:79:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:77:68
+✖ hostile executor rejection is inert before canonical owner catches (0.138318ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:79:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:77:68
+✖ hostile objects rejection is inert before canonical owner catches (0.125148ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/application.test.mjs:79:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:21:1
+✖ Excel create/revise/read preserves both immutable XLSX versions and canonical accounting (1.359855ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:22:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:36:81
+✖ create_word refuses opposite-family create and revise before authority/accounting (0.179289ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:37:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:36:81
+✖ create_excel refuses opposite-family create and revise before authority/accounting (0.091077ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:37:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:41:1
+✖ canonical workbook errors and caller authority fields refuse before allocation (0.155955ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:42:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:47:1
+✖ only the exact canonical Excel descriptor is admitted, without arbitrary registry expansion (0.267502ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:48:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:55:54
+✖ create_word read cannot release an otherwise valid opposite-family stored version (0.243225ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:56:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:55:54
+✖ create_excel read cannot release an otherwise valid opposite-family stored version (0.112649ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:56:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:63:1
+✖ fresh revocation blocks XLSX read without another generation or debit (0.180161ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:64:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:68:1
+✖ Excel descriptor is detached from later caller mutation (0.293681ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:69:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:72:1
+✖ Excel application remains disabled by default with no allocation (0.310236ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:73:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:75:114
+✖ canonical xlsx title length120 releases exact125-character filename (0.261543ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:76:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:75:114
+✖ canonical xlsx title length200 releases exact125-character filename (0.209546ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:76:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:75:114
+✖ canonical docx title length120 releases exact125-character filename (0.155584ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:76:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:75:114
+✖ canonical docx title length200 releases exact125-character filename (0.092559ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:76:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/workbook-application.test.mjs:84:1
+✖ forged126-character stored filename cannot be inspected or downloaded (0.178218ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/local/fixture.mjs:19:117)
+      at setup (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:14:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-contract-integrated-20261013/apps/control/document-application/test/workbook-application.test.mjs:85:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

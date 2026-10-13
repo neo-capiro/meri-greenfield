@@ -1,0 +1,98 @@
+
+> @capiro/meri-contracts@0.1.2 check
+> npm run check:generated && npm run typecheck && npm run test:public
+
+
+> @capiro/meri-contracts@0.1.2 check:generated
+> node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check
+
+{"schema":"meri-contract-distribution/1","check":true,"records":[{"path":"browser.mjs","bytes":466002,"sha256":"3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"},{"path":"contracts.d.ts","bytes":4090,"sha256":"e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"},{"path":"index.d.ts","bytes":85,"sha256":"b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"},{"path":"browser.d.ts","bytes":166,"sha256":"638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"},{"path":"metadata.mjs","bytes":533,"sha256":"63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"},{"path":"metadata.d.ts","bytes":485,"sha256":"63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"}]}
+[{"path":"action-application.mjs","bytes":1480808,"sha256":"9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"},{"path":"action-application.d.ts","bytes":17721,"sha256":"007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"},{"path":"action-application.schema.json","bytes":67726,"sha256":"a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"},{"path":"action-application.metadata.json","bytes":1980,"sha256":"9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"}]
+[{"path":"document-application.mjs","bytes":498894,"sha256":"4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde"},{"path":"document-application.d.ts","bytes":23960,"sha256":"1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31"},{"path":"document-application.schema.json","bytes":34642,"sha256":"712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51"},{"path":"document-application.metadata.json","bytes":1996,"sha256":"49def325d3792f56c99de484efb4193092a3c54dc82df0f4559ed462e9f4288f"}]
+
+> @capiro/meri-contracts@0.1.2 typecheck
+> tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts
+
+
+> @capiro/meri-contracts@0.1.2 test:public
+> node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs
+
+✔ actual PR42 wire 0 query 200 (39.175835ms)
+✔ actual PR42 wire 1 draft 200 (5.006645ms)
+✔ actual PR42 wire 2 prepare 200 (4.320524ms)
+✔ actual PR42 wire 3 execute 409 (0.558209ms)
+✔ actual PR42 wire 4 execute 200 (1.941889ms)
+✔ actual PR42 wire 5 execute 200 (0.291819ms)
+✔ preserve uncertainty UNKNOWN (0.375524ms)
+✔ preserve uncertainty STORED_NOT_RELEASED (0.158589ms)
+✔ reject success/error status interchange query (1.082567ms)
+✔ reject success/error status interchange draft (4.017459ms)
+✔ reject success/error status interchange prepare (0.51204ms)
+✔ reject success/error status interchange execute (1.585463ms)
+✔ closed/correlated negative 0 (13.147453ms)
+✔ closed/correlated negative 1 (0.453451ms)
+✔ closed/correlated negative 2 (5.751855ms)
+✔ closed/correlated negative 3 (9.200099ms)
+✔ closed/correlated negative 4 (3.525559ms)
+✔ closed/correlated negative 5 (1.953686ms)
+✔ closed/correlated negative 6 (1.05793ms)
+✔ closed/correlated negative 7 (0.341534ms)
+✔ closed/correlated negative 8 (1.370761ms)
+✔ closed/correlated negative 9 (0.342825ms)
+✔ closed/correlated negative 10 (0.267472ms)
+✔ Proxy, accessor, revoked proxy rejected without traps (0.237597ms)
+✔ bounded primitive JSON (0.815847ms)
+✔ route coercion never occurs (0.151147ms)
+✔ deep immutable parsed output (3.905371ms)
+✔ execute pending outcome retained without claimed result (0.294573ms)
+✔ interleaved events retain increasing sequence (4.581927ms)
+✔ public txt request/receipt/verified binary (44.530033ms)
+✔ public docx request/receipt/verified binary (3.331627ms)
+✔ public xlsx request/receipt/verified binary (2.154829ms)
+✔ revision parent and inspect current-byte receipt (2.618927ms)
+✔ refuse receipt extra (1.185202ms)
+✔ refuse receipt hash (0.518349ms)
+✔ refuse receipt bytes (0.383767ms)
+✔ refuse receipt mime (0.292209ms)
+✔ refuse receipt filename (0.335875ms)
+✔ refuse receipt parent (2.017873ms)
+✔ refuse receipt native (0.398589ms)
+✔ refuse receipt recalc (0.285389ms)
+✔ refuse receipt preview (0.277227ms)
+✔ refuse receipt scope (0.249415ms)
+✔ refuse receipt tenant (0.462375ms)
+✔ refuse receipt size (0.231228ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.553532ms)
+✔ typed-array overrides are not observed (0.184657ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.195914ms)
+✔ local request and version provenance cannot be reconstructed by shape (0.940494ms)
+✔ download header content-type refuses (14.80306ms)
+✔ download header content-length refuses (0.382835ms)
+✔ download header content-disposition refuses (0.511418ms)
+✔ download header cache-control refuses (0.563437ms)
+✔ download header x-content-type-options refuses (0.409525ms)
+✔ download header content-encoding refuses (0.280642ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (19.02761ms)
+✔ preabort/native Response brands and own getters (2.58818ms)
+✔ error status and uncertainty preserved without version or bytes (0.899272ms)
+✔ download JSON path accepts errors only (0.340412ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (111.43069ms)
+✔ isolated package consumer exposes document export without private files/dependencies (77.187395ms)
+✔ canonical 125-character docx filename remains usable (1.648658ms)
+✔ canonical 125-character xlsx filename remains usable (1.682469ms)
+✔ native followed redirect with exact final bytes remains refused (31.921341ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (34.255199ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (3.487221ms)
+✔ structural validation deliberately grants no tenant authorization (0.31913ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (0.87807ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (49.334705ms)
+✔ generator help and invalid arguments exit before generation (108.567167ms)
+✔ generated distribution check is independent of caller working directory (921.81744ms)
+ℹ tests 71
+ℹ suites 0
+ℹ pass 71
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1509.150141
