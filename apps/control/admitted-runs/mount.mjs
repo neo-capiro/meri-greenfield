@@ -1,4 +1,5 @@
 /** Concrete source-disabled application assembly over already-admitted persisted run state. */
+import {createHash} from 'node:crypto';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createPostgresAdmittedRunOwner,createReadAuthority,createCommandAuthority,createTaskLookupAuthorizer,createDurableSourceDisabledGateway} from '../../gateway/index.mjs';
@@ -15,10 +16,16 @@ export function createAdmittedActionHost(configuration){
  const limits=data(own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes','maxFactBytes','maxCleanupMs']));
  const ports=value=>{const p=own(value,['verifyCapability','authorizeBusiness','authorizeSources']);if(Object.values(p).some(v=>typeof v!=='function'))refuse();return p;};
  const rports=ports(c.readPorts),cports=ports(c.commandPorts),ss=data(read.scopes);
+ const persisted=createPostgresAdmittedRunOwner({...admission,now:c.now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes}});
  const configured=data(admission.grantFactsJsons).map(raw=>JSON.parse(raw));
+ const producer=data(cmd.producerContext);own(producer,['context','producer']);
+ if(cmd.budgetPool!==admission.pool||configured.length!==2||typeof read.credential!=='string'||read.credential.length<1||read.credential.length>8192)refuse();
+ const readHash=createHash('sha256').update(read.credential).digest('hex');
+ const readFacts=configured.filter(f=>f.capabilitySha256===readHash),commandFacts=configured.filter(f=>same(f,producer.context));
+ if(readFacts.length!==1||commandFacts.length!==1||readFacts[0].grantId===commandFacts[0].grantId)refuse();
  if(configured.some(f=>!same(f.binding,context.binding))||ss.length!==1||ss[0].kind!=='client'||ss[0].tenantId!==context.binding.tenantId||ss[0].resourceId!==context.clientResolution.clientId||ss[0].policyRevision!==configured[0]?.qualificationBinding.policyRevision||context.clientResolution.reference!==context.clientResolution.clientId)refuse();
  validateShape('Scope',ss[0]);
- const persisted=createPostgresAdmittedRunOwner({...admission,now:c.now,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes}});
+
  const readAuthorityPorts={...rports,currentRun:persisted.currentRun},commandAuthorityPorts={...cports,currentRun:persisted.currentRun};
  const readAuthority=createReadAuthority({authorityPorts:readAuthorityPorts,now:c.now,maxFactBytes:limits.maxFactBytes});
  const commandAuthority=createCommandAuthority({authorityPorts:commandAuthorityPorts,now:c.now,maxFactBytes:limits.maxFactBytes});
