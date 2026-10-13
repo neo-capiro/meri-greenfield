@@ -1,0 +1,19 @@
+✔ HTTP independent real client performs accepted pending/approved/single-effect/replay flow and closes listener (280.907718ms)
+✔ HTTP independent real application requires session; revocation remains current (15.552411ms)
+✔ HTTP independent scope hints do not create session authority (3.380024ms)
+✔ HTTP independent disconnect cancels actual pending Fetch request (4.908803ms)
+✔ HTTP independent finite server deadline aborts pending requests and destroys sockets (83.866707ms)
+✔ HTTP independent app failure is bounded and content-free (4.23568ms)
+✔ HTTP independent header bytes are bounded before application dispatch (1.59533ms)
+✔ HTTP independent unsafe host/port/lifetime values refuse before binding (0.631731ms)
+✔ HTTP independent CLI help/invalid arguments are inert and bounded (81.606056ms)
+✔ HTTP independent raw duplicate Authorization and oversized body cannot bypass canonical admission (16.408959ms)
+✔ HTTP independent header count refuses before dispatch rather than dropping trailing fields (3.148405ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3925.899233

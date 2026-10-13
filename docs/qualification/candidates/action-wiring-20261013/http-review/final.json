@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-application/http-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-wiring-http-review-20261013",
+  "sourceHead": "49a2a49bd631eab2862fcad82264b5f7bfbb0ebf",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:49:53.084430+00:00",
+  "durationSeconds": 3.981,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 450250,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/final.stdout.bin",
+      "bytes": 1163,
+      "sha256": "1c8296523fdb9e76afa373df19d8a8cbb4aab3588e8cad680f119019ec572a2d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
