@@ -1,0 +1,83 @@
+✔ actual txt create/inspect/download accepted without authority claims (737.378023ms)
+✔ actual docx create/inspect/download accepted without authority claims (1.726625ms)
+✔ actual xlsx create/inspect/download accepted without authority claims (1.139293ms)
+✔ actual XLSX admits canonical 125-character filename (0.258338ms)
+✔ actual TXT preserves exact multibyte whitespace and newline bytes (0.211969ms)
+✔ actual revision correlates immutable parent and retains original (0.137737ms)
+✔ closed request refuses browser authority injection (0.60555ms)
+✔ wrong operation and format pair refuses (0.227201ms)
+✔ PDF remains outside document application (0.29927ms)
+✔ request rejects invalid UTF8 (0.170457ms)
+✔ request rejects parsed objects without getters or proxy traps (0.172579ms)
+✔ request rejects proxy over byte view without traps (0.169115ms)
+✔ JSON byte access ignores hostile own iterator/getter (0.142374ms)
+✔ request bound counts UTF8 bytes not characters (12.783015ms)
+✔ request deeply nested JSON refuses boundedly (0.222014ms)
+✔ unknown dangerous JSON key refuses (0.267182ms)
+✔ request snapshots bytes and returns frozen values (0.309084ms)
+✔ shape-like unbranded request cannot admit response (0.537167ms)
+✔ wrong route request brand refuses (0.201152ms)
+✔ response refuses unknown response field (0.348664ms)
+✔ response refuses format/MIME mismatch (0.393441ms)
+✔ response refuses bad filename (0.301413ms)
+✔ response refuses oversize filename (0.31288ms)
+✔ response refuses hash mismatch (0.272019ms)
+✔ response refuses byte length mismatch (0.192129ms)
+✔ response refuses inspection format (0.178418ms)
+✔ response refuses rendered claim (0.205028ms)
+✔ response refuses native qualification claim (0.25256ms)
+✔ response refuses preview claim (0.169084ms)
+✔ response refuses generation claim (0.145238ms)
+✔ response refuses foreign object scope (0.17324ms)
+✔ response refuses unexpected parent (0.228112ms)
+✔ inspect expected version correlation refuses substitute (0.322205ms)
+✔ revision parent correlation refuses substituted prior version (0.213571ms)
+✔ valid content-free error returned, status mismatch rejected (0.489355ms)
+✔ error with source/private body rejected (0.137837ms)
+✔ download refuses wrong mime (0.27908ms)
+✔ download refuses wrong filename (0.23271ms)
+✔ download refuses missing length (0.177597ms)
+✔ download refuses wrong length (0.256375ms)
+✔ download refuses no-store missing (0.206431ms)
+✔ download refuses nosniff missing (0.431368ms)
+✔ download refuses encoded content (0.222324ms)
+✔ download rejects altered bytes despite matching headers (16.521263ms)
+✔ download rejects shortened EOF (0.612531ms)
+✔ download refuses redirect and error status (0.289155ms)
+✔ download refuses unbranded version without proxy traps (0.409756ms)
+✔ download rejects Response proxy without traps (0.227653ms)
+✔ download configured byte limit refuses (0.165509ms)
+✔ download consumes bounded stream EOF and cancels stalled body (21.537795ms)
+✔ download respects already cancelled caller (1.254786ms)
+✔ received binary is detached from source buffer (1.534987ms)
+(node:561993) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ standalone browser module works with no Node or private graph (11.574768ms)
+✖ native fetch followed redirect200 is refused despite exact bytes and headers (28.790175ms)
+✔ stream read error never yields verified bytes (2.242421ms)
+✔ extra byte after exact version bytes refuses (0.860824ms)
+✔ hostile route and status do not coerce unknown objects (0.243406ms)
+✔ request refuses escaped lone surrogate and concatenated JSON (0.209885ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 57
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3615.440785
+
+✖ failing tests:
+
+test at packages/contracts/test/document-application-independent.test.mjs:78:1
+✖ native fetch followed redirect200 is refused despite exact bytes and headers (28.790175ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-document-contract-review-20261013/packages/contracts/test/document-application-independent.test.mjs:80:301)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

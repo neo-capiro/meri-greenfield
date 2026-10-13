@@ -1,0 +1,29 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Canonical document application Excel extension and compatible explicit fixture option only",
+  "source": "16a4f883962bd72f9421949df95709f65b286555",
+  "sourceTree": "e30c762c6e1e860ffdf60b3967cc5d1f5d6b0d3c",
+  "fixture": "00032028b57141631c3bbd6a6cc34d5d2bcad9e8",
+  "authorPacket": "374e2285fd5a544b609161fa4c92e54b82d71627",
+  "testedHead": "a90e5d703187f4b1e205675bdb0b372288ba97f6",
+  "behavior": {
+    "passed": 33,
+    "failed": 0,
+    "skipped": 0,
+    "currentAppControls": 31,
+    "separatelyLocatedCliControls": 2,
+    "assertionsPreserved": true
+  },
+  "sourceAuditPassed": 29,
+  "initialAuthorPacketAuditPassed": 45,
+  "correctedAuthorPacketAuditPassed": 67,
+  "preservedSourceFailure": "filename-before.json:0pass/1fail; generator completed then canonical125 filename wronglyrefused",
+  "wholeFlowVerdict": "HOLD",
+  "wholeFlowReason": "Root preserves actual recalculation/cache failure and visual clipping; corrected layout/full integrated receipt under separate active ownership.",
+  "separatelyAcceptedOfficeSource": "1c3cfb9c97681415286236edd21a829e51b565eb",
+  "separatelyAcceptedOfficeReview": "83e0fcb626f69f65e1fca4558d975bb03bfd14cd",
+  "runtimeQualified": false,
+  "productionActivated": false,
+  "nativeDatabase": false,
+  "allOwnedGroupsAbsent": true
+}

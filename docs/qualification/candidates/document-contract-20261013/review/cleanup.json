@@ -1,0 +1,127 @@
+{
+  "removedOnly": "/tmp/meri-document-contract-review-20261013/packages/contracts/node_modules",
+  "priorEntries": [
+    {
+      "name": "ajv",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "ajv-formats",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "canonicalize",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "fast-uri",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "fast-deep-equal",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "json-schema-traverse",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "require-from-string",
+      "symlink": false,
+      "target": null
+    },
+    {
+      "name": "esbuild",
+      "symlink": true,
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/esbuild"
+    },
+    {
+      "name": "json-schema-to-typescript",
+      "symlink": true,
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/json-schema-to-typescript"
+    },
+    {
+      "name": "typescript",
+      "symlink": true,
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/typescript"
+    }
+  ],
+  "directoryAbsent": true,
+  "rootDependencyLinkCreated": false,
+  "ownedGroups": [
+    {
+      "capture": "public-fixed.json",
+      "pgid": 564020,
+      "absentNow": true
+    },
+    {
+      "capture": "generated-public.json",
+      "pgid": 563573,
+      "absentNow": true
+    },
+    {
+      "capture": "portable-final.json",
+      "pgid": 563501,
+      "absentNow": true
+    },
+    {
+      "capture": "final.json",
+      "pgid": 563422,
+      "absentNow": true
+    },
+    {
+      "capture": "blob-types-before.json",
+      "pgid": 563266,
+      "absentNow": true
+    },
+    {
+      "capture": "portable-local.json",
+      "pgid": 562595,
+      "absentNow": true
+    },
+    {
+      "capture": "types-fixed.json",
+      "pgid": 562661,
+      "absentNow": true
+    },
+    {
+      "capture": "redirect-before.json",
+      "pgid": 561987,
+      "absentNow": true
+    },
+    {
+      "capture": "portable-fixed.json",
+      "pgid": 562030,
+      "absentNow": true
+    },
+    {
+      "capture": "portable.json",
+      "pgid": 561652,
+      "absentNow": true
+    },
+    {
+      "capture": "types.json",
+      "pgid": 561616,
+      "absentNow": true
+    },
+    {
+      "capture": "first.json",
+      "pgid": 537922,
+      "absentNow": true
+    }
+  ],
+  "temporaryConsumerDirectories": [
+    "/tmp/meri-document-public-consumer-95eo8jr1",
+    "/tmp/meri-document-public-consumer-u4jxsvmb",
+    "/tmp/meri-document-public-consumer-ufxm2o2z",
+    "/tmp/meri-document-public-consumer-1sc2t6n7"
+  ],
+  "temporaryConsumerDirectoriesAbsent": true,
+  "donorPreserved": true
+}

@@ -1,0 +1,277 @@
+{
+  "authorPacket": "374e2285fd5a544b609161fa4c92e54b82d71627",
+  "source": "16a4f883962bd72f9421949df95709f65b286555",
+  "checks": [
+    {
+      "name": "final manifest hash",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-AUTHOR-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/author-report-before-filename.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial-test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/current.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/format-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/README.md",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/OUTLINE.md",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/test/workbook-application.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/local/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "historical report exact",
+      "passed": true
+    },
+    {
+      "name": "reviewed source exact apps/control/document-application/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed source exact apps/control/document-application/current.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed source exact apps/control/document-application/format-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "original author controls literal prefix",
+      "passed": true
+    },
+    {
+      "name": "filename-before capture",
+      "passed": true
+    },
+    {
+      "name": "filename-before counts",
+      "passed": true
+    },
+    {
+      "name": "filename-beforedocs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "filename-beforedocs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "filename-repaired capture",
+      "passed": true
+    },
+    {
+      "name": "filename-repaired counts",
+      "passed": true
+    },
+    {
+      "name": "filename-repaireddocs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "filename-repaireddocs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "independent filename-before capture",
+      "passed": true
+    },
+    {
+      "name": "independent filename-before counts",
+      "passed": true
+    },
+    {
+      "name": "independent docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "independent docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "child 533863",
+      "passed": true
+    },
+    {
+      "name": "independent filename-repaired capture",
+      "passed": true
+    },
+    {
+      "name": "independent filename-repaired counts",
+      "passed": true
+    },
+    {
+      "name": "independent docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "independent docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "child 534668",
+      "passed": true
+    },
+    {
+      "name": "child 534670",
+      "passed": true
+    },
+    {
+      "name": "child 534667",
+      "passed": true
+    },
+    {
+      "name": "child 534669",
+      "passed": true
+    },
+    {
+      "name": "child 534671",
+      "passed": true
+    },
+    {
+      "name": "child 534672",
+      "passed": true
+    },
+    {
+      "name": "child 534673",
+      "passed": true
+    },
+    {
+      "name": "child 534674",
+      "passed": true
+    },
+    {
+      "name": "child 534675",
+      "passed": true
+    },
+    {
+      "name": "child 534676",
+      "passed": true
+    },
+    {
+      "name": "child 534677",
+      "passed": true
+    }
+  ],
+  "passed": 67,
+  "failed": 0,
+  "runtimeQualified": false
+}

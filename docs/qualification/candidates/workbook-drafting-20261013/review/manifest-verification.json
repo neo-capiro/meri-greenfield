@@ -1,0 +1,7 @@
+{
+  "membersVerified": 35,
+  "mismatches": 0,
+  "manifestSha256": "78ffb56334d32b9aaaaa9216ae60bf303a1ed4d84ed2c214f45d3677fdbbf1f6",
+  "sourceVerdict": "ACCEPT_SOURCE_APPLICATION_ONLY",
+  "wholeFlow": "HOLD"
+}

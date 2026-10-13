@@ -1,0 +1,18 @@
+{
+  "acceptedSource": "1c3cfb9c97681415286236edd21a829e51b565eb",
+  "independentReview": "83e0fcb626f69f65e1fca4558d975bb03bfd14cd",
+  "rootIntegration": "3fb65433ff50cdc7bb48afcc4d437d290e24da3e",
+  "path": "apps/artifacts/office-transform.mjs",
+  "sha256": "bac0619f374729a1197192d065cd16a41b87afd646a56f03e3ab72473cb4989d",
+  "bytes": 3069,
+  "identical": true,
+  "reviewReportSha256": "49644ad662a2365e89885713c6a7d51ff56059e46f4422c9fe5680c13c13fab3",
+  "independentChecks": 7,
+  "preservedBaseline": {
+    "passed": 5,
+    "failed": 2
+  },
+  "reviewedChange": "Fixed OOXMLRecalcMode0 in private per-process owned XLSX profile; no caller profile or copied formula evaluator; DOCX arguments unchanged",
+  "qualification": "Source/local fixture only; no native/G1, arbitrary formula equivalence or visual acceptance",
+  "installedRegistryObservation": "Installed LibreOffice main.xcd documents OOXMLRecalcMode for hard OOXML recalc and default1; no numeric enum inference used as proof. Actual accepted independent result proves tested2050 and90/100 cases."
+}

@@ -1,0 +1,287 @@
+{
+  "passed": 70,
+  "total": 70,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/capture.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/criteria.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/final.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/generated-public.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/packet-audit.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-final-result.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-fixed-result.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-local-result.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-result.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-final.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-local.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-local.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable-local.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/portable.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/types.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/types.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/types.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/review/verify.py",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/document-application-independent-types.ts",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/document-application-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "source audit accepted",
+      "pass": true
+    },
+    {
+      "name": "author audit accepted",
+      "pass": true
+    },
+    {
+      "name": "all captured owned groups absent",
+      "pass": true
+    },
+    {
+      "name": "owned dependencies and consumer directories removed",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/README.md",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/dist/document-application.d.ts",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/dist/document-application.metadata.json",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/dist/document-application.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/dist/document-application.schema.json",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/document-application/boundary.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/document-application/download.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/document-application/receive.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/document-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/generate-documents.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/test/document-application-public-types.ts",
+      "pass": true
+    },
+    {
+      "name": "tested source packages/contracts/test/document-application-public.test.mjs",
+      "pass": true
+    }
+  ]
+}

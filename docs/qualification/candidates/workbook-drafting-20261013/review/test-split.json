@@ -1,0 +1,15 @@
+{
+  "beforeCommit": "3b72f476",
+  "beforeSha256": "93675e2b070ad7044610e325e1b68a5345a59aa3a4c0e61cf4f15cd6a3858792",
+  "appAfterSha256": "48a001a3820d2b6b1ff3f8cf409fcc78d74eaa2e27a239badc2295e5dfed5367",
+  "cliAfterSha256": "f66802ec3e01a87552e1ddbc97cdcf864c1373e9fedf2be540f103dd13a78e4c",
+  "reason": "Public application publication excludes unfinished root renderer/CLI; move two exact CLI controls to reviewer evidence path so app controls remain source-closed. Original33/33 captured bytes retained; no assertion modified except relocated import path.",
+  "applicationControls": 31,
+  "rootCliControls": 2,
+  "assertionsPreserved": true,
+  "combinedBehaviorReexecutionRequired": false,
+  "nextCommands": [
+    "node --test apps/control/document-application/independent/workbook-independent.test.mjs",
+    "node --test docs/qualification/candidates/workbook-drafting-20261013/review/cli-independent.test.mjs (only with root CLI source present)"
+  ]
+}

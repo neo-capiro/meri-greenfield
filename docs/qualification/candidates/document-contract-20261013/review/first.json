@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/document-application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-contract-review-20261013",
+  "sourceHead": "db3ba2ef40e210ef036a70db806a135e3888d7f9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "102524d59550e6e210a21b3da2e242b8a548ec25417a2a9a4c14c5f79b1acfae",
+  "startedAt": "2026-10-13T07:34:22.716418+00:00",
+  "durationSeconds": 3.734,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 537922,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/first.stdout.bin",
+      "bytes": 3558,
+      "sha256": "86e11ad702464a00e1a6dda003e6283b4f2839b3a66b07c6ffacd13ca38d2d6b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent focused source/public package checks; exact label identifies preserved run.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

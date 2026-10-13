@@ -1,0 +1,168 @@
+{
+  "sourceHead": "037d478eff6faa76398d68cc656b4f2ebdebc16c",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/audit.json",
+      "bytes": 1555,
+      "sha256": "5e7a57647779e7313c4a2d270e0fa53d2d2eaac5bd78b6716b845ff541e60e9d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/audit.py",
+      "bytes": 4209,
+      "sha256": "3f02ad95a6528bf15673e4c1f3b98662808117bb6eec1ee3230cac324478e3d8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/capability-ledger.json",
+      "bytes": 153,
+      "sha256": "c10dd75059bf302139667098a5f802e45855ac56cd92244c9c35c71a59fc6302"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/capiro-meri-contracts-0.1.2.tgz",
+      "bytes": 228048,
+      "sha256": "8a3f6c95935c368da5c01d87c599c5d13b9b62a21bc6924e7ad0b723bd5e91fa"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/cleanup.json",
+      "bytes": 299,
+      "sha256": "095a38c59681a0fe4afad3f14e4d52e8c81361859ce88ec3d2d5c49074424ebc"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application-root-bound.json",
+      "bytes": 1569,
+      "sha256": "968c2610775fc8efb48803467dd980138b47c6f4d1740a90e8264c1a75c8419a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application-root-bound.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application-root-bound.stdout.bin",
+      "bytes": 10340,
+      "sha256": "1b30be71ee6e190ee26ee5acbc83a643975b782329d1fcdb196dba24047d00a9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application.json",
+      "bytes": 1548,
+      "sha256": "97b694452407bca4009fe1b155ac90779e143e9ddd64ba91308aa94cd42fefdf"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application.stdout.bin",
+      "bytes": 118100,
+      "sha256": "6caa8fd37bc6ff0b9fd145f7b2a8fa09a5e5c31681d3c4cd0be447a880e070f4"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver-vm.json",
+      "bytes": 1346,
+      "sha256": "faa8920968be6d73a684199abdb4ec5e49062e4c6c8b29a73487a31719cf8b13"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver-vm.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver-vm.stdout.bin",
+      "bytes": 3931,
+      "sha256": "d2545d0eb7b3acd9c3cb34031a2e76aeca13da1f12a164c608698cf4f4f7ba02"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver.json",
+      "bytes": 1307,
+      "sha256": "a013c02327b4211c4a5156a1bac9bc7f8c1f942f4790d296e214b7943f5d84e2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver.stdout.bin",
+      "bytes": 4297,
+      "sha256": "d9e81f4913b941eddb401b1d66cc4e649dc203d872918a7310431844b749a6f9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack-cache-failure.json",
+      "bytes": 200,
+      "sha256": "208a522a0f234ede986af4f078cfb3f827c98ec8d09165b6ed6e5b83e1c4ebf8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack.json",
+      "bytes": 1457,
+      "sha256": "860881ea39e46ce5fb82a8e6c83470ce25f31ce39d8481693e5218a2f7d04d56"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack.stdout.bin",
+      "bytes": 2395,
+      "sha256": "d5c34e1a336c9bba34f0bbaff1c5eb0cb271e21806a3a0939ff62d4fcdc544c7"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-artifact.json",
+      "bytes": 312,
+      "sha256": "271ae9bc2ddde2439598cda4a18694e8b88c9ad03c953df599bd3c8157e5d3e6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-local-deps.json",
+      "bytes": 1559,
+      "sha256": "29bb13c0776f1364106de58e4178a44b165a195834f6b46a028fc321889dd066"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-local-deps.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-local-deps.stdout.bin",
+      "bytes": 6758,
+      "sha256": "e0c8ee9b7392e97dca2f53deb05cc2f3fd25c9035fbdf411878d8e77b6594230"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.json",
+      "bytes": 1328,
+      "sha256": "81a4f5773e698c52c2cf7fd44eb4724cd2a92cd9c5dab7d18ae00ffa1e7c7551"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.stderr.bin",
+      "bytes": 445,
+      "sha256": "85be3912675f8d54e5395676ed306301b0dcb4492c3df865ac9e74d11505bb2f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.stdout.bin",
+      "bytes": 262,
+      "sha256": "244372199094b8662a1cc3fc6be3db870481e850225c4925e3d7bf13865a27b1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/setup-failures.md",
+      "bytes": 1286,
+      "sha256": "66096b92a2c8f0910009736aa81e32efb1cd6fac614b38083a3ac98278c10cab"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/source-blobs.json",
+      "bytes": 5232,
+      "sha256": "06f6319dffc984be8ef60ac731be5bd7322074e24410f251576591b62f48ad05"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-INTEGRATION-20261013.md",
+      "bytes": 3749,
+      "sha256": "69c05ea49f1d3c50f80dae65623e8aa0123eadd119454de9fa1306bf65b150ea"
+    }
+  ],
+  "excludes": [
+    "manifest.json"
+  ]
+}

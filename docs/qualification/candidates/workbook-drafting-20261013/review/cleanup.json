@@ -1,0 +1,155 @@
+{
+  "groups": [
+    {
+      "pidAndPgid": 531400,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531428,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531429,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531430,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531431,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531432,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531433,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531434,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531435,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531436,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 531437,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 532942,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 533845,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 533863,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534649,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534667,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534668,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534669,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534670,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534671,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534672,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534673,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534674,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534675,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534676,
+      "absent": true
+    },
+    {
+      "pidAndPgid": 534677,
+      "absent": true
+    }
+  ],
+  "links": [
+    {
+      "path": "node_modules/ajv",
+      "removed": true,
+      "donorPackageSha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+      "donorStillExact": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "removed": true,
+      "donorPackageSha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69",
+      "donorStillExact": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "removed": true,
+      "donorPackageSha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670",
+      "donorStillExact": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "removed": true,
+      "donorPackageSha256": "a5c63940db0260739be9e2ac67f3aac268df4db5770420ee4e34e493152f97d2",
+      "donorStillExact": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "removed": true,
+      "donorPackageSha256": "30cad05aad3d3596513706451dbfc7e0422f9c1d00f2903ecc34580327d54bc7",
+      "donorStillExact": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "removed": true,
+      "donorPackageSha256": "156fb24af02845c190701360d06dfda35ef04282e34a734289ea9535ad9819ae",
+      "donorStillExact": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "removed": true,
+      "donorPackageSha256": "c0002f7d4c7d7e2a885cf0f97226344902417c3a0980f2beca41962d2bc1f6d8",
+      "donorStillExact": true
+    }
+  ],
+  "noOtherOwnerCleanup": true,
+  "noDependenciesInstalled": true,
+  "allOwnedGroupsAbsent": true
+}

@@ -1,0 +1,39 @@
+✔ actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes (903.454948ms)
+✔ Word txt remains in its original grant family (96.973825ms)
+✔ Word docx remains in its original grant family (167.706449ms)
+✔ create_word cannot dispatch create_excel/xlsx through create (8.269112ms)
+✔ create_word cannot dispatch create_excel/xlsx through revise (6.839103ms)
+✔ create_excel cannot dispatch create_word/txt through create (7.159474ms)
+✔ create_excel cannot dispatch create_word/txt through revise (6.386001ms)
+✔ create_excel cannot dispatch create_word/docx through create (15.334364ms)
+✔ create_excel cannot dispatch create_word/docx through revise (6.692191ms)
+✔ create_excel cannot dispatch create_excel/pdf through create (6.753764ms)
+✔ create_excel cannot dispatch create_excel/pdf through revise (6.348445ms)
+✔ create_excel cannot dispatch create_powerpoint/xlsx through create (5.657216ms)
+✔ create_excel cannot dispatch create_powerpoint/xlsx through revise (6.448565ms)
+✔ Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format (6.781666ms)
+✔ raw context cannot choose workbook authority (6.275194ms)
+✔ raw credential cannot choose workbook authority (5.97926ms)
+✔ raw scopes cannot choose workbook authority (5.756795ms)
+✔ raw descriptor cannot choose workbook authority (5.721442ms)
+✔ raw operation cannot choose workbook authority (6.046681ms)
+✔ Word application cannot release an Excel version through inspect or download (275.059952ms)
+✔ Excel application cannot release a Word version through inspect or download (116.141703ms)
+✔ separate workbook stores and session tokens cannot release another instance version (228.635429ms)
+✔ Excel current tenant substitution refuses before accounting (7.323861ms)
+✔ Excel current actor substitution refuses before accounting (16.064462ms)
+✔ Excel current fence substitution refuses before accounting (7.190791ms)
+✔ Excel current client substitution refuses before accounting (6.955767ms)
+✔ Excel remains unavailable by default without closing borrowed session (6.188003ms)
+✔ Excel original deadline aborts parked current authority before dispatch (41.928143ms)
+✔ Excel completed bytes remain withheld after object-read session revocation (215.981858ms)
+INDEPENDENT_WORKBOOK_PROCESSES [{"pid":531429,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531431,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531428,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531430,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531432,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531433,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531434,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531435,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531436,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":531437,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false}]
+✔ a canonical Word descriptor cannot turn an Excel-only allocation into Word generation (9.339501ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4781.997568

@@ -1,0 +1,40 @@
+✔ public txt request/receipt/verified binary (38.865466ms)
+✔ public docx request/receipt/verified binary (3.13387ms)
+✔ public xlsx request/receipt/verified binary (2.453517ms)
+✔ revision parent and inspect current-byte receipt (2.199826ms)
+✔ refuse receipt extra (0.881414ms)
+✔ refuse receipt hash (0.473631ms)
+✔ refuse receipt bytes (0.446541ms)
+✔ refuse receipt mime (0.343647ms)
+✔ refuse receipt filename (0.471228ms)
+✔ refuse receipt parent (1.98961ms)
+✔ refuse receipt native (0.338238ms)
+✔ refuse receipt recalc (0.35242ms)
+✔ refuse receipt preview (0.591138ms)
+✔ refuse receipt scope (0.244728ms)
+✔ refuse receipt tenant (0.287833ms)
+✔ refuse receipt size (0.262374ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.779862ms)
+✔ typed-array overrides are not observed (0.21927ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.267532ms)
+✔ local request and version provenance cannot be reconstructed by shape (0.92461ms)
+✔ download header content-type refuses (0.411399ms)
+✔ download header content-length refuses (0.309546ms)
+✔ download header content-disposition refuses (0.600392ms)
+✔ download header cache-control refuses (0.391168ms)
+✔ download header x-content-type-options refuses (0.364197ms)
+✔ download header content-encoding refuses (0.311118ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (17.568835ms)
+✔ preabort/native Response brands and own getters (1.35777ms)
+✔ error status and uncertainty preserved without version or bytes (0.668895ms)
+✔ download JSON path accepts errors only (0.368594ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (74.724655ms)
+✔ isolated package consumer exposes document export without private files/dependencies (50.611331ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 274.512737

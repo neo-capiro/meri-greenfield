@@ -1,0 +1,189 @@
+{
+  "authorPacket": "fe81f220d3415c6934333b584f2b625f891a8378",
+  "authorSource": "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+  "checks": [
+    {
+      "name": "exact author manifest",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-AUTHOR-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial-test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/current.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/format-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/README.md",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/OUTLINE.md",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/test/workbook-application.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/local/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial outcome",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial counts",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial group absent",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected outcome",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected counts",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected group absent",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen outcome",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen counts",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen group absent",
+      "passed": true
+    },
+    {
+      "name": "initial test preimage exact independent fixture correction retained",
+      "passed": true
+    },
+    {
+      "name": "own first clean and absent",
+      "passed": true
+    },
+    {
+      "name": "own docs/qualification/candidates/workbook-drafting-20261013/review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "own docs/qualification/candidates/workbook-drafting-20261013/review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "own cli clean and absent",
+      "passed": true
+    },
+    {
+      "name": "own docs/qualification/candidates/workbook-drafting-20261013/review/cli.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "own docs/qualification/candidates/workbook-drafting-20261013/review/cli.stderr.bin",
+      "passed": true
+    }
+  ],
+  "passed": 45,
+  "failed": 0,
+  "runtimeQualified": false
+}

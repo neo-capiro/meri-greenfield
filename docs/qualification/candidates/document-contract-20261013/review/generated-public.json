@@ -1,0 +1,55 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "cd packages/contracts && node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/document-application-independent-types.ts && node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-contract-review-20261013",
+  "sourceHead": "f459370ac5d7887b441646138a781e6a61660755",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "102524d59550e6e210a21b3da2e242b8a548ec25417a2a9a4c14c5f79b1acfae",
+  "startedAt": "2026-10-13T07:39:39.710594+00:00",
+  "durationSeconds": 3.947,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 563573,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 563602,
+      "status": 0
+    },
+    {
+      "pid": 563646,
+      "status": 0
+    },
+    {
+      "pid": 563689,
+      "status": 0
+    },
+    {
+      "pid": 563813,
+      "status": 0
+    },
+    {
+      "pid": 563832,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stdout.bin",
+      "bytes": 5534,
+      "sha256": "b2a0683b107b6be498630a7b33975ad4652eabb7ac85bf9ccb1d603a63b36bcb"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent focused source/public package checks; exact label identifies preserved run.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

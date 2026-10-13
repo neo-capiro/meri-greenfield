@@ -1,0 +1,329 @@
+{
+  "verdict": "ACCEPT_METADATA",
+  "authorPacket": "7fb3705a33db61d249d4d3b7f05109705f87b0d8",
+  "source": "e91143dafe2da71546fdfb3b0152807032f4e9b8",
+  "checks": [
+    {
+      "name": "manifest exact identity",
+      "pass": true
+    },
+    {
+      "name": "52 unique safe members",
+      "pass": true
+    },
+    {
+      "name": "same accepted production source",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-DOCUMENT-CONTRACT-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.patch",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/filename-before.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/filename-before.patch",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/filename-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/filename-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/focused-filename.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/focused-filename.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/focused-filename.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/focused-first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-app-repin.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-filename.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-redirect.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/generate-update.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/preservation.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-check.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-final.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/public-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-contract-20261013/author/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/README.md",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/dist/document-application.d.ts",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/dist/document-application.metadata.json",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/dist/document-application.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/dist/document-application.schema.json",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/document-application/boundary.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/document-application/download.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/document-application/receive.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/document-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/generate-documents.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/document-application-public-types.ts",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/document-application-public.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/blob-types-before.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/filename-before.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/filename-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/filename-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/focused-filename.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/focused-filename.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/focused-filename.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/focused-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/generate-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/generate-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/generate-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/public-check-tools.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/public-check.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/public-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/public-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "captured own group docs/qualification/candidates/document-contract-20261013/author/public-final.json",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/public-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/document-contract-20261013/author/public-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author final run exactsource",
+      "pass": true
+    }
+  ],
+  "passed": 80,
+  "failed": 0
+}

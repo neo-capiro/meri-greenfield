@@ -1,0 +1,9 @@
+{
+  "fullExitCode": 2,
+  "authoredExitCode": 0,
+  "rawBytePreservationExceptions": [
+    "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.patch",
+    "docs/qualification/candidates/document-contract-20261013/author/public-check.stdout.bin"
+  ],
+  "reason": "Historical exact patch context blank and original captured output EOF; no authored source exemption."
+}

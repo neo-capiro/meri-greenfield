@@ -1,0 +1,16 @@
+{
+  "base": "bc8b65cc7186e449cf20b4956e4cd88684b35325",
+  "role": "independent public document receiver review; criteria frozen before candidate inspection",
+  "scope": [
+    "Additive package0.1.2 document-application and schema exports; frozen0.1/action browser/schema/tests preserved",
+    "Request and response schemas/types derived from canonical artifact owners; no private runtime graph in public bundle",
+    "Actual app create/revise/inspect/download and content-free errors; DOCX/TXT plus accepted XLSX extension only",
+    "Operation/format, immutable version/object, parent/request context when supplied, inspection length/hash/MIME/filename correlations; no fabricated authority or render/recalc qualification",
+    "Primitive JSON admission, unknown/proxy/accessor rejection without traps, UTF8 byte/depth/node limits, closed fields and literal statuses",
+    "Download status/header/content-disposition/length/MIME/digest/version correlation, inert binary input, multibyte TXT, truncated/altered bytes, redirects and error refusal; honest limits for archive semantic validation",
+    "Browser VM without Node/server imports, isolated npm pack/install consumer and strict TypeScript; package artifact file inventory and deterministic generation",
+    "Actual observed positive fixtures and unchanged negative controls; preserve every failed replay, exact source freeze and owned resource cleanup"
+  ],
+  "excluded": ["No application source edits", "No native/runtime/DB/cloud/customer/provider/model actions", "No frontend edits", "No new authority or retry semantics"],
+  "execution": "Focused local checks <=240seconds per bounded capture; no broad suite unless needed for public backward compatibility"
+}

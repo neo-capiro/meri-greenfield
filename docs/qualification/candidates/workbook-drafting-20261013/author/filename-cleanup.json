@@ -1,0 +1,37 @@
+{
+  "removedOwnLinks": [
+    {
+      "path": "node_modules/ajv",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv"
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats"
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize"
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri"
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal"
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse"
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string"
+    }
+  ],
+  "groupsAbsent": [
+    534297,
+    534522
+  ],
+  "donorAndOtherWorktreesUnchanged": true
+}
