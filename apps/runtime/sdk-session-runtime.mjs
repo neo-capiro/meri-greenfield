@@ -2,7 +2,7 @@
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {createNativeSdkSessionClient,createNativeBoundSdkSessionStore} from './native-authority/session-client.mjs';
 import {fault} from './config.mjs';
-import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 export function createRuntimeSdkSessionFactory(configuration){
@@ -20,13 +20,14 @@ export function createRuntimeSdkSessionFactory(configuration){
 }
 
 /** Own only mirrors returned by this runner's compiled factory, including late results. */
-export function createOwnedRuntimeSdkSession({factory,now=Date.now,cleanupMs=1000}){
+export function createOwnedRuntimeSdkSession(configuration){
+ const {factory,now=Date.now,cleanupMs=1000}=own(configuration,['factory'],['now','cleanupMs']);
  if(typeof factory!=='function'||typeof now!=='function'||!Number.isSafeInteger(cleanupMs)||cleanupMs<1||cleanupMs>30000)throw fault('RUNNER_SESSION_CONFIGURATION');
  const records=new WeakMap(),failures=[];let closed=false,current,pending=0;
  function capture(value){let r=records.get(value);if(r)return r;const v=own(value,['store','settle','close']);r={store:v.store,settle:storageMethod(v,'settle'),close:storageMethod(v,'close'),retirement:null};records.set(value,r);return r;}
  async function bounded(method,signal){const deadlineMs=now()+cleanupMs,life=createOperationLifetime({now,deadlineMs,signal,errorFactory:()=>fault('RUNNER_CLEANUP_UNKNOWN')});try{return await life.run(signal=>method({signal,deadlineMs}));}finally{life.close();}}
  function retire(record){return record.retirement??=(async()=>{try{await bounded(record.close);}catch(error){failures.push('RUNNER_CLEANUP_UNKNOWN');throw error;}})();}
- return Object.freeze({async prepare(input){if(closed||current)throw fault('RUNNER_SESSION_CONFIGURATION');let abandoned=false;
+ return Object.freeze({async prepare(value){const input=own(value,['binding','sessionKey'],['signal','continuation']);nativeSignal(input.signal);if(closed||current||pending>0)throw fault('RUNNER_SESSION_CONFIGURATION');let abandoned=false;
   const abort=()=>{abandoned=true;};input.signal?.addEventListener('abort',abort,{once:true});pending++;
   const work=Promise.resolve().then(()=>{if(closed||input.signal?.aborted)throw fault('RUNNER_SESSION_STOPPED');return factory(input);});
   work.then(value=>{if(abandoned||closed)try{void retire(capture(value)).catch(()=>{});}catch{failures.push('RUNNER_CLEANUP_UNKNOWN');}},()=>{});
