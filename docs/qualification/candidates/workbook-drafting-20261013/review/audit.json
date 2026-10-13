@@ -1,0 +1,136 @@
+{
+  "sourceBase": "bc8b65cc7186e449cf20b4956e4cd88684b35325",
+  "authorSource": "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+  "fixtureSource": "00032028b57141631c3bbd6a6cc34d5d2bcad9e8",
+  "testedHead": "c3068641db6a103adab1933c20ccbd11abc4150a",
+  "auditedHead": "c3068641db6a103adab1933c20ccbd11abc4150a",
+  "originalPaths": 11557,
+  "unchangedOriginals": 11553,
+  "changedOriginals": [
+    "apps/control/document-application/README.md",
+    "apps/control/document-application/current.mjs",
+    "apps/control/document-application/index.mjs",
+    "apps/control/document-application/local/fixture.mjs"
+  ],
+  "checks": [
+    {
+      "name": "only four allocated existing paths differ",
+      "passed": true
+    },
+    {
+      "name": "no original path deleted",
+      "passed": true
+    },
+    {
+      "name": "exact author apps/control/document-application/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact author apps/control/document-application/current.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact author apps/control/document-application/format-admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact author apps/control/document-application/test/workbook-application.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact author apps/control/document-application/README.md",
+      "passed": true
+    },
+    {
+      "name": "exact root fixture option",
+      "passed": true
+    },
+    {
+      "name": "protected apps/artifacts/",
+      "passed": true
+    },
+    {
+      "name": "protected packages/contracts/",
+      "passed": true
+    },
+    {
+      "name": "protected apps/control/document-application/test/application.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected apps/control/document-application/independent/application-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected apps/control/document-application/http.mjs",
+      "passed": true
+    },
+    {
+      "name": "protected apps/control/document-application/local/ports.mjs",
+      "passed": true
+    },
+    {
+      "name": "clean first source capture",
+      "passed": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/workbook-drafting-20261013/review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/workbook-drafting-20261013/review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "independent30 no skips failures",
+      "passed": true
+    },
+    {
+      "name": "ten actual child receipts",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531429",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531431",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531428",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531430",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531432",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531433",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531434",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531435",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531436",
+      "passed": true
+    },
+    {
+      "name": "owned artifact child 531437",
+      "passed": true
+    }
+  ],
+  "passed": 29,
+  "failed": 0,
+  "nativeQualified": false
+}
