@@ -1,0 +1,15 @@
+{
+  "beforeCandidate": true,
+  "groups": [
+    "Actual nonempty control lookup/read captures settle callbacks and feeds unchanged scorer; semantic mismatch/denied source cannot echo expected gold",
+    "All three splits complete, wrong projection hash/config/source/corpus and duplicate cases refuse before effects; injected expected/gold field refuses",
+    "Host RunBindings required for every case, no invented identity on unsupported/preparation failure, stable principal invariant, fresh allowed attempt",
+    "Unsupported original/correct-evidence untouched; mixed modes and empty corpus retain complete denominators and qualifiedRealRequests zero",
+    "Prepared selected client, exact producer RunBinding, scopes and read stable actor/tenant/conversation mismatch refuse before source effect",
+    "Actual read denied receipt and ACCESS_DENIED throw score expected denial; lookup/preparation failure never counterfeit read denial; malformed/wrong/expired receipts fail",
+    "Actual before_release original prepared tuple/ref/hash/event correlation and hash-pinned traces; no credential or private error body leak",
+    "Shorter preparation/control authority deadline, pre-abort and mid-await abort, parked ignored cancellation, no later case scheduling/retry; no borrowed close/dispose",
+    "Inert input and provider callbacks, detached snapshot retained across mutation; capture overflow visible with complete denominator",
+    "Exact source preservation and concise final receipt audit, no repeated broad tests"
+  ]
+}
