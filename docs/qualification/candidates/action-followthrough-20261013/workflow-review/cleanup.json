@@ -1,0 +1,36 @@
+{
+  "ownedDependencyDirectoriesRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "ownedNodeModulesAbsent": true,
+  "donorUntouched": true,
+  "captureGroups": [
+    {
+      "label": "initial",
+      "pgid": 434334,
+      "absent": true
+    },
+    {
+      "label": "canonical-fixture",
+      "pgid": 434710,
+      "absent": true
+    },
+    {
+      "label": "configuration-before",
+      "pgid": 435773,
+      "absent": true
+    },
+    {
+      "label": "final",
+      "pgid": 436198,
+      "absent": true
+    }
+  ],
+  "noTimeoutOrKill": true
+}

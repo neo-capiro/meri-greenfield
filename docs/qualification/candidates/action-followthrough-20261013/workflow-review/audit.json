@@ -1,0 +1,297 @@
+{
+  "decision": "PASS",
+  "base": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "source": "0715c71025a72312917c7cc0714951be814f7ae3",
+  "authorPacket": "7a5664ca4a9caff48784ba1ad0809ae2d3d8f62a",
+  "reviewHead": "f7fad8e901efd11cda10a5e09eaef48887c60c33",
+  "originalEntries": 10184,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-followthrough/index.mjs",
+      "bytes": 5861,
+      "sha256": "7ce5567c4c505904eaa0a39d1fbb96dfe4941bda7f5709c653afdd840672d042"
+    },
+    {
+      "path": "apps/control/action-followthrough/selection.mjs",
+      "bytes": 4505,
+      "sha256": "6cb431744db5fc69749be6ee49cc0505835bd771e80c384b78981e4a9c7e33a3"
+    }
+  ],
+  "authorManifestMembers": 25,
+  "authorManifestSha256": "bfbf207c3d03aff250f17352109d651aab32ecc233e90375dfefbdf8900fdc7a",
+  "captures": [
+    {
+      "label": "initial",
+      "passed": 0,
+      "failed": 28,
+      "sourceHead": "d3dacc62ca971157ccb0a1bc47623cf2904da762",
+      "processGroup": 434334,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "canonical-fixture",
+      "passed": 28,
+      "failed": 0,
+      "sourceHead": "737d3e6102ae7dac93d0a32c9610fb014219e773",
+      "processGroup": 434710,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "configuration-before",
+      "passed": 0,
+      "failed": 2,
+      "sourceHead": "97d583cb6a8f75b8f8287b8bd9c379e83c8bbe11",
+      "processGroup": 435773,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "final",
+      "passed": 30,
+      "failed": 0,
+      "sourceHead": "f7fad8e901efd11cda10a5e09eaef48887c60c33",
+      "processGroup": 436198,
+      "freshlyAbsent": true
+    }
+  ],
+  "passed": 59,
+  "total": 59,
+  "checks": [
+    {
+      "name": "all 10184 original entries unchanged in source",
+      "pass": true
+    },
+    {
+      "name": "all 10184 original entries unchanged in author packet",
+      "pass": true
+    },
+    {
+      "name": "all 10184 original entries unchanged in review",
+      "pass": true
+    },
+    {
+      "name": "exact tested and final-author source apps/control/action-followthrough/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact tested and final-author source apps/control/action-followthrough/selection.mjs",
+      "pass": true
+    },
+    {
+      "name": "only two production files and two author test files added",
+      "pass": true
+    },
+    {
+      "name": "final independent controls unchanged from pre-repair negative freeze",
+      "pass": true
+    },
+    {
+      "name": "139 original scope remains 96 selected / 43 deferred",
+      "pass": true
+    },
+    {
+      "name": "all 97 catalog entries remain unavailable without handlers",
+      "pass": true
+    },
+    {
+      "name": "author manifest exact source/base pins",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-followthrough-20261013/workflow-author/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-WORKFLOW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-WORKFLOW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-followthrough/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-followthrough/selection.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-followthrough/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-followthrough/test/workflow.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "initial stream hash initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "initial stream hash initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "initial exact counts",
+      "pass": true
+    },
+    {
+      "name": "initial no source diff",
+      "pass": true
+    },
+    {
+      "name": "initial recorded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "initial owned group freshly absent",
+      "pass": true
+    },
+    {
+      "name": "canonical-fixture stream hash canonical-fixture.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "canonical-fixture stream hash canonical-fixture.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "canonical-fixture exact counts",
+      "pass": true
+    },
+    {
+      "name": "canonical-fixture no source diff",
+      "pass": true
+    },
+    {
+      "name": "canonical-fixture recorded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "canonical-fixture owned group freshly absent",
+      "pass": true
+    },
+    {
+      "name": "configuration-before stream hash configuration-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "configuration-before stream hash configuration-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "configuration-before exact counts",
+      "pass": true
+    },
+    {
+      "name": "configuration-before no source diff",
+      "pass": true
+    },
+    {
+      "name": "configuration-before recorded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "configuration-before owned group freshly absent",
+      "pass": true
+    },
+    {
+      "name": "final stream hash final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "final stream hash final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "final exact counts",
+      "pass": true
+    },
+    {
+      "name": "final no source diff",
+      "pass": true
+    },
+    {
+      "name": "final recorded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "final owned group freshly absent",
+      "pass": true
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY; no SQL engine, network, provider or runtime admission"
+}

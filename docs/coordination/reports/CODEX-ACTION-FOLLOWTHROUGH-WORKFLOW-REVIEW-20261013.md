@@ -1,0 +1,26 @@
+# Recommendation follow-through independent review
+
+**ACCEPT_SOURCE** for `0715c71025a72312917c7cc0714951be814f7ae3`, author packet `7a5664ca4a9caff48784ba1ad0809ae2d3d8f62a`, against base `b23a2cd027d43740bd99f937366e9be2df1be3ad`. Runtime remains **HOLD**. Criteria were committed before candidate inspection at `ab54041924dbb0bb75553f4e2944adb2bbd01f3e`.
+
+The two new production modules compose an authorized retained recommendation read with canonical task normalization and the existing command proposal interface. `draft` accepts only an exact retained reference/hash/action selection and explicit title/date edits. `prepare` rereads that retained snapshot under current read authority and returns the actual immutable approval-required proposal. Neither method executes a task or creates an approval decision. A separate connected control uses the standard command interface/executor, explicit synthetic approval and retained journal outcome to demonstrate one task effect followed by replay; revoked approval prevents that effect.
+
+Independent replay: **30/30 PASS**, zero skipped/cancelled, at review merge `f7fad8e901efd11cda10a5e09eaef48887c60c33` containing the exact repaired source. Tests use actual lookup delivery/Postgres lookup store, canonical command validators/interface, executor/journal/HTTP source, with inert SQL, HTTP, authorization and metadata ports. They cover source/hash/client substitutions, invalid or lossy edits, forged drafts, fresh denial, corrupt retained records, cancellation across parked reads, one original cutoff across read and metadata preparation, lost metadata acknowledgement without retry, detached data, and original task A/current task B provenance. No real SQL engine, provider, network, native runtime, cloud or customer operation ran.
+
+| Retained check | Result | Interpretation |
+| --- | --- | --- |
+| Initial independent fixture | 0/28 | Constructor correctly refused the review fixture's separate validator instance and separate clock closure. Fixture corrected to the actual canonical export and shared clock; behavioral assertions unchanged. |
+| Canonical fixture, initial source | 28/28 | Earlier matrix passed but did not cover mutable constructor configuration. |
+| Added configuration negatives, original source | 0/2 | Host mutation changed the subsequently forwarded operation; an operation accessor executed during constructor admission. Exact preimage and raw streams retained. |
+| Unchanged independent controls, repaired source | 30/30 | Canonical inert configuration snapshot fixes both defects. |
+
+The author independently retained its initial 22/23 nullable synthetic task-result fixture failure, corrected 23/23 run, and 23/25 configuration counterexamples before the repaired 25/25 run. Those failures were not erased or reclassified as passing source evidence.
+
+Read-only audit **59/59 PASS**: all **10,184** original Git entries remain byte-identical; only two production and two author test files are added outside documentation. The two modules match the tested source and final author packet. All **25** author manifest members and all eight independent raw streams verify. Public/private contracts, original tests, catalog, SDK/native/frontend files remain unchanged; all 97 catalog operations remain unimplemented with null handlers, with the original 139/96/43 scope retained. Source hashes and exact receipt pins are in `workflow-review/audit.json`.
+
+All four owned capture groups (434334, 434710, 435773, 436198) exited and are freshly absent. No timeout or group kill was required. The final replay took 3.434 seconds under the bounded subreaper capture. Only this reviewer's seven temporary dependency directories were removed; donor dependencies and other owners' processes were untouched.
+
+The configured `lookup.read` remains the trusted owner of full canonical retained observation/event validation and current read authorization. This workflow adds selection/hash/client correlation; it does not establish authority from supplied hashes. Original and current bindings must share tenant, actor, conversation and run: same-run A-to-B attempt recovery is supported, cross-run/fork reuse is not. The command producer binding must exactly match the current read binding.
+
+Recommendation/card hashes and the returned draft source fields are supporting evidence, **not approval-bound or authenticated durable provenance**: the unchanged command hash binds task intent only. Rereading a retained result is not a live recommendation freshness check. Late metadata acknowledgement may have persisted a proposal despite cancellation; there is no physical rollback, automatic retry or source-derived idempotency claim. Durable metadata-owner integration, live current-policy provisioning, real task producer behavior and runtime/G1 qualification remain separate root-owned gates. The approved admin review exception and existing approval policy are unchanged.
+
+Reproduce the focused review with existing pinned minimal dependencies: `python3 docs/qualification/candidates/action-followthrough-20261013/workflow-review/capture-reaped.py final node --test apps/control/action-followthrough/workflow-independent.test.mjs`. Do not overwrite retained receipts; select a new capture label when rerunning.
