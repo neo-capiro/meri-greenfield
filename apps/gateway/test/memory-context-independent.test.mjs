@@ -97,7 +97,7 @@ async function denied(f,args={},changes={}) {
 
 test('independent: canonical mail and memory profiles are selected; actual15 stay unavailable',async()=>{
   const selected=CATALOG_OPERATION_BINDINGS.filter(row=>row.dispatchProfile!==undefined);
-  assert.deepEqual(selected.map(row=>[row.id,row.dispatchProfile]).sort(),[...verticalDispatchProfiles,['list_global_datasets','dataset-metadata/1'],['mail.list_messages','mail-candidates/1'],['mail.search_messages','mail-candidates/1'],[operation.id,'memory-proposals/1']].sort());
+  assert.deepEqual(selected.map(row=>[row.id,row.dispatchProfile]).sort(),[...verticalDispatchProfiles,['list_global_datasets','dataset-metadata/1'],['mail.list_messages','mail-candidates/1'],['mail.search_messages','mail-candidates/1'],[operation.id,'memory-proposals/1'],['search_memory','bound-projection/1'],['read_monday_client_boards','bound-projection/1'],['get_client_context','bound-projection/1'],['find_contacts','bound-projection/1'],['resolve_entity','bound-projection/1'],['read_client_documents','client-documents/1']].sort());
   const catalog=JSON.parse(readFileSync(new URL('packages/contracts/retrieval-0.2/catalog.json',root)));
   assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.length,139);
   const f=fixture();const gateway=createSourceDisabledGateway({authorityPorts:f.authorityPorts,budget:f.budget,limits,now:()=>NOW,newId:()=>id('b')});
