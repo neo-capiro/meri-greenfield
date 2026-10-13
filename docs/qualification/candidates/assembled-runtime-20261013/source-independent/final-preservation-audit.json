@@ -1,0 +1,67 @@
+{
+  "reviewedCommit": "def57a612e4c20992fdc78240840f717f051e434",
+  "reviewedTree": "5ae301be0a869a965e54f5e678c99042aec141a1",
+  "productionCommit": "b5734174407b399c75ab9bceafbf29c47a059ea4",
+  "productionTree": "7dd1f8fe0e5bae56f9ad2a8b689726743e14eb79",
+  "base": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "baseEntries": 14790,
+  "exactRetainedBaseEntries": 14790,
+  "changedOrMissingBasePaths": [],
+  "productionAndLockPinsIdentical": [
+    {
+      "path": "apps/runtime/cli.mjs",
+      "gitObject": "6026acb944a2109baa2d9b409483a572a6eb3d1f"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "gitObject": "c235489221044d6e05d87df410a03cc0049245b3"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "gitObject": "a0a17d67228aa3dbb275ebb8fdd0aa7290774d31"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "gitObject": "102eeb949f24fd6b49f520908a04666b6a4abd3c"
+    },
+    {
+      "path": "apps/runtime/http-server.mjs",
+      "gitObject": "efec6559c8e540b37216d0b93903de771ce8816d"
+    },
+    {
+      "path": "apps/runtime/native-client.mjs",
+      "gitObject": "f88a795d4dfd788425d443406ad9506c6130b5d6"
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "gitObject": "010cc7e87bfbc1c8daefab1d4457fed030070921"
+    },
+    {
+      "path": "apps/runtime/worker-http.mjs",
+      "gitObject": "f3749838751ef2185b5299155e30a6441dc30db8"
+    },
+    {
+      "path": "apps/runtime/package.json",
+      "gitObject": "0e09d0a2047b109d13ab99ecebc6da8de7460983"
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "gitObject": "abe5835503d7a58e44f325743d5ebc312fcd6941"
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "gitObject": "ac7a3422ea466338497a70f56ca719e15503ba4c"
+    },
+    {
+      "path": "packages/contracts/runtime-0.2/validate.mjs",
+      "gitObject": "c0edf0eeabd09c58457bb320b0cf8c81d8c2d019"
+    },
+    {
+      "path": ".dockerignore",
+      "gitObject": "25693b63967a58ca83225ef70131f138061a19f9"
+    }
+  ],
+  "twoAuthorFixtureRepairsOnly": true,
+  "allPreviousAuthorAssertionsPreserved": true,
+  "liveAcceptance": false
+}

@@ -9,7 +9,7 @@ if(!root)throw Error('exact source root required');
 const require=createRequire(join(root,'apps/runtime/package.json'));
 const {parse}=require('pg-connection-string');
 const source=await readFile(join(root,'apps/runtime/control.mjs'),'utf8');
-async function start(connectionString){
+async function start(connectionString,{signal}={}){
  const observed={pools:0,temporal:0,ended:0,ssl:null};
  class Pool{constructor(options){observed.pools++;observed.ssl=parse(options.connectionString).ssl;}async end(){observed.ended++;}}
  const context=vm.createContext({Buffer,URL,Date});
@@ -30,7 +30,8 @@ async function start(connectionString){
  });
  await main.evaluate();
  const configuration={database:{connectionFile:'/synthetic/database'},native:{capabilityFile:'/synthetic/capability'},temporal:{tls:{caFile:'/synthetic/ca',certFile:'/synthetic/cert',keyFile:'/synthetic/key'},address:'synthetic.invalid:7233'},limits:{requestMs:100,startupMs:100}};
- await assert.rejects(main.namespace.startControl(configuration),/CONTROL_STARTUP_FAILED/u);
+ if(signal?.aborted)await assert.rejects(main.namespace.startControl(configuration,{signal}));
+ else await assert.rejects(main.namespace.startControl(configuration),/CONTROL_STARTUP_FAILED/u);
  return observed;
 }
 test('duplicate sslmode cannot disable TLS verification before any Pool or Temporal allocation',async()=>{
@@ -42,4 +43,9 @@ test('duplicate sslmode cannot disable TLS verification before any Pool or Tempo
 test('one exact verify-full mode reaches the controlled allocation and closes owned Pool on startup failure',async()=>{
  const result=await start('postgresql://synthetic:synthetic@database.invalid/meri?sslmode=verify-full');
  assert.equal(result.pools,1);assert.equal(result.temporal,1);assert.equal(result.ended,1);assert.notEqual(result.ssl.rejectUnauthorized,false);
+});
+test('pre-aborted control initialization refuses before Pool or Temporal allocation',async()=>{
+ const controller=new AbortController();controller.abort();
+ const result=await start('postgresql://synthetic:synthetic@database.invalid/meri?sslmode=verify-full',{signal:controller.signal});
+ assert.equal(result.pools,0,JSON.stringify(result));assert.equal(result.temporal,0);
 });

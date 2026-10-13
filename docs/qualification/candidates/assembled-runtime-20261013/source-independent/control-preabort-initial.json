@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "4015601cd48c64ed9d00675f9166d628aee5045a",
+  "sourceTree": "df2cd89b023599c10d3218564ed545e2265fd170",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/database-tls-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 0.077,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2280,
+  "stdoutSha256": "d359b5e65c8d9ac5cba7f778ebc88caafe37e4f47128e5204c57ae888b3882ed",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

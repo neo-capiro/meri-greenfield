@@ -1,0 +1,26 @@
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (20.61792ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (10.615614ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (6.058059ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (3.069951ms)
+✔ runner native restore substitution refuses the single SDK query (3.011273ms)
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (3121.41849ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2001.547838ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (328.946547ms)
+✔ actual process exits on SIGTERM after listener shutdown (2093.747376ms)
+✔ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (2910.604263ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2877.206969ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (1.944177ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.353583ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.683459ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.404679ms)
+✔ broker refuses a response from another writer fence (0.273822ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (23.866405ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (31.106293ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13379.263065
