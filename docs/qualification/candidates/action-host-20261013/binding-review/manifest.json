@@ -1,0 +1,64 @@
+{
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "source": "7c67345398aa5422f6c760f009b729d082cfeaea",
+  "authorPacket": "dfdc642f3a105be27d9a96c4ad5057fe1363ddb0",
+  "decision": "ACCEPT_SOURCE",
+  "runtimeDecision": "HOLD",
+  "members": [
+    {
+      "path": "apps/control/action-host/binding-independent.test.mjs",
+      "bytes": 14115,
+      "sha256": "c0794152fc5bc9c78f1ec1ae2639e42187b3bfa227e2de748d5f71db8e7b3241"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-BINDING-REVIEW-20261013.md",
+      "bytes": 5019,
+      "sha256": "26fc9c7ca0987c67b0108646c09a4995e5297d410451739e8902b22884f26d28"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-HOST-BINDING-REVIEW-20261013.md",
+      "bytes": 2461,
+      "sha256": "76bef22569ebdcf6724ace597a64a09f482134225f9a8459a939817a332930db"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/audit.json",
+      "bytes": 4587,
+      "sha256": "bedfc09218cfcef5169baab8680a65b0fc7cf83af344d97b20a3af8200b0abed"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/audit.py",
+      "bytes": 3371,
+      "sha256": "81572b517ca2481e8f344f1db30bc8e072ae55054517e4a12263ac00f4a187f9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/cleanup.json",
+      "bytes": 318,
+      "sha256": "0f0be25d71192fc4cfcc24b0d6b6418fc503bba70811e14e0b2da8752129bd1e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/independent-first.json",
+      "bytes": 1281,
+      "sha256": "4ea25fc7e21d440046faa9c8e361ee7b74cb27200a717695dd87f98d771190dc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-review/independent-first.stdout.bin",
+      "bytes": 2763,
+      "sha256": "4dc536682472df482d201b8139aeb175d4f3e5e508b77b57c20ed0ca18ecc467"
+    }
+  ]
+}

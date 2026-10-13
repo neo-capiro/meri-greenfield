@@ -1,0 +1,15 @@
+{
+  "ownedGroup": 455100,
+  "freshlyAbsent": true,
+  "ownedSevenDependencyDirectoriesRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "borrowedDependenciesModified": false,
+  "otherOwnersTouched": false
+}
