@@ -45,15 +45,16 @@ export async function inspectWorkbookCopies({bytes,label,expectedTotal,pythonExe
       {cwd: workspace,input: pdf,deadlineMs});
     processes.push(rendered.receipt);
     const visual = JSON.parse(rendered.stdout);assert.equal(visual.sha256,hash(pdf));
-    const text = visual.pages.map(page => page.text).join('\n');
-    assert.match(text,/Research/);assert.match(text,/Documentation/);assert.match(text,/Total/);
-    assert.ok(text.includes(expectedTotal.toLocaleString('en-US',{minimumFractionDigits: 2})));
     await writeFile(join(outputDirectory,label+'-preview.pdf'),pdf,{flag: 'wx',mode: 0o600});
     for (const page of visual.pages) {
       assert.equal(page.png,`page-${page.page}.png`);
       const png = await readFile(join(workspace,page.png));assert.equal(hash(png),page.sha256);
       await writeFile(join(outputDirectory,`${label}-preview-${page.page}.png`),png,{flag: 'wx',mode: 0o600});
     }
+    await writeFile(join(outputDirectory,label+'-visual.json'),JSON.stringify({visual,processes},null,2)+'\n',{flag: 'wx',mode: 0o600});
+    const text = visual.pages.map(page => page.text).join('\n');
+    assert.match(text,/Research/);assert.match(text,/Documentation/);assert.match(text,/Total/);
+    assert.ok(text.includes(expectedTotal.toLocaleString('en-US',{minimumFractionDigits: 2})));
     assert.equal(hash(bytes),originalSha256);
     return {sourceSha256: originalSha256,recalculation: {receipt: transformed.receipt,inspection: reopened.inspection},
       visual,processes,storedSourceUnchanged: true,localCopiesOnly: true,nativeQualified: false};
