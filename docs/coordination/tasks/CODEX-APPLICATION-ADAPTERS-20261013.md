@@ -1,0 +1,21 @@
+# Application adapter continuation — 13 October 2026
+
+Authorized source-only continuation from accepted PR46 `ad0bdfeb830fee11f1f39c4a8a7037215595c4cf`. Root branch `task/meri-application-adapters-20261013`, isolated worktree `/tmp/meri-application-adapters-20261013`. Capiro main was refreshed read-only at `4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace`; frontend PR16 remains `7c87678730538958ace9762f824dc3e588bf445b`. No shared frontend or Capiro source edits belong to this lane.
+
+## Canonical ownership and implementation outline
+
+- Capiro owns native token verification, tenant membership, active owned conversation and client ethical walls. Its existing Clerk/TenantContext, conversation and ContextSecurityScope owners are behavioral/interface references only; do not copy their implementation into Meri. Existing `/me` lacks the necessary identity expiry/revision receipt; exact conversation reads intentionally admit archived rows. A narrow owner request must expose current authority facts through those existing owners, without changing credential issuance, roles, permissions or approval semantics.
+- Meri owns the admitted run and full RunBinding. The bridge cannot manufacture attempt, worker, fence or grant authority from a Capiro conversation or AiRun row. Bind the host's server-selected command context and recheck the canonical current-run owner; browser selectors remain constraints only.
+- Add concrete bounded fixed-route HTTP authority adapters and application composition under `apps/control/action-host/application-adapters/`. Reuse canonical operation lifetimes, closed-data validation, session owner, action host and HTTP handling. No ambient service initialization, provider calls, credentials, migrations or default source activation.
+- The existing session owner may pass its native identity credential directly to the trusted context adapter. This explicit internal call-context seam avoids a second credential registry. Never include the native credential in public receipts, errors, evidence or logs. Revalidate authority on every use; revocation, changed scope and shorter deadlines fail closed.
+- Mount session issuance and the four existing action routes over the same retained session owner. Borrow existing services and host allocator/broker ports. Preserve original proposal correlation and explicit approval; no approval route or automatic approval is introduced.
+
+## Exclusive paths and independent acceptance
+
+Gateway author owns new adapter implementation, focused author tests and README; the narrow `session/owner.mjs` and `session/README.md` change; its named task/report; and `docs/qualification/candidates/application-adapters-20261013/author/`. Gateway reviewer owns only adapter `*-independent.test.mjs`, its named task/report and `reviewer/` packet. Memory author owns the Capiro owner-request report and `capiro-boundary/` packet, with no implementation edits. Root owns this outline, integration report/evidence, accepted integration and publication. All use separate branches/worktrees from exact PR46; no recursive delegation.
+
+## Verification and limits
+
+Freeze interfaces before source acceptance. Independently exercise fresh identity/context, tenant/client/run substitution, archived/revoked states, deadlines and parked callbacks, closed response decoding, redirects/oversize bodies, lifecycle/cleanup, and actual fixture-isolated HTTP session-to-action mounting. Preserve raw failed outcomes and unchanged original assertions. Run affected prior checks and a concrete synthetic end-to-end flow after integrating only accepted source; record exact source pins, process groups, dependencies and cleanup.
+
+Fixture-isolated code execution is authorized and does not require generic runtime admission. It does not qualify live Clerk, native PostgreSQL, browser deployment, actual source connectivity or G1. Do not inspect confidential native execution receipts. No paid provider calls, cloud changes, image builds/pushes, security/network/database changes, customer data, new credentials or main merges. Existing scope/catalog and public0.1/private0.2 boundaries remain unchanged. Draft continuation publication and exact owner handoff are authorized.
