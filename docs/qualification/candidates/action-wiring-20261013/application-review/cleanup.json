@@ -1,0 +1,43 @@
+{
+  "removedOnlyOwnedDependencies": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "ownedNodeModulesAbsent": true,
+  "donorUntouched": true,
+  "captureGroupsAbsent": [
+    {
+      "label": "initial",
+      "passed": 29,
+      "failed": 1,
+      "pgid": 444067,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "actual-read-negative",
+      "passed": 0,
+      "failed": 1,
+      "pgid": 444827,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "error-metadata-negative",
+      "passed": 1,
+      "failed": 3,
+      "pgid": 445364,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "repaired",
+      "passed": 36,
+      "failed": 0,
+      "pgid": 446116,
+      "freshlyAbsent": true
+    }
+  ]
+}
