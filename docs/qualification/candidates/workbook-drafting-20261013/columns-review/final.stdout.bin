@@ -1,0 +1,12 @@
+✔ retained fixed input documents the original clipped PDF without modifying input bytes (13510.718871ms)
+✔ canonical creation and typed revision render complete labels while retaining formulas and literal text (35919.688085ms)
+✔ column bounds do not truncate long literals or turn formula-like strings into formulas (728.876744ms)
+✔ chart rebuild keeps chart and formulas while applying bounded table widths (754.379ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50977.803071

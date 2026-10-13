@@ -1,0 +1,221 @@
+{
+  "source": "07d9db0b988a8ff3f04ee3acc21951e5967dea81",
+  "base": "3fb65433ff50cdc7bb48afcc4d437d290e24da3e",
+  "members": [
+    {
+      "path": "apps/artifacts/test/workbook-columns-independent.test.mjs",
+      "bytes": 9233,
+      "sha256": "17cb2e6f4aab2b5c73f33b46c10f42765c2b7d6b7953c61f0bae5ce39303f884"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/REPORT.md",
+      "bytes": 2735,
+      "sha256": "fd2dd9a7f7d5c6ae3ecd24464a4fa35dbef7e4e0580ec416a2c02d14a2885b82"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/audit.json",
+      "bytes": 948,
+      "sha256": "1551198838eb11b4398198c60d4080c33f52e3310c8608ff76fefdd504990edf"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/audit.py",
+      "bytes": 2270,
+      "sha256": "bb8162b3070a9d6384be782a09ce62f2cef65d968ecbbc4c8a47bff90332a849"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/author-packet-audit.json",
+      "bytes": 374,
+      "sha256": "ea2301eeee65beef2b851707cbf00d3e68619934f17b0fd4645afce8633a3079"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created-pdf.json",
+      "bytes": 4148,
+      "sha256": "0857e9e967634f5a14ced9789b2cb4971cf962f9665b50f0f503376eba2811a6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created.pdf",
+      "bytes": 20712,
+      "sha256": "36615a85780c2f05fa7881603d57c6bd54a49b735691b6879996ef5c9f60c15c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created.png",
+      "bytes": 14852,
+      "sha256": "906a927bbc83054285fa6877d2dd6ce9f2deea68f8fc5f8467cef931805971fb"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created.xlsx",
+      "bytes": 6003,
+      "sha256": "d53822d4405083f98ff0ed7a267d1d4e2192762e68c31be7f1030e2fead6b063"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-FtotHf.json",
+      "bytes": 600,
+      "sha256": "df35dda83623e38705a3ad93e4e0088c27f87aa48482a6cbffee49154a84af55"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-aGxj2E.json",
+      "bytes": 1197,
+      "sha256": "076f71d897da85c1051f69f589ae5bffc187fa5f48e49ff4fad233f5aa41633a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-ifPDmh.json",
+      "bytes": 600,
+      "sha256": "fee7bf5a4280dea77798820cacbbb6f2482a18b395fedc9f0b32318684451ea6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-vTZUDP.json",
+      "bytes": 600,
+      "sha256": "0a4631e22b22115cdff7b9596f0da24b8e3e1c30fcd24b480a34d02e7363b2a0"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-retained-original-pdf.json",
+      "bytes": 4162,
+      "sha256": "7ff1b9c2c033ceecaf2dafc1ccad94596414b4dbe25332db1f6024b24cbb560a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-retained-original.pdf",
+      "bytes": 20823,
+      "sha256": "f4cc4937a232a9a0d19dd45459960b6628e4e1487c63ef3158766cedfdd9713c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-retained-original.png",
+      "bytes": 15903,
+      "sha256": "80b49954cf9b7b321f20fbe460fe7f4ba85febec9ba7f3d074fb245c8dd5e3a6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline.json",
+      "bytes": 1277,
+      "sha256": "9a139efba18356a853319d4e219ee831d3452da437b4a0a3d1c55ac3f30fba42"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline.stdout.bin",
+      "bytes": 3240,
+      "sha256": "cb06ba91cc51d0616139152672c0b5d4845a098ebf8edc7d292c61be00bcca3e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/criteria.md",
+      "bytes": 1140,
+      "sha256": "e9a45fdd174883257a4f3177b725fde3391f63c9fa21aa914367ca0e73e1d979"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created-pdf.json",
+      "bytes": 4341,
+      "sha256": "cba088ae2649bae1b8d93600fc947093f198824ef4d3897f2caab4f9cc9e7391"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created.pdf",
+      "bytes": 20702,
+      "sha256": "0a2abcf6d03a28c5a9b313988932770e81279e117c3a6035874787418a5a39e4"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created.png",
+      "bytes": 15743,
+      "sha256": "c47132d2ba4b025fa5f40bd33c8ae595c5809976c07860f57906d0cd3ae87638"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created.xlsx",
+      "bytes": 6108,
+      "sha256": "323cc66e0661ab67fb41bebf0af0ce638cedcd98c88ba659530252bee5a1f1de"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-KGKPsM.json",
+      "bytes": 1197,
+      "sha256": "db86457ddd70df3f6e89224695aa4ea94da6d315860b636d4d2e461d1ef25033"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-KOHPpF.json",
+      "bytes": 600,
+      "sha256": "fbde78fb9fa7cb18adef9ba849e15b10c8ef8c1f9e97c189e7db9eed9e5396b2"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-hlnUqN.json",
+      "bytes": 1197,
+      "sha256": "6624c7c81c369a3734edff3ad345ebd60516ea908a5216b24212f9fb09caf16e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-wRnvMl.json",
+      "bytes": 2988,
+      "sha256": "9ed1c6f2838c641766a012eb6940d728009c300550abeae0c500a3b435d4a1da"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-retained-original-pdf.json",
+      "bytes": 4162,
+      "sha256": "7ff1b9c2c033ceecaf2dafc1ccad94596414b4dbe25332db1f6024b24cbb560a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-retained-original.pdf",
+      "bytes": 20823,
+      "sha256": "2611994e8cf78eadd4e207e3d8f9d54f19a7698407393797b2de7dc2b716b05a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-retained-original.png",
+      "bytes": 15903,
+      "sha256": "80b49954cf9b7b321f20fbe460fe7f4ba85febec9ba7f3d074fb245c8dd5e3a6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised-pdf.json",
+      "bytes": 4730,
+      "sha256": "507943457574093de60b7b4baf5414ee3366cb9ad0394d5ad856f6b95226793e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised-recalculated.xlsx",
+      "bytes": 7531,
+      "sha256": "a6148e950b461e8572aa6372577fca8c12e8f89c5cfb2632a28f8b2b753a0842"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised.pdf",
+      "bytes": 20836,
+      "sha256": "6c04d7e3faef34cccb34fc975cee2ba5fd6fefda670b85d20bf1d00ef54f5d3b"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised.png",
+      "bytes": 17684,
+      "sha256": "a0dcbdb31168f891b8d92a20ed215c492f7ef98b51d07f4ab2b79b6230f5921e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised.xlsx",
+      "bytes": 5565,
+      "sha256": "aa7a75af241da48f75b80fb382141723f6fc6de13df8a7130d8a5c571152c2dc"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final.json",
+      "bytes": 1270,
+      "sha256": "29937d2c5d830466ac1a3676220aa0ec9c691b967cd63d295af1e543d02ddb9b"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final.stdout.bin",
+      "bytes": 545,
+      "sha256": "0debe24ae85f91ef3673d4b50db0d0f8c30baaa8b9856d23c07165a6b9352674"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/original-recalculated.xlsx",
+      "bytes": 7418,
+      "sha256": "ae199fecc721c8338f8aea647f627f4acb452c76624f2a78840e12fa1e9ef175"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/width-units.md",
+      "bytes": 564,
+      "sha256": "7b741507a699ab7174e5b54bcb42c75d4c206a13ad95256fbcc860d62f52f4cd"
+    }
+  ]
+}
