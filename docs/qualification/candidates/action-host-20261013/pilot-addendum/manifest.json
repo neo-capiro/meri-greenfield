@@ -1,0 +1,52 @@
+{
+  "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
+  "sealedPilot": "9e08fc64471a28e2249dc5d7c5f48fbc8589e2b1",
+  "status": "DOCUMENTATION_ONLY_NOT_SPEND_AUTHORIZATION",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "bytes": 2990,
+      "sha256": "7058cab4f33616074f557eecb0bf577442222dfaccc6a30f089c0272eb22ed78"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "bytes": 1059,
+      "sha256": "aa8391fded125e03366220bded605430ae04664ab28b791719a2d5a19db3bd74"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/capture-public-docs.py",
+      "bytes": 1888,
+      "sha256": "1a184bc4d68121fcbdbe7f9ea8d05c562ddc93fdfdb3ac3284e646a09fa1f098"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+      "bytes": 1993,
+      "sha256": "7bb20cb0febae3792025cf9279f7b8c93abd33852010b3b2ff4e9d8eb270fda7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/documentation-findings.json",
+      "bytes": 1059,
+      "sha256": "2f4676b99d8990e44b3ec7f0ac3e928f3d6a513b9ce6bf1bf649335369dffd9e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/public-retrievals.json",
+      "bytes": 1050,
+      "sha256": "ec7d3d1a4fa925d963c7c47456955a462464c59d5f31b90ea17205b6090d5c30"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/rendered-observations.json",
+      "bytes": 1354,
+      "sha256": "2d5ed8f6b067dcf47e131d5d67eefced4af6386e434a4c5b2bdd1466eae8747b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/verification.json",
+      "bytes": 4691,
+      "sha256": "5417e6798d14f666a6d9822c2c21195c752c76c54c2f08c9750abc8a8ca73718"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/verify.py",
+      "bytes": 4392,
+      "sha256": "cec84f0241d3a2014b41f08fcff02e0b2578769aebc2e0efaffe1ef549007d0a"
+    }
+  ]
+}
