@@ -1,0 +1,79 @@
+{
+  "groups": [
+    {
+      "owner": "review",
+      "label": "first",
+      "group": 436304,
+      "absent": true
+    },
+    {
+      "owner": "review",
+      "label": "hostile-before",
+      "group": 436615,
+      "absent": true
+    },
+    {
+      "owner": "review",
+      "label": "final",
+      "group": 437287,
+      "absent": true
+    },
+    {
+      "owner": "author",
+      "label": "focused",
+      "group": 435070,
+      "absent": true
+    },
+    {
+      "owner": "author",
+      "label": "final",
+      "group": 435951,
+      "absent": true
+    },
+    {
+      "owner": "author",
+      "label": "proxy-repaired",
+      "group": 436873,
+      "absent": true
+    }
+  ],
+  "ownedLinksRemoved": [
+    {
+      "path": "node_modules/ajv",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "targetRetained": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "targetRetained": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "targetRetained": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "targetRetained": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "targetRetained": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "targetRetained": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "targetRetained": true
+    }
+  ],
+  "borrowedTargetsModified": false,
+  "externalProcessesStarted": false
+}

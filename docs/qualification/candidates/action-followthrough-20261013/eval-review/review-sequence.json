@@ -1,0 +1,18 @@
+{
+  "source": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+  "authorPacket": "747bb13191b3ba4c272f03cb3c6bd818a47a2a60",
+  "reviewOnlyCommits": [
+    "ff086707b11d3b0d51cd0359ccb6b3f456838fe9",
+    "294269436a2c0edce43945255897cdd6a9f672d0",
+    "005b6a288fe0e946d7eea3c65ac51987334358ea",
+    "b850861e463d0c724abf8ceb1b1377ba61bad225",
+    "f5383412d1670802513773dd30d7b5a42146d638",
+    "b067b753acb34c9bc5889debc390192d1b54f753",
+    "3b21545a27af5616d6037c75b2a7ba6b09e97b60",
+    "7817e0c4fd125090163feb1dfb44f013fcdda905",
+    "8cc25617f90eeb4a0e6d1780144d13a5980e3c37",
+    "cec24404ecbe22f8fa57e4a22db94fedf48f5943"
+  ],
+  "finalMetadataCommit": "The commit containing this sequence and final manifest; append its SHA after these ten commits.",
+  "dependencyMergesExcluded": true
+}

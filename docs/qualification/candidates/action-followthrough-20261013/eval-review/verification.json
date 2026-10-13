@@ -1,0 +1,110 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+  "checks": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-EVAL-REVIEW-20261013.md",
+      "passed": true
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-EVAL-REVIEW-20261013.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/audit-author-packet.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/audit.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/author-packet-audit.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/cleanup.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/controls-plan.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/criteria.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/final.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/final.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/final.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/findings.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/first.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/first.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/first.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/hostile-before.execute.mjs.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/hostile-before.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/hostile-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/hostile-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/review-sequence.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/verify-packet.py",
+      "passed": true
+    },
+    {
+      "path": "evals/task-lookup/execution/execution-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact evidence membership",
+      "passed": true
+    }
+  ],
+  "passed": 25,
+  "failed": 0,
+  "runtimeQualified": false,
+  "qualifiedRealRequests": 0
+}
