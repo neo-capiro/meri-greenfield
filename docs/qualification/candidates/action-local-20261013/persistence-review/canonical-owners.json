@@ -1,0 +1,78 @@
+{
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "members": [
+    {
+      "path": "apps/control/task-lookup/binding.mjs",
+      "bytes": 8086,
+      "sha256": "eeb2cb69e3f20eacf123206d0faa2da7170ef53e8bdea624e7947bc9e81a1aeb",
+      "gitBlob": "5337c05f73a7535b0564da15f6f819b56409fa37"
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "bytes": 4418,
+      "sha256": "014e0a5520861ddbf87f315d8a57fdf124c2a5536df582189fa3d543a5bf8df2",
+      "gitBlob": "ed95692d75a0c4d028e6afaa5106d31d5d1cb6f6"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.mjs",
+      "bytes": 5080,
+      "sha256": "741ff9ffb81b2245c836ea4b010272394a0e194028519d2685f17b016be4e98b",
+      "gitBlob": "ae4281a2aa0d667da77c19ee5e1a49d6e2335a6d"
+    },
+    {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "bytes": 1024,
+      "sha256": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f",
+      "gitBlob": "cc05f27bd78c3a5304b7bf7503f561e9e9d0ad51"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "bytes": 2155,
+      "sha256": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772",
+      "gitBlob": "afc53c1bb0fb00522b181e95499411947f20e5be"
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "bytes": 9007,
+      "sha256": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75",
+      "gitBlob": "2ff16a44e605a20223155a1f73874dfa282f10c3"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "bytes": 623,
+      "sha256": "d6dace94cb0232047a2922b8c0cc6769f090e07b36aca51e64320287ebb552aa",
+      "gitBlob": "565f5f518b6c6109d29d208ffa455856032e16bd"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "bytes": 10049,
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a",
+      "gitBlob": "54d68d23563d625032578f0bb47dd44882692d40"
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "bytes": 2467,
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc",
+      "gitBlob": "a3b5709829b02f9cc04b026acbb72b70588151a8"
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "bytes": 2391,
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809",
+      "gitBlob": "01939d529ae01c6a3b4a5fe7e545511a8c698896"
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "bytes": 1097,
+      "sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+      "gitBlob": "206919bd370d6c0777fa628e82a050c2bfefad83"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "bytes": 2595,
+      "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f",
+      "gitBlob": "a90524cdfe899260310d87bafed5a7a31a664317"
+    }
+  ],
+  "meaning": "Read-only source identity; no installed migration, engine or runtime verification. New local runner must compose these existing owners, not copy their SQL/state logic."
+}
