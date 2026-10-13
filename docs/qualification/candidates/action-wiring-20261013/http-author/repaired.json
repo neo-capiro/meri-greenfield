@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-application/http.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-wiring-http-20261013",
+  "sourceHead": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:49:01.541384+00:00",
+  "durationSeconds": 2.927,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 449939,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stdout.bin",
+      "bytes": 670,
+      "sha256": "500ac54a4bbb29d98c5e138b2c71f6e7e6db3f7f4304eca1fd5248fa3d793c15"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

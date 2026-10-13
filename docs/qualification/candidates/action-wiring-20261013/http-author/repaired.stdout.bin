@@ -1,0 +1,15 @@
+✔ actual HTTP preserves body and closes sockets/listener idempotently (34.214063ms)
+✔ only explicit loopback ephemeral bounded configuration accepted (0.700494ms)
+✔ real duplicate Authorization survives bridge without selecting one (5.920506ms)
+✔ client disconnect aborts Fetch request signal (3.237189ms)
+✔ automatic bounded lifetime aborts request and physically closes listener (82.45309ms)
+✔ help and invalid CLI remain inert (0.519541ms)
+✔ actual unchanged synthetic flow crosses HTTP and closes after one effect/replay (2655.125989ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2872.58242
