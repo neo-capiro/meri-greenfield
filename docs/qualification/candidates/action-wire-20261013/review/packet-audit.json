@@ -1,0 +1,179 @@
+{
+  "authorPacket": "fcd5595e2b3fef94996ed8ae00353fd762725662",
+  "authorSource": "3a6e3391b8fb3bb8113496c897f997683a27da2d",
+  "manifestSha256": "d363543d76f89ee06042dc7684ece3ff98be4f81f3a18896a478ee42e4fafdef",
+  "membersVerified": 40,
+  "passed": 42,
+  "failed": 0,
+  "sourceUnchanged": true,
+  "reviewedAuthorPackageCheck": {
+    "originalPublic": 7,
+    "newReceiving": 29,
+    "totalPassed": 36,
+    "failed": 0,
+    "skipped": 0
+  },
+  "authorProcessCleanup": "No per-process/group capture receipts in this author packet; only reviewer owned group absence is independently asserted.",
+  "checks": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRE-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-install-verification.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-pack.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-pack.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused-stable.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused-stable.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/frozen-public.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/frozen-public.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-final.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-final.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-first.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-first.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-second.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-second.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-stable.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-stable.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-third.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-third.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/handoff.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/initial-readback.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install-verification.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-types.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-types.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/outline.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/pack.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/pack.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/package-check.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/package-check.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/receiver-before-sequence-repair.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/source-audit.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/types.stderr.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/types.stdout.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/verify-install.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/verify-packet.py",
+      "pass": true
+    }
+  ]
+}
