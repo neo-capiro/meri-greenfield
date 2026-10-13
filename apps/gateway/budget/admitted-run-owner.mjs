@@ -1,7 +1,7 @@
 /** Current admission and trusted SQL effects over one canonical budget lease. */
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {PostgresBudgetStore,BudgetStateDenied,refuse} from './postgres-budget-store.mjs';
+import {PostgresBudgetStore,BudgetStateDenied,BudgetCommitUncertain,refuse} from './postgres-budget-store.mjs';
 import {same} from './tool-budget-binding.mjs';
 import {admittedConfiguration,currentInput} from './admitted-run-binding.mjs';
 import {readCurrentAdmission} from './admitted-run-current.mjs';
@@ -33,6 +33,7 @@ export function createPostgresAdmittedRunOwner(configuration){
   const v=own(value,['binding'],['signal','deadlineMs']);
   if(typeof effect!=='function')refuse('ADMITTED_EFFECT_REFUSED');
   const input={...currentInput(v.binding,{signal:v.signal}),deadlineMs:v.deadlineMs}, {life,check}=lifetime(input);
+  let committing=false;
   try{return await life.run(()=>store.transact(async raw=>{
    const client=checked(raw,check);const deadline=await readCurrentAdmission({c,store,client,life,check,locked:true});
    let active=true;const pending=new Set();
@@ -44,7 +45,9 @@ export function createPostgresAdmittedRunOwner(configuration){
    }finally{active=false;}
    if(pending.size)refuse('ADMITTED_EFFECT_PENDING');
    await readCurrentAdmission({c,store,client,life,check,locked:true});check();return result;
-  },check));}finally{life.close();}
+  },check,()=>{committing=true;}));}
+  catch(error){if(committing)throw new BudgetCommitUncertain('COMMIT_ACKNOWLEDGEMENT_UNKNOWN');throw error;}
+  finally{life.close();}
  }
  return Object.freeze({currentRun,currentAllocation,withCurrentAllocation});
 }

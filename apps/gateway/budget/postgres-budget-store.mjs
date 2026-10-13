@@ -11,7 +11,8 @@ export class PostgresBudgetStore {
     if (!pool || typeof pool.connect !== 'function') refuse('TRUSTED_POOL_REQUIRED');
     this.pool = pool;
   }
-  async transact(operation, check = () => {}) {
+  async transact(operation, check = () => {}, onCommitting) {
+    if(onCommitting!==undefined&&typeof onCommitting!=='function')refuse('TRANSACTION_OBSERVER_REFUSED');
     let client; let begun = false; let committing = false; let result; let failure; let reusable = false;
     try {
       check(); client = await this.pool.connect(); check();
@@ -20,6 +21,7 @@ export class PostgresBudgetStore {
       await client.query("SET LOCAL lock_timeout = '2s'"); check();
       result = await operation(client); check();
       committing = true;
+      onCommitting?.();
       await client.query('COMMIT'); check(); reusable = true;
     } catch (error) {
       if (committing) failure = new BudgetCommitUncertain('COMMIT_ACKNOWLEDGEMENT_UNKNOWN');
