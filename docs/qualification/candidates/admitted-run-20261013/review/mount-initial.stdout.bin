@@ -1,0 +1,138 @@
+✖ admitted mount independent split budget pool refused before IO (45.175098ms)
+✖ admitted mount independent unwatched read credential refused before IO (26.25943ms)
+✖ admitted mount independent unwatched producer grant refused before IO (21.733518ms)
+✖ admitted mount independent substituted producer capability refused before IO (17.094265ms)
+✖ admitted mount independent producer is read grant refused before IO (23.031638ms)
+✖ admitted mount independent only read watched refused before IO (16.524509ms)
+✖ admitted mount independent read token matches only producer refused before IO (18.954245ms)
+✖ admitted mount independent actual session uses persisted owner and reconstruction rejects replaced facts (74.648444ms)
+✔ admitted mount independent caller has no authority override and default mount remains off (21.529961ms)
+✔ admitted generic independent current owner and full binding cannot be bypassed by callback input (17.938073ms)
+✔ admitted local wrapper independent preserves closed error when clock throws during status (9.244465ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 3
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2962.007005
+
+✖ failing tests:
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent split budget pool refused before IO (45.175098ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent unwatched read credential refused before IO (26.25943ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent unwatched producer grant refused before IO (21.733518ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent substituted producer capability refused before IO (17.094265ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent producer is read grant refused before IO (23.031638ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent only read watched refused before IO (16.524509ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:19:3
+✖ admitted mount independent read token matches only producer refused before IO (18.954245ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:19:138)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:20:1
+✖ admitted mount independent actual session uses persisted owner and reconstruction rejects replaced facts (74.648444ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'NOT_DISPATCHED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-review-20261013/apps/control/admitted-runs/independent/mount-independent.test.mjs:20:563)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'NOT_DISPATCHED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
