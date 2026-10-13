@@ -1,0 +1,220 @@
+✔ document fixture CLI help and malformed arguments allocate no fixture or listener (1.019452ms)
+✔ actual HTTP Word draft and revision preserve originals, budgets and revoked download denial (3857.909321ms)
+✖ create/revise/inspect/download use immutable storage and one shared canonical ledger (1.31752ms)
+✖ actual DOCX produces truthful draft/preview metadata and exact ZIP bytes (0.174111ms)
+✖ default disabled allocates no document effect; borrowed session remains open (0.171498ms)
+✖ reject body authority before generation (0.131748ms)
+✖ reject wrong operation before generation (0.116175ms)
+✖ reject PDF before generation (0.122203ms)
+✖ native identity/tool tokens cannot authenticate application routes (0.200902ms)
+✖ revoked session denies older-version read without another reservation (0.271668ms)
+✖ post-object revocation preserves uncertainty without regeneration (0.222845ms)
+✖ strict native Request admission ignores hostile own url and rejects Proxy without traps (0.341373ms)
+✖ bounded body and fixed path/media handling preserve safe no-store errors (0.283977ms)
+✖ constructor snapshots data and rejects authority getters without invocation (0.154202ms)
+✖ canonical descriptor rejects accidental grant or source redefinition (0.213381ms)
+✖ shorter artifact receipt clips outer lifetime before the next parked session call (0.208283ms)
+✖ fresh session with changed full binding refuses before accounting (0.130947ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 2
+ℹ fail 15
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3932.231855
+
+✖ failing tests:
+
+test at apps/control/document-application/test/application.test.mjs:17:1
+✖ create/revise/inspect/download use immutable storage and one shared canonical ledger (1.31752ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:18:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/control/document-application/test/application.test.mjs:30:1
+✖ actual DOCX produces truthful draft/preview metadata and exact ZIP bytes (0.174111ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:31:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/document-application/test/application.test.mjs:35:1
+✖ default disabled allocates no document effect; borrowed session remains open (0.171498ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:36:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:38:277
+✖ reject body authority before generation (0.131748ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:39:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:38:277
+✖ reject wrong operation before generation (0.116175ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:39:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:38:277
+✖ reject PDF before generation (0.122203ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:39:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:41:1
+✖ native identity/tool tokens cannot authenticate application routes (0.200902ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:42:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:44:1
+✖ revoked session denies older-version read without another reservation (0.271668ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:45:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:47:1
+✖ post-object revocation preserves uncertainty without regeneration (0.222845ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:48:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:51:1
+✖ strict native Request admission ignores hostile own url and rejects Proxy without traps (0.341373ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:52:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:55:1
+✖ bounded body and fixed path/media handling preserve safe no-store errors (0.283977ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:56:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:59:1
+✖ constructor snapshots data and rejects authority getters without invocation (0.154202ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:60:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:63:1
+✖ canonical descriptor rejects accidental grant or source redefinition (0.213381ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:64:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:68:1
+✖ shorter artifact receipt clips outer lifetime before the next parked session call (0.208283ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:70:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/test/application.test.mjs:73:1
+✖ fresh session with changed full binding refuses before accounting (0.130947ms)
+  Error: LOCAL_DOCUMENT_CONFIGURATION
+      at createLocalDocumentFixture (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/local/fixture.mjs:18:117)
+      at setup (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:10:16)
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-20261013/apps/control/document-application/test/application.test.mjs:74:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

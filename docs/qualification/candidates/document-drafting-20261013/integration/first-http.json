@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "scripts/local-document/run.mjs",
+    "--run",
+    "--python",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python"
+  ],
+  "cwd": "/tmp/meri-document-drafting-20261013",
+  "sourceHead": "929ea5cc5a2422ccac6e7314bcb341dbb2e573df",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:49:58.453727+00:00",
+  "durationSeconds": 3.726,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 505947,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.stdout.bin",
+      "bytes": 7363,
+      "sha256": "8703d2fcccd81112d63e5cb5c7f4a6e8602ea73b1b06e3135e14d3dbc6e75e42"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
