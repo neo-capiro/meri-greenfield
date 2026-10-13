@@ -1,0 +1,67 @@
+{
+  "originalReviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "originalReviewedTree": "b74485b502192284644497d5a8b5849b258fe8f1",
+  "repairedReviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "repairedReviewedTree": "b2729e85e4bbf3647129128edabb455d6847f96b",
+  "preimages": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/verify_artifacts.py",
+      "sha256": "8b1bc5418301fb72d91e41ab2b9245a0ccb9f874787f17a6a68e4893ad3c3603"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/capture.py",
+      "sha256": "4072a1a0869764296ca25a6094b72a8919edc778c9054dfd737d2e6c730b771e"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observe-lifecycle.mjs",
+      "sha256": "dfc17c9358a8fb9dc1958b3c20f21dca219668c4e096652a0ef3c55cfd16177b"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/installed-dependencies.mjs",
+      "sha256": "9f3953516a9de77434ceff54c2b44c4d7a13d7f0b2b41236f8869280673f4a7e"
+    }
+  ],
+  "preservedPriorTrace": {
+    "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-lifecycle.json",
+    "sha256": "2a492668d24005d811270a6888fcef0b0fb940ec14e9f0380051e5803a9a9c98"
+  },
+  "semanticExpectationChanges": [
+    {
+      "sequence": 3,
+      "deliveryId": "brief-substitution",
+      "from": {
+        "status": 400,
+        "errorCode": "INVALID_REQUEST",
+        "errorOutcome": "NOT_DISPATCHED"
+      },
+      "to": {
+        "status": 403,
+        "errorCode": "ACCESS_DENIED",
+        "errorOutcome": "UNKNOWN"
+      },
+      "reason": "Private prepared-intent guard moved into unchanged canonical authority.check before reservation/generation"
+    },
+    {
+      "sequence": 8,
+      "deliveryId": "wrong-base",
+      "from": {
+        "status": 400,
+        "errorCode": "INVALID_REQUEST",
+        "errorOutcome": "NOT_DISPATCHED"
+      },
+      "to": {
+        "status": 403,
+        "errorCode": "ACCESS_DENIED",
+        "errorOutcome": "UNKNOWN"
+      },
+      "reason": "Exact base mismatch rejected by the same private guard"
+    }
+  ],
+  "otherExpectationChanges": [
+    "Verifier pin/tree and repaired supplied artifact directory updated explicitly",
+    "Required applied subject filters now independently asserted exactly once",
+    "Observer records generation/reservation counts after every response",
+    "Review root paths updated for additive repair/ location"
+  ],
+  "nativeQualified": false
+}

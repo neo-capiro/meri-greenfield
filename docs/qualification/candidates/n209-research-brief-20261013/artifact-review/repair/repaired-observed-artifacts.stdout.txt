@@ -1,0 +1,173 @@
+{
+  "status": "PASS",
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "reviewedTree": "b2729e85e4bbf3647129128edabb455d6847f96b",
+  "observedHead": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "startedAt": "2026-10-13T09:13:39.863485+00:00",
+  "python": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+  "pythonDocx": "1.2.0",
+  "pyMuPdf": "1.26.6",
+  "artifactDirectory": "/workspace/meri-n209-artifact-review/docs/qualification/candidates/n209-research-brief-20261013/artifact-review/repair/observed-artifacts",
+  "provenanceFileSha256": "40035d4981b639d89f4636dcd99eac5e0438c59d8d5ee8a90add85e7f6e4b95f",
+  "skillPins": {
+    "skillId": "quick_skill.bill_watch",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+    "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+    "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+  },
+  "sourceReadBindings": [
+    {
+      "sourceId": "bill_text",
+      "selectorSha256": "f23944a6703f09017323d5608a503083711c289543640130038d6b1ceae3f073",
+      "resultSha256": "359c8e0c483e40ed0bd5fe3185ba6a0fd25a33e22399e31e0df8842e9a7ab829"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "selectorSha256": "f23944a6703f09017323d5608a503083711c289543640130038d6b1ceae3f073",
+      "resultSha256": "6d227a3a867b3fe39950539a5570943db7770e2faac50b2173533f14d57b6778"
+    },
+    {
+      "sourceId": "program_elements",
+      "selectorSha256": "f23944a6703f09017323d5608a503083711c289543640130038d6b1ceae3f073",
+      "resultSha256": "4392e85532432502cd1abf116fecf3b47a12787a81194a0933692c528daeda41"
+    },
+    {
+      "sourceId": "bill_text",
+      "selectorSha256": "e29846e07eaa62e3d409526eae0810594b0f8dc620b48a918fb5d01febe0eeef",
+      "resultSha256": "fea0e047ad80f2cfb0218516dc21ba7f225c1cfd07cb88044f6912f317563d15"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "selectorSha256": "e29846e07eaa62e3d409526eae0810594b0f8dc620b48a918fb5d01febe0eeef",
+      "resultSha256": "2a872a9b91dc15cfd70b4922d13ba79545a1004ab075861a800d69214e07083b"
+    },
+    {
+      "sourceId": "program_elements",
+      "selectorSha256": "e29846e07eaa62e3d409526eae0810594b0f8dc620b48a918fb5d01febe0eeef",
+      "resultSha256": "7df6e5c2155436d0e4ffbbf40de49e85628ec0ef4bd5e9fd0b1236f01090b11b"
+    }
+  ],
+  "versions": [
+    {
+      "label": "original",
+      "versionId": "6d266adb-36dd-4992-b9f2-4fb99b01f62d",
+      "docxSha256": "ba11b3f17655f0c3526bf5788f5941a9db4ec3751b595a3a9a30c14feec85d00",
+      "docxBytes": 38703,
+      "pdfSha256": "e8f3b6896e70c12feb1f16215eadc2c637292d5aefae7d223e1ff169e39383a3",
+      "pdfBytes": 49332,
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "pngSha256": "f259dd12efe8237871bc6b6f93cd3c97af968237b655e77536459e5b3c327b70",
+          "pngBytes": 113607,
+          "textSha256": "cf8fce2dd89f29982233be46a8af1cc91976e047bdcb376186d2a1b90b30f3b7",
+          "spanCount": 28,
+          "allTextSpansWithinPage": true
+        },
+        {
+          "page": 2,
+          "pngSha256": "d2a25fcf613cf9ca21bff5abdba63d81fbe0517bad17bc32d3ae8b7ea3e3107a",
+          "pngBytes": 129945,
+          "textSha256": "dc2674fd1d95b7033b9aba4ef0d900f6af0ec492c668d2d29ef8e86d22063ffe",
+          "spanCount": 34,
+          "allTextSpansWithinPage": true
+        },
+        {
+          "page": 3,
+          "pngSha256": "ee750e14ba3cbc204c8f78964df854f84cf26ed21459502989a48dd0fbcce647",
+          "pngBytes": 141364,
+          "textSha256": "4f50ed437d9d66be6e9db461c25813bdd8cbcba3eedd5c3b8ff882acd344720e",
+          "spanCount": 38,
+          "allTextSpansWithinPage": true
+        },
+        {
+          "page": 4,
+          "pngSha256": "f3ce960b3e339f8c255e6327b5c602942e80e474efcc9573a53a8e7cabbd3203",
+          "pngBytes": 25214,
+          "textSha256": "3ef2035a29ee595796c3d3d1f2ba1da25b1797d325bd49e0a21a441b883ea016",
+          "spanCount": 4,
+          "allTextSpansWithinPage": true
+        }
+      ],
+      "paragraphs": 43,
+      "editableTextSaveAndReopen": true,
+      "bodyMatchesPreparedRequest": true,
+      "bodyMatchesIndependentPdfTextIgnoringWhitespace": true,
+      "stylesSha256": "02d71a68ddb92c055e84526d6a9e45700be3872781ababf759241694bc30e384",
+      "specSha256": "fa6f1c452bbf4cf82454a1e56d8a4698f82951a5b56679989fbcaf3c3839e07d"
+    },
+    {
+      "label": "revision",
+      "versionId": "d8a8b684-13b8-400d-913b-3893cf729c66",
+      "docxSha256": "6058c3fea698d4cca59976b8df852ec55e572f3a6fef0fe61a23f9afa0a88c2d",
+      "docxBytes": 38892,
+      "pdfSha256": "b0eeffb388849f0e5c241099ee30f8e2d83fe5df4c1a23306dcef4b9691ec5c0",
+      "pdfBytes": 49905,
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "pngSha256": "c3253cdf94224c73bb0a53b83a5c6cb5a310f5ec04ddfa09e13ab1b586cca210",
+          "pngBytes": 113912,
+          "textSha256": "6b993b796645e1173b8e8169528fa9b8f3f90738c9fb4523956bd519249ca19f",
+          "spanCount": 28,
+          "allTextSpansWithinPage": true
+        },
+        {
+          "page": 2,
+          "pngSha256": "f1881f5194941bd9e41aacd618969ef49c4659b35438e7f087c032ea4c319450",
+          "pngBytes": 131594,
+          "textSha256": "63ddd4aba05360c10d8ab8cce708ed752a384f5b3787205844e3b3380c47231c",
+          "spanCount": 35,
+          "allTextSpansWithinPage": true
+        },
+        {
+          "page": 3,
+          "pngSha256": "0017ed7a14936787b2814a30ceb6c3bd6b3042c006dc89f1c487fd3e9d769ee1",
+          "pngBytes": 139109,
+          "textSha256": "06595693a0f920343242ddec57764b113e75ed10935ba036ccc1c03bf8bfd7fe",
+          "spanCount": 38,
+          "allTextSpansWithinPage": true
+        },
+        {
+          "page": 4,
+          "pngSha256": "4224ffbfa2d1e2d80d120a14f8b17e0ec2be79b4bdebb73a5f017ccf9b1ef195",
+          "pngBytes": 49932,
+          "textSha256": "b09fc6dd39c173c2eb9aab46b74442ba9a1843907a7671e3b65e2ed4bd59d0ad",
+          "spanCount": 9,
+          "allTextSpansWithinPage": true
+        }
+      ],
+      "paragraphs": 43,
+      "editableTextSaveAndReopen": true,
+      "bodyMatchesPreparedRequest": true,
+      "bodyMatchesIndependentPdfTextIgnoringWhitespace": true,
+      "stylesSha256": "02d71a68ddb92c055e84526d6a9e45700be3872781ababf759241694bc30e384",
+      "specSha256": "7f980b9d8c8f03320e27af5a773b806ab26bc1e0eb26b00a0a01dfd93af4ce0c"
+    }
+  ],
+  "parent": {
+    "versionId": "6d266adb-36dd-4992-b9f2-4fb99b01f62d",
+    "objectSha256": "ba11b3f17655f0c3526bf5788f5941a9db4ec3751b595a3a9a30c14feec85d00",
+    "specSha256": "fa6f1c452bbf4cf82454a1e56d8a4698f82951a5b56679989fbcaf3c3839e07d",
+    "provenanceSha256": "52d5a680408986d097fbd8f636abaf8b32981946902ef6f3a64ff40568f84846"
+  },
+  "sourceReopenProcessIds": [
+    32482,
+    32483,
+    32507,
+    32508,
+    32509,
+    32533
+  ],
+  "limitations": [
+    "Synthetic sources/authorization/identity/accounting only",
+    "Local editable/read/render evidence only",
+    "Hashes prove correspondence, not source authenticity or corpus completeness",
+    "No native runtime/DB/provider/SDK checkpoint/browser qualification"
+  ],
+  "nativeQualified": false,
+  "productionActivated": false
+}

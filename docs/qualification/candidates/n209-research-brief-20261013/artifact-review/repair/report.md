@@ -1,0 +1,42 @@
+# Repaired independent artifact review: ACCEPT_ARTIFACT
+
+Exact reviewed source: `57c8f7b99043938666b8f29f1e61e81c96c81d39`, tree `b2729e85e4bbf3647129128edabb455d6847f96b`. Decision: **ACCEPT_ARTIFACT for local synthetic content, lineage, rendering and exercised lifecycle controls at this repaired pin. Native/runtime acceptance remains HOLD.** This is an additive repair packet; the earlier artifact review, its 22-response trace and the independent source review's duplicate-filter/metadata HOLD remain unchanged historical evidence.
+
+The reviewer read the exact repair diff, updated task allocation and README, new private binding, canonical authority/HTTP flow and original skill/manifest. The repair requires every applied subject filter exactly once and restores public current/index to composition. The new private binding checks the branded prepared request, exact context and exact parent at the canonical artifact authority before reservation/generation, then calls the original policy owner. The unchanged HTTP owner deliberately reports substitution/wrong-parent refusal as 403 `ACCESS_DENIED / UNKNOWN` after entry. This does not grant source permissions, change the model loop or imply an uncertain write occurred.
+
+## Preserved preimages and independent checks
+
+Only new files under `artifact-review/repair/` were created. `preimage-and-expectation-map.json` retains the exact original verifier/observer/capture/loader hashes and original trace hash. The new observer compares all 22 stable response records against the prior trace and changes only two explicitly allocated expectations: substitution (sequence 3) and wrong-base (sequence 8), from 400 `INVALID_REQUEST / NOT_DISPATCHED` to 403 `ACCESS_DENIED / UNKNOWN`. All other status/code/outcome/path/delivery/phase/inspection expectations remain identical. Added per-response generation/reservation counts establish those refusals allocate nothing.
+
+Three checks passed at the exact repaired pin with zero implementation diff: repaired supplied artifact verifier (0.367 seconds), independent repaired HTTP lifecycle (3.727 seconds), independent observed artifact verifier (0.416 seconds). Each capture is bounded at 180 seconds and records its owned group absent, no timeout, no remaining child or cleanup kill. No check failed. The ordinary experimental-loader warning is retained. No dependency installation, DB work, model/provider call, cloud operation, private source, credential access or network operation other than the authorized ephemeral loopback HTTP fixture occurred.
+
+Two additional direct Git byte comparisons passed: original skill/manifest/catalog/compose/Word owner files are unchanged from `7d1024d`; public current/index and the entire contracts tree are unchanged from composition `45c2de24`. `direct-source-preservation.json` records the exact commands and empty-diff hashes. The source/compiler reviewer separately owns hostile duplicate-filter tests and public distribution acceptance; this artifact packet does not substitute for that source review.
+
+## Actual repaired artifacts and hashes
+
+The independent default python3/python-docx/PyMuPDF verifier opened all four repaired DOCX files (two supplied, two independently regenerated), checked all 43 actual editable paragraphs against each full typed request, parsed visible provenance directly, and proved edit/save/reopen in memory without mutating retained bytes. All factual/citation/passages/source IDs/versions/full and passage hashes/current decision IDs/scopes/subject filter hashes/timestamps matched decisive read envelopes and immutable version evidence. Required applied filters were independently asserted exactly once. Each complete DOCX body survived PDF text extraction after whitespace removal; all PDF pages were counted, re-rendered and matched each PNG byte-for-byte, with every text span inside its page.
+
+| Repaired supplied artifact | Bytes | Rendered pages | SHA256 |
+| --- | ---: | ---: | --- |
+| original.docx | 38,703 | 4 | `173e24a17f37caf1f364a5ed5018371f5ce81fb3ab196df4f7790e89be3823a1` |
+| revision.docx | 38,890 | 4 | `beff05a4c9bd474c980321ab74f7c625f2c58faa6da6c5f9757012eeeb676d03` |
+| original-preview.pdf | 49,310 | 4 | `4f94538390a47f4a5cc5a39655eb39e10d13c0d4e13684dfe62953aec2b3ed9a` |
+| revision-preview.pdf | 49,935 | 4 | `005c8fb2817b6d1ecaf324dbd8fb3224a26056d0cb4888ae4653b65b8954eadb` |
+
+Supplied original version: `9f2c4c7c-1759-42b9-9040-9b443fcf5952`; revision: `9cb6b0eb-0918-486b-87ab-4c3ea2235ea9`. The revision's exact parent object SHA256 equals the original DOCX hash above; independently recomputed parent spec SHA256 is `a69b58cb7b6442e4e2ba2b7b4b87cf16beb9ad22192f58af0434d60bead8f8cf`, and parent provenance SHA256 is `857ab893cf7b26ba6ce61995eaa75d0607369993e343a1892f017a20eb1a807d`.
+
+Independently generated observation: original DOCX `ba11b3f17655f0c3526bf5788f5941a9db4ec3751b595a3a9a30c14feec85d00` (38,703 bytes), revision DOCX `6058c3fea698d4cca59976b8df852ec55e572f3a6fef0fe61a23f9afa0a88c2d` (38,892 bytes); both render to four pages. All PDF/PNG/read/input/base hashes for both sets are in the two verifier outputs and visual record.
+
+Original recipe pins were reread/recomputed and remain exact in every actual DOCX: `quick_skill.bill_watch` version 1.0.0; manifest canonical SHA256 `15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065`; prose byte SHA256 `ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55`; catalog canonical SHA256 `27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968`.
+
+Congress 119/session 2/bill `119-hr-4242`/version `ih`/FY 2027/authorized stage remain explicit. F1 remains an exact bound authorization-only excerpt with a visibly non-verifying locator URL. F2 remains a free-form unverified claim despite citations and discloses potentially conflicting passages. F3 remains missing evidence and the unavailable source makes no negative assertion. Proposed language is a human-review draft. The revision preserves original styles/section properties and immutable original text, changes only the new version's proposal and records exact parent provenance.
+
+## Every repaired page opened and lifecycle replay
+
+Every supplied repaired PNG (original 1–4, revision 1–4) and every independent observation PNG (original 1–4, revision 1–4) was opened individually using `view_image` at original resolution: sixteen new page inspections. All facts, proposals, citations, coverage/verification data and provenance are readable and complete. No clipping, overlap, missing paragraph or edge truncation was observed. Provenance continues onto a sparse page 4, unchanged minor pagination behavior. `visual-review.json` records exact page hashes and observations; the eight pages from either earlier packet were not reused as evidence for this repaired pin.
+
+The fresh real loopback flow created/revised once each, reconstructed the trusted graph, inspected/downloaded both versions and proved original downloads before/after revision/reconstruction byte-identical. Four successful inspections returned `currentBytesVerified: true`. Wrong caller-context body still returned 400 before dispatch. Substitution returned 403 with generation/reservation counts `0/0`; wrong-base returned 403 with counts still `1/1`, confirming no increment from that refusal. Foreign-session/store and revocation behavior stayed exactly as before. Replay stayed 502 `ARTIFACT_BUDGET_RESERVATION_UNKNOWN / UNKNOWN` without another generation; synthetic accounting ended SETTLED 2, UNKNOWN 0, consumed 20 micro-USD. Successful durable replay remains unqualified.
+
+Raw cleanup showed all eight owned generation/inspection/render `/proc` leaders and group members absent, both exact temporary fixture directories absent after close, no TCP/TCP6 LISTEN entry on the allocated port, server closed/not listening/zero sockets. All process/store/listener coordinates and 22 response digests are retained in `observed-lifecycle.json`. Historical repaired root receipts were also read; their exact synthetic/native false flags are preserved.
+
+Source authenticity/currentness, genuine authorized gateway adapters, private attachment approval, native PostgreSQL preservation, SDK recipe execution/checkpoint durability, production preview persistence and deployment remain separate gates. All local artifact evidence retains native false flags. This packet does not close the remaining 51 whole-plan requirements and introduces no implementation change.
