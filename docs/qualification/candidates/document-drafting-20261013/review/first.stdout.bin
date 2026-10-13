@@ -1,0 +1,91 @@
+✔ independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources (776.106857ms)
+✔ independent current actor substitution refuses before generation (8.766806ms)
+✔ independent current tenant substitution refuses before generation (7.256671ms)
+✔ independent current attempt substitution refuses before generation (8.342248ms)
+✔ independent current fence substitution refuses before generation (6.985858ms)
+✔ independent current client substitution refuses before generation (7.406712ms)
+✔ independent current scope revision substitution refuses before generation (7.5316ms)
+✔ independent full canonical descriptor cannot omit grants or source requirements (5.754088ms)
+✖ independent constructor snapshots caller context, scopes, limits and descriptor (7.365799ms)
+✔ independent create replay and changed intent cannot generate or charge again (107.708485ms)
+✔ independent stale revision leaves both committed versions unchanged and preserves uncertain effect (272.25332ms)
+✔ independent committed result withheld on final session denial remains RESULT_NOT_RELEASED (89.962465ms)
+✖ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (78.71466ms)
+✔ independent original cutoff aborts parked current-state receipt before effects (42.414315ms)
+✔ independent newly shortened artifact expiry bounds the next parked executor (114.937639ms)
+✔ independent cancellation during response acquisition denies exact old version (122.839556ms)
+✔ independent raw binding injection has no authority/effect (7.249545ms)
+✔ independent raw scopes injection has no authority/effect (8.200245ms)
+✔ independent raw credential injection has no authority/effect (8.327325ms)
+✔ independent raw path injection has no authority/effect (7.110146ms)
+✔ independent raw baseVersionId injection has no authority/effect (6.402502ms)
+✖ independent hostile errors and request objects execute no getters or proxy traps (13.253079ms)
+✔ independent oversized and malformed UTF8 bodies refuse before source work (8.059683ms)
+✔ independent parked incoming body aborts under original deadline (38.273678ms)
+✔ independent no activation by default and separate tool/native credentials refused (7.823498ms)
+✔ independent CLI help and invalid arguments remain inert and preserve environment (0.477027ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 23
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4680.784269
+
+✖ failing tests:
+
+test at apps/control/document-application/independent/application-independent.test.mjs:37:1
+✖ independent constructor snapshots caller context, scopes, limits and descriptor (7.365799ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"SESSION_REFUSED","outcome":"NOT_DISPATCHED"}}
+  
+  403 !== 200
+  
+      at json (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:22:70)
+      at async TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:39:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 403,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:54:1
+✖ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (78.71466ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'NOT_DISPATCHED'
+  
+      at reject (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:23:240)
+      at async TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:55:383)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'NOT_DISPATCHED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:67:1
+✖ independent hostile errors and request objects execute no getters or proxy traps (13.253079ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:69:285)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

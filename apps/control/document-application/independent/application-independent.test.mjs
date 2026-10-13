@@ -14,7 +14,7 @@ const parked=signal=>new Promise((_,reject)=>{if(signal.aborted)reject(Error('ca
 async function setup(t,transform=x=>x){
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python});
  t.after(async()=>{await f.close();assert.equal(f.stats().cleanup.executorDirectoriesAbsent,true);assert.equal(f.stats().cleanup.storeRemoved,true);await assert.rejects(access(f.directory));});
- const base={sessions:{authenticateSession:f.sessions.authenticateSession,readCurrentState:f.sessions.readCurrentState},selectedClientId:f.selectedClientId,artifactOptions:{...f.artifactOptions},credential:f.credential,now:f.now,limits:{...f.limits},enabled:true};
+ const base={sessions:{authenticateSession:f.sessions.authenticateSession,readCurrentState:f.sessions.readCurrentState},selectedClientId:f.selectedClientId,artifactOptions:{...f.artifactOptions,context:structuredClone(f.artifactOptions.context),descriptor:structuredClone(f.artifactOptions.descriptor)},credential:f.credential,now:f.now,limits:{...f.limits},enabled:true};
  const options=transform(base),app=createDocumentApplication(options),session=await f.sessions.issue({identityCredential:f.nativeCredential});
  const request=(route,body,extra={})=>new Request('http://127.0.0.1/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json'},body:JSON.stringify(body),...extra});
  return {f,options,app,session,request,post:(route,body,extra)=>app.handle(request(route,body,extra))};
@@ -46,13 +46,12 @@ test('independent stale revision leaves both committed versions unchanged and pr
  await reject(await a.post('revise',{deliveryId:'stale',baseVersionId:first.version.versionId,request:{...text(),content:{text:'stale'}}}),'UNKNOWN');
  for(const [version,expected]of[[first.version,text().content.text],[second.version,next.content.text]]){const r=await a.post('download',{versionId:version.versionId});assert.equal(r.status,200);assert.equal(await r.text(),expected);}assert.equal(a.f.stats().settled,2);assert.equal(a.f.stats().unknown,1);
 });
-test('independent committed result withheld on final session denial remains RESULT_NOT_RELEASED',async t=>{
- let final=false;const a=await setup(t,c=>{const auth=c.sessions.authenticateSession;c.sessions.authenticateSession=x=>{if(final)throw Error('SECRET');return auth(x);};const check=c.artifactOptions.authorize;let releases=0;c.artifactOptions.authorize=async x=>{const out=await check(x);if(x.resource?.versionId&&++releases===2)final=true;return out;};return c;});
- // Denial timing is selected by the actual version commit callback, followed by the final session check.
- const out=await a.post('create',{deliveryId:'late',request:text()});if(out.status===200){const v=await out.json();final=true;await reject(await a.post('download',{versionId:v.version.versionId}),'NOT_DISPATCHED');}else{const e=await reject(out);assert.ok(['UNKNOWN','RESULT_NOT_RELEASED'].includes(e.error.outcome));}assert.equal(a.f.stats().generations,1);
+test('independent completed download withheld on final session denial remains RESULT_NOT_RELEASED',async t=>{
+ let armed=false,afterFinal=0,downloadChecks=0;const a=await setup(t,c=>{const auth=c.sessions.authenticateSession;c.sessions.authenticateSession=x=>{if(armed&&++afterFinal===2)throw Error('SECRET');return auth(x);};const authorize=c.artifactOptions.authorize;c.artifactOptions.authorize=async x=>{const out=await authorize(x);if(x.action==='artifact.download'&&++downloadChecks===3)armed=true;return out;};return c;});
+ const first=await json(await a.post('create',{deliveryId:'late',request:text()}));await reject(await a.post('download',{versionId:first.version.versionId}),'RESULT_NOT_RELEASED');assert.equal(afterFinal,2);assert.equal(downloadChecks,3);assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().settled,1);
 });
 test('independent object acknowledgement then revocation retains UNKNOWN and no second write on replay',async t=>{
- const a=await setup(t,c=>{const put=c.artifactOptions.objects.put;c.artifactOptions.objects={...c.artifactOptions.objects,async put(...args){const out=await put(...args);c.sessions.close();return out;}};return c;});await reject(await a.post('create',{deliveryId:'lost-release',request:text()}),'UNKNOWN');assert.equal(a.f.stats().unknown,1);assert.equal(a.f.stats().generations,1);await reject(await a.post('create',{deliveryId:'lost-release',request:text()}),'NOT_DISPATCHED');assert.equal(a.f.stats().generations,1);
+ let revoked=false;const a=await setup(t,c=>{const auth=c.sessions.authenticateSession;c.sessions.authenticateSession=x=>{if(revoked)throw Error('revoked');return auth(x);};const put=c.artifactOptions.objects.put;c.artifactOptions.objects={...c.artifactOptions.objects,async put(...args){const out=await put(...args);revoked=true;return out;}};return c;});await reject(await a.post('create',{deliveryId:'lost-release',request:text()}),'UNKNOWN');assert.equal(a.f.stats().unknown,1);assert.equal(a.f.stats().generations,1);await reject(await a.post('create',{deliveryId:'lost-release',request:text()}),'NOT_DISPATCHED');assert.equal(a.f.stats().generations,1);
 });
 test('independent original cutoff aborts parked current-state receipt before effects',async t=>{
  let stopped=false;const a=await setup(t,c=>{c.limits.maxRequestMs=35;c.sessions.readCurrentState=async x=>{try{await parked(x.signal);}finally{stopped=x.signal.aborted;}};return c;});const at=Date.now();await reject(await a.post('create',{deliveryId:'parked',request:text()}),'NOT_DISPATCHED');assert.equal(stopped,true);assert.ok(Date.now()-at<1000);assert.equal(a.f.stats().generations,0);
@@ -65,7 +64,7 @@ test('independent cancellation during response acquisition denies exact old vers
 });
 for(const key of ['binding','scopes','credential','path','baseVersionId'])test(`independent raw ${key} injection has no authority/effect`,async t=>{const a=await setup(t);await reject(await a.post('create',{deliveryId:'injection',request:text(),[key]:'forged'}),'NOT_DISPATCHED');assert.equal(a.f.stats().generations,0);});
 test('independent hostile errors and request objects execute no getters or proxy traps',async t=>{
- let traps=0;const hostile=new Proxy({}, {get(){traps++;throw Error('SECRET');},getPrototypeOf(){traps++;throw Error('SECRET');},ownKeys(){traps++;throw Error('SECRET');}});
+ let traps=0;const hostile=new Proxy({}, {get(_target,key){traps++;console.error('INDEPENDENT_TRAP',String(key),new Error('trap location').stack);throw Error('SECRET');},getPrototypeOf(){traps++;throw Error('SECRET');},ownKeys(){traps++;throw Error('SECRET');}});
  const a=await setup(t,c=>{c.artifactOptions.authorize=async()=>{throw hostile;};return c;});await reject(await a.app.handle(hostile),'NOT_DISPATCHED');const r=await a.post('create',{deliveryId:'hostile',request:text()});assert.equal((await r.text()).includes('SECRET'),false);assert.equal(traps,0);
 });
 test('independent oversized and malformed UTF8 bodies refuse before source work',async t=>{
