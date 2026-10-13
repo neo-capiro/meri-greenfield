@@ -1,0 +1,144 @@
+{
+  "checkedAt": "2026-10-13T07:36:31.011071+00:00",
+  "processes": [
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/failure-processes.json",
+      "pid": 537964,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/profile-docx-processes.json",
+      "pid": 537953,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/profile-xlsx-processes.json",
+      "pid": 537942,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-processes.json",
+      "pid": 537809,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-processes.json",
+      "pid": 537810,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-processes.json",
+      "pid": 537811,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-processes.json",
+      "pid": 537941,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-processes.json",
+      "pid": 537515,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-processes.json",
+      "pid": 537516,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-processes.json",
+      "pid": 537808,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-processes.json",
+      "pid": 536483,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-processes.json",
+      "pid": 536484,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-processes.json",
+      "pid": 536485,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-processes.json",
+      "pid": 536727,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-processes.json",
+      "pid": 536401,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-processes.json",
+      "pid": 536402,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-processes.json",
+      "pid": 536482,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-processes.json",
+      "pid": 535675,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-processes.json",
+      "pid": 535676,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-processes.json",
+      "pid": 535677,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-processes.json",
+      "pid": 535700,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-processes.json",
+      "pid": 535645,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-processes.json",
+      "pid": 535646,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-processes.json",
+      "pid": 535674,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "before.json",
+      "pid": 535628,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "repaired.json",
+      "pid": 536384,
+      "physicallyAbsent": true
+    },
+    {
+      "source": "final.json",
+      "pid": 537498,
+      "physicallyAbsent": true
+    }
+  ],
+  "allPhysicallyAbsent": true,
+  "allTestFinallyCleanupCompleted": true,
+  "dependenciesInstalledOrLinked": false,
+  "otherOwnerResourcesDisposed": false
+}

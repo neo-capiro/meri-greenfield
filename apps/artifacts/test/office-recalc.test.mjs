@@ -34,3 +34,22 @@ test('Word argument contract remains exact and unsupported transform is rejected
  assert.deepEqual(officeTransformArguments({workspace:'/tmp/owned',format:'docx',target:'pdf'}),['-env:UserInstallation=file:///tmp/owned/profile','--headless','--nologo','--nodefault','--norestore','--convert-to','pdf','--outdir','/tmp/owned/out','/tmp/owned/input.docx']);
  assert.throws(()=>officeTransformArguments({workspace:'/tmp/owned',format:'txt',target:'xlsx'}));
 });
+async function probe(f,body){const executable=join(f.root,'probe.mjs');await writeFile(executable,'#!'+process.execPath+'\n'+body,{mode:0o700});return executable;}
+for(const format of ['xlsx','docx'])test(`${format} profile configuration stays fixed and isolated from the borrowed temp root`,async t=>{
+ const f=await fixture(t,'profile-'+format),executable=await probe(f,`import {readFile,writeFile,stat} from 'node:fs/promises';import {join} from 'node:path';import {fileURLToPath} from 'node:url';const args=process.argv.slice(2),dir=process.cwd(),profile=fileURLToPath(args[0].split('=')[1]);let config=null;try{const path=join(profile,'user','registrymodifications.xcu');config={xml:await readFile(path,'utf8'),mode:(await stat(path)).mode&511,directoryMode:(await stat(join(profile,'user'))).mode&511};}catch(e){if(e.code!=='ENOENT')throw e;}const xlsx=args.at(-1).endsWith('.xlsx');await writeFile(join(dir,'out','input.'+(xlsx?'xlsx':'pdf')),(xlsx?'PK':'%PDF-')+JSON.stringify({owned:profile===join(dir,'profile'),config}));`);
+ const result=await createLibreOfficeTransformer({executable,tempRoot:f.root}).transform({bytes:Buffer.from('synthetic test input'),format,target:format==='xlsx'?'xlsx':'pdf',deadlineMs:Date.now()+3000,maxBytes:4096});f.receipts.push(result.receipt.process);
+ const observed=JSON.parse(result.bytes.subarray(format==='xlsx'?2:5));assert.equal(observed.owned,true);
+ if(format==='xlsx'){assert.equal(observed.config.mode,0o600);assert.equal(observed.config.directoryMode,0o700);assert.match(observed.config.xml,/oor:path="\/org\.openoffice\.Office\.Calc\/Formula\/Load"/);assert.match(observed.config.xml,/<prop oor:name="OOXMLRecalcMode" oor:op="fuse"><value>0<\/value><\/prop>/);assert.equal((observed.config.xml.match(/<prop /g)??[]).length,1);}
+ else assert.equal(observed.config,null);
+ assert.deepEqual(await readdir(f.root),['probe.mjs']);assert.equal(result.receipt.process.groupAbsent,true);
+});
+test('child failure removes owned XLSX profile/input/output and preserves borrowed root',async t=>{
+ const f=await fixture(t,'failure'),executable=await probe(f,'process.exit(9);');
+ await assert.rejects(createLibreOfficeTransformer({executable,tempRoot:f.root}).transform({bytes:Buffer.from('PKsynthetic'),format:'xlsx',target:'xlsx',deadlineMs:Date.now()+3000,maxBytes:4096}),error=>{f.receipts.push(error.receipt);assert.equal(error.receipt.groupAbsent,true);return error.code==='ARTIFACT_PROCESS_FAILED';});
+ assert.deepEqual(await readdir(f.root),['probe.mjs']);
+});
+test('pre-cancelled XLSX conversion cleans prepared profile without starting a child',async t=>{
+ const f=await fixture(t,'cancel'),abort=new AbortController();abort.abort();
+ await assert.rejects(createLibreOfficeTransformer({executable:soffice,tempRoot:f.root}).transform({bytes:Buffer.from('PKsynthetic'),format:'xlsx',target:'xlsx',deadlineMs:Date.now()+3000,maxBytes:4096,signal:abort.signal}),error=>{assert.equal(error.receipt,undefined);return error.code==='ARTIFACT_CANCELLED';});
+ assert.deepEqual(await readdir(f.root),[]);
+});

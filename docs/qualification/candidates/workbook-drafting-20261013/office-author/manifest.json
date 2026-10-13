@@ -1,0 +1,237 @@
+{
+  "sourceFreeze": "1c3cfb9c97681415286236edd21a829e51b565eb",
+  "testFreeze": "458352c965b97ee3c374d2f8f95d45027bb1ef0a",
+  "scope": "SYNTHETIC_LOCAL_OFFICE_SOURCE_NOT_NATIVE_QUALIFICATION",
+  "members": [
+    {
+      "path": "apps/artifacts/office-transform.mjs",
+      "bytes": 3069,
+      "sha256": "bac0619f374729a1197192d065cd16a41b87afd646a56f03e3ab72473cb4989d"
+    },
+    {
+      "path": "apps/artifacts/test/office-recalc.test.mjs",
+      "bytes": 8037,
+      "sha256": "854d77a0a3ef898b4088d56c11404199a11c1f47487876aa49025c7835141275"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/README.md",
+      "bytes": 1526,
+      "sha256": "8a2b60ba0fcfe04b99b28073a007419bcb07de658880584c581bcf5d92f269be"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/REPORT.md",
+      "bytes": 4554,
+      "sha256": "a575c6c305b37e20243ff2f7f8ee88ba0273106145b8b99bcc7faf69fe9d1f30"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/audit.json",
+      "bytes": 2282,
+      "sha256": "8e5822b287b3cd512295dc731f06398902ad5de4bd2fb368e5d197d847d7a388"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-input.xlsx",
+      "bytes": 5414,
+      "sha256": "d2316e758aa9de118058959cc675074d072249da3d5ca3cf02f70df16cec0860"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-inspection.json",
+      "bytes": 7875,
+      "sha256": "e298965d8ff55c68fc9e859c9071a391e9cd5165dd30da292961215b3b49dca9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-output.xlsx",
+      "bytes": 6250,
+      "sha256": "17383c9b467e93c93ea5f2bf309bb71288f152963d463f9da9b7bbc6c43e8b1d"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-processes.json",
+      "bytes": 2397,
+      "sha256": "5fa9d8347fe50a08200d4120aa3b31a6be66140dd486b8b941afa0df122af2c5"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-input.xlsx",
+      "bytes": 6002,
+      "sha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-inspection.json",
+      "bytes": 7921,
+      "sha256": "3f8feaa6dafc504a66e0da5533c2d2f61213794dd0d5d1dd40d320be7c72987f"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-output.xlsx",
+      "bytes": 7410,
+      "sha256": "81c7e99494fb4642af5036aeb1e98113ca2afdcaf2b6e4ed19a60e4a0e385297"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-processes.json",
+      "bytes": 1798,
+      "sha256": "d662b04ad30c49802b9071b35b7f9917542805eb8af47a369fc2222ca0b94060"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before.json",
+      "bytes": 1254,
+      "sha256": "d6169da5a5e14356e4255180341b943366725038e927784c28173924bafdd034"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before.stdout.bin",
+      "bytes": 1824,
+      "sha256": "e09e54982adfcbd22031581e52ae81bf93a9abb16bbb1112ecdcb42640cc9ebe"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/cleanup.json",
+      "bytes": 5270,
+      "sha256": "9f4b08e6a0ab57281e837e45440cd492f67ba3b591e9542771d60e14ea9b69be"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/cancel-processes.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/failure-processes.json",
+      "bytes": 596,
+      "sha256": "627f75e24ab5bc768159bdc99c325eac933f51303015281217bd8117ecba0feb"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-input.xlsx",
+      "bytes": 5415,
+      "sha256": "ea31e4f1bf1ebd2411d3a159acd97bba69146990b2d6d2d5c3cca1a19248c381"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-inspection.json",
+      "bytes": 7881,
+      "sha256": "a870ac1d392ff37d99e3bd34d08b44021af4659397fd814e1e2aaa2fa8defb78"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-output.xlsx",
+      "bytes": 6253,
+      "sha256": "1b359e6a8e8effa53b49ca78530bb7c7df903a7edfed8af3a910ed1f76abd509"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-processes.json",
+      "bytes": 2397,
+      "sha256": "40ad0b84ff32bdff483cedbb5bd15595d1424cad5e43530583d34092380662eb"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-input.xlsx",
+      "bytes": 6002,
+      "sha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-inspection.json",
+      "bytes": 7929,
+      "sha256": "0545517baa578931ea0418ea5856ce826b1ccece2f8c810d97d5ab1dca5f5aad"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-output.xlsx",
+      "bytes": 7418,
+      "sha256": "d7d73a722ac7539c0154d3d424f3b1aaba007f79d57044655c934aa47818a3c6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-processes.json",
+      "bytes": 1798,
+      "sha256": "f0adbea5f042d68eb3757f504a2804ca2228f9769b6325ff2408eb3840a0dbaa"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/profile-docx-processes.json",
+      "bytes": 596,
+      "sha256": "dbf957a4bd761c183601cbfe8cfa3af2b1cd87036b71522f85517c5f283e55a3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/profile-xlsx-processes.json",
+      "bytes": 596,
+      "sha256": "325ba10cb26d9466e32216efeb39ffee72fafc63b7509679d32c28ee25eb3371"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.json",
+      "bytes": 1255,
+      "sha256": "741e598c9009fa27af6159bb58557e40b136e07444a4cfa9da22f4057ddb13a7"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.stdout.bin",
+      "bytes": 826,
+      "sha256": "ca04c886c0de9b95014d9865ceefdb49dc4df4b35751b3c2d55a9ac090af0acd"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/original.xlsx",
+      "bytes": 6002,
+      "sha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-input.xlsx",
+      "bytes": 5415,
+      "sha256": "de6ac870c71625dd5550e64e1098e2b7ae23fd1e540ca31f63d6e8bf33b701cc"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-inspection.json",
+      "bytes": 7881,
+      "sha256": "6126b1ac71804bc17fd860ecf0a8c1c367d197ddab3b65ed8bbc990f75bf8ec3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-output.xlsx",
+      "bytes": 6253,
+      "sha256": "747b5af17af5766ce9ddb019300b129afaf70aca42d453c140b29224a19c8d8a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-processes.json",
+      "bytes": 2397,
+      "sha256": "2e8f3853bc165a216549a912edc7e094b72ec7a851ebb9ee64cd9ce57baa757b"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-input.xlsx",
+      "bytes": 6002,
+      "sha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-inspection.json",
+      "bytes": 7929,
+      "sha256": "764d89fe34bef31b1159ffd7ef281074573218b5e7d6b06849769613f18ff33c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-output.xlsx",
+      "bytes": 7418,
+      "sha256": "420b5ba1da27690a6b8bf91ddd9e634ea4d263c093ac4ff520d7c91958e42295"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-processes.json",
+      "bytes": 1798,
+      "sha256": "f61b851f607da41aa3512c4640b96149f6ae7a113db8fb117c85abb7a32c1931"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired.json",
+      "bytes": 1261,
+      "sha256": "1e076006ede1a4f33b4662658b8e3620c36ef31fcc6f155bd0ca5106a0274029"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired.stdout.bin",
+      "bytes": 434,
+      "sha256": "0d4b84df627f1f13cc6c0612e47cebd2e500a4f04656347d01d49a5697104edd"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/upstream.json",
+      "bytes": 565,
+      "sha256": "f13e03ade67462078a94f0b3b745c475b5608d3232c81d34ea70299ab954970c"
+    }
+  ]
+}
