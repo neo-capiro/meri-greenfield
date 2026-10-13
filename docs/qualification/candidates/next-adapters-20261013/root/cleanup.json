@@ -1,0 +1,125 @@
+{
+  "removedOwnedBorrowedLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules"
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "target": "/workspace/meri-next-batch/apps/control/conversations/node_modules"
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules"
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules"
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules"
+    }
+  ],
+  "removedOwnedDependencyCopy": "packages/contracts/node_modules",
+  "baselineDependencyLinkRemoved": true,
+  "donorDirectoriesPreserved": true,
+  "captures": [
+    {
+      "receipt": "adapters-lifecycle-repaired.json",
+      "pgid": 134525,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "public-package-pack-corrected.json",
+      "pgid": 134037,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "public-package-pack.json",
+      "pgid": 133431,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "adapters-lifecycle-final.json",
+      "pgid": 132910,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "contracts-snapshot-repaired.json",
+      "pgid": 139833,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "historical-snapshot-repaired.json",
+      "pgid": 139229,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "contracts-final.json",
+      "pgid": 128874,
+      "currentGroupAbsent": false,
+      "liveMembers": 0,
+      "exitedHostReapPending": [
+        {
+          "pid": 129186,
+          "ppid": 1,
+          "state": "Z",
+          "command": "esbuild"
+        },
+        {
+          "pid": 129215,
+          "ppid": 1,
+          "state": "Z",
+          "command": "esbuild"
+        }
+      ]
+    },
+    {
+      "receipt": "legacy-retrieval-repaired.json",
+      "pgid": 136308,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "final-public-generators-types.json",
+      "pgid": 137604,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "historical-vertical-baseline.json",
+      "pgid": 132240,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    },
+    {
+      "receipt": "public-types-final.json",
+      "pgid": 138010,
+      "currentGroupAbsent": true,
+      "liveMembers": 0,
+      "exitedHostReapPending": []
+    }
+  ],
+  "activeOwnedProcesses": 0,
+  "exitedHostReapPending": 2,
+  "hostNote": "First broadcontract run left two already-exited esbuild helpers adopted byhostPID1. This session cannot reap nonchildren and didnot mutate PID1/otherowners. Subsequent finitecapture parents adopted/reaped their own grandchildren; all latergroups absent.",
+  "publicPackageLocalPath": "/tmp/meri-next-adapters-public-pack/capiro-meri-contracts-0.1.3.tgz",
+  "publicPackageHashReverified": true,
+  "transferred": false
+}
