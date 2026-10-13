@@ -1,13 +1,16 @@
 {
   "base": "b5243ae164f68c7591b039e8365d9897390543d2",
-  "source": "e14f3fc704adde3819088b0587f91c81be5e1ad0",
-  "predecessorPacket": "48e95f3eeaf9546f465a6f4773429775b51d3244",
+  "source": "4f4da0b67d0b062a84b9196a4b70b012df30f213",
+  "predecessorPackets": [
+    "48e95f3eeaf9546f465a6f4773429775b51d3244",
+    "4030675bac1261796f05f12886c611e9b31147aa"
+  ],
   "scope": "SOURCE_ONLY_SCRIPTED_SQL_NO_NATIVE_EXECUTION",
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-QUALIFIED-FIXTURE-REPAIR-20261013.md",
-      "bytes": 8144,
-      "sha256": "43a058eab2874e76ddd5cd2101a9eff96c2a273ed6e7cb6e7936cb36c4ed97bc"
+      "bytes": 9223,
+      "sha256": "526a7e5aa0e2faaf9d72fc902cc9d1db805ce5d13f8bf84ae75594a43e9ea938"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.json",
@@ -41,18 +44,63 @@
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.json",
-      "bytes": 12240,
-      "sha256": "432bef9f364f74f11cc30fdcd43d7d1afee4252dd2ed09352a8aa3af89d1c6ee"
+      "bytes": 13339,
+      "sha256": "89aa9873c8bf21e43b886585a1ee8367325a6c02246867a40e6559da82803640"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py",
       "bytes": 4699,
-      "sha256": "b971e1811218c99e4393dcbc7290a1b7c8c734923b743bdd34be7ad270a9f59f"
+      "sha256": "325d59f0d99aa3a2c648f0634dd5f5538a576e5d3abe329008858ec435006cf0"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/capture-reaped.py",
       "bytes": 3376,
       "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.json",
+      "bytes": 1349,
+      "sha256": "3ef70de36709e5fb9cc1df6aa44e4f5484966274325517bcf533d4c8230a91de"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stdout.bin",
+      "bytes": 1065,
+      "sha256": "3b5cc9342731f4f658c1c54918038b5fcd6b1318fff0ee217e9c6f8b8826da67"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.json",
+      "bytes": 1359,
+      "sha256": "64c00ef4963c93d3c359206b12c272367d54c0b7a472f764e4e51bee503da710"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stdout.bin",
+      "bytes": 6916,
+      "sha256": "93a32d9f4ab9786f5aec5fcb3ed8d0ffba9bf61c671dc84317abb9385b3e91a8"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.json",
+      "bytes": 1366,
+      "sha256": "e0437313e4d1c1568e49bf4d386937d336acb28939208fbf135fe87a5b761096"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin",
+      "bytes": 7790,
+      "sha256": "fc06c0f610df9685a9aab3c0a8a0054a73cbe5abca1f5a26abe8372d5deae258"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cleanup.json",
@@ -163,6 +211,11 @@
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stdout.bin",
       "bytes": 1517,
       "sha256": "f6a630077d563a9496202469ce13113c1b44119e8ef37710c885f6854643ae36"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-e14-preimage.json",
+      "bytes": 13798,
+      "sha256": "fe48eb97a8326c3dbdcd215bdfef2de8738619e48601444bf3eb0b1bf654b0b8"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-f41-preimage.json",
@@ -293,6 +346,11 @@
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-whitespace-followup.json",
       "bytes": 227,
       "sha256": "75040734b1ec827caa1fc1f83bc434bbaa9e5ce2623993c8662ee7a5a4a08265"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace-final.json",
+      "bytes": 1580,
+      "sha256": "6a98ba9e803a01b20bbc93d2dffaa85cd1ab7f41df86300f98617e9045956e37"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace.json",
