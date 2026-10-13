@@ -1,0 +1,138 @@
+{
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "combinedSource": "6f76cf0ee3b8f84fc27a3aab68e38c67275b26ab",
+  "localSource": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+  "applicationSource": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "entries": [
+    {
+      "path": "apps/control/action-application/local/README.md",
+      "bytes": 5903,
+      "sha256": "1852fc37863dde901b736ca57235707805f865166c8bfabd49d0678fab3f09b9"
+    },
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "bytes": 10707,
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9"
+    },
+    {
+      "path": "apps/control/action-application/local/flow.mjs",
+      "bytes": 1914,
+      "sha256": "77f373b1d19fb6b366b9dd52c85226cdf50acb24712278eb57f9ca10745694b5"
+    },
+    {
+      "path": "apps/control/action-application/local/local.test.mjs",
+      "bytes": 4523,
+      "sha256": "af5ac57d81102fe9d05d6d660829acc6be17ef53c93bf6492425893a7f49422d"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-LOCAL-20261013.md",
+      "bytes": 3559,
+      "sha256": "846e2be79987281d1b31d69b917ad01e6e2d6001da4a02cbb21cce2395980ae4"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-LOCAL-20261013.md",
+      "bytes": 2182,
+      "sha256": "95c862450a47b17b9c0794e3a932e5c15146415bb58ecd5162747417166ea7c7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/application-dependency.json",
+      "bytes": 852,
+      "sha256": "42ccbe149327814c629b1381e015c3004f420b2f9abe206047423b7b85ebaebc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/audit.json",
+      "bytes": 3256,
+      "sha256": "96963a4c2db4980e9031d8522097546e84e878301ef9dfe3de1afc345992d19c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/audit.py",
+      "bytes": 2884,
+      "sha256": "28655366a90b6a4164712c379b15a2465b16d51fb7eb117db7e3184212c25321"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cleanup.json",
+      "bytes": 787,
+      "sha256": "1201485acfe2d210a84f27ce1c7dfe4b47677426b3c83a53b9f355f7ac0d305e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-final.json",
+      "bytes": 1240,
+      "sha256": "0735550957ef3ba97f4c6b4714948f02bac2e27b09a4ec682f3dfb6766568a73"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-final.stdout.bin",
+      "bytes": 14421,
+      "sha256": "75d42d4c230ad4bac09ba31a907421e5b5e8bab862052a73325467f847f4349c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-initial.json",
+      "bytes": 1244,
+      "sha256": "900ac4242a6bbd290f74ba50b158f55bce76f94374f78bd92433d47d78701d5c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-initial.stdout.bin",
+      "bytes": 14421,
+      "sha256": "9bb37bedfa7a7366828fa368a7d5436de781febf9c7e70312d1f20cace0090f2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/dependency-final.json",
+      "bytes": 1270,
+      "sha256": "2f1413a1b5bd9f11d0a44a0b07adb09c93d32f7ef45b579537d2f84faf7a73bf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/dependency-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/dependency-final.stdout.bin",
+      "bytes": 969,
+      "sha256": "327e776b4bee11f074bd1f2f1362ba8611e0941e31301fe7179dccde294eb971"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/dependency-pins.json",
+      "bytes": 2026,
+      "sha256": "da54fa97dd7dd9922981e5f49bc2262f27c90a517d12c40f4d023e5e855f041f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.json",
+      "bytes": 1252,
+      "sha256": "1517a303d6d9519bdc71ba0bb90b2520c7b6b0e869f125662cc602b9f6f098d8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.stdout.bin",
+      "bytes": 968,
+      "sha256": "c71356af423804b6f5c39b60175747fac1b5634d1edc13bdf985a791b35ace3f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/whitespace.json",
+      "bytes": 177,
+      "sha256": "72518d9e52fc80c1a1457e9e29a5002a6e9ad61e8e7ecaa98f99090c01e83993"
+    },
+    {
+      "path": "scripts/local-followthrough/run.mjs",
+      "bytes": 1577,
+      "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801"
+    }
+  ]
+}
