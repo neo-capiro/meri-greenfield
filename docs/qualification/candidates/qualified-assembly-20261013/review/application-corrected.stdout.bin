@@ -1,0 +1,38 @@
+✔ complete constructor defers all schema/child/source work and rejects pre-activation HTTP (63.991965ms)
+✔ configuration data is immutable across delayed schema and activation (306.360963ms)
+✔ host configuration getters cannot run during assembly preflight (27.663621ms)
+✔ complete activation read HTTP uses retained canonical state and revoked grant blocks fresh session without another effect (620.921106ms)
+✔ complete reconstruction reobserves worker but never creates new grants/allocation/proposal (411.816973ms)
+✔ stopped worker during reconstruction never resets retained ledger or grants (347.805442ms)
+✔ schema commit acknowledgement loss cannot reach child or retry initialization (39.954966ms)
+✔ close during parked worker read aborts activation and preserves pending grants without source effects (133.921761ms)
+✖ HTTP caller-selected client cannot establish authority or spend the admitted read grant (332.519311ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4846.847124
+
+✖ failing tests:
+
+test at apps/control/qualified-application/independent/application-independent.test.mjs:56:1
+✖ HTTP caller-selected client cannot establish authority or spend the admitted read grant (332.519311ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_DISPATCHED'
+  - 'UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-assembly-review-20261013/apps/control/qualified-application/independent/application-independent.test.mjs:57:256)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_DISPATCHED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
