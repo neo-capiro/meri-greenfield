@@ -78,6 +78,6 @@ test('catalog identity literals cannot resolve through implicit temporary schema
 test('catalog snapshot builtin cast types cannot resolve through temporary schemas',async()=>{
  const s=scripted({fixture:{schemaScope:scope},namespaces});await prepareOwnedApplicationSchema(s.args());
  const queries=s.log.filter(q=>q.text.startsWith('WITH ns AS')||q.text.startsWith('SELECT nspname'));
- const types=queries.flatMap(q=>[...q.text.matchAll(/::([a-z_.]+(?:\[\])?)/g)].map(m=>m[1]));
+ const types=queries.flatMap(q=>[...q.text.matchAll(/::([a-z_][a-z0-9_.]*(?:\[\])?)/g)].map(m=>m[1]));
  assert(types.length>20);for(const name of types)assert.match(name,/^pg_catalog\.(?:regclass|oid|text(?:\[\])?|int4|jsonb)$/);
 });
