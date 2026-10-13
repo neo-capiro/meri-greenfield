@@ -15,7 +15,8 @@ export function createLocalActionGateway(configuration){
  const {mode,identity,pool,allocationJson,source,limits,now,newId}=ownFields(configuration,['mode','identity','pool','allocationJson','source','limits','now','newId']);
  if(mode!=='synthetic-local')deny('GATEWAY_CONFIGURATION');assertLocalActionIdentity(identity);
  const state=identity.status(),a=allocation(allocationJson),l=frozenData(limits);
- if(state.closed||!same(a.run,Object.fromEntries(Object.keys(a.run).map(k=>[k,state.binding[k]])))||a.catalogSha256!==canonicalSha256(catalog)||a.manifest.allowedOperations.length!==1||!same(a.manifest.allowedOperations[0],operation))deny('GATEWAY_CONFIGURATION');
+ const allowed=a.manifest.allowedOperations,readOnly=allowed.length===1&&same(allowed[0],operation),shared=allowed.length===2&&allowed.some(x=>same(x,operation))&&allowed.some(x=>same(x,{id:'create_task',version:'0.2.0'}));
+ if(state.closed||!same(a.run,Object.fromEntries(Object.keys(a.run).map(k=>[k,state.binding[k]])))||a.catalogSha256!==canonicalSha256(catalog)||!(readOnly||shared))deny('GATEWAY_CONFIGURATION');
  const transport=ownFields(source,['origin','getCredentials','fetchImpl'],['maxRequestMs','maxResponseBytes']);
  if(typeof transport.origin!=='string'||typeof transport.fetchImpl!=='function')deny('GATEWAY_CONFIGURATION');
  let url;try{url=new URL(transport.origin);}catch{deny('GATEWAY_CONFIGURATION');}

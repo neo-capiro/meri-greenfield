@@ -1,0 +1,21 @@
+/** Pool admission/provisioning belongs to the caller. This module never opens a driver itself. */
+import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {receiveActionResponse} from '../../../../packages/contracts/action-application/receive.mjs';
+import {PostgresBudgetStore} from '../../../gateway/budget/postgres-budget-store.mjs';
+import {runLocalHostRecovery} from '../local/recovery.mjs';
+export async function readLocalApplicationAccounting({pool,ownedRows,check=()=>{}}){
+ return new PostgresBudgetStore(pool).transact(async client=>{
+  check();const rows=(await client.query('SELECT * FROM meri_qualification.tool_run_allocations WHERE run_id=$1',[ownedRows.runId])).rows;check();
+  const bindings=(await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=ANY($1::uuid[])',[[ownedRows.readGrantId,ownedRows.commandGrantId]])).rows;check();
+  const reservations=(await client.query('SELECT * FROM meri_qualification.tool_reservations WHERE run_id=$1',[ownedRows.runId])).rows;check();
+  if(rows.length!==1||rows[0].allocation_sha256!==ownedRows.allocationSha256||bindings.length!==2||bindings.some(r=>r.facts.allocationSha256!==ownedRows.allocationSha256)||reservations.length!==2||reservations.some(r=>r.state!=='SETTLED'||String(r.charged_micro_usd)!=='10')||new Set(reservations.map(r=>r.grant_id)).size!==2)throw Error('LOCAL_ACCOUNTING_REFUSED');
+  return data({kind:'database-readback',runId:ownedRows.runId,allocationSha256:ownedRows.allocationSha256,allocations:1,grants:2,reservations:2,chargedMicroUsd:'20'});
+ },check);
+}
+export async function runLocalApplication(options){
+ const {caseOwner,initialPool,openFreshPool}=own(options,['caseOwner','initialPool','openFreshPool']);if(typeof openFreshPool!=='function')throw Error('LOCAL_CONFIGURATION');let count=0;
+ const result=await runLocalHostRecovery({mode:'synthetic-local',approve:caseOwner.approve,revoke:caseOwner.revoke,stats:caseOwner.stats,receiveResponse:receiveActionResponse,
+  async openHost(call){if(count++===0)return caseOwner.openHost({pool:initialPool});const acquired=own(await openFreshPool(call),['pool','close']);if(typeof acquired.close!=='function')throw Error('LOCAL_POOL_OWNER');try{return caseOwner.openHost({pool:acquired.pool,closeGraph:acquired.close});}catch(error){await acquired.close();throw error;}}
+ });
+ return data({kind:'local-application-recovery',receiver:'public-action-response',recovery:result,accounting:await readLocalApplicationAccounting({pool:initialPool,ownedRows:caseOwner.ownedRows})});
+}
