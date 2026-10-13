@@ -1,0 +1,40 @@
+{
+  "command": [
+    "npm",
+    "install",
+    "--prefix",
+    "apps/runtime",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-runtime-npm-cache"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T18:45:06.026789+00:00",
+  "durationSeconds": 10.255,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 317509,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/dependency-install.stdout.bin",
+      "bytes": 27,
+      "sha256": "517e7763ca6bfe6a17596c6edb10c69c59d56c2e7bacdee6e0a7b624530c5094"
+    },
+    {
+      "path": "apps/runtime/evidence/dependency-install.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

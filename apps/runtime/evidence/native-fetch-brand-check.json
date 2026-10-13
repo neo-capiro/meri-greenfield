@@ -1,0 +1,35 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "52ab5bf0b27c026146d69f792f150bfc3b134e00fdb6968b4e72b345590b2bc1",
+  "sourceDiffBytes": 163571,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T18:54:58.290705+00:00",
+  "durationSeconds": 6.447,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 322478,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/native-fetch-brand-check.stdout.bin",
+      "bytes": 2699,
+      "sha256": "031432cad614b067d89f4133fa74cafe9c814475e9958e39ed3c4be42d88b0b1"
+    },
+    {
+      "path": "apps/runtime/evidence/native-fetch-brand-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

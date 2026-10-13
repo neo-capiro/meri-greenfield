@@ -1,0 +1,56 @@
+
+> @meri/assembled-runtime@0.1.0 test
+> node --test test/*.test.mjs
+
+
+Interrupted while running:
+
+⚠ test/process.test.mjs (test/process.test.mjs:1:1)
+⚠ test/runtime.test.mjs (test/runtime.test.mjs:1:1)
+✖ test/process.test.mjs (69843.867944ms)
+✖ configuration refuses sources, production profile, unknown fields and shared task workspace (1.3237ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.699366ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.683362ms)
+✔ broker refuses a response from another writer fence (0.397715ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (23.216846ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (4.428123ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 69848.49184
+
+✖ failing tests:
+
+test at test/process.test.mjs:1:1
+✖ test/process.test.mjs (69843.867944ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/runtime.test.mjs:4:1
+✖ configuration refuses sources, production profile, unknown fields and shared task workspace (1.3237ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Cannot assign to read only property 'origin' of object '#<Object>'"
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/runtime.test.mjs:4:112)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Cannot assign to read only property 'origin' of object '#<Object>'
+        at validateConfiguration (file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18:189)
+        at file:///workspace/meri-assembled-runtime/apps/runtime/test/runtime.test.mjs:4:129
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/runtime.test.mjs:4:112)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.start (node:internal/test_runner/test:1242:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

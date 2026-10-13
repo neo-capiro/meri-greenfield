@@ -1,0 +1,110 @@
+
+> @meri/assembled-runtime@0.1.0 test
+> node --test test/*.test.mjs
+
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (2019.480297ms)
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1817.376982ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (424.432443ms)
+✖ actual process exits on SIGTERM after listener shutdown (2104.456103ms)
+✖ configuration refuses sources, production profile, unknown fields and shared task workspace (1.421527ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.717914ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.797333ms)
+✔ broker refuses a response from another writer fence (0.447329ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (25.558983ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (14.002656ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 6
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6405.642445
+
+✖ failing tests:
+
+test at test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (2019.480297ms)
+  Error: fixture exited 1 null file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18
+   own(c.native,['origin','capabilityFile','loopback','maxResponseBytes']);requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152));c.native.origin=endpoint(c.native.origin,c.native.loopback);file(c.native.capabilityFile);
+                                                                                                                                                                                              ^
+  
+  TypeError: Cannot assign to read only property 'origin' of object '#<Object>'
+      at validateConfiguration (file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18:189)
+      at file:///workspace/meri-assembled-runtime/apps/runtime/test/process-fixture.mjs:17:93
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:3:123)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at test/process.test.mjs:14:1
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1817.376982ms)
+  Error: fixture exited 1 null file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18
+   own(c.native,['origin','capabilityFile','loopback','maxResponseBytes']);requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152));c.native.origin=endpoint(c.native.origin,c.native.loopback);file(c.native.capabilityFile);
+                                                                                                                                                                                              ^
+  
+  TypeError: Cannot assign to read only property 'origin' of object '#<Object>'
+      at validateConfiguration (file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18:189)
+      at file:///workspace/meri-assembled-runtime/apps/runtime/test/process-fixture.mjs:17:93
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:14:120)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at test/process.test.mjs:16:1
+✖ actual process exits on SIGTERM after listener shutdown (2104.456103ms)
+  Error: fixture exited 1 null file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18
+   own(c.native,['origin','capabilityFile','loopback','maxResponseBytes']);requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152));c.native.origin=endpoint(c.native.origin,c.native.loopback);file(c.native.capabilityFile);
+                                                                                                                                                                                              ^
+  
+  TypeError: Cannot assign to read only property 'origin' of object '#<Object>'
+      at validateConfiguration (file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18:189)
+      at file:///workspace/meri-assembled-runtime/apps/runtime/test/process-fixture.mjs:17:93
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:16:82)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at test/runtime.test.mjs:4:1
+✖ configuration refuses sources, production profile, unknown fields and shared task workspace (1.421527ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Cannot assign to read only property 'origin' of object '#<Object>'"
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/runtime.test.mjs:4:112)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Cannot assign to read only property 'origin' of object '#<Object>'
+        at validateConfiguration (file:///workspace/meri-assembled-runtime/apps/runtime/config.mjs:18:189)
+        at file:///workspace/meri-assembled-runtime/apps/runtime/test/runtime.test.mjs:4:129
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/runtime.test.mjs:4:112)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.start (node:internal/test_runner/test:1242:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
