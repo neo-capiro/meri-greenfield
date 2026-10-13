@@ -1,0 +1,47 @@
+✔ independent full wire flow: recommendation, draft, pending refusal, explicit approval, one effect and replay (193.36231ms)
+✔ independent mode undefined refuses (0.386431ms)
+✔ independent mode production refuses (0.089144ms)
+✔ independent mode local refuses (0.105488ms)
+✔ independent mode synthetic refuses (0.0668ms)
+✔ independent invalid ttl 0 refuses (0.140942ms)
+✔ independent invalid ttl -1 refuses (0.078448ms)
+✔ independent invalid ttl 30001 refuses (0.087481ms)
+✔ independent invalid ttl Infinity refuses (0.13306ms)
+✔ independent invalid ttl 1.5 refuses (0.115674ms)
+✔ independent opaque credentials are distinct between sessions and absent from stats (14.616012ms)
+✔ independent invalid authorization empty (10.990039ms)
+✔ independent invalid authorization Bearer invalid (6.767869ms)
+✔ independent invalid authorization Basic synthetic (6.149198ms)
+✔ independent query body tenantId never grants authority (6.679926ms)
+✔ independent query body actorId never grants authority (6.020865ms)
+✔ independent query body clientId never grants authority (6.311462ms)
+✔ independent query body scopes never grants authority (5.926674ms)
+✔ independent query body approval never grants authority (5.58519ms)
+✔ independent query body credential never grants authority (5.521764ms)
+✔ independent query request cannot select another client (6.520547ms)
+✔ independent cross-session retained selection refuses even with valid second credential (49.581078ms)
+✔ independent cross-session proposal approval and execution refuse (68.962207ms)
+✔ independent revoked session denies reads and trusted approval (67.098734ms)
+✔ independent preparation policy revocation prevents metadata insert (57.063181ms)
+✔ independent current client denial invalidates retained source read (39.094887ms)
+✔ independent revoked exact approval refuses before task effect (74.89536ms)
+✔ independent tampered proposal neither approves nor executes (70.409252ms)
+✔ independent selection hash tampering refuses (46.921108ms)
+✔ independent no HTTP approval route (6.514818ms)
+✔ independent pre-aborted Request does not run source (6.361527ms)
+✔ independent session expiry refuses subsequent requests (182.776579ms)
+✔ independent close is idempotent and leaves session unavailable (9.700339ms)
+✔ independent success response prevents caching and adds no permissive CORS (45.725885ms)
+✔ independent CLI admission --help (31.893697ms)
+✔ independent CLI admission --unknown (29.241087ms)
+✔ independent CLI admission empty (28.836379ms)
+✔ independent CLI admission --run --help (31.614657ms)
+✔ independent explicit CLI synthetic run succeeds without exposing bearer secrets (2660.509504ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6400.521546

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {createLocalActionDemo} from './demo.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 
 const root=fileURLToPath(new URL('../../../../',import.meta.url));
 const clone=v=>JSON.parse(JSON.stringify(v));
@@ -50,4 +51,12 @@ for(const args of [['--help'],['--unknown'],[],['--run','--help']])test(`indepen
 });
 test('independent explicit CLI synthetic run succeeds without exposing bearer secrets',()=>{
  const r=spawnSync(process.execPath,['scripts/local-followthrough/run.mjs','--run'],{cwd:root,env:{...process.env,MERI_REVIEW_SOURCE_ROOT:root},encoding:'utf8',timeout:20000,maxBuffer:262144});assert.equal(r.error,undefined);assert.equal(r.signal,null);assert.equal(r.status,0,r.stderr);assert.equal(r.stderr,'');assert.ok(!/Bearer |"credential"|"token"/.test(r.stdout));const receipt=JSON.parse(r.stdout);assert.equal(receipt.mode,'synthetic-local');
+});
+
+test('independent recomputed tampered command digest does not match retained metadata',async t=>{const d=await setup(t),p=await proposal(d),changed=clone(p.proposal);changed.command.arguments.title='Rehashed substituted task';changed.commandSha256=canonicalSha256(changed.command);await assert.rejects(d.approve(changed));refusal(await wire(d,'execute',{proposal:changed}));assert.equal(d.stats().taskEffects,0);});
+test('independent revoked session after explicit approval still denies execution',async t=>{const d=await setup(t),p=await proposal(d);await d.approve(p.proposal);d.revoke();refusal(await wire(d,'execute',{proposal:p.proposal}));assert.equal(d.stats().taskEffects,0);});
+for(const mode of ['revoke','expire'])test(`independent ${mode} during body acquisition refuses before source`,async t=>{
+ const d=await setup(t,mode==='expire'?{ttlMs:150}:{});let control;const stream=new ReadableStream({start(c){control=c;}});
+ const promise=d.app.handle(new Request('http://synthetic.invalid/api/action-followthrough/query',{method:'POST',duplex:'half',headers:{authorization:`Bearer ${d.credential}`,'content-type':'application/json'},body:stream}));
+ if(mode==='expire')await new Promise(r=>setTimeout(r,175));else d.revoke();control.enqueue(new TextEncoder().encode(JSON.stringify({request:{}})));control.close();const response=await promise;refusal({status:response.status,body:await response.json()});assert.equal(d.stats().sourceReads,0);assert.equal(d.stats().taskEffects,0);
 });
