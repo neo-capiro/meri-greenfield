@@ -76,7 +76,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       const projection = ['bound-projection/1','client-documents/1'].includes(entry.contract.binding?.dispatchProfile);
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
         request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256,
-        ...(projection ? {normalizationContext:context.options(effect)} : {}), signal })); }
+        ...(projection || context.handlerNormalization ? {normalizationContext:context.options(effect)} : {}), signal })); }
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;

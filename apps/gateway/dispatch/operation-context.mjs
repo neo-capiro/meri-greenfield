@@ -16,10 +16,11 @@ export function assertOperationArguments(entry, request) {
 
 export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
   const profile = entry.contract.binding?.dispatchProfile;
-  if (profile === undefined) return Object.freeze({ authority: null,
-    options: () => ({ nowMs: now(), actorId: identity.claims.binding.actorId }),
+  if (profile === undefined) {const normalizationContext=Object.freeze({nowMs:now(),actorId:identity.claims.binding.actorId});return Object.freeze({ authority: null,
+    options: () => normalizationContext,
+    handlerNormalization: entry.contract.binding?.group === 'operational-reads',
     observeAuthority() {}, async retain() {},
-  });
+  });}
   if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1', 'bound-projection/1', 'client-documents/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   if (profile === 'dataset-metadata/1') return Object.freeze({ authority: null,
     options: () => ({}), observeAuthority() {}, async retain() {},
