@@ -1,0 +1,205 @@
+✔ ordinary rows accepts exact UTF8 1048575 bytes (21.438677ms)
+✔ ordinary rows accepts exact UTF8 1048576 bytes (16.656412ms)
+✔ ordinary default refuses one byte over1MiB even if caller supplies larger second argument (8.521843ms)
+✖ preservation accepts exact UTF8 4194303 bytes (14.859388ms)
+✖ preservation accepts exact UTF8 4194304 bytes (14.796232ms)
+✔ preservation refuses UTF8 byte overflow even with fewer than4MiB JS characters (29.215607ms)
+✔ preservation refuses plain ASCII byte overflow (9.703399ms)
+✔ preservation exact one row; ordinary1024 rows ceiling unchanged (1.882642ms)
+✖ both admissions reject Proxy and accessors without invocation (1.177822ms)
+✔ preservation keeps node and depth guards despite larger byte limit (4.328903ms)
+✖ all3,128,280 bytes survive preparation and reconstruction unchanged (38.912466ms)
+✖ mutating the final byte of every metadata array changes retained signature (6.00152ms)
+✖ changed measured-inventory tail refuses later reconstruction with no additional DDL (24.720214ms)
+✔ oversized preservation refuses before first DDL and releases borrowed connection (45.728582ms)
+✖ post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed (24.091217ms)
+✖ same-size post-DDL last-character mutation remains UNKNOWN (22.86979ms)
+✔ measured inventory with unsupported object still refuses before DDL (22.226061ms)
+✔ large admission does not weaken closed metadata array shape (16.776141ms)
+✔ large admission does not weaken closed metadata array shape (23.997827ms)
+✔ large admission does not weaken closed metadata array shape (21.018523ms)
+✔ nonpreservation query still rejects oversized rows before shape interpretation (15.600052ms)
+✖ preservation SQL alone gets larger limit and retains exact namespace parameters (20.752603ms)
+✖ commit acknowledgement loss stays UNKNOWN with measured inventory (22.59783ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 13
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 493.004482
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:32:35
+✖ preservation accepts exact UTF8 4194303 bytes (14.859388ms)
+  TypeError: contract.preservationRows is not a function
+      at preservation (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:13:36)
+      at TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:33:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:32:35
+✖ preservation accepts exact UTF8 4194304 bytes (14.796232ms)
+  TypeError: contract.preservationRows is not a function
+      at preservation (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:13:36)
+      at TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:33:40)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:41:1
+✖ both admissions reject Proxy and accessors without invocation (1.177822ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:44:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:54:1
+✖ all3,128,280 bytes survive preparation and reconstruction unchanged (38.912466ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:56:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:61:1
+✖ mutating the final byte of every metadata array changes retained signature (6.00152ms)
+  TypeError: contract.preservationRows is not a function
+      at preservation (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:13:36)
+      at file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:63:47
+      at preservationSnapshot (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-preservation.mjs:54:21)
+      at snap (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:63:17)
+      at TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:64:23)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:68:1
+✖ changed measured-inventory tail refuses later reconstruction with no additional DDL (24.720214ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:69:53)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:76:1
+✖ post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed (24.091217ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:27:107)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:78:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:80:1
+✖ same-size post-DDL last-character mutation remains UNKNOWN (22.86979ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:27:107)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:82:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:93:1
+✖ preservation SQL alone gets larger limit and retains exact namespace parameters (20.752603ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:94:40)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:97:1
+✖ commit acknowledgement loss stays UNKNOWN with measured inventory (22.59783ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:27:107)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-review-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:98:58)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
