@@ -1,0 +1,260 @@
+TAP version 13
+# Subtest: Approved memory preview and exact late-content continuation each require fresh correlated eligibility
+ok 1 - Approved memory preview and exact late-content continuation each require fresh correlated eligibility
+  ---
+  duration_ms: 65.568091
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses denied native recall without filtering or falsely settling
+ok 2 - Actual memory gateway refuses denied native recall without filtering or falsely settling
+  ---
+  duration_ms: 8.890374
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses substituted record hash without filtering or falsely settling
+ok 3 - Actual memory gateway refuses substituted record hash without filtering or falsely settling
+  ---
+  duration_ms: 3.506668
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses substituted full result hash without filtering or falsely settling
+ok 4 - Actual memory gateway refuses substituted full result hash without filtering or falsely settling
+  ---
+  duration_ms: 3.967186
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses missing returned record without filtering or falsely settling
+ok 5 - Actual memory gateway refuses missing returned record without filtering or falsely settling
+  ---
+  duration_ms: 2.69958
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses another actor without filtering or falsely settling
+ok 6 - Actual memory gateway refuses another actor without filtering or falsely settling
+  ---
+  duration_ms: 3.636071
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses old policy without filtering or falsely settling
+ok 7 - Actual memory gateway refuses old policy without filtering or falsely settling
+  ---
+  duration_ms: 2.916986
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses stale eligibility observation without filtering or falsely settling
+ok 8 - Actual memory gateway refuses stale eligibility observation without filtering or falsely settling
+  ---
+  duration_ms: 3.188602
+  type: 'test'
+  ...
+# Subtest: Actual memory gateway refuses expiry beyond original request deadline without filtering or falsely settling
+ok 9 - Actual memory gateway refuses expiry beyond original request deadline without filtering or falsely settling
+  ---
+  duration_ms: 3.260148
+  type: 'test'
+  ...
+# Subtest: Current revocation after positive eligibility still prevents gateway release
+ok 10 - Current revocation after positive eligibility still prevents gateway release
+  ---
+  duration_ms: 4.675998
+  type: 'test'
+  ...
+# Subtest: Caller tenant/user normalization authority never enters passive memory source
+ok 11 - Caller tenant/user normalization authority never enters passive memory source
+  ---
+  duration_ms: 0.449452
+  type: 'test'
+  ...
+# Subtest: Managed Monday mapping is broker-owned; model boardContext does not choose a board or permit mutation
+ok 12 - Managed Monday mapping is broker-owned; model boardContext does not choose a board or permit mutation
+  ---
+  duration_ms: 7.358101
+  type: 'test'
+  ...
+# Subtest: Managed Monday foreign actor mapping refuses before source Fetch
+ok 13 - Managed Monday foreign actor mapping refuses before source Fetch
+  ---
+  duration_ms: 1.869388
+  type: 'test'
+  ...
+# Subtest: Managed Monday foreign client mapping refuses before source Fetch
+ok 14 - Managed Monday foreign client mapping refuses before source Fetch
+  ---
+  duration_ms: 1.558042
+  type: 'test'
+  ...
+# Subtest: Managed Monday missing versioned mapping refuses before source Fetch
+ok 15 - Managed Monday missing versioned mapping refuses before source Fetch
+  ---
+  duration_ms: 1.556679
+  type: 'test'
+  ...
+# Subtest: Well-shaped Monday row from an unapproved board cannot pass actual gateway release
+ok 16 - Well-shaped Monday row from an unapproved board cannot pass actual gateway release
+  ---
+  duration_ms: 22.683706
+  type: 'test'
+  ...
+# {"operation":"get_client_context","case":"foreign tenant","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"operation":"get_client_context","case":"foreign policy","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"operation":"read_client_documents","case":"foreign tenant","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"operation":"read_client_documents","case":"foreign policy","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# Subtest: get_client_context: direct source refuses additional foreign tenant capability scope before broker
+ok 17 - get_client_context: direct source refuses additional foreign tenant capability scope before broker
+  ---
+  duration_ms: 6.730643
+  type: 'test'
+  ...
+# Subtest: get_client_context: direct source refuses additional foreign policy capability scope before broker
+ok 18 - get_client_context: direct source refuses additional foreign policy capability scope before broker
+  ---
+  duration_ms: 0.865405
+  type: 'test'
+  ...
+# Subtest: read_client_documents: direct source refuses additional foreign tenant capability scope before broker
+ok 19 - read_client_documents: direct source refuses additional foreign tenant capability scope before broker
+  ---
+  duration_ms: 2.556676
+  type: 'test'
+  ...
+# Subtest: read_client_documents: direct source refuses additional foreign policy capability scope before broker
+ok 20 - read_client_documents: direct source refuses additional foreign policy capability scope before broker
+  ---
+  duration_ms: 1.189921
+  type: 'test'
+  ...
+# Subtest: get_client_context: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 21 - get_client_context: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 2.23162
+  type: 'test'
+  ...
+# Subtest: read_client_documents: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 22 - read_client_documents: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 0.798826
+  type: 'test'
+  ...
+# Subtest: resolve_entity: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 23 - resolve_entity: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 1.733254
+  type: 'test'
+  ...
+# Subtest: find_contacts: canonical dispatcher refuses foreign capability scope before reservation/broker
+ok 24 - find_contacts: canonical dispatcher refuses foreign capability scope before reservation/broker
+  ---
+  duration_ms: 0.905485
+  type: 'test'
+  ...
+# Subtest: get_client_context: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 25 - get_client_context: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 48.849006
+  type: 'test'
+  ...
+# Subtest: read_client_documents: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 26 - read_client_documents: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 12.524473
+  type: 'test'
+  ...
+# Subtest: resolve_entity: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 27 - resolve_entity: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 9.088721
+  type: 'test'
+  ...
+# Subtest: find_contacts: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+ok 28 - find_contacts: actual loopback Fetch reaches canonical handler and governed gateway with exact raw request SHA
+  ---
+  duration_ms: 6.464364
+  type: 'test'
+  ...
+# Subtest: get_client_context: changed writer fence after budget reservation blocks source effects
+ok 29 - get_client_context: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 1.567416
+  type: 'test'
+  ...
+# Subtest: read_client_documents: changed writer fence after budget reservation blocks source effects
+ok 30 - read_client_documents: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 1.221458
+  type: 'test'
+  ...
+# Subtest: resolve_entity: changed writer fence after budget reservation blocks source effects
+ok 31 - resolve_entity: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 1.01584
+  type: 'test'
+  ...
+# Subtest: find_contacts: changed writer fence after budget reservation blocks source effects
+ok 32 - find_contacts: changed writer fence after budget reservation blocks source effects
+  ---
+  duration_ms: 0.870293
+  type: 'test'
+  ...
+# Subtest: get_client_context: current decision refresh preserves selected scope and exact original observation
+ok 33 - get_client_context: current decision refresh preserves selected scope and exact original observation
+  ---
+  duration_ms: 4.55031
+  type: 'test'
+  ...
+# Subtest: read_client_documents: current decision refresh preserves selected scope and exact original observation
+ok 34 - read_client_documents: current decision refresh preserves selected scope and exact original observation
+  ---
+  duration_ms: 5.233622
+  type: 'test'
+  ...
+# Subtest: profile client selector resolves from current subject; observation substitution refuses canonical release
+ok 35 - profile client selector resolves from current subject; observation substitution refuses canonical release
+  ---
+  duration_ms: 10.119304
+  type: 'test'
+  ...
+# Subtest: document blocked extraction remains missing readable content, with no new extractor or evidence claim
+ok 36 - document blocked extraction remains missing readable content, with no new extractor or evidence claim
+  ---
+  duration_ms: 40.224325
+  type: 'test'
+  ...
+# Subtest: entity candidate cannot acquire a verified identity label through actual gateway
+ok 37 - entity candidate cannot acquire a verified identity label through actual gateway
+  ---
+  duration_ms: 42.323557
+  type: 'test'
+  ...
+# Subtest: contacts cannot substitute returned selected client at actual release boundary
+ok 38 - contacts cannot substitute returned selected client at actual release boundary
+  ---
+  duration_ms: 2.641002
+  type: 'test'
+  ...
+# Subtest: caller Congress/normalization authority cannot bypass trusted configuration, and missing pin stops before reservation
+ok 39 - caller Congress/normalization authority cannot bypass trusted configuration, and missing pin stops before reservation
+  ---
+  duration_ms: 0.823653
+  type: 'test'
+  ...
+# Subtest: broker immutable context/body receipt substitution refuses before source Fetch
+ok 40 - broker immutable context/body receipt substitution refuses before source Fetch
+  ---
+  duration_ms: 1.721876
+  type: 'test'
+  ...
+# Subtest: stalled actual Response reader has finite cancellation and governed uncertain accounting
+ok 41 - stalled actual Response reader has finite cancellation and governed uncertain accounting
+  ---
+  duration_ms: 25.960981
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3788.563266
