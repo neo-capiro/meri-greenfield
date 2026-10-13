@@ -8,6 +8,14 @@
       "classification": "integration harness configuration",
       "resolution": "Preserve all outputs and rerun with the exact source root in the captured command. Do not change original assertions or harness admission.",
       "nativeExecution": false
+    },
+    {
+      "stdout": "audit.stdout.txt",
+      "stderr": "audit.stderr.txt",
+      "cause": "The initial integration audit detected that the reviewer's final-corrected-node receipt commit had not yet been incorporated.",
+      "classification": "evidence assembly omission",
+      "resolution": "Preserved the failure and joined the complete accepted author/reviewer ancestry, restoring all three missing evidence files. Final audit passed161/161.",
+      "nativeExecution": false
     }
   ]
 }
