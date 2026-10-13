@@ -1,0 +1,37 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-document-drafting-20261013",
+    "node",
+    "--test",
+    "apps/control/document-application/local/local.test.mjs",
+    "apps/control/document-application/test/application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-20261013",
+  "sourceHead": "b4d5380d936d1a7d5e34356c3cdf93eb90578989",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:56:35.509951+00:00",
+  "durationSeconds": 3.988,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 508310,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.stdout.bin",
+      "bytes": 1931,
+      "sha256": "0ca30e1066f391e6bd41492e1bb381766751f4c2be0b689b9478e53bbd647b4d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent hostile port-rejection negative repaired in new adapter only; replay affected document and actual HTTP tests.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
