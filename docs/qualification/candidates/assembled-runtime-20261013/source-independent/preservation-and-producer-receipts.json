@@ -1,0 +1,140 @@
+{
+  "reviewedCommit": "46ab3d9836a557d2adda1f6de8f3f7ef351236ce",
+  "reviewedTree": "5ea8883a46648d934e827b23495ab71f497d887d",
+  "base": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "exactProtectedPaths": [
+    {
+      "path": "packages/contracts/package.json",
+      "gitObject": "c631d5ba79fc3cf7709a846604d76edd816ab3cc",
+      "exact": true
+    },
+    {
+      "path": "packages/contracts/dist",
+      "gitObject": "4151d87d30592ea5a28989503b07891407bdff62",
+      "exact": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "gitObject": "d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "exact": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "gitObject": "cd978e975962950785fba09f355e94141d5a77a8",
+      "exact": true
+    },
+    {
+      "path": "packages/skills",
+      "gitObject": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+      "exact": true
+    },
+    {
+      "path": "infra",
+      "gitObject": "70c6cfda689ed975f5836a397930ac439742139c",
+      "exact": true
+    },
+    {
+      "path": "apps/control/conversations",
+      "gitObject": "a7c7829f39d326b022e8eac2955f7ac451d93902",
+      "exact": true
+    },
+    {
+      "path": "apps/worker/conversation",
+      "gitObject": "7c28a7a5713a93ec631fbc208056a7ee825ea879",
+      "exact": true
+    },
+    {
+      "path": "packages/ui-stream",
+      "gitObject": "e2fc5917d77d58cfe6a1518e69039b3198b1f366",
+      "exact": true
+    },
+    {
+      "path": "packages/window-resolution",
+      "gitObject": "41a24eea4f316ba906d85899bc571a2606b60323",
+      "exact": true
+    }
+  ],
+  "verifiedProducerReceipts": [
+    {
+      "label": "final-source-tests",
+      "sourceHead": "46ab3d9836a557d2adda1f6de8f3f7ef351236ce",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "timedOut": false,
+      "ownedProcessGroupAbsent": true,
+      "streams": [
+        {
+          "path": "apps/runtime/evidence/final-source-tests.stdout.bin",
+          "bytes": 2620,
+          "sha256": "3f8c73db34c022dc182839e6877ac1e79e57126b3fdf4a0fc68090a9003c4af5"
+        },
+        {
+          "path": "apps/runtime/evidence/final-source-tests.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "final-source-types",
+      "sourceHead": "46ab3d9836a557d2adda1f6de8f3f7ef351236ce",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "timedOut": false,
+      "ownedProcessGroupAbsent": true,
+      "streams": [
+        {
+          "path": "apps/runtime/evidence/final-source-types.stdout.bin",
+          "bytes": 76,
+          "sha256": "b9205ad279b7793153bca230ab7c3f290da1268763a1aa38303f79010a2455bc"
+        },
+        {
+          "path": "apps/runtime/evidence/final-source-types.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "workflow-bundle-unsandboxed",
+      "sourceHead": "8d8893d4602541442f92bd32584b35596b88c63d",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "timedOut": false,
+      "ownedProcessGroupAbsent": true,
+      "streams": [
+        {
+          "path": "apps/runtime/evidence/workflow-bundle-unsandboxed.stdout.bin",
+          "bytes": 1525,
+          "sha256": "0ec5067d697bf74561a299c9810cc83e2f37678cb34c4944dab7d6678047fa13"
+        },
+        {
+          "path": "apps/runtime/evidence/workflow-bundle-unsandboxed.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "lifecycle-process-bundle-check",
+      "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+      "sourceDiffBytes": 176583,
+      "exitCode": 1,
+      "timedOut": false,
+      "ownedProcessGroupAbsent": true,
+      "streams": [
+        {
+          "path": "apps/runtime/evidence/lifecycle-process-bundle-check.stdout.bin",
+          "bytes": 4966,
+          "sha256": "c54de1ee1ea74e245df0ce10f9f2c4d0e6919b98c45ff378d8679742f4b1ab1f"
+        },
+        {
+          "path": "apps/runtime/evidence/lifecycle-process-bundle-check.stderr.bin",
+          "bytes": 208,
+          "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+        }
+      ]
+    }
+  ],
+  "liveAcceptance": false
+}

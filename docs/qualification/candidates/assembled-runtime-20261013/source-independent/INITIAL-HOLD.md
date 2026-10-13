@@ -1,0 +1,18 @@
+# Assembled runtime initial source decision
+
+**HOLD** at `46ab3d9836a557d2adda1f6de8f3f7ef351236ce`, tree `5ea8883a46648d934e827b23495ab71f497d887d`.
+
+Independent actual controls: **6/10 PASS; 4/10 FAIL**, zero skipped/cancelled, 2.610 seconds, capture `independent-real-controls.json` and raw streams. The initial setup failure (`independent-initial`) is retained: the producer cleaned its temporary dependency links after we borrowed them. Review setup was repaired with five direct stable donor links and an owned runtime dependency installation from the unchanged lockfile. No assertion or production source changed.
+
+1. `native-client.mjs`: a genuine native Fetch Response with pending body read and a cancellation promise that never settles leaves `call()` unsettled beyond its 30-ms operation deadline. The finally block awaits `reader.cancel()` indefinitely. Cancellation must be dispatched with a bounded owned cleanup and observed rejection, without blocking refusal indefinitely.
+2. `temporal-worker.mjs`: a 20-ms immutable execution lease followed by a 50-ms poll returns completed after expiration. Recheck lease and cancellation after awaited polling and before heartbeat/terminal release; do not extend the original lease.
+3. `conversation-runner.mjs`: configuration contains a different immutable `skillsDigest`, but the runner executes the stored other versions and completes one scripted SDK query. Cross-bind configured versions with the canonical retained run before effects/query, and with the runtime receipt. Do not remove the configured pin or weaken equality.
+4. `http-server.mjs`: an already-aborted initialization signal opens an actual live listener and returns health HTTP 200. Refuse before allocation and handle an abort racing initialization without exposing a live application.
+
+Passing independent cases exercise inert/closed private DTOs, full binding and input hash/current decision/scopes, rejection after changed post-effect authority with temporary session revocation, no effect from malformed private input, actual HTTP disconnect cancellation with native Request branding, and immutable configuration. Independent focused author runtime/process checks **11/11 PASS**, upstream API typecheck PASS, both captured under subreaper with owned groups absent. These passing checks do not override the four HOLDs.
+
+Producer receipts were hash-checked: final clean-source 12/12 and types, plus the prior SWC sandbox failure and expressly approved local bundler fallback. The fallback is source-only evidence, not Temporal Server/Worker.run or physical isolation qualification. We did not repeat a rejected sandbox operation or request broader privilege.
+
+Protected public package/dist/schema/catalog, original skill assets, infra, existing conversation/SDK/ui/calendar owners are exact to `71d8c90c5a1fe5abc88b25fb74abba177949d3b1`; the new private runtime DTO owner is separate. See `preservation-and-producer-receipts.json`.
+
+The assembly reuses canonical sessions/service/store/Temporal workflow/SDK query owners. Sources remain disabled and profile/replica settings are explicitly limited. Native identity/task/launch/checkpoint/approval/SessionStore contracts, product budget namespace, durable replica sessions, source/selected-skill/output/artifact mounts, browser sandbox and physical fresh task isolation remain gates. The SDK runner passes no lifecycle or selectedSkills adapter: mounted control/checkpoint/private-control routes therefore do not prove steer/pause/approval/resume/fork execution. No native DB/provider/model/cloud/private transfer, migration or activation was performed. Review owns docs/tests only; four implementation repairs are assigned to runtime_bootstrap.
