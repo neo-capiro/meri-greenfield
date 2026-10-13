@@ -1,0 +1,10 @@
+{
+  "wholeGraphExitCode": 2,
+  "wholeGraphStdout": "docs/qualification/candidates/action-followthrough-20261013/eval-author/initial-tool-output.txt:29: new blank line at EOF.\n",
+  "wholeGraphStderr": "",
+  "reviewOwnedExitCode": 0,
+  "reviewOwnedStdout": "",
+  "reviewOwnedStderr": "",
+  "sourceChange": false,
+  "action": "Preserved initial author tool output verbatim; no whitespace waiver or normalization."
+}

@@ -11,8 +11,9 @@
     "3b21545a27af5616d6037c75b2a7ba6b09e97b60",
     "7817e0c4fd125090163feb1dfb44f013fcdda905",
     "8cc25617f90eeb4a0e6d1780144d13a5980e3c37",
-    "cec24404ecbe22f8fa57e4a22db94fedf48f5943"
+    "cec24404ecbe22f8fa57e4a22db94fedf48f5943",
+    "92f281662ba422f65f256fea395f65ac1aafe80e"
   ],
-  "finalMetadataCommit": "The commit containing this sequence and final manifest; append its SHA after these ten commits.",
+  "finalMetadataCommit": "Append the commit containing this final whitespace receipt/manifest after these eleven review-only commits.",
   "dependencyMergesExcluded": true
 }

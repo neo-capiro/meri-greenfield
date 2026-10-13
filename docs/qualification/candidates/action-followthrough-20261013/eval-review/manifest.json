@@ -6,8 +6,8 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-EVAL-REVIEW-20261013.md",
-      "bytes": 3599,
-      "sha256": "9fcdf22985a85b9dfcb423b669a327cb97a351452eaeb89db4a0d100e0e8be4f"
+      "bytes": 3768,
+      "sha256": "6ab4d187211270f0a99bb61292aad4b69ad6a31e90eb21c10bfb39b691be7cf0"
     },
     {
       "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-EVAL-REVIEW-20261013.md",
@@ -106,8 +106,8 @@
     },
     {
       "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/review-sequence.json",
-      "bytes": 790,
-      "sha256": "ed56df4073751a24bf7219caf1ae2a638db70c54d6f316820248558f43c98278"
+      "bytes": 850,
+      "sha256": "bda23da93efb571462a46d7f7b9f177f5817d9257e2a29311d00c3904d5c338d"
     },
     {
       "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/source-audit.json",
@@ -118,6 +118,11 @@
       "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/verify-packet.py",
       "bytes": 1161,
       "sha256": "8f1519e08b47958193256610951976c2f3512947408910cdba521c40785dc9a1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/whitespace.json",
+      "bytes": 414,
+      "sha256": "9ddfdd8438d77e97bb283ade35ad7dbe3f3f61ea0362cecff460fddbf6f81d2c"
     },
     {
       "path": "evals/task-lookup/execution/execution-independent.test.mjs",

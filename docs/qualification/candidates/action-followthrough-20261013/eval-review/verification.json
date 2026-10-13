@@ -95,6 +95,10 @@
       "passed": true
     },
     {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/whitespace.json",
+      "passed": true
+    },
+    {
       "path": "evals/task-lookup/execution/execution-independent.test.mjs",
       "passed": true
     },
@@ -103,7 +107,7 @@
       "passed": true
     }
   ],
-  "passed": 25,
+  "passed": 26,
   "failed": 0,
   "runtimeQualified": false,
   "qualifiedRealRequests": 0
