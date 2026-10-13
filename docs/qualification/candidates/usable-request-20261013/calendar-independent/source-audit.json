@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python",
+    "docs/qualification/candidates/usable-request-20261013/calendar-independent/source-audit.py"
+  ],
+  "cwd": "/workspace/meri-calendar-independent",
+  "reviewedCommit": "350ab86486b2b9e65e76b73ffd7c649f5efa1340",
+  "worktreeHead": "350ab86486b2b9e65e76b73ffd7c649f5efa1340",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.097,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 173,
+  "stderrBytes": 0,
+  "stdoutSha256": "99e48ad19f36fb098942ec4d4f16676c6dcadf83ae37ef1ed55176bf50700b83",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
