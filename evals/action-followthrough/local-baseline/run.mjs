@@ -57,13 +57,19 @@ export async function runLocalPilotBaseline({mode,createDemo=createLocalActionDe
   }catch{row.status='FAIL';row.failure={code:'BASELINE_CASE_FAILED',stage};}
   finally{
    l.close();
-   if(demo){try{
-    const before=demo.stats();demo.close();const after=demo.stats();row.cleanup.closed=after.closed===true;
-    const response=await demo.app.handle(new Request('http://local.invalid/api/action-followthrough/query',{method:'POST',headers:{authorization:`Bearer ${demo.credential}`,'content-type':'application/json'},body:'{"request":{"limit":20}}',signal:AbortSignal.timeout(1000)}));
-    const raw=await response.text();if(Buffer.byteLength(raw)>MAX_BYTES)throw Error('BASELINE_CLEANUP');const error=await receiveActionResponse('query',response.status,raw);
-    row.cleanup.postCloseStatus=response.status;row.cleanup.noAdditionalEffects=demo.stats().sourceReads===before.sourceReads&&demo.stats().taskEffects===before.taskEffects&&demo.stats().metadataRows===before.metadataRows;
-    if(!row.cleanup.closed||response.status!==401||error.error?.code!=='UNAUTHENTICATED'||!row.cleanup.noAdditionalEffects)throw Error('BASELINE_CLEANUP');
-   }catch{row.status='FAIL';row.failure={code:'BASELINE_CLEANUP_UNKNOWN',stage:'cleanup'};}}
+   if(demo){
+    // Resource release must not depend on diagnostic stats. Every cleanup port
+    // shares a bounded lifetime even when an injected handler ignores abort.
+    let before;try{before=demo.stats();}catch{}
+    const cleanup=createOperationLifetime({deadlineMs:Date.now()+1000,now:Date.now,errorFactory:()=>Error('BASELINE_CLEANUP_DEADLINE')});
+    try{
+     await cleanup.run(()=>demo.close());const after=demo.stats();row.cleanup.closed=after.closed===true;
+     const response=await cleanup.run(signal=>demo.app.handle(new Request('http://local.invalid/api/action-followthrough/query',{method:'POST',headers:{authorization:`Bearer ${demo.credential}`,'content-type':'application/json'},body:'{"request":{"limit":20}}',signal})));
+     const raw=await cleanup.run(()=>response.text());if(Buffer.byteLength(raw)>MAX_BYTES)throw Error('BASELINE_CLEANUP');const error=await cleanup.run(()=>receiveActionResponse('query',response.status,raw));
+     row.cleanup.postCloseStatus=response.status;const final=demo.stats();row.cleanup.noAdditionalEffects=!!before&&final.sourceReads===before.sourceReads&&final.taskEffects===before.taskEffects&&final.metadataRows===before.metadataRows;
+     if(!row.cleanup.closed||response.status!==401||error.error?.code!=='UNAUTHENTICATED'||!row.cleanup.noAdditionalEffects)throw Error('BASELINE_CLEANUP');
+    }catch{row.status='FAIL';row.failure={code:'BASELINE_CLEANUP_UNKNOWN',stage:'cleanup'};}finally{cleanup.close();}
+   }
    else row.cleanup.notAcquired=true;
   }
   results.push(row);
