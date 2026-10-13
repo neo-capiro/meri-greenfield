@@ -5,7 +5,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {createLocalActionDemo} from './demo.mjs';
 
-const root=fileURLToPath(new URL('../../../../..',import.meta.url));
+const root=fileURLToPath(new URL('../../../../',import.meta.url));
 const clone=v=>JSON.parse(JSON.stringify(v));
 async function setup(t,options={}){const d=await createLocalActionDemo({mode:'synthetic-local',...options});t.after(()=>d.close());return d;}
 async function wire(d,route,body,options={}){

@@ -1,0 +1,5 @@
+{
+  "reason": "Corrected reviewer fileURL root from five parent segments to four before first replay; source untouched. Settled demo export was previously corrected from proposed index to actual demo.",
+  "priorCommit": "23a9f590",
+  "testsRunBeforeCorrection": false
+}
