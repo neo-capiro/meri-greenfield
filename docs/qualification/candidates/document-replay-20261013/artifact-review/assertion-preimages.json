@@ -1,0 +1,53 @@
+{
+  "baseCommit": "398d599311a5f6c48e18d31b4928cf665de8dcb9",
+  "baseTree": "e8d3463dba3a427b52b30c02db3487cb9aefa100",
+  "files": [
+    {
+      "path": "apps/control/document-application/independent/application-independent.test.mjs",
+      "preimage": "docs/qualification/candidates/document-replay-20261013/artifact-review/preimages/application-independent.before.mjs",
+      "sha256": "0186ba05438ddede8853418187e6f94fecc9432fd79b44d3f551f97f93ea742e"
+    },
+    {
+      "path": "apps/control/document-application/independent/workbook-independent.test.mjs",
+      "preimage": "docs/qualification/candidates/document-replay-20261013/artifact-review/preimages/workbook-independent.before.mjs",
+      "sha256": "48a001a3820d2b6b1ff3f8cf409fcc78d74eaa2e27a239badc2295e5dfed5367"
+    },
+    {
+      "path": "apps/control/document-application/independent/research-brief-independent.test.mjs",
+      "preimage": "docs/qualification/candidates/document-replay-20261013/artifact-review/preimages/research-brief-independent.before.mjs",
+      "sha256": "a126e2bfeb52e5d81bc2c20cd445173b1b7408fefc73e9f2ae23bbd7ce6b1e98"
+    }
+  ],
+  "intentionalChangedCases": [
+    {
+      "file": "application-independent.test.mjs",
+      "case": "independent create replay and changed intent cannot generate or charge again",
+      "old": "Completed exact repeat refuses UNKNOWN",
+      "new": "Exact repeat succeeds with identical version/inspection/request/ticket and fresh release receipt; changed intent still refuses UNKNOWN"
+    },
+    {
+      "file": "workbook-independent.test.mjs",
+      "case": "actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes",
+      "old": "Completed original-create replay refuses UNKNOWN",
+      "new": "Published original-create and exact-revise repeats succeed with retained immutable result and no additional charge/generation; changed intent still refuses"
+    },
+    {
+      "file": "research-brief-independent.test.mjs",
+      "case": "independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup",
+      "old": "Completed exact revision replay has non200 status",
+      "new": "Completed exact revision replay returns exact immutable original version/inspection/ticket without new source reads/charge/generation"
+    },
+    {
+      "file": "application-independent.test.mjs",
+      "case": "independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch",
+      "newName": "independent lost immutable-version acknowledgement is initially UNKNOWN then published-byte replay recovers without redispatch",
+      "old": "After-published-version ACK-loss later replay refuses UNKNOWN",
+      "new": "Preserve initial UNKNOWN+missing marker; exact published metadata/bytes correlate owned invocation version; later replay succeeds with original ticket/result and one physical generation/charge",
+      "authority": "Integration owner explicitly authorized this change at executable freeze c872db17"
+    }
+  ],
+  "unchanged": "Unrelated and all initial interruption assertions unchanged; object-only, revoked and unpublished gaps remain UNKNOWN. Only completed repeats and explicitly authorized after-published ACK-loss later replay expectation change.",
+  "nativeQualified": false,
+  "executablePin": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "executableTree": "4eccbb74c352be05f7e19f714d21fc353c92ed45"
+}

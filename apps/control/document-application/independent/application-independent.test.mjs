@@ -39,7 +39,13 @@ test('independent constructor snapshots caller context, scopes, limits and descr
  const out=await json(await a.post('create',{deliveryId:'snapshot',request:text()}));assert.equal(out.version.object.bytes,Buffer.byteLength(text().content.text));
 });
 test('independent create replay and changed intent cannot generate or charge again',async t=>{
- const a=await setup(t),body={deliveryId:'immutable-id',request:text()};await json(await a.post('create',body));await reject(await a.post('create',body),'UNKNOWN');await reject(await a.post('create',{...body,request:{...text(),title:'Changed'}}),'UNKNOWN');assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);assert.equal(a.f.stats().consumedMicroUsd,'10');
+ const a=await setup(t),body={deliveryId:'immutable-id',request:text()},first=await json(await a.post('create',body)),before=a.f.stats();
+ const rebuilt=createDocumentApplication(a.options),replay=await json(await rebuilt.handle(a.request('create',body)));
+ assert.deepEqual(replay.version,first.version);assert.deepEqual(replay.inspection,first.inspection);
+ assert.deepEqual({...replay.execution,authorizationReceiptId:first.execution.authorizationReceiptId},first.execution);assert.notEqual(replay.execution.authorizationReceiptId,first.execution.authorizationReceiptId);
+ const download=await a.post('download',{versionId:replay.version.versionId});assert.equal(download.status,200);assert.equal(await download.text(),text().content.text);
+ for(const key of ['generations','versionCharges','settled','unknown','consumedMicroUsd'])assert.equal(a.f.stats()[key],before[key]);
+ await reject(await a.post('create',{...body,request:{...text(),title:'Changed'}}),'UNKNOWN');assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);assert.equal(a.f.stats().consumedMicroUsd,'10');
 });
 test('independent stale revision leaves both committed versions unchanged and preserves uncertain effect',async t=>{
  const a=await setup(t),first=await json(await a.post('create',{deliveryId:'base',request:text()})),next={...text(),content:{text:'Revision\n'}},second=await json(await a.post('revise',{deliveryId:'next',baseVersionId:first.version.versionId,request:next}));
@@ -95,9 +101,11 @@ test('independent hostile own error getters remain untouched',async t=>{
  let touched=0;const error=Object.defineProperties(new Error('safe fixture'),{code:{get(){touched++;throw Error('SECRET');}},message:{get(){touched++;throw Error('SECRET');}}});
  const a=await setup(t,c=>{c.artifactOptions.authorize=async()=>{throw error;};return c;});await reject(await a.post('create',{deliveryId:'getter',request:text()}),'UNKNOWN');assert.equal(touched,0);
 });
-test('independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch',async t=>{
- let retained;const a=await setup(t,c=>{const commit=c.artifactOptions.versions.commit;c.artifactOptions.versions={...c.artifactOptions.versions,async commit(value,...args){await commit(value,...args);retained=structuredClone(value.version);throw Error('COMMIT_ACK_LOST');}};return c;});
+test('independent lost immutable-version acknowledgement is initially UNKNOWN then published-byte replay recovers without redispatch',async t=>{
+ let retained,retainedCommit;const a=await setup(t,c=>{const commit=c.artifactOptions.versions.commit;c.artifactOptions.versions={...c.artifactOptions.versions,async commit(value,...args){await commit(value,...args);retained=structuredClone(value.version);retainedCommit=structuredClone(value);throw Error('COMMIT_ACK_LOST');}};return c;});
  const body={deliveryId:'lost-commit-ack',request:text()};await reject(await a.post('create',body),'UNKNOWN');assert.ok(retained);assert.equal(a.f.stats().unknown,1);assert.equal(a.f.stats().settled,0);
+ const originalJournal=a.f.ledger.state().produced.get('owned_'+retained.versionId);assert.ok(originalJournal);assert.equal(originalJournal.completion,null);const originalTicket=originalJournal.reservation_id;assert.ok(originalTicket);
  const download=await a.post('download',{versionId:retained.versionId});assert.equal(download.status,200);assert.equal(await download.text(),text().content.text);
- await reject(await a.post('create',body),'UNKNOWN');assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);
+ const recovered=await json(await a.post('create',body));assert.deepEqual(recovered.version,retained);assert.deepEqual(recovered.inspection,retainedCommit.inspection);assert.equal(recovered.execution.budgetTicketId,originalTicket);assert.equal(recovered.execution.requestSha256,retainedCommit.requestSha256);
+ assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);assert.equal(a.f.stats().settled,1);assert.equal(a.f.stats().unknown,0);assert.equal(a.f.stats().consumedMicroUsd,'10');
 });

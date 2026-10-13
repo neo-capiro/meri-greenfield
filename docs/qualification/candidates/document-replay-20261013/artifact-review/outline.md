@@ -1,0 +1,9 @@
+# Independent document replay artifact review
+
+Published preimage base: `398d599311a5f6c48e18d31b4928cf665de8dcb9`, tree `e8d3463dba3a427b52b30c02db3487cb9aefa100`. Dedicated worktree `/workspace/meri-document-replay-artifact-review`; no root implementation edits. Exact executable replay pin will be supplied by integration owner before checks establish acceptance.
+
+Owned paths: this `artifact-review/` directory and intentional completed-replay assertion updates in the three existing document-application independent test files. Preserve exact preimages, changed-case mapping, unrelated security/format/isolation/expiry and interruption assertions. Source reviewer owns its separate artifact replay test.
+
+Replace the existing completed-repeat refusal checks with stronger exact immutable version, object/inspection and original ticket/request execution identity checks. Require a fresh current release receipt; original bytes/provenance remain unchanged; no added reservation, charge, settlement, UNKNOWN accounting or generator invocation. Exercise original completed create, exact revision, reconstruction, subsequent same-delivery changed intent refusal and revocation through existing routes and real local store. Never equate request hashes across distinct deliveries.
+
+Use bounded captures, existing installed dependencies, canonical source-local fixture/store/HTTP/Office owners and synthetic accounting only. Inspect/render every retained integration DOCX page when available and independently open every image. Preserve failed outcomes, physical process/store/listener cleanup evidence and remaining limits. No native DB, private source, provider/model, cloud, dependency installation, deployment or recursive agent work. All artifact/source evidence remains local qualification and native/runtime HOLD.

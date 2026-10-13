@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "node",
+    "--experimental-loader",
+    "./docs/qualification/candidates/document-replay-20261013/artifact-review/installed-dependencies.mjs",
+    "docs/qualification/candidates/document-replay-20261013/artifact-review/observe-replay-flow.mjs",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice"
+  ],
+  "cwd": "/workspace/meri-document-replay-artifact-review",
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "implementationDiffBytes": 12142,
+  "startedAt": "2026-10-13T10:16:27.643184+00:00",
+  "durationSeconds": 3.886,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 57301,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/replay-http-and-render.stdout.txt",
+      "bytes": 2777,
+      "sha256": "105787b0ff28b2384cd18cf67cf90c8aa06783cdc8b92bb5f24944e7703a9799"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/replay-http-and-render.stderr.txt",
+      "bytes": 434,
+      "sha256": "62d4ec8bb0a26fc636a1293fdc6c3cfc8084518e4887d6e3b3e4f19e68646766"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}
