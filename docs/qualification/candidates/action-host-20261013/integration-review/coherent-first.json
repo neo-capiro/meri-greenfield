@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=independent actual|independent CLI|independent runner failure",
+    "apps/control/action-host/local/recovery-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-host-integration-review-20261013",
+  "sourceHead": "26d66b5c76fa2f3300a2f3b38ef62de410741824",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-13T02:33:16.981428+00:00",
+  "durationSeconds": 6.444,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 461370,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.stdout.bin",
+      "bytes": 4119,
+      "sha256": "7e12fe6ffe8181e8e842f0dfb7628e251cf20c7fc9e88829cf0536e515627e1f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

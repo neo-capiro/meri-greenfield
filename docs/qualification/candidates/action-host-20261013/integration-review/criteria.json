@@ -1,0 +1,14 @@
+{
+  "base": "28a7d9de32c75b4352efdd90843dddabe57f2224",
+  "scope": "Independent local HTTP host integration; no native/DB/runtime qualification",
+  "criteria": [
+    "Freeze criteria before new local source inspection; require independent source acceptance and exact bytes for binding/durable dependencies, immutable original contracts/public/catalog/old fixtures.",
+    "Actual loopback HTTP host1 performs query/draft/edit/prepare then refuses unapproved execution without an effect; host2 reconstructs services and rereads retained result, approves exactly the original immutable proposal and has exactly one effect.",
+    "Host3 reconstructs again, repeats original proposal identity without a second effect and applies fresh revocation before returning retained content/effects. No new IDs/proposals or bypass after refusal.",
+    "Run actual canonical lookup/control/proposal/approval/journal/budget paths over existing synthetic retained SQL state, preserve source hashes/client/argument/proposal lineage and unknown outcomes. Never describe reconstruction as native SQL/process-crash durability.",
+    "Closed trusted ports and finite deadlines/cancellation; local fixture stays out of production import graph; never dispose borrowed ports; bound actual HTTP body/response and owned socket/listener cleanup.",
+    "CLI safe import/help/bad args perform no listener/effect; finite execution prints truthful summary, nonzero refusal/failure, no credentials/proposals/private bodies leaked or paid/DB/cloud/client source calls.",
+    "Independent positive/negative controls exercise observable actual HTTP behavior, corrupted or revoked facts and ownership; preserve failures and exact receipts under <=240s subreaper.",
+    "All capability/runtime/deployment/real benchmark holds stay unchanged; source ACCEPT_SOURCE remains distinct from activation, native durability and authenticated real evidence."
+  ]
+}

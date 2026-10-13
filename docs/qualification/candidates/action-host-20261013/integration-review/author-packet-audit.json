@@ -1,0 +1,169 @@
+{
+  "packet": "af46a9904167731ebb80039347ae0d033f2c9e3c",
+  "source": "8a3643e3564f676b66edc6b4cc220fb1c4193098",
+  "manifestSha256": "f00bfc6e229e2d74cb0e64cdb3bcecc41b8fc52c92558938557bb190132896df",
+  "checks": [
+    {
+      "name": "exact source freeze",
+      "passed": true
+    },
+    {
+      "name": "unique manifest20",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/local/README.md",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/local/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/local/local.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/local/recovery.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-ACTION-HOST-LOCAL-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-ACTION-HOST-LOCAL-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/dependency-cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/initial-direct.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/initial-direct.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/initial-direct.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/repaired-cli.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/repaired-cli.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-host-20261013/local-author/repaired-cli.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "scripts/local-followthrough/host-run.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen source fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen source recovery.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen source local.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "frozen CLI",
+      "passed": true
+    },
+    {
+      "name": "initial-direct outcome+cleanup",
+      "passed": true
+    },
+    {
+      "name": "initial-direct stream",
+      "passed": true
+    },
+    {
+      "name": "initial-direct stream",
+      "passed": true
+    },
+    {
+      "name": "initial-direct capture producer",
+      "passed": true
+    },
+    {
+      "name": "missing-approval-fact outcome+cleanup",
+      "passed": true
+    },
+    {
+      "name": "missing-approval-fact stream",
+      "passed": true
+    },
+    {
+      "name": "missing-approval-fact stream",
+      "passed": true
+    },
+    {
+      "name": "missing-approval-fact capture producer",
+      "passed": true
+    },
+    {
+      "name": "precommit delta exactly frozen repair",
+      "passed": true
+    },
+    {
+      "name": "repaired-cli outcome+cleanup",
+      "passed": true
+    },
+    {
+      "name": "repaired-cli stream",
+      "passed": true
+    },
+    {
+      "name": "repaired-cli stream",
+      "passed": true
+    },
+    {
+      "name": "repaired-cli capture producer",
+      "passed": true
+    },
+    {
+      "name": "exact CLI capture",
+      "passed": true
+    }
+  ],
+  "passed": 40,
+  "failed": 0
+}

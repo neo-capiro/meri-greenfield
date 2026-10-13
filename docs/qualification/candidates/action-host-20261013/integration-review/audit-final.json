@@ -1,0 +1,161 @@
+{
+  "source": "8a3643e3564f676b66edc6b4cc220fb1c4193098",
+  "tree": "6b4b9e7ec6c973b6964dda1a86009cd8840ceb85",
+  "base": "28a7d9de32c75b4352efdd90843dddabe57f2224",
+  "originalEntries": 10566,
+  "unchangedOriginalEntries": 10565,
+  "authorizedMetadataAppend": "docs/coordination/tasks/CODEX-ACTION-HOST-20261013.md",
+  "checks": [
+    {
+      "name": "all original entries except authorized root outline preserve exact mode/blob",
+      "passed": true
+    },
+    {
+      "name": "root outline retains complete original prefix",
+      "passed": true
+    },
+    {
+      "name": "root outline exact authorized repair allocation",
+      "passed": true
+    },
+    {
+      "name": "reviewed working source apps/control/action-host/local/recovery.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed working source apps/control/action-host/local/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed working source scripts/local-followthrough/host-run.mjs",
+      "passed": true
+    },
+    {
+      "name": "independently accepted dependency apps/control/action-host/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "independently accepted dependency apps/control/action-host/current.mjs",
+      "passed": true
+    },
+    {
+      "name": "independently accepted dependency apps/control/action-host/resolver.mjs",
+      "passed": true
+    },
+    {
+      "name": "independently accepted dependency apps/control/action-host/durable/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "deadline-before owned process absent",
+      "passed": true
+    },
+    {
+      "name": "deadline-before exact source diff0",
+      "passed": true
+    },
+    {
+      "name": "deadline-before stdout raw hash",
+      "passed": true
+    },
+    {
+      "name": "deadline-before stderr raw hash",
+      "passed": true
+    },
+    {
+      "name": "deadline-before capture producer",
+      "passed": true
+    },
+    {
+      "name": "deadline-real-before owned process absent",
+      "passed": true
+    },
+    {
+      "name": "deadline-real-before exact source diff0",
+      "passed": true
+    },
+    {
+      "name": "deadline-real-before stdout raw hash",
+      "passed": true
+    },
+    {
+      "name": "deadline-real-before stderr raw hash",
+      "passed": true
+    },
+    {
+      "name": "deadline-real-before capture producer",
+      "passed": true
+    },
+    {
+      "name": "deadline-repaired owned process absent",
+      "passed": true
+    },
+    {
+      "name": "deadline-repaired exact source diff0",
+      "passed": true
+    },
+    {
+      "name": "deadline-repaired stdout raw hash",
+      "passed": true
+    },
+    {
+      "name": "deadline-repaired stderr raw hash",
+      "passed": true
+    },
+    {
+      "name": "deadline-repaired capture producer",
+      "passed": true
+    },
+    {
+      "name": "coherent-first owned process absent",
+      "passed": true
+    },
+    {
+      "name": "coherent-first exact source diff0",
+      "passed": true
+    },
+    {
+      "name": "coherent-first stdout raw hash",
+      "passed": true
+    },
+    {
+      "name": "coherent-first stderr raw hash",
+      "passed": true
+    },
+    {
+      "name": "coherent-first capture producer",
+      "passed": true
+    },
+    {
+      "name": "coherent-final owned process absent",
+      "passed": true
+    },
+    {
+      "name": "coherent-final exact source diff0",
+      "passed": true
+    },
+    {
+      "name": "coherent-final stdout raw hash",
+      "passed": true
+    },
+    {
+      "name": "coherent-final stderr raw hash",
+      "passed": true
+    },
+    {
+      "name": "coherent-final capture producer",
+      "passed": true
+    },
+    {
+      "name": "final capture passes",
+      "passed": true
+    },
+    {
+      "name": "canonical/public preserved packages/contracts/validate.mjs",
+      "passed": true
+    }
+  ],
+  "passed": 37,
+  "failed": 0,
+  "scope": "Source/local synthetic only; no native database, shared aggregate, production identity or activation qualification."
+}

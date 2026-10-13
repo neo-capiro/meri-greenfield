@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/meri-action-host-integration-review-20261013/docs/qualification/candidates/action-host-20261013/integration-review/audit.py", line 17, in <module>
+    check('all original entries preserve exact mode/blob',all(b.get(p)==m for p,m in a.items()))
+  File "/tmp/meri-action-host-integration-review-20261013/docs/qualification/candidates/action-host-20261013/integration-review/audit.py", line 15, in check
+    if not value:raise AssertionError(name)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: all original entries preserve exact mode/blob

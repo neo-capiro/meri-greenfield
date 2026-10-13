@@ -1,0 +1,15 @@
+{
+  "beforeFinalPacketCommit": [
+    "a3218ca6aef0fab2e6440c002c5565ef1d397ac6",
+    "c8d76691e722992e1ae1472e5855aec5f87792a0",
+    "05b4a35fe09cfff1474992c1f6a922be8b696b93",
+    "a43f628b24f947b2922e83b643c2000e5349936c",
+    "47d1370be2cc3ca92514088909cf5de53852ceb3",
+    "26d66b5c76fa2f3300a2f3b38ef62de410741824",
+    "7996d2aa30763b19e5d55d77b0006cde35126d0c",
+    "54d1c5cb4ef654a0bc048c62654137fa22aa51dd",
+    "e8161869c9b35fa93a9783ccca54c68c34abd3ad"
+  ],
+  "finalPacketCommit": "Identified by the commit containing this complete manifest; append it after this ordered sequence.",
+  "dependencyMergesExcluded": true
+}
