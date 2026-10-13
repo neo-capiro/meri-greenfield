@@ -1,0 +1,23 @@
+✔ actual Request query returns authorized observation then draft and pending proposal without task effect (108.72432ms)
+✔ execute uses trusted execution and separate current approval then existing single-effect replay (63.016361ms)
+✔ closed request admission: method (14.255363ms)
+✔ closed request admission: route (18.926813ms)
+✔ closed request admission: media (13.995202ms)
+✔ closed request admission: auth (12.772034ms)
+✔ closed request admission: extra (13.588801ms)
+✔ invalid JSON and UTF8 and content-length/actual byte bounds never resolve session (15.795717ms)
+✔ session rejects foreign client/scopes/binding, stale receipt and expiry before domain ports (72.13912ms)
+✔ session failure never leaks credentials or private errors (13.496923ms)
+✔ body abort/parked session stay finite and never start domain work (13.310283ms)
+✔ known retained query withheld by final expiry preserves RESULT_NOT_RELEASED (32.820142ms)
+✔ source uncertainty is not reported as a clean task failure (35.367951ms)
+✔ output cap refuses known query result without inventing rollback (35.93306ms)
+✔ known retained query followed by actual identity read denial remains RESULT_NOT_RELEASED (25.242084ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3041.800983
