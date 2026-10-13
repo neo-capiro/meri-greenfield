@@ -1,0 +1,50 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/action-wire-20261013/integration/check.py"
+  ],
+  "cwd": "/tmp/meri-action-wire-20261013",
+  "sourceHead": "2077d0177a81caae213a6bb7a434cc00008a5c77",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T02:41:14.173101+00:00",
+  "durationSeconds": 7.552,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 464704,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 464755,
+      "status": 0
+    },
+    {
+      "pid": 464794,
+      "status": 0
+    },
+    {
+      "pid": 464927,
+      "status": 0
+    },
+    {
+      "pid": 464947,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 7440,
+      "sha256": "f5bf663050f146cf877fac4a0904413e49cc0a2c3e04d78c1c93ff4e68cd7cb1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
