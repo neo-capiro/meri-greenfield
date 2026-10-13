@@ -32,7 +32,7 @@ test('host configuration getters cannot run during assembly preflight',async t=>
 });
 test('complete activation read HTTP uses retained canonical state and revoked grant blocks fresh session without another effect',async t=>{
  const f=await setup(t),o=f.makeConfiguration(f.configuration()),receipt=await o.initialize({prepareSchema:true}),credential=await f.issue(o);
- const result=await receive(o,'query',credential,{request:{clientId:f.s.clientId}});assert.equal(result.response.status,200);assert.equal(result.value.status,'returned');assert.equal(f.stats().sourceReads,1);assert.equal(f.sql.h.state().reservations.size,1);assert.equal(f.sql.h.state().budget.consumed_micro_usd,'10');
+ const result=await receive(o,'query',credential,{request:{limit:20}});assert.equal(result.response.status,200);assert.equal(result.value.classification,'recommendations');assert.equal(result.value.acceptedTasks,false);assert.equal(f.stats().sourceReads,1);assert.equal(f.sql.h.state().reservations.size,1);assert.equal(f.sql.h.state().budget.consumed_micro_usd,'10');
  const before=await f.child.readState();await o.revoke();assert.deepEqual(Object.values((await f.child.readState()).grants).map(x=>x.state),['REVOKED','REVOKED']);await assert.rejects(f.issue(o));assert.equal(f.stats().sourceReads,1);
  const next=f.makeConfiguration(f.configuration({fixture:receipt.fixture}));await assert.rejects(next.reconstruct());assert.equal(next.status().state,'UNKNOWN');assert.deepEqual((await f.child.readState()).run,before.run);assert.equal(f.sql.h.state().bindings.size,2);assert.equal(next.status().lifecycle.ownedChildren,0);
 });
@@ -45,11 +45,14 @@ test('stopped worker during reconstruction never resets retained ledger or grant
 });
 test('schema commit acknowledgement loss cannot reach child or retry initialization',async t=>{
  const f=await setup(t),c=f.configuration(),pool=c.hostConfiguration.admission.pool;
- const failPool={...pool,async connect(){const client=await pool.connect();return {async query(sql,...args){const r=await client.query(sql,...args);if(sql==='COMMIT')throw Error('SECRET COMMIT ACK');return r;},release:e=>client.release(e)};}};
+ const failPool={...pool,async connect(){const client=await pool.connect();return {async query(sql,...args){const r=await client.query(sql,...args);if((typeof sql==='string'?sql:sql.text)==='COMMIT')throw Error('SECRET COMMIT ACK');return r;},release:e=>client.release(e)};}};
  for(const name of ['admission','lookup','metadata'])c.hostConfiguration[name].pool=failPool;c.hostConfiguration.command.journalPool=failPool;c.hostConfiguration.command.budgetPool=failPool;
  const o=f.makeConfiguration(c);await assert.rejects(o.initialize({prepareSchema:true}),e=>e.outcome==='UNKNOWN');assert.equal(o.status().state,'UNKNOWN');await assert.rejects(f.child.readState());const count=f.statements.length;await assert.rejects(o.initialize({prepareSchema:true}));assert.equal(f.statements.length,count);assert.equal(f.stats().taskEffects,0);
 });
 test('close during parked worker read aborts activation and preserves pending grants without source effects',async t=>{
  const f=await setup(t);let entered,release;const arrived=new Promise(r=>entered=r),gate=new Promise(r=>release=r),original=f.worker.reads.describeTasks;f.worker.reads.describeTasks=async(...args)=>{entered();await gate;return original(...args);};
  const o=f.makeConfiguration(f.configuration());const pending=o.initialize({prepareSchema:true});await arrived;o.close();await assert.rejects(pending);release();await new Promise(r=>setTimeout(r,10));assert.equal(o.status().state,'CLOSED');assert.deepEqual(Object.values((await f.child.readState()).grants).map(x=>x.state),['PENDING','PENDING']);assert.equal(f.sql.h.state().bindings.size,0);assert.equal(f.stats().sourceReads,0);assert.equal(o.status().lifecycle.ownedChildren,0);
+});
+test('HTTP caller-selected client cannot establish authority or spend the admitted read grant',async t=>{
+ const f=await setup(t),o=f.makeConfiguration(f.configuration());await o.initialize({prepareSchema:true});const credential=await f.issue(o),r=await receive(o,'query',credential,{request:{clientId:f.s.clientId}});assert.equal(r.response.status,502);assert.equal(r.value.error.outcome,'UNKNOWN');assert.equal(f.stats().sourceReads,0);assert.equal(f.sql.h.state().reservations.size,0);assert.equal(f.sql.h.state().budget.consumed_micro_usd,'0');
 });
