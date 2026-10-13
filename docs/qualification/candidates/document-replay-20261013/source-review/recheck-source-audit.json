@@ -1,0 +1,77 @@
+{
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "tree": "ddada7cac8a4c9175e3a8433a9532009af008e7a",
+  "priorSource": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "publicAndOriginalSkillOwnersExact": {
+    "packages/contracts": true,
+    "apps/control/document-application/current.mjs": true,
+    "apps/control/document-application/index.mjs": true,
+    "apps/control/document-application/http.mjs": true,
+    "apps/control/document-application/research-brief/manifest.json": true,
+    "apps/control/document-application/research-brief/SKILL.md": true
+  },
+  "productionOwners": [
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "blob": "35b0243436a839a4e21bb06998d4c01a35a72937",
+      "bytes": 10796,
+      "sha256": "bfc8d898c6889784c53338a754f4ec842a9482f64e255f91ff16e87e0aa50ec4",
+      "changedFromPrior": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-execution.mjs",
+      "blob": "d41d4e7e68b9120b7bbdc4f375427e87cba777c2",
+      "bytes": 4678,
+      "sha256": "7cf8547b9357e11b656a2572c9036b5a0e364c628001a66ecd71fb8783b8723a",
+      "changedFromPrior": true
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "blob": "cd963d55028bb8add02ac333004d20b60d828138",
+      "bytes": 14164,
+      "sha256": "3543453ff9831b024bf850fd8f3966083caab9dd64234f8c720eb7668a03ea59",
+      "changedFromPrior": true
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "blob": "f1810b26cfd1e40580b53b9e3a5c29e19488a62e",
+      "bytes": 12319,
+      "sha256": "353f9f58d58ce625cb927dff31effc317c8a219287c64c2b8b6240db5a3f0d04",
+      "changedFromPrior": false
+    },
+    {
+      "path": "apps/artifacts/local-store.mjs",
+      "blob": "209c59ff2629b6a1e4639ded983dacac6fad9cbf",
+      "bytes": 5323,
+      "sha256": "7a90b34779e58090ea0f32e4a7f9988a24d3842391cac56f6cf7ec8a95d891b4",
+      "changedFromPrior": false
+    },
+    {
+      "path": "apps/artifacts/recovery.mjs",
+      "blob": "9771e2652abf2787f7d8ecc5e3982ab52461dbe1",
+      "bytes": 4180,
+      "sha256": "abc8864fde912a049c4c3e86471069423e403e79d649ccab04587b36ad1617dc",
+      "changedFromPrior": true
+    },
+    {
+      "path": "apps/artifacts/local-replay.mjs",
+      "blob": "d591d52ba735f2d20e648ce0fd2266bd3092a0aa",
+      "bytes": 2793,
+      "sha256": "0ae9ef98561521e32ab9827b1c97f3c4c1e23685b9173a7e00b9d83b884189a7",
+      "changedFromPrior": false
+    }
+  ],
+  "changedSourcePaths": [
+    "apps/artifacts/postgres-service.mjs",
+    "apps/artifacts/recovery.mjs",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/gateway/budget/tool-budget-execution.mjs",
+    "apps/gateway/budget/tool-invocation-owner.mjs"
+  ],
+  "historicalObserveReconcileRetained": true,
+  "nativeDatabase": false,
+  "nativeRuntimeAccepted": false
+}

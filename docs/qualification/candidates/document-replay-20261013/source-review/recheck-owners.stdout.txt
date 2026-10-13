@@ -1,0 +1,430 @@
+TAP version 13
+# Subtest: create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay
+ok 1 - create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay
+  ---
+  duration_ms: 61.341919
+  type: 'test'
+  ...
+# Subtest: create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay
+ok 2 - create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay
+  ---
+  duration_ms: 12.531695
+  type: 'test'
+  ...
+# Subtest: create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay
+ok 3 - create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay
+  ---
+  duration_ms: 10.838467
+  type: 'test'
+  ...
+# Subtest: run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay
+ok 4 - run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay
+  ---
+  duration_ms: 10.626509
+  type: 'test'
+  ...
+# Subtest: revision consumes exact prior version, charges a distinct delivery and preserves original
+ok 5 - revision consumes exact prior version, charges a distinct delivery and preserves original
+  ---
+  duration_ms: 13.674853
+  type: 'test'
+  ...
+# Subtest: default disabled and sandbox refusal precede all pool/executor ports
+ok 6 - default disabled and sandbox refusal precede all pool/executor ports
+  ---
+  duration_ms: 4.441444
+  type: 'test'
+  ...
+# Subtest: factory never closes borrowed pool and does not expose kernel bypasses
+ok 7 - factory never closes borrowed pool and does not expose kernel bypasses
+  ---
+  duration_ms: 1.902731
+  type: 'test'
+  ...
+# Subtest: mutation of factory inputs cannot substitute current request context or scopes
+ok 8 - mutation of factory inputs cannot substitute current request context or scopes
+  ---
+  duration_ms: 7.25909
+  type: 'test'
+  ...
+# Subtest: same delivery with changed request conflicts before generation
+ok 9 - same delivery with changed request conflicts before generation
+  ---
+  duration_ms: 11.288078
+  type: 'test'
+  ...
+# Subtest: same delivery with changed trusted evidence conflicts before generation
+ok 10 - same delivery with changed trusted evidence conflicts before generation
+  ---
+  duration_ms: 7.669964
+  type: 'test'
+  ...
+# Subtest: credential mismatch and current authority denial cause no generation/reservation
+ok 11 - credential mismatch and current authority denial cause no generation/reservation
+  ---
+  duration_ms: 4.299201
+  type: 'test'
+  ...
+# Subtest: unrelated operation and foreign producer binding fail before I/O
+ok 12 - unrelated operation and foreign producer binding fail before I/O
+  ---
+  duration_ms: 1.920578
+  type: 'test'
+  ...
+# Subtest: canonical allocation/capability ceilings reach actual executor and forbid oversized publication
+ok 13 - canonical allocation/capability ceilings reach actual executor and forbid oversized publication
+  ---
+  duration_ms: 4.655363
+  type: 'test'
+  ...
+# Subtest: lower current output ceiling before publication refuses with retained liability
+ok 14 - lower current output ceiling before publication refuses with retained liability
+  ---
+  duration_ms: 4.639248
+  type: 'test'
+  ...
+# Subtest: generator failure retains explicit UNKNOWN without marker, refund or retry
+ok 15 - generator failure retains explicit UNKNOWN without marker, refund or retry
+  ---
+  duration_ms: 6.87049
+  type: 'test'
+  ...
+# Subtest: lost prepare ACK preserves actual owner identity and only explicit reconciliation
+ok 16 - lost prepare ACK preserves actual owner identity and only explicit reconciliation
+  ---
+  duration_ms: 3.444784
+  type: 'test'
+  ...
+# Subtest: lost reserve ACK preserves actual owner identity and only explicit reconciliation
+ok 17 - lost reserve ACK preserves actual owner identity and only explicit reconciliation
+  ---
+  duration_ms: 7.858626
+  type: 'test'
+  ...
+# Subtest: lost marker ACK preserves actual owner identity and only explicit reconciliation
+ok 18 - lost marker ACK preserves actual owner identity and only explicit reconciliation
+  ---
+  duration_ms: 8.934633
+  type: 'test'
+  ...
+# Subtest: lost settle ACK preserves actual owner identity and only explicit reconciliation
+ok 19 - lost settle ACK preserves actual owner identity and only explicit reconciliation
+  ---
+  duration_ms: 8.965369
+  type: 'test'
+  ...
+# Subtest: cancelled preparation at connect cannot start generator or later accounting
+ok 20 - cancelled preparation at connect cannot start generator or later accounting
+  ---
+  duration_ms: 13.473681
+  type: 'test'
+  ...
+# Subtest: cancelled preparation at BEGIN cannot start generator or later accounting
+ok 21 - cancelled preparation at BEGIN cannot start generator or later accounting
+  ---
+  duration_ms: 3.816589
+  type: 'test'
+  ...
+# Subtest: cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting
+ok 22 - cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting
+  ---
+  duration_ms: 3.227009
+  type: 'test'
+  ...
+# Subtest: short artifact release deadline survives parked completion ACK and needs historical reconciliation
+ok 23 - short artifact release deadline survives parked completion ACK and needs historical reconciliation
+  ---
+  duration_ms: 7.21186
+  type: 'test'
+  ...
+# Subtest: post-settlement revocation prevents result release without refund or regeneration
+ok 24 - post-settlement revocation prevents result release without refund or regeneration
+  ---
+  duration_ms: 7.248175
+  type: 'test'
+  ...
+# Subtest: borrowed version read keeps its original receiver for revision
+ok 25 - borrowed version read keeps its original receiver for revision
+  ---
+  duration_ms: 11.241308
+  type: 'test'
+  ...
+# Subtest: oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure
+ok 26 - oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure
+  ---
+  duration_ms: 7.085061
+  type: 'test'
+  ...
+# Subtest: outer cancellation during put preserves version/effect identity
+ok 27 - outer cancellation during put preserves version/effect identity
+  ---
+  duration_ms: 5.889275
+  type: 'test'
+  ...
+# Subtest: outer cancellation during commit preserves version/effect identity
+ok 28 - outer cancellation during commit preserves version/effect identity
+  ---
+  duration_ms: 5.869615
+  type: 'test'
+  ...
+# Subtest: outer cancellation during reserve discloses accounting uncertainty without retry
+ok 29 - outer cancellation during reserve discloses accounting uncertainty without retry
+  ---
+  duration_ms: 8.031444
+  type: 'test'
+  ...
+# Subtest: outer cancellation during marker discloses accounting uncertainty without retry
+ok 30 - outer cancellation during marker discloses accounting uncertainty without retry
+  ---
+  duration_ms: 5.964567
+  type: 'test'
+  ...
+# Subtest: outer cancellation during settle discloses accounting uncertainty without retry
+ok 31 - outer cancellation during settle discloses accounting uncertainty without retry
+  ---
+  duration_ms: 6.243605
+  type: 'test'
+  ...
+# Subtest: outer cancellation during marker preserves confirmed version acknowledgement
+ok 32 - outer cancellation during marker preserves confirmed version acknowledgement
+  ---
+  duration_ms: 6.114542
+  type: 'test'
+  ...
+# Subtest: outer cancellation during settle preserves confirmed version acknowledgement
+ok 33 - outer cancellation during settle preserves confirmed version acknowledgement
+  ---
+  duration_ms: 6.336182
+  type: 'test'
+  ...
+# Subtest: real current-authority + artifact + canonical owner hashes committed record, not delivery
+ok 34 - real current-authority + artifact + canonical owner hashes committed record, not delivery
+  ---
+  duration_ms: 55.905
+  type: 'test'
+  ...
+# Subtest: fresh decision ID may rotate while stable selected subject is unchanged
+ok 35 - fresh decision ID may rotate while stable selected subject is unchanged
+  ---
+  duration_ms: 10.051399
+  type: 'test'
+  ...
+# Subtest: canonical policy refuses decision actor before budget reservation
+ok 36 - canonical policy refuses decision actor before budget reservation
+  ---
+  duration_ms: 4.770605
+  type: 'test'
+  ...
+# Subtest: canonical policy refuses subject actor before budget reservation
+ok 37 - canonical policy refuses subject actor before budget reservation
+  ---
+  duration_ms: 4.504017
+  type: 'test'
+  ...
+# Subtest: canonical policy refuses missing grant before budget reservation
+ok 38 - canonical policy refuses missing grant before budget reservation
+  ---
+  duration_ms: 4.193764
+  type: 'test'
+  ...
+# Subtest: canonical policy refuses decision policy before budget reservation
+ok 39 - canonical policy refuses decision policy before budget reservation
+  ---
+  duration_ms: 3.718245
+  type: 'test'
+  ...
+# Subtest: canonical policy refuses unmatched decision ID before budget reservation
+ok 40 - canonical policy refuses unmatched decision ID before budget reservation
+  ---
+  duration_ms: 3.81522
+  type: 'test'
+  ...
+# Subtest: canonical authority refuses current writer fence without effects
+ok 41 - canonical authority refuses current writer fence without effects
+  ---
+  duration_ms: 6.55149
+  type: 'test'
+  ...
+# Subtest: canonical authority refuses expired capability without effects
+ok 42 - canonical authority refuses expired capability without effects
+  ---
+  duration_ms: 3.745735
+  type: 'test'
+  ...
+# Subtest: canonical authority refuses disabled source without effects
+ok 43 - canonical authority refuses disabled source without effects
+  ---
+  duration_ms: 3.947096
+  type: 'test'
+  ...
+# Subtest: canonical authority refuses missing source without effects
+ok 44 - canonical authority refuses missing source without effects
+  ---
+  duration_ms: 3.612127
+  type: 'test'
+  ...
+# Subtest: subject change after reserve refuses execution and leaves UNKNOWN, never refund
+ok 45 - subject change after reserve refuses execution and leaves UNKNOWN, never refund
+  ---
+  duration_ms: 4.841029
+  type: 'test'
+  ...
+# Subtest: artifact resource digest mismatch cannot borrow canonical policy permission
+ok 46 - artifact resource digest mismatch cannot borrow canonical policy permission
+  ---
+  duration_ms: 3.786607
+  type: 'test'
+  ...
+# Subtest: changed trusted scopes cannot be substituted by otherwise valid current policy
+ok 47 - changed trusted scopes cannot be substituted by otherwise valid current policy
+  ---
+  duration_ms: 3.621361
+  type: 'test'
+  ...
+# Subtest: current revocation after settlement prevents release but preserves charged version
+ok 48 - current revocation after settlement prevents release but preserves charged version
+  ---
+  duration_ms: 8.183934
+  type: 'test'
+  ...
+# Subtest: resource release expiry while marker ACK parked refuses now, reconciles historical completion
+ok 49 - resource release expiry while marker ACK parked refuses now, reconciles historical completion
+  ---
+  duration_ms: 7.835615
+  type: 'test'
+  ...
+# Subtest: wrong commit acknowledgement cannot publish durable completion
+ok 50 - wrong commit acknowledgement cannot publish durable completion
+  ---
+  duration_ms: 5.918617
+  type: 'test'
+  ...
+# Subtest: wrong immutable readback forbids version commit while retaining object uncertainty
+ok 51 - wrong immutable readback forbids version commit while retaining object uncertainty
+  ---
+  duration_ms: 5.29758
+  type: 'test'
+  ...
+# Subtest: late returned object write is retained as UNKNOWN and never starts version commit
+ok 52 - late returned object write is retained as UNKNOWN and never starts version commit
+  ---
+  duration_ms: 5.500253
+  type: 'test'
+  ...
+# Subtest: late version acknowledgement cannot become a completion marker
+ok 53 - late version acknowledgement cannot become a completion marker
+  ---
+  duration_ms: 6.032266
+  type: 'test'
+  ...
+# Subtest: borrowed receivers survive create and revise with exact base object and intent
+ok 54 - borrowed receivers survive create and revise with exact base object and intent
+  ---
+  duration_ms: 17.324896
+  type: 'test'
+  ...
+# Subtest: snapshot of delivery remains exact while generation is parked
+ok 55 - snapshot of delivery remains exact while generation is parked
+  ---
+  duration_ms: 7.438593
+  type: 'test'
+  ...
+# Subtest: lost reserve ACK cannot regenerate, only canonical reconciliation
+ok 56 - lost reserve ACK cannot regenerate, only canonical reconciliation
+  ---
+  duration_ms: 9.223595
+  type: 'test'
+  ...
+# Subtest: lost marker ACK cannot regenerate, only canonical reconciliation
+ok 57 - lost marker ACK cannot regenerate, only canonical reconciliation
+  ---
+  duration_ms: 9.176295
+  type: 'test'
+  ...
+# Subtest: lost settle ACK cannot regenerate, only canonical reconciliation
+ok 58 - lost settle ACK cannot regenerate, only canonical reconciliation
+  ---
+  duration_ms: 9.795198
+  type: 'test'
+  ...
+# Subtest: same delivery plus changed parent conflicts before read or regeneration
+ok 59 - same delivery plus changed parent conflicts before read or regeneration
+  ---
+  duration_ms: 8.052228
+  type: 'test'
+  ...
+# Subtest: wrong producer task binding cannot reuse a bound grant
+ok 60 - wrong producer task binding cannot reuse a bound grant
+  ---
+  duration_ms: 2.169335
+  type: 'test'
+  ...
+# Subtest: no startup pool calls or invocation bypass; default disabled before prepare
+ok 61 - no startup pool calls or invocation bypass; default disabled before prepare
+  ---
+  duration_ms: 1.819814
+  type: 'test'
+  ...
+# Subtest: postpublication response ceiling reports exact committed uncertainty
+ok 62 - postpublication response ceiling reports exact committed uncertainty
+  ---
+  duration_ms: 7.38974
+  type: 'test'
+  ...
+# Subtest: generator exception preserves original cause and durable UNKNOWN without marker
+ok 63 - generator exception preserves original cause and durable UNKNOWN without marker
+  ---
+  duration_ms: 11.418608
+  type: 'test'
+  ...
+# Subtest: outer cancellation during putHook retains explicit effect uncertainty
+ok 64 - outer cancellation during putHook retains explicit effect uncertainty
+  ---
+  duration_ms: 12.247665
+  type: 'test'
+  ...
+# Subtest: outer cancellation during commitHook retains explicit effect uncertainty
+ok 65 - outer cancellation during commitHook retains explicit effect uncertainty
+  ---
+  duration_ms: 7.030815
+  type: 'test'
+  ...
+# Subtest: outer cancellation after reservation persistence exposes budget identity without artifact effects
+ok 66 - outer cancellation after reservation persistence exposes budget identity without artifact effects
+  ---
+  duration_ms: 5.052214
+  type: 'test'
+  ...
+# Subtest: concurrent rejected delivery cannot steal pending call effect identity
+ok 67 - concurrent rejected delivery cannot steal pending call effect identity
+  ---
+  duration_ms: 8.202492
+  type: 'test'
+  ...
+# Subtest: outer cancellation during marker preserves already confirmed version commit
+ok 68 - outer cancellation during marker preserves already confirmed version commit
+  ---
+  duration_ms: 7.728245
+  type: 'test'
+  ...
+# Subtest: outer cancellation during settle preserves already confirmed version commit
+ok 69 - outer cancellation during settle preserves already confirmed version commit
+  ---
+  duration_ms: 7.91276
+  type: 'test'
+  ...
+# Subtest: schema-valid selected entity change is refused by adapter stable-subject check
+ok 70 - schema-valid selected entity change is refused by adapter stable-subject check
+  ---
+  duration_ms: 5.172184
+  type: 'test'
+  ...
+1..70
+# tests 70
+# suites 0
+# pass 70
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4089.054421

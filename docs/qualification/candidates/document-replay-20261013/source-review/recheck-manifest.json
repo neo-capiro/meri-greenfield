@@ -1,0 +1,101 @@
+{
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "reviewedTree": "ddada7cac8a4c9175e3a8433a9532009af008e7a",
+  "decision": "ACCEPT_SOURCE",
+  "nativeRuntimeAccepted": false,
+  "checks": {
+    "independent": 37,
+    "authorReplay": 33,
+    "focusedOwners": 70,
+    "sourceWhitespace": true,
+    "publicPinsExact": true
+  },
+  "historicalEvidenceAndCounterexampleRetained": true,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-author.json",
+      "bytes": 842,
+      "sha256": "fef333075571ed00b94f7cbd9ef12f6572dc1631240935b1f45baa9090de970f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-author.stdout.txt",
+      "bytes": 7767,
+      "sha256": "46e339ab6cc5cd94174e9607853aa3afaf4fb92561e6165a3246718352f2cbe3"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-cleanup.json",
+      "bytes": 317,
+      "sha256": "999a2feeecb05e4b57fce25a8bddade46fe581abc15bf164ac2125b1cf9fe609"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-independent.json",
+      "bytes": 861,
+      "sha256": "3d027b01405c0335a18fa49f435a66eabbf71e7698bb9134c21001da4707075a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-independent.stdout.txt",
+      "bytes": 9029,
+      "sha256": "b66805a96dce7c5d78878cfc70ff056f254120e285d1cc9bff1779d3ca2644b1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-outline.md",
+      "bytes": 1268,
+      "sha256": "f6783c3626508275e93c1aa7189fef5dc04a5df79f82acb69210ab6bc8aa9f28"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-owners.json",
+      "bytes": 917,
+      "sha256": "7f08729f560e0f6ac4ffd521beeb7c33611e057484f836b92b0199503da4fb25"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-owners.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-owners.stdout.txt",
+      "bytes": 15756,
+      "sha256": "22fa6de89dbfc44574b1d3ffb2d4121a7c48b463c70dbdcc337bab4fe740a2a9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-report.md",
+      "bytes": 4131,
+      "sha256": "ede4bf1794fd469e0d024873f7ac9ba8190c6dbe0a0b54632241c0b3a5fdd716"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-source-audit.json",
+      "bytes": 3057,
+      "sha256": "55b670bb162182becc1cdbeacc2f6bb16fd931ff3d01d94965cad4408978106b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-source-whitespace.json",
+      "bytes": 878,
+      "sha256": "6302ce4bc3d8418e03fe25a08a083bfeb0df7c487f309e8d365546c50094f709"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/independent/document-replay-independent.test.mjs",
+      "bytes": 23070,
+      "sha256": "2b7d7ed5af30457e8f716822f13c49782c1f31ee5195052dc9d73cac811747d3"
+    }
+  ]
+}

@@ -147,6 +147,29 @@ test('canonical database grant revocation denies replay even when business/resou
  const a=await setup(t);await a.run();const before=a.snapshot();a.f.ledger.state().grant.state='REVOKED';forbidNewEffects(a);
  await unresolved(a.run());a.noNewEffects(before);
 });
+for(const state of ['expired-grant','stale-run-fence','missing-run','quarantined-budget','capability-mismatch'])test(`canonical ${state} denies completed replay independently of permissive resource ports`,async t=>{
+ const a=await setup(t);await a.run();const before=a.snapshot(),db=a.f.ledger.state();
+ if(state==='expired-grant')db.grant.expires_at=new Date(Date.now()-1);if(state==='stale-run-fence')db.run.fence++;if(state==='missing-run')db.run=null;
+ if(state==='quarantined-budget')db.budget.quarantined=true;if(state==='capability-mismatch')db.grant.capability_sha256='e'.repeat(64);
+ forbidNewEffects(a);await assert.rejects(a.run());a.noNewEffects(before);
+});
+test('canonical grant revoked after replay bytes prevents marker mutation and release',async t=>{
+ const a=await setup(t),versions=a.options.versions;a.options.versions={...versions,async commit(...args){await versions.commit(...args);throw Error('Lost premarker ACK');}};
+ await assert.rejects(a.run());assert.equal(a.row().completion,null);const before=a.snapshot(),objects=a.options.objects;
+ a.options.objects={...objects,async get(...args){const bytes=await objects.get(...args);a.f.ledger.state().grant.state='REVOKED';return bytes;}};forbidNewEffects(a);
+ await unresolved(a.run());assert.equal(a.row().completion,null);assert.equal(a.reservation().state,'UNKNOWN');a.noNewEffects(before);
+});
+test('canonical grant revoked while completion ACK is parked still withholds final replay release',async t=>{
+ const a=await setup(t),versions=a.options.versions;a.options.versions={...versions,async commit(...args){await versions.commit(...args);throw Error('Lost premarker ACK');}};
+ await assert.rejects(a.run());const generated=a.f.stats().generations,charges=a.f.stats().versionCharges;forbidNewEffects(a);
+ const gate=a.f.ledger.parkCommit('marker'),pending=a.run();await gate.ready;a.f.ledger.state().grant.state='REVOKED';gate.resume();await unresolved(pending);
+ assert.equal(a.f.stats().generations,generated);assert.equal(a.f.stats().versionCharges,charges);assert.equal(a.f.stats().settled,1);assert.equal(a.f.stats().consumedMicroUsd,'10');assert(a.row().completion);
+});
+test('canonical database time beyond original invocation deadline denies despite unexpired host-time lease',async t=>{
+ const a=await setup(t);await a.run();const before=a.snapshot(),pool=a.options.pool,expired=Number(a.row().deadline_ms)+1;
+ assert(expired<Date.now()+25000);a.options.pool={async connect(){const client=await pool.connect();return {async query(...args){const result=await client.query(...args);return args[0]==='SELECT clock_timestamp() AS now'?{rows:[{now:new Date(expired)}]}:result;},release(...args){return client.release(...args);}};}};
+ forbidNewEffects(a);await unresolved(a.run());a.noNewEffects(before);
+});
 
 function lookupFixture(count,{bytes=256,cycle=false}={}){
  const records=new Map(),artifactId=uid(9000),requestSha256='a'.repeat(64),target=uid(1),head=uid(count),calls=[];

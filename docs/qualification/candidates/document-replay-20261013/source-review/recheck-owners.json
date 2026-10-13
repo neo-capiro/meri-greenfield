@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs",
+    "apps/artifacts/test/postgres-service-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay-review",
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 4.12,
+  "processReaped": true,
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-document-replay-review"
+  },
+  "stdoutBytes": 15756,
+  "stderrBytes": 0,
+  "stdoutSha256": "22fa6de89dbfc44574b1d3ffb2d4121a7c48b463c70dbdcc337bab4fe740a2a9",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
