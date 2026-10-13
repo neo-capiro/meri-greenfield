@@ -1,6 +1,7 @@
 /** Capture trusted owners; reuse canonical session freshness, not a policy engine. */
 import {types} from 'node:util';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createRequestCurrent,same} from '../action-host/current.mjs';
 import {fail} from './http.mjs';
@@ -17,6 +18,8 @@ export function configuration(value){
  const limits=data(c.limits);own(limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']);
  if(Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216||typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean')fail('DOCUMENT_CONFIGURATION',500);
  const context=data(v.context(o.context)),descriptor=data(o.descriptor);
+ const entry=catalog.operations.find(e=>e.operation.id==='create_word'),canonicalDescriptor={operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};
+ if(!same(descriptor,canonicalDescriptor))fail('DOCUMENT_CONFIGURATION',500);
  if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(c.selectedClientId??'')||!context.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===c.selectedClientId)||descriptor.operation?.id!=='create_word'||descriptor.operation?.version!=='0.2.0')fail('DOCUMENT_CONFIGURATION',500);
  for(const fn of ['authorize','ids','newReservationId'])if(typeof o[fn]!=='function')fail('DOCUMENT_CONFIGURATION',500);
  const options={...o,context,descriptor,producerContext:data(o.producerContext),limits:data(o.limits),

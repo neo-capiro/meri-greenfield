@@ -1,0 +1,23 @@
+✔ create/revise/inspect/download use immutable storage and one shared canonical ledger (330.68929ms)
+✔ actual DOCX produces truthful draft/preview metadata and exact ZIP bytes (164.713826ms)
+✔ default disabled allocates no document effect; borrowed session remains open (6.675681ms)
+✔ reject body authority before generation (6.261208ms)
+✔ reject wrong operation before generation (6.493767ms)
+✔ reject PDF before generation (6.201719ms)
+✔ native identity/tool tokens cannot authenticate application routes (6.177362ms)
+✔ revoked session denies older-version read without another reservation (90.222562ms)
+✔ post-object revocation preserves uncertainty without regeneration (74.313839ms)
+✔ strict native Request admission ignores hostile own url and rejects Proxy without traps (10.687769ms)
+✔ bounded body and fixed path/media handling preserve safe no-store errors (7.128279ms)
+✔ constructor snapshots data and rejects authority getters without invocation (91.201904ms)
+✔ canonical descriptor rejects accidental grant or source redefinition (6.627027ms)
+✔ shorter artifact receipt clips outer lifetime before the next parked session call (53.752565ms)
+✔ fresh session with changed full binding refuses before accounting (7.557906ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3537.945834
