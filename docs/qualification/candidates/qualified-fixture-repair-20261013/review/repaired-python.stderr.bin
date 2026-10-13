@@ -1,0 +1,38 @@
+test_actual_fixture_verifier_uses_server_not_dial (test_compatibility_independent.CompatibilityIndependent.test_actual_fixture_verifier_uses_server_not_dial) ... ok
+test_closed_fixture_bool_port (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_bool_port) ... ok
+test_closed_fixture_fixture_extra (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_fixture_extra) ... ok
+test_closed_fixture_hostname (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_hostname) ... ok
+test_closed_fixture_ipv6_zone (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_ipv6_zone) ... ok
+test_closed_fixture_leaf_extra (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_leaf_extra) ... ok
+test_closed_fixture_public (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_public) ... ok
+test_closed_fixture_scope_duplicate (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_duplicate) ... ok
+test_closed_fixture_scope_empty (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_empty) ... ok
+test_closed_fixture_scope_null (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_null) ... ok
+test_closed_fixture_scope_overlimit (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_overlimit) ... ok
+test_closed_fixture_system (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_system) ... ok
+test_closed_fixture_target (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_target) ... ok
+test_closed_fixture_unpaired_address (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_unpaired_address) ... ok
+test_closed_fixture_unpaired_port (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_unpaired_port) ... ok
+test_closed_fixture_zero_port (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_zero_port) ... ok
+test_dial_dbname (test_compatibility_independent.CompatibilityIndependent.test_dial_dbname) ... ok
+test_dial_host (test_compatibility_independent.CompatibilityIndependent.test_dial_host) ... ok
+test_dial_port (test_compatibility_independent.CompatibilityIndependent.test_dial_port) ... ok
+test_dial_user (test_compatibility_independent.CompatibilityIndependent.test_dial_user) ... ok
+test_full_compatibility_facts_in_original_admission_hash (test_compatibility_independent.CompatibilityIndependent.test_full_compatibility_facts_in_original_admission_hash) ... ok
+test_legacy_server_fallback_remains (test_compatibility_independent.CompatibilityIndependent.test_legacy_server_fallback_remains) ... ok
+test_mapped_server_and25_scope_preserved_in_actual_decode (test_compatibility_independent.CompatibilityIndependent.test_mapped_server_and25_scope_preserved_in_actual_decode) ... ok
+test_observed_identity_address (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_address) ... ok
+test_observed_identity_database (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_database) ... ok
+test_observed_identity_fsync (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_fsync) ... ok
+test_observed_identity_port (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_port) ... ok
+test_observed_identity_started_ms (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_started_ms) ... ok
+test_observed_identity_synchronous_commit (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_synchronous_commit) ... ok
+test_observed_identity_system_identifier (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_system_identifier) ... ok
+test_observed_identity_username (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_username) ... ok
+test_observed_identity_version (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_version) ... ok
+test_query_returning_after_deadline_prevents_fetch (test_compatibility_independent.CompatibilityIndependent.test_query_returning_after_deadline_prevents_fetch) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.004s
+
+OK

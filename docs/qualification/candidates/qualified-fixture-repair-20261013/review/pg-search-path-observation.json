@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-13",
+  "method": "Official PostgreSQL17 rendered documentation read using web tool; no SQL engine execution and no raw HTML hash claim.",
+  "sources": [
+    {
+      "url": "https://www.postgresql.org/docs/17/runtime-config-client.html",
+      "paraphrase": "An unlisted temporary schema precedes even pg_catalog for relation/type resolution."
+    },
+    {
+      "url": "https://www.postgresql.org/docs/17/datatype-oid.html",
+      "paraphrase": "regclass input resolves relation names using the schema search path; explicitly qualified names are supported."
+    }
+  ],
+  "inference": "New preservation SQL used unqualified regclass catalog identity literals while installer sets search_path TO public. A borrowed session temporary relation with the same name can alter those class OIDs and thereby metadata/dependency joins. Qualify only the catalog identity literals.",
+  "nativeReproduction": false
+}
