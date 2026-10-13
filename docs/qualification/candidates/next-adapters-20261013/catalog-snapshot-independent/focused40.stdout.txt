@@ -1,0 +1,250 @@
+TAP version 13
+# Subtest: final canonical create_task advertises actual raw and invokes normalizer
+ok 1 - final canonical create_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 2.608276
+  type: 'test'
+  ...
+# Subtest: final canonical create_task refuses caller authority context and hostile substitutions
+ok 2 - final canonical create_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.580765
+  type: 'test'
+  ...
+# Subtest: final canonical update_task advertises actual raw and invokes normalizer
+ok 3 - final canonical update_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 0.800152
+  type: 'test'
+  ...
+# Subtest: final canonical update_task refuses caller authority context and hostile substitutions
+ok 4 - final canonical update_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.310603
+  type: 'test'
+  ...
+# Subtest: final canonical save_memory advertises actual raw and invokes normalizer
+ok 5 - final canonical save_memory advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 3.460987
+  type: 'test'
+  ...
+# Subtest: final canonical save_memory refuses caller authority context and hostile substitutions
+ok 6 - final canonical save_memory refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.38269
+  type: 'test'
+  ...
+# Subtest: final canonical save_chat_attachments advertises actual raw and invokes normalizer
+ok 7 - final canonical save_chat_attachments advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.641105
+  type: 'test'
+  ...
+# Subtest: final canonical save_chat_attachments refuses caller authority context and hostile substitutions
+ok 8 - final canonical save_chat_attachments refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.450511
+  type: 'test'
+  ...
+# Subtest: final canonical create_word advertises actual raw and invokes normalizer
+ok 9 - final canonical create_word advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 9.936774
+  type: 'test'
+  ...
+# Subtest: final canonical create_word refuses caller authority context and hostile substitutions
+ok 10 - final canonical create_word refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 2.611871
+  type: 'test'
+  ...
+# Subtest: final canonical create_excel advertises actual raw and invokes normalizer
+ok 11 - final canonical create_excel advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.300818
+  type: 'test'
+  ...
+# Subtest: final canonical create_excel refuses caller authority context and hostile substitutions
+ok 12 - final canonical create_excel refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.736768
+  type: 'test'
+  ...
+# Subtest: final canonical create_powerpoint advertises actual raw and invokes normalizer
+ok 13 - final canonical create_powerpoint advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.065307
+  type: 'test'
+  ...
+# Subtest: final canonical create_powerpoint refuses caller authority context and hostile substitutions
+ok 14 - final canonical create_powerpoint refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.564221
+  type: 'test'
+  ...
+# Subtest: final canonical run_analysis advertises actual raw and invokes normalizer
+ok 15 - final canonical run_analysis advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 0.838309
+  type: 'test'
+  ...
+# Subtest: final canonical run_analysis refuses caller authority context and hostile substitutions
+ok 16 - final canonical run_analysis refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.66439
+  type: 'test'
+  ...
+# Subtest: final canonical schedule_task advertises actual raw and invokes normalizer
+ok 17 - final canonical schedule_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 27.220664
+  type: 'test'
+  ...
+# Subtest: final canonical schedule_task refuses caller authority context and hostile substitutions
+ok 18 - final canonical schedule_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 2.211795
+  type: 'test'
+  ...
+# Subtest: final canonical update_scheduled_task advertises actual raw and invokes normalizer
+ok 19 - final canonical update_scheduled_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 3.683658
+  type: 'test'
+  ...
+# Subtest: final canonical update_scheduled_task refuses caller authority context and hostile substitutions
+ok 20 - final canonical update_scheduled_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 1.507716
+  type: 'test'
+  ...
+# Subtest: final canonical cancel_scheduled_task advertises actual raw and invokes normalizer
+ok 21 - final canonical cancel_scheduled_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 3.021972
+  type: 'test'
+  ...
+# Subtest: final canonical cancel_scheduled_task refuses caller authority context and hostile substitutions
+ok 22 - final canonical cancel_scheduled_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.795745
+  type: 'test'
+  ...
+# Subtest: final canonical list_scheduled_tasks advertises actual raw and invokes normalizer
+ok 23 - final canonical list_scheduled_tasks advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 4.741854
+  type: 'test'
+  ...
+# Subtest: final canonical list_scheduled_tasks refuses caller authority context and hostile substitutions
+ok 24 - final canonical list_scheduled_tasks refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.7916
+  type: 'test'
+  ...
+# Subtest: final canonical get_research_evidence advertises actual raw and invokes normalizer
+ok 25 - final canonical get_research_evidence advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.740323
+  type: 'test'
+  ...
+# Subtest: final canonical get_research_evidence refuses caller authority context and hostile substitutions
+ok 26 - final canonical get_research_evidence refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.666483
+  type: 'test'
+  ...
+# Subtest: final canonical create_task correlates exact command even for indeterminate observation
+ok 27 - final canonical create_task correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 3.627754
+  type: 'test'
+  ...
+# Subtest: final canonical update_task correlates exact command even for indeterminate observation
+ok 28 - final canonical update_task correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 3.321548
+  type: 'test'
+  ...
+# Subtest: final canonical save_memory correlates exact command even for indeterminate observation
+ok 29 - final canonical save_memory correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 2.643088
+  type: 'test'
+  ...
+# Subtest: final canonical save_chat_attachments correlates exact command even for indeterminate observation
+ok 30 - final canonical save_chat_attachments correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 2.865168
+  type: 'test'
+  ...
+# Subtest: final canonical schedule_task validators feed actual accepted schedule application
+ok 31 - final canonical schedule_task validators feed actual accepted schedule application
+  ---
+  duration_ms: 11.406413
+  type: 'test'
+  ...
+# Subtest: final canonical update_scheduled_task validators feed actual accepted schedule application
+ok 32 - final canonical update_scheduled_task validators feed actual accepted schedule application
+  ---
+  duration_ms: 7.218444
+  type: 'test'
+  ...
+# Subtest: final canonical cancel_scheduled_task validators feed actual accepted schedule application
+ok 33 - final canonical cancel_scheduled_task validators feed actual accepted schedule application
+  ---
+  duration_ms: 4.323281
+  type: 'test'
+  ...
+# Subtest: final canonical list_scheduled_tasks validators feed actual accepted schedule application
+ok 34 - final canonical list_scheduled_tasks validators feed actual accepted schedule application
+  ---
+  duration_ms: 2.374687
+  type: 'test'
+  ...
+# Subtest: final loader keeps generic private schema names out of global namespace
+ok 35 - final loader keeps generic private schema names out of global namespace
+  ---
+  duration_ms: 0.336822
+  type: 'test'
+  ...
+# Subtest: final one canonical catalog covers139 original96selected43deferred and97typed96mapped0pending
+ok 36 - final one canonical catalog covers139 original96selected43deferred and97typed96mapped0pending
+  ---
+  duration_ms: 4.302059
+  type: 'test'
+  ...
+# Subtest: final all97 production routes remain unavailable before authority budget or source effects
+ok 37 - final all97 production routes remain unavailable before authority budget or source effects
+  ---
+  duration_ms: 14.868611
+  type: 'test'
+  ...
+# Subtest: final thirteen descriptors bind exact schema bytes and refuse tampering
+ok 38 - final thirteen descriptors bind exact schema bytes and refuse tampering
+  ---
+  duration_ms: 70.618408
+  type: 'test'
+  ...
+# Subtest: final all84 prior descriptors and callback bodies retain two Portfolio footnotes and accepted action dispatch metadata
+ok 39 - final all84 prior descriptors and callback bodies retain two Portfolio footnotes and accepted action dispatch metadata
+  ---
+  duration_ms: 4.981812
+  type: 'test'
+  ...
+# Subtest: final source accounting cannot promote whole requirements or native gates
+ok 40 - final source accounting cannot promote whole requirements or native gates
+  ---
+  duration_ms: 0.623039
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2115.789165

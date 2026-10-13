@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs"
+  ],
+  "cwd": "/workspace/meri-catalog-snapshot-independent",
+  "reviewedCommit": "eda892e204e65ac9860a008002c262d7207523b8",
+  "worktreeHead": "eda892e204e65ac9860a008002c262d7207523b8",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 2.033,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2144,
+  "stderrBytes": 0,
+  "stdoutSha256": "58fc0d116ef8bfbee5b4155d45616eb84120a7d2b2d56483e272c82bdbb76e76",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

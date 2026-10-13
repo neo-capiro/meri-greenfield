@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "4c8606976d0f0b6e898fea1a4b3830be8c327071",
+    "eda892e204e65ac9860a008002c262d7207523b8"
+  ],
+  "cwd": "/workspace/meri-catalog-snapshot-independent",
+  "reviewedCommit": "eda892e204e65ac9860a008002c262d7207523b8",
+  "worktreeHead": "eda892e204e65ac9860a008002c262d7207523b8",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.004,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
