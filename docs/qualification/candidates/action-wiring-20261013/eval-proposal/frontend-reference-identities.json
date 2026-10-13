@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "inspectionDate": "2026-10-13",
+  "status": "READ_ONLY_SOURCE_DISCOVERY",
+  "remoteHeadRefreshed": false,
+  "shippingCandidateChanged": false,
+  "privateBodiesRetained": false,
+  "files": [
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "7c87678730538958ace9762f824dc3e588bf445b",
+      "path": "packages/meri-client/README.md",
+      "blob": "56c9c1286d739cd556f49ddbde896cb3f1a96b21",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7c87678730538958ace9762f824dc3e588bf445b/packages/meri-client/README.md",
+      "lineCount": 12,
+      "method": "supported GitHub fetch_file at exact ref; private content inspected but not retained",
+      "anchors": [
+        {
+          "line": 5,
+          "selector": "createMeriChat"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "7c87678730538958ace9762f824dc3e588bf445b",
+      "path": "apps/web/src/features/meri/workspace/workspace-view.ts",
+      "blob": "0bb4fd6b44a71bd7774924fe568b7a6a5560a222",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7c87678730538958ace9762f824dc3e588bf445b/apps/web/src/features/meri/workspace/workspace-view.ts",
+      "lineCount": 147,
+      "method": "supported GitHub fetch_file at exact ref; private content inspected but not retained",
+      "anchors": [
+        {
+          "line": 23,
+          "selector": "resultReference"
+        },
+        {
+          "line": 32,
+          "selector": "approval.required"
+        },
+        {
+          "line": 43,
+          "selector": "export function"
+        },
+        {
+          "line": 58,
+          "selector": "export function"
+        },
+        {
+          "line": 104,
+          "selector": "resultReference"
+        },
+        {
+          "line": 105,
+          "selector": "resultReference"
+        },
+        {
+          "line": 112,
+          "selector": "resultReference"
+        },
+        {
+          "line": 118,
+          "selector": "approval.required"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "7c87678730538958ace9762f824dc3e588bf445b",
+      "path": "packages/meri-client/src/guarded-transport.ts",
+      "blob": "aadc7c52c7f9c4c8f9c8379cadee44c877c6f722",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7c87678730538958ace9762f824dc3e588bf445b/packages/meri-client/src/guarded-transport.ts",
+      "lineCount": 271,
+      "method": "supported GitHub fetch_file at exact ref; private content inspected but not retained",
+      "anchors": [
+        {
+          "line": 54,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 66,
+          "selector": "export function"
+        },
+        {
+          "line": 68,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 80,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 110,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 124,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 147,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 185,
+          "selector": "validateEvent"
+        },
+        {
+          "line": 225,
+          "selector": "export function"
+        },
+        {
+          "line": 250,
+          "selector": "validateEvent"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "7c87678730538958ace9762f824dc3e588bf445b",
+      "path": "apps/web/src/features/meri/workspace/RunActivityPanel.tsx",
+      "blob": "3d72861283d5ccbf8eb1c7a57bb0c4d4576bf664",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7c87678730538958ace9762f824dc3e588bf445b/apps/web/src/features/meri/workspace/RunActivityPanel.tsx",
+      "lineCount": 141,
+      "method": "supported GitHub fetch_file at exact ref; private content inspected but not retained",
+      "anchors": [
+        {
+          "line": 6,
+          "selector": "export function"
+        },
+        {
+          "line": 32,
+          "selector": "resultReference"
+        },
+        {
+          "line": 39,
+          "selector": "resultReference"
+        },
+        {
+          "line": 42,
+          "selector": "resultReference"
+        },
+        {
+          "line": 129,
+          "selector": "disabled"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "7c87678730538958ace9762f824dc3e588bf445b",
+      "path": "packages/meri-client/src/client-facade.tsx",
+      "blob": "6b1b6dcedaad2ceb9ea4ab1d425b00ec3bdc6ff9",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7c87678730538958ace9762f824dc3e588bf445b/packages/meri-client/src/client-facade.tsx",
+      "lineCount": 36,
+      "method": "supported GitHub fetch_file at exact ref; private content inspected but not retained",
+      "anchors": [
+        {
+          "line": 5,
+          "selector": "createMeriChat"
+        },
+        {
+          "line": 14,
+          "selector": "disabled"
+        },
+        {
+          "line": 19,
+          "selector": "createMeriChat"
+        },
+        {
+          "line": 23,
+          "selector": "createMeriChat"
+        },
+        {
+          "line": 27,
+          "selector": "disabled"
+        },
+        {
+          "line": 28,
+          "selector": "export function"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "ref": "7c87678730538958ace9762f824dc3e588bf445b",
+      "path": "apps/web/src/features/meri/workspace/MeriRunWorkspace.tsx",
+      "blob": "d641d43469a0e0ba4d7065af742d97ae4967b9dc",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/7c87678730538958ace9762f824dc3e588bf445b/apps/web/src/features/meri/workspace/MeriRunWorkspace.tsx",
+      "lineCount": 41,
+      "method": "supported GitHub fetch_file at exact ref; private content inspected but not retained",
+      "anchors": [
+        {
+          "line": 10,
+          "selector": "export function"
+        },
+        {
+          "line": 25,
+          "selector": "Disconnected"
+        }
+      ]
+    }
+  ]
+}

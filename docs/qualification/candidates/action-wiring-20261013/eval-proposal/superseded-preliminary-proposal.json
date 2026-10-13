@@ -1,0 +1,16 @@
+{
+  "status": "SUPERSEDED_PRELIMINARY_ESTIMATE",
+  "reason": "Existing proxy source inspection fixes actual model/profile/region and output envelope; no model or guard change needed in final proposal.",
+  "earlier": {
+    "model": "Haiku4.5",
+    "outputTokensPerCall": 1024,
+    "proposedCeilingUsd": "0.50"
+  },
+  "final": {
+    "model": "Sonnet4.6",
+    "outputTokensPerCall": 256,
+    "proposedCeilingUsd": "0.75"
+  },
+  "paidCalls": 0,
+  "sourceChanges": 0
+}
