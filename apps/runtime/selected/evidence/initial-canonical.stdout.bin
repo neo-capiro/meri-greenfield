@@ -1,0 +1,40 @@
+✔ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (122.105798ms)
+✔ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (62.369784ms)
+✔ install binding substitution refuses before SDK exposure (1.549917ms)
+✔ install skill substitution refuses before SDK exposure (0.879668ms)
+✔ install requestSha256 substitution refuses before SDK exposure (0.83999ms)
+✔ install selectionSha256 substitution refuses before SDK exposure (0.680654ms)
+✔ install baseCatalogSha256 substitution refuses before SDK exposure (0.599835ms)
+✔ install executionCatalogSha256 substitution refuses before SDK exposure (0.603421ms)
+✔ install operations substitution refuses before SDK exposure (0.830866ms)
+✔ install checkedAtMs substitution refuses before SDK exposure (0.73194ms)
+✔ install expiresAtMs substitution refuses before SDK exposure (0.64382ms)
+✔ admission binding substitution refuses before SDK exposure (0.856785ms)
+✔ admission skill substitution refuses before SDK exposure (0.945105ms)
+✔ admission requestSha256 substitution refuses before SDK exposure (0.884906ms)
+✔ admission selectionSha256 substitution refuses before SDK exposure (0.701294ms)
+✔ admission manifestSha256 substitution refuses before SDK exposure (0.735415ms)
+✔ admission catalogSha256 substitution refuses before SDK exposure (6.490076ms)
+✔ admission budgets substitution refuses before SDK exposure (0.937584ms)
+✔ admission allocationSha256 substitution refuses before SDK exposure (0.899908ms)
+✔ admission policyRevision substitution refuses before SDK exposure (0.729426ms)
+✔ admission checkedAtMs substitution refuses before SDK exposure (0.783125ms)
+✔ admission expiresAtMs substitution refuses before SDK exposure (0.737088ms)
+✔ revocation and changed installation after mounting cannot release source result (4.729889ms)
+✔ model source arguments cannot inject authority or substitute a canonical operation (3.830221ms)
+✔ tool-call cap covers denied reads and collector work, without creating another budget owner (18.709006ms)
+✔ task result must be literal successful exact-pin data; altered replay never recompiles (31.970954ms)
+✔ actual single activity query mounts original reads and completes research with explicit pending output without artifact publication (49.482514ms)
+✔ changed current installation and foreign selection refuse before source effect (5.047337ms)
+✔ separately configured output owner cannot return an arbitrary artifact success object (32.907622ms)
+✔ resume cannot substitute source request or immutable original skill pins before mounting (0.892337ms)
+✔ empty/partial installation never permits an unlisted native gateway operation (8.164648ms)
+✔ closing a parked owned gateway read aborts its bounded lifetime and prevents late result publication (12.540974ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2320.602696
