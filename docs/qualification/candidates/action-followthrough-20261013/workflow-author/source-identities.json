@@ -1,0 +1,60 @@
+{
+  "base": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "source": "0715c71025a72312917c7cc0714951be814f7ae3",
+  "originalEntriesUnchanged": 10184,
+  "allocatedOnly": true,
+  "files": [
+    {
+      "path": "apps/control/action-followthrough/index.mjs",
+      "bytes": 5861,
+      "sha256": "7ce5567c4c505904eaa0a39d1fbb96dfe4941bda7f5709c653afdd840672d042",
+      "gitBlob": "e46d749d7c3295b00a091395955a50777ca94742"
+    },
+    {
+      "path": "apps/control/action-followthrough/selection.mjs",
+      "bytes": 4505,
+      "sha256": "6cb431744db5fc69749be6ee49cc0505835bd771e80c384b78981e4a9c7e33a3",
+      "gitBlob": "6b9faf95c0431c0efb0cd6f29d27cf9afce1c604"
+    },
+    {
+      "path": "apps/control/action-followthrough/test/fixture.mjs",
+      "bytes": 5121,
+      "sha256": "0e158f44fd22fa3b82141edb2a7354db7090ddd0d1e327dda4980dacdb8661e5",
+      "gitBlob": "b10a03e65adb4989e91aa6e8b6a8bdb3631bb929"
+    },
+    {
+      "path": "apps/control/action-followthrough/test/workflow.test.mjs",
+      "bytes": 8126,
+      "sha256": "7c723356ad37484ef072d59be34aa1c5b124a7184b0c4e48ba818e0712c9c53a",
+      "gitBlob": "f81ba96b95110a195e160ed452a5aee1afbd2491"
+    }
+  ],
+  "groups": [
+    {
+      "label": "initial",
+      "pgid": 433774,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "label": "fixture-repaired",
+      "pgid": 434227,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "label": "configuration-negative",
+      "pgid": 435431,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "label": "configuration-repaired",
+      "pgid": 435653,
+      "freshAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "sourceOnly": true,
+  "realEngineExecuted": false
+}

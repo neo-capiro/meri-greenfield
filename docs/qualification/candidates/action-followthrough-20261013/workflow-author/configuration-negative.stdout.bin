@@ -1,0 +1,74 @@
+✔ actual retained read yields editable canonical draft without metadata or task effect (63.417605ms)
+✔ explicit task edits normalize through canonical contract and prepare immutable approval only (46.047445ms)
+✔ downstream existing standard approval/executor creates one task and replay does not redispatch (78.14639ms)
+✔ ordinary current approval denial remains the existing executor owner (38.709067ms)
+✔ selection cannot provide binding authority (13.732126ms)
+✔ selection cannot provide scopes authority (12.706504ms)
+✔ selection cannot provide requiredApprover authority (13.401169ms)
+✔ selection cannot provide clientId authority (12.967166ms)
+✔ selection cannot provide action authority (14.617387ms)
+✔ unknown or lossy task edits refuse rather than assign owner or silently truncate (37.936265ms)
+✔ mismatched selected hash refuses (24.881257ms)
+✔ mismatched selected action refuses (30.132166ms)
+✔ mismatched selected reference refuses (15.922221ms)
+✔ caller draft/card edits cannot bypass a fresh retained evidence comparison (51.472466ms)
+✔ retained result tampering is refused by actual lookup store and canonical read validator (27.816562ms)
+✔ current read revocation blocks prepare after draft; no metadata or source work (21.687223ms)
+✔ hostile inputs stay inert and accepted output is detached (22.497602ms)
+✔ original deadline clips metadata even after time spent in current read (29.059792ms)
+✔ preabort allocates no read or metadata (13.644455ms)
+✔ parked read is bounded and cannot start metadata after cancellation (25.34139ms)
+✔ late metadata ACK is not delivered; persisted metadata is not called rollback (32.382831ms)
+✔ deadline expires across parked metadata without new effects (41.06455ms)
+✔ constructor refuses mismatched current command/client and unknown operation (14.779582ms)
+✖ trusted operation configuration is snapshotted before later caller mutation (33.316687ms)
+✖ trusted operation accessor is refused without invoking caller code (14.749026ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 23
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3552.558311
+
+✖ failing tests:
+
+test at apps/control/action-followthrough/test/workflow.test.mjs:22:1
+✖ trusted operation configuration is snapshotted before later caller mutation (33.316687ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   id: 'other',
+  -   id: 'create_task',
+      version: '0.2.0'
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-20261013/apps/control/action-followthrough/test/workflow.test.mjs:22:359)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'other', version: '0.2.0' },
+    expected: { id: 'create_task', version: '0.2.0' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-followthrough/test/workflow.test.mjs:23:1
+✖ trusted operation accessor is refused without invoking caller code (14.749026ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-20261013/apps/control/action-followthrough/test/workflow.test.mjs:23:264)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

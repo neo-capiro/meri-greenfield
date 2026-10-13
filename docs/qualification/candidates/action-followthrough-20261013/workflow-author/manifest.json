@@ -1,0 +1,132 @@
+{
+  "source": "0715c71025a72312917c7cc0714951be814f7ae3",
+  "base": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "scope": "SOURCE_ONLY_INERT_EXTERNAL_PORTS",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.json",
+      "bytes": 1297,
+      "sha256": "26473dfa4952f70e1fc7fbc8c76763910975c4638a72080f29148d655a3f2bd2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.py",
+      "bytes": 2106,
+      "sha256": "f4983f6c3fc1d148cbc5fdf4d2ccaf709ea8e9b13bbd15b9cb6d5732cfc78aa4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.stdout.bin",
+      "bytes": 90,
+      "sha256": "a1584b99e4d156241d74a344472159861782583e303438af77b61f14b1441736"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/cleanup.json",
+      "bytes": 1034,
+      "sha256": "855bce1fd2c2f91bc8938390c50760196b42e2e0a2f40b08b974af97eccca797"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.json",
+      "bytes": 1320,
+      "sha256": "46716cddee14aef9523d6dcba7eaa90b2ac856a3554a8bdb81f658d51957bf6d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.stdout.bin",
+      "bytes": 3724,
+      "sha256": "445441ddd8f1867016d3c51b290213f794712245b57f78b02ea9287c545deca9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.json",
+      "bytes": 1320,
+      "sha256": "6be01a1dae6ad1d7844ea98d9a9ba01003bd4112f3e57340a0880306f139ad47"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.stdout.bin",
+      "bytes": 2154,
+      "sha256": "0d275e37dc77c90d85069d0bf164fad925425afc472c552cef78a59d66b2abd5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.json",
+      "bytes": 1308,
+      "sha256": "b6758e07b0eb33a8907cb1c94ec476359879c519b91f462a5f6c54e5e070dcf4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.stdout.bin",
+      "bytes": 1973,
+      "sha256": "fc8ce0432d20b5ca010ba3ec1d11951e6b6c34a6841116033643491460ccc395"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.json",
+      "bytes": 1287,
+      "sha256": "c1189cdbfb7ad582fb0de6a4e4cd48303e14417abd3b515f1992c3eaa91b4c95"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.stdout.bin",
+      "bytes": 2924,
+      "sha256": "ab4982b5274c550ae903a3449f32567f65c859364904c3b51add39bb24a99ba2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/source-identities.json",
+      "bytes": 1714,
+      "sha256": "5a8fbd701186c1a57d50a2ff8c42ae9d0ebcbc343d42672f45b597309d16d471"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-WORKFLOW-20261013.md",
+      "bytes": 7023,
+      "sha256": "11b3a79c6ddcad2711aa09d42c64fe6318cccd242ac65d21c509a000161a1274"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-WORKFLOW-20261013.md",
+      "bytes": 2973,
+      "sha256": "16b088a9cfde04d337e2e002478f7cccb2ad803d164ffa46a678db67fb27a1bf"
+    },
+    {
+      "path": "apps/control/action-followthrough/index.mjs",
+      "bytes": 5861,
+      "sha256": "7ce5567c4c505904eaa0a39d1fbb96dfe4941bda7f5709c653afdd840672d042"
+    },
+    {
+      "path": "apps/control/action-followthrough/selection.mjs",
+      "bytes": 4505,
+      "sha256": "6cb431744db5fc69749be6ee49cc0505835bd771e80c384b78981e4a9c7e33a3"
+    },
+    {
+      "path": "apps/control/action-followthrough/test/fixture.mjs",
+      "bytes": 5121,
+      "sha256": "0e158f44fd22fa3b82141edb2a7354db7090ddd0d1e327dda4980dacdb8661e5"
+    },
+    {
+      "path": "apps/control/action-followthrough/test/workflow.test.mjs",
+      "bytes": 8126,
+      "sha256": "7c723356ad37484ef072d59be34aa1c5b124a7184b0c4e48ba818e0712c9c53a"
+    }
+  ]
+}
