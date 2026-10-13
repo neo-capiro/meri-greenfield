@@ -74,3 +74,8 @@ test('fresh session with changed full binding refuses before accounting',async t
  const a=await setup(t,c=>({...c,sessions:{authenticateSession:c.sessions.authenticateSession,async readCurrentState(call){const fact=await c.sessions.readCurrentState(call);return {...fact,binding:{...fact.binding,writerFence:fact.binding.writerFence+1}};}}}));
  const res=await a.post('create',{deliveryId:'foreign',request:spec});assert.equal(res.status,403);assert.equal(a.f.stats().versionCharges,0);
 });
+for(const target of ['authorize','authority','executor','objects'])test(`hostile ${target} rejection is inert before canonical owner catches`,async t=>{
+ let traps=0;const rejected=new Proxy({}, {get(_t,key){if(key==='then')return undefined;traps++;throw Error('SECRET');},getPrototypeOf(){traps++;throw Error('SECRET');},set(){traps++;throw Error('SECRET');}});
+ const a=await setup(t,c=>{const options={...c.artifactOptions};if(target==='authorize')options.authorize=async()=>{throw rejected;};else if(target==='authority')options.authority={check:async()=>{throw rejected;}};else if(target==='executor')options.executor={execute:async()=>{throw rejected;}};else options.objects={...options.objects,put:async()=>{throw rejected;}};return {...c,artifactOptions:options};});
+ const res=await a.post('create',{deliveryId:'hostile',request:spec});assert.notEqual(res.status,200);const body=await res.text();assert.equal(body.includes('SECRET'),false);assert.equal(traps,0);
+});

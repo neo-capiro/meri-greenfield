@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=hostile .* rejection",
+    "apps/control/document-application/test/application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-author-20261013",
+  "sourceHead": "4fbce759a62a5a070fd32dc6c8a1f78d46a95b53",
+  "sourceDiffSha256": "de9677c550d54984736d975e8a42e7d9ce7c967d3d856d35e4c03216d8504827",
+  "sourceDiffBytes": 1792,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:54:57.605826+00:00",
+  "durationSeconds": 2.775,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 507547,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-before.stdout.bin",
+      "bytes": 1854,
+      "sha256": "03d7100ce20294e39f4956e1a956da4adece7fd492d8d8f012a2e642bea0acbe"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
