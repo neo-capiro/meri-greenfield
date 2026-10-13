@@ -1,0 +1,16 @@
+{
+  "base": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "scope": "Independent source review of gold-free task lookup execution, not runtime or model qualification",
+  "criteria": [
+    "Accept only the three exact gold-free canonical runner projections and independently supplied hashes; identical corpus/config/source pins, unique cases and complete host runBindings; no gold, approval or authority fields accepted as runner input.",
+    "Execute correct-tool only through actual createTaskLookupDelivery lookup and authorized read; original/correct-evidence are explicit ineligible without prepare/control/source effects. No SDK or task-completion inference.",
+    "Capture actual callback binding/receipt/error and full prepared original, actual immutable delivery/read and thrown outcome. Never echo expected result or classify denial from label alone. Trace digest binds retained trace without credentials.",
+    "Feed unchanged scoreObservations; all requested cases remain represented, including empty, unsupported, preparation failure, denial, skipped and cancellation. Independent nonempty differing source result must change score.",
+    "Retain exact source/config/case/argument/client/tenant/actor/conversation/RunBinding/scope identity through prepare, lookup/read and score; trusted callback does not make mismatched correlation valid.",
+    "Require finite bounded deadline, propagate shortest deadline/abort to every borrowed effect, stop scheduling after expiry/cancel; no retry or disposal of borrowed ports. Pending ignored cancellation remains explicitly unproved physical stop.",
+    "Snapshot inert inputs/results/callbacks before later awaits, refuse hostile JSON/accessors/proxies and credential leakage; bounded retained capture with visible failed accounting, never silent truncation/success.",
+    "No source/runtime/SDK/image/provider/current-authority authenticity or qualified-real count inferred. Preserve real0, 75\u2192200 gates and all97 unavailable. Existing scorer/control/contracts/public/registry bytes unchanged.",
+    "Review module boundaries, safe import/no ambient execution, source-only checks under subreaper<=240s; preserve original failures/preimages and verify owned group absence; no native/DB/network/paid actions."
+  ],
+  "checks": "Focused independent actual control integration plus author tests at exact final freeze; concise source preservation/receipt audit; no broad unchanged replay"
+}
