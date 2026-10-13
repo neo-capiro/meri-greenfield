@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: Closed command admits bounded intents and grants no caller binding/skill/window fields
+ok 1 - Closed command admits bounded intents and grants no caller binding/skill/window fields
+  ---
+  duration_ms: 2.329338
+  type: 'test'
+  ...
+# Subtest: Caller object getters, Proxy and nested hostile command data are inert
+ok 2 - Caller object getters, Proxy and nested hostile command data are inert
+  ---
+  duration_ms: 0.158497
+  type: 'test'
+  ...
+# Subtest: Invalid Unicode, controls and oversized steering text refuse
+ok 3 - Invalid Unicode, controls and oversized steering text refuse
+  ---
+  duration_ms: 1.314653
+  type: 'test'
+  ...
+# Subtest: Applied resume receipt requires fresh complete binding and admission plus retirement correlation
+ok 4 - Applied resume receipt requires fresh complete binding and admission plus retirement correlation
+  ---
+  duration_ms: 1.302014
+  type: 'test'
+  ...
+# Subtest: Fork receipt preserves source and has distinct target conversation without claiming retirement
+ok 5 - Fork receipt preserves source and has distinct target conversation without claiming retirement
+  ---
+  duration_ms: 0.390603
+  type: 'test'
+  ...
+# Subtest: UNKNOWN receipt does not fabricate a target or physical-stop proof
+ok 6 - UNKNOWN receipt does not fabricate a target or physical-stop proof
+  ---
+  duration_ms: 0.188952
+  type: 'test'
+  ...
+# Subtest: Worker command snapshots full server context and admits no caller-selected source or runtime
+ok 7 - Worker command snapshots full server context and admits no caller-selected source or runtime
+  ---
+  duration_ms: 0.572294
+  type: 'test'
+  ...
+# Subtest: Approval wait requires exact proposal identity/hash while pause and steer prohibit approval fields
+ok 8 - Approval wait requires exact proposal identity/hash while pause and steer prohibit approval fields
+  ---
+  duration_ms: 0.215742
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 209.828235

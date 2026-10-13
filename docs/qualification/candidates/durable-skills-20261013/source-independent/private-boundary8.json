@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/private-boundary-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "e87c40e2db87fa0f2cda77ed2c2d8ab2f2ea2aea",
+  "worktreeHead": "484b3c84dc3c4f2a16464e5495d868b479c7248d",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.238,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2011,
+  "stderrBytes": 0,
+  "stdoutSha256": "64e7188fa8cb123370548ac3a5148fb07374cc343fd32db6196196659c4ab5b9",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
