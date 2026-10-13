@@ -18,5 +18,19 @@
     "readbackExact": true,
     "frontendHeadBeforePost": "7c87678730538958ace9762f824dc3e588bf445b"
   },
-  "tarballSha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651"
+  "tarballSha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651",
+  "laterObservedPRHead": "4b23c8e414270aa9466148207d00f0e78fd57238",
+  "authorCleanup": {
+    "sealedHead": "fcd5595e2b3fef94996ed8ae00353fd762725662",
+    "ownedDependencyLayoutRemoved": true,
+    "recordedGroupsFreshlyAbsent": [
+      462000,
+      462285,
+      462297,
+      462309,
+      462320
+    ],
+    "historicalGeneratorGroupsRecorded": false,
+    "limitation": "No retrospective group-proof claim for unrecorded historical generator groups; author reports no current owned node/npm/esbuild processes."
+  }
 }
