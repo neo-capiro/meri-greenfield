@@ -54,5 +54,5 @@ test('local gateway independent: source acquisition token revocation leaves UNKN
 });
 test('local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports',async()=>{
  const f=await setup();for(const changes of [{source:{...f.config.source,origin:'https://example.com'}},{identity:{...f.identity}},{sourceEnabled:true}])assert.throws(()=>createLocalActionGateway({...f.config,...changes}));
- await assert.rejects(f.gateway.executeOwned(JSON.stringify({operation:{id:'save_memory',version:'0.2.0'},arguments:{}}),f.issued.credential,f.h.delivery()));assert.equal(f.http.length,0);
+ assert.throws(()=>f.gateway.executeOwned(JSON.stringify({operation:{id:'save_memory',version:'0.2.0'},arguments:{}}),f.issued.credential,f.h.delivery()));assert.equal(f.http.length,0);
 });

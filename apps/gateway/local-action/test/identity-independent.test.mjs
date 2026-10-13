@@ -34,7 +34,7 @@ test('local identity independent: even valid credential text cannot be issued th
 });
 test('local identity independent: direct policy port rejects altered retained claims and normalized foreign scope',async()=>{
  const t=setup(),base={claims:t.issued.claims,operation,requiredGrants:contract.descriptor.requiredGrants,input:t.input};
- for(const mutate of [c=>c.binding.actorId='foreign',c=>c.binding.writerFence++,c=>c.policyRevision='b'.repeat(64),c=>c.scopes[0].resourceId=randomUUID(),c=>c.budgets.maxToolCalls++]){
+ for(const mutate of [c=>c.binding.actorId='foreign',c=>c.binding.writerFence++,c=>c.policyRevision='b'.repeat(64),c=>c.scopes[0].resourceId=randomUUID(),c=>c.budgets.maxOutputBytes--]){
   const claims=clone(t.issued.claims);mutate(claims);await assert.rejects(t.identity.authorityPorts.authorizeBusiness({...base,claims}));
  }
  const input=clone(t.input);input.selection.clientId=randomUUID();await assert.rejects(t.identity.authorityPorts.authorizeBusiness({...base,input}));
