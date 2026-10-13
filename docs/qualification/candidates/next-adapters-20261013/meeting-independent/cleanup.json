@@ -1,0 +1,101 @@
+{
+  "commands": [
+    {
+      "path": "author28-root31.receipt.json",
+      "source": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+      "exitCode": 0,
+      "seconds": 2.072668071999942,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "b2c1312c17dcf3d5c7ece2c846d7f3760afb19fcd5f0d8714bf8cdc6d8637af4"
+    },
+    {
+      "path": "fixture-corrected18.receipt.json",
+      "source": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+      "exitCode": 1,
+      "seconds": 2.0717497810001078,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "1ad5c9683116473d71e93efee1f2889345de03a0e3ca7b86eed3ad325c04421e"
+    },
+    {
+      "path": "focused60-final.receipt.json",
+      "source": "7f9a23cc5edf29b113589428beabf79a2f9de431",
+      "exitCode": 0,
+      "seconds": 2.67186650199983,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "6a81c14e84874287b71c3966a32ea5cc7be3cf1fec752972f5808c6babae9a40"
+    },
+    {
+      "path": "focused60-seal.receipt.json",
+      "source": "95dd8f75915c731d27b2e2516cadd57cd07677eb",
+      "exitCode": 0,
+      "seconds": 3.2429701520013623,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "0205c366c126c018f5d737ee8f6099208ef38186000ec7c1ce90d7d379218b86"
+    },
+    {
+      "path": "independent18-final.receipt.json",
+      "source": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+      "exitCode": 0,
+      "seconds": 1.8767758180001692,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "49106b8833aa8c5eaeda480b56f3bbe96bf8da77de9f98663a7a8767281c971c"
+    },
+    {
+      "path": "independent18-repaired.receipt.json",
+      "source": "7f9a23cc5edf29b113589428beabf79a2f9de431",
+      "exitCode": 0,
+      "seconds": 2.512770827001077,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "8ef752ebc4bbb5a2054a5c34a4551076794304dcd21d8cbdc13110239d414c2d"
+    },
+    {
+      "path": "independent18.receipt.json",
+      "source": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+      "exitCode": 1,
+      "seconds": 1.8708833010005037,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "57e10eeaf301fce23b351301cd854940008e35e50f54860776873bd11e0b5c7d"
+    },
+    {
+      "path": "independent19-seal.receipt.json",
+      "source": "95dd8f75915c731d27b2e2516cadd57cd07677eb",
+      "exitCode": 0,
+      "seconds": 3.195083534999867,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "997dc10b6312cc9ca4f2538f6758d7d09350399a7b714288192bb2bfbbf5c35a"
+    },
+    {
+      "path": "receiver-before.receipt.json",
+      "source": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+      "exitCode": 1,
+      "seconds": 1.772073738000472,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "336b33b8dd1eaa77dd9291f6a51b72ab5eaf16af66b7223d2f109ad52ea5cced"
+    },
+    {
+      "path": "receiver-final.receipt.json",
+      "source": "7f9a23cc5edf29b113589428beabf79a2f9de431",
+      "exitCode": 0,
+      "seconds": 2.3422285139986343,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "756ad5a3e5acd0e3333efc26bed143cf17c5326b9e2c63154f1c76f429e9b824"
+    }
+  ],
+  "ownedDependencyLinkRemoved": true,
+  "donorPreserved": true,
+  "donor": "/workspace/meri-greenfield/node_modules",
+  "listenersStarted": 0,
+  "nativeProviderPrivateCloudActions": 0,
+  "newDocx": 0,
+  "nativeQualified": false
+}

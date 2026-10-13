@@ -1,0 +1,20 @@
+✖ canonical meeting handler preserves receiver identity of an ordinary borrowed read port (7.113189ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1704.997218
+
+✖ failing tests:
+
+test at docs/qualification/candidates/next-adapters-20261013/meeting-independent/receiver-independent.test.mjs:6:1
+✖ canonical meeting handler preserves receiver identity of an ordinary borrowed read port (7.113189ms)
+  GatewayDenied: INTERNAL_ERROR
+      at safeFailure (file:///workspace/meri-meeting-independent/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at execute (file:///workspace/meri-meeting-independent/apps/gateway/sources/meetings/handler.mjs:21:27)
+      at async TestContext.<anonymous> (file:///workspace/meri-meeting-independent/docs/qualification/candidates/next-adapters-20261013/meeting-independent/receiver-independent.test.mjs:9:111)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

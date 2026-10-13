@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/sources/meetings/test/adapter-handler.test.mjs",
+    "apps/gateway/test/next-read-adapters-integration.test.mjs"
+  ],
+  "sourceHead": "7f9a23cc5edf29b113589428beabf79a2f9de431",
+  "exitCode": 0,
+  "seconds": 2.67186650199983,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 123622,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

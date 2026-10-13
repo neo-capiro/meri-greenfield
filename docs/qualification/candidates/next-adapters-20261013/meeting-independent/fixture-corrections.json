@@ -1,0 +1,11 @@
+{
+  "source": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+  "initialIndependent": {"passed": 16, "failed": 2, "total": 18},
+  "changes": [
+    {"case": "One-sided full authority substitution before credentials", "reason": "Published synthetic fixture deliberately shares binding/scope objects among claims, subject and decision. In-place mutations also changed the matching claims, making a coherent new trusted context instead of the intended mismatch. Replace only the selected binding/scope property with a new object/array. Same no-credential/no-HTTP refusal assertions remain."},
+    {"case": "Retained mail continuation through canonical current authority", "reason": "Mail fixture does not supply the same a.decision member as meeting fixture. The independent policy receipt omitted mandatory decision fields. Construct the explicit canonical synthetic AuthorizationDecision DTO from the fixed binding/subject/operation for both source families. Same tamper/refusal/one-original-effect assertions remain."},
+    {"case": "Actual canonical retained mail record field", "reason": "Second run17PASS/1FAIL showed the verifier guessed record.previous instead of the existing owner's actual record.previousPage. Target that actual retained page subject actor. Same deliberate provenance tamper/refusal/one-original-effect assertions remain; second raw failure retained."}
+  ],
+  "preserved": "Initial18 output and exact verifier preimage. No product change, removed case or weakened assertion. These are reviewer fixture errors, not product failures or runtime evidence.",
+  "nativeQualified": false
+}

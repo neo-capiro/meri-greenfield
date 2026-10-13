@@ -1,0 +1,131 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
+import {createMeetingHttpAdapter} from '../../../../../apps/gateway/sources/meetings/http-adapter.mjs';
+import {createMeetingReadHandler} from '../../../../../apps/gateway/sources/meetings/handler.mjs';
+import {meetingFixture,credentialReceipt,NOW,operations,endpoints,clientId,meetingId,noteId,transcriptId,fullBody,id} from '../../../../../apps/gateway/sources/meetings/test/fixtures.mjs';
+import {createCurrentToolAuthority} from '../../../../../apps/gateway/authorization/current-tool-authority.mjs';
+import {createToolDispatch} from '../../../../../apps/gateway/dispatch/tool-dispatch.mjs';
+import {createSourceDisabledGateway} from '../../../../../apps/gateway/index.mjs';
+import {createMailHttpAdapter} from '../../../../../apps/gateway/sources/mail/http-adapter.mjs';
+import {createMailReadHandler} from '../../../../../apps/gateway/sources/mail/handler.mjs';
+import {createMailFixture} from '../../../../../apps/gateway/sources/mail/test/fixtures.mjs';
+
+const exact=(kind='note')=>({clientId,meetingId,sourceKind:kind,sourceId:kind==='note'?noteId:transcriptId});
+function direct(op=operations.read,args=exact(),pageOptions={}){
+ const f=meetingFixture(op,args,pageOptions),state={now:NOW,fetches:0,credentials:0},wire=[];
+ const config={endpoints,now:()=>state.now,maxRequestMs:100,maxResponseBytes:65536,
+  getCredentials:async req=>{state.credentials++;state.pins=req;return credentialReceipt(req);},
+  fetchImpl:async(url,options)=>{state.fetches++;wire.push({url,protocol:JSON.parse(options.body)});return new Response(JSON.stringify(f.page),{headers:{'content-type':'application/json'}});}};
+ const execute=(overrides={})=>createMeetingReadHandler({operation:op,adapter:createMeetingHttpAdapter({...config,...overrides}),now:()=>state.now})(f.call);
+ return {...f,state,wire,config,execute};
+}
+function dispatched(op,args){
+ const mail=op.id.startsWith('mail.'),f=mail?createMailFixture(op.id):meetingFixture(op,args),actual=args??f.args;
+ const state={now:mail?f.state.now:NOW,revoked:false,policyOld:false},counts={reserve:0,settle:0,uncertain:0,fetch:0},records=new Map();
+ const a=f.authority,b=a.binding,subject=a.subject;
+ const ports={verifyCapability:async()=>{if(state.revoked)throw Error('scripted current revocation');return JSON.stringify(a.claims);},
+  currentRun:async()=>JSON.stringify({binding:b,policyRevision:a.policyRevision,deadlineMs:state.now+10000,checkedAtMs:state.now}),
+  authorizeBusiness:async()=>JSON.stringify({decision:{decisionId:subject.authorizationDecisionId,actor:{tenantId:b.tenantId,actorId:b.actorId},operation:`${op.id}@${op.version}`,scopes:subject.scopes,policyRevision:a.policyRevision,evaluatedAt:new Date(state.now-(state.policyOld?1000:0)).toISOString(),decision:'allowed',reasonCode:'SYNTHETIC_ONLY'},subject,grants:f.contract.descriptor.requiredGrants}),
+  authorizeSources:async()=>JSON.stringify({sourceIds:a.sourceIds,enabled:true,policyRevision:a.policyRevision,checkedAtMs:state.now})};
+ const budget={reserve:async({reservationId})=>{counts.reserve++;state.afterReserve?.();return JSON.stringify({reservationId,decision:'reserved'});},
+  settle:async({reservationId})=>{counts.settle++;state.afterSettle?.();return JSON.stringify({reservationId,decision:'settled'});},markUncertain:async()=>{counts.uncertain++;}};
+ const config={endpoints:mail?f.config.endpoints:endpoints,now:()=>state.now,maxRequestMs:100,maxResponseBytes:65536,
+  getCredentials:async req=>{state.pins=req;return mail?f.credentials(req):credentialReceipt(req);},
+  fetchImpl:async(url,options)=>{counts.fetch++;const protocol=JSON.parse(options.body);state.protocol=protocol;
+   const page=mail?f.page(protocol.input):meetingFixture(op,state.args,state.pageOptions).page;state.changePage?.(page);state.afterFetch?.();return new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});}};
+ const adapter=(mail?createMailHttpAdapter:createMeetingHttpAdapter)(config),execute=(mail?createMailReadHandler:createMeetingReadHandler)({operation:op,adapter,now:()=>state.now});
+ const authority=createCurrentToolAuthority({ports,now:()=>state.now,maxFactBytes:65536}),limits={maxRequestBytes:65536,maxResponseBytes:65536,maxRequestMs:150,maxCleanupMs:30};
+ const mailContextPorts={loadPrevious:async({key})=>JSON.stringify({record:records.get(hash(key))??null,checkedAtMs:state.now}),retain:async({record})=>{records.set(hash(record.key),structuredClone(record));return JSON.stringify({decision:'retained',keySha256:hash(record.key),previousSha256:record.previousSha256,checkedAtMs:state.now});}};
+ const gateway=createToolDispatch({catalog:{entry:()=>({descriptor:f.contract.descriptor,contract:f.contract,execute}),discoverable:()=>[]},authority,budget,limits,now:()=>state.now,newId:()=>b.workerId,sourceEnabled:true,mailContextPorts});
+ const run=async(value=actual,signal)=>{state.args=value;return JSON.parse(await gateway.execute(JSON.stringify({operation:op,arguments:value}),'synthetic-only-capability',signal));};
+ return {f,state,counts,records,ports,budget,limits,run};
+}
+
+for(const kind of ['note','transcript'])test(`actual ${kind} body keeps exact late UTF-16 range/hash/client/authority without evidence promotion`,async()=>{
+ const f=direct(operations.read,{...exact(kind),characterOffset:25}),out=JSON.parse(await f.execute());
+ assert.equal(out.source.body,fullBody.slice(25));assert.match(out.source.body,/funding was withheld/u);assert.equal(out.source.bodyCoverage.characterStart,25);
+ assert.equal(out.source.provenance.returnedByteLength,Buffer.byteLength(out.source.body,'utf8'));assert.equal(out.source.provenance.bodySha256,out.source.contentHash);assert.equal(out.source.sourceVersion,out.source.provenance.sourceVersion);assert.equal(out.source.provenance.currentClientId,clientId);
+ assert.equal(out.source.bodyCoverage.complete,false);assert.equal(out.evidenceReady,false);assert.equal(out.coverage.enumeration,'unknown');assert.equal(out.negativeAssertion.kind,'none');
+ assert.deepEqual(f.wire[0].protocol,{input:f.input,metadata:f.metadata});assert.equal(f.state.pins.requestSha256,hash(f.wire[0].protocol));
+});
+
+test('exact approved debrief cursor goes to metadata and protocol digest, never an invented body-offset authority',async()=>{
+ const f=direct(operations.debrief,{clientId,debriefId:noteId,cursor:'opaque-original-cursor',characterLimit:100},{start:25}),out=JSON.parse(await f.execute());
+ assert.equal(out.debriefs[0].body,fullBody.slice(25));assert.equal(out.debriefs[0].status,'approved');assert.equal(out.debriefs[0].provenance.currentClientId,clientId);assert.equal(out.scope.cursorApplied,true);assert.equal(f.wire[0].protocol.metadata.cursor,'opaque-original-cursor');assert.equal(f.state.pins.requestSha256,hash(f.wire[0].protocol));assert.equal(out.evidenceReady,false);
+});
+
+test('inventory hashes and source identities cannot become body/evidence/absence proof',async()=>{
+ const f=direct(operations.read,{clientId}),out=JSON.parse(await f.execute());assert.equal(out.kind,'meeting-inventory-page');assert.equal(out.meetings[0].sources[0].body,undefined);assert.equal(out.pageCoverage.sourceBodyCoverageComplete,false);
+ for(const edit of [p=>p.meetings[0].sources[0].body=fullBody,p=>p.evidenceReady=true,p=>p.pageCoverage.sourceBodyCoverageComplete=true,p=>p.negativeAssertion={kind:'absence'}]){const bad=direct(operations.read,{clientId});edit(bad.page);await assert.rejects(bad.execute(),/INVALID_RESULT/u);}
+});
+
+test('coordinated UTF-16 counts cannot masquerade as actual UTF-8 byte provenance',async()=>{
+ const f=direct();assert.notEqual(fullBody.length,Buffer.byteLength(fullBody,'utf8'));f.page.source.provenance.sourceByteLength=fullBody.length;f.page.source.provenance.returnedByteLength=fullBody.length;
+ await assert.rejects(f.execute(),/INVALID_RESULT/u);
+});
+
+test('foreign client, source kind/owner, source version and returned digest substitutions refuse actual HTTP bytes',async()=>{
+ for(const edit of [p=>p.source.provenance.currentClientId=id('c'),p=>p.source.sourceKind='transcript',p=>p.source.provenance.owner='engagement_attachment_storage',p=>p.source.provenance.sourceVersion='other-version',p=>p.source.provenance.returnedBodySha256='f'.repeat(64),p=>p.source.body+='changed']){
+  const f=direct();edit(f.page);await assert.rejects(f.execute(),/INVALID_RESULT/u);
+ }
+});
+
+test('approved-only debrief cannot return a draft and calendar cannot return a foreign client',async()=>{
+ const d=direct(operations.debrief,{clientId,debriefId:noteId});d.page.debriefs[0].status='draft';await assert.rejects(d.execute(),/INVALID_RESULT/u);
+ const c=direct(operations.upcoming,{clientId});c.page.meetings[0].client={id:id('c'),name:'Foreign'};await assert.rejects(c.execute(),/INVALID_RESULT/u);
+});
+
+test('cursor or protocol digest changes in a closed broker receipt refuse before transport',async()=>{
+ for(const edit of [c=>c.metadata.cursor='foreign-cursor',c=>c.requestSha256='f'.repeat(64),c=>c.argumentsSha256='f'.repeat(64),c=>c.subject.entityIds=[id('c')],c=>c.extra='unapproved']){
+  const f=direct(operations.read,{...exact(),cursor:'opaque-original'},{start:25});await assert.rejects(f.execute({getCredentials:async req=>{const c=credentialReceipt(req);edit(c);return c;}}),/ACCESS_DENIED|INVALID_ARGUMENTS/u);assert.equal(f.state.fetches,0);
+ }
+});
+
+test('full current attempt/fence/operation/source input authority cannot be substituted before credential issuance',async()=>{
+ for(const edit of [a=>a.binding={...a.binding,attemptId:id('c')},a=>a.binding={...a.binding,writerFence:2},a=>a.decision.operation='meeting.query_debriefs@0.2.0',a=>a.sourceIds=['mail'],a=>a.subject.scopes=[{...a.subject.scopes[0],resourceId:id('c')}]]){
+  const f=direct();edit(f.call.authority);await assert.rejects(f.execute());assert.equal(f.state.credentials,0);assert.equal(f.state.fetches,0);
+ }
+});
+
+test('a stalled response and stalled cancel acknowledgement do not prevent deadline or reader release',async()=>{
+ const f=direct();let cancelled=0,response;response=new Response(new ReadableStream({pull(){return new Promise(()=>{});},cancel(){cancelled++;return new Promise(()=>{});}}),{headers:{'content-type':'application/json'}});
+ await assert.rejects(f.execute({maxRequestMs:20,fetchImpl:async()=>response}),/DEADLINE/u);assert.equal(cancelled,1);assert.equal(response.body.locked,false);
+});
+
+test('a late acquired Response after cutoff is cancelled and never released',async()=>{
+ const f=direct(),late=Promise.withResolvers();let cancelled=0;const pending=f.execute({maxRequestMs:20,fetchImpl:()=>late.promise});await assert.rejects(pending,/DEADLINE/u);
+ const response=new Response(new ReadableStream({cancel(){cancelled++;}}),{headers:{'content-type':'application/json'}});late.resolve(response);await new Promise(r=>setImmediate(r));assert.equal(cancelled,1);
+});
+
+test('abort while body is parked aborts transport and releases the actual reader',async()=>{
+ const f=direct(),controller=new AbortController();let cancelled=0,signal,response;
+ const execute=createMeetingReadHandler({operation:operations.read,now:()=>NOW,adapter:createMeetingHttpAdapter({...f.config,fetchImpl:async(u,o)=>{signal=o.signal;response=new Response(new ReadableStream({pull(){return new Promise(()=>{});},cancel(){cancelled++;}}),{headers:{'content-type':'application/json'}});return response;}})});
+ const pending=execute({...f.call,signal:controller.signal});while(!response)await new Promise(r=>setImmediate(r));controller.abort();await assert.rejects(pending,/CANCELLED/u);assert.equal(signal.aborted,true);assert.equal(cancelled,1);assert.equal(response.body.locked,false);
+});
+
+test('actual dispatcher stale policy decision refuses before budget and source transport',async()=>{
+ const f=dispatched(operations.read,exact());f.state.policyOld=true;await assert.rejects(f.run(),/ACCESS_DENIED/u);assert.deepEqual(f.counts,{reserve:0,settle:0,uncertain:0,fetch:0});
+});
+
+test('actual dispatcher revocation after reservation prevents source effects and retains uncertain liability',async()=>{
+ const f=dispatched(operations.read,exact());f.state.afterReserve=()=>f.state.revoked=true;await assert.rejects(f.run(),/ACCESS_DENIED/u);assert.deepEqual(f.counts,{reserve:1,settle:0,uncertain:1,fetch:0});
+});
+
+test('actual dispatcher source-binding corruption withholds release and never settles',async()=>{
+ const f=dispatched(operations.read,exact('transcript'));f.state.changePage=p=>p.source.provenance.owner='meeting_notes';await assert.rejects(f.run(),/INVALID_RESULT/u);assert.deepEqual(f.counts,{reserve:1,settle:0,uncertain:1,fetch:1});
+});
+
+test('actual dispatcher post-response and post-settlement revocation preserve their distinct budget outcomes',async()=>{
+ for(const phase of ['afterFetch','afterSettle']){const f=dispatched(operations.read,exact());f.state[phase]=()=>f.state.revoked=true;await assert.rejects(f.run(),/ACCESS_DENIED/u);assert.equal(f.counts.fetch,1);assert.equal(f.counts.reserve,1);assert.equal(f.counts.settle,phase==='afterSettle'?1:0);assert.equal(f.counts.uncertain,phase==='afterSettle'?0:1);}
+});
+
+test('retained mail continuation is required, pinned and cannot replay tampered earlier page authority',async()=>{
+ const f=dispatched({id:'mail.list_messages',version:'0.2.0'});const first=await f.run();assert.equal(f.records.size,1);const record=f.records.values().next().value;
+ record.previousPage.subject.actorId='foreign-actor';await assert.rejects(f.run({...f.f.args,offset:first.nextOffset,asOf:first.queryScope.asOfInclusive}));assert.equal(f.counts.fetch,1);assert.equal(f.counts.settle,1);assert.equal(f.counts.reserve,1);
+});
+
+test('default production facade still refuses all meeting operations before any configured effect',async()=>{
+ for(const op of Object.values(operations)){const f=dispatched(op,op.id===operations.upcoming.id?{}:{clientId}),gateway=createSourceDisabledGateway({authorityPorts:f.ports,budget:f.budget,limits:f.limits,now:()=>f.state.now,newId:()=>f.f.authority.binding.workerId});
+  await assert.rejects(gateway.execute(JSON.stringify({operation:op,arguments:op.id===operations.upcoming.id?{}:{clientId}}),'synthetic-only-capability'),/UNAVAILABLE/u);assert.deepEqual(f.counts,{reserve:0,settle:0,uncertain:0,fetch:0});assert.equal(f.f.contract.descriptor.handler,null);assert.equal(f.f.contract.descriptor.availability,'unimplemented');assert.equal(f.f.contract.descriptor.qualification,'pending');}
+});
