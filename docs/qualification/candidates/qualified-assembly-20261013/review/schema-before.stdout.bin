@@ -1,0 +1,40 @@
+✖ namespace query must not hide pgx_private through SQL underscore wildcard (10.857489ms)
+✔ independent engine identity address refuses before DDL (4.276351ms)
+✔ independent engine identity username refuses before DDL (2.841844ms)
+✔ independent engine identity system_identifier refuses before DDL (2.192933ms)
+✔ independent engine identity start_ms refuses before DDL (3.627655ms)
+✔ independent engine identity fsync refuses before DDL (1.90127ms)
+✔ independent engine identity synchronous_commit refuses before DDL (1.776652ms)
+✔ own and inherited hostile port accessors and proxy cannot run during admission (0.635766ms)
+✔ verify without retained digest and install with a retained digest allocate nothing (0.448364ms)
+✔ cancel during borrowed acquisition releases late client and sends no SQL (12.686549ms)
+✔ cancellation while advisory lock waits prevents first migration after it returns (13.237569ms)
+✔ first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal (4.633808ms)
+✔ host clock crossing original cutoff after identity cannot proceed to ownership or DDL (2.023233ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.865686
+
+✖ failing tests:
+
+test at apps/control/qualified-application/independent/schema-independent.test.mjs:13:1
+✖ namespace query must not hide pgx_private through SQL underscore wildcard (10.857489ms)
+  AssertionError [ERR_ASSERTION]: underscore must be literal when excluding reserved pg_ namespaces
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-assembly-review-20261013/apps/control/qualified-application/independent/schema-independent.test.mjs:16:24)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
