@@ -1,0 +1,1 @@
+Initial root pipeline syntax check failed: SyntaxError: Unexpected token ) at service.submit missing outer closing request brace. Repaired before executing tests; source/native effects absent.

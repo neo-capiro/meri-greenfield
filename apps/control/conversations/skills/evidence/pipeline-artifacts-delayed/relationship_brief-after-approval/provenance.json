@@ -1,0 +1,987 @@
+{
+  "state": "delivered",
+  "sourceBinding": {
+    "tenantId": "72000000-0000-4000-8000-000000000020",
+    "actorId": "72000000-0000-4000-8000-000000000021",
+    "conversationId": "11111111-1111-4111-8111-111111111111",
+    "runId": "72000000-0000-4000-8000-000000000001",
+    "attemptId": "72000000-0000-4000-8000-000000000002",
+    "workerId": "72000000-0000-4000-8000-000000000003",
+    "writerFence": 1
+  },
+  "outputBinding": {
+    "tenantId": "72000000-0000-4000-8000-000000000020",
+    "actorId": "72000000-0000-4000-8000-000000000021",
+    "conversationId": "11111111-1111-4111-8111-111111111111",
+    "runId": "22222222-2222-4222-8222-222222222222",
+    "attemptId": "33333333-3333-4333-8333-333333333333",
+    "workerId": "44444444-4444-4444-8444-444444444444",
+    "writerFence": 1
+  },
+  "skill": {
+    "skillId": "quick_skill.relationship_brief",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+    "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+    "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+  },
+  "requestSha256": "366bab6d20efde27065e1b4f3894696ce54820d0bfcc719d6877b4381d3e1939",
+  "selectionSha256": "a2bb3f14470f79810cde70956e25022d0b86cb850f5f00c6223bfbbe2568db89",
+  "inputSha256": "5e75d6d4aa577a90f1ef8234e901af03db0451c52fd4eae4a48540c7e7107189",
+  "preparationSha256": "23150d0c2d29f12edfd61b565e915c22ab21f5e5dcb9aa9b4f12a78aac0f8908",
+  "sourceContextSha256": "53f8f005416027d205def3a2b1a89eb6c7778b783db5815362988caf5b18200b",
+  "outputContextSha256": "62b2d4875c98ea48cd85ff3a40b0fdd8483df3e82351bcfad577efd0103ed447",
+  "sourceArtifactRequestSha256": "9a629b3c3b3b4d2fcd5826f512c0985e087b0d5941ac830b46ade47fe920a7be",
+  "artifactRequestSha256": "506272f8573cd511d1594bec681921e39c074f66270898ac71809439c8a767b4",
+  "lineageSha256": "0f4df374a5b7ab9ad1b0374beaf137ae752e5e1785b8f4bb4f033d7ecacbe490",
+  "baseVersionId": null,
+  "lineage": {
+    "recipe": "original-selected-docx/1",
+    "sourceBinding": {
+      "tenantId": "72000000-0000-4000-8000-000000000020",
+      "actorId": "72000000-0000-4000-8000-000000000021",
+      "conversationId": "11111111-1111-4111-8111-111111111111",
+      "runId": "72000000-0000-4000-8000-000000000001",
+      "attemptId": "72000000-0000-4000-8000-000000000002",
+      "workerId": "72000000-0000-4000-8000-000000000003",
+      "writerFence": 1
+    },
+    "skill": {
+      "skillId": "quick_skill.relationship_brief",
+      "skillVersion": "1.0.0",
+      "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+      "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+      "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+    },
+    "selection": {
+      "subject": {
+        "kind": "client",
+        "entityType": "client",
+        "entityIds": [
+          "99999999-9999-4999-8999-999999999999"
+        ],
+        "tenantId": "72000000-0000-4000-8000-000000000020",
+        "actorId": "72000000-0000-4000-8000-000000000021",
+        "authorizationDecisionId": "66666666-6666-4666-8666-666666666666",
+        "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "scopes": [
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "rosterVersionId": null
+      },
+      "window": {
+        "basis": "unbounded"
+      },
+      "mondayBoardIds": []
+    },
+    "window": {
+      "basis": "unbounded"
+    },
+    "requestSha256": "366bab6d20efde27065e1b4f3894696ce54820d0bfcc719d6877b4381d3e1939",
+    "selectionSha256": "a2bb3f14470f79810cde70956e25022d0b86cb850f5f00c6223bfbbe2568db89",
+    "inputSha256": "5e75d6d4aa577a90f1ef8234e901af03db0451c52fd4eae4a48540c7e7107189",
+    "readsSha256": "f6fb6f2d1685e36fe1bfa054edd9f2110d9aadc71b4489a11a61adfa706baa14",
+    "compilerReadsSha256": "25191f44e1dc4636aee010404237c4a25565574ed8f6a2a4e609523053c1cbf2",
+    "preparationSha256": "23150d0c2d29f12edfd61b565e915c22ab21f5e5dcb9aa9b4f12a78aac0f8908",
+    "sourceArtifactRequestSha256": "9a629b3c3b3b4d2fcd5826f512c0985e087b0d5941ac830b46ade47fe920a7be",
+    "sourceContextSha256": "53f8f005416027d205def3a2b1a89eb6c7778b783db5815362988caf5b18200b",
+    "baseVersionId": null,
+    "outputBinding": {
+      "tenantId": "72000000-0000-4000-8000-000000000020",
+      "actorId": "72000000-0000-4000-8000-000000000021",
+      "conversationId": "11111111-1111-4111-8111-111111111111",
+      "runId": "22222222-2222-4222-8222-222222222222",
+      "attemptId": "33333333-3333-4333-8333-333333333333",
+      "workerId": "44444444-4444-4444-8444-444444444444",
+      "writerFence": 1
+    },
+    "outputAllocationSha256": "17b4c3ac4bdc34c705cb5df51ef71181625d7317a993b0dfb9a2cca0c9d066c4",
+    "outputGrantId": "88888888-8888-4888-8888-888888888888",
+    "approvalReceiptId": "72000000-0000-4000-8000-000000000004",
+    "sourceEvidenceSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "sourceDeadlineMs": 1791916262234,
+    "outputDeadlineMs": 1791916282228,
+    "sourceProvenance": {
+      "recipe": "relationship-brief",
+      "skill": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "target": "Morgan",
+      "asOf": "2026-10-13T18:30:57.229Z",
+      "selection": {
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "99999999-9999-4999-8999-999999999999"
+          ],
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "actorId": "72000000-0000-4000-8000-000000000021",
+          "authorizationDecisionId": "66666666-6666-4666-8666-666666666666",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scopes": [
+            {
+              "tenantId": "72000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "72000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "mondayBoardIds": []
+      },
+      "inputSha256": "5e75d6d4aa577a90f1ef8234e901af03db0451c52fd4eae4a48540c7e7107189",
+      "readsSha256": "25191f44e1dc4636aee010404237c4a25565574ed8f6a2a4e609523053c1cbf2",
+      "parent": null,
+      "collection": {
+        "calls": 9,
+        "bytes": 3293,
+        "limits": {
+          "maxCalls": 24,
+          "maxPages": 3,
+          "maxMaterial": 3,
+          "maxSourceBytes": 2097152
+        }
+      }
+    },
+    "sourceEvidence": []
+  },
+  "projection": {
+    "request": {
+      "operation": "create_word",
+      "format": "docx",
+      "title": "Synthetic Relationship Brief",
+      "content": {
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "style": "Title",
+            "runs": [
+              {
+                "text": "Synthetic Relationship Brief"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Relationship Brief | Editable draft for review"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Selected correspondent / organization: Morgan"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Exact window: {\"basis\":\"unbounded\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Identity and relationship context"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Names, contacts and addresses are candidate metadata. Identity matching, relationship strength, sentiment and influence remain unverified. No namesake is silently merged."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Candidate entity matches: unavailable; contact matches: unavailable. No match count proves relationship or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Source-supplied chronology"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Dates and participants below are supplied metadata, not verified event meaning or window membership."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Exact source excerpts"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[missing-or-mismatched-excerpt] I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source mail; record 71000000-0000-4000-8000-000000000074; immutable version synthetic-message-utf16-v2; UTF16 2002-2103; locator URL, not claim verification: https://example.invalid/locator-only."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Interpretations, conflicts and open commitments"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "All relationship, sentiment, decisions, ownership, promise, chronology and delivery interpretations are unverified for human review. Unequal source statements remain visible; no semantic contradiction is resolved automatically. Native completion flags and recommendations do not establish delivery or acceptance."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unverified interpretation] The mail statement suggests a promised briefing; delivery and relationship strength remain unverified."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Risks and suggested next steps"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unverified risk] The meeting statement conflicts with an assumption of funding availability; human reconciliation is required."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[suggestion; no mutation] Confirm identity and obtain delivery evidence before any separately approved action."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Coverage and verification appendix"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Every original required source is shown. Bound excerpts prove byte correlation with admitted supplied material; live authenticity, freshness, exhaustive history and semantic truth require separate qualification. No source or empty page establishes absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "entity_candidates; authority derived; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved resolve_entity: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"entity_candidates\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "tenant_contacts; authority derived; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved find_contacts: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"tenant_contacts\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail; authority authoritative; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved mail.search_messages: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"mail\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "meetings; authority authoritative; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved meeting.read_client_meetings: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved meeting.query_debriefs: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"meetings\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "client_documents; authority authoritative; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved read_client_documents: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"client_documents\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Approved-memory recall was inspected as unverified discovery metadata. Composite content hashes are not plain full-text SHA256; material quote binding is unsupported for unread, unversioned or metadata-only content."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "client_knowledge_memory; authority derived; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved search_memory: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"client_knowledge_memory\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "tasks; authority authoritative; status partial; freshness unknown; snapshot unknown; retrieved 2026-10-13T18:30:57.370Z; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Native coverage, content hashes and versions are unauthenticated producer assertions; no qualified freshness, history, snapshot or exhaustive absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Source authority describes the declared original owner; this receipt does not verify producer identity or authentic current authorization."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Opaque native cursor is forwarded without decoding, authentication or snapshot-safe continuation."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Native read coverage and metadata do not verify semantic conclusions or exhaustive history."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Projection-only or unsupported material: no complete eligible version/hash/body with an observed read time; metadata is not a decisive source excerpt."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "action_recommendation; authority authoritative; status unavailable; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved query_action_items: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"action_recommendation\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "client_knowledge_monday; authority derived; status not-mapped; freshness unknown; snapshot unknown; retrieved unknown; enumeration unknown; complete false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Required source has no admitted decisive read."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Unresolved read_monday_client_boards: NOT_MAPPED"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Remaining decisive reads: {\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"client_knowledge_monday\"]}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved entity_candidates / resolve_entity: UNAVAILABLE; remaining selector {\"query\":\"Morgan\",\"limit\":5}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved tenant_contacts / find_contacts: UNAVAILABLE; remaining selector {\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"query\":\"Morgan\",\"limit\":10}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved mail / mail.search_messages: UNAVAILABLE; remaining selector {\"subject\":{\"kind\":\"client\",\"entityId\":\"99999999-9999-4999-8999-999999999999\"},\"query\":\"Morgan\",\"asOf\":\"2026-10-13T18:30:57.229Z\",\"limit\":5,\"offset\":0}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved meetings / meeting.read_client_meetings: UNAVAILABLE; remaining selector {\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved meetings / meeting.query_debriefs: UNAVAILABLE; remaining selector {\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3,\"characterLimit\":2000}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved client_documents / read_client_documents: UNAVAILABLE; remaining selector {\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved client_knowledge_memory / search_memory: UNAVAILABLE; remaining selector {\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"query\":\"Morgan\",\"k\":3}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved action_recommendation / query_action_items: UNAVAILABLE; remaining selector {\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":5}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unresolved client_knowledge_monday / read_monday_client_boards: NOT_MAPPED; remaining selector \"No authorized managed board mapping.\"."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Collection calls 9/24; body/inventory pages capped 3, material records capped 3; source bytes 3293."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 2",
+            "runs": [
+              {
+                "text": "Immutable recipe and revision provenance"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Meri Relationship Brief provenance: {\"recipe\":\"relationship-brief\",\"skill\":{\"skillId\":\"quick_skill.relationship_brief\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed\",\"proseSha256\":\"3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"target\":\"Morgan\",\"asOf\":\"2026-10-13T18:30:57.229Z\",\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"authorizationDecisionId\":\"66666666-6666-4666-8666-666666666666\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"},\"mondayBoardIds\":[]},\"inputSha256\":\"5e75d6d4aa577a90f1ef8234e901af03db0451c52fd4eae4a48540c7e7107189\",\"readsSha256\":\"25191f44e1dc4636aee010404237c4a25565574ed8f6a2a4e609523053c1cbf2\",\"parent\":null,\"collection\":{\"calls\":9,\"bytes\":3293,\"limits\":{\"maxCalls\":24,\"maxPages\":3,\"maxMaterial\":3,\"maxSourceBytes\":2097152}}}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Separately approved output lineage"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Meri separately approved output lineage: {\"recipe\":\"original-selected-docx/1\",\"sourceBinding\":{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"conversationId\":\"11111111-1111-4111-8111-111111111111\",\"runId\":\"72000000-0000-4000-8000-000000000001\",\"attemptId\":\"72000000-0000-4000-8000-000000000002\",\"workerId\":\"72000000-0000-4000-8000-000000000003\",\"writerFence\":1},\"skill\":{\"skillId\":\"quick_skill.relationship_brief\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed\",\"proseSha256\":\"3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"authorizationDecisionId\":\"66666666-6666-4666-8666-666666666666\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"},\"mondayBoardIds\":[]},\"window\":{\"basis\":\"unbounded\"},\"requestSha256\":\"366bab6d20efde27065e1b4f3894696ce54820d0bfcc719d6877b4381d3e1939\",\"selectionSha256\":\"a2bb3f14470f79810cde70956e25022d0b86cb850f5f00c6223bfbbe2568db89\",\"inputSha256\":\"5e75d6d4aa577a90f1ef8234e901af03db0451c52fd4eae4a48540c7e7107189\",\"readsSha256\":\"f6fb6f2d1685e36fe1bfa054edd9f2110d9aadc71b4489a11a61adfa706baa14\",\"compilerReadsSha256\":\"25191f44e1dc4636aee010404237c4a25565574ed8f6a2a4e609523053c1cbf2\",\"preparationSha256\":\"23150d0c2d29f12edfd61b565e915c22ab21f5e5dcb9aa9b4f12a78aac0f8908\",\"sourceArtifactRequestSha256\":\"9a629b3c3b3b4d2fcd5826f512c0985e087b0d5941ac830b46ade47fe920a7be\",\"sourceContextSha256\":\"53f8f005416027d205def3a2b1a89eb6c7778b783db5815362988caf5b18200b\",\"baseVersionId\":null,\"outputBinding\":{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"conversationId\":\"11111111-1111-4111-8111-111111111111\",\"runId\":\"22222222-2222-4222-8222-222222222222\",\"attemptId\":\"33333333-3333-4333-8333-333333333333\",\"workerId\":\"44444444-4444-4444-8444-444444444444\",\"writerFence\":1},\"outputAllocationSha256\":\"17b4c3ac4bdc34c705cb5df51ef71181625d7317a993b0dfb9a2cca0c9d066c4\",\"outputGrantId\":\"88888888-8888-4888-8888-888888888888\",\"approvalReceiptId\":\"72000000-0000-4000-8000-000000000004\",\"sourceEvidenceSha256\":\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\"sourceDeadlineMs\":1791916262234,\"outputDeadlineMs\":1791916282228}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "context": {
+      "binding": {
+        "tenantId": "72000000-0000-4000-8000-000000000020",
+        "actorId": "72000000-0000-4000-8000-000000000021",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "scopes": [
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "mailbox",
+          "resourceId": "71000000-0000-4000-8000-000000000071",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [],
+      "assets": [],
+      "deadlineMs": 1791916282228,
+      "maxBytes": 1048576
+    },
+    "baseVersionId": null
+  },
+  "artifact": {
+    "version": {
+      "contractVersion": "0.1.0",
+      "artifactId": "2fc86b5a-ec0c-49c9-b312-d49471c03967",
+      "versionId": "175143d1-974e-47cc-9824-c5032041fa13",
+      "parentVersionId": null,
+      "binding": {
+        "tenantId": "72000000-0000-4000-8000-000000000020",
+        "actorId": "72000000-0000-4000-8000-000000000021",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "a3db0ad2-98e2-4eca-87db-51883745a24f",
+        "versionId": "d3422c946dcdd2df79d995b45a32904333b2abf4efaf322cc8f315ed865d9bd0",
+        "sha256": "d3422c946dcdd2df79d995b45a32904333b2abf4efaf322cc8f315ed865d9bd0",
+        "bytes": 40086,
+        "scopes": [
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic Relationship Brief.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "mailbox",
+          "resourceId": "71000000-0000-4000-8000-000000000071",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T18:30:57.575Z"
+    },
+    "inspection": {
+      "sha256": "d3422c946dcdd2df79d995b45a32904333b2abf4efaf322cc8f315ed865d9bd0",
+      "bytes": 40086,
+      "format": "docx",
+      "nativeOpened": false,
+      "rendered": false,
+      "recalculated": false,
+      "members": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "docProps/core.xml",
+        "docProps/app.xml",
+        "word/document.xml",
+        "word/_rels/document.xml.rels",
+        "word/styles.xml",
+        "word/stylesWithEffects.xml",
+        "word/settings.xml",
+        "word/webSettings.xml",
+        "word/fontTable.xml",
+        "word/theme/theme1.xml",
+        "customXml/item1.xml",
+        "customXml/_rels/item1.xml.rels",
+        "customXml/itemProps1.xml",
+        "word/numbering.xml",
+        "docProps/thumbnail.jpeg"
+      ],
+      "details": {
+        "paragraphs": 75,
+        "tables": 0,
+        "pictures": 0
+      }
+    },
+    "execution": {
+      "requestSha256": "c9604bc61d535c796da84bb84b7e6a211ecb0d8f482fd6a9a291b743144d8c66",
+      "authorizationReceiptId": "3e9bee0e-14ef-4981-94d7-ca6a0b8f2272",
+      "budgetTicketId": "c346c643-3358-42f2-a6f2-3d9b3828d4bc",
+      "objectCommitted": true,
+      "versionCommitted": true,
+      "nativeQualified": false
+    }
+  }
+}

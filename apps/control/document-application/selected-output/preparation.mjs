@@ -9,8 +9,8 @@ export const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b),hash=canonicalS
 export const fail=code=>{throw Object.assign(Error(code),{code});};
 const digest=x=>typeof x==='string'&&/^[a-f0-9]{64}$/u.test(x);
 export function sourcePreparation(value,retainedSource){
- const call=own(value,['prepared','binding','requestSha256','selectionSha256','inputSha256','reads'],['preparationSha256','signal']),p=call.prepared;
- nativeSignal(call.signal);const fields=own(p,['request','context','baseVersionId','provenance'],['ledger','tracking','unresolved','reads','quotes','coverage','issues','receipts']),provenance=data(fields.provenance);
+ const {prepared:p,signal,...raw}=own(value,['prepared','binding','requestSha256','selectionSha256','inputSha256','reads'],['preparationSha256','signal']);nativeSignal(signal);const call={...data(raw),prepared:p,...(signal?{signal}:{})};
+ const fields=own(p,['request','context','baseVersionId','provenance'],['ledger','tracking','unresolved','reads','quotes','coverage','issues','receipts']),provenance=data(fields.provenance);
  const context=v.context(fields.context),request=v.request(fields.request),skill=selectSkill(provenance.skill.skillId,provenance.skill.skillVersion);
  const admit=skill.pin.skillId==='quick_skill.commitments_audit'?admitPreparedCommitmentsAudit:skill.pin.skillId==='quick_skill.relationship_brief'?admitPreparedRelationshipBrief:null;
  if(!admit)fail('SELECTED_OUTPUT_SOURCE');let guard;try{guard=admit(p,context);}catch(error){if(typeof retainedSource?.admit!=='function')throw error;guard=retainedSource.admit(p,context);}
