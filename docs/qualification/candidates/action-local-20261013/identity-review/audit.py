@@ -29,10 +29,9 @@ assert len(catalog['originals']) == 139 and len(catalog['operations']) == 97
 assert all(row['handler'] is None for row in catalog['operations'])
 # All original catalog bytes, public contracts and runtime paths are preserved above.
 receipts = []
-for path in sorted(evidence.glob('*.json')):
+for name in ['admission-before', 'admission-repaired', 'identity-before', 'identity-repaired']:
+    path = evidence / (name + '.json')
     value = json.loads(path.read_bytes())
-    if not isinstance(value, dict) or 'ownedPidAndPgid' not in value:
-        continue
     assert value['ownedProcessGroupAbsent'] and not value['timedOut']
     for stream in value['streams']:
         data = (root/stream['path']).read_bytes()

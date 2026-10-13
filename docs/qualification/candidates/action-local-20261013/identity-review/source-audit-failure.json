@@ -1,0 +1,9 @@
+{
+  "kind": "reviewer audit harness error; not source defect",
+  "auditSourceCommit": "ed5b7ee8",
+  "command": "python3 -I -B -S .../audit.py 351b2319 bd118a04 > .../source-audit.json",
+  "exitCode": 1,
+  "error": "json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+  "cause": "Shell created empty output JSON in the directory before glob-based receipt scan read it. Original empty output retained as source-audit-empty.json.",
+  "repair": "Audit selects the four existing named process receipts explicitly, without weakening their stream/exit/group validation."
+}
