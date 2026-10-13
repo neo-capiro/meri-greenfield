@@ -91,3 +91,9 @@ test('absolute clock advancement after identity prevents migration despite respo
  let now=Date.now();const s=scripted({before(text){if(text.startsWith('SELECT current_database'))now+=1000;}});await rejects(prepareOwnedApplicationSchema({...s.args(),now:()=>now,deadlineMs:now+500}),'NOT_INSTALLED','identity');assert.equal(ddls(s).length,0);
 });
 test('receipt binds original cutoff and reports port observation without native qualification',async()=>{const s=scripted(),args=s.args(),r=await prepareOwnedApplicationSchema(args);assert.equal(r.originalDeadlineMs,args.deadlineMs);assert.equal(r.evidenceKind,'borrowed-pool-catalog-observation');assert.equal(r.runtimeQualified,false);assert.equal(r.poolClosed,false);});
+test('namespace query excludes only literal pg_ prefix and refuses user pgx_private',async()=>{
+ const s=scripted({namespaces:[{name:'pgx_private'}]});await rejects(prepareOwnedApplicationSchema(s.args()),'NOT_INSTALLED','ownership');assert.equal(ddls(s).length,0);
+ const query=s.log.find(r=>r.text.startsWith('SELECT nspname')).text;
+ assert.doesNotMatch(query,/NOT\s+LIKE\s+'pg_%'/i);
+ assert.match(query,/left\(nspname,3\)\s*<>\s*'pg_'/i);
+});
