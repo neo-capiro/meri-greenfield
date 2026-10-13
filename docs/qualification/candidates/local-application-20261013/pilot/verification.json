@@ -1,0 +1,203 @@
+{
+  "scope": "offline metadata/source-byte and exact synthetic-gold checks only; no model/API/runtime execution",
+  "passed": 49,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "source:AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "source:docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "source:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "source:docs/ROUTING-EVALUATION.md",
+      "passed": true
+    },
+    {
+      "name": "source:evals/retrieval-r2/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/http.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/session.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/local/demo.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/local/flow.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/local/local.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-application/local/local-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-followthrough/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/control/action-followthrough/selection.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json",
+      "passed": true
+    },
+    {
+      "name": "source:docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:apps/proxy/qualification/proxy-config.json",
+      "passed": true
+    },
+    {
+      "name": "source:apps/proxy/qualification/runtime/bedrock_body.py",
+      "passed": true
+    },
+    {
+      "name": "source:apps/worker/qualification/package.json",
+      "passed": true
+    },
+    {
+      "name": "source:packages/contracts/package.json",
+      "passed": true
+    },
+    {
+      "name": "source:scripts/local-followthrough/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "source:docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "source:docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "passed": true
+    },
+    {
+      "name": "source:docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "source:docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+      "passed": true
+    },
+    {
+      "name": "six-exact-case-identities",
+      "passed": true
+    },
+    {
+      "name": "all-prompts-present",
+      "passed": true
+    },
+    {
+      "name": "zero-qualified-real",
+      "passed": true
+    },
+    {
+      "name": "implemented-routes",
+      "passed": true
+    },
+    {
+      "name": "no-task-effects",
+      "passed": true
+    },
+    {
+      "name": "no-false-rate",
+      "passed": true
+    },
+    {
+      "name": "count-tokens-published-zero",
+      "passed": true
+    },
+    {
+      "name": "operation-caps",
+      "passed": true
+    },
+    {
+      "name": "token-caps",
+      "passed": true
+    },
+    {
+      "name": "no-spend-approval",
+      "passed": true
+    },
+    {
+      "name": "conditional-max",
+      "passed": true
+    },
+    {
+      "name": "conditional-estimate",
+      "passed": true
+    },
+    {
+      "name": "actual-one-synthetic-row",
+      "passed": true
+    },
+    {
+      "name": "actual-recommendation-gold",
+      "passed": true
+    },
+    {
+      "name": "actual-coverage-gold",
+      "passed": true
+    },
+    {
+      "name": "actual-draft-task",
+      "passed": true
+    },
+    {
+      "name": "actual-prepare-status",
+      "passed": true
+    },
+    {
+      "name": "actual-unapproved-error",
+      "passed": true
+    },
+    {
+      "name": "source-derived-revocation",
+      "passed": true
+    },
+    {
+      "name": "real-manifest-unchanged-zero",
+      "passed": true
+    },
+    {
+      "name": "retained-zero-byte-failure:https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/us-east-1/index.json",
+      "passed": true
+    },
+    {
+      "name": "retained-zero-byte-failure:https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/region_index.json",
+      "passed": true
+    },
+    {
+      "name": "retained-zero-byte-failure:https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/bedrock.json",
+      "passed": true
+    },
+    {
+      "name": "retained-zero-byte-failure:https://a0.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/bedrock.json",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "meri-pilot-price-proposal/0.1.0",
+  "checkedDate": "2026-10-13",
+  "provider": "Amazon Bedrock",
+  "region": "us-east-1",
+  "profile": "us.anthropic.claude-sonnet-4-6",
+  "foundationModel": "anthropic.claude-sonnet-4-6",
+  "tier": "Standard",
+  "routing": "US geographic cross-region inference; not global, batch, Flex, Priority or first-party Claude Platform on AWS",
+  "sdk": "@anthropic-ai/claude-agent-sdk@0.3.295; sole model loop",
+  "publicAwsMatchedRate": {
+    "status": "NOT_ESTABLISHED_FROM_SUPPORTED_READS",
+    "inputUsdPerMillionTokens": null,
+    "outputUsdPerMillionTokens": null,
+    "sku": null,
+    "effectiveDate": null,
+    "requiredEvidence": "AWS public record naming exact model, Standard, US geographic route, origin us-east-1, dimensions/units/currency and effective date; matching raw source URL/hash or authenticated rendered official row. No account API needed for public list price."
+  },
+  "countTokens": {
+    "publishedUsdPerRequest": "0",
+    "source": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
+    "scope": "AWS explicitly says token counting has no charge; actual exact request/account compatibility not exercised."
+  },
+  "caps": {
+    "sessions": 6,
+    "inferenceAttempts": 18,
+    "countTokensAttempts": 18,
+    "totalProviderHttpOperations": 36,
+    "inputTokensPerInference": 8000,
+    "outputTokensPerInference": 256,
+    "inputTokensTotal": 144000,
+    "outputTokensTotal": 4608,
+    "proposedNewUsdCeiling": "0.75",
+    "approved": false,
+    "historicalAllowanceRemainder": "UNKNOWN_NOT_REUSED",
+    "concurrency": 1,
+    "automaticRetries": 0,
+    "auxiliaryCalls": "All setup, failed, uncertain, cancelled, retried, SDK background and compaction requests count within these ceilings; no separate auxiliary allowance. Stop rather than add calls. CountTokens failure spends one count slot and no inference is launched for that pair."
+  },
+  "formula": {
+    "unit": "USD with Pin/Pout in USD per million tokens",
+    "estimated": "12 * (4000 * Pin + 128 * Pout) / 1000000",
+    "maximumTokens": "(144000 * Pin + 4608 * Pout) / 1000000",
+    "countTokensFee": "18 * 0 = 0",
+    "priorConditionalIllustrationOnly": {
+      "inputUsdPerMillionTokens": "3.30",
+      "outputUsdPerMillionTokens": "16.50",
+      "estimatedUsd": "0.183744",
+      "maximumTokenUsd": "0.551232",
+      "status": "NOT_A_VERIFIED_AWS_RATE_OR_EXECUTABLE_COST_BOUND",
+      "reason": "Anthropic first-party US inference_geo1.1x does not establish partner Bedrock regional prices."
+    }
+  },
+  "strictOld18TotalAlternative": {
+    "pairedInferenceMaximum": 9,
+    "countTokensMaximum": 9,
+    "impact": "Six sessions would average only1.5 inference calls; three-call per-session budget is impossible. No silent substitution."
+  },
+  "excludedFeatures": "No prompt cache writes/reads, extended thinking, web search, model tools billed separately, batch, priority, images, managed agents, background model calls or arbitrary providers. Confirm actual SDK request payload has caching disabled; otherwise reprice before any call. All system/tool/history/compaction content is included in8000 input cap.",
+  "accountCosts": "Public list price is separate from unverified account discounts/private offers/tax and incremental compute/logging/network. Reconcile these and enforce worst-case total<=approved ceiling before launch; no discount assumed. A numeric all-in ceiling is not established by this packet.",
+  "stopAndCleanup": [
+    "No launch until exact rate bound and separate spend approval, supported current SDK/proxy/session/source binding and exact tool admission are present. This condition applies to paid model calls, not ordinary source-only synthetic checks.",
+    "Before each count and inference reserve one attempt and worst-case cost; no retry/refund assumption for uncertain calls. Stop at3 inference or3 count attempts per session,18/18 total, authority change, unpriced feature, cache field, deadline, budget ceiling, unexpected source/effect or unknown ACK.",
+    "Proposed wall time60 seconds per model operation,180 seconds per session,20 minutes overall; shortest authority deadline wins. Cancel owned SDK session and wait for owned work/streams; record any unsettled call as uncertain, retain liability and stop, never claim remote cancellation refunds cost.",
+    "Close each owned synthetic session/store after capture; no new daemon/resource/credential. Retain redacted immutable request/config/response/usage hashes, actual source/control receipts and expected-vs-observed fields; cleanup only owned temp files and processes."
+  ]
+}

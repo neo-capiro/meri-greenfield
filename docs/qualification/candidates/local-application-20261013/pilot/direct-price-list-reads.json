@@ -1,0 +1,42 @@
+[
+  {
+    "url": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/us-east-1/index.json",
+    "retrievedAt": "2026-10-13T03:01:03.913565+00:00",
+    "timeoutSeconds": 10,
+    "byteCap": 20000000,
+    "candidateLocationExistenceVerified": false,
+    "errorType": "URLError",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+    "bytes": 0
+  },
+  {
+    "url": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/region_index.json",
+    "retrievedAt": "2026-10-13T03:01:03.928979+00:00",
+    "timeoutSeconds": 10,
+    "byteCap": 20000000,
+    "candidateLocationExistenceVerified": false,
+    "errorType": "URLError",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+    "bytes": 0
+  },
+  {
+    "url": "https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/bedrock.json",
+    "retrievedAt": "2026-10-13T03:01:03.932679+00:00",
+    "timeoutSeconds": 10,
+    "byteCap": 20000000,
+    "candidateLocationExistenceVerified": false,
+    "errorType": "URLError",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+    "bytes": 0
+  },
+  {
+    "url": "https://a0.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/bedrock.json",
+    "retrievedAt": "2026-10-13T03:01:03.935772+00:00",
+    "timeoutSeconds": 10,
+    "byteCap": 20000000,
+    "candidateLocationExistenceVerified": false,
+    "errorType": "URLError",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+    "bytes": 0
+  }
+]

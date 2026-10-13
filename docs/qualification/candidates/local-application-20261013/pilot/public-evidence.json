@@ -1,0 +1,67 @@
+{
+  "checkedDate": "2026-10-13",
+  "receiptKind": "Rendered public-document observations and tool-read failures; not retained authenticated raw AWS rate data",
+  "documents": [
+    {
+      "url": "https://aws.amazon.com/bedrock/pricing/",
+      "finding": "Provider/tier-specific pricing; rendered Anthropic section has no numeric Sonnet4.6 row. No matched rate established.",
+      "locator": "lines244-247,329-342 of retrieved rendered page"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
+      "finding": "Exact profile/region/Standard and CountTokens supported in documentation; no numeric rate and no account admission proven."
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
+      "finding": "CountTokens has no charge; no endpoint invoked.",
+      "locator": "line10 of rendered guide"
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "finding": "First-party inference_geo1.1x excludes partner-operated Bedrock regional pricing; cannot infer AWS3.30/16.50.",
+      "locator": "lines174-175"
+    }
+  ],
+  "staticWebReadFailures": [
+    {
+      "url": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/us-east-1/index.json",
+      "tool": "web.open",
+      "result": "URL https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/us-east-1/index.json is not accessible via this tool.",
+      "bodyRetained": false,
+      "locationExistenceVerified": false
+    },
+    {
+      "url": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/region_index.json",
+      "tool": "web.open",
+      "result": "URL https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonBedrock/current/region_index.json is not accessible via this tool.",
+      "bodyRetained": false,
+      "locationExistenceVerified": false
+    },
+    {
+      "url": "https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/bedrock.json",
+      "tool": "web.open",
+      "result": "URL https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/bedrock.json is not accessible via this tool.",
+      "bodyRetained": false,
+      "locationExistenceVerified": false
+    },
+    {
+      "url": "https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/index.json",
+      "tool": "web.open",
+      "result": "URL https://b0.p.awsstatic.com/pricing/2.0/meteredUnitMaps/bedrock/USD/current/index.json is not accessible via this tool.",
+      "bodyRetained": false,
+      "locationExistenceVerified": false
+    }
+  ],
+  "otherPreservedFailures": [
+    {
+      "action": "git show base:docs/coordination/tasks/CODEX-LOCAL-APPLICATION-20261013.md",
+      "exitCode": 128,
+      "result": "Path does not exist in base; explicit parent delegation and new owned task used. No source inference from missing task."
+    },
+    {
+      "action": "rg /tmp/meri-pilot-aws-pricing.html",
+      "result": "No such file after rawHTTPS403; no rawHTMLclaimed."
+    }
+  ],
+  "searchOutcome": "Two primary-domain search routes returned no exact matched AWS Sonnet4.6 USgeo Standard numeric price. No irrelevant or third-party result used as pricing evidence."
+}

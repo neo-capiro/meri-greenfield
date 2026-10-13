@@ -1,0 +1,9 @@
+{
+  "url": "https://aws.amazon.com/bedrock/pricing/",
+  "at": "2026-10-13T02:55:41.905279+00:00",
+  "limitBytes": 2500000,
+  "timeoutSeconds": 15,
+  "error": "URLError",
+  "detail": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+  "bytes": 0
+}
