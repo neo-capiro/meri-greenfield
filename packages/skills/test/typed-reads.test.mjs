@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {canonicalSha256 as hash} from '../../contracts/validate.mjs';
+import {bindWorkflowReads} from '../evidence/typed-reads.mjs';
+import {compileCommitmentsAudit} from '../commitments/index.mjs';
+import {sourcePage,unitContext,selected,NOW,uid,corpus,lateQuote,sourceVersionId} from '../../../apps/control/document-application/mail-history/test/fixtures.mjs';
+const identity={skillId:'quick_skill.commitments_audit',skillVersion:'1.0.0'};
+function fixture(){const c=unitContext(),s=selected(c),context={binding:c.binding,subject:s.subject,window:s.window,asOf:new Date(NOW).toISOString(),mondayBoardIds:[]},receipts=[];
+ for(const bodyOffset of [0,1999]){const operation={id:'mail.read_thread',version:'0.2.0'},request={subject:{kind:'client',entityId:s.subject.entityIds[0]},threadId:uid(73),messageId:uid(74),limit:1,bodyOffset,maxCharacters:2000},normalizationContext={nowMs:NOW};const result=sourcePage({operation,request,normalizationContext,binding:c.binding,subject:s.subject,window:s.window});receipts.push({operation,request,normalizationContext,result,resultSha256:hash(result)});}return {context,receipts};}
+test('actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes',()=>{const f=fixture(),bound=bindWorkflowReads(f.context,f.receipts,identity),found=[...bound.records.values()][0];assert.equal(bound.records.size,1);assert.equal(found.record.content.text,corpus);assert.equal(found.record.recordVersionId,sourceVersionId);assert.equal(bound.coverage.length,6);assert.equal(bound.coverage.every(c=>c.complete===false),true);
+ const p={sourceId:'mail',recordId:uid(74),recordVersionId:sourceVersionId,start:corpus.indexOf(lateQuote),end:corpus.indexOf(lateQuote)+lateQuote.length,quote:lateQuote};const ledger=compileCommitmentsAudit({observations:[{id:'promise-1',kind:'promise',relatedPromiseId:null,owner:null,dueDate:null,passage:p}]},{context:f.context,reads:f.receipts});assert.equal(ledger.commitments[0].completed,false);assert.equal(ledger.commitments[0].promise.verification,'bound-source-excerpt');assert.equal(ledger.negativeClaimSupported,false);});
+test('missing first source body remains incomplete and has no eligible passage',()=>{const f=fixture(),bound=bindWorkflowReads(f.context,f.receipts.slice(1),identity);assert.equal(bound.records.size,0);assert.equal(bound.incomplete.length,1);assert.match(bound.coverage.find(c=>c.sourceId==='mail').limitations.join(' '),/incomplete/);});
+for(const [name,change] of [
+ ['result digest',f=>f.receipts[0].resultSha256='a'.repeat(64)],
+ ['current binding',f=>{f.receipts[0].result.binding.writerFence++;f.receipts[0].resultSha256=hash(f.receipts[0].result);}],
+ ['scope',f=>{f.receipts[0].result.subject.scopes[0].resourceId=uid(800);f.receipts[0].resultSha256=hash(f.receipts[0].result);}],
+ ['immutable body hash',f=>{f.receipts[1].result.messages[0].contentSha256='a'.repeat(64);f.receipts[1].resultSha256=hash(f.receipts[1].result);}],
+ ['future source clock',f=>{f.receipts[0].result.sources[0].retrievedAt=new Date(NOW+60001).toISOString();f.receipts[0].resultSha256=hash(f.receipts[0].result);}],
+ ['unknown receipt field',f=>f.receipts[0].claimedVerified=true]
+])test(`refuses ${name} substitution`,()=>{const f=fixture();change(f);assert.throws(()=>bindWorkflowReads(f.context,f.receipts,identity));});

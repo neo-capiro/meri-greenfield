@@ -1,0 +1,62 @@
+✔ exact original promise is bound with scope/version/hash and visible six-source coverage; no task mutation (10.896119ms)
+✔ suggestions remain separate and exact duplicate promise origins merge without semantic merging (2.747189ms)
+✔ conflicting owner/date evidence stays conflicting, including contradictions from related tracking (2.607039ms)
+✔ completed native task and free-form delivery claim cannot establish delivery or acceptance (2.217598ms)
+✔ unread sources and unmapped Monday are visible and never support absence (1.523989ms)
+✔ disconnected/unavailable mapped Monday retains source failure and continuation (1.943878ms)
+✔ refuses foreign tenant without a ledger (1.396619ms)
+✔ refuses foreign actor without a ledger (1.180486ms)
+✔ refuses different conversation without a ledger (1.31751ms)
+✔ refuses different run without a ledger (1.38378ms)
+✔ refuses different attempt without a ledger (1.236099ms)
+✔ refuses obsolete fence without a ledger (1.191012ms)
+✔ refuses different decision without a ledger (1.222509ms)
+✔ refuses substituted bytes without a ledger (1.186986ms)
+✔ refuses substituted hash without a ledger (1.161057ms)
+✔ refuses snippet without a ledger (1.213735ms)
+✔ refuses future read without a ledger (1.209409ms)
+✔ refuses unknown operation without a ledger (1.344471ms)
+✔ refuses other window without a ledger (9.877194ms)
+✔ refuses unmapped Monday read without a ledger (1.595987ms)
+✔ refuses wrong Monday boards without a ledger (1.614005ms)
+✔ refuses record-version substitution without a ledger (1.708435ms)
+✔ refuses quote mismatch without a ledger (1.536979ms)
+✔ refuses quote range without a ledger (1.595576ms)
+✔ refuses invented tracking source without a ledger (1.647303ms)
+✔ refuses orphan delivery link without a ledger (1.646232ms)
+✔ refuses invalid due date without a ledger (4.513311ms)
+✔ refuses duplicate ID without a ledger (1.73195ms)
+✔ refuses duplicate source without a ledger (1.912351ms)
+✔ refuses model-completed property without a ledger (1.728686ms)
+✔ accessors and extra options do not run during input admission (0.2006ms)
+✔ actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes (14.182363ms)
+✖ missing first source body remains incomplete and has no eligible passage (1.46417ms)
+✔ refuses result digest substitution (1.164041ms)
+✔ refuses current binding substitution (1.735115ms)
+✔ refuses scope substitution (2.098479ms)
+✔ refuses immutable body hash substitution (2.141533ms)
+✔ refuses future source clock substitution (1.93846ms)
+✔ refuses unknown receipt field substitution (0.932945ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 38
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1835.632368
+
+✖ failing tests:
+
+test at packages/skills/test/typed-reads.test.mjs:12:1
+✖ missing first source body remains incomplete and has no eligible passage (1.46417ms)
+  TypeError: Cannot add property 1, object is not extensible
+      at Array.push (<anonymous>)
+      at bindWorkflowReads (file:///workspace/meri-durable-skills-batch/packages/skills/evidence/typed-reads.mjs:37:203)
+      at TestContext.<anonymous> (file:///workspace/meri-durable-skills-batch/packages/skills/test/typed-reads.test.mjs:12:110)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

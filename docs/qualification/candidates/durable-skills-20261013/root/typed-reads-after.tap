@@ -1,0 +1,47 @@
+✔ exact original promise is bound with scope/version/hash and visible six-source coverage; no task mutation (12.779002ms)
+✔ suggestions remain separate and exact duplicate promise origins merge without semantic merging (3.119738ms)
+✔ conflicting owner/date evidence stays conflicting, including contradictions from related tracking (2.778538ms)
+✔ completed native task and free-form delivery claim cannot establish delivery or acceptance (2.331149ms)
+✔ unread sources and unmapped Monday are visible and never support absence (1.880193ms)
+✔ disconnected/unavailable mapped Monday retains source failure and continuation (2.085942ms)
+✔ refuses foreign tenant without a ledger (1.508136ms)
+✔ refuses foreign actor without a ledger (1.286856ms)
+✔ refuses different conversation without a ledger (2.15172ms)
+✔ refuses different run without a ledger (2.128675ms)
+✔ refuses different attempt without a ledger (1.995176ms)
+✔ refuses obsolete fence without a ledger (2.005321ms)
+✔ refuses different decision without a ledger (1.996758ms)
+✔ refuses substituted bytes without a ledger (2.104289ms)
+✔ refuses substituted hash without a ledger (1.269449ms)
+✔ refuses snippet without a ledger (1.291864ms)
+✔ refuses future read without a ledger (1.355598ms)
+✔ refuses unknown operation without a ledger (1.204202ms)
+✔ refuses other window without a ledger (10.716075ms)
+✔ refuses unmapped Monday read without a ledger (1.740675ms)
+✔ refuses wrong Monday boards without a ledger (1.660745ms)
+✔ refuses record-version substitution without a ledger (1.936749ms)
+✔ refuses quote mismatch without a ledger (1.68412ms)
+✔ refuses quote range without a ledger (1.560455ms)
+✔ refuses invented tracking source without a ledger (1.769418ms)
+✔ refuses orphan delivery link without a ledger (1.716529ms)
+✔ refuses invalid due date without a ledger (1.658933ms)
+✔ refuses duplicate ID without a ledger (1.615748ms)
+✔ refuses duplicate source without a ledger (2.044059ms)
+✔ refuses model-completed property without a ledger (2.313622ms)
+✔ accessors and extra options do not run during input admission (0.235392ms)
+✔ actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes (13.590317ms)
+✔ missing first source body remains incomplete and has no eligible passage (1.457611ms)
+✔ refuses result digest substitution (1.105625ms)
+✔ refuses current binding substitution (1.558792ms)
+✔ refuses scope substitution (1.607456ms)
+✔ refuses immutable body hash substitution (1.868115ms)
+✔ refuses future source clock substitution (1.428598ms)
+✔ refuses unknown receipt field substitution (0.829401ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1897.067639
