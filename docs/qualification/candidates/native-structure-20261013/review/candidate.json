@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/schema-structure-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-native-structure-review-20261013",
+  "sourceHead": "7ca187a06ba627a3d26f9a2bfc110f6b8303345e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T07:53:40.316054+00:00",
+  "durationSeconds": 20.152,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 569765,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.stdout.bin",
+      "bytes": 4027,
+      "sha256": "d917bb831e91c7abec4b822fe0f6244f13d4452bf8743076da2616b5f29e5b28"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
