@@ -1,0 +1,169 @@
+✔ independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources (740.879584ms)
+✔ independent current actor substitution refuses before generation (8.463916ms)
+✔ independent current tenant substitution refuses before generation (7.180267ms)
+✔ independent current attempt substitution refuses before generation (8.167815ms)
+✔ independent current fence substitution refuses before generation (10.126329ms)
+✔ independent current client substitution refuses before generation (9.644695ms)
+✔ independent current scope revision substitution refuses before generation (9.129761ms)
+✔ independent full canonical descriptor cannot omit grants or source requirements (7.556767ms)
+✔ independent constructor snapshots caller context, scopes, limits and descriptor (101.150399ms)
+✔ independent create replay and changed intent cannot generate or charge again (111.861512ms)
+✔ independent stale revision leaves both committed versions unchanged and preserves uncertain effect (286.122805ms)
+✔ independent completed download withheld on final session denial remains RESULT_NOT_RELEASED (96.925513ms)
+✔ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (76.076919ms)
+✔ independent original cutoff aborts parked current-state receipt before effects (50.417234ms)
+✔ independent newly shortened artifact expiry bounds the next parked executor (113.643683ms)
+✔ independent cancellation during response acquisition denies exact old version (105.528271ms)
+✔ independent raw binding injection has no authority/effect (6.379157ms)
+✔ independent raw scopes injection has no authority/effect (6.538957ms)
+✔ independent raw credential injection has no authority/effect (5.763262ms)
+✔ independent raw path injection has no authority/effect (5.348418ms)
+✔ independent raw baseVersionId injection has no authority/effect (5.024681ms)
+INDEPENDENT_TRAP code Error: trap location
+    at Object.get (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:67:113)
+    at file:///tmp/meri-document-drafting-review-20261013/apps/artifacts/postgres-service.mjs:107:18
+    at async file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/index.mjs:49:55
+✖ independent hostile errors and request objects execute no getters or proxy traps (13.410275ms)
+✔ independent oversized and malformed UTF8 bodies refuse before source work (7.588154ms)
+✔ independent parked incoming body aborts under original deadline (43.3284ms)
+✔ independent no activation by default and separate tool/native credentials refused (6.751057ms)
+✔ independent CLI help and invalid arguments remain inert and preserve environment (0.468975ms)
+✖ independent hostile rejected authority port cannot trigger reflection or erase uncertainty (9.677775ms)
+✖ independent hostile rejected session-late port cannot trigger reflection or erase uncertainty (8.241446ms)
+✔ independent hostile rejected executor port cannot trigger reflection or erase uncertainty (17.233471ms)
+✖ independent hostile rejected version-read port cannot trigger reflection or erase uncertainty (85.463887ms)
+✖ independent hostile rejected object-get port cannot trigger reflection or erase uncertainty (94.470244ms)
+✔ independent hostile rejected object-put port cannot trigger reflection or erase uncertainty (70.027888ms)
+✔ independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty (72.870029ms)
+✖ independent hostile rejected ids port cannot trigger reflection or erase uncertainty (9.568601ms)
+✔ independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty (11.70379ms)
+✖ independent hostile own error getters remain untouched (12.035779ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 29
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4757.079643
+
+✖ failing tests:
+
+test at apps/control/document-application/independent/application-independent.test.mjs:66:1
+✖ independent hostile errors and request objects execute no getters or proxy traps (13.410275ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:68:285)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected authority port cannot trigger reflection or erase uncertainty (9.677775ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:91:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected session-late port cannot trigger reflection or erase uncertainty (8.241446ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:91:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected version-read port cannot trigger reflection or erase uncertainty (85.463887ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:91:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected object-get port cannot trigger reflection or erase uncertainty (94.470244ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:91:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:76:140
+✖ independent hostile rejected ids port cannot trigger reflection or erase uncertainty (9.568601ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:91:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/independent/application-independent.test.mjs:94:1
+✖ independent hostile own error getters remain untouched (12.035779ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:96:183)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
