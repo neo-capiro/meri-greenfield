@@ -1,0 +1,35 @@
+{
+  "allAbsent": true,
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/audit.json",
+      "pgid": 436398,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-repaired.json",
+      "pgid": 435653,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.json",
+      "pgid": 435431,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/fixture-repaired.json",
+      "pgid": 434227,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/initial.json",
+      "pgid": 433774,
+      "freshAbsent": true,
+      "exitCode": 1
+    }
+  ]
+}

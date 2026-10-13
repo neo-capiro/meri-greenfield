@@ -1,0 +1,33 @@
+✔ actual retained read yields editable canonical draft without metadata or task effect (62.42396ms)
+✔ explicit task edits normalize through canonical contract and prepare immutable approval only (37.745502ms)
+✔ downstream existing standard approval/executor creates one task and replay does not redispatch (73.983256ms)
+✔ ordinary current approval denial remains the existing executor owner (40.163729ms)
+✔ selection cannot provide binding authority (14.238065ms)
+✔ selection cannot provide scopes authority (13.356338ms)
+✔ selection cannot provide requiredApprover authority (14.087618ms)
+✔ selection cannot provide clientId authority (13.772695ms)
+✔ selection cannot provide action authority (13.671823ms)
+✔ unknown or lossy task edits refuse rather than assign owner or silently truncate (40.359182ms)
+✔ mismatched selected hash refuses (26.256392ms)
+✔ mismatched selected action refuses (20.705873ms)
+✔ mismatched selected reference refuses (15.546403ms)
+✔ caller draft/card edits cannot bypass a fresh retained evidence comparison (46.320805ms)
+✔ retained result tampering is refused by actual lookup store and canonical read validator (29.164015ms)
+✔ current read revocation blocks prepare after draft; no metadata or source work (34.993853ms)
+✔ hostile inputs stay inert and accepted output is detached (22.522646ms)
+✔ original deadline clips metadata even after time spent in current read (29.884448ms)
+✔ preabort allocates no read or metadata (13.199964ms)
+✔ parked read is bounded and cannot start metadata after cancellation (27.592991ms)
+✔ late metadata ACK is not delivered; persisted metadata is not called rollback (30.485813ms)
+✔ deadline expires across parked metadata without new effects (44.527252ms)
+✔ constructor refuses mismatched current command/client and unknown operation (13.356208ms)
+✔ trusted operation configuration is snapshotted before later caller mutation (32.25954ms)
+✔ trusted operation accessor is refused without invoking caller code (13.453716ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3247.440369

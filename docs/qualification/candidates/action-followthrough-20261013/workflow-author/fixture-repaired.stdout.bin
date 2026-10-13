@@ -1,0 +1,31 @@
+✔ actual retained read yields editable canonical draft without metadata or task effect (67.311985ms)
+✔ explicit task edits normalize through canonical contract and prepare immutable approval only (40.203533ms)
+✔ downstream existing standard approval/executor creates one task and replay does not redispatch (75.934076ms)
+✔ ordinary current approval denial remains the existing executor owner (42.80087ms)
+✔ selection cannot provide binding authority (21.815344ms)
+✔ selection cannot provide scopes authority (16.703238ms)
+✔ selection cannot provide requiredApprover authority (13.996617ms)
+✔ selection cannot provide clientId authority (18.700188ms)
+✔ selection cannot provide action authority (18.236445ms)
+✔ unknown or lossy task edits refuse rather than assign owner or silently truncate (56.323283ms)
+✔ mismatched selected hash refuses (46.418823ms)
+✔ mismatched selected action refuses (36.979372ms)
+✔ mismatched selected reference refuses (25.170427ms)
+✔ caller draft/card edits cannot bypass a fresh retained evidence comparison (92.646187ms)
+✔ retained result tampering is refused by actual lookup store and canonical read validator (50.116175ms)
+✔ current read revocation blocks prepare after draft; no metadata or source work (43.331733ms)
+✔ hostile inputs stay inert and accepted output is detached (30.4302ms)
+✔ original deadline clips metadata even after time spent in current read (49.236892ms)
+✔ preabort allocates no read or metadata (18.588715ms)
+✔ parked read is bounded and cannot start metadata after cancellation (43.874395ms)
+✔ late metadata ACK is not delivered; persisted metadata is not called rollback (52.253551ms)
+✔ deadline expires across parked metadata without new effects (47.859119ms)
+✔ constructor refuses mismatched current command/client and unknown operation (14.13214ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3680.949501
