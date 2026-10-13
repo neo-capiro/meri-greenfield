@@ -1,0 +1,5 @@
+# Independent XLSX recalculation review
+
+Base305648bc. Review the fixed canonical LibreOffice transformer correction, not an alternative renderer or authority. Read AGENTS and implementation standards. Own only office-recalc-independent.test.mjs and this review packet.
+
+Use the retained same original.xlsx bytes to establish stale cached D4=0 before conversion and expected D4=2050 afterward. Retain formulas and literal text semantically, compare meaningful styles and source bytes, reject any bypass that writes synthetic cached totals. Verify fixed isolated profile configuration applies only to XLSX; DOCX conversion arguments unchanged; unsupported modes refused; no caller-provided macro/config channel; all owned profiles/workspaces/processes cleaned after success/failure/cancellation. Actual installed local soffice and Python allowed; no native/G1/sandbox qualification claims, no cloud/provider/customer evidence. Preserve failures, exact source identities and bounded raw capture (<=180seconds per subprocess). Existing PR53 source and tests remain unchanged except the explicitly allocated transformer.

@@ -1,0 +1,15 @@
+✔ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (11248.414993ms)
+✔ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (10597.221336ms)
+✔ Word argument contract remains exact and unsupported transform is rejected (0.531239ms)
+✔ xlsx profile configuration stays fixed and isolated from the borrowed temp root (50.545205ms)
+✔ docx profile configuration stays fixed and isolated from the borrowed temp root (37.028736ms)
+✔ child failure removes owned XLSX profile/input/output and preserves borrowed root (33.066373ms)
+✔ pre-cancelled XLSX conversion cleans prepared profile without starting a child (3.981205ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22053.656184

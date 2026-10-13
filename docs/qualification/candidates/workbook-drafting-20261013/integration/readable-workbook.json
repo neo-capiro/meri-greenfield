@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "scripts/local-workbook/run.mjs",
+    "--run",
+    "--python",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "--soffice",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+    "--output",
+    "/tmp/meri-workbook-drafting-20261013/docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts"
+  ],
+  "cwd": "/tmp/meri-workbook-drafting-20261013",
+  "sourceHead": "fd993f5105deda49a88973b42906df3e928ac829",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T07:56:12.138573+00:00",
+  "durationSeconds": 46.366,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 570711,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stdout.bin",
+      "bytes": 22805,
+      "sha256": "90370125566d3f0cfb597a918a895287513cc09a973b6efa72e6ae6fad76d0d9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

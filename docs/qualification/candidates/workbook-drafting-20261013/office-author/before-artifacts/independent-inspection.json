@@ -1,0 +1,361 @@
+{
+  "before": {
+    "Budget": [
+      {
+        "cell": "A1",
+        "value": "=1+1",
+        "type": "s",
+        "cached": "=1+1",
+        "numberFormat": "General",
+        "bold": true
+      },
+      {
+        "cell": "B1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "E1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A2",
+        "value": "Literal formula text",
+        "type": "s",
+        "cached": "Literal formula text",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B2",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C2",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D2",
+        "value": 1000,
+        "type": "n",
+        "cached": 1000,
+        "numberFormat": "0.00",
+        "bold": false
+      },
+      {
+        "cell": "E2",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D3",
+        "value": 1050,
+        "type": "n",
+        "cached": 1050,
+        "numberFormat": "0.00",
+        "bold": false
+      },
+      {
+        "cell": "E3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "0.00",
+        "bold": false
+      },
+      {
+        "cell": "E4",
+        "value": "=D4*2",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "0.00",
+        "bold": false
+      }
+    ]
+  },
+  "after": {
+    "Budget": [
+      {
+        "cell": "A1",
+        "value": "=1+1",
+        "type": "s",
+        "cached": "=1+1",
+        "numberFormat": "General",
+        "bold": true
+      },
+      {
+        "cell": "B1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "E1",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A2",
+        "value": "Literal formula text",
+        "type": "s",
+        "cached": "Literal formula text",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B2",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C2",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D2",
+        "value": 1000,
+        "type": "n",
+        "cached": 1000,
+        "numberFormat": "0.00",
+        "bold": false
+      },
+      {
+        "cell": "E2",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D3",
+        "value": 1050,
+        "type": "n",
+        "cached": 1050,
+        "numberFormat": "0.00",
+        "bold": false
+      },
+      {
+        "cell": "E3",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "0.00",
+        "bold": false
+      },
+      {
+        "cell": "E4",
+        "value": "=D4*2",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "0.00",
+        "bold": false
+      }
+    ]
+  },
+  "inputSha256": "d2316e758aa9de118058959cc675074d072249da3d5ca3cf02f70df16cec0860",
+  "outputSha256": "17383c9b467e93c93ea5f2bf309bb71288f152963d463f9da9b7bbc6c43e8b1d",
+  "receipt": {
+    "inputSha256": "d2316e758aa9de118058959cc675074d072249da3d5ca3cf02f70df16cec0860",
+    "outputSha256": "17383c9b467e93c93ea5f2bf309bb71288f152963d463f9da9b7bbc6c43e8b1d",
+    "format": "xlsx",
+    "target": "xlsx",
+    "process": {
+      "pid": 535677,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 192,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 192,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "b58eac11026bf481760bc63e247f2a82859f9daf4eaf325b87bc88bd4db0d333",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    },
+    "nativeQualification": false,
+    "renderInspection": "pending",
+    "formulaEquivalence": "unqualified"
+  }
+}

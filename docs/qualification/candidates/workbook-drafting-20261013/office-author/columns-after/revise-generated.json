@@ -1,0 +1,147 @@
+{
+  "Plan": {
+    "widths": {
+      "A": {
+        "width": 24,
+        "min": 1,
+        "max": 1
+      },
+      "B": {
+        "width": 12,
+        "min": 2,
+        "max": 2
+      },
+      "C": {
+        "width": 16,
+        "min": 3,
+        "max": 3
+      },
+      "D": {
+        "width": 17,
+        "min": 4,
+        "max": 4
+      }
+    },
+    "cells": {
+      "A1": {
+        "value": "Workstream",
+        "type": "s",
+        "format": "General",
+        "cached": "Workstream"
+      },
+      "B1": {
+        "value": "Hours",
+        "type": "s",
+        "format": "General",
+        "cached": "Hours"
+      },
+      "C1": {
+        "value": "Rate",
+        "type": "s",
+        "format": "General",
+        "cached": "Rate"
+      },
+      "D1": {
+        "value": "Cost",
+        "type": "s",
+        "format": "General",
+        "cached": "Cost"
+      },
+      "A2": {
+        "value": "Research",
+        "type": "s",
+        "format": "General",
+        "cached": "Research"
+      },
+      "B2": {
+        "value": 12,
+        "type": "n",
+        "format": "General",
+        "cached": 12
+      },
+      "C2": {
+        "value": 125,
+        "type": "n",
+        "format": "$#,##0.00",
+        "cached": 125
+      },
+      "D2": {
+        "value": "=B2*C2",
+        "type": "f",
+        "format": "$#,##0.00",
+        "cached": null
+      },
+      "A3": {
+        "value": "Documentation review",
+        "type": "s",
+        "format": "General",
+        "cached": "Documentation review"
+      },
+      "B3": {
+        "value": 8,
+        "type": "n",
+        "format": "General",
+        "cached": 8
+      },
+      "C3": {
+        "value": 100,
+        "type": "n",
+        "format": "$#,##0.00",
+        "cached": 100
+      },
+      "D3": {
+        "value": "=B3*C3",
+        "type": "f",
+        "format": "$#,##0.00",
+        "cached": null
+      },
+      "A4": {
+        "value": "Total",
+        "type": "s",
+        "format": "General",
+        "cached": "Total"
+      },
+      "B4": {
+        "value": null,
+        "type": "n",
+        "format": "General",
+        "cached": null
+      },
+      "C4": {
+        "value": null,
+        "type": "n",
+        "format": "General",
+        "cached": null
+      },
+      "D4": {
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "format": "$#,##0.00",
+        "cached": null
+      }
+    }
+  },
+  "Notes": {
+    "widths": {
+      "A": {
+        "width": 29,
+        "min": 1,
+        "max": 1
+      }
+    },
+    "cells": {
+      "A1": {
+        "value": "=1+1",
+        "type": "s",
+        "format": "General",
+        "cached": "=1+1"
+      },
+      "A2": {
+        "value": "Synthetic local planning only",
+        "type": "s",
+        "format": "General",
+        "cached": "Synthetic local planning only"
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+✔ all four typed requests compile under strict private/public schemas (61.90006ms)
+✔ reject code, external inputs, malformed Unicode, unsafe functions and shape drift (1.086163ms)
+✔ context rejects foreign provenance and assets (9.657267ms)
+✔ exact UTF8 TXT download plus current-attempt authorization and owned cleanup (107.700985ms)
+✔ actual Word package contains rich runs, tables and embedded chart (1499.183885ms)
+✔ actual XLSX distinguishes literal formulas and preserves declared formulas with unverified cache (208.384645ms)
+✔ actual editable PptxGenJS deck includes notes, chart, table and multiple slides (117.667677ms)
+✔ actual pandas join, typed delta and chart produce inspectable result bundle (1779.025507ms)
+✔ immutable revision preserves original exact bytes and rejects stale parent (207.362307ms)
+✔ denied authority stops before generation (2.098205ms)
+✔ changed authorization intent is rejected (1.581457ms)
+✔ changed budget binding is rejected (2.10839ms)
+✔ unqualified inspection cannot claim rendered, native-opened or recalculated (8.787502ms)
+✔ revocation after generation prevents any object commit (2.007819ms)
+✔ executor deadlines remain cancellation, not successful artifact publication (33.12438ms)
+✔ post-commit budget failure is explicit unknown effect (4.711122ms)
+✔ read integrity detects corrupted object bytes (54.558715ms)
+✔ fixed Office conversion source arguments have no user option/path channel (0.523187ms)
+✔ general analysis is unavailable without admitted native port (4.192574ms)
+✔ actual openpyxl cell revision keeps original XLSX and explicit literals/formulas (402.797238ms)
+✔ trusted immutable PNG asset produces Word and PPT image parts without URL fetch (306.693258ms)
+✔ actual fixed child deadline rejects and removes owned output workspace (5.426418ms)
+✔ fixed child output failure remains a failure with owned workspace cleanup (68.05542ms)
+✔ pure source PDF composition remains unavailable without explicit transformer (5.299007ms)
+✔ all asset/provenance tuples participate in immutable intent (7.357671ms)
+✔ stable version allocation cannot overwrite an immutable committed version (6.524734ms)
+✔ sandbox input/receipt verifier gates general code before any port call (0.973163ms)
+✔ retained MIME and inspection format cannot substitute a different artifact type (60.549707ms)
+✔ failed generation retains cause and budget reconciliation identity (2.532667ms)
+✔ CRC-invalid PNG remains an explicit refusal, without fixing or fetching the asset (128.141265ms)
+✔ pandas arithmetic refuses integers outside safe output range instead of signed wraparound (257.341417ms)
+✔ pandas aggregates refuse numeric overflow instead of wrapping (313.637799ms)
+✔ canonical operation schema and source output assertion bind exact generated result (98.450397ms)
+✔ general analysis schema binds immutable inputs, manifest and declared pending publication (5.377254ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5984.264639

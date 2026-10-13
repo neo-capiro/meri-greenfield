@@ -1,0 +1,270 @@
+{
+  "source": "07d9db0b988a8ff3f04ee3acc21951e5967dea81",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/bounds-creation.json",
+      "bytes": 2475,
+      "sha256": "56f2182c65075e4b8e3f0cea56ce89b0ad023e36a4a367efd3325a1b52901b72"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/bounds-processes.json",
+      "bytes": 2598,
+      "sha256": "2da08d479a70b9df1d70cc8e32d1557e5c95e5254a28b6af21857dbd1778b0dc"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/bounds-revision.json",
+      "bytes": 2462,
+      "sha256": "18e60f67e2325ee504855336a29666cea974b04e28e7fb2802eeeea7e738a5ad"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-generated.json",
+      "bytes": 2826,
+      "sha256": "524397db12b1134d862dd5d48c4b56c3d12c62f7818ed062d4d669317d72690d"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-generated.xlsx",
+      "bytes": 6075,
+      "sha256": "ea9af3000eadbf3695a3c1df2789b107df7e99805abb563f15073de94691f076"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-output.pdf",
+      "bytes": 20116,
+      "sha256": "847dcad7a3f62c4ef091834cc3e6cfbce539db6d6a6be166a8b1b4970c2b6db5"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-page-1.png",
+      "bytes": 13862,
+      "sha256": "470506c410e8b0e96e7ac168daa431fa3d3a5d6e36de0c772ef228e60e9794bf"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-page-2.png",
+      "bytes": 7324,
+      "sha256": "91649c1f909fae4f7e617b66777ab6fc227495e5ea68a072fc0c3b9b402584f3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-processes.json",
+      "bytes": 3872,
+      "sha256": "0fb906c89628f743ad51c6d76b5e8ad535e6fa7bab07752398f578de945459eb"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-recalculated.xlsx",
+      "bytes": 7499,
+      "sha256": "86b0b648824cb68abd946e473c0cf63e88203e14bd29673c629e52bc9154094a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-visual.json",
+      "bytes": 3481,
+      "sha256": "3c51056667801c1a6b43d52ede5b90e35d26bfc63c4ceb957fbbda8ff9f33b4f"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-generated.json",
+      "bytes": 2809,
+      "sha256": "45ebfb0dae0beaa3468e4f56aaf1d13b9c3a799079d95717fe74bd3364b1dc8d"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-generated.xlsx",
+      "bytes": 5527,
+      "sha256": "649b4cbbb7a60a87730f40f28de0d738258d79ce0cf6cdb21b9e2e835103d8dc"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-output.pdf",
+      "bytes": 20566,
+      "sha256": "63770a20089000ba8bea067536db8f9b49c11085fc6450a32b06939b27d38738"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-page-1.png",
+      "bytes": 13883,
+      "sha256": "f9411b4625705e11d8ce58e6db97a36dd3456e698026f23692c270cd5dead66e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-page-2.png",
+      "bytes": 7324,
+      "sha256": "91649c1f909fae4f7e617b66777ab6fc227495e5ea68a072fc0c3b9b402584f3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-processes.json",
+      "bytes": 4509,
+      "sha256": "3940486b078ee0550a0829e7a16047a67117effdfceb1592fc64e3c04be692e2"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-recalculated.xlsx",
+      "bytes": 7489,
+      "sha256": "31c874c410febee8da504ba1f3694d567177edec1ad8bbfa451965ca6ad3a03a"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-visual.json",
+      "bytes": 3487,
+      "sha256": "ed57fea9884f44f9da0b3a219d12d9c1b58faf73e92c946c47095ff15a607af6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after.json",
+      "bytes": 1299,
+      "sha256": "491155c2b661e8297be5a117c3159c12fd8f2b30c028334f0fbaa3f3c75e19d4"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after.stdout.bin",
+      "bytes": 458,
+      "sha256": "2209e4f9f0d9425f65ebee350d014e63d857777baebd6805478055ac34192fb1"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-audit.json",
+      "bytes": 2672,
+      "sha256": "5cfc1442e3270d33eb4b99be2dcb87f9c34cbf742bb84611a22e5f50aeef4443"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/bounds-creation.json",
+      "bytes": 2213,
+      "sha256": "db03fdb3a022d75bb5eb0c80d50a8267812c9fc963ae6661da8d9d8e91637084"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/bounds-processes.json",
+      "bytes": 2598,
+      "sha256": "fac2638c430352ca0e1c7e722b1462dd4e3bb263eea420754ae0b5097b490945"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/bounds-revision.json",
+      "bytes": 2224,
+      "sha256": "3698843661952a7f6a4b231a1ae95ad4f5645e4f5756a0d59985376b5757a38c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-generated.json",
+      "bytes": 2388,
+      "sha256": "02de63f49fc24210f422314a22cce634bc95dc4937846ffb9ca13dadce9ab398"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-generated.xlsx",
+      "bytes": 5968,
+      "sha256": "c917494e00a74d9488694f85b8a26f7a3f1bf8265fe9ee4444c5dac23761ce82"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-output.pdf",
+      "bytes": 20121,
+      "sha256": "cd2818aea6321bcfd9ae53eab663216495e7bfd90d32ac8eaf9707162e889dc0"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-page-1.png",
+      "bytes": 13021,
+      "sha256": "db941cdd86f7bc75fb0b34e843dc46dba564261972399a2acf95965c7e684ce0"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-page-2.png",
+      "bytes": 7324,
+      "sha256": "91649c1f909fae4f7e617b66777ab6fc227495e5ea68a072fc0c3b9b402584f3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-processes.json",
+      "bytes": 3872,
+      "sha256": "f566026a249b5bafaf924e1655f0c7fb3b60fa3258debf9dc3b59d59aff6ab6c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-recalculated.xlsx",
+      "bytes": 7386,
+      "sha256": "62227d8d485d34a9a4e88298b700c28071283703d52c3c53fbf7c2fd90b2754f"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-visual.json",
+      "bytes": 3005,
+      "sha256": "495d4ddd49561b8209dabdb6fafbe089fa674ce992853a7fa9d6e2c88b0acfdf"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-generated.json",
+      "bytes": 2411,
+      "sha256": "b36ddbc9fb7b1b2d98e084a7001be572f4f4ae23cdb21db3cf9a81495f8b11b6"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-generated.xlsx",
+      "bytes": 5438,
+      "sha256": "84ef96c007fcd3eb23d21a9940a8196804097adea012850a228bc3c9af0d8dd1"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-output.pdf",
+      "bytes": 20352,
+      "sha256": "8fae1b5d2b550bb88e71512bdaab5a88cfb825e3bea573cc3ff2df44ab6355b3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-page-1.png",
+      "bytes": 13035,
+      "sha256": "e2213811d296bc70c1dc11db5118139f35f0be03aa52b95e347aa90323e51728"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-page-2.png",
+      "bytes": 7324,
+      "sha256": "91649c1f909fae4f7e617b66777ab6fc227495e5ea68a072fc0c3b9b402584f3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-processes.json",
+      "bytes": 4509,
+      "sha256": "fcfc6a5bbcee1cb28ae2828028099bb214e05824adf5c4457d4bffd6e40bec12"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-recalculated.xlsx",
+      "bytes": 7378,
+      "sha256": "85273f2d7cb613cfd467290cbdaf939415e608b3f98547b6a83176fd18f4039f"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-visual.json",
+      "bytes": 3019,
+      "sha256": "f8f92e05ab8204f5a357b0413f11a988af25ec3867aa932bc62138ce6b1a6d92"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before.json",
+      "bytes": 1272,
+      "sha256": "e37f83088b72e66b130f6c4dbc1aabb9e6309194046a73a784b779343ece3050"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before.stdout.bin",
+      "bytes": 3268,
+      "sha256": "cb6fc170a797995d9a7a5e93c41650f4fc4a0b25df8285d8efda7040dee336de"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-original-regression.json",
+      "bytes": 1330,
+      "sha256": "4a02ed0487c5e67bebf379b5dbe2e39cf8e022ef8b035065ce028353a8bcde71"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-original-regression.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-original-regression.stdout.bin",
+      "bytes": 3090,
+      "sha256": "9cca3c25950e66966414e5eb369da672c518d1c8b5f315a8643fb792c64c15eb"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-outline.md",
+      "bytes": 1999,
+      "sha256": "12318b044e4a961e97c25f4d598035158ecffa06b2d976f061e79e5c28e792fc"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-report.md",
+      "bytes": 3554,
+      "sha256": "909de93bba64ca9c172c0afb53732dd3cf1f7a7eb04a4e2031ad6ddec4512943"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-tooling-note.json",
+      "bytes": 223,
+      "sha256": "fb6068c1b27bbf63f63ef0e371e261d8316eeec9dafba2e685505872c5f66854"
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "bytes": 7263,
+      "sha256": "0d96d65ec3f7a6dede443f1bfc0e8a175f5e838b4c3101e38c4293e8491a21ab"
+    },
+    {
+      "path": "apps/artifacts/test/office-columns.test.mjs",
+      "bytes": 7318,
+      "sha256": "7070a8fc0ac20801163fd27ed28f9f767bb47c4f649e502d8c4602d0c901cefe"
+    }
+  ]
+}

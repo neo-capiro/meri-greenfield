@@ -1,0 +1,188 @@
+{
+  "sourceHead": "29c85d18dd3cacc7ee5bdd7c281d4318be60680e",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/audit.json",
+      "bytes": 1181,
+      "sha256": "4644b48f563628398df0294e79e86359b2847d7f67d426406d9b74935c9a07e5"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/audit.py",
+      "bytes": 4282,
+      "sha256": "32e397f3f4abea75fd35d70f3d5cf3e75aa18d293018f817478938a0d00cd083"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/cleanup.json",
+      "bytes": 156,
+      "sha256": "020476172d773f787aa2d88b69fcbfb171c3ae867af4375027ded4d9502964a9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-artifacts/original.xlsx",
+      "bytes": 6002,
+      "sha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.json",
+      "bytes": 1596,
+      "sha256": "4c109e898906abb19121e449622d25ba9923037a1c7a8e2cf676851be5bc4cba"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.stdout.bin",
+      "bytes": 2164,
+      "sha256": "bfa22882ece83c07590f3d1f9b18e2733ccd0b2414bbc899724b3b1a2ba5bdce"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview-1.png",
+      "bytes": 13862,
+      "sha256": "470506c410e8b0e96e7ac168daa431fa3d3a5d6e36de0c772ef228e60e9794bf"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview-2.png",
+      "bytes": 10074,
+      "sha256": "f90d971a7716d8fe3c4b8d9efe4ca867fd1cbece6f7201ef087eab514e8d576c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview.pdf",
+      "bytes": 20812,
+      "sha256": "ba72ab1506ea55c19bd90d58d5fb98641c8343eafa46c7c1bd79006f2400e9c4"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-recalculated.xlsx",
+      "bytes": 7531,
+      "sha256": "e87b022e642b995298d49496f99dde398ffefe76e8fffba1240784511bfabf91"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-recalculation.json",
+      "bytes": 5637,
+      "sha256": "af4443108057c2a26a50d20d715195e135bfba935e77ea08e7f589b968acfd2c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-visual.json",
+      "bytes": 3446,
+      "sha256": "c6af2c6ad10fa875f4f4328f49a1f28c28bd07c93bfda846d7701f22a409a9cd"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original.xlsx",
+      "bytes": 6107,
+      "sha256": "9d3b15a958ee396d260f0169d5e4720608b5c2f8d384ceb8327e6cfd7577039e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview-1.png",
+      "bytes": 13423,
+      "sha256": "e07c70bd15049773987705dece393c4e0a73f173adadcbe52365f0d9138be32d"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview-2.png",
+      "bytes": 9976,
+      "sha256": "06f32ee2d63e29d54fea13df4ad9bd4c578a91a30eb6ed2a02456881dbd54edf"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview.pdf",
+      "bytes": 21038,
+      "sha256": "d20a8ca962fc3fdbb97a1685298164719a74a624ca082ba259f2327886edea53"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-recalculated.xlsx",
+      "bytes": 7515,
+      "sha256": "d69d4a967b18e1d2ddc9238f6a4e4a9a7a1b3d41d0fcd1e028450dfbe20ca9f1"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-recalculation.json",
+      "bytes": 5641,
+      "sha256": "932abf8f5f3115e0a75c32db96fa548862150a18d16bcde9b84412e53a502273"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-visual.json",
+      "bytes": 3447,
+      "sha256": "2a51bb92ddf8cc2165bf5f4884b8e834277fb50da302a662c1c1e815b1614657"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision.xlsx",
+      "bytes": 5555,
+      "sha256": "d9c34aaa7e94fbdcc9008d8ec004ab757c4e976067058fcb2d7867f67032f4d4"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.json",
+      "bytes": 1600,
+      "sha256": "3e5428bb02e0778762863c5bd4554f5ab7e58cf7efff68f21d519fcc8fa6e350"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stdout.bin",
+      "bytes": 22805,
+      "sha256": "90370125566d3f0cfb597a918a895287513cc09a973b6efa72e6ae6fad76d0d9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-artifacts/original-recalculated.xlsx",
+      "bytes": 7418,
+      "sha256": "ae199fecc721c8338f8aea647f627f4acb452c76624f2a78840e12fa1e9ef175"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-artifacts/original-recalculation.json",
+      "bytes": 5637,
+      "sha256": "66a45139e79f6727507fab771bdac7051e2e84063d5cd28aa58701b3548bbb89"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-artifacts/original.xlsx",
+      "bytes": 6002,
+      "sha256": "602545ef35fdc5b543daa84046b2c349d4b2697774673b5656c4521d55ae6908"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.json",
+      "bytes": 1611,
+      "sha256": "2c822a93d1ab7c837e877fd83a0654e22002e8defab9de2b440c8925fb900b13"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.stdout.bin",
+      "bytes": 2515,
+      "sha256": "6e841e3609300d8b04fd431e9d472ad3cc3f058051f87f30a3cd02fdfef42d01"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/source-blobs.json",
+      "bytes": 2283,
+      "sha256": "0152de9ebc9a1da60e0bd44de2cfdcd0ae1ecc27fb277064b2966c37bae9049d"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.json",
+      "bytes": 1373,
+      "sha256": "6667bb1174fe7c0d3860b1261c106f3fb15442d7fcc5dd995dfa2ef34daf22a7"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.stdout.bin",
+      "bytes": 509,
+      "sha256": "274c197f6ad1445c4ffd312ad66035cb5280e71cde589e0772ccfe627a855c45"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-INTEGRATION-20261013.md",
+      "bytes": 4638,
+      "sha256": "826dfafb39e95a057188231afa0484de6ee80ce32294ee811967b92eb0c2ecd3"
+    }
+  ],
+  "excludes": [
+    "manifest.json"
+  ]
+}

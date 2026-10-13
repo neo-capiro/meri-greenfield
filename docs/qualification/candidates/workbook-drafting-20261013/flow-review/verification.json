@@ -1,0 +1,203 @@
+{
+  "passed": 49,
+  "total": 49,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "docs/coordination/reports/CODEX-WORKBOOK-FLOW-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/capture.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/criteria.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/flow-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/prerequisite-references.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/verify.py",
+      "pass": true
+    },
+    {
+      "name": "96 audit checks passed",
+      "pass": true
+    },
+    {
+      "name": "focused group clean and no source diff",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "11 controls no skips",
+      "pass": true
+    },
+    {
+      "name": "frozen source apps/control/document-application/local/workbook/README.md",
+      "pass": true
+    },
+    {
+      "name": "frozen source apps/control/document-application/local/workbook/flow.mjs",
+      "pass": true
+    },
+    {
+      "name": "frozen source apps/control/document-application/local/workbook/inspect_pdf.py",
+      "pass": true
+    },
+    {
+      "name": "frozen source apps/control/document-application/local/workbook/inspect_xlsx.py",
+      "pass": true
+    },
+    {
+      "name": "frozen source apps/control/document-application/local/workbook/inspection.mjs",
+      "pass": true
+    },
+    {
+      "name": "frozen source apps/control/document-application/local/workbook/local.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "frozen source scripts/local-workbook/run.mjs",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original.xlsx",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-recalculated.xlsx",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-recalculation.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-visual.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview.pdf",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview-1.png",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview-2.png",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision.xlsx",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-recalculated.xlsx",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-recalculation.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-visual.json",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview.pdf",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview-1.png",
+      "pass": true
+    },
+    {
+      "name": "frozen evidence docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview-2.png",
+      "pass": true
+    }
+  ]
+}

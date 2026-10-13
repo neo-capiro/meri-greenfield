@@ -1,0 +1,77 @@
+{
+  "base": "305648bc66dbb29d70bb27aea45e485dfe664637",
+  "sourceFreeze": "1c3cfb9c97681415286236edd21a829e51b565eb",
+  "testFreeze": "458352c965b97ee3c374d2f8f95d45027bb1ef0a",
+  "originalEntries": 11567,
+  "unchangedOriginalEntries": 11566,
+  "onlyExistingChange": "apps/artifacts/office-transform.mjs",
+  "parentOriginalBytes": 6002,
+  "parentOriginalSha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+  "originalInputExactAcrossRuns": true,
+  "observations": [
+    {
+      "phase": "before",
+      "inputSha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+      "outputSha256": "81c7e99494fb4642af5036aeb1e98113ca2afdcaf2b6e4ed19a60e4a0e385297",
+      "beforeD4": {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      "afterD4": {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      }
+    },
+    {
+      "phase": "repaired",
+      "inputSha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+      "outputSha256": "420b5ba1da27690a6b8bf91ddd9e634ea4d263c093ac4ff520d7c91958e42295",
+      "beforeD4": {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      "afterD4": {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 2050,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      }
+    },
+    {
+      "phase": "final",
+      "inputSha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+      "outputSha256": "d7d73a722ac7539c0154d3d424f3b1aaba007f79d57044655c934aa47818a3c6",
+      "beforeD4": {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      "afterD4": {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 2050,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      }
+    }
+  ],
+  "checksPassed": true
+}

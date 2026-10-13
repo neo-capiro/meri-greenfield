@@ -1,0 +1,19 @@
+✔ workbook CLI import/help/invalid arguments allocate no fixture or change source-root environment (1.581968ms)
+✔ workbook CLI refuses an existing evidence directory without touching its bytes (10.507142ms)
+✔ foreign source-root configuration refuses before output creation and preserves environment (6.517017ms)
+✔ missing executable refuses before output or borrowed resource mutation (2.229011ms)
+✔ existing output file is retained and never removed as borrowed state (2.869204ms)
+✔ fixed inspectors support help and reject extra arguments without loading Office (122.121221ms)
+✔ actual XLSX inspection input limit fails with settled canonical child receipt (95.971339ms)
+✔ copy inspection rejects arbitrary evidence labels before allocation (6.699316ms)
+✔ cell lookup preserves literal data and missing cells without fabricated values (0.313491ms)
+✔ workbook CLI help imports no fixture graph and leaves environment unchanged (2.139095ms)
+✔ workbook CLI malformed arguments refuse before graph and output allocation (0.330897ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 424.93773

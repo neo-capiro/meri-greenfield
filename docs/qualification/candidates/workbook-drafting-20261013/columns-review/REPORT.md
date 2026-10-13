@@ -1,0 +1,13 @@
+# Independent XLSX column-sizing review
+
+ACCEPT_SOURCE: `07d9db0b988a8ff3f04ee3acc21951e5967dea81` (`apps/artifacts/python/office.py`, SHA256 `0d96d65ec3f7a6dede443f1bfc0e8a175f5e838b4c3101e38c4293e8491a21ab`). Author packet `be62f8f09d9060dfae56b5f14cd7b9050eb7a65e`: all 53 manifest members verified against immutable Git blobs; production matches tested bytes.
+
+Independent controls were frozen before inspecting the repair. Baseline: 1/4 passed, three expected clipping/width failures, 22.471 seconds. Repaired replay: 4/4 passed, 51.025 seconds, zero skips, no timeout/kill, zero tracked source diff. Raw streams and real XLSX/PDF/PNG artifacts remain in this packet. No broad suite was repeated. Author separately recorded 3/3 rendered controls and 34/34 original artifact-execution controls.
+
+Actual local generator, typed openpyxl revision, unchanged LibreOffice transformer, and PDF rendering were exercised. The unchanged retained original still visibly clips Documentation and overlaps Workstream/Hours. I inspected final-created.png and final-revised.png: complete labels fit separate columns, including Implementation and documentation after revision. Formulas, literal formula-looking strings, number formats and chart count survive. A 2,000-character literal remains intact under the width cap; shorter revisions shrink widths. The real recalculation control returns 2,450 after the hour edit. Direct generator creation still has unverified zero formula caches until the existing transformer runs; column sizing adds no formula evaluator.
+
+Before candidate inspection, the independent creation-width assertion was corrected from raw OOXML 48 to 48.7109375: installed XlsxWriter encodes configured width 48 with pixel padding. Openpyxl revision remains bounded by 48. The original assertion, failed capture, installed-library explanation, and exact correction remain in history and width-units.md; no label/value/formula assertion was removed.
+
+Preservation audit: all 11,624 base entries retained; 11,623 unchanged. Only office.py changed. All original tests, contracts, public package, Word behavior, and accepted Office recalculation source `1c3cfb9c97681415286236edd21a829e51b565eb` remain byte-identical. All 17 recorded owned process groups were freshly absent; temporary directories removed; no dependency links created.
+
+This is bounded default-font sizing, not universal autofit. Text beyond the 48-character bound, unusual numeric formats/fonts or extreme formula results can still clip. Chart/image construction code and anchor expressions are unchanged; image rendering was not separately exercised. No product XLSX-to-PDF route, native qualification, cloud/provider execution or private evidence is claimed.

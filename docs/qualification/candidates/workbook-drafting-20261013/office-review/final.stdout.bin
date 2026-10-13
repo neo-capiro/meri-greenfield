@@ -1,0 +1,15 @@
+✔ exact original workbook recalculates stale cached2050 total with unchanged formula and literal cells (11043.276382ms)
+✔ independent workbook preserves styled literals and formulas while computing arithmetic (10802.621811ms)
+✔ fixed XLSX profile is private and cannot be supplied by document arguments (33.127632ms)
+✔ DOCX conversion keeps exact arguments and does not install XLSX configuration (39.386127ms)
+✔ failed owned process removes recalculation profile/workspace (31.369685ms)
+✔ cancelled parked process closes its group and removes XLSX profile (36.791687ms)
+✔ unsupported conversion refuses without leaving an owned workspace (1.23757ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22059.275397

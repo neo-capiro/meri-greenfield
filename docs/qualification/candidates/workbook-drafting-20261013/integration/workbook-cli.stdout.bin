@@ -1,0 +1,12 @@
+✔ workbook CLI import/help/invalid arguments allocate no fixture or change source-root environment (1.161425ms)
+✔ workbook CLI refuses an existing evidence directory without touching its bytes (8.342991ms)
+✔ workbook CLI help imports no fixture graph and leaves environment unchanged (2.106496ms)
+✔ workbook CLI malformed arguments refuse before graph and output allocation (0.322455ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.517364

@@ -1,0 +1,47 @@
+✖ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (13094.078561ms)
+✖ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (11461.486865ms)
+✔ Word argument contract remains exact and unsupported transform is rejected (0.69761ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24612.169662
+
+✖ failing tests:
+
+test at apps/artifacts/test/office-recalc.test.mjs:20:49
+✖ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (13094.078561ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2050
+  
+      at TestContext.<anonymous> (file:///tmp/meri-workbook-office-author-20261013/apps/artifacts/test/office-recalc.test.mjs:29:52)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2050,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/office-recalc.test.mjs:20:49
+✖ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (11461.486865ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2050
+  
+      at TestContext.<anonymous> (file:///tmp/meri-workbook-office-author-20261013/apps/artifacts/test/office-recalc.test.mjs:29:52)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2050,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

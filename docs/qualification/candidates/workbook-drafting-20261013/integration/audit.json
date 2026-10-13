@@ -1,0 +1,47 @@
+{
+  "sourceVerdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "base": "70516e5c9681917ce493bbc50e3023494f2e1209",
+  "flowSource": "fd993f5105deda49a88973b42906df3e928ac829",
+  "head": "29c85d18dd3cacc7ee5bdd7c281d4318be60680e",
+  "baseEntries": 11762,
+  "unchangedBaseEntries": 11759,
+  "changedOriginalPaths": [
+    "apps/artifacts/office-transform.mjs",
+    "apps/artifacts/python/office.py",
+    "docs/coordination/tasks/CODEX-WORKBOOK-DRAFTING-20261013.md"
+  ],
+  "roleManifestMembers": 175,
+  "ownedGroupsAbsent": [
+    532733,
+    561504,
+    570711,
+    570843,
+    570844,
+    570845,
+    570846,
+    570847,
+    571040,
+    571041,
+    571119,
+    571120,
+    571151,
+    571152,
+    571186,
+    571280
+  ],
+  "invariants": {
+    "originalPreserved": true,
+    "revisionParentExact": true,
+    "downloadsVerified": true,
+    "reconstructedVersionsReadable": true,
+    "literalFormulaTextPreserved": true,
+    "formulaAndStylePreserved": true,
+    "localRecalculationVerified": true,
+    "localPdfRendered": true,
+    "independentStoresAndSessionsIsolated": true,
+    "wrongOperationRefusedBeforeEffects": true,
+    "revokedVersionsDenied": true
+  },
+  "sourceMembers": 9
+}

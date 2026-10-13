@@ -1,0 +1,349 @@
+{
+  "before": {
+    "Plan": [
+      {
+        "cell": "A1",
+        "value": "Workstream",
+        "type": "s",
+        "cached": "Workstream",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B1",
+        "value": "Hours",
+        "type": "s",
+        "cached": "Hours",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C1",
+        "value": "Rate",
+        "type": "s",
+        "cached": "Rate",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D1",
+        "value": "Cost",
+        "type": "s",
+        "cached": "Cost",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A2",
+        "value": "Research",
+        "type": "s",
+        "cached": "Research",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B2",
+        "value": 10,
+        "type": "n",
+        "cached": 10,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C2",
+        "value": 125,
+        "type": "n",
+        "cached": 125,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "D2",
+        "value": "=B2*C2",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "A3",
+        "value": "Documentation",
+        "type": "s",
+        "cached": "Documentation",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B3",
+        "value": 8,
+        "type": "n",
+        "cached": 8,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C3",
+        "value": 100,
+        "type": "n",
+        "cached": 100,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "D3",
+        "value": "=B3*C3",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "A4",
+        "value": "Total",
+        "type": "s",
+        "cached": "Total",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 0,
+        "numberFormat": "$#,##0.00",
+        "bold": false
+      }
+    ],
+    "Notes": [
+      {
+        "cell": "A1",
+        "value": "Synthetic local planning only",
+        "type": "s",
+        "cached": "Synthetic local planning only",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A2",
+        "value": "=1+1",
+        "type": "s",
+        "cached": "=1+1",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A3",
+        "value": "Revise assumptions before approval",
+        "type": "s",
+        "cached": "Revise assumptions before approval",
+        "numberFormat": "General",
+        "bold": false
+      }
+    ]
+  },
+  "after": {
+    "Plan": [
+      {
+        "cell": "A1",
+        "value": "Workstream",
+        "type": "s",
+        "cached": "Workstream",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B1",
+        "value": "Hours",
+        "type": "s",
+        "cached": "Hours",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C1",
+        "value": "Rate",
+        "type": "s",
+        "cached": "Rate",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D1",
+        "value": "Cost",
+        "type": "s",
+        "cached": "Cost",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A2",
+        "value": "Research",
+        "type": "s",
+        "cached": "Research",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B2",
+        "value": 10,
+        "type": "n",
+        "cached": 10,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C2",
+        "value": 125,
+        "type": "n",
+        "cached": 125,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "D2",
+        "value": "=B2*C2",
+        "type": "f",
+        "cached": 1250,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "A3",
+        "value": "Documentation",
+        "type": "s",
+        "cached": "Documentation",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B3",
+        "value": 8,
+        "type": "n",
+        "cached": 8,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C3",
+        "value": 100,
+        "type": "n",
+        "cached": 100,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "D3",
+        "value": "=B3*C3",
+        "type": "f",
+        "cached": 800,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      },
+      {
+        "cell": "A4",
+        "value": "Total",
+        "type": "s",
+        "cached": "Total",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "B4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "C4",
+        "value": null,
+        "type": "n",
+        "cached": null,
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "D4",
+        "value": "=SUM(D2:D3)",
+        "type": "f",
+        "cached": 2050,
+        "numberFormat": "\\$#,##0.00",
+        "bold": false
+      }
+    ],
+    "Notes": [
+      {
+        "cell": "A1",
+        "value": "Synthetic local planning only",
+        "type": "s",
+        "cached": "Synthetic local planning only",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A2",
+        "value": "=1+1",
+        "type": "s",
+        "cached": "=1+1",
+        "numberFormat": "General",
+        "bold": false
+      },
+      {
+        "cell": "A3",
+        "value": "Revise assumptions before approval",
+        "type": "s",
+        "cached": "Revise assumptions before approval",
+        "numberFormat": "General",
+        "bold": false
+      }
+    ]
+  },
+  "inputSha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+  "outputSha256": "420b5ba1da27690a6b8bf91ddd9e634ea4d263c093ac4ff520d7c91958e42295",
+  "receipt": {
+    "inputSha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+    "outputSha256": "420b5ba1da27690a6b8bf91ddd9e634ea4d263c093ac4ff520d7c91958e42295",
+    "format": "xlsx",
+    "target": "xlsx",
+    "process": {
+      "pid": 536402,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 192,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 192,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "408299129a480ff029643a40e227cec0ec1fca51f09474eb14d17a9cfc77beb2",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    },
+    "nativeQualification": false,
+    "renderInspection": "pending",
+    "formulaEquivalence": "unqualified"
+  }
+}

@@ -1,6 +1,26 @@
 """Original data-only Office builders over adopted upstream libraries."""
 import io
 
+def _excel_column_widths(rows):
+    """Bounded default-font estimates, not formula evaluation or universal autofit."""
+    from math import ceil
+    from xlsxwriter.utility import cell_autofit_width
+    widths={}
+    for row in rows:
+        for index,cell in enumerate(row):
+            value=cell.get('value')
+            if 'formula' in cell:
+                # A result allowance: the expression itself is never displayed.
+                text='0'*14
+            elif isinstance(value,bool):text='TRUE' if value else 'FALSE'
+            else:text='' if value is None else str(value)
+            pixels=max((cell_autofit_width(line) for line in text.splitlines()),default=0)
+            if cell.get('numberFormat') and ('formula' in cell or isinstance(value,(int,float))):
+                # Room for common separators/currency without a second formatter.
+                pixels=max(pixels,cell_autofit_width(cell['numberFormat'])+28)
+            widths[index]=max(widths.get(index,12),min(48,max(12,ceil(pixels/7)+2)))
+    return widths
+
 def word(spec,assets,path):
     from docx import Document
     from docx.shared import Inches
@@ -54,12 +74,18 @@ def excel(spec,assets,path,base=None):
                             cell.value=item.get('value')
                             if isinstance(cell.value,str):cell.data_type='s'
                         if item.get('numberFormat'):cell.number_format=item['numberFormat']
+                for index,width in _excel_column_widths(sheet['rows']).items():
+                    column=page.column_dimensions[openpyxl.utils.get_column_letter(index+1)]
+                    # Split any grouped dimensions produced by XlsxWriter.
+                    column.min=column.max=index+1;column.width=width
             book.calculation.fullCalcOnLoad=True;book.calculation.forceFullCalc=True;book.save(path)
         finally:book.close()
         return {'sheets':[s['name'] for s in spec['sheets']],'formulas':sum(1 for s in spec['sheets'] for row in s['rows'] for cell in row if 'formula' in cell),'formulaCache':'removed/unverified; recalculation required','revisionMethod':'openpyxl typed-cell replacement'}
     with xlsxwriter.Workbook(path,{'strings_to_urls':False,'strings_to_formulas':False,'strings_to_numbers':False}) as book:
         for sheet in spec['sheets']:
             page=book.add_worksheet(sheet['name'])
+            for index,width in _excel_column_widths(sheet['rows']).items():
+                page.set_column(index,index,width)
             for y,row in enumerate(sheet['rows']):
                 for x,cell in enumerate(row):
                     fmt=book.add_format({'num_format':cell['numberFormat']}) if cell.get('numberFormat') else None

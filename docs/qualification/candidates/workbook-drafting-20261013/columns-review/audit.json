@@ -1,0 +1,45 @@
+{
+  "base": "3fb65433ff50cdc7bb48afcc4d437d290e24da3e",
+  "source": "07d9db0b988a8ff3f04ee3acc21951e5967dea81",
+  "originalEntries": 11624,
+  "unchangedOriginalEntries": 11623,
+  "approvedOriginalChanges": [
+    "apps/artifacts/python/office.py"
+  ],
+  "sourceSha256": "0d96d65ec3f7a6dede443f1bfc0e8a175f5e838b4c3101e38c4293e8491a21ab",
+  "officeRecalculationSourceUnchanged": true,
+  "allOriginalTestsPublicContractsAndOtherSourceUnchanged": true,
+  "captures": [
+    {
+      "label": "baseline",
+      "exitCode": 1,
+      "seconds": 22.471
+    },
+    {
+      "label": "final",
+      "exitCode": 0,
+      "seconds": 51.025
+    }
+  ],
+  "ownedProcessGroupsFreshlyAbsent": [
+    566214,
+    566695,
+    566689,
+    566401,
+    566420,
+    566231,
+    569036,
+    569601,
+    569607,
+    569589,
+    569595,
+    569406,
+    569415,
+    569520,
+    569526,
+    569555,
+    569053
+  ],
+  "nativeQualification": false,
+  "dependenciesCreated": false
+}

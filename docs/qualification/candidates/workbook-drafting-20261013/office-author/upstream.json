@@ -1,0 +1,14 @@
+{
+  "primarySource": "https://raw.githubusercontent.com/LibreOffice/core/master/officecfg/registry/schema/org/openoffice/Office/Calc.xcs",
+  "lines": [
+    1599,
+    1625
+  ],
+  "reviewedAt": "2026-10-13T07:36:31.011222+00:00",
+  "property": "/org.openoffice.Office.Calc/Formula/Load/OOXMLRecalcMode",
+  "always": 0,
+  "neverAndUpstreamDefault": 1,
+  "localBuildId": "2c87e51eeaa2b413ff4ae097b2705eea1995d8e5",
+  "localUpdateId": "LibreOfficeDev_26_en-US",
+  "basis": "Primary schema plus retained actual local before/after observations; no native qualification"
+}

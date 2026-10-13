@@ -4,6 +4,16 @@ import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {runArtifactProcess} from './process.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
+// Fixed owned Calc profile: recompute OOXML formula caches on load. No caller
+// profile settings or formula evaluator; source/native equivalence stays unqualified.
+const xlsxRecalculationProfile=`<?xml version="1.0" encoding="UTF-8"?>
+<oor:items xmlns:oor="http://openoffice.org/2001/registry">
+ <item oor:path="/org.openoffice.Office.Calc/Formula/Load">
+  <prop oor:name="OOXMLRecalcMode" oor:op="fuse"><value>0</value></prop>
+ </item>
+</oor:items>
+`;
+
 // Source adapter only; caller must admit exact CLI/image/sandbox independently.
 export function officeTransformArguments({workspace,format,target}){
   if(!isAbsolute(workspace)||!((format==='docx'&&target==='pdf')||(format==='xlsx'&&target==='xlsx')))fail('ARTIFACT_TRANSFORM_UNSUPPORTED');
@@ -16,6 +26,10 @@ export function createLibreOfficeTransformer({executable,tempRoot}){
     const workspace=await mkdtemp(join(tempRoot,'meri-office-'));
     try{
       const args=officeTransformArguments({workspace,format,target});await mkdir(join(workspace,'out'),{mode:0o700});await writeFile(join(workspace,'input.'+format),bytes,{flag:'wx',mode:0o600});
+      if(format==='xlsx'){
+        const userProfile=join(workspace,'profile','user');await mkdir(userProfile,{recursive:true,mode:0o700});
+        await writeFile(join(userProfile,'registrymodifications.xcu'),xlsxRecalculationProfile,{flag:'wx',mode:0o600});
+      }
       const run=await runArtifactProcess(executable,args,{cwd:workspace,input:Buffer.alloc(0),signal,deadlineMs});
       const output=join(workspace,'out','input.'+target),stat=await lstat(output);if(!stat.isFile()||stat.isSymbolicLink()||stat.size>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
       const result=await readFile(output);if(target==='pdf'&&!result.subarray(0,5).equals(Buffer.from('%PDF-')))fail('ARTIFACT_FORMAT');
