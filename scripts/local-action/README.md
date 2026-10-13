@@ -1,0 +1,9 @@
+# Existing local action database fixture
+
+This source-only runner is for the existing isolated synthetic PostgreSQL fixture. It does not install a driver/engine, pull an image, provision a database, apply a migration, issue production credentials or connect to Aurora. The local fixture owner must supply its exact admitted connection and lifetime. There is currently no such usable fixture in this backend environment: Docker has no images/containers, native PostgreSQL binaries are absent, and the inspected canonical pg dependency is not materialized.
+
+`admission.mjs` reads a private regular input file of at most16KiB, verifies the supplied SHA256 and exact source migration/driver-lock hashes, then uses the existing `parseNativeAdmission` contract. The input is `{schema:"meri-local-action-input/1",native:<existing native budget fixture config>,migrationSha256:{qualification,budget,invocation,lookup}}`. The native config retains the existing fixed local address/database/role, cluster identity, version/start time, synthetic password and finite work/cleanup clocks. Never commit this private input. The nonsecret descriptor passed to the case runner contains no password.
+
+The four source migration hashes identify the expected source; they do not prove how the target schema was installed. The runner separately checks actual required schema and database identity before seeding fresh synthetic rows. Its actual gateway and stores use the caller's real pg pool. No in-memory SQL substitute may satisfy these tests.
+
+Real PostgreSQL execution remains unrun until existing fixture access is supplied. Help, admission and source composition checks are not database durability, native/G1 or live policy qualification. Source transport and identity remain explicitly synthetic; no model runs or provider charges occur.
