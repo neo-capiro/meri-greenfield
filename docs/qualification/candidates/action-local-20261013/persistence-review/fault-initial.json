@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/task-lookup/local-integration/commit-ack-fault-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-local-persistence-review-20261013",
+  "sourceHead": "cf0d70de307298c20cedb87806dce528672d3288",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:21:16.492058+00:00",
+  "durationSeconds": 2.571,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 425140,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stdout.bin",
+      "bytes": 1308,
+      "sha256": "5a6458efe853d35cfe004d0ed12483aa99838dadfd90cd82cfeee92fa00631cf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
