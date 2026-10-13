@@ -4,6 +4,9 @@ import {createCommitAckFault} from './commit-ack-fault.mjs';
 import {createFreshPoolOwner} from './fresh-pool.mjs';
 import {assertLocalDescriptor} from './fixture-checks.mjs';
 import {runLocalActionPersistence} from './run-persistence.mjs';
+import {assertLocalResultRows} from './run-persistence.mjs';
+import {fixture,envelope,NOW,id} from '../fixtures.mjs';
+import {prepare,event,canonicalSha256} from '../binding.mjs';
 const descriptor=()=>({mode:'synthetic-local-action',host:'127.0.0.1',port:5432,database:'meri_qualification_test',user:'qualification_owner',systemIdentifier:'123456',serverStartTime:'2026-10-13T00:00:00.000Z',serverVersion:'170011',deadlineMs:Date.now()+60000,migrationSha256:{qualification:'a'.repeat(64),budget:'b'.repeat(64),invocation:'c'.repeat(64),lookup:'d'.repeat(64)}});
 const selected={claim:"INSERT INTO meri_task_lookup.lookups(tenant_id) VALUES($1)",dispatch:"UPDATE meri_task_lookup.lookups SET state='DISPATCHING' WHERE lookup_id=$1",result:"UPDATE meri_task_lookup.lookups SET state='RESULT',record=$1 WHERE lookup_id=$2"};
 function spy(){const calls=[],releases=[];return {calls,releases,pool:{async connect(){return{async query(...args){calls.push(args);return {rows:[],rowCount:1};},release(e){releases.push(e);}};}}};}
@@ -39,24 +42,46 @@ test('offline mismatched migration bytes HOLD before any SQL or case producer',a
  assert.equal(result.status,'HOLD');assert.equal(result.failure.case,'fixture');assert.equal(result.runtimeQualified,false);assert.equal(calls,0);assert.deepEqual(result.ownedRows,[]);assert.equal(result.cleanup.borrowedPoolClosed,false);
 });
 test('offline fresh pool is closed exactly once and initial borrowed pool untouched',async()=>{
- let closed=0,borrowedClose=0;const initial={end(){borrowedClose++;}},pool={};
+ let closed=0,borrowedClose=0;const initial={end(){borrowedClose++;}},pool={query(){}};
  const owner=createFreshPoolOwner({openFreshPool:async()=>({pool,close:async()=>{closed++;}}),originalPool:initial,deadlineMs:Date.now()+1000});
  assert.equal(await owner.acquire(),pool);await owner.close();await owner.close();assert.equal(closed,1);assert.equal(borrowedClose,0);assert.equal(owner.state().ownedFreshPoolsClosed,1);
 });
 test('offline late acquisition after owner close is cleaned once without returning a pool',async()=>{
  let resolve,closed=0;const owner=createFreshPoolOwner({openFreshPool:()=>new Promise(r=>{resolve=r;}),originalPool:{},deadlineMs:Date.now()+1000});
- const pending=owner.acquire();await owner.close();assert.equal(owner.state().acquisitionPending,true);resolve({pool:{},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});await owner.close();assert.equal(closed,1);
+ const pending=owner.acquire();await owner.close();assert.equal(owner.state().acquisitionPending,true);resolve({pool:{query(){}},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});await owner.close();assert.equal(closed,1);
 });
 test('offline cancelled acquisition cleans its eventual wrapper without borrowed queries',async()=>{
  const controller=new AbortController();let resolve,closed=0;
  const owner=createFreshPoolOwner({openFreshPool:()=>new Promise(r=>{resolve=r;}),originalPool:{},deadlineMs:Date.now()+1000,signal:controller.signal});
- const pending=owner.acquire();controller.abort();resolve({pool:{},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});assert.equal(closed,1);
+ const pending=owner.acquire();controller.abort();resolve({pool:{query(){}},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});assert.equal(closed,1);
 });
 test('offline returning borrowed pool refuses and does not close it',async()=>{
  const pool={};let closed=0;const owner=createFreshPoolOwner({openFreshPool:async()=>({pool,close(){closed++;}}),originalPool:pool,deadlineMs:Date.now()+1000});
  await assert.rejects(owner.acquire(),{code:'LOCAL_BORROWED_POOL'});await owner.close();assert.equal(closed,0);
 });
 test('offline close failure is retained as cleanup UNKNOWN',async()=>{
- const owner=createFreshPoolOwner({openFreshPool:async()=>({pool:{},close:async()=>{throw new Error('private');}}),originalPool:{},deadlineMs:Date.now()+1000});
+ const owner=createFreshPoolOwner({openFreshPool:async()=>({pool:{query(){}},close:async()=>{throw new Error('private');}}),originalPool:{},deadlineMs:Date.now()+1000});
  await owner.acquire();await owner.close();assert.equal(owner.state().freshPoolCleanupUnknown,true);assert.equal(owner.state().ownedFreshPoolsClosed,0);
+});
+
+test('offline malformed extra/missing-field fresh wrapper still closes known owned resource',async()=>{
+ for(const make of [close=>({pool:{query(){}},close,extra:true}),close=>({close})]){
+  let count=0;const owner=createFreshPoolOwner({openFreshPool:async()=>make(async()=>{count++;}),originalPool:{},deadlineMs:Date.now()+1000});
+  await assert.rejects(owner.acquire());await owner.close();assert.equal(count,1);
+ }
+});
+for(const kind of ['expired','aborted'])test(`offline ${kind} fresh acquisition never calls factory`,async()=>{
+ let calls=0;const abort=new AbortController();if(kind==='aborted')abort.abort();
+ const owner=createFreshPoolOwner({openFreshPool:async()=>{calls++;return{pool:{query(){}},close(){}};},originalPool:{},deadlineMs:Date.now()+(kind==='expired'?-1:1000),signal:abort.signal});
+ await assert.rejects(owner.acquire(),{code:'DEADLINE'});assert.equal(calls,0);
+});
+function rowFixture(){
+ const f=fixture(),b=prepare(f.request,f.context,NOW),observation=envelope(b),events=[event(b,'tool.started',NOW),event(b,'tool.completed',NOW,f.context.resultReference)];
+ const hash=canonicalSha256(observation),completion={invocationId:'owned_'+id(90),reservationId:id(91),argumentsSha256:b.argumentsSha256,resultSha256:hash,outputBytes:123};
+ const rows={lookups:[{state:'RESULT',payload:b,record:{observation,resultSha256:hash,events}}],events:events.map((event,i)=>({event,kind:i?'terminal':'started',sequence:String(i+1),event_id:event.eventId})),invocations:[{invocation_id:completion.invocationId,reservation_id:completion.reservationId,arguments_sha256:b.argumentsSha256,completion}],reservations:[{invocation_id:completion.invocationId,reservation_id:completion.reservationId,state:'SETTLED',hold_micro_usd:'10',charged_micro_usd:'10',output_bytes:'123'}]};
+ const read={observation,resultSha256:hash,events,classification:'recommendations',acceptedTasks:false};return {rows,c:{lookup:{request:f.request,context:f.context},expectedChargeMicroUsd:10},read};
+}
+test('offline actual retained-row assertion accepts coherent canonical result/events/accounting',()=>{const f=rowFixture();assertLocalResultRows(f.rows,f.c,f.read);});
+for(const [key,value]of [['invocationId','owned_'+id(92)],['reservationId',id(92)],['outputBytes',124]])test(`offline actual retained-row assertion rejects contradictory completion ${key}`,()=>{
+ const f=rowFixture();f.rows.invocations[0].completion[key]=value;assert.throws(()=>assertLocalResultRows(f.rows,f.c,f.read));
 });
