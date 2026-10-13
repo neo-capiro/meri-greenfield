@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/commitments-audit/test/tracking-native.test.mjs",
+    "apps/control/document-application/commitments-audit/test/compiler.test.mjs",
+    "apps/control/document-application/commitments-audit/test/collection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "005c026b6fd4c3523b2c3c7359c5176ec0e8a7bd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:11:38.897639+00:00",
+  "durationSeconds": 4.706,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 298327,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/focused21.stdout.bin",
+      "bytes": 2484,
+      "sha256": "8474b4f106919e80f865b353c7d93dcc0825855824f9fedb8b6856f1fcc48c0f"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/focused21.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent exact010 tracking review; existing21 controls; preserve fresh authorized downloads and render pages for independent literal and all-page visual inspection",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

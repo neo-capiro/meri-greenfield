@@ -1,0 +1,29 @@
+✔ collection executes all8 original reads with actual canonical pages, exact body continuation and explicit unavailable native records (44.643937ms)
+✔ call/read cap never executes later source effects and preserves exact remaining source intent (5.658846ms)
+✔ source authority failure is terminal and cannot be treated as missing evidence (1.041603ms)
+✔ source byte budget refuses before compiling or reading later families (0.700525ms)
+✔ parked source deadline closes continuation and late return starts no later effects (21.184482ms)
+✔ all8 original operations collect actual canonical pages across6 sources and exact late promise (93.659342ms)
+✔ all required source failures stay visible without inventing absence or a bound promise (3.551364ms)
+✔ call/body caps disclose unbound observations and retain original budgets (17.569574ms)
+✔ foreign binding/subject/window refuses rather than returning a partial authority failure (12.460898ms)
+✔ immutable skill, source body hash, quote and output request provenance cannot be substituted (37.744481ms)
+✔ no mapped Monday board means not-mapped coverage and no unrelated board source call (20.301646ms)
+✔ fresh authorization decision IDs retain exact stable subject and every actual source decision (22.211964ms)
+✔ cancelled collection never reaches later source work (3.159911ms)
+✔ closed original read wrapper preserves a bounded selection and incomplete wider native evidence (34.291583ms)
+✔ original wrapper refuses altered lineage, input hash, extra fields and actual successor source/operation (22.210222ms)
+✔ original task/action/Monday native rows appear visibly and preserve exact proof/identity without becoming body evidence (92.782014ms)
+✔ exact native origin comparison retains unresolved version/semantics and native owner/date never resolves ledger conflicts (65.440802ms)
+✔ source owner/hash/client tampering and derived successor substitution refuse typed original receipts (26.95086ms)
+✔ Monday status/date/optional title remain unverified unversioned metadata with disclosed display caps (31.048088ms)
+✔ real DOCX native tracking original/revision preserves immutable bytes, typed proofs, session/revocation and every-page rendering (1954.6074ms)
+✔ renderer failure retains BOTH exact native tracking DOCX downloads and immutable provenance (647.663368ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4676.714468
