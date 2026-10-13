@@ -1,0 +1,35 @@
+✔ quick_skill.relationship_brief: actual adopted SDK server lists only immutable original read tools (37.792072ms)
+✔ quick_skill.commitments_audit: actual adopted SDK server lists only immutable original read tools (14.696407ms)
+✔ actual MCP call preserves exact canonical operation and literal JSON arguments (4.885148ms)
+✖ unlisted MCP operation and extra outer selector cannot change gateway operation (3.236973ms)
+✔ gateway denial is sanitized and never becomes successful source evidence (2.042286ms)
+✔ server rejects altered original asset/unsupported selection before resource allocation (11.874406ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1869.580631
+
+✖ failing tests:
+
+test at apps/worker/conversation/skills/test/mcp.test.mjs:9:1
+✖ unlisted MCP operation and extra outer selector cannot change gateway operation (3.236973ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-sdk-skills/apps/worker/conversation/skills/test/mcp.test.mjs:9:456)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

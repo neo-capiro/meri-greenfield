@@ -1,0 +1,1 @@
+apps/worker/conversation/options.mjs(10,84): error TS1016: A required parameter cannot follow an optional parameter.
