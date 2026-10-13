@@ -1,0 +1,50 @@
+✖ exact original workbook recalculates stale cached2050 total with unchanged formula and literal cells (11156.099563ms)
+✔ independent workbook preserves styled literals and formulas while computing arithmetic (19570.648638ms)
+✖ fixed XLSX profile is private and cannot be supplied by document arguments (37.186094ms)
+✔ DOCX conversion keeps exact arguments and does not install XLSX configuration (35.785208ms)
+✔ failed owned process removes recalculation profile/workspace (34.439404ms)
+✔ cancelled parked process closes its group and removes XLSX profile (38.674086ms)
+✔ unsupported conversion refuses without leaving an owned workspace (1.611424ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30940.507061
+
+✖ failing tests:
+
+test at apps/artifacts/test/office-recalc-independent.test.mjs:46:1
+✖ exact original workbook recalculates stale cached2050 total with unchanged formula and literal cells (11156.099563ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2050
+  
+      at file:///tmp/meri-workbook-office-review-20261013/apps/artifacts/test/office-recalc-independent.test.mjs:51:9
+      at async owned (file:///tmp/meri-workbook-office-review-20261013/apps/artifacts/test/office-recalc-independent.test.mjs:29:102)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2050,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/office-recalc-independent.test.mjs:71:1
+✖ fixed XLSX profile is private and cannot be supplied by document arguments (37.186094ms)
+  AssertionError [ERR_ASSERTION]: The "string" argument must be of type string. Received type object (null)
+      at file:///tmp/meri-workbook-office-review-20261013/apps/artifacts/test/office-recalc-independent.test.mjs:73:64
+      at async owned (file:///tmp/meri-workbook-office-review-20261013/apps/artifacts/test/office-recalc-independent.test.mjs:29:102)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: /oor:path="\/org\.openoffice\.Office\.Calc\/Formula\/Load"/,
+    operator: 'match',
+    diff: 'simple'
+  }

@@ -1,0 +1,29 @@
+{
+  "inputSha256": "ef279518862c5972e974a04dae9cc28777c1dc36f1c2ef9fcf74ebfe5019f603",
+  "outputSha256": "a0d55c68e611b8eb5b1e3e978c71ecec1b35036fdb285cb16a033e5e12e35ac4",
+  "format": "xlsx",
+  "target": "xlsx",
+  "process": {
+    "pid": 536445,
+    "exitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "stdoutBytes": 192,
+    "stderrBytes": 0,
+    "stdoutRetainedBytes": 192,
+    "stderrRetainedBytes": 0,
+    "hashScope": "retained bytes",
+    "stdoutSha256": "d0bf1bd1856d764773896989856d8b86eaba0784bf434df9f03f6895b4e8aac1",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdoutEnded": true,
+    "stderrEnded": true,
+    "streamErrors": [],
+    "leaderClosed": true,
+    "groupKillAttempted": true,
+    "groupAbsent": true,
+    "sandboxQualified": false
+  },
+  "nativeQualification": false,
+  "renderInspection": "pending",
+  "formulaEquivalence": "unqualified"
+}
