@@ -1,0 +1,43 @@
+{
+  "command": [
+    "node",
+    "packages/contracts/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--strict",
+    "--skipLibCheck",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "packages/contracts/test/document-application-independent-types.ts"
+  ],
+  "cwd": "/tmp/meri-document-contract-review-20261013",
+  "sourceHead": "7c8887379b19144ddd2e2baf0af5a55bb0cd9e23",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "102524d59550e6e210a21b3da2e242b8a548ec25417a2a9a4c14c5f79b1acfae",
+  "startedAt": "2026-10-13T07:38:36.300225+00:00",
+  "durationSeconds": 0.417,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 563266,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stdout.bin",
+      "bytes": 601,
+      "sha256": "cf07a59f4c78d82a7969d07b8c432660d6eb1fc40ad5d714fbcf3ca90da6967e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent focused source/public package checks; exact label identifies preserved run.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
