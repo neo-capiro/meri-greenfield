@@ -1,0 +1,62 @@
+{
+  "base": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "sourceCommit": "bea75ebd9e7d0af75c34e1a671ceed8af3a82935",
+  "sourceTree": "1c7e1412f70759f0564543a41baecbd504de8bdf",
+  "changedPaths": [
+    "apps/gateway/budget/PRODUCT-RUNTIME-OUTLINE.md",
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/admitted-run-binding.mjs",
+    "apps/gateway/budget/admitted-run-current.mjs",
+    "apps/gateway/budget/admitted-run-owner.mjs",
+    "apps/gateway/budget/migrations/0001_product_budget.sql",
+    "apps/gateway/budget/namespace.mjs",
+    "apps/gateway/budget/postgres-budget-store.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/budget/product-runtime.test.mjs",
+    "apps/gateway/budget/product-scripted-fixture.mjs",
+    "apps/gateway/budget/tool-budget-execution.mjs",
+    "apps/gateway/budget/tool-invocation-owner.mjs"
+  ],
+  "protectedPaths": [
+    {
+      "path": "apps/proxy/qualification",
+      "gitObject": "c3eacb291686f1621a56e45989424aab9f263d1a",
+      "exact": true
+    },
+    {
+      "path": "infra",
+      "gitObject": "70c6cfda689ed975f5836a397930ac439742139c",
+      "exact": true
+    },
+    {
+      "path": "packages/contracts",
+      "gitObject": "4212921daa0b4be21880018f81f02f18f9a1ff6a",
+      "exact": true
+    },
+    {
+      "path": "packages/skills",
+      "gitObject": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+      "exact": true
+    },
+    {
+      "path": "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+      "gitObject": "aa4520d182ec5af945bf15e926b8210f88eb1097",
+      "exact": true
+    }
+  ],
+  "exactFrozenProductTests": {
+    "total": 16,
+    "pass": 16,
+    "fail": 0
+  },
+  "exactFrozenDefaultTests": {
+    "total": 168,
+    "pass": 167,
+    "fail": 1,
+    "failure": "known stale independent Object.keys only-currentRun assertion; published baseline1/1FAILactualports currentRun/currentAllocation"
+  },
+  "earlyCaptureLimit": "Precommit captures record base HEAD only; final frozen reruns bind exact source commit. Raw earlier runs remain.",
+  "initialProductFixtureFailure": "missing configured newId; repaired by randomUUID without changing assertions",
+  "appliedMigration": false,
+  "nativeAcceptance": false
+}

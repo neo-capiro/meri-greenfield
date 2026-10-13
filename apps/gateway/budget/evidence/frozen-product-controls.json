@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "bea75ebd9e7d0af75c34e1a671ceed8af3a82935",
+  "sourceTree": "1c7e1412f70759f0564543a41baecbd504de8bdf",
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/budget/product-runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-product-budget-runtime",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 1.7,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1689,
+  "stdoutSha256": "01cd799fc0d97256f2336da0dc0dbc829ee4fc7d14b9cbcf65a92aca181a641d",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

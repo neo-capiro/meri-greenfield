@@ -1,0 +1,6 @@
+{
+  "failedPatch": "apply_patch verification failed: invalid patch: multiple operations target admitted-run-owner.mjs",
+  "correction": "one Update operation with exact old content; helper added separately",
+  "sourceUnaffectedByFailedPatch": true,
+  "metadataPrintFailure": "ValueError: substring not found when printing capture helper variable; README content already written and unchanged; helper unmodified"
+}

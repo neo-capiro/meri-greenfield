@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "sourceTree": "f73a270b9f526c8ff41d67199548a1b919ec7f17",
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=construction is inert",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-product-budget-baseline",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 1.657,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1114,
+  "stdoutSha256": "f0de76d4f4760950e3f368e9f261fe76d9a0dee5b7cd6da1c630defa0af8edf3",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
