@@ -1,0 +1,37 @@
+✔ actual HTTP preserves body and closes sockets/listener idempotently (40.455667ms)
+✔ only explicit loopback ephemeral bounded configuration accepted (0.700073ms)
+✖ real duplicate Authorization survives bridge without selecting one (7.295104ms)
+✔ client disconnect aborts Fetch request signal (4.305327ms)
+✔ automatic bounded lifetime aborts request and physically closes listener (83.424774ms)
+✔ help and invalid CLI remain inert (0.719092ms)
+✔ actual unchanged synthetic flow crosses HTTP and closes after one effect/replay (2835.667039ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3093.404405
+
+✖ failing tests:
+
+test at apps/control/action-application/http.test.mjs:9:1
+✖ real duplicate Authorization survives bridge without selecting one (7.295104ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'Bearer first, Bearer second'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-wiring-http-20261013/apps/control/action-application/http.test.mjs:9:480)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'Bearer first, Bearer second',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
