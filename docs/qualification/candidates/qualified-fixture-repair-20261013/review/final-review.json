@@ -1,0 +1,36 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "UNPROVEN_NO_NATIVE_EXECUTION",
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "source": "4f4da0b67d0b062a84b9196a4b70b012df30f213",
+  "sourceTree": "a9f5b4485fca43b01766ce0ce10301a74d098199",
+  "authorPacket": "fe51a6c75bd3a0878e786a2f9b2af64d4271871c",
+  "authorManifestSha256": "33da05663d0497aaadbaa362be49cbd5a3f14809c930a2ae999889249cf0074e",
+  "authorManifestMembers": 70,
+  "node": {
+    "passed": 72,
+    "receipt": "final-corrected-node.json",
+    "testedHead": "b7b4498b0e5f03a1351a434f50ba967e53868ae2"
+  },
+  "python": {
+    "passed": 33,
+    "receipt": "repaired-python.json",
+    "testedHead": "f2637b2d69ad3c127a719f793530f22b329e27e2",
+    "unchangedAtFinalSource": true
+  },
+  "audit": {
+    "passed": 145,
+    "failed": 0,
+    "originalEntries": 11411,
+    "unchangedOriginalEntries": 11400,
+    "changedOriginalPaths": 11,
+    "protectedPaths": 11
+  },
+  "limitations": [
+    "Scripted ports and emitted SQL contracts do not execute or emulate PostgreSQL.",
+    "Supported metadata classes remain bounded; the native25-schema object kinds and metadata size are not proved compatible.",
+    "Fingerprint excludes rows, sequence current values, physical TOAST storage, external dependency definitions, volatile relation statistics/freeze counters; not concurrent-DDL protection.",
+    "originalDeadlineMs remains per-operation cutoff at most60s, not entire fixture cleanup deadline.",
+    "No migration changed/applied, no reset/drop/retry or identity waiver."
+  ]
+}
