@@ -1,0 +1,30 @@
+{
+  "package": "@capiro/meri-contracts",
+  "version": "0.1.1",
+  "filename": "capiro-meri-contracts-0.1.1.tgz",
+  "bytes": 175627,
+  "sha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651",
+  "integrity": "sha512-DQGUUm88mWTb0w7Me7CqvN9l+XTZwgtHD1VymifcyZHZes4O2ZugmxSMmH5Zwzs8m+3OLQS+/ulq8wKQ0ntxpA==",
+  "files": [
+    "README.md",
+    "THIRD-PARTY-NOTICES.md",
+    "dist/action-application.d.ts",
+    "dist/action-application.metadata.json",
+    "dist/action-application.mjs",
+    "dist/action-application.schema.json",
+    "dist/browser.d.ts",
+    "dist/browser.mjs",
+    "dist/contracts.d.ts",
+    "dist/index.d.ts",
+    "dist/metadata.d.ts",
+    "dist/metadata.mjs",
+    "meri.schema.json",
+    "package.json",
+    "validate.mjs"
+  ],
+  "isolatedRuntime": "PASS",
+  "isolatedStrictTypes": "PASS",
+  "privateSourceAbsent": true,
+  "npmInstall": false,
+  "network": false
+}
