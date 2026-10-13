@@ -1,0 +1,26 @@
+✖ independent parked cleanup response body is bounded as well as handler (2203.651928ms)
+✔ independent CLI help and invalid args do not alter environment or launch the graph (1.585724ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4802.534354
+
+✖ failing tests:
+
+test at evals/action-followthrough/local-baseline/baseline-independent.test.mjs:45:1
+✖ independent parked cleanup response body is bounded as well as handler (2203.651928ms)
+  AssertionError [ERR_ASSERTION]: cleanup body read parked beyond deadline
+      at TestContext.<anonymous> (file:///tmp/meri-pilot-baseline-review-20261013/evals/action-followthrough/local-baseline/baseline-independent.test.mjs:45:463)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: null,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

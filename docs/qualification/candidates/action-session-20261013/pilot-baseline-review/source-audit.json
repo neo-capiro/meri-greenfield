@@ -1,0 +1,120 @@
+{
+  "candidate": "d16896b348daa765f3cb069732c9a70e5ffe13b0",
+  "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+  "passed": 16,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all-original-files-exact",
+      "passed": true,
+      "detail": {
+        "originals": 10967,
+        "changed": []
+      }
+    },
+    {
+      "name": "author-exclusive-additions",
+      "passed": true,
+      "detail": [
+        "docs/coordination/tasks/CODEX-ACTION-PILOT-BASELINE-20261013.md",
+        "docs/qualification/candidates/action-session-20261013/pilot-baseline-author/capture-reaped.py",
+        "docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.json",
+        "docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stderr.bin",
+        "docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stdout.bin",
+        "evals/action-followthrough/local-baseline/README.md",
+        "evals/action-followthrough/local-baseline/baseline.test.mjs",
+        "evals/action-followthrough/local-baseline/cli.mjs",
+        "evals/action-followthrough/local-baseline/run.mjs"
+      ]
+    },
+    {
+      "name": "actual-demo-import",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "actual-public-receiver",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "canonical-lifetime-reuse",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-approval-call",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "single-create-site",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "six-denominator",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "gold-import",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "zero-model-human-native-claims",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "bounded-local-receipt",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "cli-help-before-graph",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "cli-argument-refusal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "cli-inert-import",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "fixed-route-allowlist",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact-accepted-pilot",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "evals/action-followthrough/local-baseline/baseline.test.mjs",
+      "bytes": 5225,
+      "sha256": "30f48e6b2131457a0a614817047fe38bad4cf1860b481ae2585c377d8154c553"
+    },
+    {
+      "path": "evals/action-followthrough/local-baseline/cli.mjs",
+      "bytes": 931,
+      "sha256": "6666324ed522a2a48b6a7a114a6cddd4223d32fa7653af3db631d8051f771ceb"
+    },
+    {
+      "path": "evals/action-followthrough/local-baseline/run.mjs",
+      "bytes": 9350,
+      "sha256": "4f9702eb578c6a8e51b56d700076ef98387806d994897cb95d5e28fc7dabf3df"
+    }
+  ],
+  "goldSha256": "c87bd3feb6814439d6f1ce763188c1dfabb6931504f1e5abeb164bd9078cea48",
+  "nativeRuntimeAccepted": false
+}

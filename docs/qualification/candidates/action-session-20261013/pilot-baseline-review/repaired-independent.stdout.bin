@@ -1,0 +1,25 @@
+✔ independent actual six fresh compositions retain current public DTOs, no approval/effect, exact preludes and cleanup (405.462582ms)
+✔ independent default production composition passes all six without injection (270.461489ms)
+✔ independent one constructor error is redacted and retains all six denominator rows (223.64527ms)
+✔ independent reported task effect makes the real case fail (224.384732ms)
+✔ independent approval issuance makes the real case fail (226.622644ms)
+✔ independent cleanup failure fails its case and never removes later cases (278.740539ms)
+✔ independent coherent but wrong recommendation title cannot pass gold (243.551749ms)
+✔ independent false evidence-ready assertion cannot pass coverage gold (235.993661ms)
+✔ independent coherent draft for another result cannot pass current selection correlation (233.294287ms)
+✔ independent malformed public response cannot become a passing row (235.614045ms)
+✔ independent refusal wrong outcome cannot pass P05 (235.281205ms)
+✔ independent revoked-session source read contradicts P06 even if HTTP refusal is correct (231.698603ms)
+✔ independent wrong mode refuses before acquiring any demo (0.446311ms)
+✔ independent stats failure must still close the acquired session and continue denominator (219.165991ms)
+✔ independent parked cleanup handler is bounded and cannot erase later cases (1235.294699ms)
+✔ independent parked cleanup response body is bounded as well as handler (1242.877889ms)
+✔ independent CLI help and invalid args do not alter environment or launch the graph (1.258943ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8236.810284

@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "--test-name-pattern=parked cleanup response body|CLI help",
+    "evals/action-followthrough/local-baseline/baseline-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-pilot-baseline-review-20261013",
+  "sourceHead": "245a221e4ef89b2bdfcd5ff88f00cb727484ce7a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:36:30.939216+00:00",
+  "durationSeconds": 4.837,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 478758,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.stdout.bin",
+      "bytes": 1040,
+      "sha256": "4de0591f54ba34f888dbe241dba3aad4d56f3c19fceb8421178ca7dcfd1a087e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New separate cleanup-body and CLI controls against unchanged initial candidate; prior2failures retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

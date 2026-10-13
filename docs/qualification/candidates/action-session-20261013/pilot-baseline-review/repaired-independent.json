@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "evals/action-followthrough/local-baseline/baseline-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-pilot-baseline-review-20261013",
+  "sourceHead": "3adcdf804975d1e4d9d6355b2f7bcf9f12ea6784",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:37:27.411026+00:00",
+  "durationSeconds": 8.296,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 479444,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.stdout.bin",
+      "bytes": 1705,
+      "sha256": "760f28daea2c9b8f034956fa40a09fc8f1d177f41deff1504ed9359fe6acbe57"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Replay unchanged17 independent controls after exact cleanup repair; initial3 cleanup failures retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
