@@ -81,3 +81,11 @@ test('workbook CLI malformed arguments refuse before graph and output allocation
  }
  assert.equal(process.env.MERI_REVIEW_SOURCE_ROOT,before);
 });
+test('canonical 120-character Excel title releases its 125-character filename',async t=>{
+ const a=await setup(t);const request=workbook();request.title='A'.repeat(120);
+ const result=await good(await a.post('create',{deliveryId:'max-title',request}));
+ assert.equal(result.version.filename,'A'.repeat(120)+'.xlsx');
+ assert.equal(result.version.filename.length,125);
+ assert.equal((await a.post('download',{versionId:result.version.versionId})).status,200);
+ assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);
+});
