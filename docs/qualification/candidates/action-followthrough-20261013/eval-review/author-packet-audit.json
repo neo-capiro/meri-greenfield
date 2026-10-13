@@ -1,0 +1,149 @@
+{
+  "verdict": "ACCEPT_METADATA",
+  "packet": "747bb13191b3ba4c272f03cb3c6bd818a47a2a60",
+  "tree": "e8c4a752afafb9c3910fea11adf1398406d92076",
+  "source": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+  "manifestSha256": "9ed422ad6c7cd546d88e11d5966c4b67fafe029afcdf233fb6503946ee3559a1",
+  "members": 23,
+  "checks": [
+    {
+      "check": "exact independently received manifest identity",
+      "passed": true
+    },
+    {
+      "check": "manifest binds accepted source",
+      "passed": true
+    },
+    {
+      "check": "exact unique23 members",
+      "passed": true
+    },
+    {
+      "check": "member docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-EVAL-20261013.md",
+      "passed": true
+    },
+    {
+      "check": "member docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-EVAL-20261013.md",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/final.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/final.stderr.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/final.stdout.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/focused.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/focused.stderr.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/focused.stdout.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/initial-capture-limit.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/initial-tool-output.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/proxy-repaired.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/proxy-repaired.stderr.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/proxy-repaired.stdout.txt",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/repair.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/run-focused.py",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/action-followthrough-20261013/eval-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "check": "member evals/task-lookup/execution/README.md",
+      "passed": true
+    },
+    {
+      "check": "member evals/task-lookup/execution/admission.mjs",
+      "passed": true
+    },
+    {
+      "check": "member evals/task-lookup/execution/execute.mjs",
+      "passed": true
+    },
+    {
+      "check": "member evals/task-lookup/execution/test/execution.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "member evals/task-lookup/execution/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "check": "reviewed source/test unchanged admission.mjs",
+      "passed": true
+    },
+    {
+      "check": "reviewed source/test unchanged execute.mjs",
+      "passed": true
+    },
+    {
+      "check": "reviewed source/test unchanged test/execution.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "reviewed source/test unchanged test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "check": "packet changes only own documentation/evidence",
+      "passed": true
+    },
+    {
+      "check": "source qualification false",
+      "passed": true
+    },
+    {
+      "check": "report retains real0 and original failure",
+      "passed": true
+    },
+    {
+      "check": "initial tool-output-only limit disclosed",
+      "passed": true
+    }
+  ],
+  "passed": 34,
+  "failed": 0,
+  "noBehaviorReplay": true
+}
