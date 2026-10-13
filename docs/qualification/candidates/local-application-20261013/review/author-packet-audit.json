@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "authorPacket": "e1c3cbd6955f8fdc5455aaf7ae38958fe464e2d8",
+  "source": "fc76ac68f8e2b2b0de6f214326a7f67b9a7ef661",
+  "manifestSha256": "89fd6f8ada390c62cf649745a4ec0114f0b900358a343cae85ef185486b6a28f",
+  "membersVerified": 27,
+  "sourceDeltaAfterFreeze": [
+    "apps/control/action-host/local-integration/README.md"
+  ]
+}

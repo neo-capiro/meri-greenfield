@@ -1,0 +1,87 @@
+{
+  "decision": "PASS",
+  "base": "334890d930fbdb209044c30ff552409bcb86240e",
+  "source": "fc76ac68f8e2b2b0de6f214326a7f67b9a7ef661",
+  "baseEntries": 10854,
+  "unchangedBaseEntries": 10852,
+  "onlyChangedExisting": [
+    "apps/control/action-host/local/recovery.mjs",
+    "apps/gateway/local-action/gateway.mjs"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-host/local-integration/case.mjs",
+      "bytes": 5070,
+      "sha256": "27611e0437da119f234dcb9d5efceee2a0dc2279b6e794fa235221770adca527"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/local.test.mjs",
+      "bytes": 2426,
+      "sha256": "97bce5805202e5aa0576ca88803028997d22c25b3491a541db585ba84ee143fd"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "bytes": 7932,
+      "sha256": "3dc9b0231738e95f9153c7c281ba9804ea15009c0d92df797e82d82bf1e9e41e"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/run.mjs",
+      "bytes": 4044,
+      "sha256": "90261757e965b28ad7d809b41a99bca20c802f1d03e3b997f9743dfad57193d1"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/state.mjs",
+      "bytes": 4533,
+      "sha256": "7c5a4ddcd75859a1fb16a19e24c058917d858fd312c816ad59918390bb251d98"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/test-pool.mjs",
+      "bytes": 2743,
+      "sha256": "df95268c969877ef7e5fe20f2d5ee2365ee0887b1617fd9523eaa859dbed3d97"
+    },
+    {
+      "path": "apps/control/action-host/local/recovery.mjs",
+      "bytes": 5917,
+      "sha256": "17a6a701933c611dac3cb33c3a1d41c46f4dae772842109d44219e4766d9521d"
+    },
+    {
+      "path": "apps/gateway/local-action/gateway.mjs",
+      "bytes": 4005,
+      "sha256": "60e72324425ee40cee48ad19b0cd2760f5edcb09d56d2d822e97da941bda937e"
+    }
+  ],
+  "captures": [
+    {
+      "label": "initial-controls",
+      "exitCode": 1,
+      "group": 470078,
+      "freshAbsent": true
+    },
+    {
+      "label": "coherent-controls",
+      "exitCode": 0,
+      "group": 471484,
+      "freshAbsent": true
+    },
+    {
+      "label": "direct-readback-before",
+      "exitCode": 1,
+      "group": 472309,
+      "freshAbsent": true
+    },
+    {
+      "label": "original-parked-callbacks",
+      "exitCode": 0,
+      "group": 472486,
+      "freshAbsent": true
+    },
+    {
+      "label": "final-source",
+      "exitCode": 0,
+      "group": 472692,
+      "freshAbsent": true
+    }
+  ],
+  "nativeEngineExecuted": false,
+  "scope": "SOURCE_ONLY; existing inert SQL boundaries and loopback HTTP"
+}

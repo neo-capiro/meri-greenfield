@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/local-integration/allocation-independent.test.mjs",
+    "apps/control/action-host/local-integration/recovery-independent.test.mjs",
+    "apps/control/action-host/local-integration/application-independent.test.mjs",
+    "apps/control/action-host/local-integration/local.test.mjs",
+    "apps/control/action-host/local/local.test.mjs",
+    "apps/gateway/local-action/test/gateway-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-review-20261013",
+  "sourceHead": "63da45b97ba7551abeca6a105d53c0ea54833f8e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:12:26.438193+00:00",
+  "durationSeconds": 7.895,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 472692,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/final-source.stdout.bin",
+      "bytes": 3605,
+      "sha256": "4707b43ab81debbc5edeeebf7eac7b03de64ef50c7b3acb220576cea16ba0a02"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/final-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

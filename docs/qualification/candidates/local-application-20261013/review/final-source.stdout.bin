@@ -1,0 +1,40 @@
+✔ independent shared allocation: read executes through actual owned budget while command stays inaccessible actions.query (103.494929ms)
+✔ independent shared allocation: read executes through actual owned budget while command stays inaccessible create_task (43.632278ms)
+✔ independent shared allocation refuses command only (25.100035ms)
+✔ independent shared allocation refuses extra operation (14.352812ms)
+✔ independent shared allocation refuses wrong command version (14.907855ms)
+✔ independent shared allocation refuses different second operation (10.486361ms)
+✔ independent shared allocation refuses duplicate read (7.151909ms)
+✔ independent shared ledger: exact pending proposal, one charge per effect, fresh-pool retained replay and revocation over HTTP/public receiver (426.8583ms)
+✔ independent runner refuses borrowed initial pool returned as fresh without disposing it (122.410028ms)
+✔ independent runner closes owned fresh pool when asynchronous graph construction rejects (122.490603ms)
+✔ independent runner bounds late fresh-pool acquisition and eventually closes the owned arrival (845.81929ms)
+✔ independent runner original cutoff bounds final accounting connect without late queries or false success (1049.954391ms)
+✔ independent direct readback: original cutoff after parked budget lock prevents new clock/read SQL (110.6617ms)
+✔ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (421.218303ms)
+✔ lost setup acknowledgement is terminal and exposes only owned identifiers (5.466476ms)
+✔ committed seed with lost acknowledgement remains terminal and never reseeds (8.777322ms)
+✔ independent async graph: query refusal closes listener then owned graph once (53.218666ms)
+✔ independent async graph: invalid graph credential still closes acquired ownership (0.917859ms)
+✔ independent async graph: total cutoff refuses parked acquisition and closes late graph exactly once (61.230487ms)
+✔ independent async graph: rejected acquisition starts no listener or approval (0.969507ms)
+✔ independent async graph: cleanup failure is surfaced and borrowed application is not disposed (9.023632ms)
+✔ independent async graph: uncooperative cleanup cannot park caller forever (1008.737749ms)
+✔ actual three host recovery keeps same proposal and accounting across reconstruction (364.616034ms)
+✔ help and invalid arguments are inert and closed (0.447242ms)
+✔ local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read (122.504719ms)
+✔ local gateway independent: narrowing client after real source acquisition blocks release and result retention (29.371061ms)
+✔ local gateway independent: narrowing grants after real source acquisition blocks release and result retention (27.562783ms)
+✔ local gateway independent: narrowing sources after real source acquisition blocks release and result retention (23.443062ms)
+✔ local gateway independent: local capability cannot override canonical durable grant revocation (14.805942ms)
+✔ local gateway independent: historical result survives exact task replacement but requires newly issued current credential (45.38618ms)
+✔ local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch (24.551047ms)
+✔ local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports (8.169398ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7831.726248
