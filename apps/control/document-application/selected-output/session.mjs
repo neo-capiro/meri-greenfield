@@ -16,6 +16,8 @@ export async function openOutputSession(c,source,signal){
    authority:{async check(call){projection.guard(call.input);await fresh('effect');const result=await authority.check.call(authority,call);await fresh('effect');return result;}},
    async authorize(call){await fresh('effect');const result=await authorize.call(options.artifactOptions,call);await fresh('effect');return result;}}});
   const send=async(route,body)=>{await fresh('effect');return life.run(signal=>app.handle(new Request('https://meri.invalid/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+sessionCredential,'content-type':'application/json'},body:JSON.stringify(body),signal})));};
-  return {life,receipt,projection,send,fresh,close:life.close};
+  const versionPort=options.artifactOptions.versions,versionMethods=own(versionPort,['read','commit']);if(typeof versionMethods.read!=='function')fail('SELECTED_OUTPUT_READ');
+  const readVersion=async versionId=>{await fresh('effect');const record=data(await life.run(signal=>versionMethods.read.call(versionPort,versionId,signal)));await fresh('release');return record;};
+  return {life,receipt,projection,send,fresh,readVersion,close:life.close};
  }catch(error){life.close();throw error;}
 }
