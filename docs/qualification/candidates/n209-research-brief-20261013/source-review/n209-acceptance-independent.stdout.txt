@@ -1,0 +1,364 @@
+TAP version 13
+# Subtest: independent source IDs, exact Unicode passage bytes and honest claim/coverage semantics
+ok 1 - independent source IDs, exact Unicode passage bytes and honest claim/coverage semantics
+  ---
+  duration_ms: 32.83216
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign actor
+ok 2 - independent refusal: foreign actor
+  ---
+  duration_ms: 3.893785
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign tenant
+ok 3 - independent refusal: foreign tenant
+  ---
+  duration_ms: 3.381256
+  type: 'test'
+  ...
+# Subtest: independent refusal: other run
+ok 4 - independent refusal: other run
+  ---
+  duration_ms: 3.507563
+  type: 'test'
+  ...
+# Subtest: independent refusal: other attempt
+ok 5 - independent refusal: other attempt
+  ---
+  duration_ms: 3.358252
+  type: 'test'
+  ...
+# Subtest: independent refusal: other fence
+ok 6 - independent refusal: other fence
+  ---
+  duration_ms: 3.443449
+  type: 'test'
+  ...
+# Subtest: independent refusal: changed selector
+ok 7 - independent refusal: changed selector
+  ---
+  duration_ms: 3.362729
+  type: 'test'
+  ...
+# Subtest: independent refusal: source operation
+ok 8 - independent refusal: source operation
+  ---
+  duration_ms: 7.352095
+  type: 'test'
+  ...
+# Subtest: independent refusal: source identity
+ok 9 - independent refusal: source identity
+  ---
+  duration_ms: 3.454044
+  type: 'test'
+  ...
+# Subtest: independent refusal: authorization decision
+ok 10 - independent refusal: authorization decision
+  ---
+  duration_ms: 3.528214
+  type: 'test'
+  ...
+# Subtest: independent refusal: source version
+ok 11 - independent refusal: source version
+  ---
+  duration_ms: 3.288149
+  type: 'test'
+  ...
+# Subtest: independent refusal: record identity
+ok 12 - independent refusal: record identity
+  ---
+  duration_ms: 3.456487
+  type: 'test'
+  ...
+# Subtest: independent refusal: raw text with retained hash
+ok 13 - independent refusal: raw text with retained hash
+  ---
+  duration_ms: 3.325273
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof hash
+ok 14 - independent refusal: proof hash
+  ---
+  duration_ms: 3.153108
+  type: 'test'
+  ...
+# Subtest: independent refusal: record hash
+ok 15 - independent refusal: record hash
+  ---
+  duration_ms: 3.314648
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign evidence scope
+ok 16 - independent refusal: foreign evidence scope
+  ---
+  duration_ms: 3.232617
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign client subject
+ok 17 - independent refusal: foreign client subject
+  ---
+  duration_ms: 3.096935
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof observed time
+ok 18 - independent refusal: proof observed time
+  ---
+  duration_ms: 3.216392
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof update later than observed
+ok 19 - independent refusal: proof update later than observed
+  ---
+  duration_ms: 3.288869
+  type: 'test'
+  ...
+# Subtest: independent refusal: future retrieval
+ok 20 - independent refusal: future retrieval
+  ---
+  duration_ms: 3.380215
+  type: 'test'
+  ...
+# Subtest: independent refusal: missing citation proof
+ok 21 - independent refusal: missing citation proof
+  ---
+  duration_ms: 3.996226
+  type: 'test'
+  ...
+# Subtest: independent refusal: extra citation proof
+ok 22 - independent refusal: extra citation proof
+  ---
+  duration_ms: 6.809542
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace congress
+ok 23 - exact subject read filter cannot omit or replace congress
+  ---
+  duration_ms: 7.357904
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace session
+ok 24 - exact subject read filter cannot omit or replace session
+  ---
+  duration_ms: 6.96334
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace billId
+ok 25 - exact subject read filter cannot omit or replace billId
+  ---
+  duration_ms: 9.251718
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace billVersion
+ok 26 - exact subject read filter cannot omit or replace billVersion
+  ---
+  duration_ms: 11.158821
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace fiscalYear
+ok 27 - exact subject read filter cannot omit or replace fiscalYear
+  ---
+  duration_ms: 10.014317
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace budgetStage
+ok 28 - exact subject read filter cannot omit or replace budgetStage
+  ---
+  duration_ms: 7.565451
+  type: 'test'
+  ...
+# Subtest: canonical candidate envelope cannot serve as a decisive full read
+ok 29 - canonical candidate envelope cannot serve as a decisive full read
+  ---
+  duration_ms: 5.705186
+  type: 'test'
+  ...
+# Subtest: partial/stale coverage remains visible and never changes free-form verification
+ok 30 - partial/stale coverage remains visible and never changes free-form verification
+  ---
+  duration_ms: 13.011755
+  type: 'test'
+  ...
+# Subtest: decisive subject filters cannot contain contradictory exact-version assertions
+ok 31 - decisive subject filters cannot contain contradictory exact-version assertions
+  ---
+  duration_ms: 4.813607
+  type: 'test'
+  ...
+# Subtest: missing immutable citation version and false excerpt keep explicit negative statuses
+ok 32 - missing immutable citation version and false excerpt keep explicit negative statuses
+  ---
+  duration_ms: 16.471286
+  type: 'test'
+  ...
+# Subtest: untrusted input getter and Proxy execute no traps
+ok 33 - untrusted input getter and Proxy execute no traps
+  ---
+  duration_ms: 5.434687
+  type: 'test'
+  ...
+# Subtest: recipe/prose/catalog pins and future as-of refuse before source dispatch
+ok 34 - recipe/prose/catalog pins and future as-of refuse before source dispatch
+  ---
+  duration_ms: 29.830326
+  type: 'test'
+  ...
+# Subtest: prepared guard captures immutable authority context and exact full request identity
+ok 35 - prepared guard captures immutable authority context and exact full request identity
+  ---
+  duration_ms: 6.752618
+  type: 'test'
+  ...
+# Subtest: preabort and parked source cancellation release no prepared result or subsequent reads
+ok 36 - preabort and parked source cancellation release no prepared result or subsequent reads
+  ---
+  duration_ms: 4.269482
+  type: 'test'
+  ...
+# Subtest: private binder preserves the original borrowed authority receiver and call resource
+ok 37 - private binder preserves the original borrowed authority receiver and call resource
+  ---
+  duration_ms: 6.120832
+  type: 'test'
+  ...
+# Subtest: private binder must pin context digest even if returned prepared context mutates after binding
+ok 38 - private binder must pin context digest even if returned prepared context mutates after binding
+  ---
+  duration_ms: 6.020473
+  type: 'test'
+  ...
+# Subtest: private binder refuses authority accessor or Proxy without invoking getter/traps
+ok 39 - private binder refuses authority accessor or Proxy without invoking getter/traps
+  ---
+  duration_ms: 5.287799
+  type: 'test'
+  ...
+# Subtest: private binder captures borrowed check while retaining owner fields and original revocation
+ok 40 - private binder captures borrowed check while retaining owner fields and original revocation
+  ---
+  duration_ms: 6.349811
+  type: 'test'
+  ...
+# Subtest: private binder denies changed request context base and hostile intent before any policy effect
+ok 41 - private binder denies changed request context base and hostile intent before any policy effect
+  ---
+  duration_ms: 10.62459
+  type: 'test'
+  ...
+# Subtest: private binder preserves inert configuration admission before reading or spreading outer ports
+ok 42 - private binder preserves inert configuration admission before reading or spreading outer ports
+  ---
+  duration_ms: 6.451522
+  type: 'test'
+  ...
+# Subtest: independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup
+ok 43 - independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup
+  ---
+  duration_ms: 607.251236
+  type: 'test'
+  ...
+# Subtest: decisive reads bind exact excerpts, preserve bases, disclose missing/conflicting evidence and keep cited prose unverified
+ok 44 - decisive reads bind exact excerpts, preserve bases, disclose missing/conflicting evidence and keep cited prose unverified
+  ---
+  duration_ms: 27.160793
+  type: 'test'
+  ...
+# Subtest: free-form text equal to cited quote stays unverified
+ok 45 - free-form text equal to cited quote stays unverified
+  ---
+  duration_ms: 6.36148
+  type: 'test'
+  ...
+# Subtest: quote differs
+ok 46 - quote differs
+  ---
+  duration_ms: 5.846359
+  type: 'test'
+  ...
+# Subtest: wrong source version
+ok 47 - wrong source version
+  ---
+  duration_ms: 5.142176
+  type: 'test'
+  ...
+# Subtest: out-of-range passage
+ok 48 - out-of-range passage
+  ---
+  duration_ms: 5.200729
+  type: 'test'
+  ...
+# Subtest: refuse altered source hash
+ok 49 - refuse altered source hash
+  ---
+  duration_ms: 3.469359
+  type: 'test'
+  ...
+# Subtest: refuse foreign tenant
+ok 50 - refuse foreign tenant
+  ---
+  duration_ms: 6.321566
+  type: 'test'
+  ...
+# Subtest: refuse wrong selector hash
+ok 51 - refuse wrong selector hash
+  ---
+  duration_ms: 3.099791
+  type: 'test'
+  ...
+# Subtest: refuse wrong source scope
+ok 52 - refuse wrong source scope
+  ---
+  duration_ms: 3.299238
+  type: 'test'
+  ...
+# Subtest: refuse source version substitution
+ok 53 - refuse source version substitution
+  ---
+  duration_ms: 3.263362
+  type: 'test'
+  ...
+# Subtest: refuse candidate snippet
+ok 54 - refuse candidate snippet
+  ---
+  duration_ms: 3.084676
+  type: 'test'
+  ...
+# Subtest: refuse Congress/session filter substitution
+ok 55 - refuse Congress/session filter substitution
+  ---
+  duration_ms: 3.024411
+  type: 'test'
+  ...
+# Subtest: stale source remains a stale bound excerpt
+ok 56 - stale source remains a stale bound excerpt
+  ---
+  duration_ms: 5.319549
+  type: 'test'
+  ...
+# Subtest: wrong immutable recipe/version and changed budget/legislative basis are refused
+ok 57 - wrong immutable recipe/version and changed budget/legislative basis are refused
+  ---
+  duration_ms: 12.189309
+  type: 'test'
+  ...
+# Subtest: parked source read is bounded; cancelled preparation returns no prepared request
+ok 58 - parked source read is bounded; cancelled preparation returns no prepared request
+  ---
+  duration_ms: 4.385591
+  type: 'test'
+  ...
+# Subtest: actual canonical routes guard approved full request, retain original and revise exact selected DOCX base
+ok 59 - actual canonical routes guard approved full request, retain original and revise exact selected DOCX base
+  ---
+  duration_ms: 387.38105
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4926.989207

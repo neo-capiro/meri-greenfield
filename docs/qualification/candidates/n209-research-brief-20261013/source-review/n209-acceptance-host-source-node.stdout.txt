@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: IPv4 proper host projection installs and reconstructs with separate loopback dial
+ok 1 - IPv4 proper host projection installs and reconstructs with separate loopback dial
+  ---
+  duration_ms: 33.657982
+  type: 'test'
+  ...
+# Subtest: IPv4 masked or foreign observed address 192.0.2.41/32 refuses before DDL
+ok 2 - IPv4 masked or foreign observed address 192.0.2.41/32 refuses before DDL
+  ---
+  duration_ms: 4.950145
+  type: 'test'
+  ...
+# Subtest: IPv4 masked or foreign observed address 192.0.2.42 refuses before DDL
+ok 3 - IPv4 masked or foreign observed address 192.0.2.42 refuses before DDL
+  ---
+  duration_ms: 2.357672
+  type: 'test'
+  ...
+# Subtest: IPv4 caller cannot put a mask into the strict server address descriptor
+ok 4 - IPv4 caller cannot put a mask into the strict server address descriptor
+  ---
+  duration_ms: 2.275375
+  type: 'test'
+  ...
+# Subtest: IPv6 proper host projection installs and reconstructs with separate loopback dial
+ok 5 - IPv6 proper host projection installs and reconstructs with separate loopback dial
+  ---
+  duration_ms: 36.901651
+  type: 'test'
+  ...
+# Subtest: IPv6 masked or foreign observed address 2001:db8::41/128 refuses before DDL
+ok 6 - IPv6 masked or foreign observed address 2001:db8::41/128 refuses before DDL
+  ---
+  duration_ms: 3.014604
+  type: 'test'
+  ...
+# Subtest: IPv6 masked or foreign observed address 2001:db8::42 refuses before DDL
+ok 7 - IPv6 masked or foreign observed address 2001:db8::42 refuses before DDL
+  ---
+  duration_ms: 2.420984
+  type: 'test'
+  ...
+# Subtest: IPv6 caller cannot put a mask into the strict server address descriptor
+ok 8 - IPv6 caller cannot put a mask into the strict server address descriptor
+  ---
+  duration_ms: 0.400623
+  type: 'test'
+  ...
+# Subtest: native identity projection retains qualified host semantics: apps/control/qualified-application/schema.mjs
+ok 9 - native identity projection retains qualified host semantics: apps/control/qualified-application/schema.mjs
+  ---
+  duration_ms: 1.937339
+  type: 'test'
+  ...
+# Subtest: native identity projection retains qualified host semantics: apps/proxy/qualification/assembly/lifecycle.py
+ok 10 - native identity projection retains qualified host semantics: apps/proxy/qualification/assembly/lifecycle.py
+  ---
+  duration_ms: 1.306535
+  type: 'test'
+  ...
+# Subtest: native identity projection retains qualified host semantics: apps/gateway/test/postgres-budget-native-fixture.mjs
+ok 11 - native identity projection retains qualified host semantics: apps/gateway/test/postgres-budget-native-fixture.mjs
+  ---
+  duration_ms: 1.400854
+  type: 'test'
+  ...
+# Subtest: native identity projection retains qualified host semantics: apps/control/task-lookup/local-integration/fixture-checks.mjs
+ok 12 - native identity projection retains qualified host semantics: apps/control/task-lookup/local-integration/fixture-checks.mjs
+  ---
+  duration_ms: 1.050345
+  type: 'test'
+  ...
+# Subtest: direct loopback profile verifies a plain host result using qualified PostgreSQL projection
+ok 13 - direct loopback profile verifies a plain host result using qualified PostgreSQL projection
+  ---
+  duration_ms: 1.98597
+  type: 'test'
+  ...
+# Subtest: direct profile retains refusal for addr mismatch
+ok 14 - direct profile retains refusal for addr mismatch
+  ---
+  duration_ms: 2.034803
+  type: 'test'
+  ...
+# Subtest: direct profile retains refusal for addr mismatch
+ok 15 - direct profile retains refusal for addr mismatch
+  ---
+  duration_ms: 0.382066
+  type: 'test'
+  ...
+# Subtest: direct profile retains refusal for port mismatch
+ok 16 - direct profile retains refusal for port mismatch
+  ---
+  duration_ms: 0.284522
+  type: 'test'
+  ...
+# Subtest: direct profile retains refusal for system mismatch
+ok 17 - direct profile retains refusal for system mismatch
+  ---
+  duration_ms: 0.257392
+  type: 'test'
+  ...
+# Subtest: direct profile retains refusal for fsync mismatch
+ok 18 - direct profile retains refusal for fsync mismatch
+  ---
+  duration_ms: 0.271973
+  type: 'test'
+  ...
+# Subtest: direct profile retains refusal for sync mismatch
+ok 19 - direct profile retains refusal for sync mismatch
+  ---
+  duration_ms: 0.277811
+  type: 'test'
+  ...
+# Subtest: direct-profile caller still cannot widen loopback admission to IPv6
+ok 20 - direct-profile caller still cannot widen loopback admission to IPv6
+  ---
+  duration_ms: 0.230441
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 243.690174

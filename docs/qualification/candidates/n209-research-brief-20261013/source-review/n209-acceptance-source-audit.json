@@ -1,0 +1,137 @@
+{
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "tree": "bc288d53ce03e926833a26366e53216837f4fa2b",
+  "parents": [
+    "ac721b611fe0a0f5cdce9b97dd793918d1a6f25e",
+    "a72d130b26d39c99d9d87a524795cee15aca8efc"
+  ],
+  "PR57": {
+    "commit": "a72d130b26d39c99d9d87a524795cee15aca8efc",
+    "tree": "db5b487efb8dcea775208a4dc455f32f4fcd4bf5"
+  },
+  "publicAndMappedOwnersExact": {
+    "packages/contracts": true,
+    "apps/control/document-application/current.mjs": true,
+    "apps/control/document-application/index.mjs": true
+  },
+  "reviewedN209Production": [
+    {
+      "path": "apps/control/document-application/research-brief/input.mjs",
+      "blob": "6fa0247d64054008669f685ff162f8673950626c",
+      "sha256": "cae958dc640990aecba93700e35d525a798d37aa47e60c124d0003db6bc4b4ba",
+      "bytes": 2808,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/evidence.mjs",
+      "blob": "5666a411b5f2e45e1e3a0979759819450df18c04",
+      "sha256": "715bfeb5120672685c6e8beec85e4a1c76e97ef53f91e583c38b7af9a297cdde",
+      "bytes": 3853,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/compose.mjs",
+      "blob": "fb1b1fdd72566ad7723e2a6ff65dd39ff21471d6",
+      "sha256": "4c9bc22bfb88331717ca963a810137cfbd4e5f83c843b78833aa7d4e70300240",
+      "bytes": 7775,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/skill.mjs",
+      "blob": "65f31328101652ed9ac931fe873bdeb94282d2f3",
+      "sha256": "b2b6fd4420507d551d77f2dc7485ddfc75255821576138e54b26715e10bbfad2",
+      "bytes": 1516,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/binding.mjs",
+      "blob": "a6006de5cf81edaa0c19409b0e422260bbf9fc2d",
+      "sha256": "660abc82c010838f9b229b8581a12bfed1f4c3d36569b4944b45a501fa0a74b2",
+      "bytes": 1960,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/manifest.json",
+      "blob": "71f70b0d804168d543ff46f2aee6ec7b403ee0ba",
+      "sha256": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
+      "bytes": 2375,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/SKILL.md",
+      "blob": "41617dfdd9a6c37af4071d75838b2a3fc00aa721",
+      "sha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+      "bytes": 2206,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "blob": "68f71beae0dfdf413a4ad86eb251020d54cd7106",
+      "sha256": "f4189022c13e9a598eeaf66c63a5969f524ead8bb58a02482ada74f3cc600d41",
+      "bytes": 7324,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/control/document-application/local/mount.mjs",
+      "blob": "b8b4f6a7d9a91a3f4971eb0ba70859c7ad67a5e3",
+      "sha256": "ff665a84ab8ab0c744e0bc698b2903f568ec38fbd62d9db77c7409691072b085",
+      "bytes": 1272,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/artifacts/python/entry.py",
+      "blob": "5aaa397d14874fc5a7a5caee700dbeb6525cf534",
+      "sha256": "fa8d1ef53d6d0004258d193707c188c62dff2f08b01ac8ddcd26d0dc83b02017",
+      "bytes": 3565,
+      "unchangedByPR57Composition": true
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "blob": "1cc895587801085ad3e794b0d18f8a2d238a13a0",
+      "sha256": "8826a11aa25828515caa829dcde3a4dcdef757027bbf10373e0af43d543ad1b3",
+      "bytes": 7693,
+      "unchangedByPR57Composition": true
+    }
+  ],
+  "reviewedPR57Source": [
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "blob": "df698f88da622488dbbf816a6542a522cbab61b0",
+      "sha256": "4efb9734fdeaf92b71ab089e8ad5f2eb82ef6950e6d9c6b42014d26140c3d29a",
+      "bytes": 9052,
+      "exactPR57": true
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "blob": "0bb688174224affa47b7a0d3c4fc11b602781a80",
+      "sha256": "1e954d4c2bb7a95589fc1f9d7ad82621da8b0850d473fa80e9768591a8c04d65",
+      "bytes": 10029,
+      "exactPR57": true
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "blob": "d1deac394600b399b27fbd0f76f093bcd8d4d7d9",
+      "sha256": "e031959b45ba01cadeffc603d5e75dda9f1624ce9b6a4aa484484efe32bb0ae4",
+      "bytes": 10071,
+      "exactPR57": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "blob": "781381655eb3d007f827ad0c3043ea05d71d15c8",
+      "sha256": "33cb54abace6c5f564d937b97f9b26415565031f6ea20787dea72f333a9aae09",
+      "bytes": 5367,
+      "exactPR57": true
+    }
+  ],
+  "PR57CompositionSourcePaths": [
+    "apps/control/qualified-application/schema-host-address.test.mjs",
+    "apps/control/qualified-application/schema.mjs",
+    "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+    "apps/gateway/test/postgres-budget-host-address.test.mjs",
+    "apps/gateway/test/postgres-budget-native-fixture.mjs",
+    "apps/proxy/qualification/assembly/lifecycle.py",
+    "apps/proxy/qualification/assembly/test_host_address.py"
+  ],
+  "nativeDatabaseAccess": false,
+  "nativeRuntimeAccepted": false
+}

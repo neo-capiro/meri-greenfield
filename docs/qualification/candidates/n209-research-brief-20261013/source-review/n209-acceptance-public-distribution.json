@@ -1,0 +1,27 @@
+{
+  "label": "n209-acceptance-public-distribution",
+  "argv": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 3.335,
+  "processReaped": true,
+  "stdoutBytes": 6760,
+  "stderrBytes": 832,
+  "stdoutSha256": "d6a843c86ad011fc8bf87481011f34875de6a770ffb4a79017f20f1765769864",
+  "stderrSha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

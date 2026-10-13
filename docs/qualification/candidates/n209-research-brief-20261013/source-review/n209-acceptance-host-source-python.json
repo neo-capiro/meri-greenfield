@@ -1,0 +1,26 @@
+{
+  "label": "n209-acceptance-host-source-python",
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "apps.proxy.qualification.assembly.test_host_address"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 0.079,
+  "processReaped": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 102,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "d094b1bd2c8318c96097f80c50da282add5b2972970a77046de8db6c8935f6ca",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}
