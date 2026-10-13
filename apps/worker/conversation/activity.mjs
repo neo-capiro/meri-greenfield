@@ -21,7 +21,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
   try{preparation=createOperationLifetime({deadlineMs:now()+3000,now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
    const prepareStarted=now();if(saved.continuation&&lifecycle===undefined)throw fault('CONTINUATION_UNAVAILABLE');
    const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,
-    ...(saved.continuation?{continuation:saved.continuation,sourceRequest:saved.sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),signal}));
+    ...(saved.continuation?{continuation:saved.continuation,sourceRequest:saved.sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),runtimeSignal:controller.signal,signal}));
    life=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
    await publish('run.status',{state:'starting',reasonCode:null});claimed=true;if(!same(runtime.binding,binding)||!same(runtime.versions,saved.run.versions))throw fault('RUNTIME_PIN_REFUSED');
