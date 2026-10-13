@@ -1,0 +1,159 @@
+{
+  "sourceEvidenceFreeze": "795ad9652473547a0806a716797a6f207299ad28",
+  "sourceEvidenceTree": "b32813c6cd7a7dc8bc0745970a183a3d2986097c",
+  "sourceAcceptance": "ACCEPT_SOURCE",
+  "runtimeAcceptance": "HOLD",
+  "nativeQualified": false,
+  "members": [
+    {
+      "path": "apps/control/qualified-application/README.md",
+      "bytes": 5510,
+      "sha256": "1a38843fada29c8996a10ca6f26bdb27cea024f720caaf518f239f3ef1b04c72"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-QUALIFIED-ASSEMBLY-INTEGRATION-20261013.md",
+      "bytes": 5603,
+      "sha256": "a0cddb89521262abfac2119757d7ea5c59d3a053786b4ec45e7ff937facd37bd"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-QUALIFIED-NATIVE-FIXTURE-REQUEST-20261013.md",
+      "bytes": 4831,
+      "sha256": "1d862a43aa64d5322be5582f85b2a0fc562f21d17b96e3c480210f6c2e173915"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-QUALIFIED-ASSEMBLY-20261013.md",
+      "bytes": 3297,
+      "sha256": "8605fad6bcfb9388530ec03890641ba5136bc8af4de9029f55523ff673d3c1a6"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/audit.json",
+      "bytes": 26644,
+      "sha256": "d7d5a1a7ed86d20abe53ebdb46e6ae20fe82b0678496db61f4f1d7fa1e9f3279"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/audit.py",
+      "bytes": 4363,
+      "sha256": "a2732c3e1a90e2b264b88ce8c352cffe970e09d97a378509e23d6af1732423cf"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/audit.stdout.txt",
+      "bytes": 1197,
+      "sha256": "e49be753f3832dade3f1cde0053861b242ec01a27a85b6dc5e84841f94dad075"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/cleanup.json",
+      "bytes": 645,
+      "sha256": "3f1dff49e5b7d7080c2e3ace1ce3128504980ac75343bd224e0f87b0045a81c0"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-node.json",
+      "bytes": 4511,
+      "sha256": "27b73e4a942addb7e2f341fe7c85c77699e236a520dc0c1a64cad75b7f49941e"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-node.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-node.stdout.bin",
+      "bytes": 80631,
+      "sha256": "4e9d89727f3e563c0193fa51ce1f56ca8efc20d68e9aa42b9c20e39d16907c5c"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-python.json",
+      "bytes": 1300,
+      "sha256": "5bc295f63d2d97430b09e58bd1286763443c2aa4f60989e11d5eebd5f732bfc1"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-python.stderr.bin",
+      "bytes": 110,
+      "sha256": "4edfca02e999ef76ea55f4e4c72e4542227513ebe57eb669bbd30666521e4ab7"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-python.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/mount-author-1.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/mount-author-1.stdout.txt",
+      "bytes": 477,
+      "sha256": "4546914a4bdd50e4ca1b915203e7bc86c342889ff300e12b3c0cfa58851b27f0"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/mount-author-2.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/mount-author-2.stdout.txt",
+      "bytes": 477,
+      "sha256": "805c58580a2b621713cb82204eae72f9b451c57c5d4f672d7c16332ae6739ed9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression-rerun.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression-rerun.stdout.txt",
+      "bytes": 7792,
+      "sha256": "003f829c18e6595bb348ace0e03aa8ded08e9050746ef7bcedd2ad84f2749a1b"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression-rerun2.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression-rerun2.stdout.txt",
+      "bytes": 9609,
+      "sha256": "16797b1377ae2ae005657c8d7fb8e9479828d1741ab1bcc5e151990e7a8c09b0"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression.failure.json",
+      "bytes": 362,
+      "sha256": "d99e394ed115254a65be85dddaf37f8e9d7a4f2274fa0393fb0638a47d9a3a9f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/preliminary-regression.stdout.txt",
+      "bytes": 7796,
+      "sha256": "5e48730c815e7afac68d3daed0bcb23156f846ea07b794d9f8499de6c8c37978"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/qualified-tables-1.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/qualified-tables-1.stdout.txt",
+      "bytes": 20320,
+      "sha256": "9d7b5417df5d308d7eb9f449f9b58e913b6f1b197063407af90f3fcf56308a74"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/integration/source-identities.json",
+      "bytes": 9378,
+      "sha256": "99ddcc8c337a2287e303574bf0dca6f207f46d9a25affbf8aca269677fdefffe"
+    }
+  ]
+}
