@@ -1,0 +1,41 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "apps/control/qualified-application/compatibility-independent",
+    "-p",
+    "test_compatibility_independent.py",
+    "-v"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-review-20261013",
+  "sourceHead": "8dca2b8369bbc23d7bc33d959e19c8aa0bc74a84",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T06:23:06.896183+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 513562,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.stderr.bin",
+      "bytes": 19690,
+      "sha256": "6d3e571a1d343b2ffdc4fcc08db436a96ef078c9a9c21d126b216295e2c413f9"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
