@@ -1,8 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {createMailBodySection} from '../../../../../packages/contracts/retrieval-0.2/mail-utf16.mjs';
 const shaForUnicode=value=>createHash('sha256').update(Buffer.from(value)).digest('hex');
 import {createMailHistoryCompiler,admitPreparedMailHistory} from '../compose.mjs';
-import {unitContext,selected,makeInput,sourcePage,NOW,corpus,lateQuote,uid} from './fixtures.mjs';
+import {unitContext,selected,makeInput,sourcePage,NOW,corpus,lateQuote,uid,sourceVersionId} from './fixtures.mjs';
 const make=(readSource=sourcePage,limits)=>createMailHistoryCompiler({readSource,now:()=>NOW,defaultCongress:119,limits});
 const prepare=(compiler=make(),i=makeInput(),context=unitContext())=>compiler.prepare(i,context,{selection:selected(context)});
 const text=result=>result.request.content.blocks.flatMap(b=>b.runs?.map(r=>r.text)??[]).join('\n');
@@ -10,9 +11,11 @@ const text=result=>result.request.content.blocks.flatMap(b=>b.runs?.map(r=>r.tex
 test('actual canonical pages produce editable Word specification, late bound body quote and all original source coverage',async()=>{
  const result=await prepare();assert.equal(result.request.operation,'create_word');assert.equal(result.request.format,'docx');assert.equal(result.bodies[0].text,corpus);assert.equal(result.bodies[0].sections.length,2);
  assert.equal(result.quotes[0].status,'bound-source-excerpt');assert.equal(result.context.evidence[0].recordId,uid(74));assert.equal(result.provenance.collection.calls,6);
+ assert.equal(sourceVersionId,'synthetic-message-utf16-v2');assert.equal(result.context.evidence[0].sourceVersionId,sourceVersionId);assert.equal(result.quotes[0].sourceVersionId,sourceVersionId);assert(result.bodies[0].sections.every(section=>section.version===sourceVersionId));
  assert.deepEqual([...new Set(result.coverage.map(c=>c.sourceId))].sort(),['entity_candidates','mail','tenant_contacts']);
  for(const phrase of [lateQuote,'unverified interpretation','Metadata is unversioned and unverified','enumeration unknown','locator URL, not verification','snapshot unknown','connection disconnected','Original skill and immutable revision provenance'])assert(text(result).includes(phrase),phrase);
  assert(Object.isFrozen(result.context.evidence));assert.equal(result.coverage[0].verified,false);
+ for(const id of ['entity_candidates','tenant_contacts']){const cell=result.coverage.find(c=>c.sourceId===id);assert.equal(cell.authority,'derived');assert.equal(cell.generatedAt,new Date(NOW).toISOString());assert.equal(cell.freshness,'unknown');assert.equal(cell.snapshotVersionId,null);assert(text(result).includes(`Source ${id}; authority derived; supplied projection generatedAt ${cell.generatedAt} (unverified); freshness unknown; snapshot unknown.`));}
 });
 
 test('preview, unversioned or incomplete body cannot verify an excerpt',async()=>{
@@ -59,20 +62,30 @@ test('candidate page/call/body-size caps retain their exact stop reason and unve
 test('canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage',async()=>{
  const {deny}=await import('../../../../gateway/dispatch/operation-result.mjs');
  const out=await prepare(make(call=>{if(call.operation.id==='find_contacts')deny('UNAVAILABLE');return sourcePage(call);}));
- const coverage=out.coverage.find(c=>c.sourceId==='tenant_contacts');assert.equal(coverage.status,'unavailable');assert.equal(coverage.reason,'UNAVAILABLE');assert.equal(coverage.verified,false);assert(text(out).includes('tenant_contacts'));assert(text(out).includes('UNAVAILABLE'));assert.equal(out.quotes[0].status,'bound-source-excerpt');
+ const coverage=out.coverage.find(c=>c.sourceId==='tenant_contacts');assert.equal(coverage.status,'unavailable');assert.equal(coverage.reason,'UNAVAILABLE');assert.equal(coverage.verified,false);assert.equal(coverage.generatedAt,null);assert.equal(coverage.freshness,'unknown');assert.equal(coverage.snapshotVersionId,null);assert(text(out).includes('Source tenant_contacts; authority derived; supplied projection generatedAt unknown (unverified); freshness unknown; snapshot unknown.'));assert(text(out).includes('UNAVAILABLE'));assert.equal(out.quotes[0].status,'bound-source-excerpt');
 });
-function unicodeSource(full){return call=>{
+function unicodeSource(full,{malformed=false}={}){return call=>{
  const page=sourcePage(call);if(call.operation.id!=='mail.read_thread')return page;
  const row=page.messages[0],start=call.request.bodyOffset,end=Math.min(full.length,start+call.request.maxCharacters);
- row.contentSha256=shaForUnicode(full);row.section={start,endExclusive:end,totalCodeUnits:full.length,unit:'utf16-code-unit',text:full.slice(start,end),hasMore:end<full.length};page.nextBodyOffsets=end<full.length?[{messageId:row.messageId,bodyOffset:end}]:[];page.coverage.truncated=end<full.length;return page;
+ row.contentSha256=shaForUnicode(full);row.section=malformed?{start,endExclusive:end,totalCodeUnits:full.length,unit:'utf16-code-unit',text:full.slice(start,end),hasMore:end<full.length}:createMailBodySection(full,start,call.request.maxCharacters);page.nextBodyOffsets=row.section.hasMore?[{messageId:row.messageId,bodyOffset:row.section.endExclusive}]:[];page.coverage.truncated=row.section.hasMore;return page;
 };}
 test('well-formed contiguous Unicode sections reconstruct only against the exact full body hash',async()=>{
  const full='a'.repeat(1998)+'😀'+' exact retained suffix',i=makeInput();i.quotes=[];
  const out=await prepare(make(unicodeSource(full)),i);assert.equal(out.bodies[0].text,full);assert.equal(out.bodies[0].sections.length,2);assert.equal(out.context.evidence[0].contentSha256,shaForUnicode(full));
 });
-test('fixed UTF16 page boundary splitting a surrogate pair is refused by the canonical JSON hash',async()=>{
+test('an explicitly malformed producer splitting a surrogate pair remains refused',async()=>{
  const full='a'.repeat(1999)+'😀'+' exact retained suffix',i=makeInput();i.quotes=[];
- await assert.rejects(prepare(make(unicodeSource(full)),i),/Lone surrogate is not allowed/u);
+ await assert.rejects(prepare(make(unicodeSource(full,{malformed:true})),i),/surrogate|well.formed|UTF-16/iu);
+});
+test('a surrogate pair at requested2000 boundary preserves contiguous exact quote and full-body evidence',async()=>{
+ const full='a'.repeat(1999)+'😀 exact retained suffix',i=makeInput();i.quotes[0]={...i.quotes[0],start:1999,end:full.length,text:full.slice(1999)};
+ const out=await prepare(make(unicodeSource(full)),i);assert.equal(out.bodies[0].text,full);assert.deepEqual(out.bodies[0].sections.map(s=>[s.start,s.end]),[[0,1999],[1999,full.length]]);assert.equal(out.quotes[0].status,'bound-source-excerpt');assert.equal(out.context.evidence[0].contentSha256,shaForUnicode(full));assert.equal(out.quotes[0].passageSha256,shaForUnicode(full.slice(1999)));assert.equal(out.provenance.collection.limits.bodySectionCodeUnits,2000);assert.equal(out.provenance.collection.calls,6);assert.deepEqual(out.provenance.collection.capHits,[]);
+});
+test('one-unit repeated-emoji paging makes progress without loss, duplication or an invented cap',async()=>{
+ const full='😀'.repeat(4)+'Z',i=makeInput();i.quotes[0]={...i.quotes[0],start:0,end:full.length,text:full};
+ const out=await prepare(make(unicodeSource(full),{bodySectionCodeUnits:1}),i);assert.equal(out.bodies[0].text,full);assert.deepEqual(out.bodies[0].sections.map(s=>[s.start,s.end]),[[0,2],[2,4],[4,6],[6,8],[8,9]]);assert.equal(out.quotes[0].status,'bound-source-excerpt');assert.equal(out.context.evidence[0].contentSha256,shaForUnicode(full));assert.equal(out.provenance.collection.limits.bodySectionCodeUnits,1);assert.equal(out.provenance.collection.calls,9);assert.deepEqual(out.provenance.collection.capHits,[]);
+ const capped=await prepare(make(unicodeSource(full),{bodySectionCodeUnits:1,maxBodyCodeUnits:8}),i);assert.equal(capped.context.evidence.length,0);assert.equal(capped.quotes[0].status,'missing-or-unread-version');assert.equal(capped.provenance.collection.unreadCount,1);assert(text(capped).includes('BODY_CODE_UNIT_CAP'));
+ assert.deepEqual(createMailBodySection(full,full.length,1),{start:full.length,endExclusive:full.length,totalCodeUnits:full.length,unit:'utf16-code-unit',text:'',hasMore:false});
 });
 test('cancelling a parked read preserves the typed lifetime outcome and aborts its source signal',async()=>{
  const controller=new AbortController();let began,observedSignal;const started=new Promise(resolve=>began=resolve);

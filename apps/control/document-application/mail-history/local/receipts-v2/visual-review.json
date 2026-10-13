@@ -1,0 +1,111 @@
+{
+  "reviewer": "skills_implementation",
+  "status": "PASS",
+  "scope": "All8 new v2 local synthetic DOCX pages opened with view_image; exact unchanged source version across original/revision checked",
+  "sourceVersionId": "synthetic-message-utf16-v2",
+  "nativeQualified": false,
+  "sharedDependencies": [
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-utf16.mjs",
+      "sha256": "a22497344de75f16c4048d47e80a4f4197be72c318318674c99371d00c066414",
+      "owner": "root",
+      "borrowedForTestsOnly": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "sha256": "d36822bf76c4458a67741c943dfb111824390adb1f74453b2e6bfaf52fdad2fb",
+      "owner": "root",
+      "borrowedForTestsOnly": true
+    }
+  ],
+  "documents": [
+    {
+      "name": "original",
+      "docxSha256": "8c329c99f0849fdf609bc55699f2d3da105045ebdac29507ca7364ccca5f0977",
+      "pdfSha256": "40a6440ccf7c78fa9230e6c1bcb475a751fdbbab0b77e67c93a28ca680634f6c",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "original-preview-1.png",
+          "sha256": "d7333ec1703001a742af4771ca6cd678ddf0e41a2fd386951635b91e5b927550",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, v2 source citation, explicit derived timestamps and unknown freshness/snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 2,
+          "path": "original-preview-2.png",
+          "sha256": "2d1b5a76fc2f5ec05722afd85c1166d08e6a1c6210f71acb79bd8b03986920c9",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, v2 source citation, explicit derived timestamps and unknown freshness/snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 3,
+          "path": "original-preview-3.png",
+          "sha256": "bcd1059eac6204676db143593403ba053845cabc7512460bbb4f05da783d0f14",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, v2 source citation, explicit derived timestamps and unknown freshness/snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 4,
+          "path": "original-preview-4.png",
+          "sha256": "db72e838ba9b4602ff2229b839cfbba11268e9781c0b132fffa2f4169305193f",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable immutable provenance continuation with ample whitespace, no clipping."
+        }
+      ]
+    },
+    {
+      "name": "revision",
+      "docxSha256": "905eecbf051d05bafc337c5f6bdbf1489f3453f9e713dfa22d9da1765bf0e51e",
+      "pdfSha256": "71a7160530ee08dacf2c653465f13ee8c23ccf2af6a2d6f37effd158a7fd985f",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "revision-preview-1.png",
+          "sha256": "9d7cf3d39b05759ec175ca8c4455f5ae6202851f40b52dd69e0e9d732d56f568",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, v2 source citation, explicit derived timestamps and unknown freshness/snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 2,
+          "path": "revision-preview-2.png",
+          "sha256": "3c03cab8769656e08b3943c0e9ca52773b80a058228ea8fde1b8284484e71a8c",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, v2 source citation, explicit derived timestamps and unknown freshness/snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 3,
+          "path": "revision-preview-3.png",
+          "sha256": "25a956d3bd70caa6b49b9944ec360ca5a3acd4594b256b4631d1f59904a2b815",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, v2 source citation, explicit derived timestamps and unknown freshness/snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 4,
+          "path": "revision-preview-4.png",
+          "sha256": "5108801da1f4852f77d8f27093aa9c635a4dd5a851182c9285d1453fe670d483",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable immutable provenance continuation with ample whitespace, no clipping."
+        }
+      ]
+    }
+  ]
+}

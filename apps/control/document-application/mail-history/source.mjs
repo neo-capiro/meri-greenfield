@@ -39,7 +39,7 @@ export function createCollection({readSource,context,selected,asOf,defaultCongre
   }
   reads.push({operation,request,argumentsSha256:normalized.argumentsSha256,resultSha256:v.hash(raw),result:raw});return {result};
  }
- async function identity(id,request){const got=await read(id,request);const sourceId=id==='resolve_entity'?'entity_candidates':'tenant_contacts';coverage.push({sourceId,operation:id,status:got.unavailable?'unavailable':'candidate-metadata',reason:got.reason??null,verified:false,enumeration:'unknown',result:got.result??null});return got;}
+ async function identity(id,request){const got=await read(id,request);const sourceId=id==='resolve_entity'?'entity_candidates':'tenant_contacts';coverage.push({sourceId,operation:id,status:got.unavailable?'unavailable':'candidate-metadata',reason:got.reason??null,verified:false,enumeration:'unknown',authority:'derived',generatedAt:got.result?.generatedAt??null,freshness:'unknown',snapshotVersionId:null,result:got.result??null});return got;}
  const subjectRequest=selected.subject.kind==='client'?{kind:'client',entityId:selected.subject.entityIds[0]}:{kind:'personal'};
  const anchor=new Date(Math.min(Date.parse(asOf),selected.window.basis==='unbounded'?Date.parse(asOf):Date.parse(selected.window.endExclusive)-1)).toISOString();
  const days=selected.window.basis==='unbounded'?null:Math.ceil((Date.parse(anchor)-Date.parse(selected.window.startInclusive))/86400000);

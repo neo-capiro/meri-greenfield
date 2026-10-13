@@ -1,0 +1,110 @@
+{
+  "reviewer": "skills_implementation",
+  "status": "PASS",
+  "scope": "All8 final local synthetic DOCX pages opened with view_image after Unicode and freshness disclosure repairs",
+  "nativeQualified": false,
+  "sharedDependencies": [
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-utf16.mjs",
+      "sha256": "a22497344de75f16c4048d47e80a4f4197be72c318318674c99371d00c066414",
+      "owner": "root",
+      "borrowedForTestsOnly": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "sha256": "d36822bf76c4458a67741c943dfb111824390adb1f74453b2e6bfaf52fdad2fb",
+      "owner": "root",
+      "borrowedForTestsOnly": true
+    }
+  ],
+  "documents": [
+    {
+      "name": "original",
+      "docxSha256": "fc82c7c35454c36ed376f00451200008ed20a4d735992454ee5b03972367b91d",
+      "pdfSha256": "e9d33560578ca8b4cd0682151962469cf8d02dde541c5f1d254caa5450f78677",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "original-preview-1.png",
+          "sha256": "b6286010fcd7110e3434deb31a3bcc7ef42765f641546efe637b3ffdc1dae4fc",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, explicit derived projection timestamps/unknown freshness and snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 2,
+          "path": "original-preview-2.png",
+          "sha256": "145dd7caa6879381088f0365da77902233e9207a47d9aa5d5e508166df9dd34c",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, explicit derived projection timestamps/unknown freshness and snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 3,
+          "path": "original-preview-3.png",
+          "sha256": "17140123590778ac8958a2c3921da5f9087c368d090dd4ea6790caf1f9051e8f",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, explicit derived projection timestamps/unknown freshness and snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 4,
+          "path": "original-preview-4.png",
+          "sha256": "635ad04608e4b5cbfebc9748b954d79e2cecf2bd3ca1b2dd98cff7ac6994766e",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable provenance continuation with ample whitespace, no clipping."
+        }
+      ]
+    },
+    {
+      "name": "revision",
+      "docxSha256": "c566c545c2592d0b15b2ee5324b3524cb03ce42ad2afb120e27e42b990b0509a",
+      "pdfSha256": "45788b6aded4f0ebd1ac149aa84d81965582f209147a3c0ddf1441ee0c3db6c7",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "revision-preview-1.png",
+          "sha256": "4fbea8e292d69c5fc6c88a3160fecd86a0f04a9d247a5bda0ee903cd13f174ff",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, explicit derived projection timestamps/unknown freshness and snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 2,
+          "path": "revision-preview-2.png",
+          "sha256": "394900e3ea121c51a07ee18c27161b23ec2151ad0c4260b6112a6130a1e7f392",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, explicit derived projection timestamps/unknown freshness and snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 3,
+          "path": "revision-preview-3.png",
+          "sha256": "c9ddb834089ef84f3d6b7270f99a9b59d7eb55096e8f8fc53d5d67c66b5deb14",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, explicit derived projection timestamps/unknown freshness and snapshot, coverage and evidence, no clipping."
+        },
+        {
+          "page": 4,
+          "path": "revision-preview-4.png",
+          "sha256": "a5310fba47120db57f1f237f12f7df24801eb114f9bf2e03c0284df707612306",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable provenance continuation with ample whitespace, no clipping."
+        }
+      ]
+    }
+  ]
+}
