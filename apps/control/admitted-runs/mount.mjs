@@ -1,7 +1,7 @@
 /** Concrete source-disabled application assembly over already-admitted persisted run state. */
 import {createHash} from 'node:crypto';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
-import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {own,data,CommandError} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createPostgresAdmittedRunOwner,createReadAuthority,createCommandAuthority,createTaskLookupAuthorizer,createDurableSourceDisabledGateway} from '../../gateway/index.mjs';
 import {assertTaskLookupStoredBinding} from '../task-lookup/index.mjs';
 import {createDurableActionServices} from '../action-host/durable/index.mjs';
@@ -32,6 +32,19 @@ export function createAdmittedActionHost(configuration){
  const gateway=createDurableSourceDisabledGateway({authorityPorts:readAuthorityPorts,pool:admission.pool,allocationJson:admission.allocationJson,limits,now:c.now,newId:c.newId});
  const authorize=createTaskLookupAuthorizer({authority:readAuthority,credential:read.credential,commandContext:context,scopes:ss,assertStoredBinding:assertTaskLookupStoredBinding,now:c.now});
  const services=createDurableActionServices({lookup:{pool:read.pool,gateway,authorize},metadata:meta,command:{...cmd,allocationJson:admission.allocationJson,authority:commandAuthority},commandContext:context,now:c.now,newId:c.newId,limits:{maxRequestMs:limits.maxRequestMs,maxFactBytes:limits.maxFactBytes,maxResponseBytes:limits.maxResponseBytes,maxCleanupMs:limits.maxCleanupMs},sourceEnabled:false});
- const host=createApplicationActionHost({services,client:c.client,currentRun:persisted.currentRun,hostPorts:c.hostPorts,now:c.now,limits:{maxRequestMs:limits.maxRequestMs,maxRequestBytes:limits.maxRequestBytes,maxResponseBytes:limits.maxResponseBytes},sessionLimits:c.sessionLimits,enabled:c.enabled??false});
+ const originalPorts=own(c.hostPorts,['reserveLookup','issueLookupCredential','issueExecution']);
+ if(Object.values(originalPorts).some(port=>typeof port!=='function'))refuse();
+ const hostRefuse=()=>{throw new CommandError('ACCESS_DENIED');};
+ const snapshotReceipt=raw=>{const value=data(raw);if(Buffer.byteLength(JSON.stringify(value))>limits.maxResponseBytes)hostRefuse();return value;};
+ const matchesCredential=(value,facts)=>{if(typeof value!=='string'||value.length<1||value.length>8192||createHash('sha256').update(value).digest('hex')!==facts.capabilitySha256)hostRefuse();};
+ const hostPorts={
+  async reserveLookup(call){const receipt=snapshotReceipt(await originalPorts.reserveLookup(call));
+   if(typeof receipt.deliveryJson!=='string'||Buffer.byteLength(receipt.deliveryJson)>65536)hostRefuse();
+   let delivery;try{delivery=data(JSON.parse(receipt.deliveryJson));own(delivery,['context','producer','deliveryId']);}catch{hostRefuse();}
+   if(!same(delivery.context,readFacts[0]))hostRefuse();return receipt;},
+  async issueLookupCredential(call){const receipt=snapshotReceipt(await originalPorts.issueLookupCredential(call));matchesCredential(receipt.credential,readFacts[0]);return receipt;},
+  async issueExecution(call){const receipt=snapshotReceipt(await originalPorts.issueExecution(call));matchesCredential(receipt.credential,commandFacts[0]);return receipt;}
+ };
+ const host=createApplicationActionHost({services,client:c.client,currentRun:persisted.currentRun,hostPorts,now:c.now,limits:{maxRequestMs:limits.maxRequestMs,maxRequestBytes:limits.maxRequestBytes,maxResponseBytes:limits.maxResponseBytes},sessionLimits:c.sessionLimits,enabled:c.enabled??false});
  return Object.freeze({app:host.app,close:host.close,status:()=>({...host.status(),sourceEnabled:false})});
 }
