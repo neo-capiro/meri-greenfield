@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {commandToolValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {createTaskLookupDelivery,createPostgresTaskLookupStore} from '../task-lookup/index.mjs';
 import {createTaskLookupPoolFixture} from '../task-lookup/postgres-fixture.mjs';
@@ -26,10 +27,10 @@ async function setup(changeCard){
  const retained=await actual.lookup({request:l.request,context:l.context,credential:'SYNTHETIC_RECOMMENDATION'});
  t.hooks.prepare=call=>{t.f.command.arguments=clone(call.input.arguments);t.f.resign();};
  t.f.state.hooks.http=()=>new Response(JSON.stringify({tool:'create_task',generatedAt:new Date(t.f.state.now).toISOString(),created:true,task:{id:id(23),...t.f.command.arguments,status:'todo',createdAt:new Date(t.f.state.now).toISOString()}}),{headers:{'content-type':'application/json'}});
- t.base.executor=t.f.make();
+ t.base.executor=t.f.make();t.base.validators=commandToolValidators;
  const readContext={currentBinding:clone(t.f.binding),scopes:l.context.scopes,deadlineMs:l.context.deadlineMs};
  const lookup={async read(call){state.readCalls++;return actual.read(call);}};
- const options={lookup,readContext,selectedClientId:client,commandOptions:t.base,now:()=>t.f.state.now,limits:{maxRequestMs:200,maxFactBytes:65536}};
+ const options={lookup,readContext,selectedClientId:client,commandOptions:t.base,now:t.base.now,limits:{maxRequestMs:200,maxFactBytes:65536}};
  const workflow=createActionFollowthrough(options),selection={resultReference:retained.resultReference,resultSha256:retained.resultSha256,actionId:row.id};
  return{t,l,pool,state,calls,original,row,retained,actual,lookup,options,workflow,selection};
 }

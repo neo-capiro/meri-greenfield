@@ -1,0 +1,318 @@
+✖ followthrough independent: retained read becomes editable draft and explicit canonical proposal without task effect (42.628433ms)
+✖ followthrough independent: standard downstream explicit approval executes once and replays retained outcome (10.556726ms)
+✖ followthrough independent: draft/read permission is never command approval (11.108036ms)
+✖ followthrough independent: hash selection substitution refuses (12.292567ms)
+✖ followthrough independent: action selection substitution refuses (9.952737ms)
+✖ followthrough independent: reference selection substitution refuses (9.862171ms)
+✖ followthrough independent: extra-card selection substitution refuses (10.173119ms)
+✖ followthrough independent: unsupported or lossy edit {"clientId":"00000000-0000-4000-8000-000000000099"} refuses (8.475687ms)
+✖ followthrough independent: unsupported or lossy edit {"ownerUserId":"00000000-0000-4000-8000-000000000099"} refuses (8.18555ms)
+✖ followthrough independent: unsupported or lossy edit {"requiredApprover":"00000000-0000-4000-8000-000000000099"} refuses (10.079458ms)
+✖ followthrough independent: unsupported or lossy edit {"title":" "} refuses (8.404003ms)
+✖ followthrough independent: unsupported or lossy edit {"title":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx refuses (8.902659ms)
+✖ followthrough independent: unsupported or lossy edit {"dueDate":"2026-11-05T12:00:00.000Z"} refuses (7.358316ms)
+✖ followthrough independent: unsupported or lossy edit {"dueDate":"2026-02-30"} refuses (7.09473ms)
+✖ followthrough independent: unsupported or lossy edit {"title":12} refuses (7.627751ms)
+✖ followthrough independent: unsupported or lossy edit {"dueDate":0} refuses (7.478437ms)
+✖ followthrough independent: mutation of a returned draft cannot change prepare input (8.993835ms)
+✖ followthrough independent: rehashed foreign-client draft still fails retained/current correlation (12.618357ms)
+✖ followthrough independent: current denial before prepare performs no metadata write (8.402096ms)
+✖ followthrough independent: current denial before draft releases no recommendation (7.898278ms)
+✖ followthrough independent: corrupt retained source cannot become a task through a correct caller hash (7.303674ms)
+✖ followthrough independent: cancelled parked read cannot enter command preparation after late resolution (7.731498ms)
+✖ followthrough independent: finite original cutoff covers read and metadata, without reset (8.159691ms)
+✖ followthrough independent: metadata ACK loss is retained as failure and is not retried (7.66657ms)
+✖ followthrough independent: preaborted or effectful inputs never invoke read/metadata ports (7.157604ms)
+✖ followthrough independent: long-title source default requires explicit edit rather than silent loss (8.326818ms)
+✖ followthrough independent: time-of-day source default requires explicit edit rather than silent loss (7.26187ms)
+✖ followthrough independent: original task A evidence can prepare a task under coherent current B (6.80242ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 0
+ℹ fail 28
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3349.693471
+
+✖ failing tests:
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:38:1
+✖ followthrough independent: retained read becomes editable draft and explicit canonical proposal without task effect (42.628433ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:39:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:46:1
+✖ followthrough independent: standard downstream explicit approval executes once and replays retained outcome (10.556726ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:47:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:52:1
+✖ followthrough independent: draft/read permission is never command approval (11.108036ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:53:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:57:2
+✖ followthrough independent: hash selection substitution refuses (12.292567ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:57:93)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:57:2
+✖ followthrough independent: action selection substitution refuses (9.952737ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:57:93)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:57:2
+✖ followthrough independent: reference selection substitution refuses (9.862171ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:57:93)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:57:2
+✖ followthrough independent: extra-card selection substitution refuses (10.173119ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:57:93)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"clientId":"00000000-0000-4000-8000-000000000099"} refuses (8.475687ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"ownerUserId":"00000000-0000-4000-8000-000000000099"} refuses (8.18555ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"requiredApprover":"00000000-0000-4000-8000-000000000099"} refuses (10.079458ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"title":" "} refuses (8.404003ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"title":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx refuses (8.902659ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"dueDate":"2026-11-05T12:00:00.000Z"} refuses (7.358316ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"dueDate":"2026-02-30"} refuses (7.09473ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"title":12} refuses (7.627751ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:59:2
+✖ followthrough independent: unsupported or lossy edit {"dueDate":0} refuses (7.478437ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:59:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:60:1
+✖ followthrough independent: mutation of a returned draft cannot change prepare input (8.993835ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:61:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:63:1
+✖ followthrough independent: rehashed foreign-client draft still fails retained/current correlation (12.618357ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:64:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:67:1
+✖ followthrough independent: current denial before prepare performs no metadata write (8.402096ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:68:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:70:1
+✖ followthrough independent: current denial before draft releases no recommendation (7.898278ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:71:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:73:1
+✖ followthrough independent: corrupt retained source cannot become a task through a correct caller hash (7.303674ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:74:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:77:1
+✖ followthrough independent: cancelled parked read cannot enter command preparation after late resolution (7.731498ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:78:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:82:1
+✖ followthrough independent: finite original cutoff covers read and metadata, without reset (8.159691ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:83:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:88:1
+✖ followthrough independent: metadata ACK loss is retained as failure and is not retried (7.66657ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:89:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:92:1
+✖ followthrough independent: preaborted or effectful inputs never invoke read/metadata ports (7.157604ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:93:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:101:3
+✖ followthrough independent: long-title source default requires explicit edit rather than silent loss (8.326818ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:102:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:101:3
+✖ followthrough independent: time-of-day source default requires explicit edit rather than silent loss (7.26187ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:102:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:104:1
+✖ followthrough independent: original task A evidence can prepare a task under coherent current B (6.80242ms)
+  Error [CommandError]: FOLLOWTHROUGH_CONFIGURATION
+      at deny (file:///tmp/meri-action-followthrough-workflow-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at createActionFollowthrough (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/index.mjs:21:238)
+      at setup (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:33:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:105:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
