@@ -74,3 +74,17 @@ test('independent cancellation of a parked insertion returns UNKNOWN and suppres
  let release,entered;const enteredPromise=new Promise(resolve=>{entered=resolve;});const t=setup({store:(store,state)=>({...store,insert(payload,check){state.inserts++;return new Promise(resolve=>{release=()=>{state.stored=clone(payload);resolve(clone(payload));};entered();});}})}),a=new AbortController();
  const pending=t.owner.prepare({...t.call,signal:a.signal});await Promise.race([enteredPromise,pending.then(()=>assert.fail('insert unexpectedly completed'),e=>{throw e;})]);a.abort();await assert.rejects(pending,e=>e.outcome==='UNKNOWN');release();await new Promise(resolve=>setImmediate(resolve));assert.equal(t.state.inserts,1);assert.equal(t.state.policy.some(x=>x.phase==='before_release'),false);
 });
+for(const kind of ['command hash','proposal identity','raw request','original binding'])test(`independent substituted retained ${kind} cannot be read`,async()=>{
+ const t=setup(),record=await t.owner.prepare(t.call),read=t.readCall(record);
+ if(kind==='command hash')t.state.stored.commandSha256='f'.repeat(64);
+ else if(kind==='proposal identity')t.state.stored.record.proposalId=id(900);
+ else if(kind==='raw request')t.state.stored.record.request.title='substituted';
+ else t.state.stored.record.binding.writerFence=99;
+ await assert.rejects(t.owner.read(read));assert.equal(t.state.inserts,1);assert.equal(t.state.executor,0);
+});
+test('independent actual command interface rechecks retained metadata before calling existing executor',async()=>{
+ let denied=false;const t=setup({policy:base=>async call=>{const r=await base(call);return denied?{...r,authorized:false}:r;}});
+ const result=await t.tool.prepare(t.call.request);denied=true;
+ const execution={contractVersion:'0.1.0',proposalId:result.proposal.proposalId,commandSha256:result.proposal.commandSha256,idempotencyKey:result.proposal.command.idempotencyKey,executorBinding:t.binding};
+ await assert.rejects(t.tool.executeApproved(result.proposal,execution,'unused-credential'));assert.equal(t.state.executor,0);assert.equal(t.state.inserts,1);
+});
