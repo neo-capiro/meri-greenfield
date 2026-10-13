@@ -1,0 +1,11 @@
+# Assembled runtime checkpoint
+
+Base `71d8c90c5a1fe5abc88b25fb74abba177949d3b1`, tree `1d2832f47c6b32295cf4dd6d8e837d27310bd468`. Sole owner `apps/runtime/**`; no shared contract, migration, protected native fixture or existing package lock changes.
+
+Compose canonical conversation Fetch/service/PostgreSQL/Temporal dispatcher and existing workflow definitions. A trusted Temporal polling process invokes an execution broker; the isolated per-conversation runner invokes `createConversationActivity` and the Claude Agent SDK sole loop. The trusted poller owns Temporal credentials. The isolated runner owns only a task-bound short-lived broker capability. The runtime never loads arbitrary configuration-supplied JavaScript.
+
+Separate configuration/secret-file parsing, native HTTPS capability transport, control assembly, HTTP lifetime/health, worker registration and CLI ownership. Explicit validated JSON config precedes allocation. Upstream Node HTTP adapter, pg and Temporal replace custom transport/queue implementations. Startup and shutdown are bounded, partial allocations close in reverse order, reusable imports are inert. Browser selectors are rechecked by existing opaque session/current scope owners.
+
+Native identity/context provider and physical task-launch broker are fixed, closed protocol boundaries that remain deployment dependencies. Existing opaque sessions are process-local: this checkpoint supports one isolated preview control replica and does not qualify restart/replica durability. Artifact/version storage, source installation/admission, current native approval/retirement/checkpoint owners and browser qualification remain separate; sources stay disabled. The existing budget adapter's `meri_qualification` namespace remains untouched. No production readiness or release acceptance follows from local process tests.
+
+Checks: configuration rejection before connections; actual listener process and HTTP health/404/method/auth/body limits; abort/disconnect and bounded SIGTERM cleanup; canonical service with explicit synthetic native/SQL/Temporal fixtures; exact Temporal worker registrations/types; container command/source boundaries; no model, native DB or cloud calls. All test processes run under owned Linux subreaper capture, with failed evidence retained.

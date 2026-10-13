@@ -1,0 +1,60 @@
+
+> @meri/assembled-runtime@0.1.0 test
+> node --test test/*.test.mjs
+
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (1961.135731ms)
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1946.950594ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (361.960063ms)
+✔ actual process exits on SIGTERM after listener shutdown (1960.734244ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (1.943768ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.68235ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.376453ms)
+✔ broker refuses a response from another writer fence (0.358686ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (23.000279ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (12.209345ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 8
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6278.0357
+
+✖ failing tests:
+
+test at test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (1961.135731ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 401
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:5:9)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 401,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/process.test.mjs:14:1
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1946.950594ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  400 !== 404
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime/apps/runtime/test/process.test.mjs:14:225)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 400,
+    expected: 404,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

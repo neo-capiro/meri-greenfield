@@ -1,0 +1,21 @@
+# Build from a separately reviewed Node 24 image digest. No floating default.
+ARG NODE_IMAGE
+FROM ${NODE_IMAGE}
+WORKDIR /opt/meri
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts --no-audit --no-fund
+COPY apps/runtime/package.json apps/runtime/package-lock.json ./apps/runtime/
+RUN npm ci --prefix apps/runtime --ignore-scripts --no-audit --no-fund
+COPY apps/worker/conversation/package.json apps/worker/conversation/package-lock.json ./apps/worker/conversation/
+RUN npm ci --prefix apps/worker/conversation --ignore-scripts --no-audit --no-fund
+COPY packages/ui-stream/package.json packages/ui-stream/package-lock.json ./packages/ui-stream/
+RUN npm ci --prefix packages/ui-stream --ignore-scripts --no-audit --no-fund
+COPY packages/window-resolution/package.json packages/window-resolution/package-lock.json ./packages/window-resolution/
+RUN npm ci --prefix packages/window-resolution --ignore-scripts --no-audit --no-fund
+COPY apps/control/conversations/package.json apps/control/conversations/package-lock.json ./apps/control/conversations/
+RUN npm ci --prefix apps/control/conversations --ignore-scripts --no-audit --no-fund
+COPY apps ./apps
+COPY packages ./packages
+USER node
+ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
+CMD ["--help"]

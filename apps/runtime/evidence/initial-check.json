@@ -1,0 +1,44 @@
+{
+  "command": [
+    "npm",
+    "test",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-assembled-runtime",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "1238de211f6f51ec020007457c9f6ae9e26f1ad1e6d822772955d411111d82a7",
+  "startedAt": "2026-10-13T18:52:33.405332+00:00",
+  "durationSeconds": 70.023,
+  "exitCode": -15,
+  "timedOut": false,
+  "ownedPidAndPgid": 320827,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 320840,
+      "status": 256
+    },
+    {
+      "pid": 320846,
+      "status": 15
+    }
+  ],
+  "streams": [
+    {
+      "path": "apps/runtime/evidence/initial-check.stdout.bin",
+      "bytes": 2718,
+      "sha256": "5c9d5be9364d00530fab61d1f073d2e626d9351b70ad0b2ebe56592154283070"
+    },
+    {
+      "path": "apps/runtime/evidence/initial-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
