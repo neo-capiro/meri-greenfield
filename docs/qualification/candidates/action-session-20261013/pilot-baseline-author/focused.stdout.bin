@@ -1,0 +1,14 @@
+✔ six real local compositions have bounded correlated receipts, no approvals/effects and post-close denial (409.507509ms)
+✔ one failed construction remains denominator-visible, next cases run, error content is scrubbed (220.096395ms)
+✔ malformed public response is refused, cleanup still executes and later cases are retained (229.64508ms)
+✔ cleanup failure cannot count as PASS and cannot leak thrown content (258.571863ms)
+✔ wrong mode refuses before any demo allocation (0.697078ms)
+✔ CLI import/help/invalid are inert and do not set source-root environment (31.29276ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3642.230659
