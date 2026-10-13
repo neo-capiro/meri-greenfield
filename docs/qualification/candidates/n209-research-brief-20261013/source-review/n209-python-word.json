@@ -1,0 +1,26 @@
+{
+  "label": "n209-python-word",
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "apps.artifacts.test.test_word_revision"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 0.167,
+  "processReaped": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 100,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "7d5c9ab002d7c614c71e0655c1f64ea23d420dec69d8e37bf300ce249ba786bc",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

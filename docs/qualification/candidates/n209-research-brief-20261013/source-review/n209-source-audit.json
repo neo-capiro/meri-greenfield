@@ -1,0 +1,70 @@
+{
+  "reviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "tree": "b74485b502192284644497d5a8b5849b258fe8f1",
+  "changedProductionPaths": [
+    "apps/artifacts/python/entry.py",
+    "apps/artifacts/python/office.py",
+    "apps/artifacts/test/test_word_revision.py",
+    "apps/control/document-application/current.mjs",
+    "apps/control/document-application/index.mjs",
+    "apps/control/document-application/local/fixture.mjs",
+    "apps/control/document-application/local/mount.mjs",
+    "apps/control/document-application/research-brief/README.md",
+    "apps/control/document-application/research-brief/SKILL.md",
+    "apps/control/document-application/research-brief/compose.mjs",
+    "apps/control/document-application/research-brief/evidence.mjs",
+    "apps/control/document-application/research-brief/input.mjs",
+    "apps/control/document-application/research-brief/local/flow.mjs",
+    "apps/control/document-application/research-brief/local/inspection.mjs",
+    "apps/control/document-application/research-brief/local/synthetic.mjs",
+    "apps/control/document-application/research-brief/manifest.json",
+    "apps/control/document-application/research-brief/skill.mjs",
+    "apps/control/document-application/test/research-brief.test.mjs"
+  ],
+  "contractsTreeExact": true,
+  "packageVersion": "0.1.2",
+  "generatedMetadataBindings": [
+    {
+      "path": "../../apps/control/action-application/http.mjs",
+      "metadataSha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "actualSha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "matches": true
+    },
+    {
+      "path": "../../apps/control/document-application/current.mjs",
+      "metadataSha256": "37e3c4ae7fddaeec3c232d141d91e8a3969c61515289c04afe22e6ae65888194",
+      "actualSha256": "6168360db230da804dcb19d672ad9efcd5ca3b4b4b1f8fbd0bda006f24cbeecf",
+      "matches": false
+    },
+    {
+      "path": "../../apps/control/document-application/format-admission.mjs",
+      "metadataSha256": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75",
+      "actualSha256": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75",
+      "matches": true
+    },
+    {
+      "path": "../../apps/control/document-application/http.mjs",
+      "metadataSha256": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d",
+      "actualSha256": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d",
+      "matches": true
+    },
+    {
+      "path": "../../apps/control/document-application/index.mjs",
+      "metadataSha256": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+      "actualSha256": "c456f09ba0fab94ef6942f6d408e3881b4d23e0abb0d3e6662f9120e18550cda",
+      "matches": false
+    },
+    {
+      "path": "artifacts-0.2/artifact.schema.json",
+      "metadataSha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486",
+      "actualSha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486",
+      "matches": true
+    },
+    {
+      "path": "meri.schema.json",
+      "metadataSha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "actualSha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "matches": true
+    }
+  ]
+}

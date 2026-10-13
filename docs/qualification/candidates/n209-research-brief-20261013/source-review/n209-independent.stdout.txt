@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: independent source IDs, exact Unicode passage bytes and honest claim/coverage semantics
+ok 1 - independent source IDs, exact Unicode passage bytes and honest claim/coverage semantics
+  ---
+  duration_ms: 35.031285
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign actor
+ok 2 - independent refusal: foreign actor
+  ---
+  duration_ms: 5.525981
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign tenant
+ok 3 - independent refusal: foreign tenant
+  ---
+  duration_ms: 4.914776
+  type: 'test'
+  ...
+# Subtest: independent refusal: other run
+ok 4 - independent refusal: other run
+  ---
+  duration_ms: 4.254308
+  type: 'test'
+  ...
+# Subtest: independent refusal: other attempt
+ok 5 - independent refusal: other attempt
+  ---
+  duration_ms: 5.109077
+  type: 'test'
+  ...
+# Subtest: independent refusal: other fence
+ok 6 - independent refusal: other fence
+  ---
+  duration_ms: 3.800158
+  type: 'test'
+  ...
+# Subtest: independent refusal: changed selector
+ok 7 - independent refusal: changed selector
+  ---
+  duration_ms: 4.452414
+  type: 'test'
+  ...
+# Subtest: independent refusal: source operation
+ok 8 - independent refusal: source operation
+  ---
+  duration_ms: 4.627516
+  type: 'test'
+  ...
+# Subtest: independent refusal: source identity
+ok 9 - independent refusal: source identity
+  ---
+  duration_ms: 6.977664
+  type: 'test'
+  ...
+# Subtest: independent refusal: authorization decision
+ok 10 - independent refusal: authorization decision
+  ---
+  duration_ms: 6.244948
+  type: 'test'
+  ...
+# Subtest: independent refusal: source version
+ok 11 - independent refusal: source version
+  ---
+  duration_ms: 3.83453
+  type: 'test'
+  ...
+# Subtest: independent refusal: record identity
+ok 12 - independent refusal: record identity
+  ---
+  duration_ms: 7.226987
+  type: 'test'
+  ...
+# Subtest: independent refusal: raw text with retained hash
+ok 13 - independent refusal: raw text with retained hash
+  ---
+  duration_ms: 3.451026
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof hash
+ok 14 - independent refusal: proof hash
+  ---
+  duration_ms: 3.319389
+  type: 'test'
+  ...
+# Subtest: independent refusal: record hash
+ok 15 - independent refusal: record hash
+  ---
+  duration_ms: 3.529193
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign evidence scope
+ok 16 - independent refusal: foreign evidence scope
+  ---
+  duration_ms: 3.525968
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign client subject
+ok 17 - independent refusal: foreign client subject
+  ---
+  duration_ms: 3.404265
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof observed time
+ok 18 - independent refusal: proof observed time
+  ---
+  duration_ms: 3.50065
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof update later than observed
+ok 19 - independent refusal: proof update later than observed
+  ---
+  duration_ms: 3.409844
+  type: 'test'
+  ...
+# Subtest: independent refusal: future retrieval
+ok 20 - independent refusal: future retrieval
+  ---
+  duration_ms: 3.18044
+  type: 'test'
+  ...
+# Subtest: independent refusal: missing citation proof
+ok 21 - independent refusal: missing citation proof
+  ---
+  duration_ms: 3.438146
+  type: 'test'
+  ...
+# Subtest: independent refusal: extra citation proof
+ok 22 - independent refusal: extra citation proof
+  ---
+  duration_ms: 4.007929
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace congress
+ok 23 - exact subject read filter cannot omit or replace congress
+  ---
+  duration_ms: 10.513898
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace session
+ok 24 - exact subject read filter cannot omit or replace session
+  ---
+  duration_ms: 13.954908
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace billId
+ok 25 - exact subject read filter cannot omit or replace billId
+  ---
+  duration_ms: 8.834473
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace billVersion
+ok 26 - exact subject read filter cannot omit or replace billVersion
+  ---
+  duration_ms: 6.280541
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace fiscalYear
+ok 27 - exact subject read filter cannot omit or replace fiscalYear
+  ---
+  duration_ms: 6.30666
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace budgetStage
+ok 28 - exact subject read filter cannot omit or replace budgetStage
+  ---
+  duration_ms: 5.93932
+  type: 'test'
+  ...
+# Subtest: canonical candidate envelope cannot serve as a decisive full read
+ok 29 - canonical candidate envelope cannot serve as a decisive full read
+  ---
+  duration_ms: 3.292368
+  type: 'test'
+  ...
+# Subtest: partial/stale coverage remains visible and never changes free-form verification
+ok 30 - partial/stale coverage remains visible and never changes free-form verification
+  ---
+  duration_ms: 5.824789
+  type: 'test'
+  ...
+# Subtest: missing immutable citation version and false excerpt keep explicit negative statuses
+ok 31 - missing immutable citation version and false excerpt keep explicit negative statuses
+  ---
+  duration_ms: 17.470891
+  type: 'test'
+  ...
+# Subtest: untrusted input getter and Proxy execute no traps
+ok 32 - untrusted input getter and Proxy execute no traps
+  ---
+  duration_ms: 5.055477
+  type: 'test'
+  ...
+# Subtest: recipe/prose/catalog pins and future as-of refuse before source dispatch
+ok 33 - recipe/prose/catalog pins and future as-of refuse before source dispatch
+  ---
+  duration_ms: 23.250332
+  type: 'test'
+  ...
+# Subtest: prepared guard captures immutable authority context and exact full request identity
+ok 34 - prepared guard captures immutable authority context and exact full request identity
+  ---
+  duration_ms: 6.604196
+  type: 'test'
+  ...
+# Subtest: preabort and parked source cancellation release no prepared result or subsequent reads
+ok 35 - preabort and parked source cancellation release no prepared result or subsequent reads
+  ---
+  duration_ms: 4.323842
+  type: 'test'
+  ...
+# Subtest: independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup
+ok 36 - independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup
+  ---
+  duration_ms: 488.129839
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2809.856273

@@ -1,0 +1,27 @@
+{
+  "label": "n209-filter-counterexample",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=decisive subject filters cannot",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 1.83,
+  "processReaped": true,
+  "stdoutBytes": 944,
+  "stderrBytes": 0,
+  "stdoutSha256": "ec8f29602b61c49d812b73824a6f93fb3bff5765072000def3cca64e73ace8bb",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}
