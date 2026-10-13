@@ -1,0 +1,66 @@
+{
+  "schema": "workbook-flow-review/1",
+  "source": "fd993f5105deda49a88973b42906df3e928ac829",
+  "rootEvidence": "abe90a62fd8b1af1d31b49ab6c39809b5259f9b7",
+  "excludes": [
+    "manifest.json self-reference",
+    "verification.json verifier output"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-WORKBOOK-FLOW-REVIEW-20261013.md",
+      "bytes": 5252,
+      "sha256": "92cb44332dc34d025912fd63f85c1f5ab6926fdb9a04f1f8790a5a27e5cab5ce"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/audit.json",
+      "bytes": 19134,
+      "sha256": "e6f5a87fdc894aff092d6cce7965f690f46422312f2d5d7644dd7c58dd7ac793"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/audit.py",
+      "bytes": 8602,
+      "sha256": "8052425eb12b008696d4931c7c0b4b445be2435f27aec7cf951695c483cd4e56"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/capture.py",
+      "bytes": 3365,
+      "sha256": "102524d59550e6e210a21b3da2e242b8a548ec25417a2a9a4c14c5f79b1acfae"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/criteria.json",
+      "bytes": 1576,
+      "sha256": "e109b36a76c1119207be5df03130fa0e829928cd422ee69bab530765e68017ec"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/flow-independent.test.mjs",
+      "bytes": 4687,
+      "sha256": "950c75d7ba1becef1ffe71ef118bc4265afe90671c4e77317592514342310e1c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/prerequisite-references.json",
+      "bytes": 566,
+      "sha256": "3b4da22b835ed3d9927ff3d068be99a6717381a10aea14d83ade5b700905d9b5"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.json",
+      "bytes": 1535,
+      "sha256": "1b59061f9e334e0fd82863a6054e03ff5bb01c59e7ad1fbc79bdd95165f35bb4"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stdout.bin",
+      "bytes": 1170,
+      "sha256": "ccdf6bab7ae40332e250ed520e809b62fd79994005bfaaf57af3f53ccc7f5aed"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/verify.py",
+      "bytes": 1962,
+      "sha256": "b033ed439efd92a7523e3874508ba1257e58cebf870144485decd2931795ac6d"
+    }
+  ]
+}
