@@ -100,7 +100,7 @@ test('independent actual graph: same retained selection and proposal across thre
    assert.deepEqual(success(await call('execute',{proposal:pending.proposal}),'replay'),observed);assert.equal(fixture.stats().taskEffects,1);
    fixture.revoke();assert.notEqual((await call('draft',{selection:selected})).status,200);assert.notEqual((await call('execute',{proposal:pending.proposal})).status,200);assert.equal(fixture.stats().taskEffects,1);
   });
-  const stats=fixture.stats();assert.equal(stats.hostsOpened,3);assert.equal(stats.sourceReads,1);assert.equal(stats.commandReservations,1);assert.equal(stats.commandChargeMicroUsd,'10');assert.equal(stats.lookupChargeMicroUsd,'10');
+  const stats=fixture.stats();assert.equal(stats.hostsOpened,3);assert.equal(stats.sourceReads,1);assert.equal(stats.commandReservations,1);assert.equal(stats.commandInvocations,1);assert.equal(stats.commandRows,1);assert.equal(stats.metadataRows,1);assert.equal(stats.lookupRows,initial.lookupRows+1);assert.equal(stats.commandChargeMicroUsd,'10');assert.equal(stats.lookupChargeMicroUsd,'10');
  }finally{fixture.close();assert.equal(fixture.stats().closed,true);}
 });
 
