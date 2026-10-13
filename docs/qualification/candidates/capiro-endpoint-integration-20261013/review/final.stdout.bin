@@ -1,0 +1,43 @@
+✔ independent exact Git source manifest and AST-selected implementations match received metadata (758.482615ms)
+✔ independent actual middleware/provider/context pipeline emits closed canonical receipts (299.67932ms)
+✔ independent actual Capiro owners refuse foreign tenant grant (273.844528ms)
+✔ independent actual Capiro owners refuse foreign actor grant (266.155485ms)
+✔ independent actual Capiro owners refuse foreign client grant (243.684208ms)
+✔ independent actual Capiro owners refuse missing wall grant (214.307311ms)
+✔ independent actual Capiro owners refuse foreign conversation tenant (211.107401ms)
+✔ independent actual Capiro owners refuse foreign conversation actor (217.014275ms)
+✔ independent actual Capiro owners refuse changed selected client (214.483115ms)
+✔ independent actual Capiro owners refuse null selected client (211.141678ms)
+✔ independent actual Capiro owners refuse archived conversation (202.799162ms)
+✔ independent actual Capiro owners refuse inactive conversation (198.976752ms)
+✔ independent actual Capiro owners refuse foreign tenant client (207.872579ms)
+✔ independent actual Capiro owners refuse archived client (215.193358ms)
+✔ independent actual Capiro owners refuse inactive membership (228.809786ms)
+✔ independent actual Capiro owners refuse inactive tenant (217.877687ms)
+✔ independent actual Capiro owners refuse unknown role (220.86979ms)
+✔ independent actual Capiro owners refuse lower role (228.908228ms)
+✔ independent actual Capiro owners refuse revoked online session (219.239049ms)
+✔ independent actual Capiro owners refuse invalid native token (224.612173ms)
+✔ independent wall false legitimately works without grant and tenant predicate remains explicit (222.203493ms)
+✔ independent headers and body do not supply identity or scope authority (235.416705ms)
+✔ independent context hash echo grants no authority and canonical join rejects a different echo (240.922981ms)
+✔ independent canonical receiver/join rejects forged native principal (215.950865ms)
+✔ independent canonical receiver/join rejects forged native revision (217.165601ms)
+✔ independent canonical receiver/join rejects forged native extra (235.407581ms)
+✔ independent canonical receiver/join rejects forged native future clock (218.054391ms)
+✔ independent canonical receiver/join rejects forged native expired clock (215.970374ms)
+✔ independent asynchronous online recheck re-evaluates revoked wall grant (206.054468ms)
+✔ independent final local membership recheck catches role change after context reads (214.441936ms)
+✔ independent expiry never refreshes after activity and token/session expiry bounds all receipts (214.595747ms)
+✔ independent changed Meri policy/fence between native context reads refuses current join (239.057222ms)
+✔ independent caller deadline refuses parked online session and consumes late completion (302.494647ms)
+✔ independent application flow retains exact pending proposal and separate approval with one effect/replay/revocation (562.770052ms)
+✔ independent production catalog remains unavailable with original scope (0.449837ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11460.249415

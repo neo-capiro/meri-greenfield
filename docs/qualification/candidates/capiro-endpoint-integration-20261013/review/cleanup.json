@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-13T06:55:15.987475+00:00",
+  "ownedGroups": [
+    {
+      "pgid": 521708,
+      "physicallyAbsent": true
+    },
+    {
+      "pgid": 523284,
+      "physicallyAbsent": true
+    }
+  ],
+  "ownedDependencyLinks": [
+    {
+      "path": "node_modules",
+      "removedOwnedSymlink": true,
+      "donorExists": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "removedOwnedSymlink": true,
+      "donorExists": true
+    }
+  ],
+  "sharedSourceAndCompilerPreserved": true,
+  "killRequired": false
+}
