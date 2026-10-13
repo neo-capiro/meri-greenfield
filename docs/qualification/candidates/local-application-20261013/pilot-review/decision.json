@@ -1,0 +1,30 @@
+{
+  "verdict": "ACCEPT_DOCUMENTATION",
+  "authorCandidate": "a20f1a2dea79a19fdd17c3485a9448db478dd080",
+  "authorTree": "ba24c72a72a3a68034c22ca390cdd76640893541",
+  "initialCandidate": "832120c96f33ca07862f10176797b777916ade45",
+  "criteria": "146e5f861d7386335960fb4fa4890e7d69574041",
+  "independentChecks": {
+    "passed": 81,
+    "failed": 0
+  },
+  "authorVerifierReplay": {
+    "passed": 49,
+    "failed": 0
+  },
+  "baseOriginalsPreserved": 10853,
+  "authorManifestMembers": 11,
+  "authorManifestSha256": "0665e8d42772e041c4d7b0efd2d9829321534dc9b18bd7a06421ffe902d4166b",
+  "paidExecution": "HOLD",
+  "unpaidSyntheticTestsPermitted": true,
+  "providerApiCalls": 0,
+  "accountApiCalls": 0,
+  "actualSixCaseRun": false,
+  "realHumanQualified": 0,
+  "cleanup": {
+    "dependenciesCreated": 0,
+    "backgroundProcessesCreated": 0,
+    "foregroundChecksCompleted": true,
+    "nativeResourcesCreated": 0
+  }
+}
