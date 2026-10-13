@@ -68,3 +68,10 @@ test('empty evidence schema identity includes namespace OID to detect replacemen
  assert.match(sql,/\boid::text AS oid\b/);observed[0].oid='30101';
  await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
 });
+test('catalog identity literals cannot resolve through implicit temporary schemas',async()=>{
+ const s=scripted({fixture:{schemaScope:scope},namespaces});await prepareOwnedApplicationSchema(s.args());
+ const sql=s.log.find(q=>q.text.startsWith('WITH ns AS')).text;
+ const literals=[...sql.matchAll(/'([^']+)'::regclass/g)].map(m=>m[1]);
+ assert(literals.length>=12);for(const name of literals)assert.match(name,/^pg_catalog\.pg_[a-z_]+$/);
+ for(const name of ['pg_class','pg_type','pg_constraint','pg_attrdef','pg_rewrite','pg_trigger','pg_namespace'])assert(literals.includes(`pg_catalog.${name}`));
+});

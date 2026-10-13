@@ -15,18 +15,18 @@ export const preservationSQL=`WITH ns AS (SELECT oid FROM pg_catalog.pg_namespac
  rel AS (SELECT c.* FROM pg_catalog.pg_class c WHERE c.relnamespace IN (SELECT oid FROM ns)),
  typ AS (SELECT t.* FROM pg_catalog.pg_type t WHERE t.typnamespace IN (SELECT oid FROM ns)),
  objects AS (
- SELECT 'pg_class'::regclass::oid AS classid,oid AS objid FROM rel UNION ALL
- SELECT 'pg_type'::regclass::oid,oid FROM typ UNION ALL
- SELECT 'pg_constraint'::regclass::oid,oid FROM pg_catalog.pg_constraint WHERE conrelid IN (SELECT oid FROM rel) UNION ALL
- SELECT 'pg_attrdef'::regclass::oid,oid FROM pg_catalog.pg_attrdef WHERE adrelid IN (SELECT oid FROM rel) UNION ALL
- SELECT 'pg_rewrite'::regclass::oid,oid FROM pg_catalog.pg_rewrite WHERE ev_class IN (SELECT oid FROM rel) UNION ALL
- SELECT 'pg_trigger'::regclass::oid,oid FROM pg_catalog.pg_trigger WHERE tgrelid IN (SELECT oid FROM rel))
+ SELECT 'pg_catalog.pg_class'::regclass::oid AS classid,oid AS objid FROM rel UNION ALL
+ SELECT 'pg_catalog.pg_type'::regclass::oid,oid FROM typ UNION ALL
+ SELECT 'pg_catalog.pg_constraint'::regclass::oid,oid FROM pg_catalog.pg_constraint WHERE conrelid IN (SELECT oid FROM rel) UNION ALL
+ SELECT 'pg_catalog.pg_attrdef'::regclass::oid,oid FROM pg_catalog.pg_attrdef WHERE adrelid IN (SELECT oid FROM rel) UNION ALL
+ SELECT 'pg_catalog.pg_rewrite'::regclass::oid,oid FROM pg_catalog.pg_rewrite WHERE ev_class IN (SELECT oid FROM rel) UNION ALL
+ SELECT 'pg_catalog.pg_trigger'::regclass::oid,oid FROM pg_catalog.pg_trigger WHERE tgrelid IN (SELECT oid FROM rel))
  SELECT
  (SELECT count(*)::int FROM (
  SELECT oid FROM rel WHERE relkind NOT IN ('r','v','i','S') OR relispartition
  UNION ALL SELECT inhrelid FROM pg_catalog.pg_inherits WHERE inhrelid IN (SELECT oid FROM rel) OR inhparent IN (SELECT oid FROM rel)
  UNION ALL SELECT oid FROM typ t WHERE NOT ((t.typtype='c' AND t.typrelid IN (SELECT oid FROM rel WHERE relkind IN ('r','v'))) OR (t.typtype='b' AND t.typelem IN (SELECT oid FROM typ WHERE typtype='c' AND typrelid IN (SELECT oid FROM rel WHERE relkind IN ('r','v')))))
- UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d WHERE d.refclassid='pg_namespace'::regclass AND d.refobjid IN (SELECT oid FROM ns) AND d.classid NOT IN ('pg_class'::regclass,'pg_type'::regclass,'pg_constraint'::regclass)
+ UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d WHERE d.refclassid='pg_catalog.pg_namespace'::regclass AND d.refobjid IN (SELECT oid FROM ns) AND d.classid NOT IN ('pg_catalog.pg_class'::regclass,'pg_catalog.pg_type'::regclass,'pg_catalog.pg_constraint'::regclass)
  UNION ALL SELECT oid FROM pg_catalog.pg_proc WHERE pronamespace IN (SELECT oid FROM ns)
  UNION ALL SELECT oid FROM pg_catalog.pg_extension WHERE extnamespace IN (SELECT oid FROM ns)
  UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid WHERE d.deptype='e'
@@ -45,8 +45,8 @@ export const preservationSQL=`WITH ns AS (SELECT oid FROM pg_catalog.pg_namespac
  'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s)||jsonb_build_object('seqstart',s.seqstart::text,'seqincrement',s.seqincrement::text,'seqmax',s.seqmax::text,'seqmin',s.seqmin::text,'seqcache',s.seqcache::text) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'triggers',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM pg_catalog.pg_trigger t WHERE t.tgrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'dependencies',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classid,d.objid,d.objsubid,d.refclassid,d.refobjid,d.refobjsubid,d.deptype) FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid),'[]'::jsonb),
- 'comments',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid) FROM pg_catalog.pg_description d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb),
- 'labels',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid,d.provider) FROM pg_catalog.pg_seclabel d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb)
+ 'comments',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid) FROM pg_catalog.pg_description d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_catalog.pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb),
+ 'labels',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid,d.provider) FROM pg_catalog.pg_seclabel d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_catalog.pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb)
  ) AS metadata`;
 const metadataFields=['relations','columns','defaults','constraints','indexes','views','types','sequences','triggers','dependencies','comments','labels'];
 export async function preservationSnapshot(query,fixture,namespaces){
