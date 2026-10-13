@@ -1,6 +1,6 @@
 {
   "base": "b5243ae164f68c7591b039e8365d9897390543d2",
-  "source": "e14f3fc704adde3819088b0587f91c81be5e1ad0",
+  "source": "4f4da0b67d0b062a84b9196a4b70b012df30f213",
   "originalEntries": 11411,
   "unchangedOriginalEntries": 11400,
   "checks": [
@@ -90,6 +90,42 @@
     },
     {
       "name": "audit-scope-before stream stderr",
+      "passed": true
+    },
+    {
+      "name": "cast-types-before bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "cast-types-before stream stdout",
+      "passed": true
+    },
+    {
+      "name": "cast-types-before stream stderr",
+      "passed": true
+    },
+    {
+      "name": "cast-types-final bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "cast-types-final stream stdout",
+      "passed": true
+    },
+    {
+      "name": "cast-types-final stream stderr",
+      "passed": true
+    },
+    {
+      "name": "cast-types-repaired bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "cast-types-repaired stream stdout",
+      "passed": true
+    },
+    {
+      "name": "cast-types-repaired stream stderr",
       "passed": true
     },
     {
@@ -297,7 +333,7 @@
       "passed": true
     }
   ],
-  "passed": 73,
+  "passed": 82,
   "failed": 0,
   "sourceFiles": [
     {
@@ -327,8 +363,8 @@
     },
     {
       "path": "apps/control/qualified-application/schema-compatibility.test.mjs",
-      "blob": "71931019eb060ef13dfd1b3c28972081e945f190",
-      "sha256": "49030860075645e85ee6fe5b5b0c18ee8f5b21270e9a52fdc5233f01eab412af"
+      "blob": "59ef05618ecc27ea5e060aca290928b6853b0515",
+      "sha256": "66b7e4c32f0b2f4d8ea577f11931f49909dd18b3f74e87048fe6a13ef522c695"
     },
     {
       "path": "apps/control/qualified-application/schema-contract.mjs",
@@ -342,8 +378,8 @@
     },
     {
       "path": "apps/control/qualified-application/schema-preservation.mjs",
-      "blob": "48cecf65cb615659d739953a32a0927040a84f8e",
-      "sha256": "3a0c321f6464865c1e77ccab0b6d7732b095447c8beb5e03c29e948ab2a5f0f5"
+      "blob": "6d3cbdae4f14e7438ad7f250a1f76a4ce0acac9b",
+      "sha256": "f487219178395847dee406b8db60fcc4e945fca8707265a5e475beca9e07f4e0"
     },
     {
       "path": "apps/control/qualified-application/schema.fixture.mjs",
@@ -379,6 +415,21 @@
     },
     {
       "label": "audit-scope-before",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "cast-types-before",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "cast-types-final",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "cast-types-repaired",
       "exitCode": 1,
       "ownedProcessGroupAbsent": true
     },

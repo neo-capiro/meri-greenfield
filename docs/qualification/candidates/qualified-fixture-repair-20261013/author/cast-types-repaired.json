@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/schema-compatibility.test.mjs",
+    "apps/control/qualified-application/schema.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-author-20261013",
+  "sourceHead": "4030675bac1261796f05f12886c611e9b31147aa",
+  "sourceDiffSha256": "8263cfb1689653dad0a7220fbe0e80aa0e2ed5640d8a2382fc7fd83a86cbf6cd",
+  "sourceDiffBytes": 13820,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T06:29:06.165775+00:00",
+  "durationSeconds": 0.668,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 514981,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin",
+      "bytes": 7790,
+      "sha256": "fc06c0f610df9685a9aab3c0a8a0054a73cbe5abca1f5a26abe8372d5deae258"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
