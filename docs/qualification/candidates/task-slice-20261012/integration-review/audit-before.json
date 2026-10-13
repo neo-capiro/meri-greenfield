@@ -1,0 +1,5 @@
+{
+  "exitCode": 1,
+  "sourceSha256": "f08f3f22ea7d5fff7c1c3c4b91a0d7303c4332e4611a0845a72c1e445b05a591",
+  "reason": "Reviewer assumed availability label unavailable instead of canonical unimplemented; audit fixture only."
+}
