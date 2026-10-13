@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/lifecycle-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "14f2e2eaff45e520727ba2b0eb7398daf0cf3a38",
+  "worktreeHead": "bef6bafb11e717c12aa2b7e5c9ef3ee39706cc8d",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 2.052,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2910,
+  "stderrBytes": 0,
+  "stdoutSha256": "24ad43b55f9c84fc90e4818223647ae7e36ba41833486cd95df4016830aa100d",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

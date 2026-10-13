@@ -21,8 +21,8 @@ async function fixture(){
  }};
  const journal=createLifecycleJournal({tx:async(_binding,check,body)=>{check();const result=await body(client);check();return result;},rowRun:value=>value});
  const input={controlId:id('5'),intent:'steer',text:'Synthetic steering'},command={controlId:input.controlId,action:'steer',binding,contextSha256:hash({window:request.window,skill:request.skill,scopes}),prompt:input.text};
- const saved=await journal.begin({binding,scopes,input,command},()=>{});
- return {binding,scopes,saved,journal,calls,row:()=>row,read:()=>journal.controls({binding,scopes,after:0},()=>{})};
+ const saved=await journal.begin({binding,scopes,selectedClientId:scopes[0].resourceId,input,command},()=>{});
+ return {binding,scopes,saved,journal,calls,row:()=>row,read:()=>journal.controls({binding,scopes,selectedClientId:scopes[0].resourceId,after:0},()=>{})};
 }
 test('Actual journal creates and decodes a healthy immutable source control',async()=>{
  const f=await fixture(),rows=await f.read();assert.equal(rows.length,1);assert.equal(rows[0].controlSequence,1);
