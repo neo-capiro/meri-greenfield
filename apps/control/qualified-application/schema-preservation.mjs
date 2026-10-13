@@ -1,6 +1,6 @@
 /** Metadata-only preservation of explicitly declared unrelated evidence namespaces. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {requireSchema,sha256} from './schema-contract.mjs';
+import {requireSchema,sha256,preservationData} from './schema-contract.mjs';
 export const namespaceSQL="SELECT nspname AS name,oid::pg_catalog.text AS oid,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::pg_catalog.text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
 const targets=['meri_qualification','meri_task_lookup'];
 export function assertNamespaces(rows,fixture,prepared){
@@ -54,7 +54,7 @@ export async function preservationSnapshot(query,fixture,namespaces){
  const result=await query(preservationSQL,[fixture.schemaScope.namespaces.map(n=>n.name)]);
  requireSchema(result.length===1);const r=own(result[0],['unsupported','metadata']);
  if(r.unsupported!==0)throw Object.assign(Error('QUALIFICATION_SCHEMA_UNSUPPORTED_EVIDENCE_OBJECT'),{reason:'UNSUPPORTED_EVIDENCE_OBJECT'});
- const metadata=data(own(r.metadata,metadataFields));for(const k of metadataFields)requireSchema(Array.isArray(metadata[k]));
+ const metadata=preservationData(own(r.metadata,metadataFields));for(const k of metadataFields)requireSchema(Array.isArray(metadata[k]));
  return data({namespaceCount:namespaces.length,metadataSha256:sha256(JSON.stringify({namespaces,metadata})),coverage:'declared-namespace-catalog-metadata/1'});
 }
 export function compatibilityBinding(f,preservation){

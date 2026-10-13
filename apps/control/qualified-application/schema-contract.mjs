@@ -3,6 +3,8 @@ import {createHash} from 'node:crypto';
 import {types} from 'node:util';
 import {isIP} from 'node:net';
 import {own,data,nativeSignal,instant} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {snapshotPreservationData} from '../../../packages/contracts/retrieval-0.2/operation-contracts.mjs';
+export {snapshotPreservationData as preservationData};
 
 export const migrations=data([
  ['qualification','apps/proxy/qualification/state/migrations/0001_qualification_state.sql','fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc'],
@@ -79,15 +81,15 @@ export function portValue(value,name){
  throw new Error('QUALIFICATION_SCHEMA_PORT');
 }
 export function portMethod(value,name){const method=portValue(value,name);requireSchema(typeof method==='function');return method.bind(value);}
-function boundedRows(result,maxBytes,oneRow){
- const r=data(portValue(result,'rows'));
+function boundedRows(result,maxBytes,oneRow,snapshot=data){
+ const r=snapshot(portValue(result,'rows'));
  requireSchema(Array.isArray(r)&&(oneRow?r.length===1:r.length<=1024)&&Buffer.byteLength(JSON.stringify(r),'utf8')<=maxBytes);
  return r;
 }
 export function rows(result){return boundedRows(result,1048576,false);}
 // Only the fixed preservation query uses this ceiling. Keep the full metadata,
-// shared inert/depth/node guards and exactly one result row; no caller limit.
-export function preservationRows(result){return boundedRows(result,4194304,true);}
+// shared inert/depth guards, fixed250000 nodes and exactly one row; no caller limit.
+export function preservationRows(result){return boundedRows(result,4194304,true,snapshotPreservationData);}
 
 export function assertCatalog(value){
  const catalog=data(value);requireSchema(Array.isArray(catalog)&&catalog.length===relations.length);
