@@ -1,0 +1,2795 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:action-application:0.1.0",
+  "$defs": {
+    "ActionQueryResponse": {
+      "type": "object",
+      "properties": {
+        "lookupId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultReference": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "resultSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "classification": {
+          "const": "recommendations"
+        },
+        "acceptedTasks": {
+          "const": false
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_UIEvent_1691b714"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "observation": {
+          "type": "object",
+          "properties": {
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "subject": {
+              "$ref": "#/$defs/Canonical_ResolvedSubject_470b2bbc"
+            },
+            "operation": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "const": "actions.query"
+                },
+                "version": {
+                  "const": "0.2.0"
+                }
+              },
+              "required": [
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "argumentsSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_ActionItemClientScopedPage_872c93ea"
+            }
+          },
+          "required": [
+            "binding",
+            "subject",
+            "operation",
+            "argumentsSha256",
+            "result"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "lookupId",
+        "resultReference",
+        "resultSha256",
+        "classification",
+        "acceptedTasks",
+        "events",
+        "observation"
+      ],
+      "additionalProperties": false
+    },
+    "ActionDraftResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "draft"
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "resultReference": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "resultSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "actionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "lookupId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "actionSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "originalBinding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "resultReference",
+            "resultSha256",
+            "actionId",
+            "lookupId",
+            "actionSha256",
+            "originalBinding",
+            "clientId"
+          ],
+          "additionalProperties": false
+        },
+        "recommendation": {
+          "$ref": "#/$defs/Canonical_ActionItemReadRow_387d1c2e"
+        },
+        "task": {
+          "$ref": "#/$defs/Canonical_TaskCreateArguments_1202c301"
+        },
+        "draftSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "status",
+        "source",
+        "recommendation",
+        "task",
+        "draftSha256"
+      ],
+      "additionalProperties": false
+    },
+    "ActionPrepareResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "const": "approval_required"
+        },
+        "draft": {
+          "$ref": "#/$defs/ActionDraftResponse"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_ApprovalProposal_d1a3e74f"
+        }
+      },
+      "required": [
+        "status",
+        "draft",
+        "proposal"
+      ],
+      "additionalProperties": false
+    },
+    "ActionExecuteResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "observed"
+            },
+            "outcome": {
+              "type": "object",
+              "properties": {
+                "receipt": {
+                  "$ref": "#/$defs/Canonical_CommandReceipt_ac49ee1e"
+                },
+                "result": {
+                  "$ref": "#/$defs/Canonical_TaskCreateResult_0501c509"
+                }
+              },
+              "required": [
+                "receipt",
+                "result"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "indeterminate"
+            },
+            "outcome": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "status",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ActionErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "ACCESS_DENIED",
+                "APPLICATION_CLOCK",
+                "APPLICATION_CONFIGURATION",
+                "CANCELLED",
+                "COMMAND_APPROVAL_REFUSED",
+                "COMMAND_AUTHORITY_REFUSED",
+                "COMMAND_COMMIT_UNCERTAIN",
+                "COMMAND_OUTCOME_UNKNOWN",
+                "COMMAND_PREPARATION_REFUSED",
+                "COMMAND_REFUSED",
+                "DEADLINE",
+                "EXECUTION_AUTHORITY_REFUSED",
+                "INVALID_BODY",
+                "INVALID_CONTENT_LENGTH",
+                "INVALID_JSON",
+                "INVALID_REQUEST",
+                "LOOKUP_REPLAY",
+                "LOOKUP_UNAVAILABLE",
+                "METHOD_NOT_ALLOWED",
+                "NOT_FOUND",
+                "REQUEST_FAILED",
+                "REQUEST_TOO_LARGE",
+                "RESPONSE_TOO_LARGE",
+                "RESULT_CORRELATION_REFUSED",
+                "SESSION_SCOPE_REFUSED",
+                "UNAUTHENTICATED",
+                "UNAVAILABLE",
+                "UNSUPPORTED_CONTENT_ENCODING",
+                "UNSUPPORTED_MEDIA_TYPE"
+              ]
+            },
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN",
+                "RESULT_NOT_RELEASED",
+                "STORED_NOT_RELEASED",
+                "NOT_STORED",
+                "READ_UNAVAILABLE"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_SourceEvidence_d9008775": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceVersionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "contentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_UIEvent_1691b714": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "run.status"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "queued",
+                    "starting",
+                    "running",
+                    "waiting-for-approval",
+                    "paused",
+                    "completed",
+                    "failed",
+                    "cancelled"
+                  ]
+                },
+                "reasonCode": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "state",
+                "reasonCode"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "message.delta"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "messageId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "messageId",
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "tool.started"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "tool": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "requestId",
+                "tool"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "tool.completed"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "resultReference": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "requestId",
+                "resultReference"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "source.available"
+            },
+            "data": {
+              "$ref": "#/$defs/Canonical_SourceEvidence_d9008775"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "approval.required"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "proposalId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "commandSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                }
+              },
+              "required": [
+                "proposalId",
+                "commandSha256",
+                "expiresAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "artifact.available"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "artifactId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "versionId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "artifactId",
+                "versionId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "checkpoint.verified"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "checkpointId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "checkpointId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "usage.recorded"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "usageId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "usageId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "run.error"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "code",
+                "retryable",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_ResolvedSubject_470b2bbc": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "client",
+            "portfolio",
+            "personal",
+            "entity"
+          ]
+        },
+        "entityType": {
+          "type": "string",
+          "enum": [
+            "client",
+            "person",
+            "organization",
+            "program-element",
+            "bill",
+            "docket",
+            "funding-opportunity",
+            "research-portfolio",
+            "prospect",
+            "user"
+          ]
+        },
+        "entityIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "rosterVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "entityType",
+        "entityIds",
+        "tenantId",
+        "actorId",
+        "authorizationDecisionId",
+        "policyRevision",
+        "scopes",
+        "rosterVersionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_NormalizedWindow_e50ec0ed": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "type": "string",
+              "enum": [
+                "calendar-week",
+                "calendar-month",
+                "calendar-year",
+                "relative-duration",
+                "explicit"
+              ]
+            },
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "endExclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "weekStartsOn": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "monday",
+                    "sunday"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "basis",
+            "startInclusive",
+            "endExclusive",
+            "timezone",
+            "weekStartsOn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "fiscal-year"
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 3000
+            },
+            "calendarId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "stage": {
+              "type": "string",
+              "enum": [
+                "requested",
+                "authorized",
+                "appropriated",
+                "obligated",
+                "actual",
+                "outlay"
+              ]
+            },
+            "revisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "endExclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "year",
+            "calendarId",
+            "stage",
+            "revisionId",
+            "startInclusive",
+            "endExclusive",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "unbounded"
+            }
+          },
+          "required": [
+            "basis"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_appliedFilters_13ba99b6": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "valueSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "name",
+          "valueSha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "Canonical_SourceState_466075c2": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9_.-]*$"
+        },
+        "authority": {
+          "type": "string",
+          "enum": [
+            "authoritative",
+            "derived",
+            "approved-memory"
+          ]
+        },
+        "snapshotVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "adapterVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "checked",
+            "partial",
+            "unavailable",
+            "denied"
+          ]
+        },
+        "synchronizedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "asOf": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retrievedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "freshness": {
+          "type": "string",
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "sourceId",
+        "authority",
+        "snapshotVersionId",
+        "adapterVersion",
+        "status",
+        "synchronizedAt",
+        "asOf",
+        "retrievedAt",
+        "freshness"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Coverage_a7c3afed": {
+      "type": "object",
+      "properties": {
+        "sourcesRequested": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "sourcesChecked": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "sourcesUnavailable": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "enumeration": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "partial",
+            "unknown"
+          ]
+        },
+        "enumerableTotal": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "returnedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "historySupport": {
+          "type": "string",
+          "enum": [
+            "supported",
+            "bounded",
+            "unsupported"
+          ]
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "sourcesRequested",
+        "sourcesChecked",
+        "sourcesUnavailable",
+        "enumeration",
+        "enumerableTotal",
+        "returnedCount",
+        "truncated",
+        "historySupport",
+        "limitations"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionStatus_21422bf6": {
+      "type": "string",
+      "enum": [
+        "new",
+        "triaged",
+        "assigned",
+        "drafting",
+        "ready_for_review",
+        "sent_to_client",
+        "outreach_completed",
+        "monitoring",
+        "dismissed",
+        "archived"
+      ]
+    },
+    "Canonical_ActionSort_ce05e4a0": {
+      "type": "string",
+      "enum": [
+        "deadline",
+        "priority"
+      ]
+    },
+    "Canonical_ActionItemClientScopedSelection_8ef7e563": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "actionItemId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ActionStatus_21422bf6"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sort": {
+          "$ref": "#/$defs/Canonical_ActionSort_ce05e4a0"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "const": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "cursorApplied": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "clientId",
+        "actionItemId",
+        "status",
+        "sort",
+        "page",
+        "limit",
+        "cursorApplied"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemReadScope_71b651a0": {
+      "type": "object",
+      "properties": {
+        "actionItemId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_ActionStatus_21422bf6"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sort": {
+          "$ref": "#/$defs/Canonical_ActionSort_ce05e4a0"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "cursorApplied": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "actionItemId",
+        "status",
+        "sort",
+        "page",
+        "limit",
+        "cursorApplied"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionType_b0113df0": {
+      "type": "string",
+      "enum": [
+        "protect_funding",
+        "restore_cut",
+        "add_report_language",
+        "oppose_restriction",
+        "district_one_pager",
+        "monitor_procurement",
+        "client_alert",
+        "schedule_outreach",
+        "escalate_uncertainty",
+        "update_compliance_notes"
+      ]
+    },
+    "Canonical_AudienceMember_2989a346": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "committee",
+            "office",
+            "person_role"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "contactUse": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "outreachEligible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_DeadlineSource_c0cee855": {
+      "type": "string",
+      "enum": [
+        "sam_response",
+        "markup_window",
+        "hearing",
+        "manual"
+      ]
+    },
+    "Canonical_ConfidenceBand_1337a6d6": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "Canonical_ConfidenceBands_d8ce0f28": {
+      "type": "object",
+      "properties": {
+        "delta": {
+          "$ref": "#/$defs/Canonical_ConfidenceBand_1337a6d6"
+        },
+        "programMatch": {
+          "$ref": "#/$defs/Canonical_ConfidenceBand_1337a6d6"
+        },
+        "peopleMatch": {
+          "$ref": "#/$defs/Canonical_ConfidenceBand_1337a6d6"
+        },
+        "clientRelevance": {
+          "$ref": "#/$defs/Canonical_ConfidenceBand_1337a6d6"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Canonical_EvidenceRef_213ffa01": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "source",
+            "delta",
+            "provision",
+            "opportunity",
+            "program_match"
+          ]
+        },
+        "sourceDocumentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "deltaId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "provisionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "programId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "opportunityId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemNativeCompletion_98af041c": {
+      "type": "object",
+      "properties": {
+        "completed": {
+          "const": false
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "const": "recommendation_outcome_only"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "establishesDeliveryOrAcceptance": {
+          "const": false
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "completed",
+        "evidence",
+        "establishesDeliveryOrAcceptance",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemLinkedSourceProof_ff2dc401": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "const": "source_document"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "sourceVersion": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "contentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "owner",
+        "sourceRecordId",
+        "sourceVersion",
+        "contentSha256"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemSourceProof_83d56046": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "owner": {
+          "const": "action_recommendation"
+        },
+        "sourceRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "currentClientId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "sourceVersion": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "contentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "linkedSources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_ActionItemLinkedSourceProof_ff2dc401"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "version",
+        "owner",
+        "sourceRecordId",
+        "currentClientId",
+        "sourceVersion",
+        "contentSha256",
+        "linkedSources"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemReadRow_387d1c2e": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "districtKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "clientName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "programId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deltaId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actionType": {
+          "$ref": "#/$defs/Canonical_ActionType_b0113df0"
+        },
+        "issueTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "whatChanged": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "whyItMatters": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "recommendedAction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "targetAudience": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_AudienceMember_2989a346"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "suggestedArtifactType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadlineSource": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_DeadlineSource_c0cee855"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownerUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "priority": {
+          "type": "number"
+        },
+        "confidence": {
+          "$ref": "#/$defs/Canonical_ConfidenceBands_d8ce0f28"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_EvidenceRef_213ffa01"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "status": {
+          "$ref": "#/$defs/Canonical_ActionStatus_21422bf6"
+        },
+        "dismissalReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "recordKind": {
+          "const": "action_recommendation"
+        },
+        "recommendation": {
+          "const": true
+        },
+        "acceptedAsTask": {
+          "const": false
+        },
+        "nativeCompletion": {
+          "$ref": "#/$defs/Canonical_ActionItemNativeCompletion_98af041c"
+        },
+        "sourceProof": {
+          "$ref": "#/$defs/Canonical_ActionItemSourceProof_83d56046"
+        }
+      },
+      "required": [
+        "id",
+        "districtKey",
+        "clientId",
+        "clientName",
+        "peCode",
+        "programId",
+        "deltaId",
+        "actionType",
+        "issueTitle",
+        "whatChanged",
+        "whyItMatters",
+        "recommendedAction",
+        "targetAudience",
+        "suggestedArtifactType",
+        "deadline",
+        "deadlineSource",
+        "ownerUserId",
+        "priority",
+        "confidence",
+        "uncertainty",
+        "evidence",
+        "status",
+        "dismissalReason",
+        "outcome",
+        "createdAt",
+        "updatedAt",
+        "title",
+        "body",
+        "recordKind",
+        "recommendation",
+        "acceptedAsTask",
+        "nativeCompletion",
+        "sourceProof"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemClientScopedPageCoverage_2ed597e6": {
+      "type": "object",
+      "properties": {
+        "sourceStatus": {
+          "type": "string",
+          "enum": [
+            "healthy",
+            "degraded"
+          ]
+        },
+        "sourceReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "partial": {
+          "type": "boolean"
+        },
+        "paginationComplete": {
+          "type": "boolean"
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "totalIsExactForScope": {
+          "const": true
+        },
+        "absenceSupported": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "sourceStatus",
+        "sourceReason",
+        "complete",
+        "partial",
+        "paginationComplete",
+        "hasMore",
+        "nextCursor",
+        "totalIsExactForScope",
+        "absenceSupported",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_continuation_c9f32bf1": {
+      "type": "object",
+      "properties": {
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requiredReads": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "remainingSources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "cursor",
+        "requiredReads",
+        "remainingSources"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ActionItemClientScopedPage_872c93ea": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "action-item-client-scoped-page"
+        },
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "query_action_items"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "traceId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "subject": {
+          "$ref": "#/$defs/Canonical_ResolvedSubject_470b2bbc"
+        },
+        "window": {
+          "$ref": "#/$defs/Canonical_NormalizedWindow_e50ec0ed"
+        },
+        "argumentsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "appliedFilters": {
+          "$ref": "#/$defs/Canonical_appliedFilters_13ba99b6"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_SourceState_466075c2"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "coverage": {
+          "$ref": "#/$defs/Canonical_Coverage_a7c3afed"
+        },
+        "selection": {
+          "$ref": "#/$defs/Canonical_ActionItemClientScopedSelection_8ef7e563"
+        },
+        "order": {
+          "type": "string",
+          "enum": [
+            "deadline-asc_nulls-last_priority-desc_id-asc-owner-unconfirmed",
+            "priority-desc_deadline-asc_nulls-last_id-asc-owner-unconfirmed"
+          ]
+        },
+        "snapshotVersionId": {
+          "type": "null"
+        },
+        "clientId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "scope": {
+          "$ref": "#/$defs/Canonical_ActionItemReadScope_71b651a0"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 50
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_ActionItemReadRow_387d1c2e"
+          },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "pageCoverage": {
+          "$ref": "#/$defs/Canonical_ActionItemClientScopedPageCoverage_2ed597e6"
+        },
+        "continuation": {
+          "$ref": "#/$defs/Canonical_continuation_c9f32bf1"
+        },
+        "evidenceReady": {
+          "const": false
+        },
+        "negativeAssertion": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "none"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "contractVersion",
+        "operation",
+        "requestId",
+        "traceId",
+        "binding",
+        "subject",
+        "window",
+        "argumentsSha256",
+        "appliedFilters",
+        "generatedAt",
+        "sources",
+        "coverage",
+        "selection",
+        "order",
+        "snapshotVersionId",
+        "clientId",
+        "scope",
+        "total",
+        "returned",
+        "actions",
+        "pageCoverage",
+        "continuation",
+        "evidenceReady",
+        "negativeAssertion"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskCreateArguments_1202c301": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "clientId",
+        "dueDate"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ObjectReference_a099bd1c": {
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "versionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "objectId",
+        "versionId",
+        "sha256",
+        "bytes",
+        "scopes"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Command_2099e1ba": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.1.0"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "memory.propose",
+            "task.create",
+            "artifact.file"
+          ]
+        },
+        "arguments": {
+          "type": "object"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_ObjectReference_a099bd1c"
+          }
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "contractVersion",
+        "commandId",
+        "binding",
+        "action",
+        "arguments",
+        "attachments",
+        "scopes",
+        "idempotencyKey"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Identity_aba0a4e9": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_ApprovalProposal_d1a3e74f": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "command": {
+          "$ref": "#/$defs/Canonical_Command_2099e1ba"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "proposalId",
+        "command",
+        "commandSha256",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_CommandReceipt_ac49ee1e": {
+      "type": "object",
+      "properties": {
+        "receiptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "idempotencyKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "succeeded",
+            "denied",
+            "failed",
+            "indeterminate"
+          ]
+        },
+        "sourceTransactionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "receiptId",
+        "commandId",
+        "commandSha256",
+        "idempotencyKey",
+        "binding",
+        "outcome",
+        "sourceTransactionId",
+        "completedAt",
+        "scopes",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_TaskCreateResult_0501c509": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "status": {
+          "const": "todo"
+        },
+        "dueDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T00:00:00\\.000Z$",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "status",
+        "dueDate",
+        "clientId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
