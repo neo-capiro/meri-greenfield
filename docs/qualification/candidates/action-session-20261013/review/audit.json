@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "base": "9815492c51d35be3e83f08e6a5b086269437af04",
+  "source": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+  "baseEntries": 10924,
+  "unchanged": 10922,
+  "onlyOriginalChanges": [
+    "apps/control/action-host/local-integration/case.mjs",
+    "apps/control/action-host/local-integration/ports.mjs"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-host/local-integration/case.mjs",
+      "bytes": 6139,
+      "sha256": "4e4a8b93361ce90412b3732c85a8bdd14a00c3d86339ac54962fe1ae3696b0cc"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "bytes": 8521,
+      "sha256": "3290d6924dc33c017086f3d6ceda39ac4d7ed46119034f63e7073b8fd05f29bd"
+    },
+    {
+      "path": "apps/control/action-host/session/http.mjs",
+      "bytes": 3396,
+      "sha256": "2403d12bf43147aeea9b6fd040ca1dd662d4f30d3dd19e263187e2bc38b69542"
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "bytes": 9596,
+      "sha256": "2e755e24865951e72a871ea7377c7b221022e67dad964d51f7276b5a83812499"
+    },
+    {
+      "path": "apps/control/action-host/session/session.test.mjs",
+      "bytes": 9927,
+      "sha256": "e18a79b757a1b2c9738d2645d8f17087c4a79fd998ab1089d07a63dd9ddbc2d1"
+    }
+  ],
+  "captures": [
+    {
+      "label": "owner-before",
+      "exitCode": 1,
+      "pgid": 475162,
+      "freshAbsent": true
+    },
+    {
+      "label": "http-before",
+      "exitCode": 1,
+      "pgid": 475417,
+      "freshAbsent": true
+    },
+    {
+      "label": "root-http-before",
+      "exitCode": 1,
+      "pgid": 475635,
+      "freshAbsent": true
+    },
+    {
+      "label": "final-source",
+      "exitCode": 0,
+      "pgid": 476969,
+      "freshAbsent": true
+    },
+    {
+      "label": "final-http-reuse",
+      "exitCode": 0,
+      "pgid": 477717,
+      "freshAbsent": true
+    }
+  ],
+  "nativeAuthExecuted": false,
+  "finalRefactorOnly": "apps/control/action-host/session/http.mjs",
+  "unchangedOwnerAndIntegrationFreeze": "aca37f81b2a795f2502dc8c0dc36cdbc10d72d2a",
+  "authorPacket": {
+    "commit": "b0e70fd0a7e082885be917ff8d9092c12b5d070e",
+    "manifestSha256": "fd2e91b14a9af90c743e84f7357bc395cd63ea723c790b27f76459450e7f7c1b",
+    "membersVerified": 23
+  }
+}

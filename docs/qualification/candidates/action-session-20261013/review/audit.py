@@ -10,8 +10,10 @@ identities=[]
 for p in sorted(b):
  if p in changed or p.startswith('apps/control/action-host/session/'):
   raw=git('show',f'{source}:{p}');assert(root/p).read_bytes()==raw,p;identities.append({'path':p,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})
+previous='aca37f81b2a795f2502dc8c0dc36cdbc10d72d2a'
+assert git('diff','--name-only',previous,source).decode().splitlines()==['apps/control/action-host/session/http.mjs']
 captures=[]
-for label in ['owner-before','http-before','root-http-before','final-source']:
+for label in ['owner-before','http-before','root-http-before','final-source','final-http-reuse']:
  r=json.loads((e/f'{label}.json').read_text());assert r['ownedProcessGroupAbsent'] and not r['timedOut'] and not r['ownedGroupKillRequired']
  for s in r['streams']:
   raw=(root/s['path']).read_bytes();assert len(raw)==s['bytes'] and hashlib.sha256(raw).hexdigest()==s['sha256']
@@ -19,7 +21,7 @@ for label in ['owner-before','http-before','root-http-before','final-source']:
  except ProcessLookupError:pass
  else:raise AssertionError(r['ownedPidAndPgid'])
  captures.append({'label':label,'exitCode':r['exitCode'],'pgid':r['ownedPidAndPgid'],'freshAbsent':True})
-result={'status':'PASS','base':base,'source':source,'baseEntries':len(a),'unchanged':len(a)-len(changed),'onlyOriginalChanges':changed,'sourceIdentities':identities,'captures':captures,'nativeAuthExecuted':False}
+result={'status':'PASS','base':base,'source':source,'baseEntries':len(a),'unchanged':len(a)-len(changed),'onlyOriginalChanges':changed,'sourceIdentities':identities,'captures':captures,'nativeAuthExecuted':False,'finalRefactorOnly':'apps/control/action-host/session/http.mjs','unchangedOwnerAndIntegrationFreeze':previous}
 if packet:
  mp='docs/qualification/candidates/action-session-20261013/author/manifest.json';raw=git('show',f'{packet}:{mp}');m=json.loads(raw)
  for row in m['members']:

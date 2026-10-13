@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/session/owner-independent.test.mjs",
+    "apps/control/action-host/session/http-independent.test.mjs",
+    "apps/control/action-host/session/session.test.mjs",
+    "apps/control/action-host/local-integration/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-session-review-20261013",
+  "sourceHead": "83f1c6b0fdd7aa9adb6092ccef40016d6f8d91ef",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:30:49.400371+00:00",
+  "durationSeconds": 3.839,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 476969,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-source.stdout.bin",
+      "bytes": 4303,
+      "sha256": "db0e875aa748a9d6a1fbd91e47f4ac9611495f28a49d226fa6e90180d5ab6136"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,32 @@
+✔ independent session HTTP refuses method before owner (4.578154ms)
+✔ independent session HTTP refuses query before owner (0.853493ms)
+✔ independent session HTTP refuses fragment before owner (0.671299ms)
+✔ independent session HTTP refuses extra authority before owner (3.005749ms)
+✔ independent session HTTP refuses duplicate auth before owner (0.856167ms)
+✔ independent session HTTP refuses length mismatch before owner (1.373245ms)
+✔ independent session HTTP refuses oversized stream before owner (0.970359ms)
+✔ independent session HTTP refuses invalid utf8 before owner (0.895076ms)
+✔ independent session HTTP must not execute own Request accessors (1.63635ms)
+✔ independent session HTTP rejects Proxy Request without traps (0.513492ms)
+✔ independent session HTTP parked body is cancelled before issuance at finite deadline (81.351691ms)
+✔ independent session constructor rejects borrowed issue getter without executing it (0.590268ms)
+✔ independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute (373.950351ms)
+✔ independent issuance HTTP never reflects extra owner fields or response accessors (1.107456ms)
+✔ independent short HTTP cutoff reaches both real session-owner authorization ports (1.332154ms)
+✔ empty hints resolve current context; native token is not an action session; revisions and revocation fail closed (6.907456ms)
+✔ explicit substituted hints and hostile getters do not issue sessions (0.937349ms)
+✔ bounded registry expires records and close invalidates all credentials (1.664974ms)
+✔ Fetch issuance is closed, bounded and content-free on refusal (8.807243ms)
+✔ actual HTTP session issuance composes shared-pool host query draft prepare and approved execute (303.192483ms)
+✔ revocation while native verification is parked refuses receipt and skips the later context port (0.974786ms)
+✔ HTTP original cutoff reaches native identity and current context ports (1.066314ms)
+✔ issuance response remains minimal and bounded even for injected malformed owners (1.776723ms)
+✔ native Request accessors and inert issue descriptors prevent caller code during routing (1.339766ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3042.123976
