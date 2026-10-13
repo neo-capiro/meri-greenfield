@@ -1,0 +1,216 @@
+{
+  "packet": "a581f8a7b0024e7a29dd90253598051024f1fd9c",
+  "tree": "76c2a02c4dfc6d8535eb0f84a23438b0e9fda35c",
+  "source": "a57f5cf0e2345975ec11a3c2f43157c6e6769a73",
+  "manifestSha256": "59f56adea20a0cc6b9264dc97dd5cea81ca558f3f8e11808097445383e2aefda",
+  "members": 35,
+  "passed": 51,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "exact author manifest identity",
+      "passed": true
+    },
+    {
+      "name": "accepted source identity",
+      "passed": true
+    },
+    {
+      "name": "35 unique member paths",
+      "passed": true
+    },
+    {
+      "name": "member docs/coordination/reports/CODEX-TASK-LOOKUP-EVAL-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "member docs/coordination/tasks/CODEX-TASK-LOOKUP-EVAL-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/consolidated-source-binding.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/consolidated.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/consolidated.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/consolidated.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/control-before.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/control-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/control-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/first.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/first.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/first.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/outcome-before.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/outcome-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/outcome-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/repair-accounting.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/repaired.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/repaired.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/repaired.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/run-focused.py",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/setup-failure.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/task-slice-20261012/eval-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/README.md",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/README.md",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/cli.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/cli.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/corpus.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/corpus.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/score.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/score.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/test/actual-control.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/test/actual-control.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/test/cli.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/test/cli.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/test/corpus.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/test/corpus.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/test/fixtures.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/test/result-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/test/result-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "member evals/task-lookup/test/score.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed product evals/task-lookup/test/score.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact packet membership",
+      "passed": true
+    },
+    {
+      "name": "our consolidated replay success",
+      "passed": true
+    }
+  ],
+  "scope": "GIT_METADATA_ONLY_NO_AUTHOR_CODE_EXECUTED"
+}

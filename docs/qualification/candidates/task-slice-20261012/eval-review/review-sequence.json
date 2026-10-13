@@ -1,0 +1,27 @@
+{
+  "excludeDependencyMerges": true,
+  "commitsThroughSourceVerdict": [
+    "1dbe41d0f83b4300087a460aec69361fccf4f4af",
+    "92be2696025422726627b4f1648940c0c02426ea",
+    "10e1299c0ce7bd7f0beedebe28aec88352086a20",
+    "0e19ffdfb330bac34869443a48d3a77a2263fd58",
+    "9637c35f80963af6104cee09ed93bf82bd9cbf2e",
+    "42e55ec6b765230247f2ee809fa3961671506aaf",
+    "3f77b808c1d05628846d946a10603082fa239b36",
+    "fd578d8a4fc1fda73b657d4992a7a7b17711b9f5",
+    "d54635797117ceb10bedda986f01318d17fd4ea9",
+    "7dd039bc89fdd7d44498d043cee102ac82a8cf8b",
+    "ca501db44123aaf915ba56bc74502e12c2e41550",
+    "98a0b74950fea5f71a40925bb896a545d82eb7ad",
+    "4b547a2ecd5dea0df933e2837784c9a73f4a7cff",
+    "85e9251d7a872c836c5618e77b81357380610470",
+    "458714ba6a1b5beabaace8bb3af89c53910dc98d",
+    "d35d81d1237371c0c30d28af68c8ffe1d1004a6a",
+    "cdfd1805fb94bcacba98f250ff6f65d702c62b94",
+    "1da2628e9b6cb2276c5cfba8129393b57e87f713",
+    "e8607dea4a3bc74899c543941657596064f5bc9b",
+    "39a8d99b07233b627e71d7bf9cd7493af1be6be3",
+    "a4d9a53fbe6c122366ce3d6b88dc7df6c8a4a553"
+  ],
+  "laterPacketCommits": "Final handoff appends packet sealing commits; no production included."
+}
