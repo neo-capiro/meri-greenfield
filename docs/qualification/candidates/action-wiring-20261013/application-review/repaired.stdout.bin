@@ -1,0 +1,44 @@
+✔ application independent actual query -> edited draft -> proposal -> explicit execution and replay (150.232045ms)
+✔ application independent closed query authority (15.062256ms)
+✔ application independent closed caller execution (13.846149ms)
+✔ application independent closed draft approver (16.065104ms)
+✔ application independent closed prepare approval (21.462915ms)
+✔ application independent wrong method before session ports (17.145577ms)
+✔ application independent wrong content type before session ports (14.35946ms)
+✔ application independent missing credential before session ports (14.096175ms)
+✔ application independent wrong auth scheme before session ports (14.420031ms)
+✔ application independent unknown route and query-string route refuse (14.141783ms)
+✔ application independent malformed JSON {"request": (13.954061ms)
+✔ application independent malformed JSON [] (15.827266ms)
+✔ application independent malformed JSON null (16.26306ms)
+✔ application independent malformed JSON {"request":{}} trailing (18.675547ms)
+✔ application independent byte cap handles multibyte UTF8 before session (21.898741ms)
+✔ application independent body stream cancelled with no later session (26.104762ms)
+✔ application independent revoked opaque session and source denial leak no details (14.859461ms)
+✔ application independent stale or expired resolved session refuses before read (30.984495ms)
+✔ application independent cancelled parked session cannot begin domain work (15.365392ms)
+✔ application independent known short session expiry clips metadata original deadline (33.600887ms)
+✔ application independent query known stored release failure remains RESULT_NOT_RELEASED (32.987795ms)
+✔ application independent opaque query UNKNOWN is preserved without redispatch (17.589945ms)
+✔ application independent forged proposal never reaches source (44.680658ms)
+✔ application independent conflicting server client binding refuses (13.844096ms)
+✔ application independent current canonical read revocation blocks prepare (24.057825ms)
+✔ application independent late execution cancellation cannot return success or retry (48.763294ms)
+✔ application independent false Content-Length cannot evade streaming byte bound (13.131464ms)
+✔ application independent invalid UTF8 is refused rather than replacement decoded (12.872485ms)
+✔ application independent duplicate credential header cannot resolve an identity (12.36981ms)
+✔ application independent output cap after known execution preserves withheld-result outcome (46.808996ms)
+✔ application independent hostile proxy rejection stays inert (14.383646ms)
+✔ application independent hostile command-message-getter rejection stays inert (13.007468ms)
+✔ application independent actual metadata stored outcome survives HTTP (38.792069ms)
+✔ application independent actual metadata unknown outcome survives HTTP (33.058712ms)
+✔ application independent canonical NOT_STORED preserves no insertion evidence (29.156779ms)
+✔ application independent canonical READ_UNAVAILABLE is not absent or retry permission (42.362995ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3451.897834
