@@ -4,7 +4,7 @@ import {canonicalSha256,validateShape} from '../../../packages/contracts/validat
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createCurrentToolAuthority} from '../authorization/current-tool-authority.mjs';
 import {ownFields,frozenData} from '../sources/source-admission.mjs';
-import {deny} from '../dispatch/operation-result.mjs';
+import {deny,safeFailure} from '../dispatch/operation-result.mjs';
 import {assertLocalActionIdentity} from './identity.mjs';
 const contract=resolveOperationContract({id:'actions.query',version:'0.2.0'}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const phases=['before_claim','before_dispatch','before_store','before_release','before_error_release','before_read'];
@@ -13,6 +13,7 @@ export function createLocalLookupAuthorizer(configuration){
  assertLocalActionIdentity(identity);if(typeof credential!=='string'||typeof assertStoredBinding!=='function'||typeof now!=='function')deny('GATEWAY_CONFIGURATION');
  const authority=createCurrentToolAuthority({ports:identity.authorityPorts,now,maxFactBytes});
  return async function authorize(call){
+  try {
   const {phase,binding:value,signal,limitDeadline}=ownFields(call,['phase','binding','limitDeadline'],['signal']);
   if(!phases.includes(phase)||typeof limitDeadline!=='function')deny('ACCESS_DENIED');
   if(signal!==undefined){if(types.isProxy(signal))deny('ACCESS_DENIED');try{Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted').get.call(signal);}catch{deny('ACCESS_DENIED');}}
@@ -32,5 +33,12 @@ export function createLocalLookupAuthorizer(configuration){
   const current=await authority.check({credential,descriptor:contract.descriptor,input:normalized.input,signal,limitDeadline});
   const stamp=now();if(signal?.aborted||!Number.isSafeInteger(stamp)||stamp>=current.deadlineMs||!same(current.binding,binding.current)||!same(current.subject.scopes,binding.scopes))deny('ACCESS_DENIED');
   return frozenData({authorized:true,bindingSha256,expiresAtMs:current.deadlineMs});
+  } catch(error) {
+   // Canonical gateway denials intentionally have no public .code; the existing
+   // control callback protocol requires a closed own code. Never forward text.
+   const owned=safeFailure(error).message;
+   const code=['ACCESS_DENIED','DEADLINE','CANCELLED'].includes(owned)?owned:'LOOKUP_UNAVAILABLE';
+   throw Object.assign(new Error(code),{code});
+  }
  };
 }
