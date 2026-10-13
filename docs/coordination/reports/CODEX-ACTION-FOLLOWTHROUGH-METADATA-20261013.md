@@ -1,6 +1,6 @@
 # Task-create approval metadata producer
 
-Base: `158fa00828cd46864c20f481a998c9d3e9cc236a`. Initial source: `e56c4bca8f16abd026e9f18396e72d4334346477`. Current source: `924979b527b1b8c7f3f7883ceddd2cf78eebd63f`. Independent source review is pending; this report does not admit native execution.
+Base: `158fa00828cd46864c20f481a998c9d3e9cc236a`. Initial source: `e56c4bca8f16abd026e9f18396e72d4334346477`. Current source: `924979b527b1b8c7f3f7883ceddd2cf78eebd63f`. Independent final behavioral replay passes76/76 (51 independent +25 author); reviewer source/packet audit is separately owned. This report does not admit native execution.
 
 `apps/control/commands/approval-metadata/index.mjs` exports `createTaskCreateApprovalMetadataOwner` and `createPostgresApprovalMetadataStore`. The owner supplies the existing command interface's concrete `prepare` and `read` metadata ports for `create_task@0.2.0` / `task.create`. Canonical task normalization, public proposal integrity, immutable JSON admission and shared operation lifetime are reused. Existing command approval, execution, mutation and idempotency remain with their original owners. No existing source/schema/lock/catalog file changed.
 
@@ -21,3 +21,7 @@ Preparation failures distinguish `NOT_STORED`, `UNKNOWN`, and `STORED_NOT_RELEAS
 Tests compose the actual existing command interface, new owner and concrete store over inert SQL protocol ports. The test executor is a counter returning canonical indeterminate output; it is not evidence of actual approval/mutation. Focused controls cover exact request/input/binding/action, immutable IDs/records, current policy changes and revocation, wrong or missing reads, lost INSERT ACK, corrupt return, release refusal, parked policy expiry and late canceled acquisition. Root separately owns the actual standard-executor and recommendation workflow composition. Test-only reusable root helpers are `createMetadataPoolFixture()` and `createMetadataPolicyFixture(...)` in `test/fixture.mjs`; these are explicitly synthetic ports, not a SQL engine or authority producer.
 
 No real PostgreSQL statement, migration, source/provider/model/customer/native/cloud/security action occurred. Native persistence, permissions, real pool/driver behavior, actual preparation-policy producer qualification and live execution remain unrun. Source connectivity and all existing operation availability remain unchanged. No broad suite was repeated in this lane.
+
+Offline source/receipt audit passes22/22 and preserves all10,184 original Git entries byte-for-byte. Only the seven explicitly copied minimal dependency directories in this worktree were removed after all author tests; the donor was untouched. Cleanup receipt records all four owned groups absent. Independent reviewer uses separate dependencies.
+
+Full `git diff --check` returns2 solely for four whitespace-bearing lines in the retained original `boundary-before.stdout.bin` assertion trace; the raw evidence is intentionally unchanged. Authored-only whitespace check passes.

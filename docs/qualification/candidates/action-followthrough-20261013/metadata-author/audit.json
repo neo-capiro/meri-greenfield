@@ -1,0 +1,161 @@
+{
+  "scope": "OFFLINE_SOURCE_AND_RECEIPT_PRESERVATION_NOT_NATIVE",
+  "base": "158fa00828cd46864c20f481a998c9d3e9cc236a",
+  "head": "e008275d78ed37977b1b4a33018693509b4910f3",
+  "originalCount": 10184,
+  "changedOriginals": [],
+  "addedPaths": [
+    "apps/control/commands/approval-metadata/binding.mjs",
+    "apps/control/commands/approval-metadata/index.mjs",
+    "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+    "apps/control/commands/approval-metadata/owner.mjs",
+    "apps/control/commands/approval-metadata/postgres-store.mjs",
+    "apps/control/commands/approval-metadata/test/fixture.mjs",
+    "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+    "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+    "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/audit.py",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.json",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stderr.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stdout.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.json",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stderr.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stdout.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/capture-reaped.py",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.json",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stderr.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stdout.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.json",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stderr.bin",
+    "docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stdout.bin"
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "bytes": 4611,
+      "sha256": "6eedd92962688ab4d2fe4ff2303966f0626bf4453f298daaf59d3a0830eef9ce"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "bytes": 223,
+      "sha256": "0731f3aceedd6c1d33aae783c8fe081ca2ab6c718f6dd0248fb6ceb95338a835"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "bytes": 685,
+      "sha256": "3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "bytes": 5171,
+      "sha256": "e78ff4055432263c25679da68af7291d936f0ce6e139720ee51467b5a184d39e"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-store.mjs",
+      "bytes": 3730,
+      "sha256": "5a61bd703bb883ae39aacf82f0351ee5d3fafe1aa0812c2e683136a3c5896f71"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/fixture.mjs",
+      "bytes": 3766,
+      "sha256": "0322dcab58da95b3be82101048a34df247cc6c0c76083545d0684a0508c4c58f"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "bytes": 8114,
+      "sha256": "5653b975a73dc55b8d5c821ef76ad7489679e501a44dddc599763a4c2838d06b"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all original tracked paths retain exact mode/type/blob",
+      "pass": true
+    },
+    {
+      "name": "new paths remain allocated",
+      "pass": true
+    },
+    {
+      "name": "boundary-before source was clean",
+      "pass": true
+    },
+    {
+      "name": "boundary-before group absent and bounded",
+      "pass": true
+    },
+    {
+      "name": "boundary-before exact source exists",
+      "pass": true
+    },
+    {
+      "name": "boundary-before stdout hash",
+      "pass": true
+    },
+    {
+      "name": "boundary-before stderr hash",
+      "pass": true
+    },
+    {
+      "name": "boundary-repaired source was clean",
+      "pass": true
+    },
+    {
+      "name": "boundary-repaired group absent and bounded",
+      "pass": true
+    },
+    {
+      "name": "boundary-repaired exact source exists",
+      "pass": true
+    },
+    {
+      "name": "boundary-repaired stdout hash",
+      "pass": true
+    },
+    {
+      "name": "boundary-repaired stderr hash",
+      "pass": true
+    },
+    {
+      "name": "fixture-corrected source was clean",
+      "pass": true
+    },
+    {
+      "name": "fixture-corrected group absent and bounded",
+      "pass": true
+    },
+    {
+      "name": "fixture-corrected exact source exists",
+      "pass": true
+    },
+    {
+      "name": "fixture-corrected stdout hash",
+      "pass": true
+    },
+    {
+      "name": "fixture-corrected stderr hash",
+      "pass": true
+    },
+    {
+      "name": "initial source was clean",
+      "pass": true
+    },
+    {
+      "name": "initial group absent and bounded",
+      "pass": true
+    },
+    {
+      "name": "initial exact source exists",
+      "pass": true
+    },
+    {
+      "name": "initial stdout hash",
+      "pass": true
+    },
+    {
+      "name": "initial stderr hash",
+      "pass": true
+    }
+  ],
+  "passed": 22,
+  "total": 22
+}
