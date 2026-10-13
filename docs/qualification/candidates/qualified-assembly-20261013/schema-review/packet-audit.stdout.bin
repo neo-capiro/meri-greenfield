@@ -1,0 +1,362 @@
+{
+  "schema": "meri.qualification-schema-independent-audit/1",
+  "base": "3d34bf42983824327c63f96419abcfea8a587407",
+  "source": "d560cf999d4e6d03a0cc66ded8a52387776fb48c",
+  "sourceTree": "5dcbb74173b210be67fc499906faa03a36a7ce54",
+  "authorPacket": "87f0cac8b812f663612211a7bf718c2d7420566d",
+  "authorPacketTree": "d90ce89d08c088d5f70f129d47db6726c659175f",
+  "authorManifestSha256": "1abe0f3aee2ec32b6abc25ff937b8f71e758b9b6130a364d95b66147eb7eb3f8",
+  "originalEntries": 11236,
+  "changedOriginalEntries": [],
+  "sourceIdentities": {
+    "apps/control/qualified-application/schema.mjs": {
+      "bytes": 8380,
+      "sha256": "b8dd16b6d63a98dfa752b65988911070b509b559a82901947f197bebe4850c81"
+    },
+    "apps/control/qualified-application/schema-contract.mjs": {
+      "bytes": 10758,
+      "sha256": "d8991c273989f1918eaff096efaddcad441cae9399bcaa834d693f069a5c7b5f"
+    },
+    "apps/control/qualified-application/schema.test.mjs": {
+      "bytes": 9772,
+      "sha256": "043b00628fa0523a66248fed2708af417fa8aa1e5a9dd1a8507daf93b97bb561"
+    },
+    "apps/control/qualified-application/schema.fixture.mjs": {
+      "bytes": 7024,
+      "sha256": "feba5391920803e3cf3968f4a3312ae8027f664523d8c3081db2e3bc629656ac"
+    }
+  },
+  "checks": [
+    {
+      "name": "all base entries unchanged at source",
+      "passed": true
+    },
+    {
+      "name": "all base entries unchanged at packet",
+      "passed": true
+    },
+    {
+      "name": "source equals packet apps/control/qualified-application/schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals review checkout apps/control/qualified-application/schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals packet apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals review checkout apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals packet apps/control/qualified-application/schema.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals review checkout apps/control/qualified-application/schema.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals packet apps/control/qualified-application/schema.fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "source equals review checkout apps/control/qualified-application/schema.fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact six pinned migration declarations",
+      "passed": true
+    },
+    {
+      "name": "unchanged migration qualification",
+      "passed": true
+    },
+    {
+      "name": "migration digest qualification",
+      "passed": true
+    },
+    {
+      "name": "unchanged migration budget",
+      "passed": true
+    },
+    {
+      "name": "migration digest budget",
+      "passed": true
+    },
+    {
+      "name": "unchanged migration invocation",
+      "passed": true
+    },
+    {
+      "name": "migration digest invocation",
+      "passed": true
+    },
+    {
+      "name": "unchanged migration lookup",
+      "passed": true
+    },
+    {
+      "name": "migration digest lookup",
+      "passed": true
+    },
+    {
+      "name": "unchanged migration metadata",
+      "passed": true
+    },
+    {
+      "name": "migration digest metadata",
+      "passed": true
+    },
+    {
+      "name": "unchanged migration command",
+      "passed": true
+    },
+    {
+      "name": "migration digest command",
+      "passed": true
+    },
+    {
+      "name": "namespace repair is only installer production delta",
+      "passed": true
+    },
+    {
+      "name": "schema contract unchanged",
+      "passed": true
+    },
+    {
+      "name": "all original author assertion section preserved byte-for-byte",
+      "passed": true
+    },
+    {
+      "name": "fixture extraction only approved descriptor override",
+      "passed": true
+    },
+    {
+      "name": "product schema does not import scripted fixture",
+      "passed": true
+    },
+    {
+      "name": "canonical transaction owner reused",
+      "passed": true
+    },
+    {
+      "name": "canonical lifetime owner reused",
+      "passed": true
+    },
+    {
+      "name": "explicit catalog namespace queries",
+      "passed": true
+    },
+    {
+      "name": "fixed qualified accounting query",
+      "passed": true
+    },
+    {
+      "name": "retained full definition digest comparison",
+      "passed": true
+    },
+    {
+      "name": "receipt labels source observation not qualification",
+      "passed": true
+    },
+    {
+      "name": "no reset retry or borrowed shutdown",
+      "passed": true
+    },
+    {
+      "name": "author manifest binds exact source",
+      "passed": true
+    },
+    {
+      "name": "author manifest apps/control/qualified-application/README-schema.md",
+      "passed": true
+    },
+    {
+      "name": "author manifest apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "author manifest apps/control/qualified-application/schema.fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "author manifest apps/control/qualified-application/schema.mjs",
+      "passed": true
+    },
+    {
+      "name": "author manifest apps/control/qualified-application/schema.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/coordination/reports/CODEX-QUALIFIED-SCHEMA-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/coordination/tasks/CODEX-QUALIFIED-SCHEMA-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/audit.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/initial.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/manifest-initial.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.diff.patch",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/repair-audit.json",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/repair-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest docs/qualification/candidates/qualified-application-20261013/schema-author/repair-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author manifest unique members",
+      "passed": true
+    },
+    {
+      "name": "author evidence fully manifested",
+      "passed": true
+    },
+    {
+      "name": "capture empty source diff initial.json",
+      "passed": true
+    },
+    {
+      "name": "capture owned group absent initial.json",
+      "passed": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture empty source diff namespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "capture owned group absent namespace-before.json",
+      "passed": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "capture empty source diff repaired.json",
+      "passed": true
+    },
+    {
+      "name": "capture owned group absent repaired.json",
+      "passed": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.stderr.bin",
+      "passed": true
+    }
+  ],
+  "passed": 82,
+  "failed": 0,
+  "runtime": "UNRUN; scripted ports are not a database or native qualification"
+}

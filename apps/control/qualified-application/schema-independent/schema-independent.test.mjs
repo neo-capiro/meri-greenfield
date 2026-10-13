@@ -1,0 +1,65 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {prepareOwnedApplicationSchema as install,verifyOwnedApplicationSchema as verify} from '../schema.mjs';
+import {scripted,fixture,ddl,deferred,tick} from './fixture.mjs';
+const refused=(outcome)=>e=>{assert.equal(e.code,'QUALIFICATION_SCHEMA_REFUSED');assert.equal(e.message,'QUALIFICATION_SCHEMA_REFUSED');assert.equal(e.outcome,outcome);return true;};
+const texts=h=>h.state.queries.map(x=>x.text);
+const noDDL=h=>assert.equal(h.state.queries.filter(x=>ddl.includes(x.text)).length,0);
+async function rejected(h,outcome='NOT_INSTALLED'){await assert.rejects(install(h.args),refused(outcome));assert.equal(h.state.ends,0);}
+async function retained(){const h=scripted();return(await install(h.args)).schemaSha256;}
+
+test('actual entry applies only exact six migration bytes in order once and returns detached pinned receipt',async()=>{
+ const h=scripted();const r=await install(h.args);assert.deepEqual(h.state.ddl,ddl);assert.equal(h.state.connects,1);assert.deepEqual(h.state.releases,[undefined]);assert.equal(h.state.ends,0);
+ assert(texts(h).findIndex(t=>t.startsWith('SELECT current_database()'))<texts(h).indexOf(ddl[0]));assert.equal(texts(h).filter(t=>t==='COMMIT').length,1);
+ assert.equal(r.relationCount,13);assert.equal(r.originalDeadlineMs,h.deadlineMs);assert.equal(r.fixtureId,fixture.fixtureId);assert.equal(r.runtimeQualified,false);assert.equal(r.poolClosed,false);assert.equal(r.initialStateVerified,true);assert.equal(r.evidenceKind,'borrowed-pool-catalog-observation');assert.match(r.schemaSha256,/^[a-f0-9]{64}$/);assert.equal(Object.keys(r.migrationSha256).length,6);assert(Object.isFrozen(r.catalog[0].columns[0]));h.cat[0].columns[0].name='changed';assert.equal(r.catalog[0].columns[0].name,'id');
+});
+test('reconstruction requires retained full digest; populated accounting remains an observation',async()=>{
+ const hash=await retained();const h=scripted({verify:true,onQuery:({text})=>text.startsWith('SELECT id,cap_micro_usd')?{rows:[{id:1,cap_micro_usd:'10000000',consumed_micro_usd:'123',quarantined:true}]}:undefined});h.args.fixture.schemaSha256=hash;
+ const r=await verify(h.args);assert.equal(r.operation,'verified');assert.equal(r.schemaSha256,hash);assert.equal(r.initialStateVerified,false);assert.equal(r.budget.consumed_micro_usd,'123');assert.equal(r.budget.quarantined,true);noDDL(h);assert(!texts(h).some(t=>t.includes('pg_try_advisory')));assert(!texts(h).some(t=>t.includes('count(*)::text AS count FROM')));
+});
+for(const [name,change]of Object.entries({constraint:c=>{c[0].constraints[0].definition+=' changed';},default:c=>{c[0].columns[2].default+=' changed';},index:c=>{c[3].indexes[0].predicate='changed';},view:c=>{c[8].view+=' changed';},collation:c=>{c[1].columns[2].collation='public.changed';}}))test(`retained digest detects ${name} replacement without DDL`,async()=>{const hash=await retained();const h=scripted({verify:true,catalogChange:change});h.args.fixture.schemaSha256=hash;await assert.rejects(verify(h.args),refused('READ_UNAVAILABLE'));noDDL(h);assert(texts(h).includes('ROLLBACK'));});
+for(const [name,change]of Object.entries({host:f=>f.host='localhost',database:f=>f.database='production',user:f=>f.user='postgres',mode:f=>f.mode='borrowed',fixtureCase:f=>f.fixtureId='AAAAAAAA-2222-3333-4444-555555555555',port:f=>f.port=0,system:f=>f.systemIdentifier='unknown',timestamp:f=>f.serverStartTime='2026-10-13',version:f=>f.serverVersion='16',hash:f=>f.schemaSha256='a'.repeat(64),extra:f=>f.ownership=true}))test(`pre-admission ${name} cannot reach borrowed pool`,async()=>{const h=scripted();change(h.args.fixture);await rejected(h);assert.equal(h.state.connects,0);});
+for(const [name,value]of Object.entries({database:'other',username:'other',address:'::1',port:5432,version:'170000',start_ms:'0',system_identifier:'2',fsync:'off',synchronous_commit:'off',search_path:'public, pg_temp'}))test(`actual server ${name} mismatch stops before DDL`,async()=>{const h=scripted({identityChange:r=>r[name]=value});await rejected(h);noDDL(h);assert.deepEqual(h.state.releases,[undefined]);assert(texts(h).includes('ROLLBACK'));});
+for(const [name,onQuery]of Object.entries({lock:({text})=>text.includes('pg_try_advisory')?{rows:[{acquired:false}]}:undefined,namespace:({text})=>text.startsWith('SELECT nspname')?{rows:[{name:'foreign'}]}:undefined,existingRelation:({text})=>text.startsWith('SELECT n.nspname')?{rows:[{name:'public.existing'}]}:undefined}))test(`no reset or retry for ${name}`,async()=>{const h=scripted({onQuery});await rejected(h);noDDL(h);assert.equal(h.state.connects,1);assert.equal(texts(h).filter(t=>t==='ROLLBACK').length,1);});
+for(const [name,change]of Object.entries({missing:c=>c.pop(),duplicate:c=>c[1]=c[0],type:c=>c[0].columns[0].type='text',nullable:c=>c[0].columns[0].notNull=false,owner:c=>c[0].owner='other',rowSecurity:c=>c[0].rowSecurity=true,trigger:c=>c[0].triggers=1,rule:c=>c[0].rules=1,invalidConstraint:c=>c[0].constraints[0].validated=false,missingConstraint:c=>c[0].constraints.pop(),duplicateConstraint:c=>c[0].constraints[1].name=c[0].constraints[0].name,invalidIndex:c=>c[0].indexes[0].valid=false,deferrable:c=>c[0].constraints[0].deferrable=true,generated:c=>c[0].columns[0].generated='s'}))test(`post-DDL ${name} refusal preserves uncertainty`,async()=>{const h=scripted({catalogChange:change});await rejected(h,'UNKNOWN');assert.deepEqual(h.state.ddl,ddl);assert(!texts(h).includes('COMMIT'));assert(texts(h).includes('ROLLBACK'));});
+for(const [name,override]of Object.entries({consumed:{consumed_micro_usd:'1'},quarantine:{quarantined:true},cap:{cap_micro_usd:'1'}}))test(`fresh schema refuses ${name} budget`,async()=>{const h=scripted({onQuery:({text})=>text.startsWith('SELECT id,cap_micro_usd')?{rows:[{id:1,cap_micro_usd:'10000000',consumed_micro_usd:'0',quarantined:false,...override}]}:undefined});await rejected(h,'UNKNOWN');});
+test('fresh schema refuses any preexisting task row',async()=>{const h=scripted({onQuery:({text})=>text.startsWith("SELECT 'meri_qualification.budget'")?{rows:[]} :undefined});await rejected(h,'UNKNOWN');});
+for(const kind of ['abort','deadline'])test(`pre-${kind} has no connection`,async()=>{const h=scripted();if(kind==='abort'){const c=new AbortController();c.abort();h.args.signal=c.signal;}else h.setNow(h.deadlineMs);await rejected(h);assert.equal(h.state.connects,0);});
+test('deadline returned by identity prevents any migration',async()=>{const h=scripted({onQuery:({text})=>{if(text.startsWith('SELECT current_database()'))h.setNow(h.deadlineMs);}});await rejected(h);noDDL(h);assert.equal(texts(h).at(-1),'ROLLBACK');});
+test('deadline returned by first DDL allows rollback only',async()=>{const h=scripted({onQuery:({text})=>{if(text===ddl[0])h.setNow(h.deadlineMs);}});await rejected(h,'UNKNOWN');assert.deepEqual(h.state.ddl,[ddl[0]]);assert.equal(texts(h).at(-1),'ROLLBACK');});
+test('borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened',async()=>{for(const timeout of [6000,1000]){const h=scripted({options:{query_timeout:timeout}});await install(h.args);assert(h.state.queries.every(q=>q.query_timeout===Math.min(timeout,5000)));}});
+test('remaining original budget narrows statement timeout',async()=>{const h=scripted({onQuery:({text})=>{if(text.startsWith('SELECT current_database()'))h.setNow(h.deadlineMs-17);}});await install(h.args);const i=texts(h).findIndex(t=>t.startsWith('SELECT current_database()'));assert(h.state.queries.slice(i+1).every(q=>q.query_timeout===17));});
+for(const point of ['BEGIN','COMMIT','release','ROLLBACK'])test(`failed ${point} cannot produce success or retry`,async()=>{
+ const h=scripted({onQuery:({text})=>{if(text===point)throw Error('SECRET_CANARY');if(point==='ROLLBACK'&&text===ddl[0])throw Error('SECRET_CANARY');},onRelease:()=>{if(point==='release')throw Error('SECRET_CANARY');}});
+ await rejected(h,point==='BEGIN'?'NOT_INSTALLED':'UNKNOWN');assert.equal(h.state.connects,1);assert.equal(h.state.releases.length,1);if(point==='BEGIN'||point==='COMMIT'||point==='ROLLBACK')assert(h.state.releases[0] instanceof Error);if(point==='COMMIT')assert(!texts(h).includes('ROLLBACK'));
+});
+test('late connection after cancellation is released exactly once without SQL',async()=>{
+ const got=deferred(),arrived=deferred(),c=new AbortController();const h=scripted({onConnect:client=>{arrived.resolve(client);return got.promise;}});h.args.signal=c.signal;const pending=install(h.args);const client=await arrived.promise;c.abort();await assert.rejects(pending,refused('NOT_INSTALLED'));got.resolve(client);await tick();await tick();assert.equal(h.state.queries.length,0);assert.equal(h.state.releases.length,1);assert(h.state.releases[0] instanceof Error);assert.equal(h.state.ends,0);
+});
+test('late DDL ACK after cancellation cannot resume migrations or claim physical stop',async()=>{
+ const got=deferred(),arrived=deferred(),c=new AbortController();const h=scripted({onQuery:({text})=>{if(text===ddl[0]){arrived.resolve();return got.promise;}}});h.args.signal=c.signal;const pending=install(h.args);await arrived.promise;c.abort();let error;try{await pending;}catch(e){error=e;}assert(refused('UNKNOWN')(error));assert(error.unsettledOperations>0);got.resolve({rows:[]});await tick();await tick();assert.equal(texts(h).filter(t=>ddl.includes(t)).length,1);assert.equal(texts(h).at(-1),'ROLLBACK');assert.equal(h.state.releases.length,1);
+});
+test('malformed acquired client with release is disposed without SQL',async()=>{const h=scripted({onConnect:client=>({release:client.release,query:42})});await rejected(h);assert.equal(h.state.releases.length,1);assert(h.state.releases[0] instanceof Error);assert.equal(h.state.queries.length,0);});
+test('hostile options getter and pool Proxy execute no traps',async()=>{let hits=0;for(const hostile of [Object.defineProperty({},'options',{get(){hits++;throw Error('SECRET');}}),new Proxy({},{get(){hits++;},getOwnPropertyDescriptor(){hits++;},getPrototypeOf(){hits++;}})]){const h=scripted();h.args.pool=hostile;await rejected(h);}assert.equal(hits,0);});
+test('hostile result rows getter never executes and is sanitized',async()=>{let hits=0;const h=scripted({onQuery:({text})=>text.startsWith('SELECT current_database()')?Object.defineProperty({},'rows',{get(){hits++;throw Error('SECRET');}}):undefined});await rejected(h);assert.equal(hits,0);noDDL(h);});
+test('emitted namespace SQL preserves underscore literally in the reserved pg_ prefix',async()=>{
+ const h=scripted();await install(h.args);const sql=texts(h).find(t=>t.startsWith('SELECT nspname'));
+ // SQL LIKE '_' is one arbitrary character. This is a lexical contract check,
+ // not a database execution or a general SQL evaluator.
+ assert(!/NOT\s+LIKE\s+'pg_%'/i.test(sql),'unescaped LIKE hides a user namespace such as pgx_private');
+ assert(/left\(nspname,\s*3\)\s*(?:<>|!=)\s*'pg_'/i.test(sql)||/NOT\s+LIKE\s+'pg\\_%'/i.test(sql),'reserved-prefix comparison must represent literal pg_');
+});
+test('reported user namespace pgx_private prevents every DDL statement',async()=>{
+ const h=scripted({onQuery:({text})=>text.startsWith('SELECT nspname')?{rows:[{name:'pgx_private'}]}:undefined});await rejected(h);noDDL(h);assert.equal(h.state.connects,1);
+});
+test('fixed original clock rejects an operation ceiling beyond sixty seconds',async()=>{const h=scripted();h.args.deadlineMs=h.now()+60001;await rejected(h);assert.equal(h.state.connects,0);});
+test('contending installer refuses lock while first owner completes exactly one DDL sequence',async()=>{
+ const started=deferred(),continueDDL=deferred();let lockOwner=null;
+ const first=scripted({onQuery:({text})=>{if(text.includes('pg_try_advisory')){assert.equal(lockOwner,null);lockOwner='first';return{rows:[{acquired:true}]};}if(text===ddl[0]){started.resolve();return continueDDL.promise;}}});
+ const one=install(first.args);await started.promise;
+ const second=scripted({onQuery:({text})=>text.includes('pg_try_advisory')?{rows:[{acquired:lockOwner===null}]}:undefined});await rejected(second);noDDL(second);assert.equal(lockOwner,'first');continueDDL.resolve({rows:[]});await one;
+ assert.deepEqual(texts(first).filter(t=>ddl.includes(t)),ddl);assert.equal(first.state.connects,1);assert.equal(second.state.connects,1);assert.equal(first.state.releases.length,1);assert.equal(second.state.releases.length,1);
+});
+test('late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry',async()=>{
+ const got=deferred(),arrived=deferred(),c=new AbortController();const h=scripted({onQuery:({text})=>{if(text==='COMMIT'){arrived.resolve();return got.promise;}}});h.args.signal=c.signal;const pending=install(h.args);await arrived.promise;c.abort();await assert.rejects(pending,refused('UNKNOWN'));assert.equal(h.state.releases.length,0);got.resolve({rows:[]});await tick();await tick();assert.equal(h.state.releases.length,1);assert(h.state.releases[0] instanceof Error);assert(!texts(h).includes('ROLLBACK'));assert.equal(h.state.connects,1);assert.deepEqual(h.state.ddl,ddl);
+});

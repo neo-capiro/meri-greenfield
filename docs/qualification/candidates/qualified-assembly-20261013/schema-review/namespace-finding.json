@@ -1,0 +1,12 @@
+{
+  "source": "20b474036039ec8c15f983d0d6e01d064aef2448",
+  "initialIndependentReplay": "64/64 PASS; incomplete namespace-predicate coverage",
+  "findingOwner": "gateway_reviewer",
+  "findingReviewCommit": "6437e383",
+  "findingCaptureCommit": "9219e9a5",
+  "finding": "NOT LIKE 'pg_%' uses underscore wildcard and can hide user namespace pgx_private.",
+  "independentExtension": "Actual emitted SQL lexical literal-prefix check, plus pre-DDL refusal when pgx_private is returned. No SQL engine or general SQL simulation.",
+  "dispositionBeforeRepair": "HOLD",
+  "deadlineClarification": "Receipt originalDeadlineMs is the admitted operation cutoff, bounded to now+60000; enclosing fixture cleanup cutoff is independently owned.",
+  "readOnlyLookupCorrection": "Initial author manifest path used qualified-assembly rather than actual qualified-application; git show exited128 with missing path, corrected via tracked report. No files modified."
+}

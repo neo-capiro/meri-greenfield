@@ -1,0 +1,173 @@
+{
+  "schema": "meri.qualification-schema-independent-packet/1",
+  "decision": "ACCEPT_SOURCE",
+  "source": "d560cf999d4e6d03a0cc66ded8a52387776fb48c",
+  "sourceTree": "5dcbb74173b210be67fc499906faa03a36a7ce54",
+  "authorPacket": "87f0cac8b812f663612211a7bf718c2d7420566d",
+  "behaviorTests": {
+    "passed": 69,
+    "failed": 0
+  },
+  "sourcePacketAudit": {
+    "passed": 82,
+    "failed": 0
+  },
+  "authorReceiptReview": {
+    "passed": 9,
+    "failed": 0
+  },
+  "runtimeQualified": false,
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "apps/control/qualified-application/schema-independent/fixture.mjs",
+      "bytes": 6916,
+      "sha256": "e8ac5c067c59b4fabd9868a6f05040f5a5cdcfe277c586f366d0e898addcd96a"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+      "bytes": 13096,
+      "sha256": "a158e6c95943199cf26ce2a1e038e38ec938dbb91c5388989828967c3fa5cb71"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/audit.json",
+      "bytes": 11400,
+      "sha256": "d6d84b6f02deada5658c026d74bdd01362c9934259ae2ab99dbe83205a54da6e"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/audit.py",
+      "bytes": 5734,
+      "sha256": "5b7a929e85c72eb401e99630993273b16feec010c268376b4164f0cfab4e0ef3"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/author-receipts.json",
+      "bytes": 2558,
+      "sha256": "95a7e5d06d91aff89f03551f34655c7ef7dd7672cafdc3775429b445110ac86d"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/authored-whitespace.json",
+      "bytes": 78,
+      "sha256": "d84b4c25607f8db98125f98047577ae30e32a854f16889022e62f843dd215b05"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/authored-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/authored-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/cleanup.json",
+      "bytes": 448,
+      "sha256": "56177cb7baf607450c06103e869f1ced1d96b28b92822c9134700978f9353fa9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/full-whitespace.json",
+      "bytes": 74,
+      "sha256": "31d9a27c37dfbded1477173d7bc00905021ad3cc59d03c633033e980b7fc942f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/full-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/full-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.json",
+      "bytes": 1298,
+      "sha256": "bbe9040f9151ac38717be6ee0088ff8fbaadac6eb667052b737ab92cdef067b9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.stdout.bin",
+      "bytes": 4482,
+      "sha256": "1e5ec8c1476caa17ebd62d42a3582618de8258a03de89536127ef427530cebbd"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.json",
+      "bytes": 1316,
+      "sha256": "9c2844b657bbfd846e4edd20be1155ad59c0985f58ad2ebe38ab4af6de1d71fd"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.stdout.bin",
+      "bytes": 5426,
+      "sha256": "d59e8182647580f9b511c960ee72e637b4dc47251eaa976a77674e8fcb0521e2"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-finding.json",
+      "bytes": 947,
+      "sha256": "cb62f496126610c095887de3cdef59885ce6fa2af821763d9ddf77241a433600"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/outline.md",
+      "bytes": 1967,
+      "sha256": "80dde72d7b88def5daa6f05c0d62c905bdf38bc16386531de2a0e27ccec740a7"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/packet-audit.json",
+      "bytes": 1393,
+      "sha256": "a4e01a7183497aa93c595ade662e20c8c7ed1021e8b7322765caa63f7b89dfd5"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/packet-audit.stdout.bin",
+      "bytes": 11400,
+      "sha256": "d6d84b6f02deada5658c026d74bdd01362c9934259ae2ab99dbe83205a54da6e"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.json",
+      "bytes": 1300,
+      "sha256": "cb55e3997107534af714f4b7ae3bac3b04b834cdb1b7410ec71846e6a44052ab"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.stdout.bin",
+      "bytes": 4959,
+      "sha256": "e3889e3034db2d8f92a0ca835e754aaf74018109b1d6626a586e79dbfe4332a4"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/report.md",
+      "bytes": 4502,
+      "sha256": "396ab364583f755880e2535d3eded417f45a421dcf6e573043c29381cb7e7b92"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/tooling-warning.json",
+      "bytes": 567,
+      "sha256": "7cf766895a298920d82ff027be6a5af67a0c00f6e6b2b81632b103a09da3c542"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/schema-review/verdict.json",
+      "bytes": 1924,
+      "sha256": "30195ed8c66cf4ee76a70bfb288704af2a823497cbd9cff449e1f6a019e0b333"
+    }
+  ]
+}
