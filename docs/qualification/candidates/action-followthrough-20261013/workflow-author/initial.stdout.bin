@@ -1,0 +1,43 @@
+✔ actual retained read yields editable canonical draft without metadata or task effect (75.101906ms)
+✔ explicit task edits normalize through canonical contract and prepare immutable approval only (62.543656ms)
+✖ downstream existing standard approval/executor creates one task and replay does not redispatch (83.436904ms)
+✔ ordinary current approval denial remains the existing executor owner (43.335481ms)
+✔ selection cannot provide binding authority (15.512872ms)
+✔ selection cannot provide scopes authority (14.267127ms)
+✔ selection cannot provide requiredApprover authority (21.614157ms)
+✔ selection cannot provide clientId authority (14.801753ms)
+✔ selection cannot provide action authority (16.571926ms)
+✔ unknown or lossy task edits refuse rather than assign owner or silently truncate (43.753536ms)
+✔ mismatched selected hash refuses (22.006388ms)
+✔ mismatched selected action refuses (23.405184ms)
+✔ mismatched selected reference refuses (21.780197ms)
+✔ caller draft/card edits cannot bypass a fresh retained evidence comparison (59.888514ms)
+✔ retained result tampering is refused by actual lookup store and canonical read validator (27.417859ms)
+✔ current read revocation blocks prepare after draft; no metadata or source work (25.414027ms)
+✔ hostile inputs stay inert and accepted output is detached (26.519051ms)
+✔ original deadline clips metadata even after time spent in current read (37.161222ms)
+✔ preabort allocates no read or metadata (12.819278ms)
+✔ parked read is bounded and cannot start metadata after cancellation (24.165438ms)
+✔ late metadata ACK is not delivered; persisted metadata is not called rollback (32.70253ms)
+✔ deadline expires across parked metadata without new effects (46.631443ms)
+✔ constructor refuses mismatched current command/client and unknown operation (16.787331ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3560.805398
+
+✖ failing tests:
+
+test at apps/control/action-followthrough/test/workflow.test.mjs:7:1
+✖ downstream existing standard approval/executor creates one task and replay does not redispatch (83.436904ms)
+  Error [CommandError]: COMMAND_OUTCOME_UNKNOWN
+      at deny (file:///tmp/meri-action-followthrough-workflow-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at operate (file:///tmp/meri-action-followthrough-workflow-20261013/apps/control/commands/executor.mjs:83:54)
+      at async Object.executeApproved (file:///tmp/meri-action-followthrough-workflow-20261013/apps/control/commands/tool-interface.mjs:59:16)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-20261013/apps/control/action-followthrough/test/workflow.test.mjs:7:261)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
