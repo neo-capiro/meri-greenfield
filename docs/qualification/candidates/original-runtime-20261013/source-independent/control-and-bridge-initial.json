@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "c43c8b761e10bd911e3f25190354a77a9b8dcd23",
+  "sourceTree": "dbe28202464c844505571a0f808d3aad40f3b372",
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-control-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 4.949,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 6307,
+  "stdoutSha256": "c0840881849499633c6f86b6e7c1728111103146cf2316bdf3372882847924fa",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

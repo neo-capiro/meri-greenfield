@@ -1,0 +1,65 @@
+✖ canonical current original admission accepts native signal separately and preserves immutable pins (0.675671ms)
+✖ canonical original admission refuses current policy/fence/allocation substitution (0.16055ms)
+✖ canonical original admission refuses exact selection or request changes before allocation read (0.090725ms)
+✖ canonical installed handler retains its genuine method receiver and expires without effects (7.204682ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1683.617949
+
+✖ failing tests:
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:9:1
+✖ canonical current original admission accepts native signal separately and preserves immutable pins (0.675671ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createOriginalSkillAdmissionOwner (file:///workspace/meri-original-control-source-review/apps/control/conversations/skills/admission.mjs:12:10)
+      at owner (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:7:596)
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:9:125)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:10:1
+✖ canonical original admission refuses current policy/fence/allocation substitution (0.16055ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createOriginalSkillAdmissionOwner (file:///workspace/meri-original-control-source-review/apps/control/conversations/skills/admission.mjs:12:10)
+      at owner (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:7:596)
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:10:289)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:11:1
+✖ canonical original admission refuses exact selection or request changes before allocation read (0.090725ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createOriginalSkillAdmissionOwner (file:///workspace/meri-original-control-source-review/apps/control/conversations/skills/admission.mjs:12:10)
+      at owner (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:7:596)
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:11:177)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:12:1
+✖ canonical installed handler retains its genuine method receiver and expires without effects (7.204682ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-original-control-source-review/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createInstalledRuntimeCatalog (file:///workspace/meri-original-control-source-review/apps/gateway/catalog/installed-catalog.mjs:11:10)
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs:12:826)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

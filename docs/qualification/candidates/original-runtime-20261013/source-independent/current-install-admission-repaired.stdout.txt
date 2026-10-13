@@ -1,0 +1,12 @@
+✔ canonical current original admission accepts native signal separately and preserves immutable pins (6.585952ms)
+✔ canonical original admission refuses current policy/fence/allocation substitution (5.667773ms)
+✔ canonical original admission refuses exact selection or request changes before allocation read (1.02668ms)
+✔ canonical installed handler retains its genuine method receiver and expires without effects (13.703064ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1788.351011

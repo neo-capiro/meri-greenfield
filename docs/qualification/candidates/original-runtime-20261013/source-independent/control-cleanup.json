@@ -1,0 +1,83 @@
+{
+  "removedLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-greenfield/packages/contracts/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "target": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true
+    }
+  ],
+  "receiptsVerified": [
+    {
+      "label": "control-composition-initial",
+      "sourceCommit": "6656d98de7452fe22d43dc3bf07721772ccb7201",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "control-composition-repaired-plus",
+      "sourceCommit": "66bd040f4502dbe286e20426ea16fdadb54bd3bf",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "control-and-bridge-initial",
+      "sourceCommit": "c43c8b761e10bd911e3f25190354a77a9b8dcd23",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "current-install-admission",
+      "sourceCommit": "c43c8b761e10bd911e3f25190354a77a9b8dcd23",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "control-composition-final",
+      "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "current-install-admission-repaired",
+      "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "control-owner-final",
+      "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "control-composition-sealed",
+      "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "exactPinWorktreeClean": true,
+  "donorEdits": false,
+  "productEdits": false,
+  "entireHostCleanupClaim": false
+}

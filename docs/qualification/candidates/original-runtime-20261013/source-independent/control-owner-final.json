@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+  "sourceTree": "ba53b13b34a4cfe8d34428b849f8b1d382b22106",
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/control/conversations/skills/service-admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-control-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 5.326,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 6412,
+  "stdoutSha256": "af19f8755ab36e0edd19c8948d40e02d20085d90145bf63d493490b899534b76",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

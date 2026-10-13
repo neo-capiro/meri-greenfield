@@ -1,0 +1,53 @@
+✔ execution constructor refuses a retention method getter before evaluating it (0.837983ms)
+✔ execution constructor refuses output bridge method proxy before introspection (0.139158ms)
+✔ new optional service admission method cannot execute a configured getter (2.758115ms)
+✔ shared selected-output assertion rejects a state getter without evaluating it (0.286418ms)
+✔ canonical publication rejects a preparation hash getter without evaluating it (0.360008ms)
+✔ invalid current-context timestamps cannot expose the runtime factory (8.57302ms)
+✔ valid native AbortSignal reaches runtime factory with original owner receiver preserved (1.097171ms)
+✔ actual canonical admission precedes storage/start and original pins survive exact replay (21.9214ms)
+✔ exact selected-client revocation during admission refuses before persistence (2.417395ms)
+✔ unconfigured selected output and ordinary worker artifact event cannot mint availability (5.257683ms)
+✖ an expired source context cannot expose a new runtime even with a future context receipt (0.871533ms)
+✖ preparation deadline cancels pending initialization and closes a late-created runtime (3001.161647ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 10
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4857.91846
+
+✖ failing tests:
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:25:1
+✖ an expired source context cannot expose a new runtime even with a future context receipt (0.871533ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:25:349)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:26:1
+✖ preparation deadline cancels pending initialization and closes a late-created runtime (3001.161647ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:26:625)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
