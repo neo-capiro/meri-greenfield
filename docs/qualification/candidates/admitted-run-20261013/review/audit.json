@@ -1,0 +1,82 @@
+{
+  "base": "84c2ca01d0bce025a0003b6e724d675a05f2975a",
+  "acceptedProduction": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "reviewHead": "df87be4e486f9318061ad0938497daaf737f62ac",
+  "baseEntries": 11160,
+  "unchangedBaseEntries": 11157,
+  "changedOriginalPaths": [
+    "apps/gateway/budget/tool-budget-binding.mjs",
+    "apps/gateway/index.mjs",
+    "apps/gateway/local-action/control-authorizer.mjs"
+  ],
+  "production": [
+    {
+      "path": "apps/control/admitted-runs/mount.mjs",
+      "bytes": 6090,
+      "sha256": "c90c7641893da1547fa2d0ea13fb436c54721eb90002ea1b33e1a33e9bcb0b49"
+    },
+    {
+      "path": "apps/gateway/authorization/task-lookup-authorizer.mjs",
+      "bytes": 4532,
+      "sha256": "fa3972ffd0445d5a2d9a0ea2302c30bbd0c45a7bbb9a9d83fc1749ce38a62425"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-binding.mjs",
+      "bytes": 2397,
+      "sha256": "1150d1cc2e87337dc07fdfabf2744829ac7000d4bb78ff838fa9b06f198aa4ea"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-owner.mjs",
+      "bytes": 3920,
+      "sha256": "896fbd043e76fb4d8dd201b0e7346f09d8c96416500adc36c5d5e0f45b718b34"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-binding.mjs",
+      "bytes": 4591,
+      "sha256": "e43a8f953d2f37f75514c10c416fc2129a2e7224b4e9ff056087bbf6e664bbed"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 3916,
+      "sha256": "117670fba2ffec201a31b1a5b0b426d8f156f34b51c9689d5fbe44dedffd7a6c"
+    },
+    {
+      "path": "apps/gateway/local-action/control-authorizer.mjs",
+      "bytes": 1298,
+      "sha256": "35921f15562d41d1edae15f04534174e41b7af584f1ed61ad341369b0d8c2447"
+    }
+  ],
+  "captures": [
+    {
+      "label": "owner-initial",
+      "exitCode": 1,
+      "groupAbsent": true,
+      "streamsVerified": true
+    },
+    {
+      "label": "mount-initial",
+      "exitCode": 1,
+      "groupAbsent": true,
+      "streamsVerified": true
+    },
+    {
+      "label": "repaired-plus-host",
+      "exitCode": 1,
+      "groupAbsent": true,
+      "streamsVerified": true
+    },
+    {
+      "label": "command-receipt-before",
+      "exitCode": 1,
+      "groupAbsent": true,
+      "streamsVerified": true
+    },
+    {
+      "label": "final-independent",
+      "exitCode": 0,
+      "groupAbsent": true,
+      "streamsVerified": true
+    }
+  ],
+  "scope": "READ_ONLY_SOURCE_AUDIT_NOT_NATIVE_QUALIFICATION"
+}

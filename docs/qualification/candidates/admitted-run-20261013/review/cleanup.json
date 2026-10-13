@@ -1,0 +1,14 @@
+{
+  "observedAt": "2026-10-13T04:41:33.903450+00:00",
+  "reviewerGroups": [
+    488715,
+    489187,
+    489817,
+    490417,
+    490672
+  ],
+  "allFreshlyAbsent": true,
+  "ownedMinimalDependencyCopiesRemoved": true,
+  "borrowedPoolsEnded": false,
+  "externalRuntimeExecuted": false
+}
