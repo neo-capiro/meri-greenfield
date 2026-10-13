@@ -42,3 +42,14 @@ export function createDurableSourceDisabledGateway(options) {
 
 /** Trusted application composition; this export does not activate any source. */
 export {createPostgresBudgetExecution} from './budget/postgres-tool-budget.mjs';
+
+/** Read-only persisted current state; requires independently active canonical admission. */
+export {createPostgresAdmittedRunOwner} from './budget/admitted-run-owner.mjs';
+
+/** Fixed read capability action; uses the same canonical current authority owner. */
+export function createReadAuthority(options) {
+  if (!options || Object.keys(options).some(key => !['authorityPorts', 'now', 'maxFactBytes'].includes(key))) deny('GATEWAY_CONFIGURATION');
+  const {authorityPorts,now,maxFactBytes}=options;
+  return createCurrentToolAuthority({ports:authorityPorts,now,maxFactBytes,capabilityAction:'tool.read'});
+}
+export {createTaskLookupAuthorizer} from './authorization/task-lookup-authorizer.mjs';
