@@ -28,7 +28,7 @@ export async function main(args = process.argv.slice(2),write = text => process.
     server = await listenActionApplication({app: {handle: request => app.handle(request)},host: '127.0.0.1',port: 0,lifetimeMs: 25000});
     const send = (path,body,credential) => fetch(server.origin+path,{method: 'POST',redirect: 'error',
       headers: {authorization: 'Bearer '+credential,'content-type': 'application/json'},body: JSON.stringify(body)});
-    result = await runLocalWorkbookFlow({fixture,send,pythonExecutable: args[2],sofficeExecutable: args[4],outputDirectory: args[6],
+    result = await runLocalWorkbookFlow({fixture,send,pythonExecutable: args[2],sofficeExecutable: args[4],outputDirectory: args[6],copyInspectionDeadlineMs: Date.now()+90000,
       reconstruct: async () => {app = mountLocalDocumentApplication(fixture);},
       checkIsolation: async ({versionId,credential}) => {
         const otherSend = (path,body,token) => otherApp.handle(new Request('https://isolated-fixture.invalid'+path,{method: 'POST',

@@ -14,7 +14,7 @@ export const workbookDraft = () => ({operation: 'create_excel',format: 'xlsx',ti
   ]},
   {name: 'Notes',rows: [[value('Synthetic local planning only')],[value('=1+1')],[value('Revise assumptions before approval')]]},
 ]}});
-export async function runLocalWorkbookFlow({fixture,send,pythonExecutable,sofficeExecutable,outputDirectory,reconstruct,checkIsolation}) {
+export async function runLocalWorkbookFlow({fixture,send,pythonExecutable,sofficeExecutable,outputDirectory,reconstruct,checkIsolation,copyInspectionDeadlineMs}) {
   const json = async response => {const body = await response.json();assert.equal(response.status,200,JSON.stringify(body));return body;};
   const session = await json(await send('/api/action-followthrough/session',{},fixture.nativeCredential));
   assert.notEqual(session.credential,fixture.nativeCredential);assert.notEqual(session.credential,fixture.credential);
@@ -58,10 +58,13 @@ export async function runLocalWorkbookFlow({fixture,send,pythonExecutable,soffic
   for (const version of [first.version,second.version]) assert.notEqual((await call('download',{versionId: version.versionId})).status,200);
   assert.notEqual((await call('create',{deliveryId: 'revoked-write',request: workbookDraft()})).status,200);
   assert.equal(fixture.stats().generations,2);
+  // Authority is already revoked. These are independently bounded offline inspections
+  // of bytes downloaded above, never a refreshed session, grant or artifact action.
+  assert.ok(Number.isSafeInteger(copyInspectionDeadlineMs) && copyInspectionDeadlineMs > Date.now() && copyInspectionDeadlineMs <= Date.now()+90000);
   const copies = [];
   for (const [index,bytes] of downloads.entries()) copies.push(await inspectWorkbookCopies({bytes,label: index ? 'revision' : 'original',
     expectedTotal: index ? 2300 : 2050,pythonExecutable,sofficeExecutable,tempRoot: fixture.directory,outputDirectory,
-    deadlineMs: fixture.artifactOptions.context.deadlineMs}));
+    deadlineMs: copyInspectionDeadlineMs}));
   return {versions: [first.version,second.version],inspections,inspectionProcesses,copies,replayStatus: replay.status,
     invariants: {originalPreserved: true,revisionParentExact: true,downloadsVerified: true,reconstructedVersionsReadable: true,
       literalFormulaTextPreserved: true,formulaAndStylePreserved: true,localRecalculationVerified: true,localPdfRendered: true,
