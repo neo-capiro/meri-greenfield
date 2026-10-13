@@ -1,3 +1,4 @@
+import {types} from 'node:util';
 import {createTaskLookupDelivery} from '../../../apps/control/task-lookup/index.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {admit,prepared,options,method,safeCode,snapshot,hash,freeze,error,operation} from './admission.mjs';
@@ -60,7 +61,7 @@ export function createTaskLookupExecution(configuration){
       o.status='returned';o.reason=null;o.route={operation,request:snapshot(c.request)};o.delivery=snapshot(lookup);o.read=snapshot(read);o.failure=null;
      }
     }catch(e){
-     const code=safeCode(e);const d=e&&typeof e==='object'?Object.getOwnPropertyDescriptor(e,'outcome'):null;
+     const code=safeCode(e);const d=e&&typeof e==='object'&&!types.isProxy(e)?Object.getOwnPropertyDescriptor(e,'outcome'):null;
      const outcome=d&&Object.hasOwn(d,'value')&&['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED'].includes(d.value)?d.value:stage==='lookup'&&lookupStarted?'UNKNOWN':'NOT_DISPATCHED';
      o.status=stage==='read'&&code==='ACCESS_DENIED'&&t.authorization.some(a=>['before_read','before_release'].includes(a.phase)&&(a.receipt?.authorized===false||a.error?.code==='ACCESS_DENIED'))?'denied':'failed';
      o.reason=code;o.failure=failure(code,outcome);o.delivery=null;o.read=null;
