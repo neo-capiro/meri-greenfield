@@ -1,0 +1,36 @@
+✔ followthrough independent: retained read becomes editable draft and explicit canonical proposal without task effect (70.540156ms)
+✔ followthrough independent: standard downstream explicit approval executes once and replays retained outcome (68.669603ms)
+✔ followthrough independent: draft/read permission is never command approval (23.673015ms)
+✔ followthrough independent: hash selection substitution refuses (13.643835ms)
+✔ followthrough independent: action selection substitution refuses (13.137964ms)
+✔ followthrough independent: reference selection substitution refuses (8.323114ms)
+✔ followthrough independent: extra-card selection substitution refuses (7.825347ms)
+✔ followthrough independent: unsupported or lossy edit {"clientId":"00000000-0000-4000-8000-000000000099"} refuses (12.708679ms)
+✔ followthrough independent: unsupported or lossy edit {"ownerUserId":"00000000-0000-4000-8000-000000000099"} refuses (8.242884ms)
+✔ followthrough independent: unsupported or lossy edit {"requiredApprover":"00000000-0000-4000-8000-000000000099"} refuses (7.739728ms)
+✔ followthrough independent: unsupported or lossy edit {"title":" "} refuses (12.971754ms)
+✔ followthrough independent: unsupported or lossy edit {"title":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx refuses (12.940778ms)
+✔ followthrough independent: unsupported or lossy edit {"dueDate":"2026-11-05T12:00:00.000Z"} refuses (13.259036ms)
+✔ followthrough independent: unsupported or lossy edit {"dueDate":"2026-02-30"} refuses (13.204845ms)
+✔ followthrough independent: unsupported or lossy edit {"title":12} refuses (14.847875ms)
+✔ followthrough independent: unsupported or lossy edit {"dueDate":0} refuses (12.619555ms)
+✔ followthrough independent: mutation of a returned draft cannot change prepare input (12.701819ms)
+✔ followthrough independent: rehashed foreign-client draft still fails retained/current correlation (19.165448ms)
+✔ followthrough independent: current denial before prepare performs no metadata write (13.767791ms)
+✔ followthrough independent: current denial before draft releases no recommendation (8.630166ms)
+✔ followthrough independent: corrupt retained source cannot become a task through a correct caller hash (15.491413ms)
+✔ followthrough independent: cancelled parked read cannot enter command preparation after late resolution (22.060651ms)
+✔ followthrough independent: finite original cutoff covers read and metadata, without reset (19.234421ms)
+✔ followthrough independent: metadata ACK loss is retained as failure and is not retried (19.227261ms)
+✔ followthrough independent: preaborted or effectful inputs never invoke read/metadata ports (7.19545ms)
+✔ followthrough independent: long-title source default requires explicit edit rather than silent loss (29.250668ms)
+✔ followthrough independent: time-of-day source default requires explicit edit rather than silent loss (28.41801ms)
+✔ followthrough independent: original task A evidence can prepare a task under coherent current B (32.218845ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3095.488221
