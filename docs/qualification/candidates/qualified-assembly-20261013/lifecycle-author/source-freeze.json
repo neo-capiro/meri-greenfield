@@ -1,0 +1,38 @@
+{
+  "sourceCommit": "3253960035dbfd8cce4dd1b20925f4f4c7f152ae",
+  "base": "3d34bf42983824327c63f96419abcfea8a587407",
+  "rootDependency": "77ddc682",
+  "members": [
+    {
+      "path": "infra/native-enforcement/worker-observer.mjs",
+      "bytes": 6842,
+      "sha256": "28384e4abcb0fe818f496e886bfafe5b8dc258275f56872639dd89107ba3afe9"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/__init__.py",
+      "bytes": 84,
+      "sha256": "0c8e599beba6fce624799523d0cf5c1a8034c901dbedd73dbe01aff5c5548971"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "bytes": 7856,
+      "sha256": "6a2050f554819085a575f0b19219009d5d65d450763737fc2ec771c6899bf1a1"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/bridge.py",
+      "bytes": 2892,
+      "sha256": "6e905fda6a2e0b1709c48733ce3675ffc3b3030a53bef9cd51ea70895ebf2cea"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+      "bytes": 9519,
+      "sha256": "2452ee68f2f272a24766778518b9c3744ee0a4ea7a6145651f5fddefaba9fbdb"
+    },
+    {
+      "path": "packages/contracts/qualification-assembly-0.2/protocol.json",
+      "bytes": 865,
+      "sha256": "eae2f5d0e33318634b52b58a49d1f6d9e481837659d27fe14cb4686199f5a370"
+    }
+  ],
+  "sourceOnly": true
+}

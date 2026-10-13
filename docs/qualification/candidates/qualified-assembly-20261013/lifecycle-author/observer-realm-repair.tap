@@ -1,0 +1,25 @@
+✔ actual owner expressions admit exact synthetic running task and private ENI; observation is one use (76.702239ms)
+✔ refuses foreign task (37.43743ms)
+✔ refuses foreign run (56.838927ms)
+✔ refuses image (55.449253ms)
+✔ refuses stopped (61.897645ms)
+✔ refuses worker stopped (56.347759ms)
+✔ refuses override (41.484123ms)
+✔ refuses pending ENI (53.01227ms)
+✔ refuses public IP (61.300648ms)
+✔ refuses foreign ENI (47.152303ms)
+✔ refuses extra container (62.252799ms)
+✔ refuses missing tag (45.425226ms)
+✔ caller Boolean/lookalike observation cannot grant activation (17.25128ms)
+✔ parked read ends at caller original cutoff (47.2178ms)
+✔ late observation and cross-owner token refuse (98.359119ms)
+✔ raw getters/proxies are never inspected by observer (17.683479ms)
+✔ runtime hash and unbranded compilation refuse before reads (1.075086ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 914.642563

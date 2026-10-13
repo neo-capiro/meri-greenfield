@@ -1,0 +1,25 @@
+{
+  "groups": [
+    {
+      "ownedPidAndPgid": 497775,
+      "absent": true
+    },
+    {
+      "ownedPidAndPgid": 498373,
+      "absent": true
+    },
+    {
+      "ownedPidAndPgid": 499917,
+      "absent": true
+    },
+    {
+      "ownedPidAndPgid": 500934,
+      "absent": true
+    }
+  ],
+  "dependenciesAllocated": 0,
+  "dependenciesRemoved": 0,
+  "borrowedResourcesClosed": 0,
+  "databaseOrProviderActions": 0,
+  "otherOwnerResourcesChanged": 0
+}

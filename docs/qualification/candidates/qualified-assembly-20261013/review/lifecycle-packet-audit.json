@@ -1,0 +1,10 @@
+{
+  "authorPacket": "a6da75f59709b9bf4b29dff3b5f4b34bcd39a422",
+  "source": "3253960035dbfd8cce4dd1b20925f4f4c7f152ae",
+  "verifiedManifestMembers": 31,
+  "manifestSha256": "1c10157ec125e19f3740613c26fc84ca8b9663b55cfa3724bc030c6b2e2f9aea",
+  "authorGroupsAbsent": [
+    497973,
+    498511
+  ]
+}

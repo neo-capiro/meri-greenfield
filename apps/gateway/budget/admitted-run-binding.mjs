@@ -7,12 +7,22 @@ export function admittedConfiguration(value){
  const c=own(value,['pool','allocationJson','grantFactsJsons','now','limits']);
  const limits=data(own(c.limits,['maxRequestMs','maxFactBytes']));
  if(!c.pool||typeof c.pool.connect!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||!Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)refuse('ADMITTED_RUN_CONFIGURATION');
+ const {allocation:a,facts}=parseAdmittedGrantSet(c);const first=facts[0];
+ if(Buffer.byteLength(JSON.stringify(facts))>limits.maxFactBytes)refuse('ADMITTED_RUN_CONFIGURATION');
+ return {...c,limits,a,facts,binding:first.binding,policyRevision:first.qualificationBinding.policyRevision,allocationSha256:canonicalSha256(a)};
+}
+/** Inert trusted-owner parsing shared by admission and qualification lifecycle. */
+export function parseAdmittedGrantSet(c){
  const a=allocation(c.allocationJson),raw=data(c.grantFactsJsons);
  if(!Array.isArray(raw)||raw.length<1||raw.length>16)refuse('ADMITTED_RUN_CONFIGURATION');
  const facts=raw.map(text=>parseToolGrantFacts(text,a)),first=facts[0],seen=new Set();
  for(const f of facts){if(seen.has(f.grantId)||!same(f.binding,first.binding)||!same(f.qualificationBinding,first.qualificationBinding))refuse('ADMITTED_RUN_CONFIGURATION');seen.add(f.grantId);}
- if(Buffer.byteLength(JSON.stringify(facts))>limits.maxFactBytes)refuse('ADMITTED_RUN_CONFIGURATION');
- return {...c,limits,a,facts,binding:first.binding,policyRevision:first.qualificationBinding.policyRevision,allocationSha256:canonicalSha256(a)};
+ return {allocation:a,facts};
+}
+export function validateQualificationGrantSet(value){
+ const c=own(value,['allocationJson','grantFactsJsons']),result=parseAdmittedGrantSet(c);
+ if(result.facts.length!==2||result.facts[0].capabilitySha256===result.facts[1].capabilitySha256)refuse('QUALIFICATION_GRANT_SET');
+ return data(result);
 }
 export function currentInput(binding,options){
  const b=data(binding),o=own(options,[],['signal']);nativeSignal(o.signal);validateShape('RunBinding',b);return {binding:b,signal:o.signal};

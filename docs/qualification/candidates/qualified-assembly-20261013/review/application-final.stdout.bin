@@ -1,0 +1,17 @@
+✔ complete constructor defers all schema/child/source work and rejects pre-activation HTTP (56.749921ms)
+✔ configuration data is immutable across delayed schema and activation (319.7969ms)
+✔ host configuration getters cannot run during assembly preflight (29.67257ms)
+✔ complete activation read HTTP uses retained canonical state and revoked grant blocks fresh session without another effect (630.060315ms)
+✔ complete reconstruction reobserves worker but never creates new grants/allocation/proposal (426.091025ms)
+✔ stopped worker during reconstruction never resets retained ledger or grants (418.888864ms)
+✔ schema commit acknowledgement loss cannot reach child or retry initialization (35.045797ms)
+✔ close during parked worker read aborts activation and preserves pending grants without source effects (93.722507ms)
+✔ HTTP caller-selected client cannot establish authority or spend the admitted read grant (326.774899ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4889.906979

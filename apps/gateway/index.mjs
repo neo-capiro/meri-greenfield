@@ -53,3 +53,7 @@ export function createReadAuthority(options) {
   return createCurrentToolAuthority({ports:authorityPorts,now,maxFactBytes,capabilityAction:'tool.read'});
 }
 export {createTaskLookupAuthorizer} from './authorization/task-lookup-authorizer.mjs';
+
+/** Explicit owned fixture only; this does not enable the production catalog. */
+export {createQualificationActionGateway,qualificationActionTransport} from './qualification/action-gateway.mjs';
+export {validateQualificationGrantSet} from './budget/admitted-run-binding.mjs';

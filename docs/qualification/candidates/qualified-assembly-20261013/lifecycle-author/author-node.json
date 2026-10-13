@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "infra/native-enforcement/worker-observer.test.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-assembly-author-20261013",
+  "sourceHead": "3253960035dbfd8cce4dd1b20925f4f4c7f152ae",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T05:15:13.825142+00:00",
+  "durationSeconds": 3.837,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 497973,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.stdout.bin",
+      "bytes": 2041,
+      "sha256": "45b5bfe20eb4e8c8b22f692735fa02cb83b83ade68d0c9299ebbfb6b0d630fc1"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

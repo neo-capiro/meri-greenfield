@@ -7,7 +7,8 @@ export const NOW=1900000000000,id=n=>`00000000-0000-4000-8000-${String(n).padSta
 export function createMetadataPoolFixture(){
  const rows=new Map(),calls=[],releases=[];
  const pool={options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){calls.push('connect');return {async query(config){
-  calls.push(config);const {text,values}=config;
+  calls.push(config);const {text:statement,values}=config;
+  const text=statement.replace(/^(INSERT INTO |SELECT payload,payload_sha256 FROM )public\.meri_approval_metadata /u,'$1meri_approval_metadata ');
   if(text.startsWith('INSERT INTO meri_approval_metadata ')){
    const [tenant,actor,proposal,,,,hash,raw]=values,key=JSON.stringify([tenant,actor,proposal.toLowerCase()]);
    if(rows.has(key))throw new Error('synthetic unique conflict');const record={payload:JSON.parse(raw),payload_sha256:hash};rows.set(key,record);return {rows:[structuredClone(record)]};

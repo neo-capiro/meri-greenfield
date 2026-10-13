@@ -1,0 +1,11 @@
+✔ persisted qualification graph executes typed fixture and retained approval replay over three actual HTTP hosts (557.297464ms)
+✔ both read and command accidental live origins and opaque command source overrides are refused before I/O (6.837437ms)
+✔ canonical trusted grant binding stops after a parked SQL response crosses original cutoff (106.373605ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3212.401925

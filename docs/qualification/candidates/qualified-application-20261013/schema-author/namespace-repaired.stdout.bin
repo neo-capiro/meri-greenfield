@@ -1,0 +1,44 @@
+✔ installs exactly the six unchanged files, then verifies13 relations and empty accounting (24.51278ms)
+✔ reconstruction permits retained accounting but binds original complete catalog hash (26.291069ms)
+✔ identity database mismatch refuses before DDL (4.26414ms)
+✔ identity username mismatch refuses before DDL (3.084727ms)
+✔ identity address mismatch refuses before DDL (5.951105ms)
+✔ identity port mismatch refuses before DDL (2.866699ms)
+✔ identity version mismatch refuses before DDL (2.392671ms)
+✔ identity start_ms mismatch refuses before DDL (2.011564ms)
+✔ identity system_identifier mismatch refuses before DDL (2.166426ms)
+✔ identity fsync mismatch refuses before DDL (2.796743ms)
+✔ identity synchronous_commit mismatch refuses before DDL (2.045815ms)
+✔ identity search_path mismatch refuses before DDL (1.646474ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (0.932251ms)
+✔ install refuses partial namespaces, preexisting relation and same fixture reapply (14.469329ms)
+✔ concurrent installers cannot both acquire fixed transaction lock (18.549411ms)
+✔ post-install missing corruption is UNKNOWN, never retry/success (5.305044ms)
+✔ post-install nullable corruption is UNKNOWN, never retry/success (4.854928ms)
+✔ post-install type corruption is UNKNOWN, never retry/success (6.024936ms)
+✔ post-install constraint corruption is UNKNOWN, never retry/success (4.433063ms)
+✔ post-install unvalidated corruption is UNKNOWN, never retry/success (4.294505ms)
+✔ post-install index corruption is UNKNOWN, never retry/success (5.173436ms)
+✔ post-install trigger corruption is UNKNOWN, never retry/success (6.208532ms)
+✔ post-install owner corruption is UNKNOWN, never retry/success (5.259755ms)
+✔ post-install view corruption is UNKNOWN, never retry/success (9.896776ms)
+✔ post-install rowSecurity corruption is UNKNOWN, never retry/success (5.298634ms)
+✔ reconstruction catches changed check definition even when type/counts remain (18.186866ms)
+✔ fresh install requires exact empty application rows and zero unquarantined accounting (22.466138ms)
+✔ migration, commit and release errors preserve UNKNOWN and no retry (18.424584ms)
+✔ unknown errors are not reflected or evaluated (3.321673ms)
+✔ owner query timeout6000 is admitted and shorter bound is preserved for every query (10.283477ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (61.219104ms)
+✔ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (14.041791ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (5.444738ms)
+✔ receipt binds original cutoff and reports port observation without native qualification (8.113135ms)
+✔ namespace query excludes only literal pg_ prefix and refuses user pgx_private (2.358365ms)
+✔ reusable scripted fixture binds configured target identity without allocating a database (7.740785ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 407.786827

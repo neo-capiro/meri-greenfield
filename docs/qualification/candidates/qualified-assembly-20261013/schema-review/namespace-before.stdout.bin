@@ -1,0 +1,90 @@
+✔ actual entry applies only exact six migration bytes in order once and returns detached pinned receipt (28.170753ms)
+✔ reconstruction requires retained full digest; populated accounting remains an observation (22.170494ms)
+✔ retained digest detects constraint replacement without DDL (17.560715ms)
+✔ retained digest detects default replacement without DDL (14.721968ms)
+✔ retained digest detects index replacement without DDL (14.819205ms)
+✔ retained digest detects view replacement without DDL (13.904309ms)
+✔ retained digest detects collation replacement without DDL (14.984803ms)
+✔ pre-admission host cannot reach borrowed pool (0.542696ms)
+✔ pre-admission database cannot reach borrowed pool (0.378398ms)
+✔ pre-admission user cannot reach borrowed pool (0.582827ms)
+✔ pre-admission mode cannot reach borrowed pool (0.289606ms)
+✔ pre-admission fixtureCase cannot reach borrowed pool (0.248874ms)
+✔ pre-admission port cannot reach borrowed pool (0.210016ms)
+✔ pre-admission system cannot reach borrowed pool (0.197237ms)
+✔ pre-admission timestamp cannot reach borrowed pool (0.268845ms)
+✔ pre-admission version cannot reach borrowed pool (0.274733ms)
+✔ pre-admission hash cannot reach borrowed pool (0.271178ms)
+✔ pre-admission extra cannot reach borrowed pool (0.246791ms)
+✔ actual server database mismatch stops before DDL (3.145768ms)
+✔ actual server username mismatch stops before DDL (1.78952ms)
+✔ actual server address mismatch stops before DDL (1.702529ms)
+✔ actual server port mismatch stops before DDL (1.753315ms)
+✔ actual server version mismatch stops before DDL (1.782659ms)
+✔ actual server start_ms mismatch stops before DDL (4.802298ms)
+✔ actual server system_identifier mismatch stops before DDL (4.752023ms)
+✔ actual server fsync mismatch stops before DDL (1.510491ms)
+✔ actual server synchronous_commit mismatch stops before DDL (2.01611ms)
+✔ actual server search_path mismatch stops before DDL (2.602112ms)
+✔ no reset or retry for lock (2.014738ms)
+✔ no reset or retry for namespace (2.344584ms)
+✔ no reset or retry for existingRelation (6.264867ms)
+✔ post-DDL missing refusal preserves uncertainty (5.320917ms)
+✔ post-DDL duplicate refusal preserves uncertainty (4.848507ms)
+✔ post-DDL type refusal preserves uncertainty (5.214207ms)
+✔ post-DDL nullable refusal preserves uncertainty (4.441826ms)
+✔ post-DDL owner refusal preserves uncertainty (4.241966ms)
+✔ post-DDL rowSecurity refusal preserves uncertainty (4.937331ms)
+✔ post-DDL trigger refusal preserves uncertainty (5.407397ms)
+✔ post-DDL rule refusal preserves uncertainty (4.547555ms)
+✔ post-DDL invalidConstraint refusal preserves uncertainty (5.351204ms)
+✔ post-DDL missingConstraint refusal preserves uncertainty (6.552659ms)
+✔ post-DDL duplicateConstraint refusal preserves uncertainty (4.860657ms)
+✔ post-DDL invalidIndex refusal preserves uncertainty (5.271053ms)
+✔ post-DDL deferrable refusal preserves uncertainty (5.881541ms)
+✔ post-DDL generated refusal preserves uncertainty (4.900746ms)
+✔ fresh schema refuses consumed budget (9.825398ms)
+✔ fresh schema refuses quarantine budget (9.239498ms)
+✔ fresh schema refuses cap budget (8.232313ms)
+✔ fresh schema refuses any preexisting task row (12.108165ms)
+✔ pre-abort has no connection (0.42611ms)
+✔ pre-deadline has no connection (0.190757ms)
+✔ deadline returned by identity prevents any migration (2.602051ms)
+✔ deadline returned by first DDL allows rollback only (5.160396ms)
+✔ borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened (16.496456ms)
+✔ remaining original budget narrows statement timeout (9.180899ms)
+✔ failed BEGIN cannot produce success or retry (10.413948ms)
+✔ failed COMMIT cannot produce success or retry (8.653181ms)
+✔ failed release cannot produce success or retry (7.571921ms)
+✔ failed ROLLBACK cannot produce success or retry (2.763063ms)
+✔ late connection after cancellation is released exactly once without SQL (1.89608ms)
+✔ late DDL ACK after cancellation cannot resume migrations or claim physical stop (1.974678ms)
+✔ malformed acquired client with release is disposed without SQL (1.364591ms)
+✔ hostile options getter and pool Proxy execute no traps (0.938601ms)
+✔ hostile result rows getter never executes and is sanitized (2.124594ms)
+✖ emitted namespace SQL preserves underscore literally in the reserved pg_ prefix (10.433163ms)
+✔ reported user namespace pgx_private prevents every DDL statement (5.241819ms)
+ℹ tests 66
+ℹ suites 0
+ℹ pass 65
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 434.446891
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:45:1
+✖ emitted namespace SQL preserves underscore literally in the reserved pg_ prefix (10.433163ms)
+  AssertionError [ERR_ASSERTION]: unescaped LIKE hides a user namespace such as pgx_private
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-schema-review-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:49:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

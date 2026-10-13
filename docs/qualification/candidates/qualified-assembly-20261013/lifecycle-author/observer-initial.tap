@@ -1,0 +1,45 @@
+✖ actual owner expressions admit exact synthetic running task and private ENI; observation is one use (77.317884ms)
+✔ refuses foreign task (44.183641ms)
+✔ refuses foreign run (46.799654ms)
+✔ refuses image (40.29735ms)
+✔ refuses stopped (39.654884ms)
+✔ refuses worker stopped (42.294662ms)
+✔ refuses override (35.88629ms)
+✔ refuses pending ENI (38.543263ms)
+✔ refuses public IP (62.940114ms)
+✔ refuses foreign ENI (37.910993ms)
+✔ refuses extra container (46.148935ms)
+✔ refuses missing tag (41.701741ms)
+✔ caller Boolean/lookalike observation cannot grant activation (16.056864ms)
+✔ parked read ends at caller original cutoff (47.585585ms)
+✖ late observation and cross-owner token refuse (33.356868ms)
+✔ raw getters/proxies are never inspected by observer (16.248623ms)
+✔ runtime hash and unbranded compilation refuse before reads (1.085422ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 15
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 786.857071
+
+✖ failing tests:
+
+test at infra/native-enforcement/worker-observer.test.mjs:24:1
+✖ actual owner expressions admit exact synthetic running task and private ENI; observation is one use (77.317884ms)
+  Error: WORKER_OBSERVATION_REFUSED
+      at deny (file:///tmp/meri-qualified-assembly-author-20261013/infra/native-enforcement/worker-observer.mjs:14:23)
+      at Object.observe (file:///tmp/meri-qualified-assembly-author-20261013/infra/native-enforcement/worker-observer.mjs:61:10)
+      at async TestContext.<anonymous> (file:///tmp/meri-qualified-assembly-author-20261013/infra/native-enforcement/worker-observer.test.mjs:25:59)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at infra/native-enforcement/worker-observer.test.mjs:39:1
+✖ late observation and cross-owner token refuse (33.356868ms)
+  Error: WORKER_OBSERVATION_REFUSED
+      at deny (file:///tmp/meri-qualified-assembly-author-20261013/infra/native-enforcement/worker-observer.mjs:14:23)
+      at Object.observe (file:///tmp/meri-qualified-assembly-author-20261013/infra/native-enforcement/worker-observer.mjs:61:10)
+      at async TestContext.<anonymous> (file:///tmp/meri-qualified-assembly-author-20261013/infra/native-enforcement/worker-observer.test.mjs:39:112)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

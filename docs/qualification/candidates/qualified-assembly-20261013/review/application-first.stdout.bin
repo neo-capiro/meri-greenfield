@@ -1,0 +1,23 @@
+✔ complete source assembly installs, activates through actual Python Grants, binds one ledger and reconstructs HTTP hosts (1392.224469ms)
+✔ worker refusal leaves pending grants, no JS allocation or source, and terminal application state (132.565985ms)
+✔ namespace query must not hide pgx_private through SQL underscore wildcard (14.20453ms)
+✔ independent engine identity address refuses before DDL (4.734206ms)
+✔ independent engine identity username refuses before DDL (2.843724ms)
+✔ independent engine identity system_identifier refuses before DDL (4.445412ms)
+✔ independent engine identity start_ms refuses before DDL (6.807222ms)
+✔ independent engine identity fsync refuses before DDL (1.762209ms)
+✔ independent engine identity synchronous_commit refuses before DDL (1.657491ms)
+✔ own and inherited hostile port accessors and proxy cannot run during admission (0.500142ms)
+✔ verify without retained digest and install with a retained digest allocate nothing (0.367482ms)
+✔ cancel during borrowed acquisition releases late client and sends no SQL (13.262154ms)
+✔ cancellation while advisory lock waits prevents first migration after it returns (12.821232ms)
+✔ first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal (8.182609ms)
+✔ host clock crossing original cutoff after identity cannot proceed to ownership or DDL (2.804475ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4159.510075

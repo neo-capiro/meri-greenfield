@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/independent/schema-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-assembly-review-20261013",
+  "sourceHead": "6437e38335b6687e6615543c2dbb87df278ce63b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T05:12:25.224964+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 497347,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.stdout.bin",
+      "bytes": 2042,
+      "sha256": "bab95b7c9b889032dc48e2fcfcc3956904668c193d8ea7d5b56122452f33f0a9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

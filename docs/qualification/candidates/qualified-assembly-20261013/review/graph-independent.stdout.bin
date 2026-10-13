@@ -1,0 +1,18 @@
+✔ qualification graph construction and close are inert and cannot mutate production catalog (27.609971ms)
+✔ qualification graph rejects a separate lookup pool (10.328825ms)
+✔ qualification graph rejects a separate metadata pool (7.085701ms)
+✔ qualification graph rejects a separate journalPool pool (8.870183ms)
+✔ qualification graph rejects a separate budgetPool pool (9.197655ms)
+✔ qualified read transport rejects live origin (6.589174ms)
+✔ qualified command transport rejects live origin (6.002884ms)
+✔ nested host accessors and proxies cannot execute during qualification admission (6.224926ms)
+✔ metadata autocommit read explicitly targets public rather than inherited search_path (0.869307ms)
+✔ all six canonical metadata/journal relation references are schema-qualified (5.742852ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2703.908502

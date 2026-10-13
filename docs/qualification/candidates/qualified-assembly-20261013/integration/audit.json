@@ -1,0 +1,772 @@
+{
+  "base": "3d34bf42983824327c63f96419abcfea8a587407",
+  "sourceHead": "5b41583d345384383f499955f7eeb31dbb755a0d",
+  "review": "38e34eea822db5b22ce9d8005f6a349d8b94e26e",
+  "schemaReview": "0b086d9a4142722b204a5c8b5c91cc07654ad4e9",
+  "originalEntries": 11236,
+  "originalUnchanged": 11228,
+  "allocatedOriginalChanges": [
+    "apps/control/admitted-runs/mount.mjs",
+    "apps/control/commands/approval-metadata/postgres-store.mjs",
+    "apps/control/commands/approval-metadata/test/fixture.mjs",
+    "apps/control/commands/postgres-command-journal.mjs",
+    "apps/gateway/budget/admitted-run-binding.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/index.mjs",
+    "apps/gateway/local-action/gateway.mjs"
+  ],
+  "reviewedSourceFiles": 37,
+  "capabilityScope": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mapped": 96,
+    "operations": 97
+  },
+  "laneManifestMembers": {
+    "schema-author": 32,
+    "lifecycle-author": 31,
+    "review": 38,
+    "schema-review": 30
+  },
+  "receipts": [
+    {
+      "label": "integrated-node",
+      "testedHead": "9a624d9fb533ad834a7fd9d893a281d9ad2adbb1",
+      "ownedPidAndPgid": 502917
+    },
+    {
+      "label": "integrated-python",
+      "testedHead": "9a624d9fb533ad834a7fd9d893a281d9ad2adbb1",
+      "ownedPidAndPgid": 502894
+    }
+  ],
+  "passed": 181,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all original entries retained",
+      "pass": true
+    },
+    {
+      "name": "only eight allocated original seams changed",
+      "pass": true
+    },
+    {
+      "name": "original tests migrations catalog public contracts and failure evidence unchanged",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/admitted-runs/mount-core.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/admitted-runs/mount.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/commands/approval-metadata/postgres-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/commands/approval-metadata/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/commands/postgres-command-journal.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/application.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/application.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/application.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/independent/application-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/independent/graph-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/independent/lifecycle-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/lifecycle-bridge.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/lifecycle-bridge.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/mount.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/mount.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-contract.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-independent/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/gateway/budget/admitted-run-binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/gateway/budget/postgres-tool-budget.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/gateway/local-action/fixture-gateway.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/gateway/local-action/gateway.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/gateway/qualification/action-gateway.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/__init__.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/bridge.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/test_lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed infra/native-enforcement/worker-observer.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed infra/native-enforcement/worker-observer.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed infra/native-enforcement/worker-observer.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed packages/contracts/qualification-assembly-0.2/protocol.json",
+      "pass": true
+    },
+    {
+      "name": "original139 selected96 deferred43 source mapping retained",
+      "pass": true
+    },
+    {
+      "name": "all production operations still unavailable",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/README-schema.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/schema-contract.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/schema.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/schema.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-QUALIFIED-SCHEMA-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-QUALIFIED-SCHEMA-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/manifest-initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.diff.patch",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/namespace-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/repair-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/repair-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-application-20261013/schema-author/repair-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/lifecycle-bridge.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/lifecycle-bridge.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/proxy/qualification/assembly/__init__.py",
+      "pass": true
+    },
+    {
+      "name": "retained apps/proxy/qualification/assembly/bridge.py",
+      "pass": true
+    },
+    {
+      "name": "retained apps/proxy/qualification/assembly/lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "retained apps/proxy/qualification/assembly/test_lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-QUALIFIED-LIFECYCLE-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-QUALIFIED-LIFECYCLE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-python.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/bridge-initial.tap",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/jsonata-dependency.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/observer-initial.tap",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/observer-realm-repair.tap",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-checked.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-checked.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-initial.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-initial.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/source-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "retained infra/native-enforcement/worker-observer.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained infra/native-enforcement/worker-observer.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained infra/native-enforcement/worker-observer.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained packages/contracts/qualification-assembly-0.2/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained packages/contracts/qualification-assembly-0.2/protocol.json",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/independent/application-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/independent/graph-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/independent/lifecycle-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/REPORT.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-final.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-first.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/application-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/configuration-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/configuration-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/configuration-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/criteria.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/graph-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/graph-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/graph-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-replay.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-replay.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-replay.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/review/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/schema-independent/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/author-receipts.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/authored-whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/authored-whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/authored-whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/full-whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/full-whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/full-whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/namespace-finding.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/outline.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/report.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/tooling-warning.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-assembly-20261013/schema-review/verdict.json",
+      "pass": true
+    },
+    {
+      "name": "passing bounded check integrated-node",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent group integrated-node",
+      "pass": true
+    },
+    {
+      "name": "passing bounded check integrated-python",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-assembly-20261013/integration/integrated-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent group integrated-python",
+      "pass": true
+    }
+  ]
+}

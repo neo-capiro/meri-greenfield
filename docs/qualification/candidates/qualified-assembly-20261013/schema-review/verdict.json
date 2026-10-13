@@ -1,0 +1,52 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "scope": "Isolated fixed six-migration schema assembly; no database/runtime acceptance",
+  "source": "d560cf999d4e6d03a0cc66ded8a52387776fb48c",
+  "sourceTree": "5dcbb74173b210be67fc499906faa03a36a7ce54",
+  "behaviorTestHead": "6b52b9c2c6688789326e91f76c6002cf30bf5ee9",
+  "behaviorTestTree": "ae2d07b4daa740ba37093bb929e5dfec5a4d67b0",
+  "independentTests": {
+    "passed": 69,
+    "failed": 0,
+    "sourceDiffBytes": 0
+  },
+  "history": [
+    {
+      "source": "20b474036039ec8c15f983d0d6e01d064aef2448",
+      "passed": 64,
+      "failed": 0,
+      "limitation": "Did not exercise SQL literal-prefix semantics"
+    },
+    {
+      "source": "20b474036039ec8c15f983d0d6e01d064aef2448",
+      "passed": 65,
+      "failed": 1,
+      "finding": "SQL LIKE underscore wildcard hides pgx_private; original finding gateway_reviewer"
+    },
+    {
+      "source": "d560cf999d4e6d03a0cc66ded8a52387776fb48c",
+      "passed": 69,
+      "failed": 0,
+      "change": "Namespace repair plus three additive original-clock/contention/late-COMMIT controls"
+    }
+  ],
+  "pendingPacketAudit": false,
+  "runtimeQualified": false,
+  "remainingGates": [
+    "Separate root pooled-connection search_path boundary and final application composition review",
+    "Exact native engine/fixture qualification and real catalog/transaction behavior remain separate and untested in this lane"
+  ],
+  "deadlineMeaning": "originalDeadlineMs is admitted operation cutoff <= now+60000, not the enclosing fixture cleanup deadline.",
+  "authorPacket": "87f0cac8b812f663612211a7bf718c2d7420566d",
+  "authorPacketTree": "d90ce89d08c088d5f70f129d47db6726c659175f",
+  "authorManifestSha256": "1abe0f3aee2ec32b6abc25ff937b8f71e758b9b6130a364d95b66147eb7eb3f8",
+  "sourcePacketAudit": {
+    "passed": 82,
+    "failed": 0,
+    "originalEntriesPreserved": 11236
+  },
+  "authorReceiptReview": {
+    "passed": 9,
+    "failed": 0
+  }
+}

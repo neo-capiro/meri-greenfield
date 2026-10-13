@@ -1,0 +1,9 @@
+# Independent qualification schema assembly review
+
+Candidate `20b474036039ec8c15f983d0d6e01d064aef2448`; original PR48 base `3d34bf42983824327c63f96419abcfea8a587407`. Criteria recorded after author freeze but before production inspection. Own only `apps/control/qualified-application/schema-independent/*` and this schema-review packet. No production or old-test edits, no delegated agents, no database/Docker/cloud/provider/private-pin operations; bounded local source checks only.
+
+1. All six existing migrations remain byte-identical and ordered explicitly. No reset/drop/retry/implicit upgrade. Exact owned fixture identity and the original absolute deadline are checked before any DDL and after returned asynchronous ports; absence or ambiguity refuses.
+2. Actual assembly entry consumes canonical migration bytes and borrowed pool. Initialization is inert; borrowed pool is never ended. Late acquisition/query, cancellation, failed rollback, lost COMMIT acknowledgment and release failure preserve uncertainty and safe owned connection cleanup without new SQL or retry authority.
+3. Post-read catalog verification covers the exact13 relations and required constraints through schema-qualified catalogs/counts; missing, substituted or nonempty state refuses. Existing reconstruction uses retained receipt/digest, original fixture identity and cutoff; it does not manufacture fresh DDL admission or infer physical durability.
+4. Independent inert-port controls exercise observable ordering/state/cleanup and malformed or stale evidence. Preserve exact failures and original controls. Root's separate borrowed-connection search_path wrapper is an integration dependency, not established by this isolated schema review.
+5. Final acceptance names exact source/tested tree and evidence. Synthetic SQL ports do not prove PostgreSQL semantics, native transaction/cancellation, migration application or actual fixture ownership. No runtime qualification is performed.
