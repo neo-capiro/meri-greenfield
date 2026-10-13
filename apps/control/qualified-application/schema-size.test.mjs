@@ -45,7 +45,7 @@ for(const kind of ['count','depth','nodes','accessor','proxy','metadata-shape','
  s.pool.connect=async()=>{const c=await connect(),query=c.query.bind(c);c.query=async q=>{const r=await query(q);if(!q.text.startsWith('WITH ns AS'))return r;
   if(kind==='count')r.rows.push(structuredClone(r.rows[0]));
   if(kind==='depth'){let nested={};for(let i=0;i<65;i++)nested={nested};r.rows[0].metadata.labels=[nested];}
-  if(kind==='nodes')r.rows[0].metadata.labels=Array(100001).fill(null);
+  if(kind==='nodes')r.rows[0].metadata.labels=Array(250001).fill(null);
   if(kind==='accessor')Object.defineProperty(r.rows[0].metadata,'labels',{enumerable:true,get(){touched++;return [];}});
   if(kind==='proxy')r.rows[0].metadata.labels=new Proxy([],{ownKeys(){touched++;return [];}});
   if(kind==='metadata-shape')r.rows[0].metadata.extra=[];

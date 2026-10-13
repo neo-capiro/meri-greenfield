@@ -47,7 +47,7 @@ test('both admissions reject Proxy and accessors without invocation',()=>{
  assert.equal(effects,0);
 });
 test('preservation keeps node and depth guards despite larger byte limit',()=>{
- assert.throws(()=>preservation([{values:Array.from({length:100001},()=>0)}]));
+ assert.throws(()=>preservation([{values:Array.from({length:250001},()=>0)}]));
  let deep={};for(let i=0;i<66;i++)deep={next:deep};assert.throws(()=>preservation([deep]));
  const cycle={};cycle.self=cycle;assert.throws(()=>preservation([cycle]));
 });
