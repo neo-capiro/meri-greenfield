@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: private binder preserves inert configuration admission before reading or spreading outer ports
+not ok 1 - private binder preserves inert configuration admission before reading or spreading outer ports
+  ---
+  duration_ms: 29.462568
+  type: 'test'
+  location: '/workspace/meri-n209-source-review/apps/control/document-application/independent/research-brief-independent.test.mjs:162:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    4 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 4
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/document-application/independent/research-brief-independent.test.mjs:170:70)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1899.742478

@@ -1,0 +1,29 @@
+{
+  "label": "n209-final-independent",
+  "argv": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs",
+    "apps/control/document-application/test/research-brief.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "086cb8960a8cd314d97b484198660c171d63272f",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 5.017,
+  "processReaped": true,
+  "stdoutBytes": 10497,
+  "stderrBytes": 0,
+  "stdoutSha256": "4923a50bb128678fbc70a22f5f1b3e57ccb7005e61328002f22f42e0a3c371f9",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

@@ -136,6 +136,39 @@ test('private binder must pin context digest even if returned prepared context m
  p.context.evidence[0].contentSha256='e'.repeat(64);
  await assert.rejects(bound.authority.check({input:{request:p.request,context:bound.context,baseVersionId:null}}),e=>e.code==='ACCESS_DENIED');assert.equal(checked,0);
 });
+test('private binder refuses authority accessor or Proxy without invoking getter/traps',async()=>{
+ const p=await compiler().prepare(input(),context());let invoked=0;
+ const accessor={get check(){invoked++;throw Error('hostile getter');}};
+ assert.throws(()=>bindPreparedBriefArtifactOptions(p,{context:p.context,authority:accessor}),/BRIEF_CONFIGURATION/);
+ const proxy=new Proxy({check(){}},{getOwnPropertyDescriptor(){invoked++;throw Error('hostile descriptor');},get(){invoked++;throw Error('hostile get');}});
+ assert.throws(()=>bindPreparedBriefArtifactOptions(p,{context:p.context,authority:proxy}),/BRIEF_CONFIGURATION/);assert.equal(invoked,0);
+});
+test('private binder captures borrowed check while retaining owner fields and original revocation',async()=>{
+ const p=await compiler().prepare(input(),context()),signal=new AbortController().signal;let changedCheck=0,extraGetter=0;
+ const owner={allowed:true,checks:0,get unusedMetadata(){extraGetter++;throw Error('must stay unused');},check(call){assert.equal(this,owner);assert.equal(call.signal,signal);this.checks++;if(!this.allowed)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return 'canonical-policy-result';}};
+ const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authority:owner});owner.check=()=>{changedCheck++;return 'replacement';};
+ const call={input:{request:p.request,context:p.context,baseVersionId:null},signal};assert.equal(await bound.authority.check(call),'canonical-policy-result');
+ owner.allowed=false;await assert.rejects(bound.authority.check(call),e=>e.code==='ACCESS_DENIED');assert.equal(owner.checks,2);assert.equal(changedCheck,0);assert.equal(extraGetter,0);
+});
+test('private binder denies changed request context base and hostile intent before any policy effect',async()=>{
+ const p=await compiler().prepare(input(),context());let calls=0;
+ const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authority:{check(){calls++;return true;}}});
+ const good={request:p.request,context:p.context,baseVersionId:null},changedRequest=structuredClone(good),changedContext=structuredClone(good),changedBase=structuredClone(good);
+ changedRequest.request.title='Different approved body';changedContext.context.binding.writerFence=2;changedBase.baseVersionId=uid(83);
+ let traps=0;const hostile=new Proxy(good,{ownKeys(){traps++;throw Error('hostile intent');}});
+ for(const intent of [changedRequest,changedContext,changedBase,hostile])await assert.rejects(bound.authority.check({input:intent}),e=>e.code==='ACCESS_DENIED');
+ assert.equal(calls,0);assert.equal(traps,0);
+});
+test('private binder preserves inert configuration admission before reading or spreading outer ports',async()=>{
+ const p=await compiler().prepare(input(),context());let invoked=0;
+ for(const field of ['context','authority','executor']){
+  const options={context:p.context,authority:{check(){return true;}},executor:{}};
+  Object.defineProperty(options,field,{enumerable:true,get(){invoked++;throw Error('outer configuration getter invoked');}});
+  assert.throws(()=>bindPreparedBriefArtifactOptions(p,options));
+ }
+ const proxy=new Proxy({context:p.context,authority:{check(){return true;}}},{get(){invoked++;throw Error('outer configuration Proxy invoked');},ownKeys(){invoked++;throw Error('outer configuration reflection invoked');}});
+ assert.throws(()=>bindPreparedBriefArtifactOptions(p,proxy));assert.equal(invoked,0);
+});
 
 test('independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup',async t=>{
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3',skillManifest:briefManifest()});

@@ -1,0 +1,27 @@
+{
+  "label": "n209-final-outer-configuration-counterexample",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=private binder preserves inert configuration",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "086cb8960a8cd314d97b484198660c171d63272f",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 1.931,
+  "processReaped": true,
+  "stdoutBytes": 1042,
+  "stderrBytes": 0,
+  "stdoutSha256": "07b88c8304328cd6b407f04db5e7cc07b22a9f0a932c3f9b95ab15496334cef1",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}
