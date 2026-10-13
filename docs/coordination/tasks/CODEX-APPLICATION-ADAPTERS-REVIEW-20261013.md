@@ -16,3 +16,5 @@ Acceptance criteria:
 - Compare exact final source and allowed original-path changes; public package, catalog, existing contracts and approval semantics stay unchanged unless separately root allocated. Verify raw hashes and physical exit of owned processes; delete only reviewer-owned temporary dependencies.
 
 A final ACCEPT_SOURCE requires an exact coherent source freeze, independent meaningful checks and concise evidence. It does not qualify live Capiro/native identity, deployment, database persistence or current customer policy.
+
+Root interface allocation clarification: author may change exactly `apps/control/action-host/session/owner.mjs` and its README to pass the already retained native `identityCredential` directly to trusted `resolveContext`. No second credential map or public disclosure. Bridge fetch requires explicit enablement; canonical `currentRun(binding,{signal})` is an existing consumed interface, not a newly implemented generic persisted current-run authority. Capiro authority endpoints are proposed protocol contracts, currently unimplemented/unqualified externally.
