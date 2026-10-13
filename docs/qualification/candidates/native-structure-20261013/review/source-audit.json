@@ -1,0 +1,199 @@
+{
+  "schema": "meri.native-structure-independent-source-audit/1",
+  "base": "67ccac716bd6cbce4ee04e439a085bab75ae21a5",
+  "source": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b",
+  "sourceTree": "7fdca4e1a69d9cad4d2d308dfb5256ebe6188dbc",
+  "testedHead": "7ca187a06ba627a3d26f9a2bfc110f6b8303345e",
+  "testedTree": "a3fd5c22e92f22ceecbef0ba4af5ef74befd4cd6",
+  "testMapping": "ac9d7cdb1fb870619148a81adb69ab6b7409636d",
+  "originalEntries": 11621,
+  "unchangedOriginalEntries": 11618,
+  "changedOriginalPaths": [
+    "apps/control/qualified-application/schema-contract.mjs",
+    "apps/control/qualified-application/schema-preservation.mjs",
+    "packages/contracts/retrieval-0.2/operation-contracts.mjs"
+  ],
+  "protectedEntries": 11,
+  "sources": [
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 6129,
+      "sha256": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5",
+      "gitBlob": "9009e421a2ed61c1f4ba5c929ec32cdb4f80533f"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "bytes": 12704,
+      "sha256": "c77eb34a00fdd22c34a81251a811dda6fa8b299ab1002bd51eda0e488b735657",
+      "gitBlob": "3bd5067559b09bd66911132282587d5b273c25cb"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "bytes": 7976,
+      "sha256": "a1a4ff8cf2c5a79f6423fadfeb873eb69eb18fee1d0f4b0427b0d051abea1430",
+      "gitBlob": "c4615dfc1ab3138ae59e554f3e2fcf252bb001ac"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all original entries retained",
+      "passed": true
+    },
+    {
+      "name": "only three allocated originals change at source freeze",
+      "passed": true
+    },
+    {
+      "name": "source adds only allocated author control and report",
+      "passed": true
+    },
+    {
+      "name": "reviewed source exact packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "mapped test commit preserves source packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed source exact apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "mapped test commit preserves source apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed source exact apps/control/qualified-application/schema-preservation.mjs",
+      "passed": true
+    },
+    {
+      "name": "mapped test commit preserves source apps/control/qualified-application/schema-preservation.mjs",
+      "passed": true
+    },
+    {
+      "name": "canonical walker exact after private parameter substitution",
+      "passed": true
+    },
+    {
+      "name": "ordinary fixed wrapper refuses caller-controlled profile",
+      "passed": true
+    },
+    {
+      "name": "ordinary profile unchanged",
+      "passed": true
+    },
+    {
+      "name": "freezeData and operation resolver exact",
+      "passed": true
+    },
+    {
+      "name": "dedicated profile is fixed 250000 with inherited 64 and 16MiB",
+      "passed": true
+    },
+    {
+      "name": "dedicated serialized bound exact 4MiB UTF8",
+      "passed": true
+    },
+    {
+      "name": "private configurable walker is not exported",
+      "passed": true
+    },
+    {
+      "name": "migration identities and all admission before boundedRows exact",
+      "passed": true
+    },
+    {
+      "name": "ordinary rows remains 1MiB 1024 through default ordinary snapshot",
+      "passed": true
+    },
+    {
+      "name": "preservation decoder exclusively uses fixed profile and one row",
+      "passed": true
+    },
+    {
+      "name": "catalog admission exact",
+      "passed": true
+    },
+    {
+      "name": "preservation SQL and complete digest logic exact except fixed snapshot call",
+      "passed": true
+    },
+    {
+      "name": "all twelve metadata fields retained",
+      "passed": true
+    },
+    {
+      "name": "migration public deadline transaction and lifecycle protected files exact",
+      "passed": true
+    },
+    {
+      "name": "exact six migration digests",
+      "passed": true
+    },
+    {
+      "name": "exact query identity selects preservation decoder",
+      "passed": true
+    },
+    {
+      "name": "large metadata is reduced to digest before ordinary receipt",
+      "passed": true
+    },
+    {
+      "name": "exact three test-only mappings",
+      "passed": true
+    },
+    {
+      "name": "bound-specific mapping keeps all other assertions apps/control/qualified-application/schema-size-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "bound-specific mapping keeps all other assertions apps/control/qualified-application/schema-size-inventory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "bound-specific mapping keeps all other assertions apps/control/qualified-application/schema-size.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "baseline raw stream identities",
+      "passed": true
+    },
+    {
+      "name": "baseline expected counts",
+      "passed": true
+    },
+    {
+      "name": "baseline exact source capture and physical exit",
+      "passed": true
+    },
+    {
+      "name": "downstream-before raw stream identities",
+      "passed": true
+    },
+    {
+      "name": "downstream-before expected counts",
+      "passed": true
+    },
+    {
+      "name": "downstream-before exact source capture and physical exit",
+      "passed": true
+    },
+    {
+      "name": "candidate raw stream identities",
+      "passed": true
+    },
+    {
+      "name": "candidate expected counts",
+      "passed": true
+    },
+    {
+      "name": "candidate exact source capture and physical exit",
+      "passed": true
+    }
+  ],
+  "passed": 39,
+  "failed": 0,
+  "runtimeQualified": false,
+  "nativeExecution": false
+}

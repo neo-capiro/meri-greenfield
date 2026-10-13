@@ -1,0 +1,9 @@
+{
+  "kind": "reviewer-audit-expected-additions-correction",
+  "originalPassed": 38,
+  "originalFailed": 1,
+  "cause": "Checker incorrectly required identical total tree membership although the author had allocated new test/report files. All original-path preservation and three source-delta checks already passed.",
+  "change": "Allow exactly author schema-structure.test.mjs and CODEX-NATIVE-STRUCTURE report additions; no product/test changes, no preservation exception for original paths.",
+  "beforeScriptSha256": "93d3c38e57139253d059344c43629339595950175d29be6736927ea37eb99c4d",
+  "afterScriptSha256": "ab9919635130fb220c4e0115b40dcb6606bd0fa0d7085820c0a12be4f36c8c31"
+}
