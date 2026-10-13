@@ -38,7 +38,10 @@ export function createCollection({readSource,context,selected,asOf,query,deadlin
    if(error===life.signal.reason)throw error;fail('COMMITMENTS_SOURCE_AUTHORITY');}
   life.check();bytes+=Buffer.byteLength(JSON.stringify(raw));if(bytes>limits.maxSourceBytes)fail('COMMITMENTS_SOURCE_BYTES');
   let result=raw;
-  if(contract.binding.dispatchProfile==='bound-projection/1'){own(raw,['binding','subject','operation','argumentsSha256','result']);
+  // A trusted read may carry the closed binding wrapper even for an original
+  // descriptor. The exact operation and canonical inner DTO still apply;
+  // this does not activate an unavailable original producer or its successor.
+  if(contract.binding.dispatchProfile==='bound-projection/1'||Object.hasOwn(raw,'result')){own(raw,['binding','subject','operation','argumentsSha256','result']);
    if(!same(raw.binding,context.binding)||!same(stableSubject(raw.subject),stableSubject(selected.subject))||!same(raw.operation,operation)||raw.argumentsSha256!==normalized.argumentsSha256)fail('COMMITMENTS_SOURCE_BINDING');result=raw.result;}
   if(id==='read_client_documents'&&same(result.binding,context.binding)&&same(stableSubject(result.subject),stableSubject(selected.subject)))normalizationContext={binding:context.binding,subject:result.subject};
   contract.assertOutput(result,{request,...normalizationContext});

@@ -46,3 +46,18 @@ test('fresh authorization decision IDs retain exact stable subject and every act
  assert.ok(p.context.evidence.every(e=>e.authorizationDecisionId===uid(90)));
 });
 test('cancelled collection never reaches later source work',async()=>{const f=setup(),controller=new AbortController();controller.abort();await assert.rejects(f.compiler.prepare(makeInput(),f.context,{selection:f.selected,signal:controller.signal}));assert.equal(f.calls.length,0);});
+
+// This is synthetic original DTO grammar, not the actions.query producer.
+import {sourcePage as originalFixture,unitContext as originalContext} from '../../relationship-brief/test/fixtures.mjs';
+const originalGrammar=call=>originalFixture(call.operation.id.startsWith('mail.')?{...call,normalizationContext:{...call.normalizationContext,nowMs:NOW}}:call);
+test('closed original read wrapper preserves a bounded selection and incomplete wider native evidence',async()=>{
+ const context=originalContext(),selected=selection(context);selected.window={basis:'explicit',startInclusive:'2026-10-13T10:00:00.000Z',endExclusive:'2026-10-13T15:00:00.000Z',timezone:'UTC',weekStartsOn:null};
+ const p=await createCommitmentsAuditCompiler({now:()=>NOW,readSource:originalGrammar}).prepare(makeInput(),context,{selection:selected});
+ assert.deepEqual(p.provenance.selection.window,selected.window);assert(p.ledger.coverage.some(c=>c.windowMatch==='broad-native-read'));assert(p.ledger.coverage.every(c=>!c.complete));assert(p.ledger.commitments.every(c=>!c.completed));
+});
+test('original wrapper refuses altered lineage, input hash, extra fields and actual successor source/operation',async()=>{
+ for(const mutate of [p=>{p.binding.actorId='foreign';},p=>{p.argumentsSha256='0'.repeat(64);},p=>{p.credential='not-authority';},p=>{p.operation={id:'actions.query',version:'0.2.0'};},p=>{p.result.sources[0].sourceId='action_items_complete';p.result.sources[0].authority='derived';}]){
+  const context=originalContext(),compiler=createCommitmentsAuditCompiler({now:()=>NOW,readSource:call=>{const p=originalGrammar(call);if(call.operation.id==='query_action_items')mutate(p);return p;}});
+  await assert.rejects(compiler.prepare(makeInput(),context,{selection:selection(context)}));
+ }
+});
