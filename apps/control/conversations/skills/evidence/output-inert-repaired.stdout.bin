@@ -1,0 +1,31 @@
+✔ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (437.966397ms)
+✔ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (279.195927ms)
+✔ missing approval is pending with no IDs/effect; cloned source object cannot acquire preparation identity (41.622993ms)
+✔ approved output sourcePinsSha256 substitution refuses before artifact effects (32.987752ms)
+✔ approved output outputBinding substitution refuses before artifact effects (44.961279ms)
+✔ approved output scopes substitution refuses before artifact effects (35.9808ms)
+✔ approved output policyRevision substitution refuses before artifact effects (39.673236ms)
+✔ approved output allocationSha256 substitution refuses before artifact effects (42.355951ms)
+✔ approved output grantId substitution refuses before artifact effects (39.918583ms)
+✔ approved output approvalReceiptId substitution refuses before artifact effects (33.515602ms)
+✔ approved output deadlineMs substitution refuses before artifact effects (35.374604ms)
+✔ approved output maxBytes substitution refuses before artifact effects (32.038061ms)
+✔ native retained source revocation refuses output even though old source decisions and grant remain (37.800503ms)
+✔ current retained evidence evidenceSha256 substitution refuses before generation (38.426941ms)
+✔ current retained evidence sourcePinsSha256 substitution refuses before generation (43.131861ms)
+✔ current retained evidence scopes substitution refuses before generation (34.95784ms)
+✔ current retained evidence policyRevision substitution refuses before generation (35.88695ms)
+✔ current retained evidence checkedAtMs substitution refuses before generation (33.285858ms)
+✔ current retained evidence expiresAtMs substitution refuses before generation (36.453048ms)
+✔ valid-looking different grant ID cannot alias current output producer grant (36.781629ms)
+✔ read refuses unretained/cloned preparation and caller credential before native output reads (31.701978ms)
+✔ quick_skill.commitments_audit: real separate-output original/revision/replay/inspect/download and every-page render (2330.582497ms)
+✔ quick_skill.relationship_brief: real separate-output original/revision/replay/inspect/download and every-page render (2271.313585ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6561.970089

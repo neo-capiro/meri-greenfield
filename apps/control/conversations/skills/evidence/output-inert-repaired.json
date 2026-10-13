@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/selected-output/test/bridge.test.mjs",
+    "apps/control/document-application/selected-output/test/lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "0d8a83c607376ad858f577ff24fb17ddeca77eb9",
+  "sourceDiffSha256": "7a52388d77a211a6072e38a3b8375244ebebe86efb2bb824fd71f4b14c4597f3",
+  "sourceDiffBytes": 18259,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:20:24.032939+00:00",
+  "durationSeconds": 6.621,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 304061,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/output-inert-repaired.stdout.bin",
+      "bytes": 2513,
+      "sha256": "82b93a94cad021cb04cb14a44afd4c932bd2e2eaf68a969e753d87c7dda9b18a"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/output-inert-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root current output source boundary now captures inert callback methods and rejects nondata prepared getters/native invalid signals before I/O.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

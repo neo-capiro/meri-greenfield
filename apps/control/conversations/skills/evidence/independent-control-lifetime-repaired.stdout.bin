@@ -1,0 +1,20 @@
+✔ execution constructor refuses a retention method getter before evaluating it (0.972775ms)
+✔ execution constructor refuses output bridge method proxy before introspection (0.156464ms)
+✔ new optional service admission method cannot execute a configured getter (2.856544ms)
+✔ shared selected-output assertion rejects a state getter without evaluating it (0.301271ms)
+✔ canonical publication rejects a preparation hash getter without evaluating it (0.480158ms)
+✔ invalid current-context timestamps cannot expose the runtime factory (9.120737ms)
+✔ valid native AbortSignal reaches runtime factory with original owner receiver preserved (1.152915ms)
+✔ actual canonical admission precedes storage/start and original pins survive exact replay (21.798426ms)
+✔ exact selected-client revocation during admission refuses before persistence (2.594201ms)
+✔ unconfigured selected output and ordinary worker artifact event cannot mint availability (5.555633ms)
+✔ an expired source context cannot expose a new runtime even with a future context receipt (0.509353ms)
+✔ preparation deadline cancels pending initialization and closes a late-created runtime (3000.63178ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4851.552743

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "c43c8b761e10bd911e3f25190354a77a9b8dcd23",
+  "sourceDiffSha256": "13cfba8250ec7ff6eee6d3452e7b3a8a1522ac1515c419b5b1453246cd82a498",
+  "sourceDiffBytes": 12658,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:19:11.939082+00:00",
+  "durationSeconds": 4.876,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 303144,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/independent-control-lifetime-repaired.stdout.bin",
+      "bytes": 1296,
+      "sha256": "1ed4d48562494038bc01796ae1121d411a465211da519d44632ff758fe9f1b08"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/independent-control-lifetime-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add expired source-context refusal and preparation cancellation handoff; parked late initialization is closed, successful SDK lifetime survives preparation.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
