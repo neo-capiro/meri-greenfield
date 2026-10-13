@@ -1,0 +1,388 @@
+TAP version 13
+# Subtest: memory request trims caps floors and preserves parseInt behavior
+ok 1 - memory request trims caps floors and preserves parseInt behavior
+  ---
+  duration_ms: 6.590615
+  type: 'test'
+  ...
+# Subtest: memory early missing query wins over invalid selectors
+ok 2 - memory early missing query wins over invalid selectors
+  ---
+  duration_ms: 32.172636
+  type: 'test'
+  ...
+# Subtest: memory invalid client refusal precedes content-cursor validation
+ok 3 - memory invalid client refusal precedes content-cursor validation
+  ---
+  duration_ms: 0.587619
+  type: 'test'
+  ...
+# Subtest: memory refusal cannot replace valid query result
+ok 4 - memory refusal cannot replace valid query result
+  ---
+  duration_ms: 0.376347
+  type: 'test'
+  ...
+# Subtest: memory normal full content is detached source observation
+ok 5 - memory normal full content is detached source observation
+  ---
+  duration_ms: 3.908309
+  type: 'test'
+  ...
+# Subtest: memory missing query result cannot claim an empty search
+ok 6 - memory missing query result cannot claim an empty search
+  ---
+  duration_ms: 0.311821
+  type: 'test'
+  ...
+# Subtest: memory exact lookup is single item, query may remain opaque
+ok 7 - memory exact lookup is single item, query may remain opaque
+  ---
+  duration_ms: 0.788776
+  type: 'test'
+  ...
+# Subtest: memory metadata-budget fallback is one not arbitrary intermediate size
+ok 8 - memory metadata-budget fallback is one not arbitrary intermediate size
+  ---
+  duration_ms: 0.586096
+  type: 'test'
+  ...
+# Subtest: memory requested k and effective cap bind returned rows
+ok 9 - memory requested k and effective cap bind returned rows
+  ---
+  duration_ms: 0.505969
+  type: 'test'
+  ...
+# Subtest: memory empty, unavailable and exact ineligible stay separate
+ok 10 - memory empty, unavailable and exact ineligible stay separate
+  ---
+  duration_ms: 0.609231
+  type: 'test'
+  ...
+# Subtest: memory metadata-only and empty records are not removed or silently facts
+ok 11 - memory metadata-only and empty records are not removed or silently facts
+  ---
+  duration_ms: 1.563231
+  type: 'test'
+  ...
+# Subtest: memory stale and controlling conflict observations remain admitted
+ok 12 - memory stale and controlling conflict observations remain admitted
+  ---
+  duration_ms: 0.619226
+  type: 'test'
+  ...
+# Subtest: memory pending proposals are not a recall output status
+ok 13 - memory pending proposals are not a recall output status
+  ---
+  duration_ms: 4.506253
+  type: 'test'
+  ...
+# Subtest: memory instructionsAllowed scalar never authorizes a call
+ok 14 - memory instructionsAllowed scalar never authorizes a call
+  ---
+  duration_ms: 0.322136
+  type: 'test'
+  ...
+# Subtest: memory selected client allows firm rows but rejects other client rows
+ok 15 - memory selected client allows firm rows but rejects other client rows
+  ---
+  duration_ms: 0.807674
+  type: 'test'
+  ...
+# Subtest: memory convenience rows bind identity title type client score
+ok 16 - memory convenience rows bind identity title type client score
+  ---
+  duration_ms: 0.793483
+  type: 'test'
+  ...
+# Subtest: memory full body hash includes source version
+ok 17 - memory full body hash includes source version
+  ---
+  duration_ms: 0.444046
+  type: 'test'
+  ...
+# Subtest: memory UTF16 offsets and non-surrogate ending bind
+ok 18 - memory UTF16 offsets and non-surrogate ending bind
+  ---
+  duration_ms: 0.839671
+  type: 'test'
+  ...
+# Subtest: memory search excerpt cap differs from exact item budget
+ok 19 - memory search excerpt cap differs from exact item budget
+  ---
+  duration_ms: 0.332281
+  type: 'test'
+  ...
+# Subtest: memory truncated search next-read cursor is unkeyed scope correlation
+ok 20 - memory truncated search next-read cursor is unkeyed scope correlation
+  ---
+  duration_ms: 1.717049
+  type: 'test'
+  ...
+# Subtest: memory content cursor binds actor client item hash and offset
+ok 21 - memory content cursor binds actor client item hash and offset
+  ---
+  duration_ms: 1.07534
+  type: 'test'
+  ...
+# Subtest: memory cursor requires exact item and excludes search cursor
+ok 22 - memory cursor requires exact item and excludes search cursor
+  ---
+  duration_ms: 0.145886
+  type: 'test'
+  ...
+# Subtest: memory current content cursor strict canonical data refuses extra and malformed encoding
+ok 23 - memory current content cursor strict canonical data refuses extra and malformed encoding
+  ---
+  duration_ms: 0.18246
+  type: 'test'
+  ...
+# Subtest: memory next-read cannot change client or body hash
+ok 24 - memory next-read cannot change client or body hash
+  ---
+  duration_ms: 0.793654
+  type: 'test'
+  ...
+# Subtest: memory terminal body has no next-read and zero-progress pages refuse
+ok 25 - memory terminal body has no next-read and zero-progress pages refuse
+  ---
+  duration_ms: 0.378079
+  type: 'test'
+  ...
+# Subtest: memory duplicate records and opaque extra authority reject
+ok 26 - memory duplicate records and opaque extra authority reject
+  ---
+  duration_ms: 0.48665
+  type: 'test'
+  ...
+# Subtest: memory request and output accessors are inertly refused
+ok 27 - memory request and output accessors are inertly refused
+  ---
+  duration_ms: 0.253024
+  type: 'test'
+  ...
+# Subtest: memory available content cannot carry metadata-only limitation
+ok 28 - memory available content cannot carry metadata-only limitation
+  ---
+  duration_ms: 0.384378
+  type: 'test'
+  ...
+# Subtest: memory metadata-only and empty status require emitted limitation
+ok 29 - memory metadata-only and empty status require emitted limitation
+  ---
+  duration_ms: 0.580469
+  type: 'test'
+  ...
+# Subtest: memory normalization preserves floor/clamp and early refusal branches
+ok 30 - memory normalization preserves floor/clamp and early refusal branches
+  ---
+  duration_ms: 50.866213
+  type: 'test'
+  ...
+# Subtest: memory full governed content and detached ownership
+ok 31 - memory full governed content and detached ownership
+  ---
+  duration_ms: 5.786717
+  type: 'test'
+  ...
+# Subtest: memory exact mode and fallback preserve requested/effective page sizes
+ok 32 - memory exact mode and fallback preserve requested/effective page sizes
+  ---
+  duration_ms: 1.49442
+  type: 'test'
+  ...
+# Subtest: memory content hash, offset and result projection substitutions refuse
+ok 33 - memory content hash, offset and result projection substitutions refuse
+  ---
+  duration_ms: 2.41457
+  type: 'test'
+  ...
+# Subtest: memory governed statuses are observations not pending proposal bodies
+ok 34 - memory governed statuses are observations not pending proposal bodies
+  ---
+  duration_ms: 0.566537
+  type: 'test'
+  ...
+# Subtest: memory empty/unavailable exact result stays distinct
+ok 35 - memory empty/unavailable exact result stays distinct
+  ---
+  duration_ms: 0.520049
+  type: 'test'
+  ...
+# Subtest: memory metadata-only classification counts content without approving it as fact
+ok 36 - memory metadata-only classification counts content without approving it as fact
+  ---
+  duration_ms: 1.810767
+  type: 'test'
+  ...
+# Subtest: memory cursor scope refuses actor substitution and cursor selector conflict
+ok 37 - memory cursor scope refuses actor substitution and cursor selector conflict
+  ---
+  duration_ms: 2.351537
+  type: 'test'
+  ...
+# Subtest: memory inert request boundary rejects getters without evaluation
+ok 38 - memory inert request boundary rejects getters without evaluation
+  ---
+  duration_ms: 2.071844
+  type: 'test'
+  ...
+# Subtest: memory source status limitations cannot contradict each other
+ok 39 - memory source status limitations cannot contradict each other
+  ---
+  duration_ms: 0.963725
+  type: 'test'
+  ...
+# Subtest: Monday reuses existing coverage schema and exposes one exact operation
+ok 40 - Monday reuses existing coverage schema and exposes one exact operation
+  ---
+  duration_ms: 1.199514
+  type: 'test'
+  ...
+# Subtest: omitted page size differs from explicit null and preserves requireComplete
+ok 41 - omitted page size differs from explicit null and preserves requireComplete
+  ---
+  duration_ms: 0.891288
+  type: 'test'
+  ...
+# Subtest: source numeric conversion clamps and truncates explicit page sizes
+ok 42 - source numeric conversion clamps and truncates explicit page sizes
+  ---
+  duration_ms: 0.285472
+  type: 'test'
+  ...
+# Subtest: cursor opts into paging and selectors retain UTF16 caps
+ok 43 - cursor opts into paging and selectors retain UTF16 caps
+  ---
+  duration_ms: 0.204642
+  type: 'test'
+  ...
+# Subtest: client UUID is wrapper-owned syntax but model authority and unknown fields refuse
+ok 44 - client UUID is wrapper-owned syntax but model authority and unknown fields refuse
+  ---
+  duration_ms: 0.265763
+  type: 'test'
+  ...
+# Subtest: managed row supports omitted untyped provider fields and inert opaque values
+ok 45 - managed row supports omitted untyped provider fields and inert opaque values
+  ---
+  duration_ms: 2.273542
+  type: 'test'
+  ...
+# Subtest: item and subitem provenance are exact without inventing parent visibility
+ok 46 - item and subitem provenance are exact without inventing parent visibility
+  ---
+  duration_ms: 0.515933
+  type: 'test'
+  ...
+# Subtest: record identity and client correlation prevent substitutions and duplicate IDs
+ok 47 - record identity and client correlation prevent substitutions and duplicate IDs
+  ---
+  duration_ms: 0.688748
+  type: 'test'
+  ...
+# Subtest: status is nullable or trimmed source text with no provider status enum
+ok 48 - status is nullable or trimmed source text with no provider status enum
+  ---
+  duration_ms: 0.706144
+  type: 'test'
+  ...
+# Subtest: URL is nullable or source-accepted Monday tenant URL without generic trust claim
+ok 49 - URL is nullable or source-accepted Monday tenant URL without generic trust claim
+  ---
+  duration_ms: 0.659495
+  type: 'test'
+  ...
+# Subtest: wrapper status correlates first source and domains remain Monday
+ok 50 - wrapper status correlates first source and domains remain Monday
+  ---
+  duration_ms: 0.239414
+  type: 'test'
+  ...
+# Subtest: explicit requested page size bounds even degraded result records
+ok 51 - explicit requested page size bounds even degraded result records
+  ---
+  duration_ms: 0.986589
+  type: 'test'
+  ...
+# Subtest: unavailable and empty source observations never acquire absence flags
+ok 52 - unavailable and empty source observations never acquire absence flags
+  ---
+  duration_ms: 0.396046
+  type: 'test'
+  ...
+# Subtest: current source actor is only an observation until adapter authority is qualified
+ok 53 - current source actor is only an observation until adapter authority is qualified
+  ---
+  duration_ms: 0.242719
+  type: 'test'
+  ...
+# Subtest: Monday result is detached and getters/proxies never execute
+ok 54 - Monday result is detached and getters/proxies never execute
+  ---
+  duration_ms: 0.31101
+  type: 'test'
+  ...
+# Subtest: Monday normalized complete/page distinction and Number string semantics
+ok 55 - Monday normalized complete/page distinction and Number string semantics
+  ---
+  duration_ms: 4.306709
+  type: 'test'
+  ...
+# Subtest: Monday requires UUID and bounded trimmed selectors
+ok 56 - Monday requires UUID and bounded trimmed selectors
+  ---
+  duration_ms: 0.276679
+  type: 'test'
+  ...
+# Subtest: Monday full provider JSON fields stay inert without invented scalar types
+ok 57 - Monday full provider JSON fields stay inert without invented scalar types
+  ---
+  duration_ms: 19.534334
+  type: 'test'
+  ...
+# Subtest: Monday parent and provenance binding preserves subitems
+ok 58 - Monday parent and provenance binding preserves subitems
+  ---
+  duration_ms: 0.528411
+  type: 'test'
+  ...
+# Subtest: Monday current status echoes first coverage source including unavailable
+ok 59 - Monday current status echoes first coverage source including unavailable
+  ---
+  duration_ms: 0.403647
+  type: 'test'
+  ...
+# Subtest: Monday client, record, domain and duplicate substitutions fail
+ok 60 - Monday client, record, domain and duplicate substitutions fail
+  ---
+  duration_ms: 2.692412
+  type: 'test'
+  ...
+# Subtest: Monday invalid cursors remain bounded request data awaiting source refusal
+ok 61 - Monday invalid cursors remain bounded request data awaiting source refusal
+  ---
+  duration_ms: 0.215458
+  type: 'test'
+  ...
+# Subtest: Monday source-only data detaches and rejects getters
+ok 62 - Monday source-only data detaches and rejects getters
+  ---
+  duration_ms: 0.835035
+  type: 'test'
+  ...
+# Subtest: Monday explicit page size bounds both healthy and degraded records
+ok 63 - Monday explicit page size bounds both healthy and degraded records
+  ---
+  duration_ms: 1.121639
+  type: 'test'
+  ...
+1..63
+# tests 63
+# suites 0
+# pass 63
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 320.257194
