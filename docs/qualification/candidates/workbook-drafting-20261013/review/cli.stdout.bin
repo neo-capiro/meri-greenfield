@@ -1,0 +1,11 @@
+INDEPENDENT_WORKBOOK_PROCESSES []
+✔ workbook CLI help imports no fixture graph and leaves environment unchanged (2.622582ms)
+✔ workbook CLI malformed arguments refuse before graph and output allocation (0.315705ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4634.527852

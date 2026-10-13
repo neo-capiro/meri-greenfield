@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=workbook CLI",
+    "apps/control/document-application/independent/workbook-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-workbook-review-20261013",
+  "sourceHead": "cea2a2a3d757152479e331d736f086ee49713e5c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T07:22:14.488980+00:00",
+  "durationSeconds": 4.744,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 532942,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.stdout.bin",
+      "bytes": 335,
+      "sha256": "95da2ce70476fbe5073cab66a56d60458723fe6eee47852981b386a16144e8b9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
