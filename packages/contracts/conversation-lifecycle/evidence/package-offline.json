@@ -1,0 +1,40 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "pack",
+    "--offline",
+    "--ignore-scripts",
+    "--json",
+    "--pack-destination",
+    "/workspace/meri-public-lifecycle/packages/contracts/conversation-lifecycle/evidence"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "a8de7d4a7742f1688317f4995e6d9b4058ac0e79faf332b25a12938aead9dafe",
+  "sourceDiffBytes": 225200,
+  "captureSha256": "1682a892363b4ecccafa15c64c4fcc8d1e82c2ca2b54df05541e974b281298d8",
+  "startedAt": "2026-10-13T17:36:13.769931+00:00",
+  "durationSeconds": 12.002,
+  "exitCode": 254,
+  "timedOut": false,
+  "ownedPidAndPgid": 278291,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/package-offline.stdout.bin",
+      "bytes": 200,
+      "sha256": "208a522a0f234ede986af4f078cfb3f827c98ec8d09165b6ed6e5b83e1c4ebf8"
+    },
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/package-offline.stderr.bin",
+      "bytes": 2245,
+      "sha256": "e94387e5f5c0c1ceb3d8dcb688ff0b5a9dfea22995fc3d7cb54f563985081efa"
+    }
+  ],
+  "rerunReason": "Source generator/test capture; prior failed labels retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

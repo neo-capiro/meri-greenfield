@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "packages/contracts/generate-lifecycle.mjs"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "eef215974322ed3230cba6f50cc14e7662512acd60f6874eede738f8bb1d26fb",
+  "sourceDiffBytes": 16632,
+  "captureSha256": "1682a892363b4ecccafa15c64c4fcc8d1e82c2ca2b54df05541e974b281298d8",
+  "startedAt": "2026-10-13T17:28:41.524959+00:00",
+  "durationSeconds": 0.032,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 273322,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/initial-build.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/initial-build.stderr.bin",
+      "bytes": 1183,
+      "sha256": "ebb784771cc374112ad6ee6e6f5912d6ceb17147bb50745e125bc118812de0a1"
+    }
+  ],
+  "rerunReason": "Source generator/test capture; prior failed labels retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

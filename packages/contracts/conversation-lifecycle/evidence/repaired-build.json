@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "packages/contracts/generate-lifecycle.mjs"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "eef215974322ed3230cba6f50cc14e7662512acd60f6874eede738f8bb1d26fb",
+  "sourceDiffBytes": 16632,
+  "captureSha256": "1682a892363b4ecccafa15c64c4fcc8d1e82c2ca2b54df05541e974b281298d8",
+  "startedAt": "2026-10-13T17:29:12.598371+00:00",
+  "durationSeconds": 0.27,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 273646,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 273678,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/repaired-build.stdout.bin",
+      "bytes": 531,
+      "sha256": "29471d5f7575090efdb5919923c2504be71df102369c144e03f35165509384d6"
+    },
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/repaired-build.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Source generator/test capture; prior failed labels retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

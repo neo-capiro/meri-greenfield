@@ -1,0 +1,65 @@
+{
+  "packageVersion": "0.1.4",
+  "schemaId": "urn:meri:conversation-lifecycle:0.1.0",
+  "sources": [
+    {
+      "path": "../../apps/control/conversations/lifecycle/http.mjs",
+      "sha256": "eb52b7bd1d50575d04189d56871db004f04fc6f8af4a8e6080d4a19e992fba25",
+      "bytes": 3387
+    },
+    {
+      "path": "../../apps/control/conversations/lifecycle/service.mjs",
+      "sha256": "980ca0728c175b6fafd4f621e59c9f81fb89d6cc74d868a2bfcb91fa54d558c7",
+      "bytes": 16593
+    },
+    {
+      "path": "conversation-lifecycle/protocol.mjs",
+      "sha256": "263d48c69b8879f209fb9039648ad09b3ac459912e38c9537a2b588c7d754326",
+      "bytes": 2188
+    },
+    {
+      "path": "conversation-lifecycle/receive.mjs",
+      "sha256": "f4c151241d75183c47dfa1e6591e2b9f5638980b373dbb9de40250c638a24ad1",
+      "bytes": 3740
+    },
+    {
+      "path": "conversation-lifecycle/schema.mjs",
+      "sha256": "754e134f695372d7e830ca3edf3273673be6381ad0bce5cd106eaeff55d5e6cc",
+      "bytes": 1855
+    },
+    {
+      "path": "conversation-lifecycle/shape.mjs",
+      "sha256": "a0de32aa2acaccef26d9787eae1ed613e0ad9797027d92d1eec8c2bb5ab12c68",
+      "bytes": 749
+    },
+    {
+      "path": "conversation-lifecycle/validate.mjs",
+      "sha256": "2fd53b0c2ebe3aad0fc4f808320ccf79725f3927d9787ca1f94ce021265fee38",
+      "bytes": 4600
+    },
+    {
+      "path": "dist/conversation-application.mjs",
+      "sha256": "94465895c6a063536cd4de3ce84d6f736e8475890a663ef80e9c5d748992cea1",
+      "bytes": 1587179
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
+      "bytes": 2216
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    }
+  ],
+  "schemaSha256": "9ff87dc22a4fb144c1ad48d9b818f829a65053aac7937b83fdabdbff6f11ad4e",
+  "browserInputs": [
+    "conversation-generated:./generated-validator.mjs",
+    "conversation-lifecycle/conversation-lifecycle-receiver.mjs",
+    "conversation-lifecycle/protocol.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js"
+  ]
+}

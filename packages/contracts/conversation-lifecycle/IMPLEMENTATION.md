@@ -1,0 +1,11 @@
+# Additive public lifecycle receiving boundary
+
+Exact base66818b539b9910d9081fb19b2713b5713daefc81, treecf1e7e7c320e1477b7c1af8a39b4bab7f0cd1dc6. Owner allocation confirmed by root: conversation-lifecycle source/generator/new tests/types/new dist + package version/exports/README; current lifecycle service/http inspection + new tests. Four legacy version expectations remain root-owned. Phase<=25minutes; finite captures<=180seconds. No native/model/SQL/cloud/credential/auth activation/public npm publication or recursive agents.
+
+Canonical lifecycle schema owns reviewed control/receipt and new safe checkpoint inspection DTOs. Private assertions consume it while retaining existing semantic fence/context validations. New browser receiving module shares canonical schema, inert bounded byte parser and canonical JSON hashing; a preserved sibling conversation application import validates existing admitted-view provenance via createConversationCursor. Local validation is integrity only, never current server authority.
+
+New same-owner checkpoint inspection reads the retained APPLIED checkpoint and exact trusted read/hash owner under current original opaque session/scopes before/after each read/release; returns ID, hash, sourceBinding and lastEventSequence only. Existing cancel/events/action approval ownership stays unchanged; no inherited approval execution/grant alias. UI must obtain fresh existing session for target; a selector/receipt is not a credential.
+
+Add package0.1.4 lifecycle subpath, generated schema/types/metadata/browser module. Preserve all previous dist bytes and four generators, wire0.1.0/private0.2/original14 assets. Offline generation under copied dependency tree avoids esbuild donor path drift. Reuse accepted Linux child subreaper with owned evidence location and180second deadline, preserve failures and group-exit receipts.
+
+Verification: canonical private/public shape agreement, immutable request identity, admitted-view provenance, exact control/hash/checkpoint/target/fence/status correlation, hostile bytes/proxies/Unicode/size, real Fetch inspection/control current-authority/revocation/deadline/no secret projection; installed consumer types/browser sibling module, old generator preservation/checks and package tarball. Root independently freezes/reviews/integrates/publishes candidate.

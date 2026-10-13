@@ -1,0 +1,14 @@
+✔ real Fetch inspection and public receiving expose only exact authorized checkpoint selector/hash (135.204583ms)
+✔ inspection refuses foreign/missing selector and injected authority with zero native reads (43.420872ms)
+✔ inspection fresh revoke before or during trusted read prevents release (90.063832ms)
+✔ inspection rejects changed trusted immutable proof and unsafe HTTP/body shapes (40.653482ms)
+✔ checkpoint inspection refuses another opaque session and changed current binding before native read (28.402664ms)
+✔ trusted checkpoint read is bounded by original operation lifetime and never releases a late hash (136.694158ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2308.468313

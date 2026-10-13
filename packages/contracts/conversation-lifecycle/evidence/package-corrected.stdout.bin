@@ -1,0 +1,151 @@
+[
+  {
+    "id": "@capiro/meri-contracts@0.1.4",
+    "name": "@capiro/meri-contracts",
+    "version": "0.1.4",
+    "size": 375597,
+    "unpackedSize": 4472125,
+    "shasum": "16af3bd5b16dc5a46c9a6c18dffb0ab653bfb95e",
+    "integrity": "sha512-HUx4JJ2AT20HK7xZXEf+D1V8pyj+0hKbqHu5vnlQ7kgXueHw4+Y3ymisgrBudug81K26a+DpcztQBeF5yLHcOA==",
+    "filename": "capiro-meri-contracts-0.1.4.tgz",
+    "files": [
+      {
+        "path": "README.md",
+        "size": 17967,
+        "mode": 384
+      },
+      {
+        "path": "THIRD-PARTY-NOTICES.md",
+        "size": 3841,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.d.ts",
+        "size": 17721,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.metadata.json",
+        "size": 1980,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.mjs",
+        "size": 1480808,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.schema.json",
+        "size": 67726,
+        "mode": 384
+      },
+      {
+        "path": "dist/browser.d.ts",
+        "size": 166,
+        "mode": 384
+      },
+      {
+        "path": "dist/browser.mjs",
+        "size": 466002,
+        "mode": 384
+      },
+      {
+        "path": "dist/contracts.d.ts",
+        "size": 4090,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-application.d.ts",
+        "size": 14179,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-application.metadata.json",
+        "size": 2374,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-application.mjs",
+        "size": 1587179,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-application.schema.json",
+        "size": 39210,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-lifecycle.d.ts",
+        "size": 6339,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-lifecycle.metadata.json",
+        "size": 2237,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-lifecycle.mjs",
+        "size": 134169,
+        "mode": 384
+      },
+      {
+        "path": "dist/conversation-lifecycle.schema.json",
+        "size": 9259,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.d.ts",
+        "size": 23960,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.metadata.json",
+        "size": 1996,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.mjs",
+        "size": 498894,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.schema.json",
+        "size": 34642,
+        "mode": 384
+      },
+      {
+        "path": "dist/index.d.ts",
+        "size": 85,
+        "mode": 384
+      },
+      {
+        "path": "dist/metadata.d.ts",
+        "size": 485,
+        "mode": 384
+      },
+      {
+        "path": "dist/metadata.mjs",
+        "size": 533,
+        "mode": 384
+      },
+      {
+        "path": "meri.schema.json",
+        "size": 50043,
+        "mode": 384
+      },
+      {
+        "path": "package.json",
+        "size": 2929,
+        "mode": 384
+      },
+      {
+        "path": "validate.mjs",
+        "size": 3311,
+        "mode": 384
+      }
+    ],
+    "entryCount": 27,
+    "bundled": []
+  }
+]
