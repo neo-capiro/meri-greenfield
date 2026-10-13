@@ -24,7 +24,7 @@ test('create/revise/inspect/download use immutable storage and one shared canoni
   const bytes=Buffer.from(await download.arrayBuffer());assert.equal(bytes.toString(),text);assert.equal(createHash('sha256').update(bytes).digest('hex'),version.object.sha256);
  }
  assert.equal(a.f.stats().generations,2);assert.equal(a.f.stats().consumedMicroUsd,'20');
- const repeat=await a.post('create',{deliveryId:'one',request:spec});assert.notEqual(repeat.status,200);assert.equal(a.f.stats().generations,2);assert.equal(a.f.stats().versionCharges,2);
+ const repeat=await a.post('create',{deliveryId:'one',request:spec});assert.equal(repeat.status,200);assert.deepEqual((await repeat.json()).version,first.version);assert.equal(a.f.stats().generations,2);assert.equal(a.f.stats().versionCharges,2);
  const changed=await a.post('create',{deliveryId:'one',request:{...spec,title:'Changed'}});assert.notEqual(changed.status,200);assert.equal(a.f.stats().generations,2);
 });
 test('actual DOCX produces truthful draft/preview metadata and exact ZIP bytes',async t=>{

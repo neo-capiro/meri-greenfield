@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/document-replay.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "76c7149a96902a94747f015fa67b10b6643d9c94",
+  "sourceDiffSha256": "9befce2e71a17cf4f9040b921533fa79fd8b313d53800248c2b4c1bb47597508",
+  "sourceDiffBytes": 8236,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:28:21.962714+00:00",
+  "durationSeconds": 5.697,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 61913,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/grant-repaired-focused.stdout.bin",
+      "bytes": 3370,
+      "sha256": "adcba234dc7c52bb37a3f705018313c97fd9e534beee6646b5e96a6a48eb4c4a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/grant-repaired-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

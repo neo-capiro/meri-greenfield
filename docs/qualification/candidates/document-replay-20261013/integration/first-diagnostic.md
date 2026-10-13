@@ -1,0 +1,5 @@
+# Initial focused regression diagnostic
+
+Before capture setup, the first actual26-case document replay run reported25passes/1failure (exit1), with no skips/cancellations. Failure: `legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN` at test line126. Expected ARTIFACT_REPLAY_UNRESOLVED but got GatewayDenied BUDGET_UNCERTAIN. The test mutated a stale row reference after a successful transactional replay (the scripted SQL owner replaces its state on commit), and did not clear settled_at when modelling UNKNOWN. Corrected the fixture to mutate the current row and null settled_at. The26case focused rerun, together with34application/workbook cases, passed60/60; raw output/exit/group evidence is retained in focused-first.*. This is a test fixture correction, not an accounting gate relaxation.
+
+Independent read-only design review then required observed argument cross-binding and filename/version alias rejection. Added both, plus a16MiB aggregate legacy lookup bound and read caching, before the executable freeze. Subsequent exact-pin checks apply to that hardening.

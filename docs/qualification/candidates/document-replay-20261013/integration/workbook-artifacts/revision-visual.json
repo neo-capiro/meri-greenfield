@@ -1,0 +1,110 @@
+{
+  "visual": {
+    "sha256": "c19bd54bd9c01afd3e55542209e3f1e6a657fca20b921e20bf3181395f81727f",
+    "bytes": 21038,
+    "pages": [
+      {
+        "page": 1,
+        "text": "Workstream\nHours\nRate\nCost\nResearch\n12\n$125.00\n$1,500.00\nDocumentation\n8\n$100.00\n$800.00\nTotal\n$2,300.00\n",
+        "png": "page-1.png",
+        "width": 745,
+        "height": 1053,
+        "bytes": 13423,
+        "sha256": "e07c70bd15049773987705dece393c4e0a73f173adadcbe52365f0d9138be32d"
+      },
+      {
+        "page": 2,
+        "text": "Synthetic local planning only\n=1+1\nResearch hours revised from 10 to 12\n",
+        "png": "page-2.png",
+        "width": 745,
+        "height": 1053,
+        "bytes": 9976,
+        "sha256": "06f32ee2d63e29d54fea13df4ad9bd4c578a91a30eb6ed2a02456881dbd54edf"
+      }
+    ],
+    "renderedLocally": true,
+    "nativeQualified": false
+  },
+  "processes": [
+    {
+      "pid": 57161,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 198,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 198,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "db7d461c189afee9c364db0d9bacd00fce8fdf6fc20bca403c0e6a477048d652",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    },
+    {
+      "pid": 57229,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 2299,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 2299,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "48c6730396fe7db533e03131cd2eaf43749b5303368f67ae512e7e36e609cad9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    },
+    {
+      "pid": 57230,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 200,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 200,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "594871d44a464b45d7babf13f95c154a57e5ec683e9cf025eba0dbfc8b54dae0",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    },
+    {
+      "pid": 57271,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 690,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 690,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "d9bdd0e68f7ebd9a3694ce9479626fcc1da9ae9a19b63b72f1378ced7d69cd67",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    }
+  ]
+}

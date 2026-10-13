@@ -1,0 +1,41 @@
+✔ create_word completed create replay reconstructs owner and returns identical immutable result (193.662359ms)
+✔ create_excel completed create replay reconstructs owner and returns identical immutable result (152.803917ms)
+✔ completed exact revision replays after a newer head and preserves original bytes (340.704131ms)
+✔ lost prepare acknowledgement uses retained evidence without duplicate effects (103.918305ms)
+✔ lost reserve acknowledgement uses retained evidence without duplicate effects (11.317231ms)
+✔ lost marker acknowledgement uses retained evidence without duplicate effects (113.411502ms)
+✔ lost settle acknowledgement uses retained evidence without duplicate effects (111.998765ms)
+✔ generator interruption remains UNKNOWN with no repeat effects (14.749204ms)
+✔ object interruption remains UNKNOWN with no repeat effects (94.599302ms)
+✔ version-before-write interruption remains UNKNOWN with no repeat effects (108.538298ms)
+✔ unpublished-version interruption remains UNKNOWN with no repeat effects (156.669925ms)
+✔ lost-commit-ack after publication recovers exact server-correlated version before completion marker (102.195867ms)
+✔ malformed-commit-ack after publication recovers exact server-correlated version before completion marker (105.496843ms)
+✔ cancel after published version before ACK can be recovered with same original lease (111.552069ms)
+✔ concurrent completed repeats return one immutable version and one charge (142.254651ms)
+✔ concurrent first repeats yield one physical generation; unresolved waiter later recovers (102.669807ms)
+✔ concurrent repeat after publication settles the same original marker while original ACK is parked (96.396295ms)
+✔ distinct deliveries with identical input are distinct artifacts and never borrow completion (184.401755ms)
+✔ request/base/context/credential substitution cannot recover a completed result (96.745519ms)
+✔ new revision against stale immutable base remains UNKNOWN; completed original replay succeeds (294.475569ms)
+✔ current revocation denies replay and retained reads while historical accounting remains available (94.118913ms)
+✔ missing or conflicting object evidence cannot release or re-execute (97.196325ms)
+✔ missing or conflicting record evidence cannot release or re-execute (98.731195ms)
+✔ missing or conflicting publication evidence cannot release or re-execute (98.165016ms)
+✔ missing or conflicting marker evidence cannot release or re-execute (98.012237ms)
+✔ legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN (107.339646ms)
+✔ replay retains exact byte hash and fresh release receipt (99.54915ms)
+✔ original persisted deadline cannot be extended by a later replay (94.425372ms)
+✔ durable revoked authority blocks replay even when other current ports allow (97.628361ms)
+✔ durable expired authority blocks replay even when other current ports allow (93.398793ms)
+✔ durable run-fence authority blocks replay even when other current ports allow (104.911557ms)
+✔ durable quarantined authority blocks replay even when other current ports allow (89.880771ms)
+✔ durable grant revocation after replay bytes prevents completion marker and release (96.416265ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5645.265731

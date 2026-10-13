@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "scripts/local-research-brief/run.mjs",
+    "--run",
+    "--python",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "--soffice",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice",
+    "--output",
+    "/workspace/meri-document-replay/docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:29:57.094692+00:00",
+  "durationSeconds": 7.714,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 62557,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-repaired-brief.stdout.bin",
+      "bytes": 45375,
+      "sha256": "faa47e0f2835fa51f17a5ff639a4fbe9a313d0f50f338d90369a76f9c9cd863c"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-repaired-brief.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

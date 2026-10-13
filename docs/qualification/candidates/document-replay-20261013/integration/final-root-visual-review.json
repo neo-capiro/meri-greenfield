@@ -1,0 +1,364 @@
+{
+  "sourceHead": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "scope": "LOCAL_SYNTHETIC_DOCX_ONLY",
+  "allOpenedAndReopened": true,
+  "pagesVisuallyOpened": [
+    "original-preview-1.png",
+    "original-preview-2.png",
+    "original-preview-3.png",
+    "original-preview-4.png",
+    "revision-preview-1.png",
+    "revision-preview-2.png",
+    "revision-preview-3.png",
+    "revision-preview-4.png"
+  ],
+  "assessment": "All8pages visually opened and legible; no missing/clipped text. Prior sparse provenance continuation page4 remains. Source evidence, verification/missing/conflict appendix and exact parent provenance retained.",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-content.json",
+      "bytes": 6884,
+      "sha256": "2a814172f36ff7519dd476537925459c8e36dcce9723af4e58538c6d5ef0f3b8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-inspection.json",
+      "bytes": 17781,
+      "sha256": "d4c060fcae34da0497a9f178e156af1e05115d423529155ebe0c2b480fbdee65"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-preview-1.png",
+      "bytes": 113581,
+      "sha256": "a673b8c325dfcbbc12778c262a0e1d1a632381d6f22c1289e79d6ab8d4a5dd9c"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-preview-2.png",
+      "bytes": 129061,
+      "sha256": "11472d4d0f3af5ad4438156ae21af2f30880dffaa95159b75ee41708bc6f4476"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-preview-3.png",
+      "bytes": 140907,
+      "sha256": "d62032e972dea9e947fa898760df1c2ed6c8dc5de20ae63916b542a73df20321"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-preview-4.png",
+      "bytes": 24997,
+      "sha256": "ab8c3f39b9df8263c74c94fdb6f90a6c4ce81bb19cc3bea838b67b7b7aa90581"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original-preview.pdf",
+      "bytes": 49320,
+      "sha256": "dcfe1c6c9c54d43f96bed775001c0708d3b7cafb5a368284d7649eb7e6d4c328"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/original.docx",
+      "bytes": 38703,
+      "sha256": "f1e8df7fba022a4d9bdcacd1aae870f91d06198ef7d897367aa0725e1f48421d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/provenance.json",
+      "bytes": 89450,
+      "sha256": "a50976be579513b3018c79924a2f4e0a126d03fdd165c24404967301f187e57e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-content.json",
+      "bytes": 7207,
+      "sha256": "7eab18449afece6fa20017d5d408a889d9f46dc6ad2168f012f327fb17257d88"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-inspection.json",
+      "bytes": 18439,
+      "sha256": "5658aac7e2ce474cb7b701423a92c86afefd56e040a0098eedcd93f29ba1b292"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-preview-1.png",
+      "bytes": 113684,
+      "sha256": "21eb988263d855bd1979f3f1fc826b013041b2dd48194f5a881625803a6c6867"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-preview-2.png",
+      "bytes": 129914,
+      "sha256": "f1fd02056e382613ee530f8c64b8d75fe08ae8307619fa03bd46b6dae48ca09e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-preview-3.png",
+      "bytes": 138751,
+      "sha256": "0930be6c607734d7bb69e1436408b5fc8c3b72421ff5fce34e6e6f74fc1631f5"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-preview-4.png",
+      "bytes": 49495,
+      "sha256": "2c672cb7d81e76a1ae102bcf438e5367abf9111732190761e851cddae4d5420e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision-preview.pdf",
+      "bytes": 49935,
+      "sha256": "43dd688fbf1d0f8c18ad3112967931312db55cc732b3e140dbc42b5f7821cd8b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-brief-artifacts/revision.docx",
+      "bytes": 38887,
+      "sha256": "e2f4245a6926fc002ac671894daa6a152992b5ac1440f5196d723f1f53bc1ee3"
+    }
+  ],
+  "versions": [
+    {
+      "contractVersion": "0.1.0",
+      "artifactId": "4b597c56-dc2d-456e-a3df-abab34f38db4",
+      "versionId": "80de1a0d-cb9a-477a-8219-65db4b8ac36e",
+      "parentVersionId": null,
+      "binding": {
+        "tenantId": "synthetic-tenant",
+        "actorId": "synthetic-actor",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "a7b077db-eb94-4b38-8af8-2b67289e1e84",
+        "versionId": "f1e8df7fba022a4d9bdcacd1aae870f91d06198ef7d897367aa0725e1f48421d",
+        "sha256": "f1e8df7fba022a4d9bdcacd1aae870f91d06198ef7d897367aa0725e1f48421d",
+        "bytes": 38703,
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic congressional research brief.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "bill_text",
+          "recordId": "119-hr-4242",
+          "sourceVersionId": "synthetic-ih-v1",
+          "observedAt": "2026-10-13T10:30:01.043Z",
+          "sourceUpdatedAt": "2026-10-13T10:30:01.043Z",
+          "citationId": "69e7815a-9692-4a74-b77d-5d9deaa5e42a",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+          "authorizationDecisionId": "86fafaf1-8627-49a8-b783-ff405a93f9e0"
+        },
+        {
+          "sourceId": "federal_legislation",
+          "recordId": "synthetic-status-4242",
+          "sourceVersionId": "synthetic-status-v1",
+          "observedAt": "2026-10-13T10:30:01.043Z",
+          "sourceUpdatedAt": "2026-10-13T10:30:01.043Z",
+          "citationId": "95a39731-d6e8-4bb1-bb7f-ffd5bd08f120",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+          "authorizationDecisionId": "5d6535e1-91f7-45ed-ad76-f62e1739e02b"
+        }
+      ],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T10:30:01.940Z"
+    },
+    {
+      "contractVersion": "0.1.0",
+      "artifactId": "4b597c56-dc2d-456e-a3df-abab34f38db4",
+      "versionId": "4e4e2e02-c504-4b2b-a32c-2b11bdda4154",
+      "parentVersionId": "80de1a0d-cb9a-477a-8219-65db4b8ac36e",
+      "binding": {
+        "tenantId": "synthetic-tenant",
+        "actorId": "synthetic-actor",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "07c4d91a-388d-4cda-a6e1-9fcfe4ba6ef9",
+        "versionId": "e2f4245a6926fc002ac671894daa6a152992b5ac1440f5196d723f1f53bc1ee3",
+        "sha256": "e2f4245a6926fc002ac671894daa6a152992b5ac1440f5196d723f1f53bc1ee3",
+        "bytes": 38887,
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic congressional research brief.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "bill_text",
+          "recordId": "119-hr-4242",
+          "sourceVersionId": "synthetic-ih-v1",
+          "observedAt": "2026-10-13T10:30:02.110Z",
+          "sourceUpdatedAt": "2026-10-13T10:30:02.110Z",
+          "citationId": "301098ed-97c0-4518-87c1-d93053ae4ec6",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+          "authorizationDecisionId": "aa57191a-905f-42ef-8087-e0a30f5d6e11"
+        },
+        {
+          "sourceId": "federal_legislation",
+          "recordId": "synthetic-status-4242",
+          "sourceVersionId": "synthetic-status-v1",
+          "observedAt": "2026-10-13T10:30:02.110Z",
+          "sourceUpdatedAt": "2026-10-13T10:30:02.110Z",
+          "citationId": "c9fb06ab-6ab8-471f-bf90-0b04b6937bec",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+          "authorizationDecisionId": "90a4fe7e-159e-4afc-800a-4f0674719238"
+        }
+      ],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T10:30:02.638Z"
+    }
+  ],
+  "cleanup": {
+    "failed": false,
+    "http": {
+      "closed": true,
+      "listening": false,
+      "activeSockets": 0
+    },
+    "fixtures": [
+      {
+        "mode": "synthetic-local",
+        "sourceConnected": false,
+        "nativeDatabase": false,
+        "nativeQualified": false,
+        "generations": 2,
+        "artifactChecks": 40,
+        "versionCharges": 2,
+        "settled": 2,
+        "unknown": 0,
+        "consumedMicroUsd": "20",
+        "allocations": 1,
+        "grants": 1,
+        "skillId": "quick_skill.bill_watch",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+        "processReceipts": [
+          {
+            "pid": 62642,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 657,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 657,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "c3c5b4b68022794e540a6b13b916372b370378328f22713826669c8c8ee59fc5",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          },
+          {
+            "pid": 62653,
+            "exitCode": 0,
+            "signal": null,
+            "spawnError": null,
+            "stdoutBytes": 657,
+            "stderrBytes": 0,
+            "stdoutRetainedBytes": 657,
+            "stderrRetainedBytes": 0,
+            "hashScope": "retained bytes",
+            "stdoutSha256": "ed137f2ce5b8fc6ead840fe458733c56472361dad95d91d5f0db5ab34d9b1592",
+            "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stdoutEnded": true,
+            "stderrEnded": true,
+            "streamErrors": [],
+            "leaderClosed": true,
+            "groupKillAttempted": true,
+            "groupAbsent": true,
+            "sandboxQualified": false
+          }
+        ],
+        "closed": true,
+        "revoked": true,
+        "cleanup": {
+          "executorDirectoriesAbsent": true,
+          "storeRemoved": true
+        }
+      },
+      {
+        "mode": "synthetic-local",
+        "sourceConnected": false,
+        "nativeDatabase": false,
+        "nativeQualified": false,
+        "generations": 0,
+        "artifactChecks": 1,
+        "versionCharges": 0,
+        "settled": 0,
+        "unknown": 0,
+        "consumedMicroUsd": "0",
+        "allocations": 1,
+        "grants": 1,
+        "skillId": "quick_skill.bill_watch",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+        "processReceipts": [],
+        "closed": true,
+        "revoked": false,
+        "cleanup": {
+          "executorDirectoriesAbsent": true,
+          "storeRemoved": true
+        }
+      }
+    ]
+  }
+}

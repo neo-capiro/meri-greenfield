@@ -31,7 +31,7 @@ test('Excel create/revise/read preserves both immutable XLSX versions and canoni
   const bytes=Buffer.from(await download.arrayBuffer());assert.equal(bytes.subarray(0,2).toString(),'PK');assert.equal(bytes.length,result.version.object.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),result.version.object.sha256);
  }
  assert.equal(a.f.stats().generations,2);assert.equal(a.f.stats().versionCharges,2);assert.equal(a.f.stats().settled,2);assert.equal(a.f.stats().consumedMicroUsd,'20');
- const repeated=await a.post('create',{deliveryId:'xlsx-first',request:workbook});assert.notEqual(repeated.status,200);assert.equal(a.f.stats().generations,2);assert.equal(a.f.stats().versionCharges,2);
+ const repeated=await a.post('create',{deliveryId:'xlsx-first',request:workbook});assert.equal(repeated.status,200);assert.deepEqual((await repeated.json()).version,first.version);assert.equal(a.f.stats().generations,2);assert.equal(a.f.stats().versionCharges,2);
 });
 for(const [operation,request]of[['create_word',workbook],['create_excel',word]])test(`${operation} refuses opposite-family create and revise before authority/accounting`,async t=>{
  const a=await setup(t,operation),before=a.f.stats();

@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: create_word: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+ok 1 - create_word: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+  ---
+  duration_ms: 167.037311
+  type: 'test'
+  ...
+# Subtest: create_excel: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+ok 2 - create_excel: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+  ---
+  duration_ms: 157.772801
+  type: 'test'
+  ...
+# Subtest: new invocation UUID overrides only validated version allocation, retaining original artifact/object allocation
+ok 3 - new invocation UUID overrides only validated version allocation, retaining original artifact/object allocation
+  ---
+  duration_ms: 103.750957
+  type: 'test'
+  ...
+# Subtest: completed revision remains published in descendant ancestry and never rewrites original or later head
+ok 4 - completed revision remains published in descendant ancestry and never rewrites original or later head
+  ---
+  duration_ms: 296.334671
+  type: 'test'
+  ...
+# Subtest: lost marker ACK recovers only original immutable commit and charge
+ok 5 - lost marker ACK recovers only original immutable commit and charge
+  ---
+  duration_ms: 108.121565
+  type: 'test'
+  ...
+# Subtest: lost settle ACK recovers only original immutable commit and charge
+ok 6 - lost settle ACK recovers only original immutable commit and charge
+  ---
+  duration_ms: 109.694643
+  type: 'test'
+  ...
+# Subtest: published premarker interruption recovers while an orphan record remains UNKNOWN
+ok 7 - published premarker interruption recovers while an orphan record remains UNKNOWN
+  ---
+  duration_ms: 200.809367
+  type: 'test'
+  ...
+# Subtest: consistent accounting argument corruption is rejected (completed)
+ok 8 - consistent accounting argument corruption is rejected (completed)
+  ---
+  duration_ms: 104.403294
+  type: 'test'
+  ...
+# Subtest: consistent accounting argument corruption is rejected (premarker)
+ok 9 - consistent accounting argument corruption is rejected (premarker)
+  ---
+  duration_ms: 90.965943
+  type: 'test'
+  ...
+# Subtest: legacy complete digest supports exact random version while alias filename and markerless legacy fail closed
+ok 10 - legacy complete digest supports exact random version while alias filename and markerless legacy fail closed
+  ---
+  duration_ms: 200.636018
+  type: 'test'
+  ...
+# Subtest: identical requests on separate deliveries cannot borrow or erase each others completion
+ok 11 - identical requests on separate deliveries cannot borrow or erase each others completion
+  ---
+  duration_ms: 206.645561
+  type: 'test'
+  ...
+# Subtest: retained parent corruption cannot release or re-execute
+ok 12 - retained parent corruption cannot release or re-execute
+  ---
+  duration_ms: 97.28486
+  type: 'test'
+  ...
+# Subtest: retained scope corruption cannot release or re-execute
+ok 13 - retained scope corruption cannot release or re-execute
+  ---
+  duration_ms: 91.945431
+  type: 'test'
+  ...
+# Subtest: retained record corruption cannot release or re-execute
+ok 14 - retained record corruption cannot release or re-execute
+  ---
+  duration_ms: 100.654368
+  type: 'test'
+  ...
+# Subtest: retained object corruption cannot release or re-execute
+ok 15 - retained object corruption cannot release or re-execute
+  ---
+  duration_ms: 93.711567
+  type: 'test'
+  ...
+# Subtest: retained head corruption cannot release or re-execute
+ok 16 - retained head corruption cannot release or re-execute
+  ---
+  duration_ms: 93.523845
+  type: 'test'
+  ...
+# Subtest: retained completion corruption cannot release or re-execute
+ok 17 - retained completion corruption cannot release or re-execute
+  ---
+  duration_ms: 94.22764
+  type: 'test'
+  ...
+# Subtest: revoked current authority and a narrower current byte ceiling withhold a charged result
+ok 18 - revoked current authority and a narrower current byte ceiling withhold a charged result
+  ---
+  duration_ms: 100.077273
+  type: 'test'
+  ...
+# Subtest: revocation after exact object read still withholds release without new effects
+ok 19 - revocation after exact object read still withholds release without new effects
+  ---
+  duration_ms: 102.254095
+  type: 'test'
+  ...
+# Subtest: original invocation deadline is not renewed by a fresh owner or completed replay
+ok 20 - original invocation deadline is not renewed by a fresh owner or completed replay
+  ---
+  duration_ms: 89.613637
+  type: 'test'
+  ...
+# Subtest: cancellation during replay lookup releases no result and performs no new effect
+ok 21 - cancellation during replay lookup releases no result and performs no new effect
+  ---
+  duration_ms: 93.953568
+  type: 'test'
+  ...
+# Subtest: one generator wins while concurrent uncompleted replay stays UNKNOWN and later returns its result
+ok 22 - one generator wins while concurrent uncompleted replay stays UNKNOWN and later returns its result
+  ---
+  duration_ms: 106.204854
+  type: 'test'
+  ...
+# Subtest: published concurrent recovery uses identical original completion before first commit ACK resumes
+ok 23 - published concurrent recovery uses identical original completion before first commit ACK resumes
+  ---
+  duration_ms: 99.691194
+  type: 'test'
+  ...
+# Subtest: unchanged canonical HTTP returns exact replay200 while other sessions/stores and revocation deny release
+ok 24 - unchanged canonical HTTP returns exact replay200 while other sessions/stores and revocation deny release
+  ---
+  duration_ms: 158.107667
+  type: 'test'
+  ...
+# Subtest: private observation never reconciles a marked UNKNOWN hold before current release authority
+ok 25 - private observation never reconciles a marked UNKNOWN hold before current release authority
+  ---
+  duration_ms: 102.954384
+  type: 'test'
+  ...
+# Subtest: publication ancestry accepts exactly1024 nodes with cached target read; longer and cyclic chains fail
+ok 26 - publication ancestry accepts exactly1024 nodes with cached target read; longer and cyclic chains fail
+  ---
+  duration_ms: 6.569643
+  type: 'test'
+  ...
+# Subtest: legacy scan bounds entries and actual accumulated raw bytes, accepting exact16MiB only
+ok 27 - legacy scan bounds entries and actual accumulated raw bytes, accepting exact16MiB only
+  ---
+  duration_ms: 0.671246
+  type: 'test'
+  ...
+# Subtest: local lookup rejects file/version alias even when its claimed record and digest appear complete
+ok 28 - local lookup rejects file/version alias even when its claimed record and digest appear complete
+  ---
+  duration_ms: 0.136014
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5088.605246

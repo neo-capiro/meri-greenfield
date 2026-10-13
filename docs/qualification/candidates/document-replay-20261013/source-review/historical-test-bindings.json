@@ -1,0 +1,23 @@
+{
+  "reason": "New independent assertions extend the same owned test path. Preserve exact earlier28/29-case bytes without rewriting historical manifests or failed captures. Resolve these historical test entries via their immutable snapshots.",
+  "bindings": [
+    {
+      "historicalManifest": "manifest.json",
+      "originalMutableTestPath": "apps/artifacts/independent/document-replay-independent.test.mjs",
+      "historicalReviewCommit": "8097d1596bfb4af8297106fb1a0b9037d780a18d",
+      "immutableSnapshotPath": "docs/qualification/candidates/document-replay-20261013/source-review/initial-independent-28.mjs",
+      "bytes": 19983,
+      "sha256": "4fd76a67b68a4ade8e643f92db277f3f6b627991f46b72bf0d8d9eeccfe5b93f",
+      "verifiedAgainstHistoricalManifest": true
+    },
+    {
+      "historicalManifest": "canonical-grant-revocation-manifest.json",
+      "originalMutableTestPath": "apps/artifacts/independent/document-replay-independent.test.mjs",
+      "historicalReviewCommit": "e96dc89ce3ce1bfe8bbaccd3d09f762fffc5402e",
+      "immutableSnapshotPath": "docs/qualification/candidates/document-replay-20261013/source-review/initial-grant-counterexample-29.mjs",
+      "bytes": 20278,
+      "sha256": "ba10ad8e4bf6b2c256d12aa2394026f7cd3ba19f4cb8a2797ca3029f740dc78c",
+      "verifiedAgainstHistoricalManifest": true
+    }
+  ]
+}

@@ -46,7 +46,8 @@ export async function runLocalDocumentFlow({fixture,send,pythonExecutable,recons
   assert.equal(inspections[1].paragraphs[1],revision.content.blocks[1].runs[0].text);
   assert.deepEqual(inspections[0].tables[0],[['Topic','Status'],['Research milestone','Proposed']]);
   assert.deepEqual(inspections[1].tables[0],[['Topic','Status'],['Research milestone','Approved for discussion']]);
-  const replay = await call('create',{deliveryId: 'document-original',request: draft()});assert.notEqual(replay.status,200);
+  const replay = await call('create',{deliveryId: 'document-original',request: draft()});
+  const recovered=await checkJson(replay);assert.deepEqual(recovered.version,first.version);assert.equal(recovered.execution.budgetTicketId,first.execution.budgetTicketId);
   assert.equal(fixture.stats().generations,2);assert.equal(fixture.stats().versionCharges,2);assert.equal(fixture.stats().settled,2);
   assert.equal(fixture.stats().consumedMicroUsd,'20');assert.equal(fixture.stats().unknown,0);
   fixture.revoke();

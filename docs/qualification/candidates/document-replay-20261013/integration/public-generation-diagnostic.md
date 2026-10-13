@@ -1,0 +1,3 @@
+# Public generation environment diagnostic
+
+The first read-only generated check failed because this fresh worktree had no local esbuild dependency. Reusing the existing donor packages/contracts/node_modules through a symlink resolved loading but caused `Generated drift: browser.mjs`: esbuild embeds module source paths after resolving the symlink to the donor worktree. This did not change tracked public bytes. Removed that owned symlink and copied the already installed donor dependency tree into the owned worktree so build source paths match the generators. No package/version/lockfile update, network install, or donor edit. Raw failures remain in contract-generated.* and public-contracts.*. The real-path rerun is separately captured.

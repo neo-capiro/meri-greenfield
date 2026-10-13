@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/artifact-service-independent.test.mjs",
+    "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+    "apps/artifacts/test/artifact-execution.test.mjs",
+    "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+    "apps/artifacts/test/postgres-analysis-independent.test.mjs",
+    "apps/artifacts/test/office-columns.test.mjs",
+    "apps/artifacts/test/workbook-columns-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:11:39.141104+00:00",
+  "durationSeconds": 35.206,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 54779,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/artifact-regressions.stdout.bin",
+      "bytes": 13854,
+      "sha256": "193ba1b88f608e5c49e416f58162297ea2b785e9a66a48a4d5fc969301253340"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/artifact-regressions.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

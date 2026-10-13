@@ -2,6 +2,7 @@
 import {canonicalSha256,validateShape} from '../../packages/contracts/validate.mjs';
 import {createPostgresBudgetExecution} from '../gateway/index.mjs';
 import {createArtifactService} from './service.mjs';
+import {documentInvocationVersion} from './recovery.mjs';
 
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
@@ -40,13 +41,17 @@ export function createPostgresArtifactService(options){
   // reject before the inner service catches cancellation; do not lose effect identity.
   const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,
     createExecutor:ports=>({async execute(raw,credential,signal){
-      const call=input(raw),requestSha256=v.hash(intent(call));
-      let current,selection,ticketId,committed,outputBytes=null;
+      const call=input(raw),requestSha256=v.hash(intent(call)),document=['create_word','create_excel'].includes(call.request.operation);
+      // Bookkeeping only; all artifact access below still requires current authority.
+      const initial=document?await ports.budget.observe({signal}):null;
+      const durableVersionId=document?documentInvocationVersion(initial):undefined;
+      let current,selection,ticketId,committed,outputBytes=null,replaying=false;
       let deadlineMs=trusted.context.deadlineMs,maxBytes=Math.min(trusted.context.maxBytes,configuredAllocation.budgets.maxOutputBytes);
       const active=()=>{if(signal?.aborted||!Number.isSafeInteger(now())||now()>=deadlineMs)fail('ARTIFACT_DEADLINE');};
       const narrow=value=>{if(!Number.isSafeInteger(value))fail('ARTIFACT_BUDGET_DEADLINE');deadlineMs=Math.min(deadlineMs,value);active();};
       async function authorizeArtifact(resource){
         active();
+        if(replaying)narrow((await ports.budget.recheck({signal:resource.signal})).deadlineMs);
         current=v.snapshot(await ports.authority.check({credential,descriptor:v.snapshot(trusted.descriptor),input:v.snapshot(intent(call)),signal:resource.signal,limitDeadline:narrow}));
         validateShape('CapabilityClaims',current.claims);validateShape('AuthorizationDecision',current.decision);
         if(!same(current.binding,trusted.context.binding)||!same(current.claims.binding,trusted.context.binding)||!same(current.decision.scopes,trusted.context.scopes)||current.decision.decision!=='allowed'||current.decision.operation!==`${trusted.descriptor.operation.id}@${trusted.descriptor.operation.version}`||current.policyRevision!==current.claims.policyRevision||current.decision.policyRevision!==current.policyRevision||trusted.context.scopes.some(s=>s.policyRevision!==current.policyRevision||!current.claims.scopes.some(c=>same(c,s))))fail('ARTIFACT_BUDGET_AUTHORITY');
@@ -80,7 +85,14 @@ export function createPostgresArtifactService(options){
         },
       };
       // Completion is the immutable committed storage record, not proof of delivery.
-      const versionPort={read:(...args)=>versions.read(...args),async commit(value,abort){
+      const versionPort={async read(...args){
+        const record=await versions.read(...args);
+        if(args[0]?.kind==='artifact-replay'){
+          active();committed=v.snapshot({...record,expectedParentVersionId:call.baseVersionId});
+          outputBytes=committed.version?.object?.bytes;
+        }
+        return record;
+      },async commit(value,abort){
         active();const record=v.snapshot(value);if(record.requestSha256!==requestSha256||record.version.object.bytes>maxBytes)fail('ARTIFACT_BUDGET_BINDING');
         observation.versionCommitStarted=true;const receipt=v.snapshot(await versions.commit(value,abort));active();committed=record;
         // Observe the accepted service's exact ACK predicate; do not turn a started
@@ -90,8 +102,26 @@ export function createPostgresArtifactService(options){
       }};
       const objectPort={get:(...args)=>objects.get(...args),put(...args){active();observation.writeStarted=true;return objects.put(...args);}};
       const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
-      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,ids:()=>{const allocated=v.snapshot(ids());observation.versionId=allocated.versionId;return allocated;}});
-      const result=await (call.baseVersionId===null?service.create(call.request,trusted.context,{signal}):service.revise(call.baseVersionId,call.request,trusted.context,{signal}));
+      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,ids:()=>{const allocated=v.snapshot(ids());observation.versionId=durableVersionId??allocated.versionId;return allocated;}});
+      async function recover(evidence){
+        replaying=true;
+        ticketId=evidence.reservationId;observation.ticketId=ticketId;observation.versionId=durableVersionId;
+        observation.reservationStarted=true;observation.reservationAcknowledged=true;
+        maxBytes=Math.min(maxBytes,evidence.maxOutputBytes);
+        return service.recover(call.baseVersionId,call.request,trusted.context,{signal,evidence});
+      }
+      let result;
+      if(initial&&initial.stage!=='PREPARED')result=await recover(initial);
+      else try{
+        result=await (call.baseVersionId===null?service.create(call.request,trusted.context,{signal,versionId:durableVersionId}):service.revise(call.baseVersionId,call.request,trusted.context,{signal,versionId:durableVersionId}));
+      }catch(cause){
+        // A concurrent winner may have claimed after our observation. Observe once;
+        // never retry reserve/generate or wait for uncertain effects to finish.
+        if(!document||!observation.reservationStarted||observation.reservationAcknowledged||observation.writeStarted)throw cause;
+        const raced=await ports.budget.observe({signal});
+        if(raced.stage==='PREPARED')throw cause;
+        result=await recover(raced);
+      }
       observation.versionCommitted=true;
       try{active();if(Buffer.byteLength(JSON.stringify(result))>trusted.limits.maxResponseBytes)fail('ARTIFACT_RESPONSE_LIMIT');return result;}
       catch(cause){throw Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:result.version.versionId,versionCommitted:true});}

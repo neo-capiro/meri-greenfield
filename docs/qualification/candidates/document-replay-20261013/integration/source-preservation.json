@@ -1,0 +1,12 @@
+{
+  "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "base": "398d599311a5f6c48e18d31b4928cf665de8dcb9",
+  "publicContractPackageAndTransportExact": true,
+  "pins": {
+    "packages/contracts": "43c9485d2c8296b5757b8891e29ef46b40dc54ef",
+    "apps/control/document-application/current.mjs": "ca1a2852b35c6ac315aaab3c9b7d89659c08942b",
+    "apps/control/document-application/index.mjs": "8f698bdc490248536bcc33ca477642da872d7698",
+    "apps/control/document-application/http.mjs": "bfabedbb5e96c2bb229b533af1ea57db44113c29"
+  },
+  "PR57FilesExact": true
+}

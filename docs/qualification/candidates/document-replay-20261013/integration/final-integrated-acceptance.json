@@ -1,0 +1,16 @@
+{
+  "reviewedExecutable": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "integratedHead": "6c3674beb2e98abee4e8d7e884f97f39f48fb47e",
+  "integratedTree": "d25951d0193a6eab35d0ec3978ed9515e97404cd",
+  "productionBlobsExact": true,
+  "onlyChangedExecutablePathsSinceReview": [
+    "apps/artifacts/independent/document-replay-independent.test.mjs"
+  ],
+  "publicContracts012ByteExact": true,
+  "distinctRootNodeCases": 609,
+  "rootPythonCases": 2,
+  "combinedCases": 181,
+  "combinedOverlapsNotAdded": true,
+  "verdict": "ACCEPT_SOURCE_AND_LOCAL_ARTIFACT_ONLY",
+  "nativeRuntimeAccepted": false
+}

@@ -32,6 +32,14 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
       expected:{operation:d.operation,argumentsSha256:row.arguments_sha256},row:reservation,now:budget.now });
     return { reservation, result };
   }
+  function completion(row, observed) {
+    if(row.completion===null){if(observed?.result.state==='SETTLED')refuse('COMPLETION_MISSING');return null;}
+    if(!observed)refuse('COMPLETION_MISMATCH');
+    const marker=completionRecord(row,{reservationId:row.reservation_id,resultSha256:row.completion.resultSha256,outputBytes:row.completion.outputBytes});
+    if(!same(marker,row.completion)||marker.outputBytes>Number(observed.reservation.max_output_bytes)||
+      observed.result.state==='SETTLED'&&observed.result.outputBytes!==marker.outputBytes)refuse('COMPLETION_MISMATCH');
+    return marker;
+  }
   async function prepare(deliveryJson, requestJson, call) {
     const d = deliveryRecord(deliveryJson, requestJson, a); let deadline=call.deadlineMs; active(call,deadline);
     return store.transact(async client => {
@@ -88,7 +96,34 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
       if(result.stage!=='SETTLED')refuse('COMPLETION_MISMATCH');
       return JSON.stringify({reservationId:call.reservationId,decision:'settled'});
     }
-    return Object.freeze({...bound,deadlineMs,limitDeadline,settle});
+    // Private bookkeeping observation. It grants neither execution nor artifact release
+    // authority and does not reconcile accounting. The typed owner must verify evidence.
+    async function observe(call) {
+      const deadline=deadlineMs();active(call,deadline);
+      return store.transact(async client=>{
+        client=checkedClient(client,()=>active(call,deadline));
+        const budget=await store.lock(client),row=await prepared(client,d);active(call,deadline);
+        if(row.invocation_id!==i.invocationId)refuse('INVOCATION_CONFLICT');
+        const observed=await accounting(client,row,d,budget),marker=completion(row,observed);
+        active(call,deadline);
+        return Object.freeze({stage:observed?.result.state??'PREPARED',invocationId:row.invocation_id,
+          reservationId:row.reservation_id,argumentsSha256:row.arguments_sha256,completion:marker,
+          maxOutputBytes:observed?Number(observed.reservation.max_output_bytes):null});
+      },()=>active(call,deadline));
+    }
+    async function recheck(call) {
+      active(call,deadlineMs());
+      return store.transact(async client=>{
+        client=checkedClient(client,()=>active(call,deadlineMs()));
+        const budget=await store.lock(client),row=await prepared(client,d);
+        if(row.invocation_id!==i.invocationId)refuse('INVOCATION_CONFLICT');
+        limitDeadline(Number(row.deadline_ms));
+        await admit(client,i,budget,limitDeadline);active(call,deadlineMs());
+        if(budget.now.getTime()>=deadlineMs())refuse('INVOCATION_STOPPED');
+        return Object.freeze({deadlineMs:deadlineMs()});
+      },()=>active(call,deadlineMs()));
+    }
+    return Object.freeze({...bound,deadlineMs,limitDeadline,settle,observe,recheck});
   }
   async function reconcile(deliveryJson,requestJson,live) {
     const d=deliveryRecord(deliveryJson,requestJson,a);if(live)active(live.call,live.deadline);
@@ -100,15 +135,13 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
       if(!row)return Object.freeze({stage:'ABSENT',invocationId:null,reservationId:null,accounting:null,resultDelivered:false});
       assertInvocationRecord(row,d,a);
       let observed=await accounting(client,row,d,budget);if(live)active(live.call,live.deadline);
-      if(row.completion!==null){
-        if(!observed)refuse('COMPLETION_MISMATCH');
-        const marker=completionRecord(row,{reservationId:row.reservation_id,resultSha256:row.completion.resultSha256,outputBytes:row.completion.outputBytes});
-        if(!same(marker,row.completion)||marker.outputBytes>Number(observed.reservation.max_output_bytes))refuse('COMPLETION_MISMATCH');
+      const marker=completion(row,observed);
+      if(marker){
         if(observed.result.state==='UNKNOWN'){
           await settleRow(client,observed.reservation,marker.outputBytes,live?()=>active(live.call,live.deadline):undefined);if(live)active(live.call,live.deadline);
           observed={...observed,result:Object.freeze({...observed.result,state:'SETTLED',chargedMicrousd:observed.result.holdMicrousd,outputBytes:marker.outputBytes})};
-        }else if(observed.result.outputBytes!==marker.outputBytes)refuse('COMPLETION_MISMATCH');
-      }else if(observed?.result.state==='SETTLED')refuse('COMPLETION_MISSING');
+        }
+      }
       return Object.freeze({stage:observed?.result.state??'PREPARED',invocationId:row.invocation_id,
         reservationId:row.reservation_id,accounting:observed?.result??null,resultDelivered:false});
     },live?()=>active(live.call,live.deadline):undefined);

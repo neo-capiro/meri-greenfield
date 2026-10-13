@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "51f16409837debfd88426207c57a7726459a34f0",
+  "sourceDiffSha256": "f3263733e1b3ca543a2cb6a056bf230218161153a2e8334b39bee6177c82da09",
+  "sourceDiffBytes": 26596,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:09:27.978664+00:00",
+  "durationSeconds": 5.235,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 53453,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/hardened-focused.stdout.bin",
+      "bytes": 6700,
+      "sha256": "04608052f4d447b2ffaeff8fb8fdee9636d23c26158b028a40e2ad06166de445"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/hardened-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

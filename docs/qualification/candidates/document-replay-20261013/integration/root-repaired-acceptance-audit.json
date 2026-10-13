@@ -1,0 +1,50 @@
+{
+  "repairedExecutable": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "previousC872GovernanceDecision": "HOLD_SUPERSEDED",
+  "checks": [
+    {
+      "label": "final-repaired-owner",
+      "sourceHead": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "final-repaired-applications",
+      "sourceHead": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "final-repaired-regressions",
+      "sourceHead": "72c564208c2b7ae00a183ea3998384243bcc4e80",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "final-public",
+      "sourceHead": "72c564208c2b7ae00a183ea3998384243bcc4e80",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "final-word-python",
+      "sourceHead": "72c564208c2b7ae00a183ea3998384243bcc4e80",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "final-repaired-brief",
+      "sourceHead": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "integrated-source-replay",
+      "sourceHead": "72c564208c2b7ae00a183ea3998384243bcc4e80",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "boundary": "LOCAL_SOURCE_ONLY",
+  "nativeAcceptance": false
+}

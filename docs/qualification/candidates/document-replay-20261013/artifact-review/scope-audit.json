@@ -1,0 +1,14 @@
+{
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "reviewedTree": "4eccbb74c352be05f7e19f714d21fc353c92ed45",
+  "changedTrackedPaths": [
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs"
+  ],
+  "implementationChangedOutsideAllocatedIndependentTests": false,
+  "ownedAssertionDiffBytes": 12142,
+  "ownedAssertionDiffSha256": "b098b11058fcb62123da81b59109628beca59da9d24b8e37eaf4dd80f3152477",
+  "receiptImplementationDiffBytesExplanation": "Capture intentionally includes all apps paths; its12142bytes are only approved independent test assertion edits, not implementation changes.",
+  "nativeQualified": false
+}

@@ -1,0 +1,29 @@
+{
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "filesRead": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/grant-revocation-counterexample.json",
+      "bytes": 1116,
+      "sha256": "7e7a4d1941aa3795d2ada412d346c814a47fbcba1aa9164c85f40c5f78aa0d4e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/grant-repaired-focused.json",
+      "bytes": 1272,
+      "sha256": "6f81e4ac33d1b3f5f1d9f228b68991f35d77217d80e7305a3b06c5ddd64d5591"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/grant-repaired-focused.stdout.bin",
+      "bytes": 3370,
+      "sha256": "adcba234dc7c52bb37a3f705018313c97fd9e534beee6646b5e96a6a48eb4c4a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/grant-repaired-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "classification": "Root supplied/source-review evidence read, not independently rerun by artifact reviewer. Root repair receipt records precommit76c7149 source+working diff. Own exact74a execution results are111controls+HTTP23+artifact verifier.",
+  "rootReportedControls": 33,
+  "rootReportedGrantControls": 5,
+  "nativeQualified": false
+}

@@ -31,6 +31,9 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
   assert.equal((await call('create',{deliveryId:'brief-substitution',request:changed})).status,403);assert.equal(fixture.stats().generations,0);assert.equal(fixture.stats().versionCharges,0);
   const original=await json(await call('create',{deliveryId:'brief-original',request:first.request}));
   assert.equal(original.execution.nativeQualified,false);assert.equal(original.version.parentVersionId,null);assert.deepEqual(original.version.evidence,first.context.evidence);
+  const originalReplay=await json(await call('create',{deliveryId:'brief-original',request:first.request}));
+  assert.deepEqual(originalReplay.version,original.version);assert.deepEqual(originalReplay.inspection,original.inspection);
+  assert.equal(originalReplay.execution.budgetTicketId,original.execution.budgetTicketId);assert.equal(fixture.stats().generations,1);
   const baseSnapshot=await fixture.artifactOptions.versions.read(original.version.versionId);
   const initialResponse=await call('download',{versionId:original.version.versionId});assert.equal(initialResponse.status,200);const initialBytes=Buffer.from(await initialResponse.arrayBuffer());assert.equal(sha(initialBytes),original.version.object.sha256);
   const next=syntheticInput(new Date(fixture.now()).toISOString());next.proposedLanguage=['Revised proposal: Require independent confirmation of the authorization and appropriations basis before seeking a congressional research demonstration.'];
@@ -50,7 +53,9 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
     const bytes=Buffer.from(await response.arrayBuffer());assert.equal(bytes.length,version.object.bytes);assert.equal(sha(bytes),version.object.sha256);downloads.push(bytes);
   }
   assert.deepEqual(downloads[0],initialBytes);await checkIsolation({versionId:original.version.versionId,credential:session.credential});
-  const replay=await call('revise',{deliveryId:'brief-revision',baseVersionId:original.version.versionId,request:second.request});assert.notEqual(replay.status,200);assert.equal(fixture.stats().generations,2);
+  const replay=await call('revise',{deliveryId:'brief-revision',baseVersionId:original.version.versionId,request:second.request});
+  const recovered=await json(replay);assert.deepEqual(recovered.version,revision.version);assert.deepEqual(recovered.inspection,revision.inspection);
+  assert.equal(recovered.execution.budgetTicketId,revision.execution.budgetTicketId);assert.equal(fixture.stats().generations,2);
   fixture.revoke();
   for(const version of [original.version,revision.version])for(const route of ['inspect','download'])assert.notEqual((await call(route,{versionId:version.versionId})).status,200);
   assert.notEqual((await call('revise',{deliveryId:'revoked',baseVersionId:original.version.versionId,request:second.request})).status,200);
@@ -64,6 +69,6 @@ export async function runLocalResearchBriefFlow({fixture,send,reconfigure,checkI
   assert.ok(rendered[0].content.paragraphs.includes(input.proposedLanguage[0]));assert.ok(rendered[1].content.paragraphs.includes(next.proposedLanguage[0]));
   assert.ok(!rendered[0].content.paragraphs.includes(next.proposedLanguage[0]));
   return {versions:[original.version,revision.version],provenance:prepared.map(p=>p.provenance),sourceReads,rendered,
-    replayStatus:replay.status,invariants:{originalPreserved:true,exactImmutableParent:true,sourcePassagesReadAndBound:true,citedFreeFormClaimUnverified:true,
+    replayStatus:replay.status,invariants:{originalPreserved:true,exactImmutableParent:true,completedCreateAndReviseReplayRecovered:true,sourcePassagesReadAndBound:true,citedFreeFormClaimUnverified:true,
       missingAndConflictingEvidenceDisclosed:true,reconstructedGraph:true,sessionAndStoreIsolation:true,revokedInspectDownloadAndPreparationDenied:true},stats:fixture.stats()};
 }

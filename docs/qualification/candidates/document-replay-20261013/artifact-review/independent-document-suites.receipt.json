@@ -1,0 +1,41 @@
+{
+  "argv": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/workspace/meri-document-replay-artifact-review",
+    "node",
+    "--experimental-loader",
+    "./docs/qualification/candidates/document-replay-20261013/artifact-review/installed-dependencies.mjs",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay-artifact-review",
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "implementationDiffBytes": 12142,
+  "startedAt": "2026-10-13T10:14:21.202924+00:00",
+  "durationSeconds": 10.864,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 56407,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/independent-document-suites.stdout.txt",
+      "bytes": 12267,
+      "sha256": "e0c91bd25a93a7d31fedc0a8c27e74fdc4e85de6301f9358361aba8edbe78ea6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/independent-document-suites.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}

@@ -1,0 +1,213 @@
+{
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "reviewedTree": "4eccbb74c352be05f7e19f714d21fc353c92ed45",
+  "decision": "ACCEPT_ARTIFACT_LOCAL_SYNTHETIC_ONLY",
+  "nativeQualified": false,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/assertion-preimages.json",
+      "bytes": 3473,
+      "sha256": "6e402383fe12031d294fe69a51b2af09d89431d2953f9ed0baa44d554def8792"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/capture.py",
+      "bytes": 3829,
+      "sha256": "4072a1a0869764296ca25a6094b72a8919edc778c9054dfd737d2e6c730b771e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/exact-replay-artifacts.receipt.json",
+      "bytes": 1156,
+      "sha256": "4fdeaa0a1915b6e2821ad0a245f7a5f31ed8b52d577db787ef505325d5de121e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/exact-replay-artifacts.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/exact-replay-artifacts.stdout.txt",
+      "bytes": 7259,
+      "sha256": "d54bd17391766c224a611733c20710665ee9415939f75f5f6045a1131ab78b6c"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/independent-document-suites.receipt.json",
+      "bytes": 1586,
+      "sha256": "8685eb330d7f5390afdfb6b219bf0db48ddd5a4f603138e2c63d710473db15c0"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/independent-document-suites.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/independent-document-suites.stdout.txt",
+      "bytes": 12267,
+      "sha256": "e0c91bd25a93a7d31fedc0a8c27e74fdc4e85de6301f9358361aba8edbe78ea6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/installed-dependencies.mjs",
+      "bytes": 595,
+      "sha256": "9f3953516a9de77434ceff54c2b44c4d7a13d7f0b2b41236f8869280673f4a7e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/later-documentation-byte-audit.json",
+      "bytes": 408,
+      "sha256": "c4ca87ad93cd0a7f1641577d5b5dd44473f1305c6a0928380989cf07e58dbeb7"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observe-replay-flow.mjs",
+      "bytes": 9446,
+      "sha256": "8cffed17d73ee6e406031f7446d5f9a9a8011f9dfa09f6d74259c1f3feda8827"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-content.json",
+      "bytes": 6884,
+      "sha256": "16a77a248d7eff3f2bbe6e39f128f70c9ecd2ed6608bf2a7e3130b0b1846773a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-inspection.json",
+      "bytes": 17785,
+      "sha256": "d60cdf8c89e57aab266a3e9d9226b7ec33d63342529bb441071dd1604b58f2c6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-preview-1.png",
+      "bytes": 113684,
+      "sha256": "08ee00e8618905721d7cb01153f5acb7ad817d60685c5cab666320b91cb97625"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-preview-2.png",
+      "bytes": 130588,
+      "sha256": "41561324f424c2cacf152912f3910a650fd6ee14a739ce1b308f2378cf84a06b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-preview-3.png",
+      "bytes": 139162,
+      "sha256": "dd8ddfad641cb3d294ea5c6e6db9bbe26acc529d02f37563b6bf390ebb2a8910"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-preview-4.png",
+      "bytes": 27612,
+      "sha256": "2856d1f85331285729b5a493d365ac7593b57252a852aa5cda3b5b92a9e420d8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original-preview.pdf",
+      "bytes": 49369,
+      "sha256": "7f02da67f5a33259fd68668c41dd5816ead67fd4e662ce768f9e649579a89bea"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/original.docx",
+      "bytes": 38702,
+      "sha256": "e5d9698ea23643d133fbbc7db258aa58539091f36456902ddae60d7a7690dcfa"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/provenance.json",
+      "bytes": 89450,
+      "sha256": "c8d07a59bb8821de6c87fc85c1ff0457df585888e2cc95482a09454a69bbcbc6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-content.json",
+      "bytes": 7207,
+      "sha256": "4ce492492db993b5e1d475593eee1fb249e8b7e6e252d3f1e08db04f74bb1e97"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-inspection.json",
+      "bytes": 18439,
+      "sha256": "3b0a0dc2de0f845cf1b3d8bcbcf809884b7d21c4d44847adf75cbea85757416d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-preview-1.png",
+      "bytes": 113728,
+      "sha256": "ee95ec147aa461be57ff6ec991082aa22599df11845aeada2532f5e945e9b72c"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-preview-2.png",
+      "bytes": 130921,
+      "sha256": "ddf8434f53c1873a1988e5eb5b1d232aa939f460496ccd7a94fbb430eff22662"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-preview-3.png",
+      "bytes": 138956,
+      "sha256": "1f1ef43cc337852af3513ecc793c95204c215cdc8538cb1ada3eb6d32fb3940b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-preview-4.png",
+      "bytes": 49713,
+      "sha256": "748014724916639ba3ff12d5839b9616cdba66c880943d15635def04da56aac6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision-preview.pdf",
+      "bytes": 49913,
+      "sha256": "252a1766f081301150d11e021e7dc8809a73fd3f88ba022a0476d4a253b33317"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-artifacts/revision.docx",
+      "bytes": 38885,
+      "sha256": "aa83f4011124f972ef0ae600643feeb720fc143d122fed5ddbf3b7103fe6b5fe"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/observed-lifecycle.json",
+      "bytes": 77645,
+      "sha256": "5f35280ba7178b50636c94785d6d921d5563ed6d3a3ee576ab720201fba4104a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/outline.md",
+      "bytes": 1818,
+      "sha256": "36443ba2548e226ab0e6ac8c4806bb11f4896bbad604ca9eb1fb3be204172f10"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/owned-assertion-diff.patch",
+      "bytes": 12142,
+      "sha256": "b098b11058fcb62123da81b59109628beca59da9d24b8e37eaf4dd80f3152477"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/preimages/application-independent.before.mjs",
+      "bytes": 16958,
+      "sha256": "0186ba05438ddede8853418187e6f94fecc9432fd79b44d3f551f97f93ea742e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/preimages/research-brief-independent.before.mjs",
+      "bytes": 25271,
+      "sha256": "a126e2bfeb52e5d81bc2c20cd445173b1b7408fefc73e9f2ae23bbd7ce6b1e98"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/preimages/workbook-independent.before.mjs",
+      "bytes": 15678,
+      "sha256": "48a001a3820d2b6b1ff3f8cf409fcc78d74eaa2e27a239badc2295e5dfed5367"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/replay-http-and-render.receipt.json",
+      "bytes": 1452,
+      "sha256": "7be98e206e4898312fa83b5ff529282e4bdbc94fea6f6b6a2b8fcc446035fc00"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/replay-http-and-render.stderr.txt",
+      "bytes": 434,
+      "sha256": "62d4ec8bb0a26fc636a1293fdc6c3cfc8084518e4887d6e3b3e4f19e68646766"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/replay-http-and-render.stdout.txt",
+      "bytes": 2777,
+      "sha256": "105787b0ff28b2384cd18cf67cf90c8aa06783cdc8b92bb5f24944e7703a9799"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/report.md",
+      "bytes": 9218,
+      "sha256": "16908684bb3a6b1ca76c0019f16d80cf46109f0ef55ce8a25cc96a6e6e92f4f3"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/scope-audit.json",
+      "bytes": 837,
+      "sha256": "8e67c2207d4766aa572142eae9324141d926da04180e71e43b9f3a5da34db7df"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/verify_replay_artifacts.py",
+      "bytes": 15275,
+      "sha256": "c024a0c6c5433b659b63810c686bd40b3ee92e6c6b38ed373004a9080d416d1d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/visual-review.json",
+      "bytes": 4417,
+      "sha256": "2fb9d70ded8e231415fab974c0cc71c2ecef46ee0592fd8be49c2400850bec85"
+    }
+  ]
+}

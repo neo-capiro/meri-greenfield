@@ -1,0 +1,75 @@
+{
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "tree": "4eccbb74c352be05f7e19f714d21fc353c92ed45",
+  "publishedBase": "398d599311a5f6c48e18d31b4928cf665de8dcb9",
+  "publicTransportAndSkillPinsExact": {
+    "packages/contracts": true,
+    "apps/control/document-application/current.mjs": true,
+    "apps/control/document-application/index.mjs": true,
+    "apps/control/document-application/http.mjs": true,
+    "apps/control/document-application/research-brief/manifest.json": true,
+    "apps/control/document-application/research-brief/SKILL.md": true
+  },
+  "productionOwners": [
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "blob": "7e3ded285abb44fe83b4831b322b103ac176e4a5",
+      "bytes": 10150,
+      "sha256": "394da11398d47c703f5054b370aea7ae83ecd1188d87d59778995b79542e6e54"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-execution.mjs",
+      "blob": "d350c31c9fd115c1d4a3e45da48c3f7e81b7ace9",
+      "bytes": 4635,
+      "sha256": "31771a52ebde3a81db01a71533b5028dd307a947f1cf692b681d7898988b8f8b"
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "blob": "e16c64bff6430a2b96a47d7221b7333376a38c50",
+      "bytes": 14028,
+      "sha256": "0fbb97fadf3db34da7aeec821721c49a76190f1462f612c4aade12658b3984c9"
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "blob": "f1810b26cfd1e40580b53b9e3a5c29e19488a62e",
+      "bytes": 12319,
+      "sha256": "353f9f58d58ce625cb927dff31effc317c8a219287c64c2b8b6240db5a3f0d04"
+    },
+    {
+      "path": "apps/artifacts/local-store.mjs",
+      "blob": "209c59ff2629b6a1e4639ded983dacac6fad9cbf",
+      "bytes": 5323,
+      "sha256": "7a90b34779e58090ea0f32e4a7f9988a24d3842391cac56f6cf7ec8a95d891b4"
+    },
+    {
+      "path": "apps/artifacts/recovery.mjs",
+      "blob": "d3145cca114f24a6dc2a820cb88305c618b7df3a",
+      "bytes": 4081,
+      "sha256": "48d60b3f9d5919bfcef411820b39bf0a6b262f81452a47516fcacc06771ff087"
+    },
+    {
+      "path": "apps/artifacts/local-replay.mjs",
+      "blob": "d591d52ba735f2d20e648ce0fd2266bd3092a0aa",
+      "bytes": 2793,
+      "sha256": "0ae9ef98561521e32ab9827b1c97f3c4c1e23685b9173a7e00b9d83b884189a7"
+    }
+  ],
+  "changedSourcePaths": [
+    "apps/artifacts/local-replay.mjs",
+    "apps/artifacts/local-store.mjs",
+    "apps/artifacts/postgres-service.mjs",
+    "apps/artifacts/recovery.mjs",
+    "apps/artifacts/service.mjs",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/control/document-application/local/fixture.mjs",
+    "apps/control/document-application/local/flow.mjs",
+    "apps/control/document-application/local/workbook/flow.mjs",
+    "apps/control/document-application/research-brief/local/flow.mjs",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/test/workbook-application.test.mjs",
+    "apps/gateway/budget/tool-budget-execution.mjs",
+    "apps/gateway/budget/tool-invocation-owner.mjs"
+  ],
+  "nativeDatabase": false,
+  "nativeRuntimeAccepted": false
+}
