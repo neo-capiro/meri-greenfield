@@ -1,0 +1,1 @@
+The first cleanup removed the owned root and SDK/pg links, then rmdir of the owned storage node_modules failed ENOTEMPTY because npm's generated .package-lock.json remained. No donor directory was removed. Final cleanup removes this owned generated metadata directory and records donor metadata hashes and absence of all owned resource paths.

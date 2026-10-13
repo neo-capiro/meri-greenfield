@@ -1,0 +1,29 @@
+{
+  "ownedResourcesAbsent": {
+    "/workspace/meri-runtime-artifact-storage/node_modules": true,
+    "/workspace/meri-runtime-artifact-storage/apps/artifacts/storage/node_modules": true,
+    "/tmp/meri-storage-npm-cache": true,
+    "/tmp/meri-storage-offline-ci": true,
+    "/tmp/meri-storage-offline-ci-optional": true,
+    "/tmp/meri-storage-empty-npmrc": true,
+    "/tmp/meri-storage-empty-global-npmrc": true
+  },
+  "donorMetadataBeforeSha256": {
+    "/workspace/meri-greenfield/node_modules/ajv/package.json": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+    "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3/package.json": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881",
+    "/workspace/capirov2/node_modules/.pnpm/pg@8.23.0/node_modules/pg/package.json": "e42dd36cba6e9dd8dbb6f773a2f7be8a8c3c273e18b155e42e75961a4cb8bc28"
+  },
+  "donorMetadataAfterSha256": {
+    "/workspace/meri-greenfield/node_modules/ajv/package.json": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+    "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3/package.json": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881",
+    "/workspace/capirov2/node_modules/.pnpm/pg@8.23.0/node_modules/pg/package.json": "e42dd36cba6e9dd8dbb6f773a2f7be8a8c3c273e18b155e42e75961a4cb8bc28"
+  },
+  "donorsPreserved": true,
+  "allCapturedProcessGroupsAbsent": true,
+  "sourceChecks": {
+    "pass": 18,
+    "fail": 0
+  },
+  "installationGate": "HOLD_ENOTCACHED",
+  "nativeRuntimeGate": "PENDING_VERSION_BUCKET_KMS_IAM_REAL_PRODUCT_PG"
+}
