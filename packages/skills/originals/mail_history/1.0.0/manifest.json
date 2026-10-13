@@ -1,0 +1,105 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.mail_history",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:mail-history:1.0.0",
+    "sha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "entity_candidates",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tenant_contacts",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.list_messages",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.search_messages",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client",
+    "entity",
+    "personal"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "calendar-year",
+    "relative-duration",
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "threads-and-dates",
+        "requirement": "Read decisive messages and retain exact message dates, thread identity, promises and later revisions.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "mail-coverage",
+        "requirement": "Every required authorized mail source is covered or explicitly unavailable; no top-k absence claim.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

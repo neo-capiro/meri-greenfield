@@ -1,0 +1,158 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.relationship_brief",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:relationship-brief:1.0.0",
+    "sha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "entity_candidates",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tenant_contacts",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "meetings",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_documents",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_knowledge_memory",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tasks",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "action_recommendation",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "client_knowledge_monday",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.search_messages",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_client_documents",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_memory",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_tasks",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_action_items",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client",
+    "entity"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "calendar-year",
+    "relative-duration",
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "multi-source-history",
+        "requirement": "Mail, meetings/debriefs, contacts, documents/notes, approved memory and commitment tracking retain separate coverage.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "relationship-truth",
+        "requirement": "Separate identity matches, facts and inferences; no fabricated relationship or unsupported exhaustive history.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}
