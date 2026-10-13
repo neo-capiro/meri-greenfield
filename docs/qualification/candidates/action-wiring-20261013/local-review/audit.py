@@ -16,7 +16,7 @@ checks=[]
 def check(label,ok):checks.append({'check':label,'pass':bool(ok)})
 old,new=tree(base),tree(candidate)
 for p,meta in old.items():check('preserved:'+p,new.get(p)==meta)
-local=['apps/control/action-application/local/demo.mjs','apps/control/action-application/local/flow.mjs','apps/control/action-application/local/local.test.mjs','scripts/local-followthrough/run.mjs']
+local=['apps/control/action-application/local/demo.mjs','apps/control/action-application/local/flow.mjs','apps/control/action-application/local/local.test.mjs','scripts/local-followthrough/run.mjs','apps/control/action-application/local/README.md']
 app=['apps/control/action-application/'+p for p in ['index.mjs','http.mjs','session.mjs','README.md']]
 identities=[]
 for p in local+app:
@@ -28,7 +28,7 @@ check('97-production-operations',len(catalog['operations'])==97)
 check('all-handlers-null',all(x['handler'] is None for x in catalog['operations']))
 check('all-unavailable',all(x['availability']=='unimplemented' for x in catalog['operations']))
 receipts=[]
-for p in [ep/(label+'.json') for label in ['first','sparse-fixed','expanded','final'] if (ep/(label+'.json')).exists()]:
+for p in [ep/(label+'.json') for label in ['first','sparse-fixed','expanded','final','repeated-query'] if (ep/(label+'.json')).exists()]:
  obj=json.loads(p.read_bytes())
  if 'ownedPidAndPgid' not in obj:continue
  receipts.append({'path':p.name,'exitCode':obj['exitCode'],'pid':obj['ownedPidAndPgid'],'absent':obj['ownedProcessGroupAbsent']})
