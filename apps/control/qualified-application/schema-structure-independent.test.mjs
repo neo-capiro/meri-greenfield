@@ -14,7 +14,7 @@ const scope={mode:'preserve-declared-evidence',namespaces};
 const bytes=x=>Buffer.byteLength(JSON.stringify(x));
 const envelope=m=>[{unsupported:0,metadata:m}];
 const digest=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
-function nodes(x){let n=0,stack=[x];while(stack.length){const v=stack.pop();n++;if(v&&typeof v==='object')stack.push(...Object.values(v));}return n;}
+function nodes(x){let n=0,stack=[x];while(stack.length){const v=stack.pop();n++;if(v&&typeof v==='object'){for(const child of Object.values(v))stack.push(child);}}return n;}
 function complete(){let ordinal=0;const m=Object.fromEntries(fields.map((field,i)=>[field,Array.from({length:counts[i]},()=>{const n=ordinal++;return Object.fromEntries(Array.from({length:n<7129?18:17},(_,j)=>['k'+String(j).padStart(2,'0'),j===0?'tail-'+n:j%5===0?null:j%3===0?true:n+j]));})]));
  m.sequences[0].k00='9223372036854775807';m.columns[0].k00+='x'.repeat(1110747-bytes(m.columns));
  m.labels.at(-1).k00+='x'.repeat(3128280-bytes(envelope(m)));
