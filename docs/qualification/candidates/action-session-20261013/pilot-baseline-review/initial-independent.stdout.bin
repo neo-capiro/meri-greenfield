@@ -1,0 +1,56 @@
+✔ independent actual six fresh compositions retain current public DTOs, no approval/effect, exact preludes and cleanup (439.711051ms)
+✔ independent default production composition passes all six without injection (317.997828ms)
+✔ independent one constructor error is redacted and retains all six denominator rows (233.596076ms)
+✔ independent reported task effect makes the real case fail (225.155274ms)
+✔ independent approval issuance makes the real case fail (229.381038ms)
+✔ independent cleanup failure fails its case and never removes later cases (293.683385ms)
+✔ independent coherent but wrong recommendation title cannot pass gold (255.325136ms)
+✔ independent false evidence-ready assertion cannot pass coverage gold (266.959239ms)
+✔ independent coherent draft for another result cannot pass current selection correlation (209.558664ms)
+✔ independent malformed public response cannot become a passing row (204.66776ms)
+✔ independent refusal wrong outcome cannot pass P05 (204.800189ms)
+✔ independent revoked-session source read contradicts P06 even if HTTP refusal is correct (205.62562ms)
+✔ independent wrong mode refuses before acquiring any demo (0.447052ms)
+✖ independent stats failure must still close the acquired session and continue denominator (215.08291ms)
+✖ independent parked cleanup handler is bounded and cannot erase later cases (2203.806029ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 13
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7914.406495
+
+✖ failing tests:
+
+test at evals/action-followthrough/local-baseline/baseline-independent.test.mjs:42:1
+✖ independent stats failure must still close the acquired session and continue denominator (215.08291ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/meri-pilot-baseline-review-20261013/evals/action-followthrough/local-baseline/baseline-independent.test.mjs:42:374)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/action-followthrough/local-baseline/baseline-independent.test.mjs:43:1
+✖ independent parked cleanup handler is bounded and cannot erase later cases (2203.806029ms)
+  AssertionError [ERR_ASSERTION]: cleanup hung beyond its1s advertised signal deadline
+      at TestContext.<anonymous> (file:///tmp/meri-pilot-baseline-review-20261013/evals/action-followthrough/local-baseline/baseline-independent.test.mjs:43:439)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: null,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
