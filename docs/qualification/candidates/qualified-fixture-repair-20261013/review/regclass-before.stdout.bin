@@ -1,0 +1,30 @@
+✖ catalog relation identities remain fixed despite implicit pg_temp search precedence (2.625267ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.606368
+
+✖ failing tests:
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:65:1
+✖ catalog relation identities remain fixed despite implicit pg_temp search precedence (2.625267ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^pg_catalog\.pg_[a-z_]+$/. Input:
+  
+  'pg_class'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:65:234)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pg_class',
+    expected: /^pg_catalog\.pg_[a-z_]+$/,
+    operator: 'match',
+    diff: 'simple'
+  }
