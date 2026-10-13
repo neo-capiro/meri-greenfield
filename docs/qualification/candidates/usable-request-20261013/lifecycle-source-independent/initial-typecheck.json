@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "node",
+    "apps/control/conversations/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "-p",
+    "apps/control/conversations/tsconfig.json"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "worktreeHead": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 1.124,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

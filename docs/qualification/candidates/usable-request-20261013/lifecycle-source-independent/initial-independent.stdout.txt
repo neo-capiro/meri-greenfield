@@ -1,0 +1,162 @@
+TAP version 13
+# {"case":"changed fresh current scope","before":1,"after":2,"state":"starting"}
+# {"case":"concurrent activities","results":[{"status":"rejected","error":"EXECUTION_FAILED"},{"status":"rejected","error":"EXECUTION_FAILED"}],"queries":0,"closed":0,"state":"failed"}
+# {"case":"calendar rollover replay","original":{"basis":"calendar-week","startInclusive":"2026-09-28T04:00:00Z","endExclusive":"2026-10-05T04:00:00Z","timezone":"America/New_York","weekStartsOn":"monday"},"error":"REQUEST_REPLAY_REFUSED","starts":1,"requests":1}
+# Subtest: Current changed scope refuses worker publication before any durable event mutation
+not ok 1 - Current changed scope refuses worker publication before any durable event mutation
+  ---
+  duration_ms: 18.384812
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:14:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Denied current-scope publication must not persist an event
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:22:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: Losing concurrent activity cannot poison the legitimate starting owner
+not ok 2 - Losing concurrent activity cannot poison the legitimate starting owner
+  ---
+  duration_ms: 13.822368
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Exactly the legitimate starting owner should complete
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:38:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Exact calendar request replay retains original resolution across week rollover
+not ok 3 - Exact calendar request replay retains original resolution across week rollover
+  ---
+  duration_ms: 11.465581
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:43:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Identical immutable delivery must replay its original calendar resolution
+    + actual - expected
+    
+    + 'REQUEST_REPLAY_REFUSED'
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 'REQUEST_REPLAY_REFUSED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:54:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# {"case":"HTTP outer deadline","status":200,"body":{"ok":true}}
+# Subtest: HTTP original lifetime bounds a slow service even if it ignores cancellation
+not ok 4 - HTTP original lifetime bounds a slow service even if it ignores cancellation
+  ---
+  duration_ms: 39.376023
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:59:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    HTTP must preserve its original outer deadline during service execution
+    
+    200 !== 408
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 408
+  actual: 200
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:63:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# {"case":"blocked failure observer cleanup","settled":false,"closed":0}
+# {"case":"event sequence column alias","releasedEvents":1}
+# {"case":"event ID column alias","releasedEvents":1}
+# Subtest: Failure observation cannot park SDK Query cleanup after original activity deadline
+not ok 5 - Failure observation cannot park SDK Query cleanup after original activity deadline
+  ---
+  duration_ms: 104.175533
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:66:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Activity failure path must have a finite wait
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:74:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Retained event sequence column alias refuses disclosure despite consistent JSON hash
+not ok 6 - Retained event sequence column alias refuses disclosure despite consistent JSON hash
+  ---
+  duration_ms: 4.7777
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:81:3'
+  failureType: 'testCodeFailure'
+  error: 'Corrupt redundant event row identity must not release transcript'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:86:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Retained event ID column alias refuses disclosure despite consistent JSON hash
+not ok 7 - Retained event ID column alias refuses disclosure despite consistent JSON hash
+  ---
+  duration_ms: 4.202822
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:81:3'
+  failureType: 'testCodeFailure'
+  error: 'Corrupt redundant event row identity must not release transcript'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs:86:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2103.534298

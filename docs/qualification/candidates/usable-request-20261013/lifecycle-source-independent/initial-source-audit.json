@@ -1,0 +1,186 @@
+{
+  "reviewedSource": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "reviewedTree": "3844ffee89651af09150e95a65f7fa664ab4cbf8",
+  "verdict": "HOLD",
+  "candidateBindings": [
+    {
+      "path": "apps/control/conversations/README.md",
+      "blob": "033528c72a9cb1e6908073fdbbf1a02d62ace6fb",
+      "bytes": 4255,
+      "sha256": "8cea49348fc13a78b18280cb754e4bc81ae664481a4b5703efc0c7ed327574b6"
+    },
+    {
+      "path": "apps/control/conversations/boundary.mjs",
+      "blob": "fc6bd0e5f8f3fea23f2e674408792949a34bc6fc",
+      "bytes": 1585,
+      "sha256": "12186b81a37198d15476f3ea2dabc837dd21d84e09c2fdedba576491c69b48b6"
+    },
+    {
+      "path": "apps/control/conversations/events.mjs",
+      "blob": "7837ef3bf3f642741b9ed54876b16f9e65ec76ab",
+      "bytes": 2000,
+      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4"
+    },
+    {
+      "path": "apps/control/conversations/http.mjs",
+      "blob": "16d03d422946c05d9de86f065ed537402ebdb466",
+      "bytes": 3423,
+      "sha256": "0d14b1be802b6be0692a32ad603fa36e0c84e1b76ca362785091e55460f6e6d9"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0001_conversations.sql",
+      "blob": "e3a9da923144f2b0ee5a6e02be6bd6d384ba35cf",
+      "bytes": 1353,
+      "sha256": "97d4e7058696b8ded1ad7dc0730ab271e75137968831ed34c0b73a7dadc16b26"
+    },
+    {
+      "path": "apps/control/conversations/package-lock.json",
+      "blob": "e118246c8dbf41c7c8a358dc30cf2b6242ecb907",
+      "bytes": 18775,
+      "sha256": "1ed426a0b19dc260b9821cf5cccb46f613efc7f064786c8c7755b5115c64bd13"
+    },
+    {
+      "path": "apps/control/conversations/package.json",
+      "blob": "7092cf174ae931554f1d9404e9c3f700ca5cce67",
+      "bytes": 387,
+      "sha256": "de3b0e41e2f7cce5abdf178adad363d14f6658946263f0bb24fa5c8b93aa4a2d"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "blob": "8e7608ba3679622c1cefcb13691f81130798f835",
+      "bytes": 7084,
+      "sha256": "5e5b39b6d3e4c669751fddc7c79e0d4b1779769302ad2ab81019be49a2fd6c25"
+    },
+    {
+      "path": "apps/control/conversations/service.mjs",
+      "blob": "2e2fbeef5fee5402227bf9243e5920edf25ec119",
+      "bytes": 7168,
+      "sha256": "c794b37a97cfaf432d542aa4f8564c927dd9475a8b82cae7a51ecf82dc6dbbed"
+    },
+    {
+      "path": "apps/control/conversations/temporal-dispatch.mjs",
+      "blob": "79a0bf761ba5e17f97c2434461745e4e7ec2b2de",
+      "bytes": 1132,
+      "sha256": "ff9c56004e7b9b4cbf93461e980a7a25d896263d1965cbe0d5d0b8b73b1efa39"
+    },
+    {
+      "path": "apps/control/conversations/test/application-fixture.mjs",
+      "blob": "458ce193f9b60fbdadc5f6edf37f784f2c954a63",
+      "bytes": 2210,
+      "sha256": "e0df3b18b206b5dd280d961499e6439c589fdb0dba26c349ee741f1031e9909b"
+    },
+    {
+      "path": "apps/control/conversations/test/application.test.mjs",
+      "blob": "dd961d251e039f778c29deca0bc6a5f5e6881adf",
+      "bytes": 5264,
+      "sha256": "7348c9d8003c481c8df71b1327aeb217520caf6d345c2d2efdcbb1c29e78f6cd"
+    },
+    {
+      "path": "apps/control/conversations/test/store-fixture.mjs",
+      "blob": "8b8bc7b8159caa0b5a67a1fae019904018f4ae54",
+      "bytes": 3021,
+      "sha256": "c48cbb7eb5bdd78ced5ee183acfdf1ee720d431ecc42fbd8a3fb93f03c59d812"
+    },
+    {
+      "path": "apps/control/conversations/test/store.test.mjs",
+      "blob": "bc29bf63246def097b4a0334ae6b3180c31302fb",
+      "bytes": 4861,
+      "sha256": "68eeb89f0a170523c4df47370af3f5883349d273210fb431e4c3db66e12b5c2b"
+    },
+    {
+      "path": "apps/control/conversations/test/stream.test.mjs",
+      "blob": "970cbec0057e174de5d58964eeef97dac2924a86",
+      "bytes": 1994,
+      "sha256": "ef3a20cd2c94ef355373cb9de8ac3acf011a849cd08e09de067744a01504b629"
+    },
+    {
+      "path": "apps/control/conversations/tsconfig.json",
+      "blob": "d0cfef948467292eae22669a74697006f38bc6dc",
+      "bytes": 364,
+      "sha256": "5d26e834f1c9bdace029536f0afa9b6354cfbe4f14ba759a4436a7ebefd4257c"
+    },
+    {
+      "path": "apps/control/conversations/workflow.ts",
+      "blob": "1b4f3915eb581318185ad965cdc55efb39577d63",
+      "bytes": 728,
+      "sha256": "835a494d379d34e25845ae7567c3dcabbd481ea0341bbdb1aa67e82ece2863cf"
+    },
+    {
+      "path": "apps/worker/conversation/README.md",
+      "blob": "f8f6756cf956e4294a795434d32fdf58500abc8f",
+      "bytes": 2117,
+      "sha256": "db71787ea0722c67553e13ca8d226e9e42cca3d541298e3f9ebc9ae798f8ae57"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "blob": "9c27b73446f861f45e9fd90685368ba51b34bfbb",
+      "bytes": 4991,
+      "sha256": "75e1df7795fd4815dd6b87e563fb6532d245b5274ce419f6b82528edc4bf0aaa"
+    },
+    {
+      "path": "apps/worker/conversation/options.mjs",
+      "blob": "eb63b79dfd59a06bea609f5655212d9b07a8fcea",
+      "bytes": 2301,
+      "sha256": "b33e6b3870ed985475ca3d634c3cf2aa88b211acea86686e4e4f047eb9bbfc28"
+    },
+    {
+      "path": "apps/worker/conversation/package-lock.json",
+      "blob": "28c4c7c27ecea0fa6477e77445bc7759f78d3f45",
+      "bytes": 52825,
+      "sha256": "b1459716b93afbf92800956b26b6c7c52b74ef38ed3314d27d8453ab76eacc26"
+    },
+    {
+      "path": "apps/worker/conversation/package.json",
+      "blob": "0b5e315fc1ff29325fac0b69dd5a1ad67d536c90",
+      "bytes": 225,
+      "sha256": "5fbb71de463f4e6ba6e246aa71a12139eb84b52a8c7c86742d7101d9fd6704d9"
+    },
+    {
+      "path": "apps/worker/conversation/test/activity.test.mjs",
+      "blob": "19597bce66689a68ff5905b53e1538e10bbee382",
+      "bytes": 5737,
+      "sha256": "34f4217ef8db7c03d39681e9736f623646c30ca84efafbe23b527bc31073fe44"
+    },
+    {
+      "path": "apps/worker/conversation/text-projector.mjs",
+      "blob": "d5fae5ad32946c4871522df2f71198f6c5c6254a",
+      "bytes": 1370,
+      "sha256": "ff2cf5b47ebce45491afcb949bbed96e4aef8c91863d20c5736f946a78cdf64d"
+    },
+    {
+      "path": "packages/ui-stream/src/producer.ts",
+      "blob": "7703aaf884569be202d172bd1cefce869febe68b",
+      "bytes": 3434,
+      "sha256": "b186b45cf9517f718bb0098ca04fe6e782f950764f92886c29928119e7bc3884"
+    },
+    {
+      "path": "packages/ui-stream/dist/producer.js",
+      "blob": "51d80116ca4965bb93e7ebf89eda563ad7ab0df5",
+      "bytes": 2627,
+      "sha256": "808ccc7b7236752fa4345f54b590db2786b8b376cdb534eadea9b6e344bc8116"
+    },
+    {
+      "path": "packages/ui-stream/dist/producer.d.ts",
+      "blob": "4d923bfe3205b56eb908681b6c57448a48afd6b2",
+      "bytes": 1553,
+      "sha256": "1beb8ba7a1e2c3ebaa0c1f2b095698ef76856bd2ad3d78cf14bcc345049c409a"
+    }
+  ],
+  "existingOwnersExactPR59": {
+    "packages/contracts": true,
+    "package.json": true,
+    "package-lock.json": true,
+    "apps/gateway/index.mjs": true,
+    "apps/control/document-application": true,
+    "apps/control/action-application": true,
+    "apps/control/qualified-application": true,
+    "apps/proxy/qualification/assembly/lifecycle.py": true,
+    "apps/gateway/test/postgres-budget-native-fixture.mjs": true
+  },
+  "ownerTests": 42,
+  "independentTests": 7,
+  "independentPass": 0,
+  "independentFail": 7,
+  "typecheck": "PASS",
+  "nativeRuntimeQualified": false
+}
