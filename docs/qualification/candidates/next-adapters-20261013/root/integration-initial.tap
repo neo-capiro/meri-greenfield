@@ -1,0 +1,39 @@
+✔ mail.list_messages: actual bounded HTTP handler composes with canonical authority, reservation and final release (31.682895ms)
+✔ mail.list_messages: canonical source-disabled application refuses before authority, budget or HTTP (6.351359ms)
+✔ mail.list_messages: revocation after actual response prevents release and retains uncertain reservation (5.653183ms)
+✔ mail.list_messages: a response cannot promote unknown source coverage to verified evidence (3.586145ms)
+✔ mail.search_messages: actual bounded HTTP handler composes with canonical authority, reservation and final release (5.94431ms)
+✔ mail.search_messages: canonical source-disabled application refuses before authority, budget or HTTP (5.225983ms)
+✔ mail.search_messages: revocation after actual response prevents release and retains uncertain reservation (4.419614ms)
+✔ mail.search_messages: a response cannot promote unknown source coverage to verified evidence (2.808439ms)
+✔ mail.read_thread: actual bounded HTTP handler composes with canonical authority, reservation and final release (9.250124ms)
+✔ mail.read_thread: canonical source-disabled application refuses before authority, budget or HTTP (5.743107ms)
+✔ mail.read_thread: revocation after actual response prevents release and retains uncertain reservation (4.518192ms)
+✔ mail.read_thread: a response cannot promote unknown source coverage to verified evidence (7.138869ms)
+✔ meeting.list_upcoming_meetings: actual bounded HTTP handler composes with canonical authority, reservation and final release (8.163786ms)
+✔ meeting.list_upcoming_meetings: canonical source-disabled application refuses before authority, budget or HTTP (6.202166ms)
+✔ meeting.list_upcoming_meetings: revocation after actual response prevents release and retains uncertain reservation (5.070374ms)
+✔ meeting.list_upcoming_meetings: a response cannot promote unknown source coverage to verified evidence (2.135841ms)
+✔ meeting.query_debriefs: actual bounded HTTP handler composes with canonical authority, reservation and final release (8.710745ms)
+✔ meeting.query_debriefs: canonical source-disabled application refuses before authority, budget or HTTP (5.51762ms)
+✔ meeting.query_debriefs: revocation after actual response prevents release and retains uncertain reservation (3.731392ms)
+✔ meeting.query_debriefs: a response cannot promote unknown source coverage to verified evidence (2.778454ms)
+✔ meeting.read_client_meetings: actual bounded HTTP handler composes with canonical authority, reservation and final release (8.550906ms)
+✔ meeting.read_client_meetings: canonical source-disabled application refuses before authority, budget or HTTP (4.99103ms)
+✔ meeting.read_client_meetings: revocation after actual response prevents release and retains uncertain reservation (3.016971ms)
+✔ meeting.read_client_meetings: a response cannot promote unknown source coverage to verified evidence (1.958025ms)
+✔ mail.list_messages: actual second page uses gateway-retained exact anchor rather than caller-authored prior content (7.037327ms)
+✔ mail.search_messages: actual second page uses gateway-retained exact anchor rather than caller-authored prior content (6.382125ms)
+✔ mail decisive body remains source/version/hash-bound and reaches content omitted from the preview (5.821335ms)
+✔ meeting note: inventory is followed by exact late UTF-16 body with original source hash (10.434058ms)
+✔ meeting transcript: inventory is followed by exact late UTF-16 body with original source hash (5.999102ms)
+✔ meeting debrief cursor is preserved in actual HTTP metadata and broker request digest (3.253026ms)
+✔ post-settlement revocation still refuses final release without double-charging (2.609211ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1974.743549
