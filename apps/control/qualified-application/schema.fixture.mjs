@@ -30,16 +30,18 @@ function catalog(){return definitions.map(([name,fields,counts])=>{
 function fixture(overrides={}){return {mode:'owned-disposable-qualification',fixtureId:'11111111-1111-1111-1111-111111111111',host:'127.0.0.1',port:55432,database:'meri_qualification_test',user:'qualification_owner',systemIdentifier:'1234567890123456789',serverStartTime:'2026-10-13T00:00:00.000Z',serverVersion:'170011',schemaSha256:null,...overrides};}
 function scripted(options={}){
  const f=fixture(options.fixture),log=[],releases=[],state={installed:false,catalog:catalog(),budget:{id:1,cap_micro_usd:'10000000',consumed_micro_usd:'0',quarantined:false},locked:null,commits:0,ended:0};let next=0;
- const pool={options:{connectionTimeoutMillis:5000,query_timeout:6000},async connect(){
+ const pool={options:{host:f.host,port:f.port,database:f.database,user:f.user,connectionTimeoutMillis:5000,query_timeout:6000},async connect(){
   const id=++next;await options.connect?.();return {async query(config){
    const {text}=config;log.push({id,...config});await options.before?.(text,state);
    if(options.fail===text)throw Object.assign(new Error('PASSWORD-CANARY'),{get secret(){throw Error('getter');}});
    let result={rows:[]};
    if(text==='COMMIT'){state.commits++;if(state.locked===id)state.locked=null;if(options.loseCommit)throw Error('PASSWORD-CANARY');}
    else if(text==='ROLLBACK'){if(state.locked===id)state.locked=null;}
-   else if(text.startsWith('SELECT current_database()'))result={rows:[{database:f.database,username:f.user,address:f.host,port:f.port,version:f.serverVersion,start_ms:String(Date.parse(f.serverStartTime)),fsync:'on',synchronous_commit:'on',system_identifier:f.systemIdentifier,search_path:'public',...options.identity}]};
+   else if(text.startsWith('SELECT current_database()'))result={rows:[{database:f.database,username:f.user,address:f.serverAddress??f.host,port:f.serverPort??f.port,version:f.serverVersion,start_ms:String(Date.parse(f.serverStartTime)),fsync:'on',synchronous_commit:'on',system_identifier:f.systemIdentifier,search_path:'public',...options.identity}]};
    else if(text.startsWith('SELECT pg_catalog.pg_try')){const acquired=state.locked===null;state.locked??=id;result={rows:[{acquired}]};}
-   else if(text.startsWith('SELECT nspname'))result={rows:state.installed?[{name:'meri_qualification'},{name:'meri_task_lookup'}]:options.namespaces??[]};
+   else if(text.startsWith('SELECT nspname'))result={rows:[...(options.namespaces??[]).map(n=>({owner:'qualification_owner',acl:null,...n})),...(state.installed?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null}]:[])]};
+   else if(text.startsWith('WITH ns AS'))result={rows:[{unsupported:options.unsupported??0,metadata:options.preservedMetadata??Object.fromEntries(['relations','columns','defaults','constraints','indexes','views','types','sequences','triggers','dependencies','comments','labels'].map(k=>[k,[]]))}]};
+   else if(text.startsWith('SELECT t.typname'))result={rows:options.publicTypeCollision??[]};
    else if(text.startsWith('SELECT n.nspname'))result={rows:state.installed?structuredClone(state.catalog):options.preexisting??[]};
    else if(ddl.includes(text)){if(text===ddl.at(-1))state.installed=true;result=[{rows:[]},{rows:[]}];}
    else if(text.startsWith('SELECT id,cap_'))result={rows:[{...state.budget}]};

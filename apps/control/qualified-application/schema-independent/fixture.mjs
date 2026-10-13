@@ -41,13 +41,14 @@ export function scripted({verify=false,onQuery,onConnect,onRelease,catalogChange
   if(ddl.includes(text)){state.ddl.push(text);return{rows:[]};}
   if(text.startsWith('SELECT current_database()'))return{rows:[identity]};
   if(text.includes('pg_try_advisory_xact_lock'))return{rows:[{acquired:true}]};
-  if(text.startsWith('SELECT nspname AS name'))return{rows:verify?[{name:'meri_qualification'},{name:'meri_task_lookup'}]:[]};
+  if(text.startsWith('SELECT nspname AS name'))return{rows:verify||ddl.every(sql=>state.queries.some(q=>q.text===sql))?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null}]:[]};
+  if(text.startsWith('SELECT t.typname'))return{rows:[]};
   if(text.startsWith('SELECT n.nspname')){state.catalogReads++;return{rows:!verify&&state.catalogReads===1?[]:cat};}
   if(text.startsWith('SELECT id,cap_micro_usd'))return{rows:[{id:1,cap_micro_usd:'10000000',consumed_micro_usd:'0',quarantined:false}]};
   if(text.startsWith("SELECT 'meri_qualification.budget'"))return{rows:specs.filter(([n])=>!n.endsWith('budget_liabilities')).map(([name])=>({name,count:name==='meri_qualification.budget'?'1':'0'}))};
   if(['BEGIN','COMMIT','ROLLBACK'].includes(text)||text.startsWith('SET LOCAL '))return{rows:[]};
   throw Error('UNEXPECTED_SCRIPTED_SQL');
  },release(error){state.releases.push(error);onRelease?.(error);}};
- const pool={options:{connectionTimeoutMillis:5000,query_timeout:6000,...options},async connect(){state.connects++;return onConnect?onConnect(client):client;},end(){state.ends++;throw Error('BORROWED_POOL_CLOSE');}};
+ const pool={options:{host:fixture.host,port:fixture.port,database:fixture.database,user:fixture.user,connectionTimeoutMillis:5000,query_timeout:6000,...options},async connect(){state.connects++;return onConnect?onConnect(client):client;},end(){state.ends++;throw Error('BORROWED_POOL_CLOSE');}};
  return{state,pool,client,cat,identity,deadlineMs,now:()=>current,setNow:n=>{current=n;},args:{pool,fixture:{...fixture},deadlineMs,now:()=>current}};
 }
