@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/test/workbook-application.test.mjs",
+    "apps/control/document-application/test/research-brief.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/control/document-application/local/local.test.mjs",
+    "apps/control/document-application/local/workbook/local.test.mjs",
+    "scripts/local-research-brief/cli.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209",
+  "sourceHead": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T09:11:15.928857+00:00",
+  "durationSeconds": 8.142,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 31955,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/repaired-application.stdout.bin",
+      "bytes": 11972,
+      "sha256": "9029839e76b8b276fd93780ba7620bb46bb94e885ed18ca57f457f9cd12b5f2c"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/repaired-application.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
