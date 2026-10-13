@@ -36,10 +36,10 @@ export function createPinnedEndpoint({sourceRepository,typescriptModulePath,now,
  let requests=0;
  async function fetchImpl(url,init){
   requests++;const parsed=new URL(url),route=routes.get(parsed.pathname);if(parsed.origin!=='https://capiro-fixture.invalid'||!route||parsed.search||parsed.hash||init.method!=='POST')return new Response('',{status:404});
-  if(init.signal?.aborted)throw Error('FIXTURE_CANCELLED');const headers={...init.headers},request={path:parsed.pathname,originalUrl:parsed.pathname,url:parsed.pathname,headers,hostname:'localhost',header(name){return this.headers[name.toLowerCase()];}},responseHeaders={};
-  try{let pending;await requestMiddleware.use(request,{setHeader(k,v){responseHeaders[k]=v;}},()=>{pending=store.run(request.tenantContext,async()=>{guard.canActivate({getHandler:()=>route.method,getClass:()=>controller.constructor,switchToHttp:()=>({getRequest:()=>request})});return route.method.call(controller,request.tenantContext,request,JSON.parse(init.body));});});
-   if(!pending)throw Error('MIDDLEWARE_DID_NOT_DISPATCH');const result=await pending;if(init.signal?.aborted)throw Error('FIXTURE_CANCELLED');return new Response(JSON.stringify(result),{status:route.status,headers:{...responseHeaders,...route.headers}});
-  }catch(error){return new Response(JSON.stringify({error:'PINNED_ENDPOINT_REFUSED'}),{status:error instanceof HttpError?error.status:403,headers:{...responseHeaders,'content-type':'application/json','cache-control':'no-store'}});}
+  if(init.signal?.aborted)throw Error('FIXTURE_CANCELLED');const headers={...init.headers},request={path:parsed.pathname,originalUrl:parsed.pathname,url:parsed.pathname,headers,hostname:'localhost',header(name){return this.headers[name.toLowerCase()];}},responseHeaders=new Headers();
+  try{let pending;await requestMiddleware.use(request,{setHeader(k,v){responseHeaders.set(k,v);}},()=>{pending=store.run(request.tenantContext,async()=>{guard.canActivate({getHandler:()=>route.method,getClass:()=>controller.constructor,switchToHttp:()=>({getRequest:()=>request})});return route.method.call(controller,request.tenantContext,request,JSON.parse(init.body));});});
+   if(!pending)throw Error('MIDDLEWARE_DID_NOT_DISPATCH');const result=await pending;if(init.signal?.aborted)throw Error('FIXTURE_CANCELLED');for(const [key,value] of Object.entries(route.headers))responseHeaders.set(key,value);return new Response(JSON.stringify(result),{status:route.status,headers:responseHeaders});
+  }catch(error){responseHeaders.set('content-type','application/json');responseHeaders.set('cache-control','no-store');return new Response(JSON.stringify({error:'PINNED_ENDPOINT_REFUSED'}),{status:error instanceof HttpError?error.status:403,headers:responseHeaders});}
  }
  return Object.freeze({fetchImpl,sourceMetadata:source.metadata,stats:()=>({requests,separateMiddlewareProvider:true,nestBootstrap:false,externalPorts:'mocked'})});
 }
