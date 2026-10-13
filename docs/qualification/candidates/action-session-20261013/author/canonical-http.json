@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/session/session.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-session-author-20261013",
+  "sourceHead": "aca37f81b2a795f2502dc8c0dc36cdbc10d72d2a",
+  "sourceDiffSha256": "fcd23cba58eba8fcc8c441ef13a8eaa3dd79abe003b7f15ba6ed894611c25075",
+  "sourceDiffBytes": 4317,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:32:09.342727+00:00",
+  "durationSeconds": 3.077,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 477206,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/canonical-http.stdout.bin",
+      "bytes": 1018,
+      "sha256": "2625c65794ef00cd1b952711848414dbd33952ab8eaedc3e7f62dfd6c06b0178"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/canonical-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Parent requested canonical jsonBody/response reuse; same session API, narrow source-owner refactor after46 independent/author/default controls passed.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

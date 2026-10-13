@@ -1,0 +1,20 @@
+# Action session source handoff
+
+Exact base `9815492c51d35be3e83f08e6a5b086269437af04`; final production `e5ee1858ea8271925cf3d9fdf172743b3903c03a`. Branch `task/meri-action-session-author-20261013`. The new bounded process-local session owner verifies native identity and resolves current conversation/run/client through trusted ports, then issues an opaque session consumed by the accepted host. No identity claims, run, grant, scope, approval or refresh authority come from browser hints.
+
+The fixed POST issuance route and exact minimal response are documented in `apps/control/action-host/session/README.md`. It composes on the existing local case's same app/listener and actual shared-pool host. The test sends a native credential over loopback HTTP to obtain a distinct action bearer, then performs query/draft/prepare, unapproved refusal, explicit fixture approval and one task effect; revocation prevents later requests. Existing default composition remains unchanged. Optional empty hints let the trusted resolver choose current context; provided hints must match exactly.
+
+Canonical ownership remains unchanged: existing inert snapshot/structural contracts, operation lifetime, HTTP JSON reader/response, host current checks, lookup, approval metadata and command execution are reused. New owner manages only process-local opaque sessions. The two allocated existing-file edits are `local-integration/case.mjs` and `ports.mjs`. Public contracts, old host/application owners, descriptors and frontend are untouched.
+
+## Preserved development evidence
+
+- Initial coherent source `0c9a1d06da38d2118d811adc14116c63ffb69e8d`: author5/5 passed. Independent tests then exposed two late-revocation release failures and four HTTP/routing failures (fragment route, own Request getter, own issue getter, mounted Proxy routing), plus parent output-closure and original-cutoff failures. Exact source and reviewer raw captures remain retained; an early reviewer Proxy `.then` trap was a Promise-assimilation fixture error, separately corrected without changing its source reflection assertion.
+- Membership repair `c53f29d1801d4f9200b63099052f69a6df0c62e6`: author11/11 passed (6 session plus 5 unchanged shared/legacy controls). Static proxy-error reflection and owner port cutoff corrections were already in initial source before executable controls; they are not claimed as reproduced failures.
+- HTTP repair `aca37f81b2a795f2502dc8c0dc36cdbc10d72d2a`: author9/9 and independent combined46/46 passed. Output is validated by one exported owner validator; original HTTP deadline is forwarded; native getter and router admission remain inert.
+- Final `e5ee1858`: narrow parent-requested reuse of canonical jsonBody/response, author9/9 passed. Final independent replay and acceptance are recorded separately by the reviewer. No assertions or original tests were weakened.
+
+Raw captures and exact precommit-diff bindings are in `action-session-20261013/author`. Owned groups are checked absent in the cleanup receipt. Only this worktree's two dependency symlinks are removed; donor packages and other owners' resources remain untouched. The author audit verifies original-file preservation except the two explicitly allocated seams and checks capture/source hashes.
+
+## Remaining qualification
+
+This is executable source evidence over synthetic identity/current context and scripted SQL, including a real loopback HTTP transport. No Clerk/native identity provider, actual database, production source, frontend deployment or customer data was accessed. Live native-token verification and authoritative current run/conversation/client resolution remain host adapter dependencies. Session loss on restart is deliberate fail-closed behavior, not shared session persistence. Production descriptors remain unavailable after integration too. Current policy is supplied by the existing trusted owners; no second approval or grant broker was introduced. No automatic refresh/retry, negative authority from missing data or physical stop guarantee is claimed.

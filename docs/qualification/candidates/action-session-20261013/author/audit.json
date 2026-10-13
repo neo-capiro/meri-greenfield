@@ -1,0 +1,68 @@
+{
+  "base": "9815492c51d35be3e83f08e6a5b086269437af04",
+  "source": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+  "originalEntries": 10924,
+  "unchanged": 10922,
+  "approvedChanged": [
+    "apps/control/action-host/local-integration/case.mjs",
+    "apps/control/action-host/local-integration/ports.mjs"
+  ],
+  "captures": [
+    {
+      "label": "first-session",
+      "source": "0c9a1d06da38d2118d811adc14116c63ffb69e8d",
+      "sourceDiffExact": true,
+      "streamsExact": true,
+      "exitCode": 0
+    },
+    {
+      "label": "revoked-session",
+      "source": "c53f29d1801d4f9200b63099052f69a6df0c62e6",
+      "sourceDiffExact": true,
+      "streamsExact": true,
+      "exitCode": 0
+    },
+    {
+      "label": "http-repaired",
+      "source": "aca37f81b2a795f2502dc8c0dc36cdbc10d72d2a",
+      "sourceDiffExact": true,
+      "streamsExact": true,
+      "exitCode": 0
+    },
+    {
+      "label": "canonical-http",
+      "source": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+      "sourceDiffExact": true,
+      "streamsExact": true,
+      "exitCode": 0
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "apps/control/action-host/local-integration/case.mjs",
+      "sha256": "4e4a8b93361ce90412b3732c85a8bdd14a00c3d86339ac54962fe1ae3696b0cc",
+      "blob": "1a3990967f1ff42ef03da81ed59fe08e8f852afb"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "sha256": "3290d6924dc33c017086f3d6ceda39ac4d7ed46119034f63e7073b8fd05f29bd",
+      "blob": "c41e1d6cf07cf2262c2f27444848c04b5f8a14f1"
+    },
+    {
+      "path": "apps/control/action-host/session/http.mjs",
+      "sha256": "2403d12bf43147aeea9b6fd040ca1dd662d4f30d3dd19e263187e2bc38b69542",
+      "blob": "11aaf4cde044c54abf1ecd22d306d8a1dfc5ab04"
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "sha256": "2e755e24865951e72a871ea7377c7b221022e67dad964d51f7276b5a83812499",
+      "blob": "fc76fd8d6043ce0143f54a19615b23acbd357796"
+    },
+    {
+      "path": "apps/control/action-host/session/session.test.mjs",
+      "sha256": "e18a79b757a1b2c9738d2645d8f17087c4a79fd998ab1089d07a63dd9ddbc2d1",
+      "blob": "37e01aa48fc7c1f041eb8d280687716055ed1b46"
+    }
+  ],
+  "scope": "SOURCE_ONLY"
+}

@@ -1,0 +1,17 @@
+✔ empty hints resolve current context; native token is not an action session; revisions and revocation fail closed (6.908625ms)
+✔ explicit substituted hints and hostile getters do not issue sessions (1.097401ms)
+✔ bounded registry expires records and close invalidates all credentials (1.882182ms)
+✔ Fetch issuance is closed, bounded and content-free on refusal (10.659187ms)
+✔ actual HTTP session issuance composes shared-pool host query draft prepare and approved execute (324.85818ms)
+✔ revocation while native verification is parked refuses receipt and skips the later context port (0.999564ms)
+✔ HTTP original cutoff reaches native identity and current context ports (1.135508ms)
+✔ issuance response remains minimal and bounded even for injected malformed owners (1.919468ms)
+✔ native Request accessors and inert issue descriptors prevent caller code during routing (1.631735ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3032.115132

@@ -1,0 +1,121 @@
+{
+  "source": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+  "scope": "SOURCE_ONLY_SYNTHETIC_HTTP_SCRIPTED_SQL",
+  "members": [
+    {
+      "path": "apps/control/action-host/local-integration/case.mjs",
+      "bytes": 6139,
+      "sha256": "4e4a8b93361ce90412b3732c85a8bdd14a00c3d86339ac54962fe1ae3696b0cc"
+    },
+    {
+      "path": "apps/control/action-host/local-integration/ports.mjs",
+      "bytes": 8521,
+      "sha256": "3290d6924dc33c017086f3d6ceda39ac4d7ed46119034f63e7073b8fd05f29bd"
+    },
+    {
+      "path": "apps/control/action-host/session/README.md",
+      "bytes": 7139,
+      "sha256": "c9e3911ec8ce4d5ae400ef6dec4a2530a9b0a5724db1284d12134df65d021f73"
+    },
+    {
+      "path": "apps/control/action-host/session/http.mjs",
+      "bytes": 3396,
+      "sha256": "2403d12bf43147aeea9b6fd040ca1dd662d4f30d3dd19e263187e2bc38b69542"
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "bytes": 9596,
+      "sha256": "2e755e24865951e72a871ea7377c7b221022e67dad964d51f7276b5a83812499"
+    },
+    {
+      "path": "apps/control/action-host/session/session.test.mjs",
+      "bytes": 9927,
+      "sha256": "e18a79b757a1b2c9738d2645d8f17087c4a79fd998ab1089d07a63dd9ddbc2d1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-SESSION-AUTHOR-20261013.md",
+      "bytes": 4044,
+      "sha256": "38473d5357738408c5a7452334996c0ea7d70c6c831addbb91e09ea08bc093e2"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-SESSION-AUTHOR-20261013.md",
+      "bytes": 2197,
+      "sha256": "21162bafd8361637d9e7c0eff61f194a273a6214c3751140bffc77feb2339141"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/audit.json",
+      "bytes": 2211,
+      "sha256": "b968b726ee7535e4fc337ffb502a8a09a4d59cd9f9c8ffde6055e0725d32b749"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/canonical-http.json",
+      "bytes": 1348,
+      "sha256": "78816ca859766b14e63c50a9d6507f88b1cc556015ac4b41ef5a81b5e14d4923"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/canonical-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/canonical-http.stdout.bin",
+      "bytes": 1018,
+      "sha256": "2625c65794ef00cd1b952711848414dbd33952ab8eaedc3e7f62dfd6c06b0178"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/cleanup.json",
+      "bytes": 511,
+      "sha256": "cdba704fda9d6843ebf36e7a5590cac09482859da8472ac9aceac7f08c90ce43"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/first-session.json",
+      "bytes": 1253,
+      "sha256": "01307a3a094f61045394445e1a2c4b384f4bc57bb7955894aac9b8618d66d697"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/first-session.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/first-session.stdout.bin",
+      "bytes": 614,
+      "sha256": "228048f754e31f51f160f64e31e4c57eecdd1b9d644253200c3a82883a8ca5b5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/http-repaired.json",
+      "bytes": 1337,
+      "sha256": "859ea2c2128e4799d3e68d9b80ee2956d0d284233ef19cb1193dbb1840ff94e2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/http-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/http-repaired.stdout.bin",
+      "bytes": 1018,
+      "sha256": "b88099d8c19ebdc3cd58de72f932e45629bd47aef1da88829f8f875ed58d17cf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/revoked-session.json",
+      "bytes": 1379,
+      "sha256": "e99265369b4efb4880f5e5a136526c8a7f1947c81e5da5f84793f931108a1256"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/revoked-session.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/revoked-session.stdout.bin",
+      "bytes": 1219,
+      "sha256": "b0ddb425c5869dc4657be7cd492a93d0fd7977358edc32cbbed32b14a206e736"
+    }
+  ]
+}
