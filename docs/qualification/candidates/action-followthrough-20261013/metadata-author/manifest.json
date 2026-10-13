@@ -1,0 +1,153 @@
+{
+  "base": "158fa00828cd46864c20f481a998c9d3e9cc236a",
+  "source": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+  "priorMetadata": "069547f7571b28e6aabfa903d7bbcb930bfb1df8",
+  "scope": "SOURCE_ONLY_NATIVE_AND_POLICY_PRODUCER_UNRUN",
+  "entries": [
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "bytes": 4611,
+      "sha256": "6eedd92962688ab4d2fe4ff2303966f0626bf4453f298daaf59d3a0830eef9ce"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "bytes": 223,
+      "sha256": "0731f3aceedd6c1d33aae783c8fe081ca2ab6c718f6dd0248fb6ceb95338a835"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "bytes": 685,
+      "sha256": "3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "bytes": 5171,
+      "sha256": "e78ff4055432263c25679da68af7291d936f0ce6e139720ee51467b5a184d39e"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-store.mjs",
+      "bytes": 3730,
+      "sha256": "5a61bd703bb883ae39aacf82f0351ee5d3fafe1aa0812c2e683136a3c5896f71"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/fixture.mjs",
+      "bytes": 3766,
+      "sha256": "0322dcab58da95b3be82101048a34df247cc6c0c76083545d0684a0508c4c58f"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "bytes": 8114,
+      "sha256": "5653b975a73dc55b8d5c821ef76ad7489679e501a44dddc599763a4c2838d06b"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+      "bytes": 6439,
+      "sha256": "506978a3c3ecd16bdb4f5d5e47ba11cf0d37d10bfb32028239d3801c4079c59b"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+      "bytes": 2514,
+      "sha256": "bf93176eee000d87a408f013272a9d05c633d19e1b2e395254d2199fc3e2e679"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/audit.json",
+      "bytes": 6173,
+      "sha256": "d8f02b468d290f763a6ce2b161102a02ed5c3c85e56047d6175955db9afa1a74"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/audit.py",
+      "bytes": 2737,
+      "sha256": "04b17822443b4b3dbffe58d5abb73b526266995b47fc6a86e08cdd9578772d35"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/authored-whitespace.json",
+      "bytes": 382,
+      "sha256": "9703da105f631523f7a78c29e4e46db39dad76b4198a862b075767ba88c6767e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.json",
+      "bytes": 1297,
+      "sha256": "f8e1d04568ca37612e630775809beb2ce84d1f7b1975b87206f4b25e67fd8d1d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stdout.bin",
+      "bytes": 5491,
+      "sha256": "ff374550b5788a996cd62f93e0d222037599cd9f9f7e7eeb69eb82e761efd12b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.json",
+      "bytes": 1301,
+      "sha256": "44fc0d2e67e82fe4fc1e33216fa2c8f4c5662778493bf8dfabe0dffef58e869e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stdout.bin",
+      "bytes": 2169,
+      "sha256": "5bd258e3c06e88cc986a58e354470b45f3fb448c935c15a1a1081facda1198ba"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/cleanup.json",
+      "bytes": 1432,
+      "sha256": "3a44ed3b7a8671cb68e4ec08573f2e10ad4185b5bc3a0f94a921859fb11b6477"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.json",
+      "bytes": 1301,
+      "sha256": "16e93df2b7b8cd50a9752bdffcf4cc82661133f18101ea786f8716d7a9023e0d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stdout.bin",
+      "bytes": 1898,
+      "sha256": "8986bcce35bd7b55b974cbdf0b8f26605b3f2956f9fb8b5b1035f854a76a8bf2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.json",
+      "bytes": 1281,
+      "sha256": "f233eedba7e851bb214b08f6c5af2f21cc3e7394e8130e8068195912d2f11261"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stdout.bin",
+      "bytes": 3037,
+      "sha256": "2bd223fb89c48d6a743f6ecca1c24f557f983a6004d4da0b590537a47f6b6628"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/whitespace.json",
+      "bytes": 239,
+      "sha256": "992fbffd091e88405f73e5222c80726a29de5f912b8b67b9cb7ac9809c86ff66"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/whitespace.stdout.bin",
+      "bytes": 528,
+      "sha256": "4e1d42e7c4e993b33a6e9eea6e9b87b94e68fa72543ab0d52d2254e5ef39d1a3"
+    }
+  ]
+}
