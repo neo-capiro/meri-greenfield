@@ -22,7 +22,7 @@ Responses have JSON content type, `Cache-Control: no-store` and `X-Content-Type-
 
 - `issue({identityCredential,hints?,signal?,deadlineMs?})` returns the exact receipt above.
 - `verifyIdentity({credential,signal,deadlineMs})` returns `{principal:{tenantId,actorId},identityRevision,checkedAtMs,expiresAtMs}` after native identity verification.
-- `resolveContext({identity,identitySha256,hints,signal,deadlineMs})` returns `{identitySha256,binding,scopes,selectedClientId,contextRevision,checkedAtMs,expiresAtMs}` from authoritative current state. The hash binds the exact fresh identity receipt; it does not independently authenticate the injected port.
+- `resolveContext({identityCredential,identity,identitySha256,hints,signal,deadlineMs})` returns `{identitySha256,binding,scopes,selectedClientId,contextRevision,checkedAtMs,expiresAtMs}` from authoritative current state. The hash binds the exact fresh identity receipt; it does not independently authenticate the injected port.
 - `authenticateSession({credential,signal?,deadlineMs?})` returns the existing host authentication receipt; `readCurrentState({authentication,signal?,deadlineMs?})` accepts only receipts actually issued for a currently retained session and returns the existing hash-bound current-state receipt.
 
 Limits are required: `maxSessions` (1..1000), `maxRequestMs` (1..30000), `maxTtlMs` (1..300000), `maxFactBytes` (1..131072). Random 32-byte tokens are indexed by digest. Up to 64 authentication receipt hashes per session are retained. Fresh verifier and resolver calls recheck original identity/context revisions, principal, binding, selected client and scopes. Expiry can only shorten; changed or revoked context refuses and removes that session. Revocation while a port is pending is checked before another port or receipt release. Closing/restarting loses all sessions and fails closed. The native credential remains only in the process-local record for revalidation and is cleared on removal; no token is logged. Expired entries are bounded and removed on use or subsequent issuance.
@@ -53,3 +53,5 @@ const listener = await listenActionApplication({app: graph.app, host: '127.0.0.1
 // Obtain the distinct action credential via POST /api/action-followthrough/session.
 // Finally: await listener.close(); localCase.close(); do not close the borrowed pool here.
 ```
+
+The trusted context port additionally receives the original native `identityCredential` to make a fresh authenticated authority request. This is server-only call context, never a response field or browser-supplied authority receipt; it avoids a second credential handoff registry. Existing callbacks can ignore this additive field.
