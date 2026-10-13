@@ -1,0 +1,85 @@
+TAP version 13
+# Subtest: Canonical thread shape accepts the exact one-unit high surrogate but canonical gateway refuses before settlement/release
+not ok 1 - Canonical thread shape accepts the exact one-unit high surrogate but canonical gateway refuses before settlement/release
+  ---
+  duration_ms: 2.003075
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: 'Body continuation requires exact messageId'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fail (file:///workspace/meri-workflow-source-independent/packages/contracts/retrieval-0.2/mail-validation.mjs:2:33)
+    Object.assertMailThreadInput (file:///workspace/meri-workflow-source-independent/packages/contracts/retrieval-0.2/mail-validation.mjs:29:67)
+    Object.normalize (file:///workspace/meri-workflow-source-independent/packages/contracts/retrieval-0.2/catalog-validation.mjs:341:61)
+    Object.normalizeInput (file:///workspace/meri-workflow-source-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:105:36)
+    input (file:///workspace/meri-workflow-source-independent/apps/gateway/sources/mail/test/fixtures.mjs:38:46)
+    Object.page (file:///workspace/meri-workflow-source-independent/apps/gateway/sources/mail/test/fixtures.mjs:39:29)
+    TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:26:46)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.start (node:internal/test_runner/test:1242:17)
+  ...
+# Subtest: Well-formed exact two-unit Unicode window passes the actual canonical gateway
+not ok 2 - Well-formed exact two-unit Unicode window passes the actual canonical gateway
+  ---
+  duration_ms: 2.505405
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: 'INVALID_ARGUMENTS'
+  code: 'ERR_TEST_FAILURE'
+  name: 'GatewayDenied'
+  stack: |-
+    safeFailure (file:///workspace/meri-workflow-source-independent/apps/gateway/dispatch/operation-result.mjs:55:10)
+    Object.execute (file:///workspace/meri-workflow-source-independent/apps/gateway/dispatch/tool-dispatch.mjs:104:13)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:32:57)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Producer shortening to a safe Unicode boundary cannot satisfy the unchanged fixed-window contract
+not ok 3 - Producer shortening to a safe Unicode boundary cannot satisfy the unchanged fixed-window contract
+  ---
+  duration_ms: 1.093405
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /INVALID_RESULT/. Input:
+    
+    'GatewayDenied: INVALID_ARGUMENTS'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'INVALID_ARGUMENTS'
+  stack: |-
+    safeFailure (file:///workspace/meri-workflow-source-independent/apps/gateway/dispatch/operation-result.mjs:55:10)
+    Object.execute (file:///workspace/meri-workflow-source-independent/apps/gateway/dispatch/tool-dispatch.mjs:104:13)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:38:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs:38:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Full well-formed Unicode body remains governed and source-unverified
+ok 4 - Full well-formed Unicode body remains governed and source-unverified
+  ---
+  duration_ms: 23.849565
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1707.084898

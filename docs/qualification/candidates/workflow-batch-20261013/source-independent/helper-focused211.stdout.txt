@@ -1,0 +1,1278 @@
+TAP version 13
+# Subtest: actual txt create/inspect/download accepted without authority claims
+ok 1 - actual txt create/inspect/download accepted without authority claims
+  ---
+  duration_ms: 796.360964
+  type: 'test'
+  ...
+# Subtest: actual docx create/inspect/download accepted without authority claims
+ok 2 - actual docx create/inspect/download accepted without authority claims
+  ---
+  duration_ms: 2.754458
+  type: 'test'
+  ...
+# Subtest: actual xlsx create/inspect/download accepted without authority claims
+ok 3 - actual xlsx create/inspect/download accepted without authority claims
+  ---
+  duration_ms: 3.039853
+  type: 'test'
+  ...
+# Subtest: actual XLSX admits canonical 125-character filename
+ok 4 - actual XLSX admits canonical 125-character filename
+  ---
+  duration_ms: 0.129784
+  type: 'test'
+  ...
+# Subtest: actual TXT preserves exact multibyte whitespace and newline bytes
+ok 5 - actual TXT preserves exact multibyte whitespace and newline bytes
+  ---
+  duration_ms: 0.080941
+  type: 'test'
+  ...
+# Subtest: actual revision correlates immutable parent and retains original
+ok 6 - actual revision correlates immutable parent and retains original
+  ---
+  duration_ms: 0.079038
+  type: 'test'
+  ...
+# Subtest: closed request refuses browser authority injection
+ok 7 - closed request refuses browser authority injection
+  ---
+  duration_ms: 0.352305
+  type: 'test'
+  ...
+# Subtest: wrong operation and format pair refuses
+ok 8 - wrong operation and format pair refuses
+  ---
+  duration_ms: 0.155101
+  type: 'test'
+  ...
+# Subtest: PDF remains outside document application
+ok 9 - PDF remains outside document application
+  ---
+  duration_ms: 0.118917
+  type: 'test'
+  ...
+# Subtest: request rejects invalid UTF8
+ok 10 - request rejects invalid UTF8
+  ---
+  duration_ms: 0.10034
+  type: 'test'
+  ...
+# Subtest: request rejects parsed objects without getters or proxy traps
+ok 11 - request rejects parsed objects without getters or proxy traps
+  ---
+  duration_ms: 0.113379
+  type: 'test'
+  ...
+# Subtest: request rejects proxy over byte view without traps
+ok 12 - request rejects proxy over byte view without traps
+  ---
+  duration_ms: 0.072307
+  type: 'test'
+  ...
+# Subtest: JSON byte access ignores hostile own iterator/getter
+ok 13 - JSON byte access ignores hostile own iterator/getter
+  ---
+  duration_ms: 0.069334
+  type: 'test'
+  ...
+# Subtest: request bound counts UTF8 bytes not characters
+ok 14 - request bound counts UTF8 bytes not characters
+  ---
+  duration_ms: 8.387858
+  type: 'test'
+  ...
+# Subtest: request deeply nested JSON refuses boundedly
+ok 15 - request deeply nested JSON refuses boundedly
+  ---
+  duration_ms: 0.175221
+  type: 'test'
+  ...
+# Subtest: unknown dangerous JSON key refuses
+ok 16 - unknown dangerous JSON key refuses
+  ---
+  duration_ms: 0.114812
+  type: 'test'
+  ...
+# Subtest: request snapshots bytes and returns frozen values
+ok 17 - request snapshots bytes and returns frozen values
+  ---
+  duration_ms: 0.190584
+  type: 'test'
+  ...
+# Subtest: shape-like unbranded request cannot admit response
+ok 18 - shape-like unbranded request cannot admit response
+  ---
+  duration_ms: 0.244976
+  type: 'test'
+  ...
+# Subtest: wrong route request brand refuses
+ok 19 - wrong route request brand refuses
+  ---
+  duration_ms: 0.093609
+  type: 'test'
+  ...
+# Subtest: response refuses unknown response field
+ok 20 - response refuses unknown response field
+  ---
+  duration_ms: 0.186769
+  type: 'test'
+  ...
+# Subtest: response refuses format/MIME mismatch
+ok 21 - response refuses format/MIME mismatch
+  ---
+  duration_ms: 0.163814
+  type: 'test'
+  ...
+# Subtest: response refuses bad filename
+ok 22 - response refuses bad filename
+  ---
+  duration_ms: 0.155972
+  type: 'test'
+  ...
+# Subtest: response refuses oversize filename
+ok 23 - response refuses oversize filename
+  ---
+  duration_ms: 0.127059
+  type: 'test'
+  ...
+# Subtest: response refuses hash mismatch
+ok 24 - response refuses hash mismatch
+  ---
+  duration_ms: 0.160209
+  type: 'test'
+  ...
+# Subtest: response refuses byte length mismatch
+ok 25 - response refuses byte length mismatch
+  ---
+  duration_ms: 0.158256
+  type: 'test'
+  ...
+# Subtest: response refuses inspection format
+ok 26 - response refuses inspection format
+  ---
+  duration_ms: 0.122753
+  type: 'test'
+  ...
+# Subtest: response refuses rendered claim
+ok 27 - response refuses rendered claim
+  ---
+  duration_ms: 0.111476
+  type: 'test'
+  ...
+# Subtest: response refuses native qualification claim
+ok 28 - response refuses native qualification claim
+  ---
+  duration_ms: 0.095482
+  type: 'test'
+  ...
+# Subtest: response refuses preview claim
+ok 29 - response refuses preview claim
+  ---
+  duration_ms: 0.082623
+  type: 'test'
+  ...
+# Subtest: response refuses generation claim
+ok 30 - response refuses generation claim
+  ---
+  duration_ms: 0.078307
+  type: 'test'
+  ...
+# Subtest: response refuses foreign object scope
+ok 31 - response refuses foreign object scope
+  ---
+  duration_ms: 0.102954
+  type: 'test'
+  ...
+# Subtest: response refuses unexpected parent
+ok 32 - response refuses unexpected parent
+  ---
+  duration_ms: 0.146899
+  type: 'test'
+  ...
+# Subtest: inspect expected version correlation refuses substitute
+ok 33 - inspect expected version correlation refuses substitute
+  ---
+  duration_ms: 0.223654
+  type: 'test'
+  ...
+# Subtest: revision parent correlation refuses substituted prior version
+ok 34 - revision parent correlation refuses substituted prior version
+  ---
+  duration_ms: 0.139638
+  type: 'test'
+  ...
+# Subtest: valid content-free error returned, status mismatch rejected
+ok 35 - valid content-free error returned, status mismatch rejected
+  ---
+  duration_ms: 0.366607
+  type: 'test'
+  ...
+# Subtest: error with source/private body rejected
+ok 36 - error with source/private body rejected
+  ---
+  duration_ms: 0.074271
+  type: 'test'
+  ...
+# Subtest: download refuses wrong mime
+ok 37 - download refuses wrong mime
+  ---
+  duration_ms: 0.251475
+  type: 'test'
+  ...
+# Subtest: download refuses wrong filename
+ok 38 - download refuses wrong filename
+  ---
+  duration_ms: 0.106989
+  type: 'test'
+  ...
+# Subtest: download refuses missing length
+ok 39 - download refuses missing length
+  ---
+  duration_ms: 0.083875
+  type: 'test'
+  ...
+# Subtest: download refuses wrong length
+ok 40 - download refuses wrong length
+  ---
+  duration_ms: 0.080049
+  type: 'test'
+  ...
+# Subtest: download refuses no-store missing
+ok 41 - download refuses no-store missing
+  ---
+  duration_ms: 0.094131
+  type: 'test'
+  ...
+# Subtest: download refuses nosniff missing
+ok 42 - download refuses nosniff missing
+  ---
+  duration_ms: 0.08029
+  type: 'test'
+  ...
+# Subtest: download refuses encoded content
+ok 43 - download refuses encoded content
+  ---
+  duration_ms: 0.119809
+  type: 'test'
+  ...
+# Subtest: download rejects altered bytes despite matching headers
+ok 44 - download rejects altered bytes despite matching headers
+  ---
+  duration_ms: 4.617966
+  type: 'test'
+  ...
+# Subtest: download rejects shortened EOF
+ok 45 - download rejects shortened EOF
+  ---
+  duration_ms: 0.263212
+  type: 'test'
+  ...
+# Subtest: download refuses redirect and error status
+ok 46 - download refuses redirect and error status
+  ---
+  duration_ms: 0.183624
+  type: 'test'
+  ...
+# Subtest: download refuses unbranded version without proxy traps
+ok 47 - download refuses unbranded version without proxy traps
+  ---
+  duration_ms: 0.245296
+  type: 'test'
+  ...
+# Subtest: download rejects Response proxy without traps
+ok 48 - download rejects Response proxy without traps
+  ---
+  duration_ms: 0.136153
+  type: 'test'
+  ...
+# Subtest: download configured byte limit refuses
+ok 49 - download configured byte limit refuses
+  ---
+  duration_ms: 0.117906
+  type: 'test'
+  ...
+# Subtest: download consumes bounded stream EOF and cancels stalled body
+ok 50 - download consumes bounded stream EOF and cancels stalled body
+  ---
+  duration_ms: 20.819036
+  type: 'test'
+  ...
+# Subtest: download respects already cancelled caller
+ok 51 - download respects already cancelled caller
+  ---
+  duration_ms: 0.58344
+  type: 'test'
+  ...
+# Subtest: received binary is detached from source buffer
+ok 52 - received binary is detached from source buffer
+  ---
+  duration_ms: 0.634596
+  type: 'test'
+  ...
+# (node:176553) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: standalone browser module works with no Node or private graph
+ok 53 - standalone browser module works with no Node or private graph
+  ---
+  duration_ms: 15.386594
+  type: 'test'
+  ...
+# Subtest: native fetch followed redirect200 is refused despite exact bytes and headers
+ok 54 - native fetch followed redirect200 is refused despite exact bytes and headers
+  ---
+  duration_ms: 15.898237
+  type: 'test'
+  ...
+# Subtest: stream read error never yields verified bytes
+ok 55 - stream read error never yields verified bytes
+  ---
+  duration_ms: 0.508628
+  type: 'test'
+  ...
+# Subtest: extra byte after exact version bytes refuses
+ok 56 - extra byte after exact version bytes refuses
+  ---
+  duration_ms: 0.358695
+  type: 'test'
+  ...
+# Subtest: hostile route and status do not coerce unknown objects
+ok 57 - hostile route and status do not coerce unknown objects
+  ---
+  duration_ms: 0.166138
+  type: 'test'
+  ...
+# Subtest: request refuses escaped lone surrogate and concatenated JSON
+ok 58 - request refuses escaped lone surrogate and concatenated JSON
+  ---
+  duration_ms: 0.137305
+  type: 'test'
+  ...
+# Subtest: all139 originals and67 prior descriptors/callbacks survive exactly four new mappings
+ok 59 - all139 originals and67 prior descriptors/callbacks survive exactly four new mappings
+  ---
+  duration_ms: 14.518741
+  type: 'test'
+  ...
+# Subtest: all84 exact schema byte pins preserve pending closed handlers
+ok 60 - all84 exact schema byte pins preserve pending closed handlers
+  ---
+  duration_ms: 31.264502
+  type: 'test'
+  ...
+# Subtest: query_outreach: actual callbacks preserve detached original request and canonical digest
+ok 61 - query_outreach: actual callbacks preserve detached original request and canonical digest
+  ---
+  duration_ms: 3.374181
+  type: 'test'
+  ...
+# Subtest: query_outreach: trusted context is mandatory, closed, and stripped before family output callback
+ok 62 - query_outreach: trusted context is mandatory, closed, and stripped before family output callback
+  ---
+  duration_ms: 0.956786
+  type: 'test'
+  ...
+# Subtest: query_outreach: inert hostile request/context/result never invokes caller accessors
+ok 63 - query_outreach: inert hostile request/context/result never invokes caller accessors
+  ---
+  duration_ms: 1.704853
+  type: 'test'
+  ...
+# Subtest: query_outreach: canonical integrity refuses handler/schema/retry/mapping injection
+ok 64 - query_outreach: canonical integrity refuses handler/schema/retry/mapping injection
+  ---
+  duration_ms: 57.365633
+  type: 'test'
+  ...
+# Subtest: search_program_elements: actual callbacks preserve detached original request and canonical digest
+ok 65 - search_program_elements: actual callbacks preserve detached original request and canonical digest
+  ---
+  duration_ms: 2.287512
+  type: 'test'
+  ...
+# Subtest: search_program_elements: trusted context is mandatory, closed, and stripped before family output callback
+ok 66 - search_program_elements: trusted context is mandatory, closed, and stripped before family output callback
+  ---
+  duration_ms: 0.598162
+  type: 'test'
+  ...
+# Subtest: search_program_elements: inert hostile request/context/result never invokes caller accessors
+ok 67 - search_program_elements: inert hostile request/context/result never invokes caller accessors
+  ---
+  duration_ms: 1.194912
+  type: 'test'
+  ...
+# Subtest: search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection
+ok 68 - search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection
+  ---
+  duration_ms: 105.534082
+  type: 'test'
+  ...
+# Subtest: get_program_element: actual callbacks preserve detached original request and canonical digest
+ok 69 - get_program_element: actual callbacks preserve detached original request and canonical digest
+  ---
+  duration_ms: 22.298712
+  type: 'test'
+  ...
+# Subtest: get_program_element: trusted context is mandatory, closed, and stripped before family output callback
+ok 70 - get_program_element: trusted context is mandatory, closed, and stripped before family output callback
+  ---
+  duration_ms: 1.186359
+  type: 'test'
+  ...
+# Subtest: get_program_element: inert hostile request/context/result never invokes caller accessors
+ok 71 - get_program_element: inert hostile request/context/result never invokes caller accessors
+  ---
+  duration_ms: 1.180781
+  type: 'test'
+  ...
+# Subtest: get_program_element: canonical integrity refuses handler/schema/retry/mapping injection
+ok 72 - get_program_element: canonical integrity refuses handler/schema/retry/mapping injection
+  ---
+  duration_ms: 59.689198
+  type: 'test'
+  ...
+# Subtest: get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest
+ok 73 - get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest
+  ---
+  duration_ms: 1.441029
+  type: 'test'
+  ...
+# Subtest: get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback
+ok 74 - get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback
+  ---
+  duration_ms: 0.467838
+  type: 'test'
+  ...
+# Subtest: get_pe_budget_timeline: inert hostile request/context/result never invokes caller accessors
+ok 75 - get_pe_budget_timeline: inert hostile request/context/result never invokes caller accessors
+  ---
+  duration_ms: 0.782187
+  type: 'test'
+  ...
+# Subtest: get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection
+ok 76 - get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection
+  ---
+  duration_ms: 43.241021
+  type: 'test'
+  ...
+# Subtest: production gateway remains closed before any authority/budget port for all84 reads
+ok 77 - production gateway remains closed before any authority/budget port for all84 reads
+  ---
+  duration_ms: 8.459765
+  type: 'test'
+  ...
+# Subtest: outreach callback resolves names only via exact trusted assertion and keeps UUID identity
+ok 78 - outreach callback resolves names only via exact trusted assertion and keeps UUID identity
+  ---
+  duration_ms: 0.740725
+  type: 'test'
+  ...
+# Subtest: outreach selected limit/status/client reach output correlation and full fetched count
+ok 79 - outreach selected limit/status/client reach output correlation and full fetched count
+  ---
+  duration_ms: 1.10699
+  type: 'test'
+  ...
+# Subtest: exact outreach precedence suppresses client resolution and cannot accept list result
+ok 80 - exact outreach precedence suppresses client resolution and cannot accept list result
+  ---
+  duration_ms: 0.299286
+  type: 'test'
+  ...
+# Subtest: program search callback preserves scalar fallback and bounded paging
+ok 81 - program search callback preserves scalar fallback and bounded paging
+  ---
+  duration_ms: 0.417343
+  type: 'test'
+  ...
+# Subtest: program detail and timeline selectors retain distinct case semantics
+ok 82 - program detail and timeline selectors retain distinct case semantics
+  ---
+  duration_ms: 0.639013
+  type: 'test'
+  ...
+# Subtest: program evidence mode controls actual lineage output without becoming authorization
+ok 83 - program evidence mode controls actual lineage output without becoming authorization
+  ---
+  duration_ms: 1.759744
+  type: 'test'
+  ...
+# Subtest: program Decimal string prerequisite and stored-year identity/order survive composition
+ok 84 - program Decimal string prerequisite and stored-year identity/order survive composition
+  ---
+  duration_ms: 2.633447
+  type: 'test'
+  ...
+# Subtest: PE direct factory now returns detached nested result, canonical behavior preserved
+ok 85 - PE direct factory now returns detached nested result, canonical behavior preserved
+  ---
+  duration_ms: 0.754805
+  type: 'test'
+  ...
+# Subtest: private command loader composes normalized task payload without retrieval mapping
+ok 86 - private command loader composes normalized task payload without retrieval mapping
+  ---
+  duration_ms: 1.098468
+  type: 'test'
+  ...
+# Subtest: private artifact loader preserves immutable tuple and refuses destination substitution
+ok 87 - private artifact loader preserves immutable tuple and refuses destination substitution
+  ---
+  duration_ms: 1.147992
+  type: 'test'
+  ...
+# Subtest: all original139 rows,56 descriptors and callback implementations survive seven exact additions
+ok 88 - all original139 rows,56 descriptors and callback implementations survive seven exact additions
+  ---
+  duration_ms: 7.674004
+  type: 'test'
+  ...
+# Subtest: every schema pin resolves exact bytes while every descriptor remains unavailable
+ok 89 - every schema pin resolves exact bytes while every descriptor remains unavailable
+  ---
+  duration_ms: 10.224887
+  type: 'test'
+  ...
+# Subtest: get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 90 - get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 3.069658
+  type: 'test'
+  ...
+# Subtest: get_state_bill_status: context allowlist, original request and output callback stripping are enforced
+ok 91 - get_state_bill_status: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 1.077237
+  type: 'test'
+  ...
+# Subtest: get_state_bill_status: foreign family, model authority fields and hostile input remain refused without effects
+ok 92 - get_state_bill_status: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 1.62239
+  type: 'test'
+  ...
+# Subtest: get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed
+ok 93 - get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 37.390036
+  type: 'test'
+  ...
+# Subtest: search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 94 - search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 1.450333
+  type: 'test'
+  ...
+# Subtest: search_state_floor_votes: context allowlist, original request and output callback stripping are enforced
+ok 95 - search_state_floor_votes: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 0.720404
+  type: 'test'
+  ...
+# Subtest: search_state_floor_votes: foreign family, model authority fields and hostile input remain refused without effects
+ok 96 - search_state_floor_votes: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 1.754897
+  type: 'test'
+  ...
+# Subtest: search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed
+ok 97 - search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 40.787092
+  type: 'test'
+  ...
+# Subtest: query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 98 - query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 1.250104
+  type: 'test'
+  ...
+# Subtest: query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced
+ok 99 - query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 0.34218
+  type: 'test'
+  ...
+# Subtest: query_regulatory_dockets: foreign family, model authority fields and hostile input remain refused without effects
+ok 100 - query_regulatory_dockets: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 1.037287
+  type: 'test'
+  ...
+# Subtest: query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed
+ok 101 - query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 30.809288
+  type: 'test'
+  ...
+# Subtest: find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 102 - find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 1.497783
+  type: 'test'
+  ...
+# Subtest: find_contacts: context allowlist, original request and output callback stripping are enforced
+ok 103 - find_contacts: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 0.338685
+  type: 'test'
+  ...
+# Subtest: find_contacts: foreign family, model authority fields and hostile input remain refused without effects
+ok 104 - find_contacts: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 1.089264
+  type: 'test'
+  ...
+# Subtest: find_contacts: catalog fingerprint, mapping and promotion mutations fail closed
+ok 105 - find_contacts: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 25.768176
+  type: 'test'
+  ...
+# Subtest: resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 106 - resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 2.088154
+  type: 'test'
+  ...
+# Subtest: resolve_entity: context allowlist, original request and output callback stripping are enforced
+ok 107 - resolve_entity: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 0.813143
+  type: 'test'
+  ...
+# Subtest: resolve_entity: foreign family, model authority fields and hostile input remain refused without effects
+ok 108 - resolve_entity: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 1.028243
+  type: 'test'
+  ...
+# Subtest: resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed
+ok 109 - resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 37.586058
+  type: 'test'
+  ...
+# Subtest: search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 110 - search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 2.806395
+  type: 'test'
+  ...
+# Subtest: search_tracked_bills: context allowlist, original request and output callback stripping are enforced
+ok 111 - search_tracked_bills: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 1.468059
+  type: 'test'
+  ...
+# Subtest: search_tracked_bills: foreign family, model authority fields and hostile input remain refused without effects
+ok 112 - search_tracked_bills: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 1.548419
+  type: 'test'
+  ...
+# Subtest: search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed
+ok 113 - search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 25.881124
+  type: 'test'
+  ...
+# Subtest: query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest
+ok 114 - query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest
+  ---
+  duration_ms: 0.823188
+  type: 'test'
+  ...
+# Subtest: query_intelligence: context allowlist, original request and output callback stripping are enforced
+ok 115 - query_intelligence: context allowlist, original request and output callback stripping are enforced
+  ---
+  duration_ms: 0.31525
+  type: 'test'
+  ...
+# Subtest: query_intelligence: foreign family, model authority fields and hostile input remain refused without effects
+ok 116 - query_intelligence: foreign family, model authority fields and hostile input remain refused without effects
+  ---
+  duration_ms: 4.591758
+  type: 'test'
+  ...
+# Subtest: query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed
+ok 117 - query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed
+  ---
+  duration_ms: 43.419717
+  type: 'test'
+  ...
+# Subtest: production gateway rejects all84 before any authority/budget port and has no activation option
+ok 118 - production gateway rejects all84 before any authority/budget port and has no activation option
+  ---
+  duration_ms: 10.316204
+  type: 'test'
+  ...
+# Subtest: state unresolved selection refuses state-wide result broadening and preserves source reasons
+ok 119 - state unresolved selection refuses state-wide result broadening and preserves source reasons
+  ---
+  duration_ms: 1.125859
+  type: 'test'
+  ...
+# Subtest: regulatory count race and selected upcoming window remain different projections
+ok 120 - regulatory count race and selected upcoming window remain different projections
+  ---
+  duration_ms: 0.379425
+  type: 'test'
+  ...
+# Subtest: contacts preserve explicit selector refusal, normalized domain and no implied profile writes
+ok 121 - contacts preserve explicit selector refusal, normalized domain and no implied profile writes
+  ---
+  duration_ms: 1.030838
+  type: 'test'
+  ...
+# Subtest: entity effective Congress is trusted context, absent and candidate facts are not authority
+ok 122 - entity effective Congress is trusted context, absent and candidate facts are not authority
+  ---
+  duration_ms: 0.884048
+  type: 'test'
+  ...
+# Subtest: tracked callbacks bind full task/actor/client context and preserve exact resolver assertion
+ok 123 - tracked callbacks bind full task/actor/client context and preserve exact resolver assertion
+  ---
+  duration_ms: 2.012241
+  type: 'test'
+  ...
+# Subtest: summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims
+ok 124 - summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims
+  ---
+  duration_ms: 0.362891
+  type: 'test'
+  ...
+# Subtest: entity output callback receives effective Congress and cannot rebind a direct bill candidate
+ok 125 - entity output callback receives effective Congress and cannot rebind a direct bill candidate
+  ---
+  duration_ms: 1.242873
+  type: 'test'
+  ...
+# Subtest: original139 rows and63 descriptors/callbacks survive exactly four full mappings
+ok 126 - original139 rows and63 descriptors/callbacks survive exactly four full mappings
+  ---
+  duration_ms: 7.106385
+  type: 'test'
+  ...
+# Subtest: all84 descriptors have exact schema byte pins and no implementation admission
+ok 127 - all84 descriptors have exact schema byte pins and no implementation admission
+  ---
+  duration_ms: 9.953443
+  type: 'test'
+  ...
+# Subtest: search_public_web: actual canonical normalizer/output callbacks preserve detached request and digest
+ok 128 - search_public_web: actual canonical normalizer/output callbacks preserve detached request and digest
+  ---
+  duration_ms: 2.336928
+  type: 'test'
+  ...
+# Subtest: search_public_web: allowlisted contexts and original request survive callback stripping
+ok 129 - search_public_web: allowlisted contexts and original request survive callback stripping
+  ---
+  duration_ms: 0.587745
+  type: 'test'
+  ...
+# Subtest: search_public_web: family substitution and hostile JSON refuse before effects
+ok 130 - search_public_web: family substitution and hostile JSON refuse before effects
+  ---
+  duration_ms: 1.229629
+  type: 'test'
+  ...
+# Subtest: search_public_web: mapping, handler, retry, and schema mutation are rejected
+ok 131 - search_public_web: mapping, handler, retry, and schema mutation are rejected
+  ---
+  duration_ms: 30.126332
+  type: 'test'
+  ...
+# Subtest: scrape_web_page: actual canonical normalizer/output callbacks preserve detached request and digest
+ok 132 - scrape_web_page: actual canonical normalizer/output callbacks preserve detached request and digest
+  ---
+  duration_ms: 1.853609
+  type: 'test'
+  ...
+# Subtest: scrape_web_page: allowlisted contexts and original request survive callback stripping
+ok 133 - scrape_web_page: allowlisted contexts and original request survive callback stripping
+  ---
+  duration_ms: 0.456619
+  type: 'test'
+  ...
+# Subtest: scrape_web_page: family substitution and hostile JSON refuse before effects
+ok 134 - scrape_web_page: family substitution and hostile JSON refuse before effects
+  ---
+  duration_ms: 1.043663
+  type: 'test'
+  ...
+# Subtest: scrape_web_page: mapping, handler, retry, and schema mutation are rejected
+ok 135 - scrape_web_page: mapping, handler, retry, and schema mutation are rejected
+  ---
+  duration_ms: 33.305102
+  type: 'test'
+  ...
+# Subtest: search_sam_opportunities: actual canonical normalizer/output callbacks preserve detached request and digest
+ok 136 - search_sam_opportunities: actual canonical normalizer/output callbacks preserve detached request and digest
+  ---
+  duration_ms: 1.796443
+  type: 'test'
+  ...
+# Subtest: search_sam_opportunities: allowlisted contexts and original request survive callback stripping
+ok 137 - search_sam_opportunities: allowlisted contexts and original request survive callback stripping
+  ---
+  duration_ms: 1.281267
+  type: 'test'
+  ...
+# Subtest: search_sam_opportunities: family substitution and hostile JSON refuse before effects
+ok 138 - search_sam_opportunities: family substitution and hostile JSON refuse before effects
+  ---
+  duration_ms: 0.878688
+  type: 'test'
+  ...
+# Subtest: search_sam_opportunities: mapping, handler, retry, and schema mutation are rejected
+ok 139 - search_sam_opportunities: mapping, handler, retry, and schema mutation are rejected
+  ---
+  duration_ms: 29.397667
+  type: 'test'
+  ...
+# Subtest: get_florida_budget_project: actual canonical normalizer/output callbacks preserve detached request and digest
+ok 140 - get_florida_budget_project: actual canonical normalizer/output callbacks preserve detached request and digest
+  ---
+  duration_ms: 2.307654
+  type: 'test'
+  ...
+# Subtest: get_florida_budget_project: allowlisted contexts and original request survive callback stripping
+ok 141 - get_florida_budget_project: allowlisted contexts and original request survive callback stripping
+  ---
+  duration_ms: 1.537858
+  type: 'test'
+  ...
+# Subtest: get_florida_budget_project: family substitution and hostile JSON refuse before effects
+ok 142 - get_florida_budget_project: family substitution and hostile JSON refuse before effects
+  ---
+  duration_ms: 0.875863
+  type: 'test'
+  ...
+# Subtest: get_florida_budget_project: mapping, handler, retry, and schema mutation are rejected
+ok 143 - get_florida_budget_project: mapping, handler, retry, and schema mutation are rejected
+  ---
+  duration_ms: 24.793326
+  type: 'test'
+  ...
+# Subtest: production gateway denies every descriptor before authority/budget and rejects activation
+ok 144 - production gateway denies every descriptor before authority/budget and rejects activation
+  ---
+  duration_ms: 7.512669
+  type: 'test'
+  ...
+# Subtest: web search callback retains limit/UTF16 and discovered evidence only
+ok 145 - web search callback retains limit/UTF16 and discovered evidence only
+  ---
+  duration_ms: 0.834633
+  type: 'test'
+  ...
+# Subtest: web page callback preserves redirects and coverage but no network/hash proof
+ok 146 - web page callback preserves redirects and coverage but no network/hash proof
+  ---
+  duration_ms: 0.526774
+  type: 'test'
+  ...
+# Subtest: web truncation callback is connected to original requested window
+ok 147 - web truncation callback is connected to original requested window
+  ---
+  duration_ms: 0.482148
+  type: 'test'
+  ...
+# Subtest: SAM independent status and health clocks are consumed by real callbacks
+ok 148 - SAM independent status and health clocks are consumed by real callbacks
+  ---
+  duration_ms: 1.142771
+  type: 'test'
+  ...
+# Subtest: SAM count races, active selector and trusted mode are distinct from completeness
+ok 149 - SAM count races, active selector and trusted mode are distinct from completeness
+  ---
+  duration_ms: 1.649034
+  type: 'test'
+  ...
+# Subtest: Florida raw Request pin admits defaults and named client resolution
+ok 150 - Florida raw Request pin admits defaults and named client resolution
+  ---
+  duration_ms: 0.717087
+  type: 'test'
+  ...
+# Subtest: Florida nested output callback binds all scope facts and request continuation
+ok 151 - Florida nested output callback binds all scope facts and request continuation
+  ---
+  duration_ms: 0.80609
+  type: 'test'
+  ...
+# Subtest: Florida folder derived client cannot override explicit selector
+ok 152 - Florida folder derived client cannot override explicit selector
+  ---
+  duration_ms: 0.410821
+  type: 'test'
+  ...
+# Subtest: exact PR28 descriptors and callback source survive in single registry with full original inventory
+ok 153 - exact PR28 descriptors and callback source survive in single registry with full original inventory
+  ---
+  duration_ms: 7.156089
+  type: 'test'
+  ...
+# Subtest: all catalog schema fingerprints resolve exact private bytes and keep unavailable admission
+ok 154 - all catalog schema fingerprints resolve exact private bytes and keep unavailable admission
+  ---
+  duration_ms: 11.426024
+  type: 'test'
+  ...
+# Subtest: get_committee_roster: canonical normalization and output use accepted family with immutable detached selection
+ok 155 - get_committee_roster: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 3.100984
+  type: 'test'
+  ...
+# Subtest: get_committee_roster: exact context keys and original request are required at both canonical boundaries
+ok 156 - get_committee_roster: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.895944
+  type: 'test'
+  ...
+# Subtest: get_committee_roster: foreign shapes and extra authority claims refuse
+ok 157 - get_committee_roster: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.519591
+  type: 'test'
+  ...
+# Subtest: get_committee_roster: hostile inputs, context, projections and operation references remain inert
+ok 158 - get_committee_roster: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.569998
+  type: 'test'
+  ...
+# Subtest: get_committee_roster: schema pin, mapping and source promotion negatives remain enforced
+ok 159 - get_committee_roster: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 28.087528
+  type: 'test'
+  ...
+# Subtest: list_members: canonical normalization and output use accepted family with immutable detached selection
+ok 160 - list_members: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 1.609525
+  type: 'test'
+  ...
+# Subtest: list_members: exact context keys and original request are required at both canonical boundaries
+ok 161 - list_members: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.653783
+  type: 'test'
+  ...
+# Subtest: list_members: foreign shapes and extra authority claims refuse
+ok 162 - list_members: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.334526
+  type: 'test'
+  ...
+# Subtest: list_members: hostile inputs, context, projections and operation references remain inert
+ok 163 - list_members: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.467977
+  type: 'test'
+  ...
+# Subtest: list_members: schema pin, mapping and source promotion negatives remain enforced
+ok 164 - list_members: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 23.087407
+  type: 'test'
+  ...
+# Subtest: get_pe_contractors: canonical normalization and output use accepted family with immutable detached selection
+ok 165 - get_pe_contractors: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 1.652829
+  type: 'test'
+  ...
+# Subtest: get_pe_contractors: exact context keys and original request are required at both canonical boundaries
+ok 166 - get_pe_contractors: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.223262
+  type: 'test'
+  ...
+# Subtest: get_pe_contractors: foreign shapes and extra authority claims refuse
+ok 167 - get_pe_contractors: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 5.72502
+  type: 'test'
+  ...
+# Subtest: get_pe_contractors: hostile inputs, context, projections and operation references remain inert
+ok 168 - get_pe_contractors: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.450991
+  type: 'test'
+  ...
+# Subtest: get_pe_contractors: schema pin, mapping and source promotion negatives remain enforced
+ok 169 - get_pe_contractors: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 23.581172
+  type: 'test'
+  ...
+# Subtest: get_pe_bills: canonical normalization and output use accepted family with immutable detached selection
+ok 170 - get_pe_bills: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 0.788333
+  type: 'test'
+  ...
+# Subtest: get_pe_bills: exact context keys and original request are required at both canonical boundaries
+ok 171 - get_pe_bills: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.211184
+  type: 'test'
+  ...
+# Subtest: get_pe_bills: foreign shapes and extra authority claims refuse
+ok 172 - get_pe_bills: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.127849
+  type: 'test'
+  ...
+# Subtest: get_pe_bills: hostile inputs, context, projections and operation references remain inert
+ok 173 - get_pe_bills: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.382309
+  type: 'test'
+  ...
+# Subtest: get_pe_bills: schema pin, mapping and source promotion negatives remain enforced
+ok 174 - get_pe_bills: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 20.916466
+  type: 'test'
+  ...
+# Subtest: get_pe_report_language: canonical normalization and output use accepted family with immutable detached selection
+ok 175 - get_pe_report_language: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 1.306915
+  type: 'test'
+  ...
+# Subtest: get_pe_report_language: exact context keys and original request are required at both canonical boundaries
+ok 176 - get_pe_report_language: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.786451
+  type: 'test'
+  ...
+# Subtest: get_pe_report_language: foreign shapes and extra authority claims refuse
+ok 177 - get_pe_report_language: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.079086
+  type: 'test'
+  ...
+# Subtest: get_pe_report_language: hostile inputs, context, projections and operation references remain inert
+ok 178 - get_pe_report_language: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.429059
+  type: 'test'
+  ...
+# Subtest: get_pe_report_language: schema pin, mapping and source promotion negatives remain enforced
+ok 179 - get_pe_report_language: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 23.962299
+  type: 'test'
+  ...
+# Subtest: get_state_rule_status: canonical normalization and output use accepted family with immutable detached selection
+ok 180 - get_state_rule_status: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 2.189569
+  type: 'test'
+  ...
+# Subtest: get_state_rule_status: exact context keys and original request are required at both canonical boundaries
+ok 181 - get_state_rule_status: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 1.079537
+  type: 'test'
+  ...
+# Subtest: get_state_rule_status: foreign shapes and extra authority claims refuse
+ok 182 - get_state_rule_status: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.481054
+  type: 'test'
+  ...
+# Subtest: get_state_rule_status: hostile inputs, context, projections and operation references remain inert
+ok 183 - get_state_rule_status: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.381968
+  type: 'test'
+  ...
+# Subtest: get_state_rule_status: schema pin, mapping and source promotion negatives remain enforced
+ok 184 - get_state_rule_status: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 21.130925
+  type: 'test'
+  ...
+# Subtest: get_certification_status: canonical normalization and output use accepted family with immutable detached selection
+ok 185 - get_certification_status: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 5.826951
+  type: 'test'
+  ...
+# Subtest: get_certification_status: exact context keys and original request are required at both canonical boundaries
+ok 186 - get_certification_status: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.774643
+  type: 'test'
+  ...
+# Subtest: get_certification_status: foreign shapes and extra authority claims refuse
+ok 187 - get_certification_status: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.49203
+  type: 'test'
+  ...
+# Subtest: get_certification_status: hostile inputs, context, projections and operation references remain inert
+ok 188 - get_certification_status: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.447095
+  type: 'test'
+  ...
+# Subtest: get_certification_status: schema pin, mapping and source promotion negatives remain enforced
+ok 189 - get_certification_status: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 21.540835
+  type: 'test'
+  ...
+# Subtest: search_intel_articles: canonical normalization and output use accepted family with immutable detached selection
+ok 190 - search_intel_articles: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 1.021901
+  type: 'test'
+  ...
+# Subtest: search_intel_articles: exact context keys and original request are required at both canonical boundaries
+ok 191 - search_intel_articles: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.268339
+  type: 'test'
+  ...
+# Subtest: search_intel_articles: foreign shapes and extra authority claims refuse
+ok 192 - search_intel_articles: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.206235
+  type: 'test'
+  ...
+# Subtest: search_intel_articles: hostile inputs, context, projections and operation references remain inert
+ok 193 - search_intel_articles: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.368228
+  type: 'test'
+  ...
+# Subtest: search_intel_articles: schema pin, mapping and source promotion negatives remain enforced
+ok 194 - search_intel_articles: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 20.320771
+  type: 'test'
+  ...
+# Subtest: list_global_datasets: canonical normalization and output use accepted family with immutable detached selection
+ok 195 - list_global_datasets: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 0.640553
+  type: 'test'
+  ...
+# Subtest: list_global_datasets: exact context keys and original request are required at both canonical boundaries
+ok 196 - list_global_datasets: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.24204
+  type: 'test'
+  ...
+# Subtest: list_global_datasets: foreign shapes and extra authority claims refuse
+ok 197 - list_global_datasets: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 0.989572
+  type: 'test'
+  ...
+# Subtest: list_global_datasets: hostile inputs, context, projections and operation references remain inert
+ok 198 - list_global_datasets: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.405183
+  type: 'test'
+  ...
+# Subtest: list_global_datasets: schema pin, mapping and source promotion negatives remain enforced
+ok 199 - list_global_datasets: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 21.276082
+  type: 'test'
+  ...
+# Subtest: get_representation: canonical normalization and output use accepted family with immutable detached selection
+ok 200 - get_representation: canonical normalization and output use accepted family with immutable detached selection
+  ---
+  duration_ms: 2.797874
+  type: 'test'
+  ...
+# Subtest: get_representation: exact context keys and original request are required at both canonical boundaries
+ok 201 - get_representation: exact context keys and original request are required at both canonical boundaries
+  ---
+  duration_ms: 0.874302
+  type: 'test'
+  ...
+# Subtest: get_representation: foreign shapes and extra authority claims refuse
+ok 202 - get_representation: foreign shapes and extra authority claims refuse
+  ---
+  duration_ms: 1.790073
+  type: 'test'
+  ...
+# Subtest: get_representation: hostile inputs, context, projections and operation references remain inert
+ok 203 - get_representation: hostile inputs, context, projections and operation references remain inert
+  ---
+  duration_ms: 0.467266
+  type: 'test'
+  ...
+# Subtest: get_representation: schema pin, mapping and source promotion negatives remain enforced
+ok 204 - get_representation: schema pin, mapping and source promotion negatives remain enforced
+  ---
+  duration_ms: 20.094453
+  type: 'test'
+  ...
+# Subtest: actual production gateway keeps all97 unavailable without any authority or budget effects
+ok 205 - actual production gateway keeps all97 unavailable without any authority or budget effects
+  ---
+  duration_ms: 7.992003
+  type: 'test'
+  ...
+# Subtest: directory and PE normalization retain independent selectors and explicit refusals
+ok 206 - directory and PE normalization retain independent selectors and explicit refusals
+  ---
+  duration_ms: 1.57899
+  type: 'test'
+  ...
+# Subtest: rule callbacks separately carry both clocks across stage and comment exact boundaries
+ok 207 - rule callbacks separately carry both clocks across stage and comment exact boundaries
+  ---
+  duration_ms: 0.764257
+  type: 'test'
+  ...
+# Subtest: certification callback uses explicit locale without interpreting source absence as authority
+ok 208 - certification callback uses explicit locale without interpreting source absence as authority
+  ---
+  duration_ms: 0.924656
+  type: 'test'
+  ...
+# Subtest: stored count races, UTF16 bounds and metadata-only query limits survive real callbacks
+ok 209 - stored count races, UTF16 bounds and metadata-only query limits survive real callbacks
+  ---
+  duration_ms: 0.963884
+  type: 'test'
+  ...
+# Subtest: facility canonical callback checks every binding and exact full subject including decision ID
+ok 210 - facility canonical callback checks every binding and exact full subject including decision ID
+  ---
+  duration_ms: 4.026111
+  type: 'test'
+  ...
+# Subtest: directory and rule namespace repair preserves canonical URN-only SchemaRef admission
+ok 211 - directory and rule namespace repair preserves canonical URN-only SchemaRef admission
+  ---
+  duration_ms: 0.560574
+  type: 'test'
+  ...
+1..211
+# tests 211
+# suites 0
+# pass 211
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5305.638463

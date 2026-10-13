@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-reporter=tap",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/document-application-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+  "worktreeHead": "df5e57e532c9727b2a70ba5a74c11ce1bfc493ed",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 5.336,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 48488,
+  "stderrBytes": 0,
+  "stdoutSha256": "2001f163852e3532a3f44be4fb873f3b9e7e935fea50f852d9824757138b48c1",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

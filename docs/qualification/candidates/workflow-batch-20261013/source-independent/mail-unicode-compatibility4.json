@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/mail-unicode-compatibility.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+  "worktreeHead": "df5e57e532c9727b2a70ba5a74c11ce1bfc493ed",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 1.734,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 4934,
+  "stderrBytes": 0,
+  "stdoutSha256": "fdc38553846c9d70f3bbb9af9ac578e8e3741fb0dd7302b865adff4ab1332dcb",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

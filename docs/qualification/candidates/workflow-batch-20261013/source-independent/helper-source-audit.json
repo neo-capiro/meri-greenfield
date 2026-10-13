@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python3",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/audit-helper.py"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+  "worktreeHead": "df5e57e532c9727b2a70ba5a74c11ce1bfc493ed",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.127,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 135,
+  "stderrBytes": 0,
+  "stdoutSha256": "0a52f622181781e5cacbf4c2a656c47887655e7b95d3888c47945282df30ae31",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
