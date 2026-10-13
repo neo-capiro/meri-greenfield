@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: Relationship artifact options refuse accessors and Proxy before any trap
+ok 1 - Relationship artifact options refuse accessors and Proxy before any trap
+  ---
+  duration_ms: 0.726393
+  type: 'test'
+  ...
+# Subtest: Relationship preparation preserves the authority receiver and borrowed extra options
+ok 2 - Relationship preparation preserves the authority receiver and borrowed extra options
+  ---
+  duration_ms: 139.937774
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3166.835042
