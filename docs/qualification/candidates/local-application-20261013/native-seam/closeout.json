@@ -1,0 +1,10 @@
+{
+  "targetImports": 0,
+  "targetExecutions": 0,
+  "databaseConnections": 0,
+  "privateReceiptsRead": 0,
+  "dependenciesCreated": 0,
+  "ownedLongRunningProcesses": 0,
+  "cleanupPending": false,
+  "whitespacePassed": true
+}

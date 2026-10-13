@@ -1,0 +1,162 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "sourceOnly": true,
+  "references": [
+    {
+      "path": "scripts/local-action/admission.mjs",
+      "blob": "e1d2955d6224268b47b2fbec4d90ca58e9877340",
+      "bytes": 3470,
+      "sha256": "8a419e7e9c3b4e069c640148591e2ee7644d9ff890c94ea4ad54685753b1cb5a"
+    },
+    {
+      "path": "scripts/local-action/cli.mjs",
+      "blob": "712589fdb1ac558388dae16d5c479206c92a3538",
+      "bytes": 4478,
+      "sha256": "de943a9e8f8b84e9033ec3c1eedab939628c74b91cac76257b56b96aafb5df69"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "blob": "bb719228eb5b322a4277ac0a58893ca734a3eb60",
+      "bytes": 13572,
+      "sha256": "643e3401a661fa33cb47638f367bc8f82b2efe96557e0dda4f07ada625636a80"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "blob": "ee926206a372a73dc7cd626c63862c79bea89161",
+      "bytes": 5345,
+      "sha256": "924f012927182e7d9152f13b879c1f952ca478e0f5cd373351850b9fc54be46e"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "blob": "9d9e851a72c0bb7f890beb930fa708d454744e37",
+      "bytes": 2110,
+      "sha256": "0b0b2967b645ca37bddded12f5f1b1d4d2cf0c1e2cde65dbf13623d08d12c7b8"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "blob": "54d68d23563d625032578f0bb47dd44882692d40",
+      "bytes": 10049,
+      "sha256": "a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a"
+    },
+    {
+      "path": "apps/gateway/local-action/case.mjs",
+      "blob": "1b295e57a3a4b8b5636259ab8506885309365a3a",
+      "bytes": 8047,
+      "sha256": "e800ce697982cc035044348f106d51fccf1b792e6128dae471d56e059786f0c6"
+    },
+    {
+      "path": "apps/gateway/local-action/gateway.mjs",
+      "blob": "cb8b416cd5d73f21c5485b6d49f7b714b9149e4a",
+      "bytes": 3851,
+      "sha256": "a1c1c69b279ad4a2d7f72488e96c986bae9b536c96fd92fcb49661dac5fd34a6"
+    },
+    {
+      "path": "apps/gateway/local-action/identity.mjs",
+      "blob": "568c870f80237f93a4c697e1687cd9764ebea481",
+      "bytes": 8799,
+      "sha256": "e66fd348e51b01dc76c7c9dfbdc7ea2ae6e7fb33800eba4bb4c64e45b0a06566"
+    },
+    {
+      "path": "apps/gateway/local-action/control-authorizer.mjs",
+      "blob": "b964c79da4271ecb9670ab031a631463dbbeefb9",
+      "bytes": 4003,
+      "sha256": "5c79923c56fd6999e82fdb2e633cc7478498490a7395acd1c82cb42f80ad3c98"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "blob": "c5bd2b0eb74491f8f0b493774798e3acdb406e89",
+      "bytes": 13226,
+      "sha256": "1605c224a0caaed35121768be388af39e3aabf9b84f4e70767c7dfbdda8a0336"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "blob": "afc53c1bb0fb00522b181e95499411947f20e5be",
+      "bytes": 2155,
+      "sha256": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772"
+    },
+    {
+      "path": "apps/control/action-host/durable/index.mjs",
+      "blob": "17fff30c9c9162ad5668c730efd196142ec8f804",
+      "bytes": 3854,
+      "sha256": "cf9ff325c4b5330bfc5b24142c3e850f100a6b48e7264166eeaf79463182de3f"
+    },
+    {
+      "path": "apps/control/action-host/durable/test/fixture.mjs",
+      "blob": "afc88d3cb22db7366cb5f4625e04f9e2df4f1f75",
+      "bytes": 7175,
+      "sha256": "e1f7b6db90ccc0ef53db86dc96d32b971ac40177b8bac388622db8fab1a0771e"
+    },
+    {
+      "path": "apps/control/action-host/index.mjs",
+      "blob": "2834f5f225b9a01b5288b67d381de4022174dbbb",
+      "bytes": 1891,
+      "sha256": "9c56953ada6eabbe19adae43d8fd051a68a333e67f2574924eb03d6f54a33363"
+    },
+    {
+      "path": "apps/control/action-host/resolver.mjs",
+      "blob": "6b4e3c243283588dbb265677eb3f9e089a1da2f0",
+      "bytes": 4196,
+      "sha256": "d54bf42a46afdb3eda0354683ec794e133e856eaffd49f685714f5f9423ec95e"
+    },
+    {
+      "path": "apps/control/action-host/local/fixture.mjs",
+      "blob": "3bd29e94eb371dabad508b72a624845621f2d852",
+      "bytes": 4343,
+      "sha256": "1f23984f9480d5d97c670e071c74f13d37980a77a8367d1da991752a4bbb7b26"
+    },
+    {
+      "path": "apps/control/action-host/local/recovery.mjs",
+      "blob": "7c58822324359a59747c8d7749ea913b9db24c16",
+      "bytes": 4710,
+      "sha256": "f84cbbbfee6323a3db0f8c78ec1f6f09b6057034528e399a1b0a88daec72f789"
+    },
+    {
+      "path": "apps/control/commands/durable-executor.mjs",
+      "blob": "5e6e7536d632ecaeb6c286fa2d723dfdcf084625",
+      "bytes": 3046,
+      "sha256": "1fb45049a3f214e9191b30818dfa122cb999eacc8316bf4ee5a5dbe6ee08b80d"
+    },
+    {
+      "path": "apps/control/commands/intent.mjs",
+      "blob": "05e9de693bf90d2398d0579a221e8811298a669f",
+      "bytes": 189,
+      "sha256": "9e10bf80b170e8e3e7ae9da9fca44ba480ef05e90ddaec05f9f224b1af87b19e"
+    },
+    {
+      "path": "apps/control/commands/source-http.mjs",
+      "blob": "8e496614327deff97de0cab8557baa87923575aa",
+      "bytes": 7185,
+      "sha256": "c864f91d547a2a703e71ac69d7cb3f7c4c34f309bae49611b3b07779d6739654"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "blob": "a4c4353c9066dc35fb82c7703bd0f95f2026fe31",
+      "bytes": 5171,
+      "sha256": "e78ff4055432263c25679da68af7291d936f0ce6e139720ee51467b5a184d39e"
+    },
+    {
+      "path": "apps/control/commands/postgres-command-journal.mjs",
+      "blob": "eb07fc072474b9c82f026af833616858cb181dd1",
+      "bytes": 5343,
+      "sha256": "c4152987233f7ba4a68b7e013d087d27c8ddadb35b058f21c185d99bec6dd08c"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "blob": "a90524cdfe899260310d87bafed5a7a31a664317",
+      "bytes": 2595,
+      "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "blob": "cd978e975962950785fba09f355e94141d5a77a8",
+      "bytes": 330499,
+      "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8"
+    },
+    {
+      "path": "packages/contracts/action-application/receive.mjs",
+      "blob": "ca9479420f0e18ae5a392bf19225c2baf018b7c2",
+      "bytes": 4337,
+      "sha256": "d4404440530e71bb56bb21d07729b1aab46b8c22e4d06e700fe10da792d81c43"
+    }
+  ]
+}

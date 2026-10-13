@@ -1,0 +1,44 @@
+{
+  "status": "SOURCE_IMPLEMENTATION_READY",
+  "implementedByThisLane": false,
+  "rootAllocation": "334890d930fbdb209044c30ff552409bcb86240e",
+  "newModules": [
+    {"path":"apps/control/action-host/local-integration/case.mjs","responsibility":"Explicit isolated synthetic case setup over caller-admitted real pool; one run/shared allocation and two grants, separate synthetic read/command authority, nonempty typed action source, immutable reconstruction facts and exact readback.","proposedAPI":"createLocalActionHostCase({mode,pool,deadlineMs,now,newId}) -> {reconstruct({pool}),approve(proposal),revoke(),readback({pool}),dispose(),ownedRows}"},
+    {"path":"apps/control/action-host/local-integration/run.mjs","responsibility":"Admitted existing-pool verification and three-host recovery/readback; initial pool borrowed, two fresh pools explicitly owned, bounded cleanup and truthful source/native metadata.","proposedAPI":"runLocalActionHostRecovery({descriptor,pool,openFreshPool,createCase}) -> bounded evidence result"}
+  ],
+  "narrowExistingSeams": [
+    {"path":"apps/gateway/local-action/gateway.mjs","gap":"Current single-operation manifest admission cannot share the immutable run allocation with create_task.","proposal":"Root-approved exact actions.query+create_task shared allocation admission while read gateway request/dispatch remains actions.query only. Preserve single-read historical callers and canonical budget/grant guards."},
+    {"path":"apps/control/action-host/local/recovery.mjs","gap":"openHost is synchronous; only listener cleanup is owned; result hardcodes nativeDatabase:false.","proposal":"Root-approved bounded asynchronous graph acquisition plus optional closeGraph; reuse one existing HTTP choreography and public receiveActionResponse. Old synthetic entry retains false flags. Real-pool wrapper owns database evidence, avoiding a false inherited database claim."}
+  ],
+  "canonicalOwners": {
+    "stateAndAccounting":"PostgresBudgetStore and canonical PostgreSQL budget/invocation owners; no replacement SQL parser/ledger",
+    "host":"createActionHostApplication",
+    "services":"createDurableActionServices",
+    "readIdentity":"createLocalActionIdentity/createLocalLookupAuthorizer, read-only synthetic capability",
+    "readGateway":"createLocalActionGateway, typed actions.query only",
+    "commandAuthority":"createCommandAuthority and canonical command intent/HTTP-source/executor; separate explicit synthetic command.execute credential",
+    "proposal":"createTaskCreateApprovalMetadataOwner via durable factory; null absent approval, explicit exact later decision",
+    "poolOwnership":"createFreshPoolOwner twice, each single acquisition; late returned owned handles still close exactly once",
+    "lifetime":"createOperationLifetime plus owner supervisor for physical process exit"
+  },
+  "criticalInvariants": [
+    "One immutable allocation and allocationSha256 for the same run across read and command owners; shared manifest/schedule contains exactly the supported pair and sufficient combined caps.",
+    "Separate grantId/capabilitySha256 and claims for read and command; same stable tenant/actor/conversation/run and compatible client scope/current policy. Do not make the read identity a command issuer.",
+    "Seed run/grants once explicitly through canonical transaction owner; bind both through canonical bindTrustedGrant. No reseed or new allocation on reconstruct.",
+    "Preserve original proposal, commandId, proposalId, idempotencyKey, commandSha256, producer context and delivery identity through refusal/approval/replay. Current execution request may be refreshed only within canonical identity rules.",
+    "All reconstructed read and command owners use the selected real pool; no retained service closure may silently keep an old pool.",
+    "Retain selected resultReference/resultSha256/actionId and original scopes; host2 reread does not rerun the source query.",
+    "Fresh approval/read/execution authority remains checked. No HTTP approval route; no automatic approval by preparation/recovery.",
+    "Global consumed budget starts from actual retained baseline; assert exact owned read+command increments and no replay increment, without clearing prior history.",
+    "All own SQL rows and failure evidence remain; closing graphs closes owned pools/listeners, not borrowed initial pool or other owners.",
+    "Real-pool reconstruction is not database/process crash, native identity/source policy, model quality, G1 or deployment acceptance."
+  ],
+  "sourceTestsToWriteNow": [
+    "Shared real-shaped allocation reaches both canonical bind paths; differing second allocation refuses rather than overwrites.",
+    "Exact two-operation manifest is admitted only for intended local composition; unsupported operations and command dispatch through read gateway refuse.",
+    "All pool-bearing owners reconstructed on new receiver-preserving pool ports; borrowed initial pool never closed; late/failed acquisition and close preserve uncertainty.",
+    "Same proposal across unapproved refusal, explicit approval, reconstructed replay and fresh revocation; no new proposal to escape refusal.",
+    "Existing synthetic runner assertions and CLI/public receiver compatibility retained; source-count, journal/metadata identity and shared charge deltas checked.",
+    "Schema/identity mismatch and expired admission refuse before seed; retained prior rows are not treated as empty/reset permission."
+  ]
+}

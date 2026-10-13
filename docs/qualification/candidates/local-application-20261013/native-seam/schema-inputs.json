@@ -1,0 +1,73 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "existingMigrationPins": {
+    "qualification": {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "blob": "a3b5709829b02f9cc04b026acbb72b70588151a8",
+      "bytes": 2467,
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc"
+    },
+    "budget": {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "blob": "01939d529ae01c6a3b4a5fe7e545511a8c698896",
+      "bytes": 2391,
+      "sha256": "53d3933a440ed0801411d3ed544f4c554f397b3338acaad1ce1addcce4ef5809"
+    },
+    "invocation": {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "blob": "206919bd370d6c0777fa628e82a050c2bfefad83",
+      "bytes": 1097,
+      "sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5"
+    },
+    "lookup": {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "blob": "cc05f27bd78c3a5304b7bf7503f561e9e9d0ad51",
+      "bytes": 1024,
+      "sha256": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f"
+    },
+    "approvalMetadata": {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "blob": "64fdf26c9225fc6c143fa08804a6eff1761db9f6",
+      "bytes": 685,
+      "sha256": "3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b"
+    },
+    "commandJournal": {
+      "path": "apps/control/commands/migrations/0001_commands.sql",
+      "blob": "532c7d29b323ac6df92d17040181f5d8f9efdfa4",
+      "bytes": 1074,
+      "sha256": "252683e2db8ffd36dbc7b3cfdada9a28f59a0f192522253a852686369560704b"
+    }
+  },
+  "driverLock": {
+    "path": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+    "blob": "45aeeba0ef04d075a4e01256dbfccffe101254d9",
+    "bytes": 5739,
+    "sha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a"
+  },
+  "requiredDriver": "pg@8.23.1",
+  "newMigrationIds": [],
+  "privateNativeValuesIncluded": false,
+  "schemaSourceHashesAreInstallationEvidence": false,
+  "requiredObservedRelations": {
+    "meri_qualification": [
+      "budget",
+      "runs",
+      "grants",
+      "requests",
+      "tool_run_allocations",
+      "tool_grant_bindings",
+      "tool_reservations",
+      "tool_invocations",
+      "budget_liabilities"
+    ],
+    "meri_task_lookup": [
+      "lookups",
+      "events"
+    ],
+    "currentCommandSearchPath": [
+      "meri_approval_metadata",
+      "meri_command_journal"
+    ]
+  },
+  "additionalReadback": "Observe current search_path/relation resolution, required columns/constraints and installation provenance separately; no schema creation, ALTER or history reset is part of runner."
+}
