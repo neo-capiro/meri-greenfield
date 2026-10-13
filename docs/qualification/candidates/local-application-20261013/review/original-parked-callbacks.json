@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=runner total deadline|runner failure",
+    "apps/control/action-host/local/recovery-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-review-20261013",
+  "sourceHead": "9c8cccd80305363e9421b5796e79278e6b0be1bd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:12:13.370168+00:00",
+  "durationSeconds": 0.616,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 472486,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/original-parked-callbacks.stdout.bin",
+      "bytes": 408,
+      "sha256": "65e252de75b822caa3f6d391c92ac4803b90288604d8841d847e771f618ff18d"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/original-parked-callbacks.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

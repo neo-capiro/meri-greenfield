@@ -1,0 +1,11 @@
+✔ independent: runner total deadline settles while approve ignores cancellation (101.740009ms)
+✔ independent: runner total deadline settles while revoke ignores cancellation (101.277493ms)
+✔ independent runner failure closes listener without retrying or changing proposals (12.627779ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 548.433423
