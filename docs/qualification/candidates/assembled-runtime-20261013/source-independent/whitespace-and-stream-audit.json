@@ -1,0 +1,12 @@
+{
+  "reviewCommit": "7f626986cfdf1815db3e1d238c6afdc529ee452b",
+  "rawEvidenceWhitespaceCheck": {
+    "exitCode": 2,
+    "output": "docs/qualification/candidates/assembled-runtime-20261013/source-independent/independent-real-controls.stdout.txt:27: trailing whitespace.\n+  \ndocs/qualification/candidates/assembled-runtime-20261013/source-independent/independent-real-controls.stdout.txt:30: trailing whitespace.\n+  \ndocs/qualification/candidates/assembled-runtime-20261013/source-independent/independent-real-controls.stdout.txt:60: trailing whitespace.\n+  \ndocs/qualification/candidates/assembled-runtime-20261013/source-independent/independent-real-controls.stdout.txt:64: trailing whitespace.\n+  \ndocs/qualification/candidates/assembled-runtime-20261013/source-independent/upstream-source-types.stdout.txt:4: new blank line at EOF.\n"
+  },
+  "sourceReportReceiptWhitespaceCheck": {
+    "exitCode": 0,
+    "rawStreamsExcludedOnly": true
+  },
+  "rawBytesPreserved": true
+}

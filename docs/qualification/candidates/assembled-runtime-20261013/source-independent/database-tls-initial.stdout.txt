@@ -1,0 +1,31 @@
+(node:336905) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✖ duplicate sslmode cannot disable TLS verification before any Pool or Temporal allocation (3.789137ms)
+✔ one exact verify-full mode reaches the controlled allocation and closes owned Pool on startup failure (1.446837ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.993372
+
+✖ failing tests:
+
+test at docs/qualification/candidates/assembled-runtime-20261013/source-independent/database-tls-independent.test.mjs:36:1
+✖ duplicate sslmode cannot disable TLS verification before any Pool or Temporal allocation (3.789137ms)
+  AssertionError [ERR_ASSERTION]: {"pools":1,"temporal":1,"ended":1,"ssl":{"rejectUnauthorized":false}}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-assembled-runtime-source-review/docs/qualification/candidates/assembled-runtime-20261013/source-independent/database-tls-independent.test.mjs:40:40)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
