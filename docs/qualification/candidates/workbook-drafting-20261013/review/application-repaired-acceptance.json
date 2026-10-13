@@ -1,0 +1,34 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Application family admission and compatible fixture only; root workbook flow/render packet pending separate final integration audit",
+  "authorSource": "16a4f883962bd72f9421949df95709f65b286555",
+  "authorTree": "e30c762c6e1e860ffdf60b3967cc5d1f5d6b0d3c",
+  "fixtureSource": "00032028b57141631c3bbd6a6cc34d5d2bcad9e8",
+  "testedHead": "a90e5d703187f4b1e205675bdb0b372288ba97f6",
+  "testedTree": "c6bcf9562a036fe4b0caea27401091ebaeed191f",
+  "authorPacket": "pending final corrected packet; fe81f220 retained",
+  "independentBehavior": {
+    "passed": 33,
+    "failed": 0
+  },
+  "cliOnly": {
+    "passed": 2,
+    "failed": 0
+  },
+  "sourceAudit": {
+    "passed": 29,
+    "failed": 0
+  },
+  "authorPacketAudit": {
+    "passed": 45,
+    "failed": 0
+  },
+  "productionCorrectionsRequested": 1,
+  "reviewerPreReplayCorrections": "pre-replay-corrections.json",
+  "runtimeQualified": false,
+  "nativeDatabase": false,
+  "providerCalls": 0,
+  "remaining": "Review final root workbook CLI/flow receipt, recalculated copies and visual previews; no application retest needed unless its bytes change.",
+  "supersedes": "filename-finding.json HOLD (original application-acceptance.json retained as passed-but-incomplete)",
+  "repair": "Canonical filename ASCII maximum124 ->125 with actual Excel longest-title release regression; all prior controls preserved."
+}
