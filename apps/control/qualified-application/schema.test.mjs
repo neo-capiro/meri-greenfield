@@ -37,8 +37,8 @@ function scripted(options={}){
    const {text}=config;log.push({id,...config});await options.before?.(text,state);
    if(options.fail===text)throw Object.assign(new Error('PASSWORD-CANARY'),{get secret(){throw Error('getter');}});
    let result={rows:[]};
-   if(text==='COMMIT'){state.commits++;state.locked=null;if(options.loseCommit)throw Error('PASSWORD-CANARY');}
-   else if(text==='ROLLBACK'){state.locked=null;}
+   if(text==='COMMIT'){state.commits++;if(state.locked===id)state.locked=null;if(options.loseCommit)throw Error('PASSWORD-CANARY');}
+   else if(text==='ROLLBACK'){if(state.locked===id)state.locked=null;}
    else if(text.startsWith('SELECT current_database()'))result={rows:[{database:f.database,username:f.user,address:f.host,port:f.port,version:f.serverVersion,start_ms:String(Date.parse(f.serverStartTime)),fsync:'on',synchronous_commit:'on',system_identifier:f.systemIdentifier,search_path:'public',...options.identity}]};
    else if(text.startsWith('SELECT pg_catalog.pg_try')){const acquired=state.locked===null;state.locked??=id;result={rows:[{acquired}]};}
    else if(text.startsWith('SELECT nspname'))result={rows:state.installed?[{name:'meri_qualification'},{name:'meri_task_lookup'}]:options.namespaces??[]};
@@ -90,3 +90,4 @@ test('cancelled parked migration remains UNKNOWN, then rolls back and releases w
 test('absolute clock advancement after identity prevents migration despite responsive ports',async()=>{
  let now=Date.now();const s=scripted({before(text){if(text.startsWith('SELECT current_database'))now+=1000;}});await rejects(prepareOwnedApplicationSchema({...s.args(),now:()=>now,deadlineMs:now+500}),'NOT_INSTALLED','identity');assert.equal(ddls(s).length,0);
 });
+test('receipt binds original cutoff and reports port observation without native qualification',async()=>{const s=scripted(),args=s.args(),r=await prepareOwnedApplicationSchema(args);assert.equal(r.originalDeadlineMs,args.deadlineMs);assert.equal(r.evidenceKind,'borrowed-pool-catalog-observation');assert.equal(r.runtimeQualified,false);assert.equal(r.poolClosed,false);});
