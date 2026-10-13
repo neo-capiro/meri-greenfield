@@ -26,9 +26,9 @@ for manifest in sorted(packet.parent.glob('*/manifest.json')):
         raw=(root/member['path']).read_bytes()
         check('manifest '+member['path'],len(raw)==member['bytes'] and hashlib.sha256(raw).hexdigest()==member['sha256'])
 receipts=[]
-for label in ['integrated-check','scripted-application']:
+for label,expected in [('integrated-check',1),('integrated-final',0),('scripted-application',0)]:
     r=json.loads((packet/(label+'.json')).read_text())
-    check('bounded passing receipt '+label,r['exitCode']==0 and not r['timedOut'] and r['sourceDiffBytes']==0 and r['ownedProcessGroupAbsent'] and not r['ownedGroupKillRequired'])
+    check('bounded retained receipt '+label,r['exitCode']==expected and not r['timedOut'] and r['sourceDiffBytes']==0 and r['ownedProcessGroupAbsent'] and not r['ownedGroupKillRequired'])
     for stream in r['streams']:
         raw=(root/stream['path']).read_bytes()
         check('raw stream '+stream['path'],len(raw)==stream['bytes'] and hashlib.sha256(raw).hexdigest()==stream['sha256'])

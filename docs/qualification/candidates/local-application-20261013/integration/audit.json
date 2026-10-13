@@ -1,0 +1,499 @@
+{
+  "base": "334890d930fbdb209044c30ff552409bcb86240e",
+  "reviewedSource": "fc76ac68f8e2b2b0de6f214326a7f67b9a7ef661",
+  "originalEntries": 10854,
+  "originalEntriesUnchanged": 10851,
+  "approvedOriginalChanges": [
+    "apps/control/action-host/local/recovery.mjs",
+    "apps/gateway/local-action/gateway.mjs",
+    "docs/coordination/tasks/CODEX-LOCAL-APPLICATION-20261013.md"
+  ],
+  "laneManifestMembers": {
+    "author": 27,
+    "native-seam": 9,
+    "pilot": 11,
+    "pilot-review": 16,
+    "review": 26
+  },
+  "receipts": [
+    {
+      "sourceHead": "4dcaa8a969307f1a90dc419e5b262d301020f473",
+      "ownedPidAndPgid": 473648,
+      "durationSeconds": 44.805
+    },
+    {
+      "sourceHead": "4dcaa8a969307f1a90dc419e5b262d301020f473",
+      "ownedPidAndPgid": 474036,
+      "durationSeconds": 47.808
+    },
+    {
+      "sourceHead": "4dcaa8a969307f1a90dc419e5b262d301020f473",
+      "ownedPidAndPgid": 474092,
+      "durationSeconds": 4.885
+    }
+  ],
+  "passed": 115,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "only two allocated original source paths and root outline changed",
+      "pass": true
+    },
+    {
+      "name": "all original tests and public package bytes retained",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local/recovery.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/gateway/local-action/gateway.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local-integration/case.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local-integration/local.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local-integration/ports.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local-integration/run.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local-integration/state.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed source apps/control/action-host/local-integration/test-pool.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local/recovery.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/README.md",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/case.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/local.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/ports.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/run.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/state.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/test-pool.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/gateway/local-action/gateway.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-LOCAL-APPLICATION-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-LOCAL-APPLICATION-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/coherent-shared.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/coherent-shared.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/coherent-shared.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/initial-shared.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/initial-shared.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/initial-shared.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/public-entry-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/public-entry-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/public-entry-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/seed-uncertain.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/seed-uncertain.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/author/seed-uncertain.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-LOCAL-APPLICATION-NATIVE-SEAM-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-LOCAL-APPLICATION-NATIVE-SEAM-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/closeout.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/native-owner-handoff.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/schema-inputs.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/seam-proposal.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/verification.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/native-seam/verify.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/aws-page-read.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/cases.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/direct-price-list-reads.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/pricing.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/public-evidence.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/review-correction.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/verification.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot/verify.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-LOCAL-APPLICATION-PILOT-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/audit-initial.py.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/author-verifier-replay.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/baseline-audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/baseline-audit.json.gz",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/closeout.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/decision.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/final-audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/historical-preservation-inputs.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/initial-candidate-audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/observed-wire-gold.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/public-source-observations.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/review-corrections.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/pilot-review/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/allocation-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/application-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/action-host/local-integration/recovery-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-LOCAL-APPLICATION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-LOCAL-APPLICATION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/coherent-controls.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/coherent-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/coherent-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/direct-readback-before.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/direct-readback-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/direct-readback-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/initial-controls.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/initial-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/initial-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/original-parked-callbacks.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/original-parked-callbacks.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/local-application-20261013/review/original-parked-callbacks.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "bounded retained receipt integrated-check",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/local-application-20261013/integration/integrated-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/local-application-20261013/integration/integrated-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence integrated-check",
+      "pass": true
+    },
+    {
+      "name": "bounded retained receipt integrated-final",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/local-application-20261013/integration/integrated-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/local-application-20261013/integration/integrated-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence integrated-final",
+      "pass": true
+    },
+    {
+      "name": "bounded retained receipt scripted-application",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/local-application-20261013/integration/scripted-application.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/local-application-20261013/integration/scripted-application.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence scripted-application",
+      "pass": true
+    },
+    {
+      "name": "scripted receipt does not claim native evidence",
+      "pass": true
+    },
+    {
+      "name": "one shared allocation and expected aggregate",
+      "pass": true
+    },
+    {
+      "name": "one read/effect and closed owner",
+      "pass": true
+    },
+    {
+      "name": "owned pools/listeners closed",
+      "pass": true
+    }
+  ]
+}

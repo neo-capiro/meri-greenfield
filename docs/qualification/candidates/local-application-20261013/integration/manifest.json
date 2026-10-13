@@ -1,0 +1,94 @@
+{
+  "members": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/.gitattributes",
+      "bytes": 40,
+      "sha256": "21ca23d16a68817f0584d0afe6a9fc1681f19dd74c6d6f6cbfa977ebc6e3ef1d"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/audit.json",
+      "bytes": 16465,
+      "sha256": "76bd4cd47123dc4b6e1e52f751bcc59df723e6f57c310a4c855d1f51f268b993"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/audit.py",
+      "bytes": 3761,
+      "sha256": "8260afafdacfe4d21599afa9496199e947623cd9db27dae0bbe8d9b9a5541c12"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/cleanup.json",
+      "bytes": 487,
+      "sha256": "9947061ceb3a85da8fe464bf9f39ac96bb94bcee40d5cb014901cbeb28767168"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/coordination.json",
+      "bytes": 1158,
+      "sha256": "2e6b6a3e2b4a198d94503a1971c2fa1c34f8d8fc75405a08caac892ecf223535"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-check.json",
+      "bytes": 2281,
+      "sha256": "a51589e468a7b5e19f196e3df87f72489147f49931ca775ccc02204d2c85bc1c"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 18147,
+      "sha256": "9328e68eb49dab7f26ddddd0dd346c4da5ced4086ae7e8fec84a0c9160ed797e"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-final.json",
+      "bytes": 2360,
+      "sha256": "3bd08cf75c29888097628f7e5835baa04e6b86d1adf556273af42a0f50451204"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-final.stdout.bin",
+      "bytes": 19836,
+      "sha256": "bb768e34198194f88964d270e6807863679fc5d3ddd60c9a99cfd5d9e5a95424"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/rerun-reason.json",
+      "bytes": 579,
+      "sha256": "41d5704fef288d27464733c3a3ad3e5c001ca0043db7d1c0868f67b77072564d"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/run-scripted.mjs",
+      "bytes": 1554,
+      "sha256": "7fc92f99287b336b039c392aea476e59508ec02120c3e67d7c22a22fa1edb0bd"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/scripted-application.json",
+      "bytes": 1380,
+      "sha256": "2e3665880aec5d2eb5de3de26a02c44bc9f2945035aee214748d388a446ee5ad"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/scripted-application.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/scripted-application.stdout.bin",
+      "bytes": 521,
+      "sha256": "83af77e4c4cde9cdc84091d4f99457e7dfab7feb3894412b3f9e2dbe82154d94"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-LOCAL-APPLICATION-20261013.md",
+      "bytes": 6110,
+      "sha256": "e4f116d8b370febc4287388d7bd2f57a7a5b86f61992f486bb443aab64fa8d52"
+    }
+  ]
+}

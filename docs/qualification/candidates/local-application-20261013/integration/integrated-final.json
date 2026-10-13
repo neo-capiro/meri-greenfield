@@ -1,0 +1,51 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-local-application-20261013",
+    "node",
+    "--test",
+    "apps/control/action-host/binding.test.mjs",
+    "apps/control/action-host/binding-independent.test.mjs",
+    "apps/control/action-host/durable/test/durable.test.mjs",
+    "apps/control/action-host/durable/durable-independent.test.mjs",
+    "apps/control/action-host/local/local.test.mjs",
+    "apps/control/action-host/local/recovery-independent.test.mjs",
+    "apps/control/action-host/local-integration/allocation-independent.test.mjs",
+    "apps/control/action-host/local-integration/application-independent.test.mjs",
+    "apps/control/action-host/local-integration/local.test.mjs",
+    "apps/control/action-host/local-integration/recovery-independent.test.mjs",
+    "apps/gateway/local-action/test/case-independent.test.mjs",
+    "apps/gateway/local-action/test/gateway-independent.test.mjs",
+    "apps/gateway/local-action/test/identity-independent.test.mjs",
+    "apps/gateway/local-action/test/identity.test.mjs",
+    "packages/contracts/test/action-application-public.test.mjs",
+    "packages/contracts/test/action-application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-20261013",
+  "sourceHead": "4dcaa8a969307f1a90dc419e5b262d301020f473",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:18:49.964052+00:00",
+  "durationSeconds": 47.808,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 474036,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-final.stdout.bin",
+      "bytes": 19836,
+      "sha256": "bb768e34198194f88964d270e6807863679fc5d3ddd60c9a99cfd5d9e5a95424"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/integration/integrated-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
