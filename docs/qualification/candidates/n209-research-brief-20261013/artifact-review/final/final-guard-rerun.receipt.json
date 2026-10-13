@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "node",
+    "--experimental-loader",
+    "./docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/installed-dependencies.mjs",
+    "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/guard-and-graph-rerun.mjs",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+  ],
+  "cwd": "/workspace/meri-n209-artifact-review",
+  "reviewedCommit": "086cb8960a8cd314d97b484198660c171d63272f",
+  "implementationDiffBytes": 0,
+  "startedAt": "2026-10-13T09:22:59.121523+00:00",
+  "durationSeconds": 2.321,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 37189,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard-rerun.stdout.txt",
+      "bytes": 3130,
+      "sha256": "08beaffbb2280bd711279397e673c7e3f5491dba5bed451a6c187adc50db335f"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard-rerun.stderr.txt",
+      "bytes": 444,
+      "sha256": "f9d1a6b8adfe816a4c05f4290e2acb57888042ec13b70e1dd94cad5ef66f551f"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}

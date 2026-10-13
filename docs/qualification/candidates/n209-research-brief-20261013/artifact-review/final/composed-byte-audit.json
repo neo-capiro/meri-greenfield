@@ -1,0 +1,59 @@
+{
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "reviewedTree": "bc288d53ce03e926833a26366e53216837f4fa2b",
+  "renderedArtifactSourcePin": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "retainedRepairEvidenceCommit": "bfc01957d45a5625f255030d38435bf1d3703e3a",
+  "priorFinalGuardSourcePin": "086cb8960a8cd314d97b484198660c171d63272f",
+  "priorFinalGuardScriptSha256": "5b13015164d39b7fb32547647dd9ff832794d7e28a0dabc4b22f9b99497fc803",
+  "addedCheck": "Outer trusted configuration inert descriptor refusal; no previous assertion removed",
+  "checks": [
+    {
+      "name": "Emitter/read/recipe/HTTP/public/binary artifact bytes unchanged from rendered57",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+        "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+        "--",
+        "apps/artifacts",
+        "apps/control/document-application/research-brief/compose.mjs",
+        "apps/control/document-application/research-brief/evidence.mjs",
+        "apps/control/document-application/research-brief/input.mjs",
+        "apps/control/document-application/research-brief/skill.mjs",
+        "apps/control/document-application/research-brief/SKILL.md",
+        "apps/control/document-application/research-brief/manifest.json",
+        "apps/control/document-application/research-brief/local",
+        "apps/control/document-application/current.mjs",
+        "apps/control/document-application/index.mjs",
+        "packages/contracts",
+        "docs/qualification/candidates/n209-research-brief-20261013/integration/repaired-final-artifacts"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Publicowner/contracts still exact composition",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "45c2de24f41402ae3a938a7df09eff78db90d94c",
+        "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+        "--",
+        "apps/control/document-application/current.mjs",
+        "apps/control/document-application/index.mjs",
+        "packages/contracts"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeQualified": false
+}
