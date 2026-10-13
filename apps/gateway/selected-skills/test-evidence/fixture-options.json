@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/selected-skills/mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-admission-mount",
+  "sourceHead": "39f0aab153ae7bdf763ea12f4b0a80300a89d5de",
+  "sourceDiffSha256": "0c1a7c97c06ec0f34138d038498c299babb96674264c2eea98c13fa2aece46e7",
+  "sourceDiffBytes": 17374,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T18:17:48.377856+00:00",
+  "durationSeconds": 2.474,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 302441,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/fixture-options.stdout.bin",
+      "bytes": 3399,
+      "sha256": "4c4fda68b394149f252e2515c983e16a8712c70495327a54edaa87e15b154955"
+    },
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/fixture-options.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Authorized root pipeline fixture options only: original skill ID, supplied binding/scopes, and synchronous external synthetic clock, keeping product source unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
