@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/session/http-independent.test.mjs",
+    "apps/control/action-host/session/session.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-session-review-20261013",
+  "sourceHead": "1fa33c92a6947360e68664efb7197e44a3512074",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:32:53.656902+00:00",
+  "durationSeconds": 3.087,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 477717,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stdout.bin",
+      "bytes": 2345,
+      "sha256": "fc74f79fffa1956758641b48f055657e0975141414cf06555a9074c28adccfdd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

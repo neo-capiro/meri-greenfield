@@ -1,0 +1,84 @@
+{
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/.gitattributes",
+      "bytes": 40,
+      "sha256": "21ca23d16a68817f0584d0afe6a9fc1681f19dd74c6d6f6cbfa977ebc6e3ef1d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/audit.json",
+      "bytes": 17136,
+      "sha256": "5dc9fdb25a9a2d38740776cc847a5e495a161b418a5ccbc85f7d73a2011e7f70"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/audit.py",
+      "bytes": 3792,
+      "sha256": "67ff48395bee77387f0f2b4fa256c28afecd8de232590c1b265a6ac06b359301"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/cleanup.json",
+      "bytes": 444,
+      "sha256": "a1d941fb3bc62e464955baa8bac4d133abf1397877c6bbd97b354aa1b93dd99c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/integrated-check.json",
+      "bytes": 2031,
+      "sha256": "e0ea7f40f1d641de731a6e6d9071204a0c4d3eb56b36e12b4d304aef4c1771e3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 14774,
+      "sha256": "3a9e7cbc435c7a3fe5e1ddb05e0650a38e34110d40fb7e8f1a6166a4c9997fbb"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-cli.json",
+      "bytes": 1267,
+      "sha256": "4beb7aa22300d8448c4cb4822704c18f8272bbe315c06f5cf6ab9b51a3cd7359"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-cli.stdout.bin",
+      "bytes": 13472,
+      "sha256": "d800774111b6b73461014bf294baf07647e602c4cdb0d712b80d8c610c84ea28"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-tests.json",
+      "bytes": 1437,
+      "sha256": "6a4f6bc547a3e7341cbf04d4d0fa2cc56faca93eaa75df4e3ab7716e8edec416"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-tests.stdout.bin",
+      "bytes": 2468,
+      "sha256": "f6ab7ac720c0de570af1cecf7b68110a5897079c76917a43291a0488ae70869e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/session-only-audit.json",
+      "bytes": 8087,
+      "sha256": "36214c2bf5221f9192e543fd2050972a9478d8a1f792c4d183220fca3353607e"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-SESSION-20261013.md",
+      "bytes": 7716,
+      "sha256": "2a2907fad8da9c1d88fda6f6e99c518551bfbb32b5cd24f85061f693616fc9c9"
+    }
+  ]
+}

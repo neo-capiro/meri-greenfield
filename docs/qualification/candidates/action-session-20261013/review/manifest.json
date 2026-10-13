@@ -1,0 +1,128 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "source": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+  "authorPacket": "b0e70fd0a7e082885be917ff8d9092c12b5d070e",
+  "scope": "SOURCE_ONLY_SYNTHETIC_HTTP_SCRIPTED_SQL",
+  "members": [
+    {
+      "path": "apps/control/action-host/session/owner-independent.test.mjs",
+      "bytes": 7303,
+      "sha256": "df9b6e1ac7182207f012648be54071d03a575de92f4600d67ce3db681c129ead"
+    },
+    {
+      "path": "apps/control/action-host/session/http-independent.test.mjs",
+      "bytes": 8916,
+      "sha256": "ea7ff882733638232753f880355268b222a6e692e6f81c008e334b2e9a0883b7"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-SESSION-REVIEW-20261013.md",
+      "bytes": 2317,
+      "sha256": "b2591db49cca244f09a25ed2c9a2dc8590ed89d597b8b4407aae2f08570db592"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-SESSION-REVIEW-20261013.md",
+      "bytes": 3931,
+      "sha256": "479c3f0f67dce813fc741b574bb01b314fff2429ad1009e4c0a16aaf55f55b02"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/audit.json",
+      "bytes": 2241,
+      "sha256": "ee5fd3f295390868c81672102d716b2654db9921b9b45c788eff53a93fe69b21"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/audit.py",
+      "bytes": 2691,
+      "sha256": "7663012e4b69a1c36f0d8b0bb213304b22c2bab1d8b71d324ac26d298f79ae1c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/dependency-cleanup.json",
+      "bytes": 454,
+      "sha256": "c5fff3aa687a2d1ae32073280ffa554f407e318e03fdc7417467aeea37fc6925"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-http-reuse.json",
+      "bytes": 1326,
+      "sha256": "8bdc557a40e7733c13579c196866b34d4be541ea5afd449b3ce90df2b35ead76"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stdout.bin",
+      "bytes": 2345,
+      "sha256": "fc74f79fffa1956758641b48f055657e0975141414cf06555a9074c28adccfdd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-source.json",
+      "bytes": 1450,
+      "sha256": "2f958718346b9e3c5e8a56ceec1675089f4a1583cfd29a1037cf5ab1d87a7ad2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/final-source.stdout.bin",
+      "bytes": 4303,
+      "sha256": "db0e875aa748a9d6a1fbd91e47f4ac9611495f28a49d226fa6e90180d5ab6136"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/http-before.json",
+      "bytes": 1259,
+      "sha256": "52320de6944f6ed1cde6e52c77f76c0ea686eb291b85e0ed1bc0e97f5dc738dd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/http-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/http-before.stdout.bin",
+      "bytes": 4447,
+      "sha256": "8c1239d13d0b30c790ab577f85cf9272a726ff256af1f1a54615e0a1d98456cd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/owner-before.json",
+      "bytes": 1262,
+      "sha256": "77b47159a026f1de0efb37e935ca54d4eb4814383831bec768e76f5fa8143ef7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/owner-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/owner-before.stdout.bin",
+      "bytes": 3823,
+      "sha256": "6759c54fe02596e2750d6dca7e8b776606bbba71e493cd42c4ceb56d7fb08092"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/root-http-before.json",
+      "bytes": 1329,
+      "sha256": "ea0c13efe4a81c4df61bd9e62de8f92e60b1add87c41a39b58aa007eb9079d3a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/root-http-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/review/root-http-before.stdout.bin",
+      "bytes": 1723,
+      "sha256": "585d2836f19c33f6cea9b11e2e0b49d038f754e981705c181555a030828d4a60"
+    }
+  ]
+}

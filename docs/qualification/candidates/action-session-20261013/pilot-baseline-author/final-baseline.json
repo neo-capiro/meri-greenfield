@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "evals/action-followthrough/local-baseline/cli.mjs",
+    "--run"
+  ],
+  "cwd": "/tmp/meri-pilot-baseline-author-20261013",
+  "sourceHead": "07d9de9bdbf76bb11edb59ff7da0022d7648d3a5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:38:04.876857+00:00",
+  "durationSeconds": 2.975,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 479556,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stdout.bin",
+      "bytes": 13472,
+      "sha256": "98b2248bce9e9941391b2c89ee64394802a7d352a79eec12c532a2104148ea92"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

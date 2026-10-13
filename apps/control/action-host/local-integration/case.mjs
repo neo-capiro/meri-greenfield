@@ -1,4 +1,5 @@
 /** Admitted-pool composition. No connection/migration/source calls at construction. */
+import {types} from 'node:util';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {taskUpdateValidators} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {createCommandIntentValidator} from '../../../../packages/contracts/commands-0.2/execution-intent.mjs';
@@ -12,8 +13,12 @@ import {createDurableActionServices} from '../durable/index.mjs';
 import {createActionHostApplication} from '../index.mjs';
 import {createState} from './state.mjs';
 import {createPorts} from './ports.mjs';
+import {createActionSessionApplication,actionSessionPath} from '../session/http.mjs';
 export function createLocalApplicationCase(options){
- const s=createState(options),p=createPorts(s),{now,newId,binding,state,active}=s;
+ const {sessionFactory,...base}=own(options,['mode','deadlineMs'],['now','newId','sessionFactory']);if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw Error('LOCAL_CASE_CONFIGURATION');
+ const s=createState(base),p=createPorts(s),{now,newId,binding,state,active}=s;
+ const sessions=sessionFactory?sessionFactory({...p.session,now,deadlineMs:s.deadlineMs}):null;
+ const issuance=sessions?createActionSessionApplication({owner:sessions,now}):null;
  const limits={maxRequestMs:3000,maxFactBytes:131072,maxResponseBytes:131072,maxCleanupMs:100};
  const ownedRows=data({runId:binding.runId,tenantId:binding.tenantId,readGrantId:s.readFacts.grantId,commandGrantId:s.commandFacts.grantId,allocationSha256:canonicalSha256(s.allocation)});
  const context=data({binding,clientResolution:{reference:s.clientId,clientId:s.clientId}});
@@ -35,9 +40,9 @@ export function createLocalApplicationCase(options){
  }
  return Object.freeze({mode:s.mode,ownedRows,
   setup,
-  openHost(value){const {pool,closeGraph}=own(value,['pool'],['closeGraph']);active();if(state.setup!=='READY'||closeGraph!==undefined&&typeof closeGraph!=='function')throw Error('LOCAL_CASE_NOT_READY');const {services}=graph(pool);const app=createActionHostApplication({services,...p.host,now,limits:{maxRequestMs:3000,maxRequestBytes:65536,maxResponseBytes:131072}});state.hostsOpened++;return {app,credential:s.credential,...(closeGraph?{closeGraph}:{})};},
+  openHost(value){const {pool,closeGraph}=own(value,['pool'],['closeGraph']);active();if(state.setup!=='READY'||closeGraph!==undefined&&typeof closeGraph!=='function')throw Error('LOCAL_CASE_NOT_READY');const {services}=graph(pool);const app=createActionHostApplication({services,...p.host,...(sessions?{authenticateSession:sessions.authenticateSession,readCurrentState:sessions.readCurrentState}:{}),now,limits:{maxRequestMs:3000,maxRequestBytes:65536,maxResponseBytes:131072}});state.hostsOpened++;const mounted=issuance?Object.freeze({handle(request){let path;try{if(types.isProxy(request)||!(request instanceof Request))return issuance.handle(request);path=new URL(Object.getOwnPropertyDescriptor(Request.prototype,'url').get.call(request)).pathname;}catch{return issuance.handle(request);}return path===actionSessionPath?issuance.handle(request):app.handle(request);}}):app;return {app:mounted,...(sessions?{identityCredential:s.credential}:{credential:s.credential}),...(closeGraph?{closeGraph}:{})};},
   approve:p.approve,revoke(){state.revoked=true;s.identity.revoke(s.read.credential);},
   stats:()=>data({sourceReads:state.sourceReads,taskEffects:state.taskEffects,hostsOpened:state.hostsOpened,closed:state.closed,revoked:state.revoked,setup:state.setup}),
-  close(){state.closed=true;s.identity.close();},
+  close(){state.closed=true;s.identity.close();sessions?.close();},
  });
 }

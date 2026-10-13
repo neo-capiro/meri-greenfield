@@ -1,0 +1,19 @@
+✔ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (372.323081ms)
+✔ lost setup acknowledgement is terminal and exposes only owned identifiers (4.026351ms)
+✔ committed seed with lost acknowledgement remains terminal and never reseeds (5.919056ms)
+✔ actual three host recovery keeps same proposal and accounting across reconstruction (407.791815ms)
+✔ help and invalid arguments are inert and closed (0.709917ms)
+✔ empty hints resolve current context; native token is not an action session; revisions and revocation fail closed (6.461111ms)
+✔ explicit substituted hints and hostile getters do not issue sessions (0.910519ms)
+✔ bounded registry expires records and close invalidates all credentials (1.596189ms)
+✔ Fetch issuance is closed, bounded and content-free on refusal (8.417692ms)
+✔ actual HTTP session issuance composes shared-pool host query draft prepare and approved execute (303.679493ms)
+✔ revocation while native verification is parked refuses receipt and skips the later context port (0.921345ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3383.030732

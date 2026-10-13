@@ -1,0 +1,18 @@
+{
+  "ownedWorktree": "/tmp/meri-action-session-review-20261013",
+  "copiedPackages": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "replayStages": 2,
+  "reasonForSecondCopy": "Parent-requested final canonical HTTP helper reuse; affected checks only",
+  "removed": true,
+  "nodeModulesAbsent": true,
+  "donorUntouched": true,
+  "installed": false
+}

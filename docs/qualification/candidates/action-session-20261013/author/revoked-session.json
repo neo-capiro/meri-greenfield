@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/session/session.test.mjs",
+    "apps/control/action-host/local-integration/local.test.mjs",
+    "apps/control/action-host/local/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-session-author-20261013",
+  "sourceHead": "0c9a1d06da38d2118d811adc14116c63ffb69e8d",
+  "sourceDiffSha256": "fc5607996eea6b20f19de0cbc1b2b17eba96fb28bd22056dc0ba767c94cce75e",
+  "sourceDiffBytes": 9024,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:24:30.234339+00:00",
+  "durationSeconds": 3.435,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 475267,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/revoked-session.stdout.bin",
+      "bytes": 1219,
+      "sha256": "b0ddb425c5869dc4657be7cd492a93d0fd7977358edc32cbbed32b14a206e736"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/author/revoked-session.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

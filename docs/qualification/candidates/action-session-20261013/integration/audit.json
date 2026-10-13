@@ -1,0 +1,510 @@
+{
+  "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+  "reviewedSource": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+  "reviewedPilotSource": "d16896b348daa765f3cb069732c9a70e5ffe13b0",
+  "originalEntries": 10967,
+  "originalEntriesUnchanged": 10965,
+  "approvedChanges": [
+    "apps/control/action-host/local-integration/case.mjs",
+    "apps/control/action-host/local-integration/ports.mjs"
+  ],
+  "laneManifestMembers": {
+    "author": 23,
+    "pilot-baseline-author": 22,
+    "pilot-baseline-review": 24,
+    "review": 24
+  },
+  "receipts": [
+    {
+      "label": "integrated-check",
+      "testedHead": "e410ae3078c6d9de535bed6dfd4254ec5d918f92",
+      "ownedProcessGroupAbsent": 479162
+    },
+    {
+      "label": "pilot-baseline-tests",
+      "testedHead": "3072a01c97bda7b0bdd40381bfd948600af49b24",
+      "ownedProcessGroupAbsent": 480115
+    },
+    {
+      "label": "pilot-baseline-cli",
+      "testedHead": "3072a01c97bda7b0bdd40381bfd948600af49b24",
+      "ownedProcessGroupAbsent": 480135
+    }
+  ],
+  "passed": 118,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "only two allocated existing case files changed",
+      "pass": true
+    },
+    {
+      "name": "all original tests public contracts and evidence retained",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/local-integration/case.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/local-integration/ports.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/session/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/session/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/session/session.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed pilot source evals/action-followthrough/local-baseline/baseline.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed pilot source evals/action-followthrough/local-baseline/cli.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed pilot source evals/action-followthrough/local-baseline/run.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local-integration/case.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local-integration/ports.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/session.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-SESSION-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-SESSION-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/canonical-http.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/canonical-http.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/canonical-http.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/first-session.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/first-session.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/first-session.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/http-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/http-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/http-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/revoked-session.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/revoked-session.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/revoked-session.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-PILOT-BASELINE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-PILOT-BASELINE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained evals/action-followthrough/local-baseline/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained evals/action-followthrough/local-baseline/baseline.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained evals/action-followthrough/local-baseline/cli.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained evals/action-followthrough/local-baseline/run.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-PILOT-BASELINE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-PILOT-BASELINE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/capture-provenance.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/decision.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/dependency-provenance.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/final-source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/initial-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/packet-audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/whitespace-full.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/pilot-baseline-review/whitespace-full.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained evals/action-followthrough/local-baseline/baseline-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/owner-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/http-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-SESSION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-SESSION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-http-reuse.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/http-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/http-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/http-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/owner-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/owner-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/owner-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/root-http-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/root-http-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/root-http-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "bounded clean passing capture integrated-check",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/integrated-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/integrated-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent integrated-check",
+      "pass": true
+    },
+    {
+      "name": "bounded clean passing capture pilot-baseline-tests",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-tests.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-tests.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent pilot-baseline-tests",
+      "pass": true
+    },
+    {
+      "name": "bounded clean passing capture pilot-baseline-cli",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-cli.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/pilot-baseline-cli.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent pilot-baseline-cli",
+      "pass": true
+    },
+    {
+      "name": "all six baseline rows accounted and passed",
+      "pass": true
+    },
+    {
+      "name": "no real or model/provider/native claims",
+      "pass": true
+    },
+    {
+      "name": "all six prohibit approvals/effects and close",
+      "pass": true
+    }
+  ]
+}

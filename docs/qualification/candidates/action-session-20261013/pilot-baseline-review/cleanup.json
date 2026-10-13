@@ -1,0 +1,67 @@
+{
+  "removed": [
+    {
+      "path": "node_modules/ajv",
+      "bytes": 1033496,
+      "absent": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "bytes": 56763,
+      "absent": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "bytes": 12966,
+      "absent": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "bytes": 220886,
+      "absent": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "bytes": 22220,
+      "absent": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "bytes": 3422,
+      "absent": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "bytes": 24474,
+      "absent": true
+    }
+  ],
+  "removedBytes": 1374227,
+  "donorsUntouched": true,
+  "groups": [
+    {
+      "capture": "initial-independent",
+      "pgid": 478387,
+      "absent": true
+    },
+    {
+      "capture": "extended-initial",
+      "pgid": 478758,
+      "absent": true
+    },
+    {
+      "capture": "repaired-independent",
+      "pgid": 479444,
+      "absent": true
+    }
+  ],
+  "providerCalls": 0,
+  "nativeDatabaseCalls": 0,
+  "whitespace": {
+    "fullExit": 2,
+    "fullStdoutBytes": 272,
+    "fullStderrBytes": 0,
+    "authoredOnlyExit": 0
+  },
+  "note": "Raw assertion-failure formatting retained byte-for-byte; source/tests/report not normalized."
+}

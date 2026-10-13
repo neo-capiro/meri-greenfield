@@ -1,0 +1,16 @@
+✔ six real local compositions have bounded correlated receipts, no approvals/effects and post-close denial (424.128111ms)
+✔ one failed construction remains denominator-visible, next cases run, error content is scrubbed (255.790782ms)
+✔ malformed public response is refused, cleanup still executes and later cases are retained (253.176782ms)
+✔ cleanup failure cannot count as PASS and cannot leak thrown content (277.06541ms)
+✔ wrong mode refuses before any demo allocation (0.670418ms)
+✔ CLI import/help/invalid are inert and do not set source-root environment (24.839728ms)
+✔ diagnostic stats failure still attempts acquired session close (195.500043ms)
+✔ parked post-close handler is bounded and cannot suppress following cases (1216.542085ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5242.17289

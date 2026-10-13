@@ -1,0 +1,237 @@
+{
+  "candidate": "b2fb1f9e882a631be0ad9e0f5ffda35336da3422",
+  "acceptedSource": "d16896b348daa765f3cb069732c9a70e5ffe13b0",
+  "passed": 57,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "manifest-source",
+      "passed": true
+    },
+    {
+      "name": "manifest22",
+      "passed": true
+    },
+    {
+      "name": "member:docs/coordination/reports/CODEX-ACTION-PILOT-BASELINE-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "member:docs/coordination/tasks/CODEX-ACTION-PILOT-BASELINE-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/audit.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member:evals/action-followthrough/local-baseline/README.md",
+      "passed": true
+    },
+    {
+      "name": "member:evals/action-followthrough/local-baseline/baseline.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member:evals/action-followthrough/local-baseline/cli.mjs",
+      "passed": true
+    },
+    {
+      "name": "member:evals/action-followthrough/local-baseline/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed-source-exact:run.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed-source-exact:cli.mjs",
+      "passed": true
+    },
+    {
+      "name": "reviewed-source-exact:baseline.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "capture-clean:initial",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "group-still-absent:initial",
+      "passed": true
+    },
+    {
+      "name": "capture-clean:focused",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "group-still-absent:focused",
+      "passed": true
+    },
+    {
+      "name": "capture-clean:cleanup-repair",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/cleanup-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "group-still-absent:cleanup-repair",
+      "passed": true
+    },
+    {
+      "name": "capture-clean:final-baseline",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "stream:docs/qualification/candidates/action-session-20261013/pilot-baseline-author/final-baseline.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "group-still-absent:final-baseline",
+      "passed": true
+    },
+    {
+      "name": "actual6of6",
+      "passed": true
+    },
+    {
+      "name": "no-human-model-provider-native",
+      "passed": true
+    },
+    {
+      "name": "gold-receipt-bound",
+      "passed": true
+    },
+    {
+      "name": "clean-zero-effects:P01",
+      "passed": true
+    },
+    {
+      "name": "clean-zero-effects:P02",
+      "passed": true
+    },
+    {
+      "name": "clean-zero-effects:P03",
+      "passed": true
+    },
+    {
+      "name": "clean-zero-effects:P04",
+      "passed": true
+    },
+    {
+      "name": "clean-zero-effects:P05",
+      "passed": true
+    },
+    {
+      "name": "clean-zero-effects:P06",
+      "passed": true
+    },
+    {
+      "name": "p05-exact-refusal",
+      "passed": true
+    },
+    {
+      "name": "p06-exact-revocation",
+      "passed": true
+    },
+    {
+      "name": "author-audit37",
+      "passed": true
+    },
+    {
+      "name": "failure-history-truthful",
+      "passed": true
+    },
+    {
+      "name": "same-capture-source",
+      "passed": true
+    }
+  ],
+  "targetExecution": false
+}

@@ -1,0 +1,46 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-action-session-20261013",
+    "node",
+    "--test",
+    "apps/control/action-host/session/http-independent.test.mjs",
+    "apps/control/action-host/session/owner-independent.test.mjs",
+    "apps/control/action-host/session/session.test.mjs",
+    "apps/control/action-host/binding.test.mjs",
+    "apps/control/action-host/binding-independent.test.mjs",
+    "apps/control/action-host/local-integration/allocation-independent.test.mjs",
+    "apps/control/action-host/local-integration/application-independent.test.mjs",
+    "apps/control/action-host/local-integration/local.test.mjs",
+    "apps/control/action-host/local-integration/recovery-independent.test.mjs",
+    "packages/contracts/test/action-application-public.test.mjs",
+    "packages/contracts/test/action-application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-session-20261013",
+  "sourceHead": "e410ae3078c6d9de535bed6dfd4254ec5d918f92",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:37:03.630877+00:00",
+  "durationSeconds": 11.921,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 479162,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 14774,
+      "sha256": "3a9e7cbc435c7a3fe5e1ddb05e0650a38e34110d40fb7e8f1a6166a4c9997fbb"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

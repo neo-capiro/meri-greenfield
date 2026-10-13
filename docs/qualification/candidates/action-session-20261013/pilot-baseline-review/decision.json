@@ -1,0 +1,48 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "d16896b348daa765f3cb069732c9a70e5ffe13b0",
+  "initialSource": "1f6beb497589efdd6cf43d524f2037bc2430bb7b",
+  "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+  "independent": {
+    "initial": {
+      "passed": 13,
+      "failed": 2
+    },
+    "additional": {
+      "passed": 1,
+      "failed": 1
+    },
+    "final": {
+      "passed": 17,
+      "failed": 0
+    }
+  },
+  "sourceAudit": {
+    "passed": 16,
+    "failed": 0,
+    "originalsPreserved": 10967
+  },
+  "packetAudit": {
+    "candidate": "b2fb1f9e882a631be0ad9e0f5ffda35336da3422",
+    "passed": 57,
+    "failed": 0,
+    "manifestMembers": 22,
+    "manifestSha256": "704cd93a213e7137965aa53959f82558ba951f074a2b58979b78d3097c65ad85"
+  },
+  "scope": "unpaid deterministic six-case route/gold baseline only",
+  "paidPilotAccepted": false,
+  "languageRoutingVerified": false,
+  "nativeDatabaseVerified": false,
+  "qualifiedHumanRequests": 0,
+  "finalSourceAudit": {
+    "passed": 16,
+    "failed": 0
+  },
+  "cleanup": {
+    "ownedDependencyCopiesRemoved": 7,
+    "bytes": 1374227,
+    "reviewGroupsAbsent": 3,
+    "authorGroupsAbsent": 4,
+    "donorsUntouched": true
+  }
+}

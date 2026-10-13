@@ -1,0 +1,29 @@
+{
+  "groups": [
+    {
+      "label": "first-session",
+      "pgid": 474979,
+      "absent": true
+    },
+    {
+      "label": "revoked-session",
+      "pgid": 475267,
+      "absent": true
+    },
+    {
+      "label": "http-repaired",
+      "pgid": 476357,
+      "absent": true
+    },
+    {
+      "label": "canonical-http",
+      "pgid": 477206,
+      "absent": true
+    }
+  ],
+  "ownedDependencySymlinksRemoved": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "borrowedDonorUnchanged": true
+}
