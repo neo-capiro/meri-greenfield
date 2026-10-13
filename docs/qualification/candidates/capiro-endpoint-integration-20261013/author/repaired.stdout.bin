@@ -1,0 +1,31 @@
+✔ exact published commit/tree/eight source hashes and compiler are admitted (353.402512ms)
+✔ actual middleware and separate provider issue canonical closed identity/context receipts (501.061572ms)
+✔ activity and lastSeen writes do not fabricate identity revision or renewed expiry (260.39ms)
+✔ actual endpoint refuses foreign tenant wall grant (274.30114ms)
+✔ actual endpoint refuses no wall grant (252.584038ms)
+✔ actual endpoint refuses other actor wall grant (262.53904ms)
+✔ actual endpoint refuses archived client (238.198995ms)
+✔ actual endpoint refuses foreign conversation (226.622294ms)
+✔ actual endpoint refuses null bound client (223.445511ms)
+✔ actual endpoint refuses closed conversation (219.598146ms)
+✔ actual endpoint refuses archived conversation (238.107482ms)
+✔ actual endpoint refuses online revoked session (227.892038ms)
+✔ actual endpoint refuses online session substitution (246.132651ms)
+✔ actual endpoint refuses membership revision change (224.975208ms)
+✔ actual endpoint refuses principal membership change (215.140522ms)
+✔ actual endpoint refuses lower role (209.404651ms)
+✔ a foreign wall grant cannot authorize even with correct selected input and identity hash (215.994189ms)
+✔ wall revocation during online recheck is observed by second context pass (218.784654ms)
+✔ local membership change during final context reads fails final identity recheck (213.528543ms)
+✔ Capiro hash echo does not authorize a foreign Meri current run (214.862554ms)
+✔ closed request contract rejects additional authority fields (227.104794ms)
+✔ original native token expiry refuses without adapter refresh (211.208587ms)
+✔ actual pinned endpoint -> opaque Meri session -> query/draft/pending/approved once/replay/revocation (548.392945ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8701.228265
