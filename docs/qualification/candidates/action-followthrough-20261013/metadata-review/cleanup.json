@@ -1,0 +1,59 @@
+{
+  "removedOwnedDependencies": [
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/ajv",
+      "bytes": 1033496
+    },
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/ajv-formats",
+      "bytes": 56763
+    },
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/canonicalize",
+      "bytes": 24474
+    },
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/fast-deep-equal",
+      "bytes": 12966
+    },
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/fast-uri",
+      "bytes": 220886
+    },
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/json-schema-traverse",
+      "bytes": 22220
+    },
+    {
+      "path": "/tmp/meri-approval-metadata-review-20261013/node_modules/require-from-string",
+      "bytes": 3422
+    }
+  ],
+  "bytesRemoved": 1374227,
+  "donorModified": false,
+  "sourceRemoved": false,
+  "groups": [
+    {
+      "group": 439303,
+      "absent": true,
+      "receipt": "repaired-composed.json"
+    },
+    {
+      "group": 438791,
+      "absent": true,
+      "receipt": "timeout-error-baseline.json"
+    },
+    {
+      "group": 438232,
+      "absent": true,
+      "receipt": "signal-corrected.json"
+    },
+    {
+      "group": 437662,
+      "absent": true,
+      "receipt": "initial-independent.json"
+    }
+  ],
+  "nativeActions": false,
+  "sourceWorktreeAndBranchPreserved": true
+}

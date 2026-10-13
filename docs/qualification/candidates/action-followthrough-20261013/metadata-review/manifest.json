@@ -1,0 +1,208 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+  "authorPacket": "6800a9d9fe62e3536764ccf9e2f49cf6cecf686c",
+  "base": "158fa00828cd46864c20f481a998c9d3e9cc236a",
+  "acceptanceCommit": "7a20c2dbd2cfac60f70fdf940d8df23211d1f664",
+  "sources": [
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "bytes": 4611,
+      "sha256": "6eedd92962688ab4d2fe4ff2303966f0626bf4453f298daaf59d3a0830eef9ce"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "bytes": 223,
+      "sha256": "0731f3aceedd6c1d33aae783c8fe081ca2ab6c718f6dd0248fb6ceb95338a835"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "bytes": 685,
+      "sha256": "3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "bytes": 5171,
+      "sha256": "e78ff4055432263c25679da68af7291d936f0ce6e139720ee51467b5a184d39e"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-store.mjs",
+      "bytes": 3730,
+      "sha256": "5a61bd703bb883ae39aacf82f0351ee5d3fafe1aa0812c2e683136a3c5896f71"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/fixture.mjs",
+      "bytes": 3766,
+      "sha256": "0322dcab58da95b3be82101048a34df247cc6c0c76083545d0684a0508c4c58f"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "bytes": 8114,
+      "sha256": "5653b975a73dc55b8d5c821ef76ad7489679e501a44dddc599763a4c2838d06b"
+    }
+  ],
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/audit.json",
+      "bytes": 15513,
+      "sha256": "c9280e0d51d9ebc8e40cf9249cf2110900af62a10a91265076d228583b2a2ae5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/audit.py",
+      "bytes": 6598,
+      "sha256": "c3f013c1ae8a0c9b5fbb24a96d108b2a6bc528c957c01b677d1f03ef93081e97"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/canonical-owners.json",
+      "bytes": 3243,
+      "sha256": "02b7ae893b0beff520c8fbfda47408a2296894023c19ca3238d16655bb84f332"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/cleanup.json",
+      "bytes": 1465,
+      "sha256": "1543147c8278ab938bd81f0434d54da4c6535b1b30220d41e0085775c2d70c74"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.json",
+      "bytes": 1394,
+      "sha256": "abafeed806e80bd209d1e8308a15e97baf1c73f9f1fe870c29f5db1dbd5b9e18"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stdout.bin",
+      "bytes": 20742,
+      "sha256": "0237e685b0dffb793c8b63e0cda14b49368b6826d9e3b95f729fb22de5e1120d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/owner-before-signal-fixture.mjs.txt",
+      "bytes": 11128,
+      "sha256": "6914eaef007a945aa423990f241b650a1662661d9521e663abc257d89bcfc541"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/postgres-before-timeout-correction.mjs.txt",
+      "bytes": 5422,
+      "sha256": "96e565de5d410c26e4102658f1740f8c02cdb6bfcfbaf8102f2f051fc19f3415"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.json",
+      "bytes": 1459,
+      "sha256": "7bcb2baa8033ad50cf5b26dc439c03771b74ebe4fef9a8dbf6e08ac365fd68cf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stdout.bin",
+      "bytes": 6780,
+      "sha256": "ae699ed076e5c771e39293f513d85b4418539584201ab721ce0503cc61534a32"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/setup.json",
+      "bytes": 1765,
+      "sha256": "f40ccb9b51e5aaf2c80ea26b8d285bd34135f4b521f4ccaec76d65e595bcb326"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.json",
+      "bytes": 1387,
+      "sha256": "e3bf51c5651b645dcaeabad4f7c86f250df06f2ee5481462f68dc5da7ddc26f3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.stdout.bin",
+      "bytes": 4212,
+      "sha256": "6a23a65b449792a453f52285c258d601fb103a65ff9ba9ed3afa6466b720fdb4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-fixture-correction.json",
+      "bytes": 641,
+      "sha256": "a5fec45fd25c9f1b2153163a5bee2776757edc64411109ff4199f75be93f65f2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/source-preservation.json",
+      "bytes": 1642,
+      "sha256": "f32aa30f80ca9c2d46ab2477243f4ec48ea63b6c3b5ebf9f86ba5553477d3861"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.json",
+      "bytes": 1399,
+      "sha256": "2b99a0c2936725e34be5c232803e94980992d1c69c61cc09a77378ac02aecb35"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.stdout.bin",
+      "bytes": 7863,
+      "sha256": "7c2c83efd7eb84fdf6606203c684e681e52385100f12261b429ef17d01fe5479"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-expectation-correction.json",
+      "bytes": 606,
+      "sha256": "8d4d75e1f418e9633c2a7cc7a3eeaee967deff342c6ea34d8923a02250ce0f28"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/verify-packet.py",
+      "bytes": 1112,
+      "sha256": "7f0affd53723ae03a72e44e028de67b005c049590ad8bc7608d8e5f76beffd91"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/whitespace-all-review.bin",
+      "bytes": 1924,
+      "sha256": "bf5c5ccdea9cf0f6f58c321100239cb001662a7f24aa6ca5c63a1b71845f364a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/whitespace-authored.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/whitespace.json",
+      "bytes": 1303,
+      "sha256": "0d47f464b0c06c936f926cbac96821a6e418b5a2e36b8fe4dac54d7a64231b9a"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+      "bytes": 5074,
+      "sha256": "87fa6a8981e79bc6f6556e8e8c25d991ad1353e48b902e67845064d30b29f55d"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+      "bytes": 7209,
+      "sha256": "8f38e4742af7630aab767e6a0de90f3f96601d937f4745bca6b72a25ab04d5e7"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner-independent.test.mjs",
+      "bytes": 13033,
+      "sha256": "fe3f5bf899f0f47ed02438fc1030b3c3b56dc603b2ffb315e5fb2c8387ddee29"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-independent.test.mjs",
+      "bytes": 6678,
+      "sha256": "bfe03f271d7c53f513ab81ce407004686eec79d2369a32ac296fe753f40e5f52"
+    }
+  ],
+  "selfExcluded": [
+    "manifest.json",
+    "packet-verification.json"
+  ],
+  "nativePostgreSQL": "UNRUN",
+  "policyProducerQualified": false,
+  "runtimeAccepted": false
+}
