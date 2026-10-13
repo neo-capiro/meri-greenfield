@@ -11,12 +11,14 @@ def run(argv,cwd):
  return p.stdout
 try:
  with tempfile.TemporaryDirectory(prefix='meri-document-public-consumer-') as name:
-  tmp=pathlib.Path(name);ENV['npm_config_cache']=str(tmp/'npm-cache');pack=json.loads(run(['npm','pack','--ignore-scripts','--json','--pack-destination',name],PKG))[0];tar=tmp/pack['filename'];out['tar']={'sha256':hashlib.sha256(tar.read_bytes()).hexdigest(),'bytes':tar.stat().st_size,'files':[x['path'] for x in pack['files']]}
+  tmp=pathlib.Path(name);ENV['npm_config_cache']=str(tmp/'npm-cache');ENV['npm_config_update_notifier']='false';pack=json.loads(run(['npm','pack','--ignore-scripts','--json','--pack-destination',name],PKG))[0];tar=tmp/pack['filename'];out['tar']={'sha256':hashlib.sha256(tar.read_bytes()).hexdigest(),'bytes':tar.stat().st_size,'files':[x['path'] for x in pack['files']]}
   if any(x.startswith(('apps/','retrieval-0.2/','commands-0.2/','artifacts-0.2/')) for x in out['tar']['files']):raise RuntimeError('private files packed')
   consumer=tmp/'consumer';consumer.mkdir();(consumer/'package.json').write_text('{"name":"document-contract-independent-consumer","version":"1.0.0","private":true,"type":"module"}\n');modules=consumer/'node_modules';modules.mkdir()
   # Existing exact runtime dependencies avoid any registry acquisition. npm validates installation offline.
-  for dep in ['ajv','ajv-formats','canonicalize','fast-uri','fast-deep-equal','json-schema-traverse','require-from-string']:shutil.copytree(PKG/'node_modules'/dep,modules/dep,symlinks=True)
-  run(['npm','install','--offline','--ignore-scripts','--no-package-lock','--no-audit','--no-fund',str(tar)],consumer)
+  dependencyTarballs=[]
+  for dep in ['ajv','ajv-formats','canonicalize','fast-uri','fast-deep-equal','json-schema-traverse','require-from-string']:
+   record=json.loads(run(['npm','pack','--offline','--ignore-scripts','--json','--pack-destination',name],PKG/'node_modules'/dep))[0];dependencyTarballs.append(str(tmp/record['filename']))
+  run(['npm','install','--offline','--ignore-scripts','--no-package-lock','--no-audit','--no-fund',str(tar),*dependencyTarballs],consumer)
   (consumer/'consumer.mjs').write_text("import assert from 'node:assert/strict';\nimport {receiveDocumentRequest,receiveDocumentResponse,receiveDocumentDownload,DocumentResponseError} from '@capiro/meri-contracts/document-application';\nimport {receiveActionResponse} from '@capiro/meri-contracts/action-application';\nimport * as old from '@capiro/meri-contracts';\nimport schema from '@capiro/meri-contracts/document-application/schema' with {type:'json'};\nassert.equal(typeof receiveActionResponse,'function');assert.equal(typeof receiveDocumentDownload,'function');assert.equal(typeof receiveDocumentResponse,'function');assert.equal(typeof DocumentResponseError,'function');assert.ok(Object.keys(old).length);assert.ok(schema.$id);const value=receiveDocumentRequest('inspect',new TextEncoder().encode(JSON.stringify({versionId:'00000000-0000-4000-8000-000000000001'})));assert.equal(value.versionId,'00000000-0000-4000-8000-000000000001');await assert.rejects(()=>import('@capiro/meri-contracts/artifacts-0.2/artifact-validation.mjs'),{code:'ERR_PACKAGE_PATH_NOT_EXPORTED'});console.log('isolated public exports and private-subpath denial PASS');\n")
   run(['node','consumer.mjs'],consumer)
   shutil.copyfile(PKG/'test/document-application-independent-types.ts',consumer/'consumer.ts')
