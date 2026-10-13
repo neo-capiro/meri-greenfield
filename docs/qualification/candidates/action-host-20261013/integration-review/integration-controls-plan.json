@@ -1,0 +1,11 @@
+{
+  "preFixtureCandidate": true,
+  "checks": [
+    "Direct actual HTTP host1 query/draft/prepare and unapproved refusal; host2 same retained selection/client/hash re-read and original proposal approved exactlyonce; host3 same proposal replay equal outcome/no second effect, then fresh revocation refusal.",
+    "New app/service compositions share only retained fixture state; mutation of selection hash/proposal arguments cannot produce a different accepted effect or skip refusal.",
+    "Fresh unauthorized/oversized request and no-approval-route keep effects zero; selected IDs/proposals never changed to bypass refusal.",
+    "Invoke actual recovery runner and inspect three listener closure receipts and real connection refusal, including failure paths.",
+    "CLI help/invalid/import allocate no listener, explicit run is bounded and secret-free, one task effect with reconstruction/native false flags.",
+    "Exact accepted binding/durable dependencies and canonical baseline files preserved; source-only simulated SQL/native durability HOLD."
+  ]
+}
