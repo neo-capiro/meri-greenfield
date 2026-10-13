@@ -59,19 +59,25 @@ test('sequence bigint settings are transported losslessly as text, never JS numb
  const preservedMetadata=metadata();preservedMetadata.sequences=[{seqstart:'9007199254740992',seqincrement:'1',seqmax:'9223372036854775807',seqmin:'1',seqcache:'1'}];
  const s=scripted({fixture:{schemaScope:scope},namespaces,preservedMetadata}),r=await prepareOwnedApplicationSchema(s.args());
  const sql=s.log.find(q=>q.text.startsWith('WITH ns AS')).text;
- for(const field of ['seqstart','seqincrement','seqmax','seqmin','seqcache'])assert.match(sql,new RegExp(`s\\.${field}::text`));
+ for(const field of ['seqstart','seqincrement','seqmax','seqmin','seqcache'])assert.match(sql,new RegExp(`s\\.${field}::pg_catalog\\.text`));
  preservedMetadata.sequences[0].seqstart='9007199254740993';await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
 });
 test('empty evidence schema identity includes namespace OID to detect replacement',async()=>{
  const allowed=[{name:'empty_evidence',owner:'qualification_owner'}],observed=[{...allowed[0],oid:'30100',acl:null}],s=scripted({fixture:{schemaScope:{mode:'preserve-declared-evidence',namespaces:allowed}},namespaces:observed});
  const r=await prepareOwnedApplicationSchema(s.args()),sql=s.log.find(q=>q.text.startsWith('SELECT nspname')).text;
- assert.match(sql,/\boid::text AS oid\b/);observed[0].oid='30101';
+ assert.match(sql,/\boid::pg_catalog\.text AS oid\b/);observed[0].oid='30101';
  await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
 });
 test('catalog identity literals cannot resolve through implicit temporary schemas',async()=>{
  const s=scripted({fixture:{schemaScope:scope},namespaces});await prepareOwnedApplicationSchema(s.args());
  const sql=s.log.find(q=>q.text.startsWith('WITH ns AS')).text;
- const literals=[...sql.matchAll(/'([^']+)'::regclass/g)].map(m=>m[1]);
+ const literals=[...sql.matchAll(/'([^']+)'::pg_catalog\.regclass/g)].map(m=>m[1]);
  assert(literals.length>=12);for(const name of literals)assert.match(name,/^pg_catalog\.pg_[a-z_]+$/);
  for(const name of ['pg_class','pg_type','pg_constraint','pg_attrdef','pg_rewrite','pg_trigger','pg_namespace'])assert(literals.includes(`pg_catalog.${name}`));
+});
+test('catalog snapshot builtin cast types cannot resolve through temporary schemas',async()=>{
+ const s=scripted({fixture:{schemaScope:scope},namespaces});await prepareOwnedApplicationSchema(s.args());
+ const queries=s.log.filter(q=>q.text.startsWith('WITH ns AS')||q.text.startsWith('SELECT nspname'));
+ const types=queries.flatMap(q=>[...q.text.matchAll(/::([a-z_][a-z0-9_.]*(?:\[\])?)/g)].map(m=>m[1]));
+ assert(types.length>20);for(const name of types)assert.match(name,/^pg_catalog\.(?:regclass|oid|text(?:\[\])?|int4|jsonb)$/);
 });

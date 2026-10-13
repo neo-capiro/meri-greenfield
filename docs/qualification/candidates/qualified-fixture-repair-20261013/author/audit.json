@@ -1,6 +1,6 @@
 {
   "base": "b5243ae164f68c7591b039e8365d9897390543d2",
-  "source": "f41ec1a78191bff882f1dbc7310e3d69a99bc111",
+  "source": "e14f3fc704adde3819088b0587f91c81be5e1ad0",
   "originalEntries": 11411,
   "unchangedOriginalEntries": 11400,
   "checks": [
@@ -78,6 +78,18 @@
     },
     {
       "name": "allocated-boundary stream stderr",
+      "passed": true
+    },
+    {
+      "name": "audit-scope-before bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "audit-scope-before stream stdout",
+      "passed": true
+    },
+    {
+      "name": "audit-scope-before stream stderr",
       "passed": true
     },
     {
@@ -201,6 +213,30 @@
       "passed": true
     },
     {
+      "name": "regclass-before bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "regclass-before stream stdout",
+      "passed": true
+    },
+    {
+      "name": "regclass-before stream stderr",
+      "passed": true
+    },
+    {
+      "name": "regclass-repaired bounded group cleanup",
+      "passed": true
+    },
+    {
+      "name": "regclass-repaired stream stdout",
+      "passed": true
+    },
+    {
+      "name": "regclass-repaired stream stderr",
+      "passed": true
+    },
+    {
       "name": "sequence-before bounded group cleanup",
       "passed": true
     },
@@ -253,11 +289,15 @@
       "passed": true
     },
     {
+      "name": "regclass namespace shadowing failure retained",
+      "passed": true
+    },
+    {
       "name": "environment setup failure retained",
       "passed": true
     }
   ],
-  "passed": 63,
+  "passed": 73,
   "failed": 0,
   "sourceFiles": [
     {
@@ -287,8 +327,8 @@
     },
     {
       "path": "apps/control/qualified-application/schema-compatibility.test.mjs",
-      "blob": "081ddb62ceee7a1711be45c17cf7ba4d108205a0",
-      "sha256": "1134d9f362bfac1b177031c66639c5303ccb251ea0ff15adc1eb5e8f445dd6ec"
+      "blob": "71931019eb060ef13dfd1b3c28972081e945f190",
+      "sha256": "49030860075645e85ee6fe5b5b0c18ee8f5b21270e9a52fdc5233f01eab412af"
     },
     {
       "path": "apps/control/qualified-application/schema-contract.mjs",
@@ -302,8 +342,8 @@
     },
     {
       "path": "apps/control/qualified-application/schema-preservation.mjs",
-      "blob": "4570c2d4a4d85d6306ce5004a2982b6b677c2f9b",
-      "sha256": "75c7e0c819e67cc19c0a06b6fe62efa64933e187a6c12a078a8f5a15c61fea20"
+      "blob": "48cecf65cb615659d739953a32a0927040a84f8e",
+      "sha256": "3a0c321f6464865c1e77ccab0b6d7732b095447c8beb5e03c29e948ab2a5f0f5"
     },
     {
       "path": "apps/control/qualified-application/schema.fixture.mjs",
@@ -335,6 +375,11 @@
     {
       "label": "allocated-boundary",
       "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "audit-scope-before",
+      "exitCode": 1,
       "ownedProcessGroupAbsent": true
     },
     {
@@ -385,6 +430,16 @@
     {
       "label": "original-lifecycle",
       "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "regclass-before",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "regclass-repaired",
+      "exitCode": 0,
       "ownedProcessGroupAbsent": true
     },
     {
