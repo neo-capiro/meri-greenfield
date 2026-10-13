@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "evidenceMethod": "Public web tool rendered both official pages; separate direct GETs were proxy-denied. No raw HTML body is retained or hashed as successful HTTP evidence.",
+  "webToolResponse": {
+    "retrievalDate": "2026-10-13",
+    "reportedCrawlAge": "yesterday",
+    "fullResponseRetained": false,
+    "rawHtmlSha256": null,
+    "identityScope": "Only the retained short observation artifact is hash-bound. No raw HTML or complete rendered-response content identity is asserted.",
+    "retainedObservationArtifact": {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/rendered-observations.json",
+      "bytes": 1354,
+      "sha256": "2d5ed8f6b067dcf47e131d5d67eefced4af6386e434a4c5b2bdd1466eae8747b"
+    }
+  },
+  "interpretation": "Documented API fee is zero and model-specific support is documented. Generic CRIS warning does not establish this exact request/profile/account will work. Runtime compatibility remains unrun; no mantle fallback or code change follows."
+}

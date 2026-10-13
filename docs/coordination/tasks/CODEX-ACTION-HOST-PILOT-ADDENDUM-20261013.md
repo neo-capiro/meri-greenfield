@@ -1,0 +1,5 @@
+# Pilot CountTokens documentation addendum
+
+Exact base `61ffc8f2487a010c9baba0c8e18088b42569d90a`; preserve sealed pilot commit `9e08fc64` and all its files. Own only this task, matching report, and `action-host-20261013/pilot-addendum/**`. Documentation-only, 15-minute bound; no package dependencies or product edits.
+
+Read the two parent-specified public AWS documentation pages, preserve retrieval timestamps/URLs/body hashes and short factual paraphrases. Close only the CountTokens API fee unknown as documented zero. Distinguish model-card bedrock-runtime support from generic CRIS caveat and exact-profile runtime qualification. Preserve existing model/route/code, 18 inference +18 CountTokens =36 operations, unapproved $0.75 inference cap, account-rate/other-cost unknowns and remaining pilot prerequisites. Verify arithmetic and all original source/pilot bytes offline. No account, CountTokens, inference, native/service, credential, provider or infrastructure action. Independent memory_reviewer assesses documentation/provenance/arithmetic only.

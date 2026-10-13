@@ -1,0 +1,28 @@
+{
+  "scriptSha256": "1a184bc4d68121fcbdbe7f9ea8d05c562ddc93fdfdb3ac3284e646a09fa1f098",
+  "records": [
+    {
+      "id": "count-tokens",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
+      "retrievedAt": "2026-10-13T02:38:33.233843+00:00",
+      "method": "GET",
+      "credentialsSupplied": false,
+      "bodyRetained": false,
+      "errorType": "URLError",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "status": null
+    },
+    {
+      "id": "sonnet-4-6",
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
+      "retrievedAt": "2026-10-13T02:38:33.247609+00:00",
+      "method": "GET",
+      "credentialsSupplied": false,
+      "bodyRetained": false,
+      "errorType": "URLError",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "status": null
+    }
+  ],
+  "scope": "Public documentation only; presence checks are not table support interpretation or runtime qualification."
+}
