@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/stream.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs"
+  ],
+  "sourceHead": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "exitCode": 0,
+  "seconds": 3.3001319370014244,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 99977,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

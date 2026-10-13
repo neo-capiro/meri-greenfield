@@ -1,0 +1,458 @@
+{
+  "source": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "tree": "f01345b8026ad85af237b05674ec2ee63b05e30a",
+  "before": "492c945547bd56e8471d3b65c7901114eb514791",
+  "base": "18adda2c5461b8d346277135aafd3972b4768802",
+  "originalSkillsExactRepairPin": "5f60ba1e7bf37a0bedbd84a96c94d5aea4434ce6",
+  "allSkillRepairBytesExact": true,
+  "windowUIProductMigrationBeforeExact": true,
+  "publicArtifactNativeBoundary": {
+    "packages/contracts": {
+      "exactBase": true,
+      "changedPaths": []
+    },
+    "apps/artifacts": {
+      "exactBase": true,
+      "changedPaths": []
+    },
+    "apps/control/document-application": {
+      "exactBase": true,
+      "changedPaths": []
+    },
+    "apps/proxy/qualification": {
+      "exactBase": true,
+      "changedPaths": []
+    },
+    "apps/worker/qualification": {
+      "exactBase": true,
+      "changedPaths": []
+    },
+    "apps/control/qualification-sdk-fixture": {
+      "exactBase": true,
+      "changedPaths": []
+    },
+    "apps/control/qualification-temporal": {
+      "exactBase": true,
+      "changedPaths": []
+    }
+  },
+  "sourceInventory": [
+    {
+      "path": "apps/control/conversations/README.md",
+      "sha256": "8be890d97db73557e51695169e3c07c721bb6703faf50e8b8fc279aca7109034",
+      "bytes": 5100
+    },
+    {
+      "path": "apps/control/conversations/boundary.mjs",
+      "sha256": "3d0271a7194d3f10be9b8f1dd128d5d43c910fa663482f603115b5166cf80396",
+      "bytes": 1594
+    },
+    {
+      "path": "apps/control/conversations/events.mjs",
+      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4",
+      "bytes": 2000
+    },
+    {
+      "path": "apps/control/conversations/http.mjs",
+      "sha256": "afc044d5f087cbc419f2da17e294748537542952327ce0bf1607d8592ce43f71",
+      "bytes": 3507
+    },
+    {
+      "path": "apps/control/conversations/migrations/0001_conversations.sql",
+      "sha256": "97d4e7058696b8ded1ad7dc0730ab271e75137968831ed34c0b73a7dadc16b26",
+      "bytes": 1353
+    },
+    {
+      "path": "apps/control/conversations/package-lock.json",
+      "sha256": "1ed426a0b19dc260b9821cf5cccb46f613efc7f064786c8c7755b5115c64bd13",
+      "bytes": 18775
+    },
+    {
+      "path": "apps/control/conversations/package.json",
+      "sha256": "de3b0e41e2f7cce5abdf178adad363d14f6658946263f0bb24fa5c8b93aa4a2d",
+      "bytes": 387
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "sha256": "e2e9074a503239e10e32f8531954acb3ee8218906644b17c04c6ef6871e92725",
+      "bytes": 8214
+    },
+    {
+      "path": "apps/control/conversations/service.mjs",
+      "sha256": "193760a9451b29dc3b59fd5e5c81d3f3e8a27f8591607050b734ad2344da4bae",
+      "bytes": 8029
+    },
+    {
+      "path": "apps/control/conversations/temporal-dispatch.mjs",
+      "sha256": "ff9c56004e7b9b4cbf93461e980a7a25d896263d1965cbe0d5d0b8b73b1efa39",
+      "bytes": 1132
+    },
+    {
+      "path": "apps/control/conversations/test/application-fixture.mjs",
+      "sha256": "e0df3b18b206b5dd280d961499e6439c589fdb0dba26c349ee741f1031e9909b",
+      "bytes": 2210
+    },
+    {
+      "path": "apps/control/conversations/test/application.test.mjs",
+      "sha256": "de62ea91de79cbe9238895bc9e575de2ae46ffdc4dbc51cbfea088825c488b2a",
+      "bytes": 6035
+    },
+    {
+      "path": "apps/control/conversations/test/store-fixture.mjs",
+      "sha256": "c48cbb7eb5bdd78ced5ee183acfdf1ee720d431ecc42fbd8a3fb93f03c59d812",
+      "bytes": 3021
+    },
+    {
+      "path": "apps/control/conversations/test/store.test.mjs",
+      "sha256": "68eeb89f0a170523c4df47370af3f5883349d273210fb431e4c3db66e12b5c2b",
+      "bytes": 4861
+    },
+    {
+      "path": "apps/control/conversations/test/stream.test.mjs",
+      "sha256": "ef3a20cd2c94ef355373cb9de8ac3acf011a849cd08e09de067744a01504b629",
+      "bytes": 1994
+    },
+    {
+      "path": "apps/control/conversations/tsconfig.json",
+      "sha256": "5d26e834f1c9bdace029536f0afa9b6354cfbe4f14ba759a4436a7ebefd4257c",
+      "bytes": 364
+    },
+    {
+      "path": "apps/control/conversations/workflow.ts",
+      "sha256": "835a494d379d34e25845ae7567c3dcabbd481ea0341bbdb1aa67e82ece2863cf",
+      "bytes": 728
+    },
+    {
+      "path": "apps/worker/conversation/README.md",
+      "sha256": "5357c5b4b1df1150db5886a7c30f82b3bcfa289d143445add35a8b1d6c1cf3d9",
+      "bytes": 2794
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "sha256": "67ebde7d903141b28859a3e99575cfa109deb7cbfb43670af7252c4b21300618",
+      "bytes": 5667
+    },
+    {
+      "path": "apps/worker/conversation/options.mjs",
+      "sha256": "b33e6b3870ed985475ca3d634c3cf2aa88b211acea86686e4e4f047eb9bbfc28",
+      "bytes": 2301
+    },
+    {
+      "path": "apps/worker/conversation/package-lock.json",
+      "sha256": "b1459716b93afbf92800956b26b6c7c52b74ef38ed3314d27d8453ab76eacc26",
+      "bytes": 52825
+    },
+    {
+      "path": "apps/worker/conversation/package.json",
+      "sha256": "5fbb71de463f4e6ba6e246aa71a12139eb84b52a8c7c86742d7101d9fd6704d9",
+      "bytes": 225
+    },
+    {
+      "path": "apps/worker/conversation/test/activity.test.mjs",
+      "sha256": "b0b213428cbe395a6a9e078d3599865c58342e512842dfda4ba2b39ed95fb30c",
+      "bytes": 6909
+    },
+    {
+      "path": "apps/worker/conversation/text-projector.mjs",
+      "sha256": "490deed3cd605cba5b5fcd5064a79ade100fa7d16af79d7bdd4be837b2d86899",
+      "bytes": 1675
+    },
+    {
+      "path": "packages/skills/IMPLEMENTATION.md",
+      "sha256": "95a59bddeabdd4d4ef1c926a4134bbd34f0c8fd2a8772ed795501a1f973a4d86",
+      "bytes": 2510
+    },
+    {
+      "path": "packages/skills/README.md",
+      "sha256": "fb8bc61f789a06d6461963297692eaa47e594e3b2215fd415db16ead098e4246",
+      "bytes": 5102
+    },
+    {
+      "path": "packages/skills/assets.json",
+      "sha256": "ebe456d0cc4b9dc34fbbc4467e2411ccccebeab424a45b1357007720342a56a5",
+      "bytes": 5995
+    },
+    {
+      "path": "packages/skills/commitments/REVIEW-REPAIR-20261013.md",
+      "sha256": "2d095c56e5ff06545d305d529f57605795cb0dc645b5f7795e7ed2e5acec6111",
+      "bytes": 1754
+    },
+    {
+      "path": "packages/skills/commitments/evidence.mjs",
+      "sha256": "743e072a2a3e2dcabd4d798c069dbae84822a35bc8fc2db3f103ba64c6f1187c",
+      "bytes": 5452
+    },
+    {
+      "path": "packages/skills/commitments/index.mjs",
+      "sha256": "96b3cc2f0cd98587bd45b79d0df6bfc38d2d37e7f058d0570ef149946dddd04c",
+      "bytes": 4776
+    },
+    {
+      "path": "packages/skills/commitments/review-failure-20261013.txt",
+      "sha256": "2765a5290dfd88f9344128ebc7bfb307a3d0c01ceb573e1de6ccfc6986fecca4",
+      "bytes": 3098
+    },
+    {
+      "path": "packages/skills/commitments/review-regression.test.mjs",
+      "sha256": "820c48a97575f6c5f2702caa7481e0b9badaeac49e82f6e10818f91c40f16978",
+      "bytes": 1353
+    },
+    {
+      "path": "packages/skills/index.mjs",
+      "sha256": "1bbd2dadbe6c791bdf9eb8561b3153a074e2b7ceb27129954cf92ba3ef2c5c94",
+      "bytes": 3456
+    },
+    {
+      "path": "packages/skills/originals/client_changes/1.0.0/SKILL.md",
+      "sha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8",
+      "bytes": 3402
+    },
+    {
+      "path": "packages/skills/originals/client_changes/1.0.0/manifest.json",
+      "sha256": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
+      "bytes": 4135
+    },
+    {
+      "path": "packages/skills/originals/commitments_audit/1.0.0/SKILL.md",
+      "sha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+      "bytes": 4059
+    },
+    {
+      "path": "packages/skills/originals/commitments_audit/1.0.0/manifest.json",
+      "sha256": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
+      "bytes": 3523
+    },
+    {
+      "path": "packages/skills/originals/funding_opportunity_match/1.0.0/SKILL.md",
+      "sha256": "e7211a21a883ec59e43f5d719fbf7e313630e57674667f99f4e875a14b8ce26d",
+      "bytes": 3472
+    },
+    {
+      "path": "packages/skills/originals/funding_opportunity_match/1.0.0/manifest.json",
+      "sha256": "742dea892a575445ec2b63902cb07fb5f8b5029e24ef31e5bf3f6d29840dac2f",
+      "bytes": 3143
+    },
+    {
+      "path": "packages/skills/originals/hearing_watch/1.0.0/SKILL.md",
+      "sha256": "d070a99280c30a38d29fa9f2fdc425faa735d30b43cd6ac80fc95cbb69626314",
+      "bytes": 3404
+    },
+    {
+      "path": "packages/skills/originals/hearing_watch/1.0.0/manifest.json",
+      "sha256": "d5492a00eba8e7b56854ed931fb0dea687f00f46861d87d1b0f28ff431b58f8f",
+      "bytes": 3100
+    },
+    {
+      "path": "packages/skills/originals/mail_history/1.0.0/SKILL.md",
+      "sha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+      "bytes": 3433
+    },
+    {
+      "path": "packages/skills/originals/mail_history/1.0.0/manifest.json",
+      "sha256": "bfa1a83dbfbe8fb55bb62018791575984dfba623d0dc198f8f79475ec8612b91",
+      "bytes": 2696
+    },
+    {
+      "path": "packages/skills/originals/meeting_prep/1.0.0/SKILL.md",
+      "sha256": "fe6f7c54e017e9f187344dd6968af7cb36c01a88c622cde868080ab118df3d7f",
+      "bytes": 3427
+    },
+    {
+      "path": "packages/skills/originals/meeting_prep/1.0.0/manifest.json",
+      "sha256": "035f5af6dbc6765d0b300c19714a73fb47d3d25b5c4e0030c9f5617e925f933a",
+      "bytes": 4608
+    },
+    {
+      "path": "packages/skills/originals/pe_deep_dive/1.0.0/SKILL.md",
+      "sha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e",
+      "bytes": 3373
+    },
+    {
+      "path": "packages/skills/originals/pe_deep_dive/1.0.0/manifest.json",
+      "sha256": "0a7a626ea1e43de2b27b71ae1f3aba154c0d15c37ac9767d1ac154bc6ee109d6",
+      "bytes": 3256
+    },
+    {
+      "path": "packages/skills/originals/portfolio_changes/1.0.0/SKILL.md",
+      "sha256": "3e76da17d5dc490944b7f5464065cee69742ac554ebe7ceb12f4e3e327ce67b5",
+      "bytes": 3486
+    },
+    {
+      "path": "packages/skills/originals/portfolio_changes/1.0.0/manifest.json",
+      "sha256": "f81f58191ca1680f0cc9601dd5ca217f968ff7308c3b60b684c6583d20f33ec6",
+      "bytes": 5884
+    },
+    {
+      "path": "packages/skills/originals/portfolio_overlap/1.0.0/SKILL.md",
+      "sha256": "3abdb87f27d60fd7f8dd85083d8aad8b0413884f297e9ed7e5a143aa50e20e8b",
+      "bytes": 3341
+    },
+    {
+      "path": "packages/skills/originals/portfolio_overlap/1.0.0/manifest.json",
+      "sha256": "d1e00e9218ca8f93c39785a272ca819602b7e5e2e50489c813061c7e6b1d2851",
+      "bytes": 5317
+    },
+    {
+      "path": "packages/skills/originals/regulatory_docket_brief/1.0.0/SKILL.md",
+      "sha256": "698a96dd6c6de443456a477a04d11e393487a38f8c82d34b68d97b01a7849da2",
+      "bytes": 3515
+    },
+    {
+      "path": "packages/skills/originals/regulatory_docket_brief/1.0.0/manifest.json",
+      "sha256": "a0f29652024a5d638224eee339c50170b5fac7890dcd172324b361b4201d2fb0",
+      "bytes": 3170
+    },
+    {
+      "path": "packages/skills/originals/relationship_brief/1.0.0/SKILL.md",
+      "sha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+      "bytes": 3432
+    },
+    {
+      "path": "packages/skills/originals/relationship_brief/1.0.0/manifest.json",
+      "sha256": "a4ee2cd51cac83d82326439ec93baf4a50860bdbb110ec1c1f40daa0f1420ace",
+      "bytes": 3855
+    },
+    {
+      "path": "packages/skills/originals/representation_lookup/1.0.0/SKILL.md",
+      "sha256": "232dec9783f0cec8001043fae72e3e6d38a5b2799c98302571d54bde0d4f6a76",
+      "bytes": 3420
+    },
+    {
+      "path": "packages/skills/originals/representation_lookup/1.0.0/manifest.json",
+      "sha256": "9fde84e2d5ff0a6174fd02eb4788bf0fb04cb2b226b624f149f424f38b73856b",
+      "bytes": 3106
+    },
+    {
+      "path": "packages/skills/originals/research_company/1.0.0/SKILL.md",
+      "sha256": "cbee7506868d65de5ef247add8390850de151398b074add2ce69d2aefd63b7ab",
+      "bytes": 3605
+    },
+    {
+      "path": "packages/skills/originals/research_company/1.0.0/manifest.json",
+      "sha256": "dcede2f73f39ff28d36a71be430c4c3b44946b7280c0ff4d7f5fa33feb059153",
+      "bytes": 4873
+    },
+    {
+      "path": "packages/skills/test/assets.test.mjs",
+      "sha256": "0d9cdc538f8ab1e7520512d2b85a2efcf82a775c13f8bc42e2b819ed52994cbc",
+      "bytes": 6577
+    },
+    {
+      "path": "packages/skills/test/commitments-fixture.mjs",
+      "sha256": "7dd5442c73582e96efdd00d2e2e58e4f4c0f2f943f693350ab570b2233b9323b",
+      "bytes": 3744
+    },
+    {
+      "path": "packages/skills/test/commitments.test.mjs",
+      "sha256": "9e2bf1ac27cb494af7622b0876e1707cc170fecddd5f332a86ae1157c1962e83",
+      "bytes": 7557
+    },
+    {
+      "path": "packages/ui-stream/README.md",
+      "sha256": "a73910609341bc6977c2d35239cbd25c131d36ddf3015045f7cdf8ebb8e9bf98",
+      "bytes": 2071
+    },
+    {
+      "path": "packages/ui-stream/dist/producer.d.ts",
+      "sha256": "1beb8ba7a1e2c3ebaa0c1f2b095698ef76856bd2ad3d78cf14bcc345049c409a",
+      "bytes": 1553
+    },
+    {
+      "path": "packages/ui-stream/dist/producer.js",
+      "sha256": "808ccc7b7236752fa4345f54b590db2786b8b376cdb534eadea9b6e344bc8116",
+      "bytes": 2627
+    },
+    {
+      "path": "packages/ui-stream/dist/protocol.d.ts",
+      "sha256": "4c6ef78b9f482649083d5297a875f7ea743483d1827c60241a7080e6fdb260b4",
+      "bytes": 369
+    },
+    {
+      "path": "packages/ui-stream/dist/protocol.js",
+      "sha256": "dc4bf67bdf512f8e1c80636e75d8c86db8f0be99fa9d1135650b39ebea1ac6ca",
+      "bytes": 181
+    },
+    {
+      "path": "packages/ui-stream/package-lock.json",
+      "sha256": "520adf386172f23b99204aa0802a8b61f64381d3c8e9207e8e8f8683760d0d0d",
+      "bytes": 6337
+    },
+    {
+      "path": "packages/ui-stream/package.json",
+      "sha256": "236a055553fd1bc98c75beb9252cf1faf1785509b69152960fdbc438dec72ad5",
+      "bytes": 771
+    },
+    {
+      "path": "packages/ui-stream/src/producer.ts",
+      "sha256": "b186b45cf9517f718bb0098ca04fe6e782f950764f92886c29928119e7bc3884",
+      "bytes": 3434
+    },
+    {
+      "path": "packages/ui-stream/src/protocol.ts",
+      "sha256": "ec9f6c677366878e460c17c29de308b7895287bef29ffd0c6ef662e9f4255b76",
+      "bytes": 349
+    },
+    {
+      "path": "packages/ui-stream/tsconfig.json",
+      "sha256": "a98fa969e6d677e098762601a20205e8a5de1c4704e7034e5f097c150102a4ab",
+      "bytes": 497
+    },
+    {
+      "path": "packages/window-resolution/IMPLEMENTATION.md",
+      "sha256": "0747f80dc1dd76c64a591b2a126da3eacfc175d2062c8306ebab94f89038f1b6",
+      "bytes": 1807
+    },
+    {
+      "path": "packages/window-resolution/README.md",
+      "sha256": "75cad47bbb22a7276a129ca1ee8d4c28bfad430fb0de16b441f31eb2e3231554",
+      "bytes": 4957
+    },
+    {
+      "path": "packages/window-resolution/index.mjs",
+      "sha256": "452d71d08cff304046a6390228babec2523cfe9c431909e3945215973f477768",
+      "bytes": 5077
+    },
+    {
+      "path": "packages/window-resolution/package-lock.json",
+      "sha256": "9076beeb56b6f98772b013a7d7dbe50126d994c87443738c706bb66eb386293d",
+      "bytes": 1079
+    },
+    {
+      "path": "packages/window-resolution/package.json",
+      "sha256": "7077fdf7f781a352143f13d4db02252a98f0376a0fe06d96e6f5a63897453f5e",
+      "bytes": 419
+    },
+    {
+      "path": "packages/window-resolution/test/initial-results.tap.gz",
+      "sha256": "c60f43ac6f3898e675c468824103aae222eadde79d88a4c14edb2260c752d089",
+      "bytes": 1719
+    },
+    {
+      "path": "packages/window-resolution/test/legacy-retrieval-results.tap.gz",
+      "sha256": "b3f98f7c6379bf02ab12973c718a8fa696c6c5cdb56e21d4d60873e6f93bb2ff",
+      "bytes": 117332
+    },
+    {
+      "path": "packages/window-resolution/test/repaired-results.tap",
+      "sha256": "d88e8bde745742cc9ef921868ecc88bfe5e1c3f6b3bd07e78a250181fad77137",
+      "bytes": 2852
+    },
+    {
+      "path": "packages/window-resolution/test/window-resolution.test.mjs",
+      "sha256": "2255b4ee04c264f680b5aec03241562c35e699f30ce465931dd7177db95245cb",
+      "bytes": 10395
+    },
+    {
+      "path": "packages/window-resolution/third-party/jsbi-LICENSE",
+      "sha256": "9568a2b155e66ac3e0ba1fd80b52b827b9460e6cf6f233125e7cbca8e206ddc3",
+      "bytes": 10174
+    },
+    {
+      "path": "packages/window-resolution/third-party/temporal-polyfill-LICENSE",
+      "sha256": "ffc4aee7f1279fc0494ff2b27f6829e6b4d16c20aa93aa008c3bd8d8af176387",
+      "bytes": 750
+    }
+  ],
+  "nativeQualified": false,
+  "docxCreated": 0
+}

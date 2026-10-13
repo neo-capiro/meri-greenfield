@@ -1,0 +1,18 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern",
+    "two simultaneously prepared",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs"
+  ],
+  "sourceHead": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "exitCode": 1,
+  "seconds": 2.236702692000108,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 95372,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

@@ -1,0 +1,19 @@
+✔ two simultaneously prepared activities permit one winning SDK execution without loser poisoning (27.541674ms)
+✔ actual submit consumer normalizes trusted Sunday calendar window through DST at fixed reference (11.066755ms)
+✔ all14 explicit selected originals refuse unavailable source operations before store or Temporal dispatch (205.783902ms)
+✔ worker exact immutable selected pin tampering refuses before SDK query and never injects changed prose (7.054506ms)
+✔ worker valid exact asset pin still refuses the unchanged canonical unavailable runtime manifest (10.694238ms)
+✔ lost event COMMIT acknowledgement preserves exact text/event identity after owner reconstruction without duplicate event (9.405761ms)
+✔ unknown request commit remains durable but current revocation blocks retry/release and no new dispatch (6.73582ms)
+✔ external pipeline cancellation after SDK text stops completion, closes query and preserves earlier durable text (12.376252ms)
+✔ source/tool/thinking/subagent diagnostics never become public AI SDK events or receipts (11.01658ms)
+✔ cancelled subscription aborts its owned polling signal and cannot release a later page (26.682409ms)
+✔ exact retained normalized calendar window reaches the actual SDK query input with scopes and immutable context (12.509301ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3198.849622

@@ -1,0 +1,76 @@
+✖ two simultaneously prepared activities permit one winning SDK execution without loser poisoning (24.803175ms)
+✖ actual submit consumer normalizes trusted Sunday calendar window through DST at fixed reference (10.056318ms)
+✔ all14 explicit selected originals refuse unavailable source operations before store or Temporal dispatch (181.376592ms)
+✔ worker exact immutable selected pin tampering refuses before SDK query and never injects changed prose (5.058094ms)
+✔ worker valid exact asset pin still refuses the unchanged canonical unavailable runtime manifest (7.874672ms)
+✔ lost event COMMIT acknowledgement preserves exact text/event identity after owner reconstruction without duplicate event (8.604745ms)
+✔ unknown request commit remains durable but current revocation blocks retry/release and no new dispatch (5.919093ms)
+✖ external pipeline cancellation after SDK text stops completion, closes query and preserves earlier durable text (9.445754ms)
+✔ source/tool/thinking/subagent diagnostics never become public AI SDK events or receipts (9.257752ms)
+✔ cancelled subscription aborts its owned polling signal and cannot release a later page (24.25543ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 7
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2191.621381
+
+✖ failing tests:
+
+test at docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs:19:1
+✖ two simultaneously prepared activities permit one winning SDK execution without loser poisoning (24.803175ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-lifecycle-reliability-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs:24:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs:30:1
+✖ actual submit consumer normalizes trusted Sunday calendar window through DST at fixed reference (10.056318ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '2026-11-01T04:00:00Z'
+  - '2026-11-01T04:00:00.000Z'
+                        ^
+  
+      at TestContext.<anonymous> (file:///workspace/meri-lifecycle-reliability-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs:37:79)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2026-11-01T04:00:00Z',
+    expected: '2026-11-01T04:00:00.000Z',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs:81:1
+✖ external pipeline cancellation after SDK text stops completion, closes query and preserves earlier durable text (9.445754ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'running'
+  - 'cancelled'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-lifecycle-reliability-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs:83:225)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'running',
+    expected: 'cancelled',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,36 @@
+{
+  "base": "18adda2c5461b8d346277135aafd3972b4768802",
+  "source": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "paths": {
+    "packages/contracts": {
+      "changedPaths": [],
+      "exact": true
+    },
+    "apps/artifacts": {
+      "changedPaths": [],
+      "exact": true
+    },
+    "apps/control/document-application": {
+      "changedPaths": [],
+      "exact": true
+    },
+    "apps/proxy/qualification": {
+      "changedPaths": [],
+      "exact": true
+    },
+    "apps/worker/qualification": {
+      "changedPaths": [],
+      "exact": true
+    },
+    "apps/control/qualification-sdk-fixture": {
+      "changedPaths": [],
+      "exact": true
+    },
+    "apps/control/qualification-temporal": {
+      "changedPaths": [],
+      "exact": true
+    }
+  },
+  "originalRaceSetupRestored": true,
+  "nativeQualified": false
+}
