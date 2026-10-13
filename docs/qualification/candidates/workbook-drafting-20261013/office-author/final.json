@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/office-recalc.test.mjs"
+  ],
+  "cwd": "/tmp/meri-workbook-office-author-20261013",
+  "sourceHead": "1c3cfb9c97681415286236edd21a829e51b565eb",
+  "sourceDiffSha256": "4b578f641637c45c61fa78a2a438f6b684743a461e84456a3f945648ccbb6594",
+  "sourceDiffBytes": 3782,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T07:34:01.281098+00:00",
+  "durationSeconds": 22.148,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 537498,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.stdout.bin",
+      "bytes": 826,
+      "sha256": "ca04c886c0de9b95014d9865ceefdb49dc4df4b35751b3c2d55a9ac090af0acd"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
