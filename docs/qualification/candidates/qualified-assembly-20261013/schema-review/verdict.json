@@ -30,11 +30,23 @@
       "change": "Namespace repair plus three additive original-clock/contention/late-COMMIT controls"
     }
   ],
-  "pendingPacketAudit": true,
+  "pendingPacketAudit": false,
   "runtimeQualified": false,
   "remainingGates": [
     "Separate root pooled-connection search_path boundary and final application composition review",
     "Exact native engine/fixture qualification and real catalog/transaction behavior remain separate and untested in this lane"
   ],
-  "deadlineMeaning": "originalDeadlineMs is admitted operation cutoff <= now+60000, not the enclosing fixture cleanup deadline."
+  "deadlineMeaning": "originalDeadlineMs is admitted operation cutoff <= now+60000, not the enclosing fixture cleanup deadline.",
+  "authorPacket": "87f0cac8b812f663612211a7bf718c2d7420566d",
+  "authorPacketTree": "d90ce89d08c088d5f70f129d47db6726c659175f",
+  "authorManifestSha256": "1abe0f3aee2ec32b6abc25ff937b8f71e758b9b6130a364d95b66147eb7eb3f8",
+  "sourcePacketAudit": {
+    "passed": 82,
+    "failed": 0,
+    "originalEntriesPreserved": 11236
+  },
+  "authorReceiptReview": {
+    "passed": 9,
+    "failed": 0
+  }
 }

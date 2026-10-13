@@ -1,0 +1,117 @@
+{
+  "packet": "87f0cac8b812f663612211a7bf718c2d7420566d",
+  "checks": [
+    {
+      "name": "initial",
+      "passed": true
+    },
+    {
+      "name": "corrected",
+      "passed": true
+    },
+    {
+      "name": "receipt",
+      "passed": true
+    },
+    {
+      "name": "namespace-before",
+      "passed": true
+    },
+    {
+      "name": "namespace-repaired",
+      "passed": true
+    },
+    {
+      "name": "audit",
+      "passed": true
+    },
+    {
+      "name": "repair-audit",
+      "passed": true
+    },
+    {
+      "name": "preserved exact before-test patch",
+      "passed": true
+    },
+    {
+      "name": "original sealed manifest preserved",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "failed": 0,
+  "receipts": [
+    {
+      "label": "initial",
+      "head": "979e30a89ecaf28eab8cca18a33cb9f5cfde36ff",
+      "sourceDiffBytes": 0,
+      "exitCode": 1,
+      "pass": 32,
+      "fail": 1,
+      "group": 495230,
+      "absent": true
+    },
+    {
+      "label": "corrected",
+      "head": "e71429f183618f2f75e736f5ea5ba00e13c71d0e",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "pass": 33,
+      "fail": 0,
+      "group": 495422,
+      "absent": true
+    },
+    {
+      "label": "receipt",
+      "head": "20b474036039ec8c15f983d0d6e01d064aef2448",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "pass": 34,
+      "fail": 0,
+      "group": 495652,
+      "absent": true
+    },
+    {
+      "label": "namespace-before",
+      "head": "97197d84b72f090cd5a87aaf0de4e5421c0a6f45",
+      "sourceDiffBytes": 1458,
+      "exitCode": 1,
+      "pass": 34,
+      "fail": 1,
+      "group": 499067,
+      "absent": true
+    },
+    {
+      "label": "namespace-repaired",
+      "head": "d560cf999d4e6d03a0cc66ded8a52387776fb48c",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "pass": 36,
+      "fail": 0,
+      "group": 499689,
+      "absent": true
+    },
+    {
+      "label": "audit",
+      "head": "7788dfbfe352473f008d1fd4341d4e502237f580",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "pass": null,
+      "fail": null,
+      "group": 496329,
+      "absent": true
+    },
+    {
+      "label": "repair-audit",
+      "head": "620f09801f70902ca7896921223cc78dc0eb033a",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "pass": null,
+      "fail": null,
+      "group": 500581,
+      "absent": true
+    }
+  ],
+  "scope": "Read-only receipt inspection, no author test rerun",
+  "lookupNote": "An audit-repaired.json lookup returned missing-path128; tracked tree confirmed actual repair-audit.json. No source mutation."
+}
