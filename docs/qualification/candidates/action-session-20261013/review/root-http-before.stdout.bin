@@ -1,0 +1,40 @@
+✖ independent issuance HTTP never reflects extra owner fields or response accessors (7.005058ms)
+✖ independent short HTTP cutoff reaches both real session-owner authorization ports (3.69246ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2763.865678
+
+✖ failing tests:
+
+test at apps/control/action-host/session/http-independent.test.mjs:28:1
+✖ independent issuance HTTP never reflects extra owner fields or response accessors (7.005058ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 200
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:31:48)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 200,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/session/http-independent.test.mjs:34:1
+✖ independent short HTTP cutoff reaches both real session-owner authorization ports (3.69246ms)
+  AssertionError [ERR_ASSERTION]: native owner deadline exceeds original HTTP cutoff
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:38:185)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
