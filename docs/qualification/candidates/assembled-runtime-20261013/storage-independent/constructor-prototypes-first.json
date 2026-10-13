@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage-review",
+  "sourceHead": "d4561d6dff0596998179a98ff439142040b463dc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:23:05.791834+00:00",
+  "durationSeconds": 1.722,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 340280,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes-first.stdout.bin",
+      "bytes": 4405,
+      "sha256": "d68e6c84474ab412d41a90bff5a5e9e153e4f0cb8592a083478b38f24720a44e"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

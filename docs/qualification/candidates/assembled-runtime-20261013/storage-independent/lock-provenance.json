@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/verify-lock.py"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage-review",
+  "sourceHead": "d4561d6dff0596998179a98ff439142040b463dc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:18:01.490958+00:00",
+  "durationSeconds": 0.716,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 337280,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/lock-provenance.stdout.bin",
+      "bytes": 10653,
+      "sha256": "4ac1fcc4b4134fd5dc5894127dca0adb4a14e9c232464c7f627617ec67fa1396"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/lock-provenance.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

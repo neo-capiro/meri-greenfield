@@ -1,0 +1,289 @@
+{
+  "verdict": "PASS_METADATA_INTEGRITY_ONLY",
+  "packages": [
+    {
+      "location": "node_modules/@aws-sdk/client-s3",
+      "name": "@aws-sdk/client-s3",
+      "version": "3.1141.0",
+      "upstreamMetadataSha256": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/checksums",
+      "name": "@aws-sdk/checksums",
+      "version": "3.1001.1",
+      "upstreamMetadataSha256": "9c1751c72a009ef46aad64865ed2de2c992fd8c5e3359aff9d02dc891b87652a",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/core",
+      "name": "@aws-sdk/core",
+      "version": "3.978.1",
+      "upstreamMetadataSha256": "f41e316f4145afaa611248576fac940f67e7d1e1c6a1cafa11c444189c98493d",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/types",
+      "name": "@aws-sdk/types",
+      "version": "3.974.6",
+      "upstreamMetadataSha256": "bdd916bfcfac454fb2ba9ff2dd2e581d10f946654515ca860bf4b8f4e4b82561",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@smithy/types",
+      "name": "@smithy/types",
+      "version": "4.19.0",
+      "upstreamMetadataSha256": "3de7840fd63a03c33bb687fbdc4794884598402600b2ee02c68856e78e41bd52",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/tslib",
+      "name": "tslib",
+      "version": "2.8.1",
+      "upstreamMetadataSha256": "f02b4851df316f29bdfcd404aa1eb41e4e216b5859015f81fcd3e91caf8be931",
+      "license": "0BSD"
+    },
+    {
+      "location": "node_modules/@aws-sdk/xml-builder",
+      "name": "@aws-sdk/xml-builder",
+      "version": "3.972.41",
+      "upstreamMetadataSha256": "103e94854d3f01cdb7eda3d170d3a8775e4fb107da472a1347418abb76116e08",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws/lambda-invoke-store",
+      "name": "@aws/lambda-invoke-store",
+      "version": "0.3.0",
+      "upstreamMetadataSha256": "67dd0cc15cb17df9e12654a78486e710e13a2e96623cb28c683056378fa973dc",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@smithy/core",
+      "name": "@smithy/core",
+      "version": "3.35.0",
+      "upstreamMetadataSha256": "b3a06d1c549d4b1ead3b19f7259d3506f3eaaac4b8fc0d3e9027c67aaf71a30d",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@smithy/signature-v4",
+      "name": "@smithy/signature-v4",
+      "version": "5.7.4",
+      "upstreamMetadataSha256": "d4794533b211f0100c0be02a8d35b677db84d84a7061ad7c0c6bb0bc5394cf11",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/bowser",
+      "name": "bowser",
+      "version": "2.14.1",
+      "upstreamMetadataSha256": "b12b643998a1a7febff9933b5a05e53045c722ff4de13fab751391b2d346a974",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-node",
+      "name": "@aws-sdk/credential-provider-node",
+      "version": "3.972.84",
+      "upstreamMetadataSha256": "d107f130cf4631f0b687351fd8d2baf74d8a8496f28a0bd463545306ba9e6f22",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-env",
+      "name": "@aws-sdk/credential-provider-env",
+      "version": "3.972.72",
+      "upstreamMetadataSha256": "83cb069a705d40c4d8cac65c4df9f3094d64db8c3105cd15670d2676f730192c",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-http",
+      "name": "@aws-sdk/credential-provider-http",
+      "version": "3.972.74",
+      "upstreamMetadataSha256": "6db5ed1c0c41ca8672b0eb663e539f87ed0deb7fc96d241ef766d2b441fe59a1",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@smithy/fetch-http-handler",
+      "name": "@smithy/fetch-http-handler",
+      "version": "5.8.0",
+      "upstreamMetadataSha256": "3319f9f00b71ae85d49473c1f5d5a0151c89547d7724753abe8d189471decffe",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@smithy/node-http-handler",
+      "name": "@smithy/node-http-handler",
+      "version": "4.12.1",
+      "upstreamMetadataSha256": "e685e00a1e28371390ffab5711e5300b81743b7a7d5f5bf1a994e40197467221",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-ini",
+      "name": "@aws-sdk/credential-provider-ini",
+      "version": "3.973.17",
+      "upstreamMetadataSha256": "825c4827279fad1a15aa72a365f4f91557305259771ab2216682c4f24690c075",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-login",
+      "name": "@aws-sdk/credential-provider-login",
+      "version": "3.972.79",
+      "upstreamMetadataSha256": "5993af12213692c03386b8af68d3894c007c87fcbee64356743668aa9ea39696",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/nested-clients",
+      "name": "@aws-sdk/nested-clients",
+      "version": "3.997.46",
+      "upstreamMetadataSha256": "dd334b9f6453d2e9094bf36a10e3a1a5637fa6c43fe38ca42e649e3fae4fdbd3",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/signature-v4-multi-region",
+      "name": "@aws-sdk/signature-v4-multi-region",
+      "version": "3.996.47",
+      "upstreamMetadataSha256": "a500d3298997fbe442acc76fd217dabd4c8310a0085a65578ba868a37d4e3f79",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-process",
+      "name": "@aws-sdk/credential-provider-process",
+      "version": "3.972.72",
+      "upstreamMetadataSha256": "37354078bd4f4ffcaeccfafe9e818b4dd298f4685fcbd6695c13437ff2e2360b",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-sso",
+      "name": "@aws-sdk/credential-provider-sso",
+      "version": "3.973.16",
+      "upstreamMetadataSha256": "417af24392691fbaa2023130328fe065688b74e4f69a2dbd96319242f86621c9",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/token-providers",
+      "name": "@aws-sdk/token-providers",
+      "version": "3.1138.0",
+      "upstreamMetadataSha256": "8680751f73f36f637b0b96dc5ff4b39578af9b3186195726eef4147758153dee",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/credential-provider-web-identity",
+      "name": "@aws-sdk/credential-provider-web-identity",
+      "version": "3.972.78",
+      "upstreamMetadataSha256": "f7b5562bbccef5b2387e5b282a7edaf1645da0cab95f2855dc33e8f38c4189af",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@smithy/credential-provider-imds",
+      "name": "@smithy/credential-provider-imds",
+      "version": "4.5.2",
+      "upstreamMetadataSha256": "1e3b437bfaf7800cbcd770cc744084ab9e3b6c445196b707fde90e2f66e0403c",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/@aws-sdk/middleware-sdk-s3",
+      "name": "@aws-sdk/middleware-sdk-s3",
+      "version": "3.972.77",
+      "upstreamMetadataSha256": "c0c7f1ba04f7627ea45a757daa04cbe768772fee67a0b56fdf9c41c95a68b06c",
+      "license": "Apache-2.0"
+    },
+    {
+      "location": "node_modules/pg",
+      "name": "pg",
+      "version": "8.23.0",
+      "upstreamMetadataSha256": "e42dd36cba6e9dd8dbb6f773a2f7be8a8c3c273e18b155e42e75961a4cb8bc28",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/pg-connection-string",
+      "name": "pg-connection-string",
+      "version": "2.14.0",
+      "upstreamMetadataSha256": "5e07e70c64af1e8695a91f9371b713106eeed3b52a1d6b7f7238a33f01dd3f20",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/pg-pool",
+      "name": "pg-pool",
+      "version": "3.14.0",
+      "upstreamMetadataSha256": "0a9924def9e06f791b09a44eaefb227f323a39199887f6ce17b44cb5a9193134",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/pg-protocol",
+      "name": "pg-protocol",
+      "version": "1.16.0",
+      "upstreamMetadataSha256": "4ee6a91e60a002e828e64dfab04c232bba566db233a905a1a15e475a0336c73d",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/pg-types",
+      "name": "pg-types",
+      "version": "2.2.0",
+      "upstreamMetadataSha256": "3ec0293cb38cc8d9475e3eb32ac5f19d195bf9fccc8b19a0714e6ecd6e7c2cf0",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/pg-int8",
+      "name": "pg-int8",
+      "version": "1.0.1",
+      "upstreamMetadataSha256": "147155887a41bb6f69ff98b3dde827b7e6a8214c3a71938da4babf8e12adff2e",
+      "license": "ISC"
+    },
+    {
+      "location": "node_modules/postgres-array",
+      "name": "postgres-array",
+      "version": "2.0.0",
+      "upstreamMetadataSha256": "dcd6a505fcbc032b409ee2838ab2c776dea3a9cfe02b736364b6cb82a946665f",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/postgres-bytea",
+      "name": "postgres-bytea",
+      "version": "1.0.1",
+      "upstreamMetadataSha256": "9125568c5fb51a65b8f11adb0080c2775b99ee82822d73bff8b56b2a9d47d7aa",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/postgres-date",
+      "name": "postgres-date",
+      "version": "1.0.7",
+      "upstreamMetadataSha256": "03f9edefa96697072075e02df045cc61ed4ca2f8dfffb1ff87f4070bc3404151",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/postgres-interval",
+      "name": "postgres-interval",
+      "version": "1.2.0",
+      "upstreamMetadataSha256": "cc3056db105e66c9128cb8a387cda782d5f1ae9281be90de0b8d26a90af89c57",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/xtend",
+      "name": "xtend",
+      "version": "4.0.2",
+      "upstreamMetadataSha256": "b02ffef8cda96c5c3ee00a00390e63f608362c2ddfb3ed754e181d013a45d48a",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/pgpass",
+      "name": "pgpass",
+      "version": "1.0.5",
+      "upstreamMetadataSha256": "d75240eb4fe759c10db9f903838275348676a8bdc1f329e20a833713cd7c99bd",
+      "license": "MIT"
+    },
+    {
+      "location": "node_modules/split2",
+      "name": "split2",
+      "version": "4.2.0",
+      "upstreamMetadataSha256": "87b734c3087c8d9ed5d76d1bff00db30f960831ba8705dd18d73b180d08d2140",
+      "license": "ISC"
+    },
+    {
+      "location": "node_modules/pg-cloudflare",
+      "name": "pg-cloudflare",
+      "version": "1.4.0",
+      "upstreamMetadataSha256": "26a5017fe5fa14bb2eaa90fb87a2c54becc2666516ef79ee591694bcb9533531",
+      "license": "MIT"
+    }
+  ],
+  "lockSha256": "eff11f1590db3b5a44d2e992d9e5ed97e6a6336723f59224089ff514916688cc",
+  "nativeLockSha256": "c90a15fc2ca3c9405062444adfdb346293d27f51a45488476db891f4c3204586",
+  "network": false,
+  "installedFresh": false
+}

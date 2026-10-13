@@ -1,0 +1,96 @@
+✖ postgres refuses inherited getter without invoking it (1.103824ms)
+✖ postgres refuses proxy prototype without invoking it (0.212639ms)
+✖ s3 refuses inherited getter without invoking it (0.330555ms)
+✖ s3 refuses proxy prototype without invoking it (0.158978ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1651.277114
+
+✖ failing tests:
+
+test at docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:6:94
+✖ postgres refuses inherited getter without invoking it (1.103824ms)
+  AssertionError [ERR_ASSERTION]: constructor must not invoke active prototype access
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage-review/docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:11:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:6:94
+✖ postgres refuses proxy prototype without invoking it (0.212639ms)
+  AssertionError [ERR_ASSERTION]: constructor must not invoke active prototype access
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage-review/docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:11:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:6:94
+✖ s3 refuses inherited getter without invoking it (0.330555ms)
+  AssertionError [ERR_ASSERTION]: constructor must not invoke active prototype access
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage-review/docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:11:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:6:94
+✖ s3 refuses proxy prototype without invoking it (0.158978ms)
+  AssertionError [ERR_ASSERTION]: constructor must not invoke active prototype access
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage-review/docs/qualification/candidates/assembled-runtime-20261013/storage-independent/constructor-prototypes.test.mjs:11:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

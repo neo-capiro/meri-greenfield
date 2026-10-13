@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/offline-install.py"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage-review",
+  "sourceHead": "d4561d6dff0596998179a98ff439142040b463dc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:18:32.005602+00:00",
+  "durationSeconds": 5.23,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 337554,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/offline-install.stdout.bin",
+      "bytes": 503,
+      "sha256": "202684a695149e4a52c20e3e031ec5690bc503efc67e20e272c3fa6078084971"
+    },
+    {
+      "path": "docs/qualification/candidates/assembled-runtime-20261013/storage-independent/offline-install.stderr.bin",
+      "bytes": 340,
+      "sha256": "dd7f9e179293673730ffa848d0d5c92312d491340d4930e55560f9ffc716bd2f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

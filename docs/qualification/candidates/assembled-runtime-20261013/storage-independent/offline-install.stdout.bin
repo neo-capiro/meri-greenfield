@@ -1,0 +1,2 @@
+{"ownedTemporaryRoot": "/tmp/meri-storage-independent-offline-mx6lacei", "command": ["npm", "ci", "--offline", "--ignore-scripts", "--no-audit", "--no-fund", "--userconfig=/tmp/meri-storage-independent-offline-mx6lacei/user.npmrc", "--globalconfig=/tmp/meri-storage-independent-offline-mx6lacei/global.npmrc", "--cache=/tmp/meri-storage-independent-offline-mx6lacei/cache"], "scope": "INSTALLATION_ONLY_OFFLINE"}
+{"ownedTemporaryRoot": "/tmp/meri-storage-independent-offline-mx6lacei", "removed": true}

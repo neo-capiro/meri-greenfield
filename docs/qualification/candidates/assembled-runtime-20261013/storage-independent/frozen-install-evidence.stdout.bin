@@ -1,0 +1,11 @@
+{
+  "verdict": "PASS_FROZEN_PRODUCER_INSTALL_EVIDENCE",
+  "packages": 40,
+  "packageAndLockUnchanged": true,
+  "officialRegistrySuccessfulTarballURLs": 40,
+  "independentNativeMetadataCorrelation": true,
+  "freshByteProducerTests": 18,
+  "removedTarballsIndependentlyRehashed": false,
+  "reviewerNetworkCalls": false,
+  "nativeRuntimeAdmission": false
+}
