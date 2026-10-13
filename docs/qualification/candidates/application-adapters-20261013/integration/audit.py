@@ -23,7 +23,8 @@ for p in reviewed:
 counts={}
 for manifest in sorted(packet.parent.glob('*/manifest.json')):
  if manifest.parent==packet: continue
- members=json.loads(manifest.read_text())['members']; counts[manifest.parent.name]=len(members)
+ payload=json.loads(manifest.read_text())
+ members=payload['files' if manifest.parent.name=='capiro-boundary' else 'members']; counts[manifest.parent.name]=len(members)
  for member in members:
   raw=(root/member['path']).read_bytes()
   check('retained '+member['path'],len(raw)==member['bytes'] and hashlib.sha256(raw).hexdigest()==member['sha256'])

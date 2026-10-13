@@ -1,0 +1,449 @@
+{
+  "base": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+  "reviewedSource": "1afbb5a53ebbf0eca9252b3b09ceb3e404918151",
+  "reviewerSource": "3760a7fe8ba54639ef978f705ca05127838368d6",
+  "originalEntries": 11081,
+  "originalEntriesUnchanged": 11079,
+  "approvedChanges": [
+    "apps/control/action-host/session/README.md",
+    "apps/control/action-host/session/owner.mjs"
+  ],
+  "laneManifestMembers": {
+    "author": 23,
+    "capiro-boundary": 9,
+    "reviewer": 25
+  },
+  "privateReferenceCount": 28,
+  "receipts": [
+    {
+      "label": "integrated-check",
+      "testedHead": "6dfc050e489d5790bd6ae009707195aac1c3890f",
+      "ownedPidAndPgid": 486108
+    },
+    {
+      "label": "mounted-http",
+      "testedHead": "97299694a4650426ad4755c58bbc477a0d85ea2b",
+      "ownedPidAndPgid": 485990
+    }
+  ],
+  "passed": 104,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "only allocated original session seam and documentation changed",
+      "pass": true
+    },
+    {
+      "name": "all original tests contracts registry and failures preserved",
+      "pass": true
+    },
+    {
+      "name": "accepted author source apps/control/action-host/session/README.md",
+      "pass": true
+    },
+    {
+      "name": "accepted author source apps/control/action-host/session/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted author source apps/control/action-host/application-adapters/adapters.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted author source apps/control/action-host/application-adapters/authority-http.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted author source apps/control/action-host/application-adapters/context-adapter.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted author source apps/control/action-host/application-adapters/mount.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted author source packages/contracts/action-authority-0.2/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independent controls apps/control/action-host/application-adapters/authority-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independent controls apps/control/action-host/application-adapters/context-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/adapters.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/authority-http.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/context-adapter.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/mount.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-APPLICATION-ADAPTERS-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-APPLICATION-ADAPTERS-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/first-adapters.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/first-adapters.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/first-adapters.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/transport-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/transport-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/author/transport-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained packages/contracts/action-authority-0.2/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-CAPIRO-APPLICATION-AUTHORITY-REQUEST-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/collect-metadata.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/discovery-notes.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/proposed-protocol.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/reference-identities-initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/verification-initial-failure.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/verification.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/capiro-boundary/verify.py",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/authority-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/application-adapters/context-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-APPLICATION-ADAPTERS-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-APPLICATION-ADAPTERS-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/first-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/first-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/first-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/first-replay-diagnosis.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/fixture-alignment.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/legacy-session.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/legacy-session.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/legacy-session.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/legacy-sparse-diagnosis.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/reference-boundaries.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/transport-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/transport-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/application-adapters-20261013/reviewer/transport-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference clerk",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference tenant",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference shared",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference me",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference app",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference http",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference context_decorator",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference conversation",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference routes",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference scope",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference scope_types",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference portfolio",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference webhook",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference research",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference research_state",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference prisma",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference frontend_rules",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference frontend_architecture",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference frontend_auth_route",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference frontend_proxy",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference frontend_session",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference meri_instructions",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference meri_standards",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference session_readme",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference session_owner",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference current_authority",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference qualification_registry",
+      "pass": true
+    },
+    {
+      "name": "exact private source reference synthetic_current_run",
+      "pass": true
+    },
+    {
+      "name": "bounded passing capture integrated-check",
+      "pass": true
+    },
+    {
+      "name": "exact captured docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact captured docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent integrated-check",
+      "pass": true
+    },
+    {
+      "name": "bounded passing capture mounted-http",
+      "pass": true
+    },
+    {
+      "name": "exact captured docs/qualification/candidates/application-adapters-20261013/integration/mounted-http.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact captured docs/qualification/candidates/application-adapters-20261013/integration/mounted-http.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent mounted-http",
+      "pass": true
+    }
+  ]
+}

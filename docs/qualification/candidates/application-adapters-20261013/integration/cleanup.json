@@ -1,0 +1,33 @@
+{
+  "removed": [
+    {
+      "path": "node_modules",
+      "ownedSymlinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "ownedSymlinkRemoved": true,
+      "donorPreserved": true
+    }
+  ],
+  "ownedGroups": [
+    {
+      "label": "integrated-check",
+      "pgid": 486108,
+      "absent": true
+    },
+    {
+      "label": "mounted-http",
+      "pgid": 485990,
+      "absent": true
+    },
+    {
+      "label": "audit-schema-initial",
+      "pgid": 486353,
+      "absent": true
+    }
+  ],
+  "remainingOwnedProcesses": 0,
+  "borrowedResourcesDisposed": false
+}

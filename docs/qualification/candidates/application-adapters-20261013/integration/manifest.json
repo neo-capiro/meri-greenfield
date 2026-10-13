@@ -1,0 +1,87 @@
+{
+  "base": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+  "acceptedSource": "1afbb5a53ebbf0eca9252b3b09ceb3e404918151",
+  "reviewer": "3760a7fe8ba54639ef978f705ca05127838368d6",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-APPLICATION-ADAPTERS-20261013.md",
+      "bytes": 9239,
+      "sha256": "082993bccdf8330541dae7d88abf2d0b0ae5e9a1ec2c2b039141cf44e8b5b235"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-APPLICATION-ADAPTERS-20261013.md",
+      "bytes": 5449,
+      "sha256": "c5a5d2d05c8e04f995d6a6cf5eb9f333ff65f362ae20ac89f3c38f9cf5488700"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit-schema-initial.json",
+      "bytes": 1459,
+      "sha256": "aaa9e1092a2dc6a0ce6ce38b5ab99ff79cc088a07d870b38ae816c6c23cd2962"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit-schema-initial.stderr.bin",
+      "bytes": 362,
+      "sha256": "f3f73c60652a8afe672f26e3944445abde7a252b9c02622f64188a06512ddbe7"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit-schema-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit.json",
+      "bytes": 14040,
+      "sha256": "d03d1ea4b9c311ef86bb38bf179db2c9fa7a352711b3a3fef475996115b16fbc"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit.py",
+      "bytes": 3700,
+      "sha256": "d735fb576c31f0eb5e4a3d3900242ee2357f3fbeed22cc9b2e6973ef04284925"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/cleanup.json",
+      "bytes": 621,
+      "sha256": "df01c545462358423151ac2a67c926ec9146a30ecd29227fbc0d6085ed31f58c"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.json",
+      "bytes": 2320,
+      "sha256": "9908d4f5775a5a801d3831cbfbd533af989363436188f804f74b923f4d849b1a"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 19914,
+      "sha256": "838ca6b7f1490549cc1c50f56973c875cbe6de71445d3cf6301f1ed73a3b9b71"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/mounted-http.json",
+      "bytes": 1391,
+      "sha256": "3e3121195fba09140232b7a1f9f8260b0b9f30faf3693902b8e14f56a0e4bc67"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/mounted-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/mounted-http.stdout.bin",
+      "bytes": 725,
+      "sha256": "3dab118c742613dee9708e2cf75ab9b5c22eadecfaf5b3a0bd74c5839f6e9474"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/run-mounted.mjs",
+      "bytes": 7419,
+      "sha256": "c5b91a767d2b209859a09a25787febcd9241fff95d0a28c4565a35e61f6c6360"
+    }
+  ]
+}

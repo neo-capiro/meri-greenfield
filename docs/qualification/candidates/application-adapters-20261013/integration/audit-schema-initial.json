@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/application-adapters-20261013/integration/audit.py",
+    "1afbb5a53ebbf0eca9252b3b09ceb3e404918151",
+    "3760a7fe8ba54639ef978f705ca05127838368d6"
+  ],
+  "cwd": "/tmp/meri-application-adapters-20261013",
+  "sourceHead": "6dfc050e489d5790bd6ae009707195aac1c3890f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:11:06.969327+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 486353,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit-schema-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/audit-schema-initial.stderr.bin",
+      "bytes": 362,
+      "sha256": "f3f73c60652a8afe672f26e3944445abde7a252b9c02622f64188a06512ddbe7"
+    }
+  ],
+  "rerunReason": "Preserve the observed root audit manifest-key mismatch before correcting metadata tooling; no source behavior rerun.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
