@@ -1,0 +1,37 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-workbook-author-20261013",
+    "node",
+    "--test",
+    "--test-name-pattern=title length|forged126",
+    "apps/control/document-application/test/workbook-application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-workbook-author-20261013",
+  "sourceHead": "fc8cb9501c8170bf254d2aa96b82c94c5d9271d3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T07:27:52.193685+00:00",
+  "durationSeconds": 3.882,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 534297,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stdout.bin",
+      "bytes": 3403,
+      "sha256": "799b9a1afc48f3159b493a422057e3b62a4c2c5e404ba7061b25f70734d9929e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

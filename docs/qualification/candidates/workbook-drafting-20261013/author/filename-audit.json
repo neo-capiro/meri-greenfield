@@ -1,0 +1,70 @@
+{
+  "priorPacket": "fe81f220d3415c6934333b584f2b625f891a8378",
+  "finalSource": "16a4f883962bd72f9421949df95709f65b286555",
+  "checks": [
+    {
+      "name": "only narrow index and appended tests change",
+      "passed": true
+    },
+    {
+      "name": "all original workbook assertions remain byte-identical prefix",
+      "passed": true
+    },
+    {
+      "name": "exact one-bound repair and explanatory comment",
+      "passed": true
+    },
+    {
+      "name": "canonical filename helper unchanged",
+      "passed": true
+    },
+    {
+      "name": "filename-before immutable head",
+      "passed": true
+    },
+    {
+      "name": "filename-before outcome",
+      "passed": true
+    },
+    {
+      "name": "filename-before physically absent",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stdout.bin exact",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stderr.bin exact",
+      "passed": true
+    },
+    {
+      "name": "filename-repaired immutable head",
+      "passed": true
+    },
+    {
+      "name": "filename-repaired outcome",
+      "passed": true
+    },
+    {
+      "name": "filename-repaired physically absent",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stdout.bin exact",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stderr.bin exact",
+      "passed": true
+    },
+    {
+      "name": "filename-before count",
+      "passed": true
+    },
+    {
+      "name": "filename-repaired count",
+      "passed": true
+    }
+  ]
+}

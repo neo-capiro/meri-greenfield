@@ -1,0 +1,23 @@
+✔ Excel create/revise/read preserves both immutable XLSX versions and canonical accounting (611.900472ms)
+✔ create_word refuses opposite-family create and revise before authority/accounting (10.033601ms)
+✔ create_excel refuses opposite-family create and revise before authority/accounting (6.663799ms)
+✔ canonical workbook errors and caller authority fields refuse before allocation (6.798171ms)
+✔ only the exact canonical Excel descriptor is admitted, without arbitrary registry expansion (6.831601ms)
+✔ create_word read cannot release an otherwise valid opposite-family stored version (102.57529ms)
+✔ create_excel read cannot release an otherwise valid opposite-family stored version (244.241282ms)
+✔ fresh revocation blocks XLSX read without another generation or debit (229.044938ms)
+✔ Excel descriptor is detached from later caller mutation (235.795146ms)
+✔ Excel application remains disabled by default with no allocation (7.366904ms)
+✔ canonical xlsx title length120 releases exact125-character filename (252.023261ms)
+✔ canonical xlsx title length200 releases exact125-character filename (223.085651ms)
+✔ canonical docx title length120 releases exact125-character filename (192.918438ms)
+✔ canonical docx title length200 releases exact125-character filename (171.811206ms)
+✔ forged126-character stored filename cannot be inspected or downloaded (240.215832ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5235.807531
