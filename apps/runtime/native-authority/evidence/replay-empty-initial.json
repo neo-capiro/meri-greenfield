@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=false empty marker",
+    "apps/runtime/native-authority/test/session-integrity.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-authority-session",
+  "sourceHead": "4b8f30846a20e9ef16bc5d0e253ea8e716e58300",
+  "sourceDiffSha256": "9975ababb24650c32e9f3816aa960c77870626e7264c86e3221e013950a09d7f",
+  "sourceDiffBytes": 852,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T21:19:09.850410+00:00",
+  "durationSeconds": 2.502,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 387107,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/native-authority/evidence/replay-empty-initial.stdout.bin",
+      "bytes": 931,
+      "sha256": "b2c4efff093c06d57f2b17affa3f34d86fb3726646ae14cb6d7cfb3fcd80972a"
+    },
+    {
+      "path": "apps/runtime/native-authority/evidence/replay-empty-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New concrete consistent false empty marker receipt control before exact-stream fix.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

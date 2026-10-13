@@ -57,6 +57,11 @@ export function createDurableSdkSessionOwner(configuration){
     if(prior){tuple(prior);if(prior.append_id!==request.appendId)fail('SDK_SESSION_CORRUPT');if(prior.request_sha256!==inputSha256||prior.receipt_sha256!==hash(prior.receipt))fail('SDK_SESSION_APPEND_CONFLICT');
      let receipt;try{receipt=assertSdkSessionResponseHeaders('append',prior.receipt,inputSha256,request.binding,request.key);}catch{fail('SDK_SESSION_CORRUPT');}
      if(receipt.committed!==true||receipt.appendId!==request.appendId||receipt.entriesSha256!==request.entriesSha256||!Number.isSafeInteger(receipt.offset)||receipt.offset<0||receipt.offset>100000||receipt.offset>offset||!Number.isSafeInteger(receipt.added)||receipt.added<0||receipt.added>entries.length||receipt.offset!==request.expectedOffset+receipt.added)fail('SDK_SESSION_CORRUPT');
+     const retained=(await query('SELECT * FROM meri_conversations.sdk_session_entries WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 ORDER BY sequence',args)).rows;
+     let sequence=0;const seen=new Map();for(const entry of retained){tuple(entry,subpath);if(integer(entry.sequence)!==++sequence||entry.entry_sha256!==hash(entry.entry)||entry.entry_uuid!==(entry.entry.uuid??null))fail('SDK_SESSION_CORRUPT');if(sequence<=request.expectedOffset&&entry.entry_uuid!==null){if(seen.has(entry.entry_uuid))fail('SDK_SESSION_CORRUPT');seen.set(entry.entry_uuid,entry.entry_sha256);}}
+     if(sequence!==offset||request.expectedOffset>sequence)fail('SDK_SESSION_CORRUPT');let added=0;
+     for(const entry of entries){const uuid=entry.uuid??null,digest=hash(entry);if(uuid!==null&&seen.has(uuid)){if(seen.get(uuid)!==digest)fail('SDK_SESSION_CORRUPT');continue;}const stored=retained[request.expectedOffset+added++];if(!stored||stored.entry_sha256!==digest||stored.entry_uuid!==uuid)fail('SDK_SESSION_CORRUPT');if(uuid!==null)seen.set(uuid,digest);}
+     if(receipt.added!==added||receipt.offset!==request.expectedOffset+added)fail('SDK_SESSION_CORRUPT');
      await fresh();return receipt;}
     if(request.expectedOffset!==offset)fail('SDK_SESSION_STALE_OFFSET');if(!stream)await query('INSERT INTO meri_conversations.sdk_session_streams(tenant_id,conversation_id,run_id,session_id,subpath) VALUES($1,$2,$3,$4,$5)',args);
     let bytes=integer(row.bytes),count=integer(row.entries_count);const added=[];

@@ -11,6 +11,7 @@ for(const [label,change] of [
  ['uncommitted receipt',r=>{r.committed=false;}],
  ['impossible offset',r=>{r.offset=100001;}],
  ['inconsistent added count',r=>{r.added=0;}],
+ ['coherent but false empty marker acknowledgement',r=>{r.added=0;r.offset=0;}],
  ['undeclared receipt field',r=>{r.nativeQualified=true;}],
 ])test('consistently rehashed retained receipt refuses '+label,async()=>{
  const f=fixture();await f.invoke('register');const call=append([{type:'system',marker:'retained'}]);await f.invoke('append',call);
