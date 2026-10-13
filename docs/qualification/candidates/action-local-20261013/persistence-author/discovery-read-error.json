@@ -1,0 +1,10 @@
+{
+  "command": "rg --files apps/gateway/task-lookup apps/gateway/budget apps/proxy/qualification/state | sort && sed -n ... apps/gateway/task-lookup/tool-budget-execution.mjs",
+  "exitCode": 2,
+  "observedErrors": [
+    "rg: apps/gateway/task-lookup: No such file or directory (os error 2)",
+    "sed: can't read apps/gateway/task-lookup/tool-budget-execution.mjs: No such file or directory"
+  ],
+  "classification": "author path assumption; source is apps/gateway/budget/tool-budget-execution.mjs; corrected read succeeded",
+  "capture": "transcribed tool receipt; no runtime or SQL executed"
+}

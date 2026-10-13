@@ -1,0 +1,58 @@
+{
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "sourceHead": "268de3a040d08c9006083ef0d340ebe2bb3310d7",
+  "references": [
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "unchanged": true
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.mjs",
+      "unchanged": true
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-execution.mjs",
+      "unchanged": true
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "unchanged": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "unchanged": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "unchanged": true
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "unchanged": true
+    },
+    {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "unchanged": true
+    }
+  ],
+  "basePathsChanged": [],
+  "newPaths": [
+    "A\tapps/control/task-lookup/local-integration/README.md",
+    "A\tapps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+    "A\tapps/control/task-lookup/local-integration/fixture-checks.mjs",
+    "A\tapps/control/task-lookup/local-integration/fresh-pool.mjs",
+    "A\tapps/control/task-lookup/local-integration/run-persistence.mjs",
+    "A\tapps/control/task-lookup/local-integration/run-persistence.test.mjs",
+    "A\tdocs/coordination/tasks/CODEX-ACTION-LOCAL-PERSISTENCE-20261013.md",
+    "A\tdocs/qualification/candidates/action-local-20261013/persistence-author/capture-reaped.py",
+    "A\tdocs/qualification/candidates/action-local-20261013/persistence-author/discovery-read-error.json",
+    "A\tdocs/qualification/candidates/action-local-20261013/persistence-author/source-references.json"
+  ],
+  "nativeExecution": "UNRUN",
+  "SQL": "UNRUN",
+  "scope": "read-only hash and Git status audit; not runtime evidence"
+}

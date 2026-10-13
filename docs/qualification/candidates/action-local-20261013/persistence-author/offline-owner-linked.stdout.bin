@@ -1,0 +1,39 @@
+✔ offline claim fault forwards actual call then loses only one selected COMMIT ACK (2.544185ms)
+✔ offline dispatch fault forwards actual call then loses only one selected COMMIT ACK (0.234142ms)
+✔ offline result fault forwards actual call then loses only one selected COMMIT ACK (0.278519ms)
+✔ offline failed COMMIT does not become injected ACK loss or get retried (0.43913ms)
+✔ offline rollback clears fault selection and separate client transactions do not inherit it (0.42554ms)
+✔ offline invalid phase refuses before connect (0.266931ms)
+✔ offline valid local descriptor is detached and source hashes are not authority (0.909668ms)
+✔ offline descriptor refuses host before pool work (1.373715ms)
+✔ offline descriptor refuses mode before pool work (0.335604ms)
+✔ offline descriptor refuses database before pool work (0.36546ms)
+✔ offline descriptor refuses user before pool work (0.2799ms)
+✔ offline descriptor refuses deadlineMs before pool work (3.595696ms)
+✔ offline descriptor refuses port before pool work (0.495765ms)
+✔ offline descriptor getter is not executed (0.23899ms)
+✔ offline mismatched migration bytes HOLD before any SQL or case producer (8.720519ms)
+✔ offline fresh pool is closed exactly once and initial borrowed pool untouched (0.468604ms)
+✔ offline late acquisition after owner close is cleaned once without returning a pool (0.235845ms)
+✔ offline cancelled acquisition cleans its eventual wrapper without borrowed queries (0.361113ms)
+✔ offline returning borrowed pool refuses and does not close it (0.127051ms)
+✔ offline close failure is retained as cleanup UNKNOWN (0.201322ms)
+✔ offline malformed extra/missing-field fresh wrapper still closes known owned resource (0.401354ms)
+✔ offline expired fresh acquisition never calls factory (0.207312ms)
+✔ offline aborted fresh acquisition never calls factory (0.155134ms)
+✔ offline actual retained-row assertion accepts coherent canonical result/events/accounting (13.222969ms)
+✔ offline actual retained-row assertion rejects contradictory completion invocationId (2.284275ms)
+✔ offline actual retained-row assertion rejects contradictory completion reservationId (2.716013ms)
+✔ offline actual retained-row assertion rejects contradictory completion outputBytes (2.393969ms)
+✔ offline retained invocation provenance contradiction is rejected (2.391455ms)
+✔ offline retained invocation provenance contradiction is rejected (1.451522ms)
+✔ offline retained invocation provenance contradiction is rejected (1.448537ms)
+✔ offline retained invocation provenance contradiction is rejected (1.369939ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2561.195333

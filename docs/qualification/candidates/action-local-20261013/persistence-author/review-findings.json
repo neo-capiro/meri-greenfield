@@ -1,0 +1,17 @@
+{
+  "candidate": "cd5c16c8f09f25da1ce9d11583cae6c9d9f5084f",
+  "independentCounterexampleCommit": "a7cacf83028e9d6d376017caa152dba0c8d53cf1",
+  "independentBefore": "6 pass / 6 fail (ownership-evidence-initial)",
+  "rawEvidenceOwner": "review/meri-action-local-persistence-20261013",
+  "findings": [
+    "closable malformed wrapper cleanup",
+    "preexpired acquisition",
+    "preaborted acquisition",
+    "completion invocationId contradiction",
+    "completion reservationId contradiction",
+    "completion outputBytes contradiction"
+  ],
+  "repairedSource": "bd3de7dd9f522ef1da8bc055b9f9147e3c9d8dda",
+  "independentFinalVerdict": "Separate reviewer packet; no author self-acceptance",
+  "native": "UNRUN"
+}
