@@ -25,7 +25,7 @@ function inventory(){
  distribute(other,3128280-bytes([{unsupported:0,metadata}]));
  return {metadata,all};
 }
-test('complete8362-record measured inventory retains exact bytes/tail at100000 nodes; next node refuses',async()=>{
+test('complete8362-record measured inventory retains exact bytes/tail at100000 nodes;100001 now passes and250001 refuses',async()=>{
  const {metadata,all}=inventory(),rows=[{unsupported:0,metadata}];
  assert.equal(rows.length,1);assert.equal(Object.keys(metadata).length,12);assert.equal(all.length,8362);
  assert(fields.every(k=>metadata[k].length>0&&metadata[k].every(r=>r.text.length>0)));
@@ -41,6 +41,8 @@ test('complete8362-record measured inventory retains exact bytes/tail at100000 n
  assert.equal(bytes(rows),3128280);assert.equal(nodes(rows),100000);
  await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture}),e=>e.outcome==='READ_UNAVAILABLE');
  tail.text=original;tail.overflow=true;assert.equal(nodes(rows),100001);assert(bytes(rows)<4194304);
+ const accepted=scripted(options);assert.equal((await prepareOwnedApplicationSchema(accepted.args())).status,'PASS');assert.equal(accepted.log.filter(q=>ddl.includes(q.text)).length,6);assert.equal(accepted.state.commits,1);
+ tail.structuralOverflow=Array(149999).fill(null);assert.equal(nodes(rows),250001);assert(bytes(rows)<4194304);
  const denied=scripted(options);
  await assert.rejects(prepareOwnedApplicationSchema(denied.args()),e=>e.outcome==='NOT_INSTALLED'&&e.stage==='preservation');
  assert.equal(denied.log.filter(q=>ddl.includes(q.text)).length,0);assert.equal(denied.state.commits,0);
