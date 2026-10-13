@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/session-owner.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-authority-session",
+  "sourceHead": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "sourceDiffSha256": "2eb8e68e819fb8b10fbfbaa34d35fc9dd2e86bc178102c7e006984328d0d6684",
+  "sourceDiffBytes": 44871,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T20:52:51.633172+00:00",
+  "durationSeconds": 1.722,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 371372,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/native-authority/evidence/session-bounded.stdout.bin",
+      "bytes": 905,
+      "sha256": "f14e4b6d38dc9e629fd71660d0da75c7b8fc61e90979f5ad107ee0bbe0c1d63a"
+    },
+    {
+      "path": "apps/runtime/native-authority/evidence/session-bounded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

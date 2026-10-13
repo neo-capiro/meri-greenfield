@@ -1,0 +1,34 @@
+{
+  "linksAbsent": {
+    "/workspace/meri-native-authority-session/node_modules": true,
+    "/workspace/meri-native-authority-session/apps/worker/qualification/checkpoint/node_modules/@capiro/meri-contracts": true
+  },
+  "capturedGroups": [
+    {
+      "capture": "session-bounded.json",
+      "group": 371372,
+      "absent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "session-staged.json",
+      "group": 370754,
+      "absent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "session-first.json",
+      "group": 369921,
+      "absent": true,
+      "exitCode": 0
+    }
+  ],
+  "liveCloudDbProviderCalls": false,
+  "migrationApplied": false,
+  "nativeIdentityCorrection": {
+    "inspectedCapiroReference": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "parentExistingBackendPin": "bbb38185058fdc64c204da723943aee055b3dad3",
+    "parentExistingMeriPairPin": "4699fdea910ba25c809725630443198c8ae189e4",
+    "claim": "Existing backend identity/context owner exists; no competing API built; current mapping/native activation remain separate."
+  }
+}

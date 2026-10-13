@@ -1,0 +1,15 @@
+✔ native authority absent fails before any admitted transaction or SQL (1.28286ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (10.50583ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (1.604559ms)
+✔ foreign project key and stale offset cannot append or overwrite original (2.4788ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (2.758227ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (1.641774ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (2.783814ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1668.418762
