@@ -1,0 +1,28 @@
+{
+  "removed": [
+    {
+      "path": "node_modules",
+      "ownedSymlinkRemoved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "ownedSymlinkRemoved": true
+    }
+  ],
+  "donorPreserved": true,
+  "ownedGroups": [
+    {
+      "pgid": 479162,
+      "absent": true
+    },
+    {
+      "pgid": 480115,
+      "absent": true
+    },
+    {
+      "pgid": 480135,
+      "absent": true
+    }
+  ],
+  "remainingOwnedProcesses": 0
+}

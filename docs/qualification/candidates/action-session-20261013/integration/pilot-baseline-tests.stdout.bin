@@ -1,0 +1,33 @@
+✔ independent actual six fresh compositions retain current public DTOs, no approval/effect, exact preludes and cleanup (743.408707ms)
+✔ independent default production composition passes all six without injection (472.655874ms)
+✔ independent one constructor error is redacted and retains all six denominator rows (389.255269ms)
+✔ independent reported task effect makes the real case fail (354.417735ms)
+✔ independent approval issuance makes the real case fail (443.125519ms)
+✔ independent cleanup failure fails its case and never removes later cases (280.174376ms)
+✔ independent coherent but wrong recommendation title cannot pass gold (263.112344ms)
+✔ independent false evidence-ready assertion cannot pass coverage gold (250.815569ms)
+✔ independent coherent draft for another result cannot pass current selection correlation (297.247475ms)
+✔ independent malformed public response cannot become a passing row (320.845351ms)
+✔ independent refusal wrong outcome cannot pass P05 (259.441756ms)
+✔ independent revoked-session source read contradicts P06 even if HTTP refusal is correct (222.779111ms)
+✔ independent wrong mode refuses before acquiring any demo (0.585991ms)
+✔ independent stats failure must still close the acquired session and continue denominator (183.10257ms)
+✔ independent parked cleanup handler is bounded and cannot erase later cases (1236.384252ms)
+✔ independent parked cleanup response body is bounded as well as handler (1235.187973ms)
+✔ independent CLI help and invalid args do not alter environment or launch the graph (1.373734ms)
+✔ six real local compositions have bounded correlated receipts, no approvals/effects and post-close denial (691.597782ms)
+✔ one failed construction remains denominator-visible, next cases run, error content is scrubbed (397.472465ms)
+✔ malformed public response is refused, cleanup still executes and later cases are retained (383.895271ms)
+✔ cleanup failure cannot count as PASS and cannot leak thrown content (409.767511ms)
+✔ wrong mode refuses before any demo allocation (3.089765ms)
+✔ CLI import/help/invalid are inert and do not set source-root environment (43.760696ms)
+✔ diagnostic stats failure still attempts acquired session close (386.832095ms)
+✔ parked post-close handler is bounded and cannot suppress following cases (1339.41302ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10704.548212

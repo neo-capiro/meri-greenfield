@@ -1,0 +1,252 @@
+{
+  "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+  "reviewedSource": "e5ee1858ea8271925cf3d9fdf172743b3903c03a",
+  "originalEntries": 10967,
+  "originalEntriesUnchanged": 10965,
+  "approvedChanges": [
+    "apps/control/action-host/local-integration/case.mjs",
+    "apps/control/action-host/local-integration/ports.mjs"
+  ],
+  "laneManifestMembers": {
+    "author": 23,
+    "review": 24
+  },
+  "testedHead": "e410ae3078c6d9de535bed6dfd4254ec5d918f92",
+  "ownedProcessGroupAbsent": 479162,
+  "passed": 58,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "only two allocated existing case files changed",
+      "pass": true
+    },
+    {
+      "name": "all original tests public contracts and evidence retained",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/local-integration/case.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/local-integration/ports.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/session/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/session/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed source apps/control/action-host/session/session.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local-integration/case.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local-integration/ports.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/session.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-SESSION-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-SESSION-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/canonical-http.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/canonical-http.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/canonical-http.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/first-session.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/first-session.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/first-session.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/http-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/http-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/http-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/revoked-session.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/revoked-session.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/author/revoked-session.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/owner-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/session/http-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-SESSION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-SESSION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-http-reuse.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-http-reuse.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/http-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/http-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/http-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/owner-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/owner-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/owner-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/root-http-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/root-http-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-session-20261013/review/root-http-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "bounded clean passing source capture",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/integrated-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "captured docs/qualification/candidates/action-session-20261013/integration/integrated-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned group freshly absent",
+      "pass": true
+    }
+  ]
+}
