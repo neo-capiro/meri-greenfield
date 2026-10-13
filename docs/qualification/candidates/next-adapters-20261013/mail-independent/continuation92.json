@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/test/mail-context.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-mail-independent",
+  "reviewedCommit": "39333d5c3ff6800515ee814a6eb39105c1793a6a",
+  "worktreeHead": "39333d5c3ff6800515ee814a6eb39105c1793a6a",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 2.306,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 19883,
+  "stderrBytes": 0,
+  "stdoutSha256": "c1aa8a622dc05b4d7122f2234afa688eb2888f87165009e05eb224af74507ccf",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

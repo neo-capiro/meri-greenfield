@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-mail-independent",
+  "reviewedCommit": "39333d5c3ff6800515ee814a6eb39105c1793a6a",
+  "worktreeHead": "39333d5c3ff6800515ee814a6eb39105c1793a6a",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 1.892,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 9612,
+  "stderrBytes": 0,
+  "stdoutSha256": "b1c29db94f59cc80dedd8574513ed050bbb5a68b9452186c68432f544fb5d468",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

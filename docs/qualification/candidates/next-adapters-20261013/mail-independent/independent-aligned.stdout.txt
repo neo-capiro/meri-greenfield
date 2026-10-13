@@ -1,0 +1,210 @@
+TAP version 13
+# {"case":"direct authority broker audience","credentialCalls":1,"fetchCalls":1}
+# {"case":"direct authority command-only actions","credentialCalls":1,"fetchCalls":1}
+# {"case":"direct authority denied decision","credentialCalls":1,"fetchCalls":1}
+# {"case":"direct authority decision ID substitution","credentialCalls":1,"fetchCalls":1}
+# {"case":"direct authority decision scope omission","credentialCalls":1,"fetchCalls":1}
+# {"case":"native Promise assimilation versus inert DTO guard","promiseThenReads":3,"reflectionEffects":0,"credentialGetterEffects":0}
+# Subtest: Borrowed adapter read preserves its original receiver
+not ok 1 - Borrowed adapter read preserves its original receiver
+  ---
+  duration_ms: 5.099249
+  type: 'test'
+  location: '/workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: 'INTERNAL_ERROR'
+  code: 'ERR_TEST_FAILURE'
+  name: 'GatewayDenied'
+  stack: |-
+    safeFailure (file:///workspace/meri-mail-independent/apps/gateway/dispatch/operation-result.mjs:55:10)
+    execute (file:///workspace/meri-mail-independent/apps/gateway/sources/mail/handler.mjs:20:29)
+    TestContext.<anonymous> (file:///workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:29:32)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.start (node:internal/test_runner/test:1242:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+  ...
+# Subtest: Direct internal mail port refuses incoherent broker audience before credential lookup
+not ok 2 - Direct internal mail port refuses incoherent broker audience before credential lookup
+  ---
+  duration_ms: 23.331664
+  type: 'test'
+  location: '/workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:37:3'
+  failureType: 'testCodeFailure'
+  error: 'Structural effect-authority mismatch must fail admission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:40:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Direct internal mail port refuses incoherent command-only actions before credential lookup
+not ok 3 - Direct internal mail port refuses incoherent command-only actions before credential lookup
+  ---
+  duration_ms: 3.634374
+  type: 'test'
+  location: '/workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:37:3'
+  failureType: 'testCodeFailure'
+  error: 'Structural effect-authority mismatch must fail admission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:40:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Direct internal mail port refuses incoherent denied decision before credential lookup
+not ok 4 - Direct internal mail port refuses incoherent denied decision before credential lookup
+  ---
+  duration_ms: 2.775658
+  type: 'test'
+  location: '/workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:37:3'
+  failureType: 'testCodeFailure'
+  error: 'Structural effect-authority mismatch must fail admission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:40:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Direct internal mail port refuses incoherent decision ID substitution before credential lookup
+not ok 5 - Direct internal mail port refuses incoherent decision ID substitution before credential lookup
+  ---
+  duration_ms: 8.53779
+  type: 'test'
+  location: '/workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:37:3'
+  failureType: 'testCodeFailure'
+  error: 'Structural effect-authority mismatch must fail admission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:40:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Direct internal mail port refuses incoherent decision scope omission before credential lookup
+not ok 6 - Direct internal mail port refuses incoherent decision scope omission before credential lookup
+  ---
+  duration_ms: 2.661427
+  type: 'test'
+  location: '/workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:37:3'
+  failureType: 'testCodeFailure'
+  error: 'Structural effect-authority mismatch must fail admission'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-mail-independent/docs/qualification/candidates/next-adapters-20261013/mail-independent/independent.test.mjs:40:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual canonical dispatcher denies broker audience before source credentials
+ok 7 - Actual canonical dispatcher denies broker audience before source credentials
+  ---
+  duration_ms: 1.33491
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies command-only actions before source credentials
+ok 8 - Actual canonical dispatcher denies command-only actions before source credentials
+  ---
+  duration_ms: 0.418387
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies denied decision before source credentials
+ok 9 - Actual canonical dispatcher denies denied decision before source credentials
+  ---
+  duration_ms: 1.344694
+  type: 'test'
+  ...
+# Subtest: Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence
+ok 10 - Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence
+  ---
+  duration_ms: 10.161112
+  type: 'test'
+  ...
+# Subtest: Malformed nested later-page mailbox cannot pass actual dispatcher release
+ok 11 - Malformed nested later-page mailbox cannot pass actual dispatcher release
+  ---
+  duration_ms: 6.755741
+  type: 'test'
+  ...
+# Subtest: Current authority revocation after source bytes blocks dispatcher release/settlement
+ok 12 - Current authority revocation after source bytes blocks dispatcher release/settlement
+  ---
+  duration_ms: 3.268166
+  type: 'test'
+  ...
+# Subtest: Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash
+ok 13 - Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash
+  ---
+  duration_ms: 8.016459
+  type: 'test'
+  ...
+# Subtest: UTF16 one-unit sections may split astral text and recombine without verified upgrade
+ok 14 - UTF16 one-unit sections may split astral text and recombine without verified upgrade
+  ---
+  duration_ms: 4.447553
+  type: 'test'
+  ...
+# Subtest: Hostile credential data getters and Proxy reflection refuse without Fetch
+ok 15 - Hostile credential data getters and Proxy reflection refuse without Fetch
+  ---
+  duration_ms: 4.467493
+  type: 'test'
+  ...
+# Subtest: Caller input/authority accessor and Proxy refuse before credentials
+ok 16 - Caller input/authority accessor and Proxy refuse before credentials
+  ---
+  duration_ms: 0.669303
+  type: 'test'
+  ...
+# Subtest: Opaque request digest/metadata receipt edits refuse before Fetch
+ok 17 - Opaque request digest/metadata receipt edits refuse before Fetch
+  ---
+  duration_ms: 2.71046
+  type: 'test'
+  ...
+# Subtest: Actual Response short content-length refuses and unlocks owned body
+ok 18 - Actual Response short content-length refuses and unlocks owned body
+  ---
+  duration_ms: 1.076252
+  type: 'test'
+  ...
+# Subtest: Actual Response invalid UTF8 refuses and unlocks owned body
+ok 19 - Actual Response invalid UTF8 refuses and unlocks owned body
+  ---
+  duration_ms: 0.910104
+  type: 'test'
+  ...
+# Subtest: Actual Response compressed body refuses and unlocks owned body
+ok 20 - Actual Response compressed body refuses and unlocks owned body
+  ---
+  duration_ms: 0.8409
+  type: 'test'
+  ...
+# Subtest: Malformed response status cancels an unread owned body without waiting on transport cancellation
+ok 21 - Malformed response status cancels an unread owned body without waiting on transport cancellation
+  ---
+  duration_ms: 0.903553
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 15
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1867.468581
