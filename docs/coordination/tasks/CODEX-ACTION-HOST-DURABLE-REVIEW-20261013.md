@@ -8,3 +8,5 @@ Base: `f8e3507307640ee6b4904782cfb20f2b05e5e7b0`. Criteria frozen before author 
 4. Lost ACK, uncertain effect, cancellation and deadline preserve liability and refuse automatic redispatch/refund. Fresh read/approval/current authority checks apply after reconstruction and at release. Stale, revoked, mismatched identities refuse.
 5. Borrow pools/ports; no end/close calls on caller resources. Inert import/construction, finite operation checks and resource release remain canonical.
 6. Preserve every original source/test and raw failure. Use meaningful focused controls with ≤240s captures, exact source/packet audit and owned group absence; remove only own temporary dependencies. Native SQL/service/provider/model/cloud/runtime gates remain UNRUN. No recursive delegation.
+
+Root clarification28a7d9de before candidate: default-disabled blocks new lookup before delivery SQL and command effects. Retained lookup reads remain canonical current-authorized. Disabled command.readOutcome retains its existing refusal; no new observer semantics. Added independent control for this distinction.
