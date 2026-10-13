@@ -28,7 +28,10 @@ export function createMailFixture(id = 'mail.list_messages', {client = false} = 
   const subject = {kind: client ? 'client' : 'personal', entityType: client ? 'client' : 'user',
     entityIds: [client ? clientId : binding.actorId], tenantId: binding.tenantId, actorId: binding.actorId,
     authorizationDecisionId: uuid('6'), policyRevision: mailboxScope.policyRevision, scopes, rosterVersionId: null};
-  const authority = {binding, claims, subject, policyRevision: mailboxScope.policyRevision, sourceIds: ['mail'], deadlineMs: NOW+10000};
+  const decision = {decisionId: subject.authorizationDecisionId, actor: {tenantId: binding.tenantId, actorId: binding.actorId},
+    operation: `${operation.id}@${operation.version}`, scopes, policyRevision: mailboxScope.policyRevision,
+    evaluatedAt: new Date(NOW).toISOString(), decision: 'allowed', reasonCode: 'SYNTHETIC_ONLY'};
+  const authority = {binding, claims, subject, decision, policyRevision: mailboxScope.policyRevision, sourceIds: ['mail'], deadlineMs: NOW+10000};
   const requestedSubject = client ? {kind: 'client', entityId: clientId} : {kind: 'personal'};
   const args = id === 'mail.read_thread' ? {subject: requestedSubject, threadId: uuid('c'), limit: 1}
     : {subject: requestedSubject, limit: 1, ...(id === 'mail.search_messages' ? {query: '  revised allocation  '} : {})};

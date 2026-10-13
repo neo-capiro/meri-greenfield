@@ -1,0 +1,652 @@
+TAP version 13
+# Subtest: mail.list_messages: real loopback Fetch, byte decoder and handler preserve the canonical page
+ok 1 - mail.list_messages: real loopback Fetch, byte decoder and handler preserve the canonical page
+  ---
+  duration_ms: 35.763379
+  type: 'test'
+  ...
+# Subtest: mail.search_messages: real loopback Fetch, byte decoder and handler preserve the canonical page
+ok 2 - mail.search_messages: real loopback Fetch, byte decoder and handler preserve the canonical page
+  ---
+  duration_ms: 9.942687
+  type: 'test'
+  ...
+# Subtest: mail.read_thread: real loopback Fetch, byte decoder and handler preserve the canonical page
+ok 3 - mail.read_thread: real loopback Fetch, byte decoder and handler preserve the canonical page
+  ---
+  duration_ms: 11.846467
+  type: 'test'
+  ...
+# Subtest: mail.list_messages: exact selected client and mailbox remain scoped independently of connection status
+ok 4 - mail.list_messages: exact selected client and mailbox remain scoped independently of connection status
+  ---
+  duration_ms: 4.056434
+  type: 'test'
+  ...
+# Subtest: mail.search_messages: exact selected client and mailbox remain scoped independently of connection status
+ok 5 - mail.search_messages: exact selected client and mailbox remain scoped independently of connection status
+  ---
+  duration_ms: 2.918439
+  type: 'test'
+  ...
+# Subtest: mail.read_thread: exact selected client and mailbox remain scoped independently of connection status
+ok 6 - mail.read_thread: exact selected client and mailbox remain scoped independently of connection status
+  ---
+  duration_ms: 2.64483
+  type: 'test'
+  ...
+# Subtest: mail previews exclude a late-body decision; exact UTF-16 continuation retrieves it without upgrading verification
+ok 7 - mail previews exclude a late-body decision; exact UTF-16 continuation retrieves it without upgrading verification
+  ---
+  duration_ms: 6.867463
+  type: 'test'
+  ...
+# Subtest: mail.list_messages: anchor, filters and advancing offset are transported exactly; history stays with dispatcher
+ok 8 - mail.list_messages: anchor, filters and advancing offset are transported exactly; history stays with dispatcher
+  ---
+  duration_ms: 2.285402
+  type: 'test'
+  ...
+# Subtest: mail.search_messages: anchor, filters and advancing offset are transported exactly; history stays with dispatcher
+ok 9 - mail.search_messages: anchor, filters and advancing offset are transported exactly; history stays with dispatcher
+  ---
+  duration_ms: 2.14404
+  type: 'test'
+  ...
+# Subtest: mail empty/unknown count 0 does not become an absence claim
+ok 10 - mail empty/unknown count 0 does not become an absence claim
+  ---
+  duration_ms: 1.829669
+  type: 'test'
+  ...
+# Subtest: mail empty/unknown count null does not become an absence claim
+ok 11 - mail empty/unknown count null does not become an absence claim
+  ---
+  duration_ms: 2.145302
+  type: 'test'
+  ...
+# Subtest: missing stored body/version/hash remain explicit unknowns
+ok 12 - missing stored body/version/hash remain explicit unknowns
+  ---
+  duration_ms: 2.067866
+  type: 'test'
+  ...
+# Subtest: mail credential tenant substitution refuses before Fetch
+ok 13 - mail credential tenant substitution refuses before Fetch
+  ---
+  duration_ms: 1.061559
+  type: 'test'
+  ...
+# Subtest: mail credential actor substitution refuses before Fetch
+ok 14 - mail credential actor substitution refuses before Fetch
+  ---
+  duration_ms: 0.795982
+  type: 'test'
+  ...
+# Subtest: mail credential conversation substitution refuses before Fetch
+ok 15 - mail credential conversation substitution refuses before Fetch
+  ---
+  duration_ms: 0.68136
+  type: 'test'
+  ...
+# Subtest: mail credential run substitution refuses before Fetch
+ok 16 - mail credential run substitution refuses before Fetch
+  ---
+  duration_ms: 0.77474
+  type: 'test'
+  ...
+# Subtest: mail credential attempt substitution refuses before Fetch
+ok 17 - mail credential attempt substitution refuses before Fetch
+  ---
+  duration_ms: 0.905565
+  type: 'test'
+  ...
+# Subtest: mail credential worker substitution refuses before Fetch
+ok 18 - mail credential worker substitution refuses before Fetch
+  ---
+  duration_ms: 0.677314
+  type: 'test'
+  ...
+# Subtest: mail credential fence substitution refuses before Fetch
+ok 19 - mail credential fence substitution refuses before Fetch
+  ---
+  duration_ms: 0.603293
+  type: 'test'
+  ...
+# Subtest: mail credential mailbox substitution refuses before Fetch
+ok 20 - mail credential mailbox substitution refuses before Fetch
+  ---
+  duration_ms: 0.775731
+  type: 'test'
+  ...
+# Subtest: mail credential client substitution refuses before Fetch
+ok 21 - mail credential client substitution refuses before Fetch
+  ---
+  duration_ms: 0.749632
+  type: 'test'
+  ...
+# Subtest: mail credential operation substitution refuses before Fetch
+ok 22 - mail credential operation substitution refuses before Fetch
+  ---
+  duration_ms: 0.671615
+  type: 'test'
+  ...
+# Subtest: mail credential version substitution refuses before Fetch
+ok 23 - mail credential version substitution refuses before Fetch
+  ---
+  duration_ms: 0.616884
+  type: 'test'
+  ...
+# Subtest: mail credential digest substitution refuses before Fetch
+ok 24 - mail credential digest substitution refuses before Fetch
+  ---
+  duration_ms: 0.687179
+  type: 'test'
+  ...
+# Subtest: mail credential requestDigest substitution refuses before Fetch
+ok 25 - mail credential requestDigest substitution refuses before Fetch
+  ---
+  duration_ms: 0.655792
+  type: 'test'
+  ...
+# Subtest: mail credential metadata substitution refuses before Fetch
+ok 26 - mail credential metadata substitution refuses before Fetch
+  ---
+  duration_ms: 0.616893
+  type: 'test'
+  ...
+# Subtest: mail credential source substitution refuses before Fetch
+ok 27 - mail credential source substitution refuses before Fetch
+  ---
+  duration_ms: 0.695942
+  type: 'test'
+  ...
+# Subtest: mail credential policy substitution refuses before Fetch
+ok 28 - mail credential policy substitution refuses before Fetch
+  ---
+  duration_ms: 0.643263
+  type: 'test'
+  ...
+# Subtest: mail credential expired substitution refuses before Fetch
+ok 29 - mail credential expired substitution refuses before Fetch
+  ---
+  duration_ms: 0.595181
+  type: 'test'
+  ...
+# Subtest: mail credential newline substitution refuses before Fetch
+ok 30 - mail credential newline substitution refuses before Fetch
+  ---
+  duration_ms: 0.620118
+  type: 'test'
+  ...
+# Subtest: mail credential oversized substitution refuses before Fetch
+ok 31 - mail credential oversized substitution refuses before Fetch
+  ---
+  duration_ms: 0.631856
+  type: 'test'
+  ...
+# Subtest: mail source binding substitution or unsupported truth claim refuses
+ok 32 - mail source binding substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.305134
+  type: 'test'
+  ...
+# Subtest: mail source subject substitution or unsupported truth claim refuses
+ok 33 - mail source subject substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.305675
+  type: 'test'
+  ...
+# Subtest: mail source operation substitution or unsupported truth claim refuses
+ok 34 - mail source operation substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.109522
+  type: 'test'
+  ...
+# Subtest: mail source digest substitution or unsupported truth claim refuses
+ok 35 - mail source digest substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.218244
+  type: 'test'
+  ...
+# Subtest: mail source selection substitution or unsupported truth claim refuses
+ok 36 - mail source selection substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.177773
+  type: 'test'
+  ...
+# Subtest: mail source anchor substitution or unsupported truth claim refuses
+ok 37 - mail source anchor substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.372325
+  type: 'test'
+  ...
+# Subtest: mail source mailbox substitution or unsupported truth claim refuses
+ok 38 - mail source mailbox substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.570241
+  type: 'test'
+  ...
+# Subtest: mail source source substitution or unsupported truth claim refuses
+ok 39 - mail source source substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.133968
+  type: 'test'
+  ...
+# Subtest: mail source authority substitution or unsupported truth claim refuses
+ok 40 - mail source authority substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.199596
+  type: 'test'
+  ...
+# Subtest: mail source verified substitution or unsupported truth claim refuses
+ok 41 - mail source verified substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.116062
+  type: 'test'
+  ...
+# Subtest: mail source absence substitution or unsupported truth claim refuses
+ok 42 - mail source absence substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.100658
+  type: 'test'
+  ...
+# Subtest: mail source complete substitution or unsupported truth claim refuses
+ok 43 - mail source complete substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.3487
+  type: 'test'
+  ...
+# Subtest: mail source reads substitution or unsupported truth claim refuses
+ok 44 - mail source reads substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.368539
+  type: 'test'
+  ...
+# Subtest: mail source snapshot substitution or unsupported truth claim refuses
+ok 45 - mail source snapshot substitution or unsupported truth claim refuses
+  ---
+  duration_ms: 1.096572
+  type: 'test'
+  ...
+# Subtest: mail thread offset counterexample refuses
+ok 46 - mail thread offset counterexample refuses
+  ---
+  duration_ms: 1.48258
+  type: 'test'
+  ...
+# Subtest: mail thread length counterexample refuses
+ok 47 - mail thread length counterexample refuses
+  ---
+  duration_ms: 1.250362
+  type: 'test'
+  ...
+# Subtest: mail thread thread counterexample refuses
+ok 48 - mail thread thread counterexample refuses
+  ---
+  duration_ms: 1.323712
+  type: 'test'
+  ...
+# Subtest: mail thread message counterexample refuses
+ok 49 - mail thread message counterexample refuses
+  ---
+  duration_ms: 1.332284
+  type: 'test'
+  ...
+# Subtest: mail thread bodyMissing counterexample refuses
+ok 50 - mail thread bodyMissing counterexample refuses
+  ---
+  duration_ms: 1.36253
+  type: 'test'
+  ...
+# Subtest: mail thread unknownTotal counterexample refuses
+ok 51 - mail thread unknownTotal counterexample refuses
+  ---
+  duration_ms: 1.290382
+  type: 'test'
+  ...
+# Subtest: wrong normalized request, body-offset selection and subject refuse before credentials
+ok 52 - wrong normalized request, body-offset selection and subject refuse before credentials
+  ---
+  duration_ms: 2.511451
+  type: 'test'
+  ...
+# Subtest: untrusted operation, endpoint overrides and source-context fields refuse without I/O
+ok 53 - untrusted operation, endpoint overrides and source-context fields refuse without I/O
+  ---
+  duration_ms: 0.408251
+  type: 'test'
+  ...
+# Subtest: proxy, accessor and forged AbortSignal admission never executes their traps
+ok 54 - proxy, accessor and forged AbortSignal admission never executes their traps
+  ---
+  duration_ms: 0.663333
+  type: 'test'
+  ...
+# Subtest: credential accessor and proxy receipt fail without evaluating secret getters
+ok 55 - credential accessor and proxy receipt fail without evaluating secret getters
+  ---
+  duration_ms: 1.390332
+  type: 'test'
+  ...
+# Subtest: mail response status is bounded and errors disclose no source text
+ok 56 - mail response status is bounded and errors disclose no source text
+  ---
+  duration_ms: 1.452866
+  type: 'test'
+  ...
+# Subtest: mail response media is bounded and errors disclose no source text
+ok 57 - mail response media is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.925215
+  type: 'test'
+  ...
+# Subtest: mail response encoding is bounded and errors disclose no source text
+ok 58 - mail response encoding is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.820539
+  type: 'test'
+  ...
+# Subtest: mail response length is bounded and errors disclose no source text
+ok 59 - mail response length is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.946667
+  type: 'test'
+  ...
+# Subtest: mail response overflow is bounded and errors disclose no source text
+ok 60 - mail response overflow is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.858015
+  type: 'test'
+  ...
+# Subtest: mail response utf8 is bounded and errors disclose no source text
+ok 61 - mail response utf8 is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.892176
+  type: 'test'
+  ...
+# Subtest: mail response json is bounded and errors disclose no source text
+ok 62 - mail response json is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.871054
+  type: 'test'
+  ...
+# Subtest: mail response object is bounded and errors disclose no source text
+ok 63 - mail response object is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.659358
+  type: 'test'
+  ...
+# Subtest: mail response redirect is bounded and errors disclose no source text
+ok 64 - mail response redirect is bounded and errors disclose no source text
+  ---
+  duration_ms: 0.851515
+  type: 'test'
+  ...
+# Subtest: mail deadline bounds parked credentials and retires late body
+ok 65 - mail deadline bounds parked credentials and retires late body
+  ---
+  duration_ms: 26.535867
+  type: 'test'
+  ...
+# Subtest: mail cancellation bounds parked credentials and retires late body
+ok 66 - mail cancellation bounds parked credentials and retires late body
+  ---
+  duration_ms: 1.335439
+  type: 'test'
+  ...
+# Subtest: mail deadline bounds parked fetch and retires late body
+ok 67 - mail deadline bounds parked fetch and retires late body
+  ---
+  duration_ms: 26.365338
+  type: 'test'
+  ...
+# Subtest: mail cancellation bounds parked fetch and retires late body
+ok 68 - mail cancellation bounds parked fetch and retires late body
+  ---
+  duration_ms: 1.144274
+  type: 'test'
+  ...
+# Subtest: mail deadline bounds parked body and retires late body
+ok 69 - mail deadline bounds parked body and retires late body
+  ---
+  duration_ms: 26.577763
+  type: 'test'
+  ...
+# Subtest: mail cancellation bounds parked body and retires late body
+ok 70 - mail cancellation bounds parked body and retires late body
+  ---
+  duration_ms: 1.069962
+  type: 'test'
+  ...
+# Subtest: credentials shorten the inherited lifetime and expiry prevents any fetch
+ok 71 - credentials shorten the inherited lifetime and expiry prevents any fetch
+  ---
+  duration_ms: 0.742151
+  type: 'test'
+  ...
+# Subtest: mail.list_messages: handler preserves the captured ordinary method's WeakMap receiver
+ok 72 - mail.list_messages: handler preserves the captured ordinary method's WeakMap receiver
+  ---
+  duration_ms: 11.526498
+  type: 'test'
+  ...
+# Subtest: mail.search_messages: handler preserves the captured ordinary method's WeakMap receiver
+ok 73 - mail.search_messages: handler preserves the captured ordinary method's WeakMap receiver
+  ---
+  duration_ms: 2.270329
+  type: 'test'
+  ...
+# Subtest: mail.read_thread: handler preserves the captured ordinary method's WeakMap receiver
+ok 74 - mail.read_thread: handler preserves the captured ordinary method's WeakMap receiver
+  ---
+  duration_ms: 5.092706
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority brokerAudience refuses before source effects
+ok 75 - mail adapter: inconsistent authority brokerAudience refuses before source effects
+  ---
+  duration_ms: 1.033557
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority brokerAudience refuses before source effects
+ok 76 - mail handler: inconsistent authority brokerAudience refuses before source effects
+  ---
+  duration_ms: 0.615312
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority commandOnly refuses before source effects
+ok 77 - mail adapter: inconsistent authority commandOnly refuses before source effects
+  ---
+  duration_ms: 0.624855
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority commandOnly refuses before source effects
+ok 78 - mail handler: inconsistent authority commandOnly refuses before source effects
+  ---
+  duration_ms: 0.463304
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority deniedDecision refuses before source effects
+ok 79 - mail adapter: inconsistent authority deniedDecision refuses before source effects
+  ---
+  duration_ms: 0.423054
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority deniedDecision refuses before source effects
+ok 80 - mail handler: inconsistent authority deniedDecision refuses before source effects
+  ---
+  duration_ms: 0.535962
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionId refuses before source effects
+ok 81 - mail adapter: inconsistent authority decisionId refuses before source effects
+  ---
+  duration_ms: 0.477255
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionId refuses before source effects
+ok 82 - mail handler: inconsistent authority decisionId refuses before source effects
+  ---
+  duration_ms: 0.476934
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionOperation refuses before source effects
+ok 83 - mail adapter: inconsistent authority decisionOperation refuses before source effects
+  ---
+  duration_ms: 0.40089
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionOperation refuses before source effects
+ok 84 - mail handler: inconsistent authority decisionOperation refuses before source effects
+  ---
+  duration_ms: 0.38725
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionVersion refuses before source effects
+ok 85 - mail adapter: inconsistent authority decisionVersion refuses before source effects
+  ---
+  duration_ms: 0.356634
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionVersion refuses before source effects
+ok 86 - mail handler: inconsistent authority decisionVersion refuses before source effects
+  ---
+  duration_ms: 0.328332
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionTenant refuses before source effects
+ok 87 - mail adapter: inconsistent authority decisionTenant refuses before source effects
+  ---
+  duration_ms: 0.396653
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionTenant refuses before source effects
+ok 88 - mail handler: inconsistent authority decisionTenant refuses before source effects
+  ---
+  duration_ms: 0.343304
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionActor refuses before source effects
+ok 89 - mail adapter: inconsistent authority decisionActor refuses before source effects
+  ---
+  duration_ms: 0.353449
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionActor refuses before source effects
+ok 90 - mail handler: inconsistent authority decisionActor refuses before source effects
+  ---
+  duration_ms: 0.372909
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionPolicy refuses before source effects
+ok 91 - mail adapter: inconsistent authority decisionPolicy refuses before source effects
+  ---
+  duration_ms: 0.364676
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionPolicy refuses before source effects
+ok 92 - mail handler: inconsistent authority decisionPolicy refuses before source effects
+  ---
+  duration_ms: 0.464766
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionScopesMissing refuses before source effects
+ok 93 - mail adapter: inconsistent authority decisionScopesMissing refuses before source effects
+  ---
+  duration_ms: 0.466839
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionScopesMissing refuses before source effects
+ok 94 - mail handler: inconsistent authority decisionScopesMissing refuses before source effects
+  ---
+  duration_ms: 0.344987
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionScopesSubstituted refuses before source effects
+ok 95 - mail adapter: inconsistent authority decisionScopesSubstituted refuses before source effects
+  ---
+  duration_ms: 0.398266
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionScopesSubstituted refuses before source effects
+ok 96 - mail handler: inconsistent authority decisionScopesSubstituted refuses before source effects
+  ---
+  duration_ms: 0.353119
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionAbsent refuses before source effects
+ok 97 - mail adapter: inconsistent authority decisionAbsent refuses before source effects
+  ---
+  duration_ms: 0.293539
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionAbsent refuses before source effects
+ok 98 - mail handler: inconsistent authority decisionAbsent refuses before source effects
+  ---
+  duration_ms: 0.279268
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority decisionExtraField refuses before source effects
+ok 99 - mail adapter: inconsistent authority decisionExtraField refuses before source effects
+  ---
+  duration_ms: 0.451686
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority decisionExtraField refuses before source effects
+ok 100 - mail handler: inconsistent authority decisionExtraField refuses before source effects
+  ---
+  duration_ms: 0.385097
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority authorityExtraField refuses before source effects
+ok 101 - mail adapter: inconsistent authority authorityExtraField refuses before source effects
+  ---
+  duration_ms: 0.276494
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority authorityExtraField refuses before source effects
+ok 102 - mail handler: inconsistent authority authorityExtraField refuses before source effects
+  ---
+  duration_ms: 0.250525
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority claimsForeignScope refuses before source effects
+ok 103 - mail adapter: inconsistent authority claimsForeignScope refuses before source effects
+  ---
+  duration_ms: 0.410675
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority claimsForeignScope refuses before source effects
+ok 104 - mail handler: inconsistent authority claimsForeignScope refuses before source effects
+  ---
+  duration_ms: 0.415862
+  type: 'test'
+  ...
+# Subtest: mail adapter: inconsistent authority claimsForeignScopePolicy refuses before source effects
+ok 105 - mail adapter: inconsistent authority claimsForeignScopePolicy refuses before source effects
+  ---
+  duration_ms: 0.338016
+  type: 'test'
+  ...
+# Subtest: mail handler: inconsistent authority claimsForeignScopePolicy refuses before source effects
+ok 106 - mail handler: inconsistent authority claimsForeignScopePolicy refuses before source effects
+  ---
+  duration_ms: 0.407941
+  type: 'test'
+  ...
+# Subtest: mail canonical authority can retain broader valid capabilities while releasing only exact read scope
+ok 107 - mail canonical authority can retain broader valid capabilities while releasing only exact read scope
+  ---
+  duration_ms: 20.216611
+  type: 'test'
+  ...
+1..107
+# tests 107
+# suites 0
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1902.532427
