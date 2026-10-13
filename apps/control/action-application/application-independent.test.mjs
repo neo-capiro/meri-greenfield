@@ -9,7 +9,8 @@ function request(route,body,options={}){return new Request(prefix+route,{method:
 async function fixture(changes={}){
  const t=await setup(),state={resolves:0,queries:0,reads:0,authorizations:0,approved:false,revoked:false,serial:100,disposed:0},hooks={};
  const stored=[...t.pool.lookups.values()][0].record.binding.context;
- const lookup={async lookup(call){state.queries++;if(hooks.lookup)return hooks.lookup(call);return t.lookup.lookup(call);},async read(call){state.reads++;if(hooks.read)return hooks.read(call);return t.lookup.read(call);},close(){state.disposed++;}};
+ const lookup={async lookup(call){state.queries++;if(hooks.lookup)return hooks.lookup(call);return t.lookup.lookup(call);},async read(call){state.reads++;if(hooks.read)return hooks.read(call);return t.lookup.read(call);}};
+ t.pool.pool.end=()=>{state.disposed++;};
  const resolveSession=async call=>{
   state.resolves++;if(hooks.resolve)await hooks.resolve(call);
   if(state.revoked||call.credential!=='synthetic-session')throw Object.assign(Error('SECRET_SESSION_DETAIL'),{code:'ACCESS_DENIED'});
@@ -58,7 +59,7 @@ test('application independent known short session expiry clips metadata original
  const f=await fixture();let bound;f.hooks.session=s=>s.expiresAtMs=f.t.clock()+50;f.t.hooks.metadata=call=>{bound=call.deadlineMs;f.t.f.state.now+=51;};
  const d=await f.call('draft',{selection:f.t.wanted});assert.equal(d.response.status,200,d.text);const start=f.t.clock(),r=await f.call('prepare',{draft:d.value});refused(r);assert.ok(bound<=start+50);assert.equal(f.t.f.state.fetches,0);
 });
-test('application independent query known stored release failure remains RESULT_NOT_RELEASED',async()=>{const f=await fixture();f.hooks.read=async()=>{throw Object.assign(Error('SECRET_READ'),{code:'ACCESS_DENIED'});};const r=await f.call('query',{request:{limit:20}});refused(r);assert.equal(r.value.error.outcome,'RESULT_NOT_RELEASED');assert.equal(f.state.queries,1);});
+test('application independent query known stored release failure remains RESULT_NOT_RELEASED',async()=>{const f=await fixture();f.hooks.read=async()=>{throw Object.assign(Error('SECRET_READ'),{code:'ACCESS_DENIED',outcome:'NOT_DISPATCHED'});};const r=await f.call('query',{request:{limit:20}});refused(r);assert.equal(r.value.error.outcome,'RESULT_NOT_RELEASED');assert.equal(f.state.queries,1);});
 test('application independent opaque query UNKNOWN is preserved without redispatch',async()=>{const f=await fixture();f.hooks.lookup=async()=>{throw Object.assign(Error('SECRET_SQL'),{code:'LOOKUP_UNAVAILABLE',outcome:'UNKNOWN'});};const r=await f.call('query',{request:{limit:20}});refused(r);assert.equal(r.value.error.outcome,'UNKNOWN');assert.equal(f.state.queries,1);});
 test('application independent forged proposal never reaches source',async()=>{const f=await fixture(),p=await f.prepared();f.state.approved=true;const proposal=clone(p.proposal);proposal.command.arguments.title='Tampered';const r=await f.call('execute',{proposal});refused(r);assert.equal(f.t.f.state.fetches,0);});
 test('application independent conflicting server client binding refuses',async()=>{const f=await fixture();f.hooks.session=s=>s.lookupContext.selectedClientId=id(99);const r=await f.call('draft',{selection:f.t.wanted});refused(r);assert.equal(f.t.metadataCalls(),0);});
