@@ -9,7 +9,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 
 export const qualificationJsonataSha256='8327cafae2779d31512939cc45eba2f1b3fff3c09cdf7906ed457c31f198302b';
-const observers=new WeakSet(),observations=new WeakMap();
+const observers=new WeakMap(),observations=new WeakMap();
 const hash=v=>createHash('sha256').update(canonical(v)).digest('hex');
 const deny=()=>{throw Error('WORKER_OBSERVATION_REFUSED');};
 function worker(value){
@@ -19,6 +19,9 @@ function worker(value){
  return w;
 }
 export function assertQualificationWorkerObserver(value){if(!observers.has(value))deny();return value;}
+export function validateQualificationWorkerRequest(observer,value){
+ assertQualificationWorkerObserver(observer);const w=worker(value),p=observers.get(observer);if(w.qualificationBinding.runId!==p.runUuid)deny();return w;
+}
 export function consumeQualificationWorkerObservation(observer,value,expected,{now,signal}={}){
  assertQualificationWorkerObserver(observer);nativeSignal(signal);
  const record=observations.get(value);observations.delete(value);
@@ -29,14 +32,15 @@ export function consumeQualificationWorkerObservation(observer,value,expected,{n
 export function createQualificationWorkerObserver(configuration){
  const c=own(configuration,['compiledAdmission','jsonataRuntimePath','reads','now'],['maxRequestMs']);
  if(!isCompiledBinding(c.compiledAdmission)||c.compiledAdmission.pins?.wireProfile!==SDK_WIRE_PROFILE||typeof c.now!=='function'||typeof c.jsonataRuntimePath!=='string')deny();
- const p=c.compiledAdmission.pins,reads=own(c.reads,['describeTasks','describeNetworkInterfaces']),maximum=c.maxRequestMs??5000;
+ const p=c.compiledAdmission.pins;if(p.image.endsWith('@sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac'))deny();
+ const reads=own(c.reads,['describeTasks','describeNetworkInterfaces']),maximum=c.maxRequestMs??5000;
  if(Object.values(reads).some(x=>typeof x!=='function')||!Number.isSafeInteger(maximum)||maximum<1||maximum>30000)deny();
  // Fixed public runtime bytes are checked before evaluation. No expression is supplied by callers.
  const bytes=readFileSync(c.jsonataRuntimePath);if(createHash('sha256').update(bytes).digest('hex')!==qualificationJsonataSha256)deny();
  const runtimeModule={exports:{}};new Script(bytes.toString('utf8'),{filename:'pinned-jsonata-2.0.6.js'}).runInNewContext({module:runtimeModule,exports:runtimeModule.exports},{timeout:1000});
  const jsonata=runtimeModule.exports,pred=buildPredicates(p);
  const expressions=Object.fromEntries(Object.entries({coverage:pred.coverage,safeRaw:pred.safeRaw,ownership:pred.ownership,ready:pred.ready,mismatch:pred.mismatch,attachments:pred.attachmentsCompatible,eni:pred.eniGood,eniId:pred.eniIdExpr,task:sdkTaskFacts('$raw.Tasks[0]'),created:sdkCreatedMs(p.timestampEncoding)}).map(([key,source])=>[key,jsonata(source)]));
- const evidenceKind=c.compiledAdmission.runtimeEnabled?'native-read-observation':'synthetic-observation';
+ const evidenceKind='trusted-read-port-observation';
  const observer=Object.freeze({async observe(input,options){
   const w=worker(input),o=own(options,['deadlineMs'],['signal']);nativeSignal(o.signal);
   const startedAtMs=c.now();if(!Number.isSafeInteger(startedAtMs)||w.qualificationBinding.runId!==p.runUuid||w.attemptEndMs>startedAtMs||!Number.isSafeInteger(o.deadlineMs))deny();
@@ -49,15 +53,15 @@ export function createQualificationWorkerObserver(configuration){
    let raw=snapshot(await life.run(()=>reads.describeTasks(data({Cluster:p.clusterArn,Tasks:[ctx.currentArn],Include:['TAGS']}),{signal:life.signal,deadlineMs:cutoff})));check();
    const observedMs=c.now(),vars={raw,ctx,observedMs,states:{result:raw}};
    if(await evaluate('safeRaw',vars)!==true||await evaluate('coverage',vars)!==true)deny();
-   ctx.current=snapshot(await evaluate('task',vars));vars.createdMs=await evaluate('created',vars);
+   ctx.current=snapshot(structuredClone(await evaluate('task',vars)));vars.createdMs=await evaluate('created',vars);
    if(await evaluate('ownership',vars)!==true||await evaluate('ready',vars)!==true||await evaluate('mismatch',vars)!==false||await evaluate('attachments',vars)!==true||ctx.current.lastStatus!=='RUNNING'||ctx.current.desiredStatus!=='RUNNING'||ctx.current.worker?.lastStatus!=='RUNNING')deny();
    const eniId=await evaluate('eniId',vars);if(typeof eniId!=='string')deny();
    const taskSha256=hash(raw);
    raw=snapshot(await life.run(()=>reads.describeNetworkInterfaces(data({NetworkInterfaceIds:[eniId]}),{signal:life.signal,deadlineMs:cutoff})));check();
    if(await evaluate('eni',{raw,ctx})!==true)deny();
    const at=c.now();check();if(at<startedAtMs)deny();
-   const receipt=data({evidenceKind,staticBindingId:c.compiledAdmission.staticBindingId,qualificationBinding:w.qualificationBinding,observedAtMs:at,expiresAtMs:Math.min(cutoff,startedAtMs+5000),taskSha256,eniSha256:hash(raw)});
+   const receipt=data({evidenceKind,predicatesPassed:true,runtimeQualified:false,staticBindingId:c.compiledAdmission.staticBindingId,qualificationBinding:w.qualificationBinding,observedAtMs:at,expiresAtMs:Math.min(cutoff,startedAtMs+5000),taskSha256,eniSha256:hash(raw)});
    const result=Object.freeze({receipt});observations.set(result,{observer,identity:hash(w),startedAtMs,expiresAtMs:receipt.expiresAtMs,receipt});return result;
   }catch{deny();}finally{life.close();}
- }});observers.add(observer);return observer;
+ }});observers.set(observer,p);return observer;
 }

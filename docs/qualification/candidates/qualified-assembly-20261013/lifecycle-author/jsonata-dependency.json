@@ -1,0 +1,10 @@
+{
+  "url": "https://registry.npmjs.org/jsonata/-/jsonata-2.0.6.tgz",
+  "version": "2.0.6",
+  "tarBytes": 187480,
+  "tarSha256": "4b7d22e3a7b897ac58f4086076dcd18ce09d51311027315e879f1c6df3cf8dd3",
+  "runtimeBytes": 291449,
+  "runtimeSha256": "8327cafae2779d31512939cc45eba2f1b3fff3c09cdf7906ed457c31f198302b",
+  "license": "MIT",
+  "nativeCalls": false
+}

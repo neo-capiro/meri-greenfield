@@ -1,0 +1,15 @@
+✔ fixed Python bridge invokes real canonical Grants over scripted SQL; recovery reads without reseed (629.054776ms)
+✔ worker refusal leaves PENDING and never auto-activates/reseeds/compensates (165.257757ms)
+✔ preflight permits only missing schema digest, never returns authority or starts child (25.605133ms)
+✔ same fixture connection and full grant context required before process (23.431694ms)
+✔ parked owned process is killed and close observed at original short deadline (86.20841ms)
+✔ stderr/error content is discarded and no automatic retry follows unknown receipt (40.748947ms)
+✔ post-mutation wrong receipt cannot admit or allow reattempt (82.685741ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4020.672171
