@@ -1,0 +1,77 @@
+✖ actual HTTP issuance uses persisted current state; reconstructed mount and source-off query (91.18244ms)
+✔ closed/default-disabled mount has no authority or persistence IO; override keys rejected (27.318977ms)
+✔ read-only currentRun reconstructs exact persisted full identity and original deadline (21.937908ms)
+✔ fresh persisted refusal: revoked second grant (8.983143ms)
+✔ fresh persisted refusal: grant expired (8.333588ms)
+✔ fresh persisted refusal: quarantine (8.022134ms)
+✔ fresh persisted refusal: fence (11.30872ms)
+✔ fresh persisted refusal: policy (11.997385ms)
+✔ fresh persisted refusal: allocation hash (7.383449ms)
+✔ fresh persisted refusal: retained facts (7.757392ms)
+✔ fresh persisted refusal: allocation numeric mirror (7.385051ms)
+✔ input and configuration refuse substitutions without SQL (6.840483ms)
+✔ lost read COMMIT acknowledgement releases no authority (11.077882ms)
+✔ late connection after deadline releases without BEGIN (26.423882ms)
+✖ newly observed short grant deadline clips a parked subsequent query (108.539163ms)
+✖ mount rejects split budget ledger and unmonitored producer/read credentials (23.291983ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 13
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3283.471775
+
+✖ failing tests:
+
+test at apps/control/admitted-runs/test/mount.test.mjs:6:1
+✖ actual HTTP issuance uses persisted current state; reconstructed mount and source-off query (91.18244ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  401 !== 403
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-author-20261013/apps/control/admitted-runs/test/mount.test.mjs:9:124)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 401,
+    expected: 403,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/test/owner.test.mjs:12:1
+✖ newly observed short grant deadline clips a parked subsequent query (108.539163ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'pending'
+  - 'refused'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-author-20261013/apps/control/admitted-runs/test/owner.test.mjs:12:428)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pending',
+    expected: 'refused',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/test/owner.test.mjs:13:1
+✖ mount rejects split budget ledger and unmonitored producer/read credentials (23.291983ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-author-20261013/apps/control/admitted-runs/test/owner.test.mjs:13:133)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

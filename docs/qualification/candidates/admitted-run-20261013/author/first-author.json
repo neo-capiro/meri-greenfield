@@ -1,0 +1,37 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-admitted-run-author-20261013",
+    "node",
+    "--test",
+    "apps/control/admitted-runs/test/owner.test.mjs",
+    "apps/control/admitted-runs/test/mount.test.mjs"
+  ],
+  "cwd": "/tmp/meri-admitted-run-author-20261013",
+  "sourceHead": "f996c54f487369c47e0b52e9fc2d8d9b851edf47",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:32:19.869361+00:00",
+  "durationSeconds": 3.332,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 488426,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/first-author.stdout.bin",
+      "bytes": 3449,
+      "sha256": "67123a8dc83e05a957ff7d81cde9ce8f2a4067bf42f7354106adb847a0d5eba8"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/author/first-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

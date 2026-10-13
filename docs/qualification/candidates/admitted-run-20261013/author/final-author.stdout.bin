@@ -1,0 +1,28 @@
+✔ canonical read and command authorities use same persisted reader and both refuse revoked configured grant (33.693581ms)
+✔ generic retained authorizer calls current canonical authority and refuses current scopes/client tampering (13.613151ms)
+✔ actual HTTP issuance uses persisted current state; reconstructed mount and source-off query (160.354771ms)
+✔ closed/default-disabled mount has no authority or persistence IO; override keys rejected (18.621278ms)
+✔ actual host receipt cannot escape watched read grant: reservation (25.94175ms)
+✔ actual host receipt cannot escape watched read grant: credential (31.78948ms)
+✔ read-only currentRun reconstructs exact persisted full identity and original deadline (20.309034ms)
+✔ fresh persisted refusal: revoked second grant (10.405144ms)
+✔ fresh persisted refusal: grant expired (7.610349ms)
+✔ fresh persisted refusal: quarantine (7.11899ms)
+✔ fresh persisted refusal: fence (12.183712ms)
+✔ fresh persisted refusal: policy (6.850597ms)
+✔ fresh persisted refusal: allocation hash (6.677866ms)
+✔ fresh persisted refusal: retained facts (7.07262ms)
+✔ fresh persisted refusal: allocation numeric mirror (7.431419ms)
+✔ input and configuration refuse substitutions without SQL (6.764667ms)
+✔ lost read COMMIT acknowledgement releases no authority (6.470645ms)
+✔ late connection after deadline releases without BEGIN (26.758548ms)
+✔ newly observed short grant deadline clips a parked subsequent query (37.810428ms)
+✔ mount rejects split budget ledger and unmonitored producer/read credentials (9.102561ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3196.372787
