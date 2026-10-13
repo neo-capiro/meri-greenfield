@@ -1,0 +1,428 @@
+docs/qualification/candidates/native-structure-20261013/author/structure-before.stdout.bin:81: trailing whitespace.
++  
+docs/qualification/candidates/native-structure-20261013/author/structure-before.stdout.bin:83: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin:74: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin:76: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin:112: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin:114: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin:136: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin:138: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:299: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:302: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:322: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:325: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:345: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:348: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:368: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:371: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:391: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:394: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:414: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:417: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:437: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:440: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:460: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:463: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:483: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:486: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:506: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:509: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:529: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:532: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:552: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:555: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:575: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:578: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:598: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:601: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:621: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:624: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:644: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:647: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:667: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:670: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:690: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:693: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:713: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:716: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:736: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:739: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:759: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:762: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:782: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:785: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:805: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:808: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:828: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:831: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:851: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:854: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:874: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:877: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:897: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:900: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:920: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:923: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:943: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:946: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:966: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:969: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1058: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1060: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1082: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1084: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1106: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1108: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1130: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1132: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1154: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1156: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1178: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1180: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1202: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1204: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1394: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1396: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1432: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1434: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1456: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1458: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1641: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1644: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1665: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1668: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1689: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1692: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1713: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1716: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1737: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1740: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1761: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1764: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1785: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1788: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1809: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1812: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1833: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1836: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1857: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1860: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1881: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1884: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1905: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1908: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1929: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1932: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1953: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1956: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1977: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:1980: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2001: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2004: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2025: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2028: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2049: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2052: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2073: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2076: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2125: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2128: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2149: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2152: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2173: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2176: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2285: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2287: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2309: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2311: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2333: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2335: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2371: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2373: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2395: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2397: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2447: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2449: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2482: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2484: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2506: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2508: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2530: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2532: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2554: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2556: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2578: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2580: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2602: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2604: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2626: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2628: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2650: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2652: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2674: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2676: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2698: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2700: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2736: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2738: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2760: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2762: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2784: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2786: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2847: trailing whitespace.
++  
+docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin:2849: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stdout.bin:16: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stdout.bin:18: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin:98: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin:100: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin:16: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin:18: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stdout.bin:16: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stdout.bin:18: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin:16: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin:54: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stdout.bin:88: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stdout.bin:90: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stdout.bin:109: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stdout.bin:147: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.stdout.bin:16: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.stdout.bin:18: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.stdout.bin:87: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.stdout.bin:89: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin:88: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin:90: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin:109: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin:147: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin:166: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin:168: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.stdout.bin:16: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.stdout.bin:18: trailing whitespace.
++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:2: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:4: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:6: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:8: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:10: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:12: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:14: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:16: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:18: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:20: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:22: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:24: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:26: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:28: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:30: trailing whitespace.
+++  
+docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin:32: trailing whitespace.
+++  

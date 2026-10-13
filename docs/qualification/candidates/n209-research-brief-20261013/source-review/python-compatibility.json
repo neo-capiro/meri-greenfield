@@ -1,0 +1,24 @@
+{
+  "label": "python-compatibility",
+  "argv": [
+    "python3",
+    "-m",
+    "unittest",
+    "apps.control.qualified-application.compatibility-independent.test_compatibility_independent",
+    "apps.proxy.qualification.assembly.test_fixture_compatibility",
+    "apps.proxy.qualification.assembly.test_lifecycle"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.167,
+  "processReaped": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 149,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "4b29cedaadc5220baa004234c6b786835d61c2ed0ffeb6a0cdbbcce6dbc76ca3",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

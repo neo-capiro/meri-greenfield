@@ -1,0 +1,23 @@
+{
+  "label": "contracts-distribution-dependency-rerun",
+  "argv": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 0.683,
+  "processReaped": true,
+  "stdoutBytes": 262,
+  "stderrBytes": 445,
+  "stdoutSha256": "244372199094b8662a1cc3fc6be3db870481e850225c4925e3d7bf13865a27b1",
+  "stderrSha256": "85be3912675f8d54e5395676ed306301b0dcb4492c3df865ac9e74d11505bb2f",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

@@ -1,0 +1,27 @@
+{
+  "label": "whitespace-whole",
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "25e0d29d6f0b6c3de284d13e86bc5f1aa0c00d21",
+    "45c2de24f41402ae3a938a7df09eff78db90d94c"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 2,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 0.009,
+  "processReaped": true,
+  "stdoutBytes": 24947,
+  "stderrBytes": 0,
+  "stdoutSha256": "6e7d2ec882977e3dd0cfdea3ce9b8cc7aade0e72a4cfd33399fadbe0b21e332b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

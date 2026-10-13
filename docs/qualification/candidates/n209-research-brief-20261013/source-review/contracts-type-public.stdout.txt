@@ -1,0 +1,4 @@
+
+> @capiro/meri-contracts@0.1.2 typecheck
+> tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts
+

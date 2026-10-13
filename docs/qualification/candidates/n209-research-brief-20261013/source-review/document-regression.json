@@ -1,0 +1,27 @@
+{
+  "label": "document-regression",
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/test/workbook-application.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "packages/contracts/test/document-application-public.test.mjs",
+    "packages/contracts/test/document-application-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 9.933,
+  "processReaped": true,
+  "stdoutBytes": 120335,
+  "stderrBytes": 0,
+  "stdoutSha256": "d8166c067504a164b3cb38296b822bcb5cbe67b62936b82ac55672099417aa0b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

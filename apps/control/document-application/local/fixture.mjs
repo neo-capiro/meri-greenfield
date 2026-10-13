@@ -5,7 +5,7 @@ import {join,resolve,isAbsolute} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {tmpdir} from 'node:os';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators,validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {createLocalArtifactExecutor} from '../../../artifacts/local-executor.mjs';
 import {createLocalArtifactStore} from '../../../artifacts/local-store.mjs';
@@ -13,7 +13,7 @@ import {createPostgresArtifactService} from '../../../artifacts/postgres-service
 import {createLocalDocumentPorts} from './ports.mjs';
 
 const root = fileURLToPath(new URL('../../../../',import.meta.url));
-export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word'}) {
+export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',skillManifest}) {
   if (mode !== 'synthetic-local' || typeof pythonExecutable !== 'string' || !isAbsolute(pythonExecutable) ||
       !['create_word','create_excel'].includes(operation) ||
       !process.env.MERI_REVIEW_SOURCE_ROOT || resolve(process.env.MERI_REVIEW_SOURCE_ROOT) !== resolve(root)) throw Error('LOCAL_DOCUMENT_CONFIGURATION');
@@ -35,6 +35,13 @@ export async function createLocalDocumentFixture({mode,pythonExecutable,operatio
   ledger.allocation.manifest.allowedOperations = [descriptor.operation];
   ledger.allocation.manifest.subjectKinds = ['client'];
   ledger.allocation.manifest.budgets = structuredClone(ledger.allocation.budgets);
+  if(skillManifest!==undefined){
+    const manifest=artifactValidators.snapshot(skillManifest);validateShape('SkillManifest',manifest);
+    if(!manifest.allowedOperations.some(x=>canonicalSha256(x)===canonicalSha256(descriptor.operation))||!manifest.subjectKinds.includes('client'))throw Error('LOCAL_DOCUMENT_CONFIGURATION');
+    ledger.allocation.manifest=manifest;ledger.allocation.budgets=structuredClone(manifest.budgets);
+    Object.assign(ledger.f.claims.budgets,{maxTurns:manifest.budgets.maxTurns,maxRuntimeSeconds:manifest.budgets.maxRuntimeSeconds,
+      maxCostMicrousd:manifest.budgets.maxCostMicroUSD,maxOutputBytes:manifest.budgets.maxOutputBytes});
+  }
   ledger.allocation.manifestSha256 = canonicalSha256(ledger.allocation.manifest);
   ledger.allocation.schedule = {revision: 'b'.repeat(64),expiresAt: new Date(deadlineMs).toISOString(),operations: [{operation: descriptor.operation,chargeMicrousd: 10}]};
   ledger.invocation.allocationSha256 = canonicalSha256(ledger.allocation);
@@ -61,6 +68,7 @@ export async function createLocalDocumentFixture({mode,pythonExecutable,operatio
       unknown: [...ledger.state().reservations.values()].filter(r => r.state === 'UNKNOWN').length,
       consumedMicroUsd: ledger.state().budget.consumed_micro_usd,
       allocations: ledger.state().allocation ? 1 : 0,grants: ledger.state().bindings.size,
+      skillId:ledger.allocation.manifest.skillId,skillVersion:ledger.allocation.manifest.skillVersion,manifestSha256:ledger.allocation.manifestSha256,
       processReceipts: structuredClone(state.processReceipts),closed: state.closed,revoked: state.revoked,cleanup: state.cleanup});
     return {mode,artifactOptions,sessions: ports.sessions,selectedClientId: clientId,
       nativeCredential: ports.nativeCredential,credential: ledger.credential,now,

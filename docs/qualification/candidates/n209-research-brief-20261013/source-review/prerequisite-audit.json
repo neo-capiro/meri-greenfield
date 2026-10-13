@@ -1,0 +1,3508 @@
+{
+  "reviewedCommit": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "tree": "0127570ddad96978dcca960eb3c8e0847f7f85b5",
+  "parents": [
+    "25e0d29d6f0b6c3de284d13e86bc5f1aa0c00d21",
+    "980c71b7941b7f13f3e1831009076f283aedbe71"
+  ],
+  "PR54": {
+    "commit": "70516e5c9681917ce493bbc50e3023494f2e1209",
+    "includedByPR56": true
+  },
+  "PR56": {
+    "commit": "25e0d29d6f0b6c3de284d13e86bc5f1aa0c00d21",
+    "tree": "c0dc04ab385a69de7cbf2a376634e77097b254ec"
+  },
+  "PR55": {
+    "commit": "980c71b7941b7f13f3e1831009076f283aedbe71",
+    "tree": "c47fc3ccd4e5517073a68e90a9e47798b73495a0"
+  },
+  "mergeBase": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "changedPathOverlap": [],
+  "parentChangedPathsPreserved": {
+    "PR56": [
+      {
+        "path": "apps/artifacts/office-transform.mjs",
+        "blob": "1a54c6bb872121452f5ce0d9046c15a60ecadc76"
+      },
+      {
+        "path": "apps/artifacts/python/office.py",
+        "blob": "2267340cdc47aab6fef03b6b69e718553c0408c4"
+      },
+      {
+        "path": "apps/artifacts/test/office-columns.test.mjs",
+        "blob": "368b71e6730c43d8f9e6f0f5352b39648b61c8c2"
+      },
+      {
+        "path": "apps/artifacts/test/office-recalc-independent.test.mjs",
+        "blob": "2f0f34c74fb866612f9c0e05dfc817a5e5c18bf9"
+      },
+      {
+        "path": "apps/artifacts/test/office-recalc.test.mjs",
+        "blob": "0a42ff33502b83704b58388da26ba7842d60c2da"
+      },
+      {
+        "path": "apps/artifacts/test/workbook-columns-independent.test.mjs",
+        "blob": "e7649e5ad317e07d2753a386f6f82a855d20c93a"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/README.md",
+        "blob": "7853fdd90a39eedb60cc99ea374b3b420f52379f"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+        "blob": "7c4a83004884bd32834496ede86af907e18d21d1"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+        "blob": "a83121088f8440464c1c2ef2afbcfb901a0cc934"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+        "blob": "46c6c62b9b0836a4d678b76e7890e1c558592fbe"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+        "blob": "b09c32d1fc161de5f4c54f02290a118122d99442"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+        "blob": "6f0c96ec69437a6b6a2a065d6e6fba0ce9fd16cb"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+        "blob": "b6845b894c9d4a29b82c248a1e7d63e219f1a94f"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+        "blob": "1593bbaad3064bf8d8b2fd08328cac5557e35927"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+        "blob": "cbf403db3cca3f056d8007738882dc258e20994e"
+      },
+      {
+        "path": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+        "blob": "b9e2ea84145bc0570c6dbe5127d5852c592aca70"
+      },
+      {
+        "path": "apps/control/document-application/OUTLINE.md",
+        "blob": "550f3620a2d0a10864a6a1b8c505908b5aa19aaa"
+      },
+      {
+        "path": "apps/control/document-application/README.md",
+        "blob": "4c0b91550e01ebbc5d0d69036bd925b0000513da"
+      },
+      {
+        "path": "apps/control/document-application/current.mjs",
+        "blob": "ca1a2852b35c6ac315aaab3c9b7d89659c08942b"
+      },
+      {
+        "path": "apps/control/document-application/format-admission.mjs",
+        "blob": "167f7ffb53570c33dab5910baa91dbfed9b598b8"
+      },
+      {
+        "path": "apps/control/document-application/http.mjs",
+        "blob": "bfabedbb5e96c2bb229b533af1ea57db44113c29"
+      },
+      {
+        "path": "apps/control/document-application/independent/application-independent.test.mjs",
+        "blob": "60cd6613270c4996adbb5372eaa1416f9d78d2c4"
+      },
+      {
+        "path": "apps/control/document-application/independent/workbook-independent.test.mjs",
+        "blob": "e6b8667e47a57a212575238e8a35aab69a2ad43b"
+      },
+      {
+        "path": "apps/control/document-application/index.mjs",
+        "blob": "8f698bdc490248536bcc33ca477642da872d7698"
+      },
+      {
+        "path": "apps/control/document-application/local/README.md",
+        "blob": "9e2f20e04d8397e4dc8fe9dda06bd07f29d491fb"
+      },
+      {
+        "path": "apps/control/document-application/local/fixture.mjs",
+        "blob": "6c11327b70676ba563368e3c02962e79c31127ca"
+      },
+      {
+        "path": "apps/control/document-application/local/flow.mjs",
+        "blob": "27b100e452a960f56e5be2832d03258ec8f6b195"
+      },
+      {
+        "path": "apps/control/document-application/local/inspect_docx.py",
+        "blob": "208aeca852823a74aff42b431f692505484f149c"
+      },
+      {
+        "path": "apps/control/document-application/local/local.test.mjs",
+        "blob": "f38416b6fcbc12249373fbaabf0155111916523a"
+      },
+      {
+        "path": "apps/control/document-application/local/mount.mjs",
+        "blob": "caf6e71a191cbb6a5c01dc76799d51f6ce811100"
+      },
+      {
+        "path": "apps/control/document-application/local/ports.mjs",
+        "blob": "05716f09e5b9447bdad815085891585205916646"
+      },
+      {
+        "path": "apps/control/document-application/local/workbook/README.md",
+        "blob": "067025ab0fa03465ad5eedd361542d9b66f40929"
+      },
+      {
+        "path": "apps/control/document-application/local/workbook/flow.mjs",
+        "blob": "e46c4b062667d96e44fcef4d1409bfcbfe41816f"
+      },
+      {
+        "path": "apps/control/document-application/local/workbook/inspect_pdf.py",
+        "blob": "9f73ba1b930bf18a583e3ea10c729b1423ab68ae"
+      },
+      {
+        "path": "apps/control/document-application/local/workbook/inspect_xlsx.py",
+        "blob": "2279a5aa5e484a4e7a30b8144959be2f346b713a"
+      },
+      {
+        "path": "apps/control/document-application/local/workbook/inspection.mjs",
+        "blob": "9da87ba130d58e59e296bde589efee12e2a565bf"
+      },
+      {
+        "path": "apps/control/document-application/local/workbook/local.test.mjs",
+        "blob": "4b9ab644a565eb7e597185601dc054d886a9826a"
+      },
+      {
+        "path": "apps/control/document-application/test/application.test.mjs",
+        "blob": "4ba328569a460d051f50f25a476fcdb8ff82c296"
+      },
+      {
+        "path": "apps/control/document-application/test/workbook-application.test.mjs",
+        "blob": "0a53428b7d55393ecd20761ae4324616bf0ef61a"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-20261013.md",
+        "blob": "b3b0bde1b1602517eacd2802f2bac4beda8e5678"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-AUTHOR-20261013.md",
+        "blob": "99dbbfeb5792890a239ed0554df99e1659362207"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-REVIEW-20261013.md",
+        "blob": "0926c47e18f9b27437d4268e419c03e4579147ed"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-AUTHOR-20261013.md",
+        "blob": "3e8fa08542d29e9267a4def4076990bf92491993"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-INTEGRATION-20261013.md",
+        "blob": "879bfa803f726e54683f74ebc54f135ab1f8493c"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-REVIEW-20261013.md",
+        "blob": "b32f101b9bef37cb73e934972f97cfddaa67bc16"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-DOCUMENT-DRAFTING-20261013.md",
+        "blob": "0f426f4616c0923ac06f93a612b6a77ad9cbf533"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-DOCUMENT-DRAFTING-AUTHOR-20261013.md",
+        "blob": "a7aefa77e5a27baaabd6f4e8eb801b66ebb87bbf"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-DOCUMENT-DRAFTING-REVIEW-20261013.md",
+        "blob": "7828224910115354e33b8fc6e7aac8380c7e169f"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-AUTHOR-20261013.md",
+        "blob": "999299e0f4dfd63cc507949a15de3ad8a8513ff1"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-INTEGRATION-20261013.md",
+        "blob": "05c5df56ef9f1171e828f7b373ebf90e111c5269"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-WORKBOOK-FLOW-REVIEW-20261013.md",
+        "blob": "cb7a3f4b70a6169570de7deb3ec31c546837c8c1"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-CAPIRO-ENDPOINT-INTEGRATION-20261013.md",
+        "blob": "c2a2146a7d693326293d224637ebb7885bac3f5f"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-DOCUMENT-CONTRACT-AUTHOR-20261013.md",
+        "blob": "ec23a6167216ed8ecb0c0adfdaf70e3e8bc3ed01"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-DOCUMENT-CONTRACT-INTEGRATION-20261013.md",
+        "blob": "5520925a582f5820efadb502d194c8fd5d70b841"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-DOCUMENT-DRAFTING-20261013.md",
+        "blob": "c93c5e828ef25fbddaf6996aca58feaa4d4708c8"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-WORKBOOK-DRAFTING-20261013.md",
+        "blob": "584bd0d4b64ad6c46e48fb65d0f615bc8cfd811f"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/audit.json",
+        "blob": "3e13a711c3f7410b1d8dac2f671a4b3d9e3fd850"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/audit.mjs",
+        "blob": "73513467edd1993f02a6dc42d10a69c0af2ae00b"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/cleanup.json",
+        "blob": "02bc0eb16e80a4d8988eb4846afb6b27df02b013"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.json",
+        "blob": "50256f0fb7bda18a464158202b7f0b9ba0f77060"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.stdout.bin",
+        "blob": "60235b1d85754ad8279f3231916d6269c392ab9e"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/manifest.json",
+        "blob": "7c0af1e4b27e4f58b4aa6c1bdda9d88269997d17"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.json",
+        "blob": "b4b696a98d5a4c3b50700896fe464d6c1e459a30"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.stdout.bin",
+        "blob": "56cf6ad1a152fa8d80e60190a03ad47eb3df4927"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.json",
+        "blob": "f84186fae4fae6b05a189e8848cb83af8c8adc55"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.stdout.bin",
+        "blob": "8c168d24822740e9b1027fe8a70b79ddcaded860"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-identities.json",
+        "blob": "292b26ce75e038ab4c74121db3b75e3e0e0bdd22"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/audit.json",
+        "blob": "fb8670d569f61dfe05b36bc8207fda02992443fa"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/audit.py",
+        "blob": "b5409cc32520f41a851ae7ac6dac344ef7995551"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/backend-response-handoff.md",
+        "blob": "2bcef3405b36dd1549c932f748573d68048e6282"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/cleanup.json",
+        "blob": "2d81a04163076b61afb36ee9136c66253475ff11"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.json",
+        "blob": "ba08d6f7ea53007f4256012ff6a14ace2cdaf93a"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.stdout.bin",
+        "blob": "6c596d84c78f44f14b274663f51e5facdeb5b3a6"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.json",
+        "blob": "e94a7c5b6a08efa4156946cabc51182d2a963882"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.stdout.bin",
+        "blob": "7f06333ba50ba30b9d5b95a7e778126cc821158f"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/manifest.json",
+        "blob": "393c426e38f44ed457356639adb1ea82fe32a870"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/packet-verification.json",
+        "blob": "a89fe17699ec56252277d880d5476e5bdedff62d"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.json",
+        "blob": "7c5892653a842976a607598cb9fba3e48733daec"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/preservation-audit.stdout.bin",
+        "blob": "a9ac9a6d1c373083f4c436302a4a85dfae9ccd9d"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/publication.json",
+        "blob": "f5b7c9cba1a1e19fdcaba9753d6662209946abe8"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/source-blobs.json",
+        "blob": "00f7ccf8c45a2466b2607a3a6f5c4c8754cd74df"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/.gitattributes",
+        "blob": "b0b5529bf46e4425ce5e7b741c6d255ee44ba6c5"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/audit.json",
+        "blob": "ba6c8ddddd39966e04edaecdb53c9be4ff7750c2"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/audit.py",
+        "blob": "4701fc5e54a07f77c534bbced908e2338e4e271d"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/author-packet-audit.json",
+        "blob": "35db2d731f732cffcc49b509cd4e70f17d270667"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/cleanup.json",
+        "blob": "cb3524288a6cc4bbd6e645113467bca39e4811a6"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/criteria.md",
+        "blob": "51a4e372b4cca439bf5deb8d577732d1e34207cc"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.json",
+        "blob": "95ccb394f6a397a732da6380016af08d9838cac2"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.stdout.bin",
+        "blob": "597fe057bc1a1f4b9f383d08e65e01871e47ef5f"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.json",
+        "blob": "c634efb778c556034b509b64dd7eae67ac36c0c5"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.stdout.bin",
+        "blob": "ccaf8bb2f4e5d6c2b82ca55e092c4c0fd5041baf"
+      },
+      {
+        "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/review/manifest.json",
+        "blob": "94f24d2e0b15724891ee7483910442447a6c22db"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.json",
+        "blob": "b50d0eb7990f32cc068753a4dd56b1c2bd6359c4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.patch",
+        "blob": "dd772055a0af0f516a6f91b43d78c1c922cd69aa"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stdout.bin",
+        "blob": "32d5be1c1f56773a1636d813c85c7a87634d6ee4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/capture-reaped.py",
+        "blob": "68303d20aa8d78b70cb022b6455ecd362aeca24d"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/filename-before.json",
+        "blob": "1c824e5c63e93d3e6b69364b9a15d35f632643a1"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/filename-before.patch",
+        "blob": "17f1f6c09c318b5b46ed73d4c9a86a3cb395ffc2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/filename-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/filename-before.stdout.bin",
+        "blob": "92c31870bbe9c9aaed3ed63acb555c2cda22e0b9"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/focused-filename.json",
+        "blob": "7c37a9b680e7e13618983dc7e33ae109080ff81e"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/focused-filename.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/focused-filename.stdout.bin",
+        "blob": "06a74dd1179b20d686a15f934f1d33689b45f338"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/focused-first.json",
+        "blob": "c4fef73b01ad6665ddc35cb911ef7dbe3556afc4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/focused-first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/focused-first.stdout.bin",
+        "blob": "ca6608fc9b9b7471939c630b889b16146c3977cb"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-app-repin.json",
+        "blob": "5d47210e4aad67b81ebde7a327319506fe60d7c2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-filename.json",
+        "blob": "fc019690351cfca459de1dfb7d1c945f3b5ad8f6"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-first.json",
+        "blob": "41559b784cd636750b1123949c3df06ea7631c43"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-first.stdout.bin",
+        "blob": "dccec238cc47af74abd639cc9fdc2ab5cc15ae07"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-redirect.json",
+        "blob": "996be72e137f655f57a635ca2b0b4f23ec58354d"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/generate-update.json",
+        "blob": "6a4fc9d80ef9cf73ebf8afb44acc39b5890fdfa5"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/manifest.json",
+        "blob": "bcf8dc7cafcea67690c64e89a0c165b89ec2bc84"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/preservation.json",
+        "blob": "43827cb2d7498d61e5d8fc22ae048b54cbb65959"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.json",
+        "blob": "edc999f2edb163575ed2030a436409d708a16327"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stderr.bin",
+        "blob": "d7d033b93092be310ec3e63bac84be11b84056aa"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-check-tools.stdout.bin",
+        "blob": "cb8588a71bd0f06ff71ec8465c9cffa8282109e4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-check.json",
+        "blob": "416300c153d39fcd10125cb85ffec3f45da3d225"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-check.stderr.bin",
+        "blob": "09f9e408e2671b4668a9769eb1234edbd882de9c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-check.stdout.bin",
+        "blob": "069aeefd63b852f6d2bc61444e17a9c66cea4747"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-final.json",
+        "blob": "5c012d3ca97f8771825139a97d43b9da60d1e3da"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-final.stderr.bin",
+        "blob": "d7d033b93092be310ec3e63bac84be11b84056aa"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/public-final.stdout.bin",
+        "blob": "b1f035646089960c87e740e426a4bdd3373265ac"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/verification.json",
+        "blob": "afc7de62190008213cd736b837293fd300db7bf4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/verify-packet.py",
+        "blob": "2a56b341892dc96c76ba805010512074c56bd22c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/whitespace-full.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/whitespace-full.stdout.bin",
+        "blob": "6c702abeda9bb9ce62990beb48098489695097db"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/author/whitespace.json",
+        "blob": "38d8848499cc2e7f8e8747f9fc1ebfc23564a5cc"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/audit.json",
+        "blob": "ede41697a7021a2a3a38b1983d965a60a7fe525c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/audit.py",
+        "blob": "94cccbc95f330230c6219dfe7ee0ce66239dd1cc"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/capability-ledger.json",
+        "blob": "13b3e4f44d262a6159c27bfa5f3d4c4cef6d78bc"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/capiro-meri-contracts-0.1.2.tgz",
+        "blob": "3b1b1e6345539632b8a4be80de44b0ab548369af"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/capture-reaped.py",
+        "blob": "bda166905f83a834a088f5e378043435b73919cc"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/cleanup.json",
+        "blob": "b0a8898866f864c9c7ad2100adf0f0ed7195b2f6"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application-root-bound.json",
+        "blob": "ddea65212cc7bcf3badfa8e9c2e1674296d1f626"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application-root-bound.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application-root-bound.stdout.bin",
+        "blob": "317b85b38a0511e5ff25eeb1af62dd65357ca7a2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application.json",
+        "blob": "0982d71aa19ae1bd9b9681eb68b23053caaae80d"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/document-application.stdout.bin",
+        "blob": "f7ee0c087b44dbffc9646ea8b307c96d80ec3acf"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver-vm.json",
+        "blob": "a1d67e238f89aa2d1c6798824ece62fa27a35eb2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver-vm.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver-vm.stdout.bin",
+        "blob": "6b26c091f5942a7e2250d7ec0cf448ec8de7f777"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver.json",
+        "blob": "644f738e11f49d7753123438ce7abe627a0c9383"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/independent-receiver.stdout.bin",
+        "blob": "4d7a9ddab0bd952b16cbe128c574e0256bf0167a"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/manifest.json",
+        "blob": "83f7510e21f70bb9d9348d2b344acf55d6b762d3"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack-cache-failure.json",
+        "blob": "3d8675ef2c49b5fafa9478894603aab48a963ed0"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack.json",
+        "blob": "e8fa90f006a013c55fd8b42889977a5949b09d84"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack.stderr.bin",
+        "blob": "64720b515d43b03c7f4ddcfd13d669e106a834c2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-pack.stdout.bin",
+        "blob": "815d67fc9d35610ce77ac6e8e1b9471fa40c84e1"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-artifact.json",
+        "blob": "4facf9d354c4b21cf3f174ff589e5c30d0f8a55b"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-local-deps.json",
+        "blob": "4b906bacf0cc4cdf9f8293a619ad604916dce215"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-local-deps.stderr.bin",
+        "blob": "d7d033b93092be310ec3e63bac84be11b84056aa"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package-local-deps.stdout.bin",
+        "blob": "78028ce092fb9b0f4cae41abbc7d950869a47a48"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.json",
+        "blob": "078637e44a27d9ed803daf726ae9ed9901153eba"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.stderr.bin",
+        "blob": "c1beb2759654f4f03a866a84cc96cdcb696db35c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.stdout.bin",
+        "blob": "0cf4fbdd9c9d90297409af154df7b983c110067c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/setup-failures.md",
+        "blob": "02245acd471e6d859ac4add877007691f94a5ab9"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/integration/source-blobs.json",
+        "blob": "83d30e23c0f0f6c2f5d1b4298e81b0916fe3bb1c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/audit.py",
+        "blob": "a7b9646cfbde10a679e5729810e752f3bc0d8883"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.json",
+        "blob": "901097b14d525bb08fa08040b599d143edfce683"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stdout.bin",
+        "blob": "e70f16b59d3805221e68366a35bfd839435ce005"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/capture.py",
+        "blob": "f01781e0f08a803278916249e61fee4ed83368e2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/cleanup.json",
+        "blob": "7fbac2467957ab1fc16bd6b0531bbbaadc378b37"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/criteria.json",
+        "blob": "170d6717f1addd8ed09ee07e485650b9234868c9"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/final.json",
+        "blob": "4a2af5365a6e72142cd35614f2b4efaca8f6652c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/final.stdout.bin",
+        "blob": "fc2c6574cae507c3a09c9507c7d2d7dc2ba5a471"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/first.json",
+        "blob": "191f68234a887d427d99651b68ec678b3465e009"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/first.stdout.bin",
+        "blob": "dd687e05ad859ee9e7fe154a656bf423d6db1acf"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.json",
+        "blob": "66757a34d578943d8deb2877230590393e5317d6"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stdout.bin",
+        "blob": "bcf3298ad65fecc77069331988572609f5a5ba9f"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/manifest.json",
+        "blob": "e4d13fc0fa9f2f2186b066c24e964c417a562fba"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/packet-audit.json",
+        "blob": "dd1f08e18d3ed782cd3855318b957058bd5b6187"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/packet-audit.py",
+        "blob": "24894975db7dfea625a4cd3d36232bf0cc4d4f50"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-final-result.json",
+        "blob": "255c2869b289770e1885fdec6cf2597373214482"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-fixed-result.json",
+        "blob": "8d7fe42c3da5bac663fda976622f8e0d0ba93bc1"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-local-result.json",
+        "blob": "c775c461414e5621143ed911e4f1eab1c5fcb0be"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-result.json",
+        "blob": "2a29e90c4255e4eb86ccd7701a2c15b78a504343"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer.py",
+        "blob": "e6be6bb8cf188825f6d023776a728fc4bcb1094d"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-final.json",
+        "blob": "ec113b2f18713e24f285ec192d6043f2b219d9c4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-final.stdout.bin",
+        "blob": "7cd6d1670f1d966318e27f0fbaace3c645a4984e"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.json",
+        "blob": "6a99a3a3c0b7112ac4c631bf4eb3d07751398aeb"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.stdout.bin",
+        "blob": "8f3a74cfdb7e6382e662f8aafbc5496c3bdb2c99"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-local.json",
+        "blob": "5fc8c18a8dfd7eda586af3303b6cc8a349c38e3d"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-local.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable-local.stdout.bin",
+        "blob": "7cd6d1670f1d966318e27f0fbaace3c645a4984e"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable.json",
+        "blob": "97e2b9dfcd98c1929673e776c452c7f26adbd2f2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/portable.stdout.bin",
+        "blob": "fc52321133e0e2f75eccad76fda03b7ccf137d1c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.json",
+        "blob": "7fe7b853cf1530c7b177d37fa73ce70ab5cbb15f"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.stdout.bin",
+        "blob": "5c2aa68515bd72e9143f4698aa93790992356cdb"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.json",
+        "blob": "b4bc1feb7180b649781edabc0955cc419f58b70a"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.stdout.bin",
+        "blob": "76ee08a248298e1d5fde88bea57f3a87e011cb47"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/source-audit.json",
+        "blob": "c19830e7e16e1eea251c19682700b5f573a4e4bd"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.json",
+        "blob": "8a6cbc2f30c75fd863cc80f3784632f825e59433"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/types.json",
+        "blob": "ed70396c4ebc8bd7e0b7a8cca3e529d346ed5209"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/types.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/types.stdout.bin",
+        "blob": "9d113340f7b45c032fb5160e07560da740b7d77f"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/verification.json",
+        "blob": "2e93c4f994bb94ce49e898216e5e4053590fb4e5"
+      },
+      {
+        "path": "docs/qualification/candidates/document-contract-20261013/review/verify.py",
+        "blob": "fc34c464b73eac7d55b01010ae0541d802c2b5dd"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/cleanup.json",
+        "blob": "6cd4d7527d2709a3e9576bca841dfe71601b7723"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/descriptor-repaired.json",
+        "blob": "0a726143934aa64357fee9dd14f6cef89c384fdd"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/descriptor-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/descriptor-repaired.stdout.bin",
+        "blob": "281bede4a5ba6c1672f1df00a25ac428263dd1f1"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/fixture-corrected.json",
+        "blob": "3f6040f1f64792c9b6ecb8d85fe7e930daadeca1"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/fixture-corrected.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/fixture-corrected.stdout.bin",
+        "blob": "b971597d1adb25472a3b0d08cb0fbbdaad0cf2af"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-before.json",
+        "blob": "33b34f8bb893bf9eb0df47afa9b90709821d137a"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-before.stdout.bin",
+        "blob": "0c478bf413799b6f9389a44ea6dce73011bb9f85"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-repaired.json",
+        "blob": "183c1d4c9887533248f5518ad1c12efd615659f2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-repaired.stdout.bin",
+        "blob": "947d1743dc592afba64befc1fd1a38b33b83d2bf"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/initial.json",
+        "blob": "4e9d8c5f3f2aecbac00038016aa7a6077dd4f300"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/initial.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/initial.stdout.bin",
+        "blob": "50932968e8ce10d0824674f117b3b193d2389494"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/manifest.json",
+        "blob": "a6cb00f4ce729a56a6339a0af37a60aa80d6b31c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/author/source-audit.json",
+        "blob": "964ecbd118b3afc68555d9453f1dd60cae7dcdc2"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/audit.json",
+        "blob": "e933e556f366927f8aea2bdd6f17fa20f257032e"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/audit.py",
+        "blob": "67d63aaa25bfc269c74e2930a97bab9fb960fd79"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.json",
+        "blob": "7b665080441e95903188545cc881019966d8f8ac"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.stdout.bin",
+        "blob": "c6cb925a9bd17bffa90c53f7e35195e44a16a64f"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/cleanup.json",
+        "blob": "a6b9a53ca9de703451b8a290e384e3a84cde32e4"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.json",
+        "blob": "c04baf83635162d393f90110e16dadef647f8542"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.stdout.bin",
+        "blob": "da892c499762393380fb35062dd71f60cafa3963"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.json",
+        "blob": "95f704c9b3158e06a4dec53222abee71e63aab43"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.stdout.bin",
+        "blob": "2723c61407834cdb7c1e0e9e663f74cdcdfe94c7"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/fixture-core.json",
+        "blob": "c63274a0dcb388bb836d6fad3912d9fb7d49ec99"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/fixture-core.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/fixture-core.stdout.bin",
+        "blob": "e40514c5e61490e9f0b1df9fc13e9d9474c2c492"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests-bound.json",
+        "blob": "e58c766fb1adc029c69cadbf1b67791d843aa99a"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests-bound.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests-bound.stdout.bin",
+        "blob": "c452e36093ca65d879f76e56d5843ff0bfa17c52"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.json",
+        "blob": "b18b3c65ceec0c85fc1dec9f651a4f0e818593e6"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.stdout.bin",
+        "blob": "0ce9d9428856fbe9ed898f117a6760980ec5af8c"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/manifest.json",
+        "blob": "2ad8f843b055ea2849f30233c730bfa30798da46"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/packet-verification.json",
+        "blob": "8af03184f2334680cc7740d988a6a2dec572fd21"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/preservation-audit.json",
+        "blob": "bcec60f214a26c2f4fa3ad7690ed86465375b892"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/preservation-audit.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/preservation-audit.stdout.bin",
+        "blob": "5d52998297bb0d18369ef5a1b9fdc7e07d6fe118"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/integration/publication.json",
+        "blob": "584def63dbf35b06e4a76f8c0dd8ea57d9014576"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/.gitattributes",
+        "blob": "b0b5529bf46e4425ce5e7b741c6d255ee44ba6c5"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/audit.json",
+        "blob": "5762a19963915adc444248896d730732a559f501"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/audit.py",
+        "blob": "78ce423610a1c25ff9443be042f6abc2e4d3f142"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/author-packet-audit.json",
+        "blob": "77a131634ed02b96c0f76cd26c46ae52dbf40560"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/cleanup.json",
+        "blob": "b7ee365959139c69389d0f24b6d7961e3f0c34bb"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/criteria.md",
+        "blob": "dd8c87cc4bc48e96c491807a7e301dc9ddf20d87"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/first.json",
+        "blob": "64599bc5e7a6f187332ebeba1e61bae9523a23db"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/first.stdout.bin",
+        "blob": "74e1817446c74028a6fea23a26a49eeeb1ec8b08"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/isolated.json",
+        "blob": "7172f054a9dedf0492962a4ed54f461f78806242"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/isolated.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/isolated.stdout.bin",
+        "blob": "232e0d6f8abb446f399d464aee91995e65411e1e"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/manifest.json",
+        "blob": "f123ed6438f36b5196c75fcd7ebdff7462f3d34f"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/port-boundaries-before.json",
+        "blob": "df1fab55db45d27bcb15a8506ea093dab04da592"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/port-boundaries-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/port-boundaries-before.stdout.bin",
+        "blob": "1f085590d8b3453e01f44d0e9eefb4b2fe5fd056"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/repaired.json",
+        "blob": "86ef015f4483e902383cc4242bac46e59d57dd16"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/document-drafting-20261013/review/repaired.stdout.bin",
+        "blob": "6cd207f83f1363631d916c8412e3610ae03d75e1"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/audit.py",
+        "blob": "e0ba7be85b29e4fbd2490a5a1c800226137c9fc9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/author-report-before-filename.md",
+        "blob": "3b214f952d31d0824152367ad3f17ded12deaaba"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/capture-reaped.py",
+        "blob": "bda166905f83a834a088f5e378043435b73919cc"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/cleanup.json",
+        "blob": "30128c2456cf1454d22252e3bbe843e5628999b3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-audit.json",
+        "blob": "74c3ac52aedfd176085c7320663c8b730a1ccf78"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-audit.py",
+        "blob": "b675ab803c6a17a1938e1e843798b9e1659d351a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.json",
+        "blob": "0bb887888b3bdf1550019c22795b2ae2ca2ec5f3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stdout.bin",
+        "blob": "17066daa8ca498c910400f28aea33677c899edd2"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-cleanup.json",
+        "blob": "0f9f5b74f77385417b54eea50fa3fe0e691c6908"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repair-manifest.json",
+        "blob": "119cb8b4dfabc17114d2f1ad55aab506c00a258f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.json",
+        "blob": "badf1d91a66217682348ea03ad7f84a0f5a512ed"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stdout.bin",
+        "blob": "46e64a55b9192c0d452b486546e21937c6232904"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/manifest.json",
+        "blob": "1e40d4d3bcde5a35c3f02e53cad1aaf2dcaf767d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/source-audit.json",
+        "blob": "3f7425808cf9ad19a21241491991ca4bb15046b6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.json",
+        "blob": "fa97293ef1faa3a47604b6ffa463544a8f471ac7"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stdout.bin",
+        "blob": "8b970f63c26a91f64edee0b57137da6f36bfe7cb"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.json",
+        "blob": "d3892ec159d56ffb20cb005907aefa6beae0131b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin",
+        "blob": "d9b5a1758c8fba2f9c70fa3d8508c063c4d0d525"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial-test.mjs.txt",
+        "blob": "1f706365ac367b40de11c18f838af2e36b249aed"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.json",
+        "blob": "62d38cd807db915517bd5f7a0dcb8415f710702a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stdout.bin",
+        "blob": "e48060da4c0948e7ee4a5b1251dea6450de10cf9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/.gitattributes",
+        "blob": "b0b5529bf46e4425ce5e7b741c6d255ee44ba6c5"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/REPORT.md",
+        "blob": "43330a2620821c4c244169f84c92ddbb6395aa59"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/audit.json",
+        "blob": "24f46bc14d93ccd1b6ec631290501d1c5ac9aaec"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/audit.py",
+        "blob": "a7d92a6f2a4a53f08aa1d0174e1e33afcd74459c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/author-packet-audit.json",
+        "blob": "a5f7582b5dc4df8df2422471b5262f1cd182aa9e"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created-pdf.json",
+        "blob": "8cac90f1f82d43fac17d32b26b7eb1c9dc19520d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created.pdf",
+        "blob": "e8684b72233745d8059a86b51a688ced2e953867"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created.png",
+        "blob": "b6fe05f52e732b72adb21a5b3c36851a9a0d610c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-created.xlsx",
+        "blob": "360f1affa1821d1821999ab2638696ba97317987"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-FtotHf.json",
+        "blob": "6fb1b9c28a430bf6635773191e05de01115061fa"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-aGxj2E.json",
+        "blob": "4a975f1aab9ab96d111c5a9167c726a1158e80d3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-ifPDmh.json",
+        "blob": "13437e084eb1910a22a6a9c77e2c4f69340930fd"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-processes-vTZUDP.json",
+        "blob": "bac012dd83cd75a62f41f1b0f8e5abeb908f4c01"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-retained-original-pdf.json",
+        "blob": "9f32fd0542ae20d5b2274f6d81611a50d76f9091"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-retained-original.pdf",
+        "blob": "2af59556b5046b2934ad93139444cdf68c2283b6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline-retained-original.png",
+        "blob": "24452b4ca3396e12c07d01282b5e855d7586918b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline.json",
+        "blob": "c86bdcbe3dd93c81bd462900b1bf03f9d680a8fc"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/baseline.stdout.bin",
+        "blob": "7a8f794b46cbf53815c160fd46787c2612116035"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/criteria.md",
+        "blob": "951f9455c30cc26fe95b7f07ba73ccf086beb6a4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created-pdf.json",
+        "blob": "f465eb1023bdd7cb21fc1e970fffc342950eb695"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created.pdf",
+        "blob": "53f666f87f03894995cbf4ab0bf8f1b5dc31b649"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created.png",
+        "blob": "30e2088f32ee796e936521bf3b56c8db3bc4b0ac"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-created.xlsx",
+        "blob": "f9b4e41f6ee6571f4a4371e534e3f5ffdf34d796"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-KGKPsM.json",
+        "blob": "a6c3e76b5a41bbc308d90253547637f31b33a955"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-KOHPpF.json",
+        "blob": "7f88b142516d26cee13c7e6068dbd57e67507da0"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-hlnUqN.json",
+        "blob": "b0875c2f7445c8d7ee4d9a1bcbc3ee3aa2aacada"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-processes-wRnvMl.json",
+        "blob": "5cff690fc23ce605b3f4d9ffcb79055af729a7dd"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-retained-original-pdf.json",
+        "blob": "9f32fd0542ae20d5b2274f6d81611a50d76f9091"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-retained-original.pdf",
+        "blob": "7580d60a7da1e0659202fc8b26162d191bb0962c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-retained-original.png",
+        "blob": "24452b4ca3396e12c07d01282b5e855d7586918b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised-pdf.json",
+        "blob": "9748bc5f2dac7dc260e256e586e6e0b600c6b042"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised-recalculated.xlsx",
+        "blob": "62860097ca35d297372bb8c03fb17ecf2e32a82b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised.pdf",
+        "blob": "bab1179e2c64bc03948fa16430b111e1ba5f357b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised.png",
+        "blob": "ad71238080523d8f8f8bbb0c57161ded1988c94e"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final-revised.xlsx",
+        "blob": "5fb6bfff3792fd01f6847a0aec495d003af4013f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final.json",
+        "blob": "ee4d4c8510885021f4871a39a82be8ceeb649793"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/final.stdout.bin",
+        "blob": "1ed8590248a3943d989d45ca1407d58bb525d043"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/manifest.json",
+        "blob": "d236c9500ead9dbf6d83de1da72415cc24e619e2"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/original-recalculated.xlsx",
+        "blob": "b80490b07aaf5669be7f47fb2423c428f5618cfa"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/columns-review/width-units.md",
+        "blob": "c5c950bbdb88baf6fd03d23ac7635fe8d2fa8e92"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/audit.json",
+        "blob": "747e3ef4f15ffc47d491f2e2b07b9d1286daa3c3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/audit.py",
+        "blob": "2042f6777bc429d686eed14c7d405b15445d5f39"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/capture.py",
+        "blob": "f01781e0f08a803278916249e61fee4ed83368e2"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/criteria.json",
+        "blob": "198eb2b8ed57b284e40e2ae224ae0bb0f6c7b29d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/flow-independent.test.mjs",
+        "blob": "dfd6f2a76c8fe35e8f51cd3fee74ee4ea26f8590"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/manifest.json",
+        "blob": "d33572526b60535881f3af312bc04d4191ff943f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/prerequisite-references.json",
+        "blob": "b42c41fbb4a4e1e46706645814f13337a0e318c3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.json",
+        "blob": "cd92e2fc6f552bad9541de1750181887ccc0c5f9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/source-checks.stdout.bin",
+        "blob": "e13a8a6b4e054fd008f1cd9e00543189e8b2e823"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/verification.json",
+        "blob": "d2e53b3c8f5701800439d1dab4407fd730466697"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/flow-review/verify.py",
+        "blob": "3f0f741e278ffc8259ec60895811d24797f0c861"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/audit.json",
+        "blob": "b3df6c416b73596b4ef4e5e1257676bc9ff41327"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/audit.py",
+        "blob": "eefd37e8263158c6f4770d37eb640fb6110c3aab"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/cleanup.json",
+        "blob": "36513ce6c341e1863e0302bef52dd5a7be12f331"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-artifacts/original.xlsx",
+        "blob": "f1c47461716228a7f0d3f51be6ce18507cb45bca"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.json",
+        "blob": "2b812a269b4d555112703a5b43b0ddc820fc01fc"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/initial-workbook.stdout.bin",
+        "blob": "245fc23c731109405c011cd3bb211e3769486b21"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/manifest.json",
+        "blob": "fde1eb9fd9599bd6a57eb0aad264a2b1e7a2542b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview-1.png",
+        "blob": "a9bb1f0a431ee399b334d9953dbf86d393a51ba9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview-2.png",
+        "blob": "e1e98486e441c778def6478a1ca1b6a5f8806f06"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-preview.pdf",
+        "blob": "733b72a8023d6a1618e72c396d868ad732699df6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-recalculated.xlsx",
+        "blob": "ecb4868d84fad1fb4f0b5be65d7ce79649ff6991"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-recalculation.json",
+        "blob": "5caeee79424ed9d6adbab00c2566e5c240eca004"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original-visual.json",
+        "blob": "4b5edf3f8573b7a52082e353f3e8a4d36fbec92a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/original.xlsx",
+        "blob": "c2af24684a8a0477ff65a35711c8dbea4fa59cbb"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview-1.png",
+        "blob": "f542fe45b46e4277f3cb6f5eb54f3bf362a0943b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview-2.png",
+        "blob": "43cdac5b8ba56de013d2cba7f6e2f3cf25bc8d88"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-preview.pdf",
+        "blob": "86049a73c4c66b7601c9feafae90dabeba732669"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-recalculated.xlsx",
+        "blob": "8b230f3ea5b64eb5ab958fcc4c51374fbfddbf12"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-recalculation.json",
+        "blob": "09e3cb76f49bef2045a2088795b0e264a46ff773"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision-visual.json",
+        "blob": "aae57ef3778e5d982491462db829c946bebbe45c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-artifacts/revision.xlsx",
+        "blob": "3fe7d560607fa77c56210518c74f40266b30756a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.json",
+        "blob": "2db3563ff4f26d723a408ed55d4465f34707cead"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/readable-workbook.stdout.bin",
+        "blob": "7bf1cd8ee39b59492046aab590643b5168c1a993"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-artifacts/original-recalculated.xlsx",
+        "blob": "b80490b07aaf5669be7f47fb2423c428f5618cfa"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-artifacts/original-recalculation.json",
+        "blob": "fca3d6c5ab8c1e4d51322b1a424020c5d79a15c0"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-artifacts/original.xlsx",
+        "blob": "bc0ef7adbfbf9c85364c2d4abeac15273abb3d49"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.json",
+        "blob": "9b31c9d7ba2d0ae1b8e9724311ed664b4193e5db"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/recalculated-workbook.stdout.bin",
+        "blob": "f367677e96f84d14a20802cc0ff0b59ff690456a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/source-blobs.json",
+        "blob": "488755c727c5eccfffa45e72255fbc365bc30c19"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.json",
+        "blob": "3049de160fc5713b7dba218e2a588575616953a4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/integration/workbook-cli.stdout.bin",
+        "blob": "9917607d7c14dc9be221054febc1e622da27c6ad"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/README.md",
+        "blob": "40e7fa35d39bdb657b6b6734f0f7c9b18af2e964"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/REPORT.md",
+        "blob": "645fec0ac169b6554c77ec674284085bc082fd65"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/audit.json",
+        "blob": "169d4794af66e31e1b9668f935888a1592fbc480"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-input.xlsx",
+        "blob": "c08b8f5ac856a6a398d773f93fbba07554a0b356"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-inspection.json",
+        "blob": "5543556c4aa8d89991b8904fd8b29b4672d2ac87"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-output.xlsx",
+        "blob": "be335acee2ec0bbdd6bda9b3e1e57fb071e305d2"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/independent-processes.json",
+        "blob": "ac3f6faf8a15b1438935e76e7854ac694e789ab8"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-input.xlsx",
+        "blob": "f1c47461716228a7f0d3f51be6ce18507cb45bca"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-inspection.json",
+        "blob": "780685adfa5b7fe696d49585e4bca9351b3fcdb3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-output.xlsx",
+        "blob": "42de8bb9b9466910dce805105cf593056775502f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before-artifacts/original-processes.json",
+        "blob": "412dd41e57dfb9a8be30610d09736d6a8779aebb"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before.json",
+        "blob": "15ec300f876f987a88b5f3fe0dc4d333a33a344d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/before.stdout.bin",
+        "blob": "4d681978547e09cd8c4307ca77b7e9dd2479bac0"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/cleanup.json",
+        "blob": "3fffcb19b7c4f78e35b130d342802c7b23ad808f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after.json",
+        "blob": "80aff90eb17ee12bbc35e48efa127d363e1d79a3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after.stdout.bin",
+        "blob": "dd668e7fae29c3385e8f42ce81739bdac1ba9810"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/bounds-creation.json",
+        "blob": "ba0d361d8d71b2d718213dcd85d35d5ec64f5dea"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/bounds-processes.json",
+        "blob": "32ec64345a6e26a22ba4270bb1e1f2fccf83a058"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/bounds-revision.json",
+        "blob": "59d9c09fd4b649bb895d73db706a7bb43b0f3279"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-generated.json",
+        "blob": "cd5691f302ad0bd66d1af98b666e0f184298f159"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-generated.xlsx",
+        "blob": "f226fa09216f54220507a393ce22653237a49c52"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-output.pdf",
+        "blob": "fed8ed91da174e892dd167a0ecb976fa834e0ba5"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-page-1.png",
+        "blob": "a9bb1f0a431ee399b334d9953dbf86d393a51ba9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-page-2.png",
+        "blob": "3b76cb6d57b648c1de6709dec663dbfef80a9db6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-processes.json",
+        "blob": "de017fcf7b3ce01cbe0dc61a6f5f7588951f2389"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-recalculated.xlsx",
+        "blob": "2841d018f895510550b2fed987869b8d99c51fd1"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/create-visual.json",
+        "blob": "2cb199a1c026d5ccd25873a7c042bd9d06b99ec4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-generated.json",
+        "blob": "f62de34093a53f81851407e076877c6aeab46ba0"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-generated.xlsx",
+        "blob": "598a2e28067a6063a282018be58a76c9dfd203b4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-output.pdf",
+        "blob": "397488d252e7e5729fea66b4d65401d2300eedf5"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-page-1.png",
+        "blob": "94abbe4f70b175c28c349250725ecddef84731e2"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-page-2.png",
+        "blob": "3b76cb6d57b648c1de6709dec663dbfef80a9db6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-processes.json",
+        "blob": "3bb28a05b39a1260e3e0eec4cf040fbd8963e92a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-recalculated.xlsx",
+        "blob": "61bb4f8a319f706f65aeb0fc7df07bd305e77c36"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-after/revise-visual.json",
+        "blob": "9b7e8998a23d8633b4b71e08091f00590c163d85"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-audit.json",
+        "blob": "8e30e0577cab89422b8c543d555dbaa0db374011"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before.json",
+        "blob": "68575c89cab199c9f08ca5c77011607b6a5d3c52"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before.stdout.bin",
+        "blob": "079127b1d66fd2080630a5eb7958c48138eec905"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/bounds-creation.json",
+        "blob": "12a5cf1598eeae871fcdb07e1a7381e8bb1c974f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/bounds-processes.json",
+        "blob": "8be5ae02435b3411bcc46f346460a2563ac1184a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/bounds-revision.json",
+        "blob": "26412956398e80feca84ad9a697cc9dab60f68bd"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-generated.json",
+        "blob": "413666df117d5173268f59beca17ec07536eacd9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-generated.xlsx",
+        "blob": "4c95cd0c241d35554db1d51b10be7a14b979be95"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-output.pdf",
+        "blob": "c64ebdd33a417c9ea49aaa74e6130368a184eee4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-page-1.png",
+        "blob": "b160211947ab2123f09054d0c2487c3af61157e9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-page-2.png",
+        "blob": "3b76cb6d57b648c1de6709dec663dbfef80a9db6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-processes.json",
+        "blob": "0c751fbf5e5bf342bc177f953000f868b0492e9b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-recalculated.xlsx",
+        "blob": "ed4a5bf02e7ff97db1d8f6aa685b5566565cae2d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/create-visual.json",
+        "blob": "29e59bfcc488a1acf3e6762ef27994d7a51ed2d4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-generated.json",
+        "blob": "70eaf089e37dcf169c51087ccbc4158514ad21b1"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-generated.xlsx",
+        "blob": "08cbd6f772c883e079d36988400ce92a9e384c84"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-output.pdf",
+        "blob": "c7349563727919b09ce5ea4c15501bd6002c98d3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-page-1.png",
+        "blob": "6f0f609386122feac80ac03790d645988c5b9c83"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-page-2.png",
+        "blob": "3b76cb6d57b648c1de6709dec663dbfef80a9db6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-processes.json",
+        "blob": "6aba9213609c302877517a2aa9a4e8478e4efcfd"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-recalculated.xlsx",
+        "blob": "5c88f86ce7f5b13a88b2930d66e197b1d69f07ce"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-before/revise-visual.json",
+        "blob": "887cda54d6d49486126fd3f9d5c5770093cbdd86"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-manifest.json",
+        "blob": "f8a2057ae4d7fab5d2ad25b468a0ee055795ce00"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-original-regression.json",
+        "blob": "b7ce2538de78ee9c5e37b3af9a06d36193edf739"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-original-regression.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-original-regression.stdout.bin",
+        "blob": "08d5f8214ac5b7d014bf40a5de1ddd4138a98c27"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-outline.md",
+        "blob": "5340498758708c484b4447d4c6f82e916ab2773a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-report.md",
+        "blob": "6b4f3ead1cc06135674f71ee7a834bbe04f046b9"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/columns-tooling-note.json",
+        "blob": "bcd2621842105fd544ec42958f3d5b6cb56eea08"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/cancel-processes.json",
+        "blob": "fe51488c7066f6687ef680d6bfaa4f7768ef205c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/failure-processes.json",
+        "blob": "0caceb39a56bd54f12041fe8190c9a0845f5779b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-input.xlsx",
+        "blob": "894292aada60c22b614a48e8f87e589ba84eb4c3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-inspection.json",
+        "blob": "e9f669aab484d4c5e15e2a79f55b55de2d2d4283"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-output.xlsx",
+        "blob": "c00a43504ed13aff49d59d726dfc323286ded138"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/independent-processes.json",
+        "blob": "30c3da6db020accd10ce96eb18ee254419775c24"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-input.xlsx",
+        "blob": "f1c47461716228a7f0d3f51be6ce18507cb45bca"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-inspection.json",
+        "blob": "96f714ac540d257e12e3d47b308ecf3c633eef74"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-output.xlsx",
+        "blob": "8d6845ff1f347c75981d5c434b7cb9a13d343920"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/original-processes.json",
+        "blob": "a10d3b445ef8eda09ba56303fb97ff2e512f9d8d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/profile-docx-processes.json",
+        "blob": "55a33273cc8d1e5840d0e7c5efb87866f4b0aa0f"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final-artifacts/profile-xlsx-processes.json",
+        "blob": "61c7032997c659621c6d28c44907acfa3406cb08"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.json",
+        "blob": "de195c49f520c03200fece33449d74ed37887adc"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/final.stdout.bin",
+        "blob": "ab3a1b1fd76ac3c04e95690b3500e6d488d8d2ae"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/manifest.json",
+        "blob": "4ca9be9168db22de00868bef8c05cbd8237c90ec"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/original.xlsx",
+        "blob": "f1c47461716228a7f0d3f51be6ce18507cb45bca"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-input.xlsx",
+        "blob": "cc8882eedd4e0bb2c183a26e778372dbdb433b37"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-inspection.json",
+        "blob": "9431415e495d681a79a7bf65444b635be2915b93"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-output.xlsx",
+        "blob": "7dfe90452b3e9736b1dbca8c0064831524674147"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/independent-processes.json",
+        "blob": "b67f93f5ad831ace14f626b614ec82cb6b21b0f3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-input.xlsx",
+        "blob": "f1c47461716228a7f0d3f51be6ce18507cb45bca"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-inspection.json",
+        "blob": "7ba5cf11a12ecd5ef0892875eb09dd4818cda971"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-output.xlsx",
+        "blob": "9c60749e5ce1001e01dc03086f72afca98918760"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired-artifacts/original-processes.json",
+        "blob": "67bf0767ee6551fc3b7fe9c726e71cb57d20b457"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired.json",
+        "blob": "dd048f5a4d198fa462018af7e19fb355e15af220"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/repaired.stdout.bin",
+        "blob": "b3155f70ed716e8c0c7d94479603fec506bd2f9c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-author/upstream.json",
+        "blob": "a5b68ccc0e64b68a72cc632dde67b2cba1371884"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/.gitattributes",
+        "blob": "b0b5529bf46e4425ce5e7b741c6d255ee44ba6c5"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/REPORT.md",
+        "blob": "542169e963e5393ab123f4e1dc07daa3acf2a63c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/audit.json",
+        "blob": "a3e34e1565d9d2e49d90d2129a768d20a4caeecd"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/audit.py",
+        "blob": "f74faf9c43bbb1e5d9bb0bf3406a2ce74f8bcd4d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline-original.json",
+        "blob": "2b78a55b1697d3f3b6060b120bf6c44fa6e8c835"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline-original.xlsx",
+        "blob": "3c72d0754f5e5a0dd2838c1cc97189b7271cc538"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline-styled.json",
+        "blob": "d82661c39b7e96f01a42d614118959b0efc7655b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline-styled.xlsx",
+        "blob": "418c24f185d6afba000b1b5b9d668035be867519"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline.json",
+        "blob": "a821537a7f883c90a22cc85ea7dbb1ece141e218"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/baseline.stdout.bin",
+        "blob": "0242f1fbb8eea6662056146693e480abbea581fe"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/criteria.md",
+        "blob": "76b83e65446e3f96126965021662b74c6534b78c"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final-original.json",
+        "blob": "fed216dbfd8fa40c8fef388fa403942d784bdda6"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final-original.xlsx",
+        "blob": "1edc5187ea59c42bfb40f72cf12813a0f61c9470"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final-styled.json",
+        "blob": "f99d631e2e9703001d66d49ed08880d79d857d13"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final-styled.xlsx",
+        "blob": "cb29d985f1ceed11b52fbed6388e948503f264c8"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final.json",
+        "blob": "0e57b2869046d476bc3f3b60049a712c3ee639d3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/final.stdout.bin",
+        "blob": "d7e63c23992b658693f39efa8627d61758e99299"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/manifest.json",
+        "blob": "b61b9906f713e3485d0b740510d60917608c03fb"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/office-review/original.xlsx",
+        "blob": "f1c47461716228a7f0d3f51be6ce18507cb45bca"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/application-acceptance.json",
+        "blob": "64705089383655a5e782a17cd0d2dddc972884dd"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/application-repaired-acceptance.json",
+        "blob": "99f99089ed02e1f6de80c0be242f6194a64ba94d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/audit.json",
+        "blob": "1afd135a45c4239beb2d5b5af3e65ee3a937f00a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/audit.py",
+        "blob": "34ac15e2cc359355f39d29d16bfa2957c75f7587"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/author-packet-audit.json",
+        "blob": "d8e112c528d4a1769cd9df5cdab36976cbc93d7d"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/author-packet-audit.py",
+        "blob": "71d6bea3e6a23b9135b03ddb8f7cb8653a23cae7"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/authored-whitespace.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/capture-reaped.py",
+        "blob": "bda166905f83a834a088f5e378043435b73919cc"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cleanup.json",
+        "blob": "ebf3dd26fca02253e31baae05b35f9825285e6c8"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli-independent.test.mjs",
+        "blob": "e7d4f2799e8ad9c48f1c5b8ffcafdaa3b2b6d77a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.json",
+        "blob": "9b29ef91e91a51d968feba7637e024d60b45def0"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.stdout.bin",
+        "blob": "16a55e6af7fbaa839e80c890a6ac4289600d0ddf"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/dependencies.json",
+        "blob": "ab9ba576a48e12a0ab4eab92d86200c965601a47"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.json",
+        "blob": "c60e093c61e80a8b5d5e66fa1c0701389b66e0af"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.stdout.bin",
+        "blob": "dcaa5d7e43507effbbad17140856a9619744fa8b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-finding.json",
+        "blob": "bb20632f199aa01ce52e5b6c5c090c7d9591c7f4"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.json",
+        "blob": "d1bea5a13f478dd624b03eb9b4e353460c46c4c3"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.stdout.bin",
+        "blob": "3ea572f251969061e577ea97e5cfbb204622e65b"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/final-application-verdict.json",
+        "blob": "6b6a223a5b21cf93589c92c74733b2bc180d9328"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/first.json",
+        "blob": "5c4c1414eee1f9c306a9b2d403661307090e3c71"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/first.stdout.bin",
+        "blob": "7fbbbb09d3881412b70596ecd599dd9ed9e32342"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/manifest-verification.json",
+        "blob": "0ad997bbf58565ac157e1fd65457f7069da805cf"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/manifest.json",
+        "blob": "ab2b5c7cb97f2d817d9f0bae34cb13b731d74ff1"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/office-dependency.json",
+        "blob": "69420c1d63d45527d182115caaed5a0c8e78085a"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/outline.md",
+        "blob": "d7323220ab2ca94cedde7c9cc9b19cc29d0898ff"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/pre-replay-corrections.json",
+        "blob": "5f1a9a33c930a01ecea31d2666a2cd96c6284c22"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/repaired-packet-audit.json",
+        "blob": "a9599b3bf80b439894ad965a7d6f99701532317e"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/repaired-packet-audit.py",
+        "blob": "b03b8edd2e97f306512293fe9225242a6f964108"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/report.md",
+        "blob": "945a27266158c0804e632c1f8ef33ae8206a0bee"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/test-split.json",
+        "blob": "a5fe71d44aa277434fcae07a29904c528fad3feb"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/whitespace.json",
+        "blob": "4e9c125f2e697d92299fe149b0307f4b049cb612"
+      },
+      {
+        "path": "docs/qualification/candidates/workbook-drafting-20261013/review/whole-whitespace.bin",
+        "blob": "ab6fe201022ee901861ede4cae1f96ccf8f313be"
+      },
+      {
+        "path": "packages/contracts/README.md",
+        "blob": "36fe1d21432358dece0edb67317219e1ab4d14c2"
+      },
+      {
+        "path": "packages/contracts/dist/document-application.d.ts",
+        "blob": "00cb5b8c10cd030d99c0ec42804317763a397ec5"
+      },
+      {
+        "path": "packages/contracts/dist/document-application.metadata.json",
+        "blob": "c33416393c13b17a30b6811f822e2a458d42c089"
+      },
+      {
+        "path": "packages/contracts/dist/document-application.mjs",
+        "blob": "7ab3974bce3a473b12236d7643d1b508f766a370"
+      },
+      {
+        "path": "packages/contracts/dist/document-application.schema.json",
+        "blob": "f355598b19eb0721165d3a20d9269247ecd11d70"
+      },
+      {
+        "path": "packages/contracts/document-application/boundary.mjs",
+        "blob": "02dad0cceaaa3b3ccbbd237de8c41bd94fdf5fc1"
+      },
+      {
+        "path": "packages/contracts/document-application/download.mjs",
+        "blob": "80cf0877cf3f7f1c0c199073758826333732d1d7"
+      },
+      {
+        "path": "packages/contracts/document-application/receive.mjs",
+        "blob": "9b4ffae2f496b4f5b569e5d2a58734eebb9b7566"
+      },
+      {
+        "path": "packages/contracts/document-application/schema.mjs",
+        "blob": "5e18d7be47d4b29f07af7e598878fabdbbd67a29"
+      },
+      {
+        "path": "packages/contracts/generate-documents.mjs",
+        "blob": "f3372156604dd0117a4d937ccd7abdbf588b689a"
+      },
+      {
+        "path": "packages/contracts/package-lock.json",
+        "blob": "e68a41d539f7df5b8116bf85ff5b4d72726d106a"
+      },
+      {
+        "path": "packages/contracts/package.json",
+        "blob": "f53cfa9fdbc943da29becd5b206dc3d024ad0767"
+      },
+      {
+        "path": "packages/contracts/test/document-application-independent-types.ts",
+        "blob": "b444c02c97d8bf2e0c0e96c50cad147c04c5906b"
+      },
+      {
+        "path": "packages/contracts/test/document-application-independent.test.mjs",
+        "blob": "1b1d0e09d7e6fd8bfb31a8621bb874973ee75d8c"
+      },
+      {
+        "path": "packages/contracts/test/document-application-public-types.ts",
+        "blob": "10af04387e554c98a4bda747a90f344881839114"
+      },
+      {
+        "path": "packages/contracts/test/document-application-public.test.mjs",
+        "blob": "75441ef5a8053f707c1e45d1b10032241902ce47"
+      },
+      {
+        "path": "scripts/local-document/run.mjs",
+        "blob": "9bb628e740b48a440278f52205a20c2f8c0bbc94"
+      },
+      {
+        "path": "scripts/local-workbook/run.mjs",
+        "blob": "634046052570998b0adb7dc78622b73eac5aea97"
+      }
+    ],
+    "PR55": [
+      {
+        "path": "apps/control/qualified-application/README-schema.md",
+        "blob": "c4e217eb2c500dc9290084742f06dcb3f219fc19"
+      },
+      {
+        "path": "apps/control/qualified-application/application.fixture.mjs",
+        "blob": "4e72bd52741d7db7b7d4ce3b5803b6ae103670ff"
+      },
+      {
+        "path": "apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs",
+        "blob": "620ff6ded765afc78787432d070156fdbd070e7e"
+      },
+      {
+        "path": "apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py",
+        "blob": "1d8602283ce1331f99c49755873718c303b19f69"
+      },
+      {
+        "path": "apps/control/qualified-application/independent/schema-independent.test.mjs",
+        "blob": "915b427ecdce9988d36bf964ba2475f0b2c08ae3"
+      },
+      {
+        "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+        "blob": "861e0ef62d994a0102e92b65b83e4e4881f64755"
+      },
+      {
+        "path": "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+        "blob": "66ac2e00662f16a613bc3dbfeca0e827e1307cfb"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-compatibility.test.mjs",
+        "blob": "59ef05618ecc27ea5e060aca290928b6853b0515"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-contract.mjs",
+        "blob": "3bd5067559b09bd66911132282587d5b273c25cb"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-independent/fixture.mjs",
+        "blob": "ad2918556e3929b2b00e56569f13dbf2df09dd69"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-preservation.mjs",
+        "blob": "c4615dfc1ab3138ae59e554f3e2fcf252bb001ac"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-size-independent.test.mjs",
+        "blob": "8a331dda45a4be0a834804e95f54c56830a5f5ec"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-size-inventory.test.mjs",
+        "blob": "1df968fa0775d24accb00f7a5c28639b7b02d07a"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-size.test.mjs",
+        "blob": "cc2c4f52c3b1fd818e8f2a29870a61d734b4f661"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-structure-independent.test.mjs",
+        "blob": "0959643f3734211525bb9999a690e5aa61feadf5"
+      },
+      {
+        "path": "apps/control/qualified-application/schema-structure.test.mjs",
+        "blob": "b79e8ca141543c2502d6d981f419cabb45cf2851"
+      },
+      {
+        "path": "apps/control/qualified-application/schema.fixture.mjs",
+        "blob": "5522e6c611d6702693144c06980f2312dcbe5df7"
+      },
+      {
+        "path": "apps/control/qualified-application/schema.mjs",
+        "blob": "0a30dd166c055b314cceaf3ad109361894ed5821"
+      },
+      {
+        "path": "apps/proxy/qualification/assembly/lifecycle.py",
+        "blob": "5742c6590e42d034782e62ea746837d2d3f72b7f"
+      },
+      {
+        "path": "apps/proxy/qualification/assembly/test_fixture_compatibility.py",
+        "blob": "bd706fd5a695da2f455658ee80a1bb4ec5d684b3"
+      },
+      {
+        "path": "apps/proxy/qualification/assembly/test_lifecycle.py",
+        "blob": "5ddcf533a44d6c906a4994d3ba9a8e54a317640a"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-NATIVE-STRUCTURE-20261013.md",
+        "blob": "d191c4e70a0eed67dbb9e73e197fc903789d74fd"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-NATIVE-STRUCTURE-INTEGRATION-20261013.md",
+        "blob": "50d149fa947adb534fdeb2097d614628eb3946e2"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-PRESERVATION-SIZE-INTEGRATION-20261013.md",
+        "blob": "b9e8094b71c93c0bc27df85be3e2a10bf45505b0"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-PRESERVATION-SIZE-REVIEW-20261013.md",
+        "blob": "c1365f92eed807c23993a2f20ac5b70b351d2e5e"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-QUALIFIED-FIXTURE-INTEGRATION-20261013.md",
+        "blob": "b77114aa839686b4a442f8a3e6bfe33eb67efaac"
+      },
+      {
+        "path": "docs/coordination/reports/CODEX-QUALIFIED-FIXTURE-REPAIR-20261013.md",
+        "blob": "10d45a8d74d6ee41ed01cc8d8539659dc571c6f2"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-NATIVE-STRUCTURE-INTEGRATION-20261013.md",
+        "blob": "5c2998060dd853fc3bc7d499c55559e5449ed1b2"
+      },
+      {
+        "path": "docs/coordination/tasks/CODEX-QUALIFIED-FIXTURE-REPAIR-20261013.md",
+        "blob": "d4a2c552046dd29a9ac4e5de4228deef0bff2a38"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/audit.py",
+        "blob": "1c88cb2946dc99ab7e73c131e004452da2dce9fe"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/cleanup.json",
+        "blob": "ad67c8f60ea8840eeb5c7767173fd23c8da5a5b4"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/manifest.json",
+        "blob": "de768ea5d1d45cf78b0ea5d2c9bfbfd7fd361f11"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/schema-size-independent.test.mjs.before.txt",
+        "blob": "8b4d25f4e0aa1414e35bb8af31695054e173e31c"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/schema-size-inventory.test.mjs.before.txt",
+        "blob": "1ba0f023eb6297f2f7e889989f43236394e71699"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/schema-size.test.mjs.before.txt",
+        "blob": "47639fb2c855a4fb4163a08be8e8acdf83fd2cf6"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/source-audit.json",
+        "blob": "a74de0e3ad9e12471cfeaff0beb15155cd48a886"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-before.json",
+        "blob": "40d086c98ad5683ec53fdc0428b5cc49c63d16c0"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-before.stdout.bin",
+        "blob": "c062dd3415707d22d3d46a72277d44d85ea0dd0a"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.json",
+        "blob": "367f7871ca973aad2352a1fc63b6cd3445b6d567"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.stdout.bin",
+        "blob": "21b3fe45ee828ac26ae559f719aab67b56971e2c"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-repaired.json",
+        "blob": "5c72742c25f75571056722721ad863d2f0ef4d4a"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/structure-repaired.stdout.bin",
+        "blob": "7b3253fad171234a6051e7ab8d33a3fcd0dc357c"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/test-expectation-map.json",
+        "blob": "bf0edd23f783733f199e11a0d3ce1f7030c0befa"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/author/test-expectation-map.patch",
+        "blob": "3f0e959bac6fcf32f47253935d901be1b9144d4a"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/audit.json",
+        "blob": "506866bba8a88cead6125637ae2c99463549ae0d"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/audit.py",
+        "blob": "adfc47eac41e92e069b804a6a63f90d22af59bd6"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/cleanup-and-packets.json",
+        "blob": "038b1ce276ac5f77c8d0893b715581dac4057fe3"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/manifest.json",
+        "blob": "947cc72769fa727b51220ac1ce916e8b429f1f64"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/schema-complete.json",
+        "blob": "83c755e1e2fe64cdbe4d7b63bfe61ec34262299a"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/schema-complete.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/schema-complete.stdout.bin",
+        "blob": "70a0931cf1443ffe8bb8114af876405c09d14adc"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/integration/source-blobs.json",
+        "blob": "8852f80abc1b84274dcb456133f4a8f48fa646ee"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/audit-correction.json",
+        "blob": "47a47e63d6064fc101bc7990d5a5319f7dfa9f0c"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/audit-packet.py",
+        "blob": "5dbd5297830d4f1b56c4213877ea5f6bb56b0904"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/audit-source-initial.py",
+        "blob": "964ca43e3b3ba0650dfb26647e730507d053c5e9"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/audit-source.py",
+        "blob": "b78f1d71e9baf20ccc7aae534a8d93e1530a3f13"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/baseline.json",
+        "blob": "095bd3c8836bc7172216ce26125dcb1b640ec7f5"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/baseline.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/baseline.stdout.bin",
+        "blob": "dd08bb5fa96bd51372a21158cbb4507bfe12ed8b"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.json",
+        "blob": "c4835315cad4a158a2d811518763676c04ef4f49"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.stdout.bin",
+        "blob": "20537fb85e4aaa10c11131a699843e805c4cd1ac"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/capture-reaped.py",
+        "blob": "bda166905f83a834a088f5e378043435b73919cc"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/cleanup.json",
+        "blob": "48492363acc619067e1c32c07d1177c188f502cc"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/downstream-before.json",
+        "blob": "be88e96632f6c3d9a8ba31a98020568fa165ace8"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/downstream-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/downstream-before.stdout.bin",
+        "blob": "c734f80c1648b82041c46a8bf9b6a3c3f057dc86"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/manifest.json",
+        "blob": "ff899e4fc78688b2afc1105ff3b4e5fcbee3e1ae"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/outline.md",
+        "blob": "c58be6381b21e6255244780af68dd6dcdf6ca5d7"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/packet-audit.json",
+        "blob": "94f0b06cd4c710f81606557a1dfd8f041efcafec"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/pre-replay-counter-correction.json",
+        "blob": "039f3dfe610e2f8066dcc28e8c58940efddb6701"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/report.md",
+        "blob": "71693bfb2969645e9d134461f4c9b8bf0f74d58b"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/source-audit-initial.json",
+        "blob": "0061d7b73c53cceaf15bbbbb9e6fcac91ed1c78a"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/source-audit.json",
+        "blob": "60c84f3e79495e817cd821c0b1df8f9817ca8dce"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/verify-manifest.py",
+        "blob": "0e0cdc75660c5a13708023946a64841df9acce51"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-authored.json",
+        "blob": "7196ac1b9eaf29c41d6553694c5cc46e5a9b508c"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-authored.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-authored.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-whole.json",
+        "blob": "cfa8768da28daaab44b161287bf59bcdaea5ca3d"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-whole.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-whole.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/INVENTORY-SUPPLEMENT.md",
+        "blob": "559b595f40e23107280a27afd603134f89db584b"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/README.md",
+        "blob": "4f93b0f85b82e190e021b65c7caab3f880e46de2"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/REPORT.md",
+        "blob": "f16f421304d4feab080831c24fe3eac0dbddec10"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/audit.json",
+        "blob": "8b74da22c0fc4872f35424f8ab2cc143826f4bbc"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/before.json",
+        "blob": "763bcec8bb5c066a360ad934766b48d40012b84d"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/before.stdout.bin",
+        "blob": "83ce5214b9cfb88be9da45eb8013e497018b2f37"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/cleanup.json",
+        "blob": "338c808df5c80ac751c5015252b301b6323b50d2"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/import-repaired.json",
+        "blob": "5da3f6b629ba722beadb294cd5cfb26aa435ce96"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/import-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/import-repaired.stdout.bin",
+        "blob": "a06cd9c63af299da2a8bf5dfa533cd80180ad414"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory-cleanup.json",
+        "blob": "1e6424595386ab2b0be540583d447365e80bd3c2"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory-manifest.json",
+        "blob": "8fa9b43314376a827bee100ba15315bbd4826c22"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory.json",
+        "blob": "d8227c5c3e8c0c113810413972b4e1bd49f83381"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory.stdout.bin",
+        "blob": "29fbb9669f7fd2f2e18b2edfecf83371bff5a75b"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/manifest.json",
+        "blob": "8104efcb881b1bc9bce4be0d9a3be3cee799d983"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/repaired.json",
+        "blob": "0b7626004b95e912cc4d8838eb71fd279690a406"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin",
+        "blob": "18d3b4c15f0e5dd40f1f73e3403c7a648e7ce487"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/author/setup-diagnostic.json",
+        "blob": "6c52d70197cb6ad15066c83e25974b1ba9f19bfe"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/audit.json",
+        "blob": "9dc72a659a2b61ed0581877706ec81864bde317d"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.json",
+        "blob": "cf61916fcfd2d99c7d62d37170bfda6863cff7e6"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.stdout.bin",
+        "blob": "06b3add6344a4aa4676134a1d1c8879e4462739a"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-schema.json",
+        "blob": "0aecf12d24ea61ef9c2a4b6c5fbb7e65d8193450"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-schema.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-schema.stdout.bin",
+        "blob": "a5e80d1951f823772dbf72a9156836521293559c"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/manifest.json",
+        "blob": "ec0055c1cf47373245219f17a1a93203a00b1f23"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/integration/source-blobs.json",
+        "blob": "4ad95df15e24cd4088412190a2a56320e6ccb6d6"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/.gitattributes",
+        "blob": "b0b5529bf46e4425ce5e7b741c6d255ee44ba6c5"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/README.md",
+        "blob": "930b57d13e01cb9db0b40e1589b643e2bbcea386"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/audit.json",
+        "blob": "b9197259bf5d47c899d20ce33d95ab6c5eaa990b"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/audit.py",
+        "blob": "eace29d0a46a1f42d4edb46594a2ef608b513afb"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/author-packet-audit.json",
+        "blob": "9728c32cc3a9a7609bc14e03d3f35a196032d87a"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.json",
+        "blob": "c72cf44a1c74a86da00b98feb462dc377f042328"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.stdout.bin",
+        "blob": "1c792997852a333dd82130a8486e3c4e826f22f5"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/cleanup.json",
+        "blob": "fa73d8151ca061abaf1c3a9c7da1b926385acdd0"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/criteria.md",
+        "blob": "9eb7e02052cc49da83c635461212e8aa1db148e1"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/final.json",
+        "blob": "8e41678f6601f8afb0e3adf9ceb261bdf70a973d"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/final.stdout.bin",
+        "blob": "2fc04d1f9ec9441689737885f9186d672bb93624"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory-audit.json",
+        "blob": "c953b8279908d977aaf70e0e48807824d4f4668e"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.json",
+        "blob": "3e70eab53942247a0f037785e1194dbfed710f23"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.stdout.bin",
+        "blob": "9ca2131fb1d1e3e2be880a8ad5f4dcdae9e090a2"
+      },
+      {
+        "path": "docs/qualification/candidates/preservation-size-20261013/review/manifest.json",
+        "blob": "b0a8dc8ad3d92479729d0a6651f0c0ec9b35420c"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.json",
+        "blob": "bde99a4aa0e288d51544179e9f32c334c0de2648"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.stdout.bin",
+        "blob": "265a6057600526c8b85b2f48e235d8e49f498ba8"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.json",
+        "blob": "d63eb5ee6d7c65f67253dc59116645ed76478d03"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stderr.bin",
+        "blob": "d7c94e3e0d7aedb83fed59b66a304c156cf90f34"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.json",
+        "blob": "1a0b24c02cff1e37d6429b8d5433098589aef61a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py",
+        "blob": "9e84e9d0936cecb2c31df7b6cab709bafc55df7d"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/capture-reaped.py",
+        "blob": "915803ff62c4bc0239078575c5497274190cc081"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.json",
+        "blob": "4d9a9b3d46a5c2b17aaa4beadcffc7200c8f9320"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stdout.bin",
+        "blob": "e659f092596ce6ab4a65b5afd21ff98cc21d962f"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.json",
+        "blob": "6e99452c229e409698a7f9e10639cabf45239a49"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stdout.bin",
+        "blob": "55371f60902fd792d2327399f79352f1c3c04c4c"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.json",
+        "blob": "f873d08592f205026ce8af312700067bccef523d"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin",
+        "blob": "62d3ff525525205ffaaea50594ea7fec7628b163"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/cleanup.json",
+        "blob": "ab734af54155a844ac58ca4705f0316ec55c925d"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.json",
+        "blob": "203634137099d7d7dfd916dd7f9f888d3707ccc5"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.stdout.bin",
+        "blob": "f5acc48853dd8e98e2713abdaae6891fbfd9d7ef"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.json",
+        "blob": "ee765c4b8063aea5ce6eb6050132d226cd09e25f"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stderr.bin",
+        "blob": "f4127ab12bc4f14511745f0a39d6841836a11737"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.json",
+        "blob": "3548510dc286be854a36a7871838831ffba6a4c8"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.stdout.bin",
+        "blob": "477e12ae9d06a4ebb55d563d0b484d8281ee186e"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.json",
+        "blob": "061c9392e397b2f8e09e68c188bac8e081b021aa"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.stderr.bin",
+        "blob": "9b24f485b72bcbd2ec37c658cd57b8050e144535"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.json",
+        "blob": "51beca1b764266ff7ad584fb54471dd66e9b130f"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stdout.bin",
+        "blob": "8aeab1e6b0ea430d231e8959c60c681691308d2a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.json",
+        "blob": "4f87e749b8ca28cdee1e92c76f4bf79668dd67db"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.stdout.bin",
+        "blob": "b9596514699fbab6fc06172a03fb7fc3a77829b5"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.json",
+        "blob": "dc7c70e46961ffccab0a8b798c7c3c3cca62e7df"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stdout.bin",
+        "blob": "3ab703db5a92c35ca9013ff710a669fb084d6285"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-e14-preimage.json",
+        "blob": "19cc52d102cd1aa655af066d6d6ab34df23f3440"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-f41-preimage.json",
+        "blob": "15bba96c3f7ebc01fc6a287435e975e76d62c5d6"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest.json",
+        "blob": "ad0a973d6855e01cafe55d85b6c3f0e7af5b21f7"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.json",
+        "blob": "f60e108198329da21b6c869857e445ff2f06b7a4"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin",
+        "blob": "111b97ee631455f4c32895190c50bf46d9e7a9b1"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.json",
+        "blob": "c793f0363a8716d5dceaa4e0cbe563d075b76769"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.stdout.bin",
+        "blob": "5b501ab6a91805e125e7af080d63a319fce3dd9a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.json",
+        "blob": "da6a6519e275dec6bcf015369a3cabfe3678d4ec"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.stdout.bin",
+        "blob": "8c47062c1345422f7302786d2a422aeec92d3cff"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.json",
+        "blob": "7002e49371282d579d85af53a2dbd3b6840e60ba"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stdout.bin",
+        "blob": "d9860aad9bc05f5ba934b26c9ef00953ac89a784"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.json",
+        "blob": "26a01ef05447f6639abe99d469d18252279ace6a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.stdout.bin",
+        "blob": "ef153ab4055881da7a683b9981d84a12e91ed58d"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.json",
+        "blob": "7770783f327e55730fac31f3797df31a3c74ba42"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin",
+        "blob": "9fc2535f5ca833dd5bb7f2047f4f2cf4a25b25b7"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.json",
+        "blob": "e74f1c13f32cc215eb6cad4c0f52bde68f6ed8c6"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.stdout.bin",
+        "blob": "c22fbb43844917ca952f4979d5aa940d87d971cb"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.json",
+        "blob": "da9bb7eb352a8fe690c92fffeb24d55b3d82573a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stdout.bin",
+        "blob": "b712a8556d9fc50c962aa070d0605a5a9ef2b3f4"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-whitespace-followup.json",
+        "blob": "34ac7519089f92d1721adb8910b0256bf353afb5"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace-final.json",
+        "blob": "d938bad6eca96c49430abd2c55aaccf0e9f4866d"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace.json",
+        "blob": "764e84f836d3b2054dc5fac68988619485cc1b0f"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit-final.stderr.txt",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit-final.stdout.txt",
+        "blob": "b66c1018e182a1cdbce16c8499687c747f361482"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit.json",
+        "blob": "f6415265dd39948dfffd7071dd8368ba36aea407"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit.py",
+        "blob": "fc2e48fa7622a6a9bae8a1d6a49696e5c17cdce3"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit.stderr.txt",
+        "blob": "733c8a058e1fc5eb7f6e5ba16e38ed7d19913896"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit.stdout.txt",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/capture-reaped.py",
+        "blob": "bda166905f83a834a088f5e378043435b73919cc"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/catalog-qualified-node.json",
+        "blob": "2369ec024783607663687e6f3ab675aa8a42ec1a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/catalog-qualified-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/catalog-qualified-node.stdout.bin",
+        "blob": "1e85c6d8ebf2e15b728b1704e4fa9aadfa2f7213"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/cleanup.json",
+        "blob": "6aa74276129cffdbd3ab2e038f5ce0c53d8e9c8c"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/failures.json",
+        "blob": "d712d53b5f5cb31e7259e2ffeb8c61ffd02f13b7"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-node.json",
+        "blob": "dce2655ca4f6b3a840ae000e61af2e1dde207cd4"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-node.stdout.bin",
+        "blob": "1235a766ead098609cf121ca76c6340f8357686b"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-python.json",
+        "blob": "b013e602043985782c7de819eca603c8d2f8f9a0"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-python.stderr.bin",
+        "blob": "3d12d9d4fa9e9350b58ecac6f5d8a671f5333ddb"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-python.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.json",
+        "blob": "bec4282f22aa8a4c9b2e946af7ea492c29ca6254"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.stdout.bin",
+        "blob": "82d8eef01fd2bef739d1c059f386552a615af78e"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node.json",
+        "blob": "8e1abf4f406ee70ac16cdbba0538970b84d9048c"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node.stdout.bin",
+        "blob": "e8638b7f7e75fa7c44a2cb8059b7c2b847a04cd8"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-python.json",
+        "blob": "88caa6c417e2c1c73fa7308415042762bb05de94"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-python.stderr.bin",
+        "blob": "4e75c7c022f2afb73d12c8fa05ce3e033fe5dc02"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-python.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/manifest.json",
+        "blob": "586d52a80ad8805cfef2c257d9e8ed656fd8c208"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/publication.json",
+        "blob": "a99d6f7a6645514503be5f0656f1dd64f3c2b4dd"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/source-blobs.json",
+        "blob": "92d6a6e166e53cb348f8458ce67f293b3e1225cc"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/audit-first.json",
+        "blob": "a52f73526ef2dad2f95c5c1cefce38accbe6874a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/audit.json",
+        "blob": "0a0777d95a5d9ec2e8a71dc47c1c82ec26830a5f"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/audit.py",
+        "blob": "57a60b151505393db0ab68ce8de4771c533c7c63"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.json",
+        "blob": "54201881401466f786ff9d4b8934ec3d3826c87b"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stdout.bin",
+        "blob": "34fe275a1cc760ac4dac7a8ec4ef588e182b6698"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/capture-reaped.py",
+        "blob": "bda166905f83a834a088f5e378043435b73919cc"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-assertions-forward.patch",
+        "blob": "14d4558dbe84d878bbc33f725364ba065407a5a4"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.json",
+        "blob": "52e5987277cc2d2477910de99d787deb035224af"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.stdout.bin",
+        "blob": "b113baafd24b51d8e8b61c3b76b7b0397b2e9ee7"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cleanup-observation-correction.json",
+        "blob": "6a79a98480c65c7facd3aef0b4b5558f073f900e"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cleanup.json",
+        "blob": "5320617de5b07b71eebfc70fa9d204701f01b10c"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.json",
+        "blob": "e47051e01782c2454e39a9496397638bbf7172ed"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.stdout.bin",
+        "blob": "549c233a9ad5812e04331e65a449669f094015c1"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.json",
+        "blob": "3232403d22f6097866d406f91189bd374fa4d20a"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.stdout.bin",
+        "blob": "af17c7c8ac21007eb34f32d1d6d2d80bfe6fe882"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.json",
+        "blob": "8f46879b1066c1b1be8ff35c34783431360d953e"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.stdout.bin",
+        "blob": "8e5409e740f16ac7b2067625a8523ddcb889a90b"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-review.json",
+        "blob": "114c72b4f48765f8843bf278bf803c93bce108ae"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.json",
+        "blob": "c52adced479b74c8f00eb84296f1b69046a42dab"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin",
+        "blob": "a4a69d944c7a5c53c165acccfe48ec9c4cdb9b91"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.json",
+        "blob": "391775fd3219dbd69df0a35b32dec4f5f56ecc33"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.stderr.bin",
+        "blob": "cc8154ccc80ed7e3ab40dcca65a3e2b3888e0154"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/manifest.json",
+        "blob": "e398c6feab3d13279daace5bb178582f645ecb67"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/outline.md",
+        "blob": "2420ca4e0f47ea128e1b092baa4a46cd3f2881c4"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/pg-search-path-observation.json",
+        "blob": "12a34720589b73a5d58294e085045d145d2c04a1"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/python-fixture-correction.json",
+        "blob": "b67116f246f38b65ba73dc4d5e2b9cab3e6f8ce1"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.json",
+        "blob": "0e0b9f3b7dc26cd5fa2c16b3be6022259a536612"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.stdout.bin",
+        "blob": "a99b45777bf80ef486ed0e8e9fcfd399a6125ee8"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.json",
+        "blob": "da3d37b1abd02239ad458d690633d9b2db8c32c6"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.stderr.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.stdout.bin",
+        "blob": "6ffa65139176a071c29bf3e96add0805fdf102bb"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.json",
+        "blob": "074357cb63cb1fe6c249d420b86bd5c4d395fb86"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.stderr.bin",
+        "blob": "3d12d9d4fa9e9350b58ecac6f5d8a671f5333ddb"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.stdout.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/report.md",
+        "blob": "8608ad32f4c8110d0f86667cce5ac9106b76a1aa"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-authored.bin",
+        "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin",
+        "blob": "e8ff6d6ca57fccefcc4b32aa6393a32187bd639f"
+      },
+      {
+        "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace.json",
+        "blob": "a0e73f85a559d0e67f3727456d059ed13885bde3"
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+        "blob": "9009e421a2ed61c1f4ba5c929ec32cdb4f80533f"
+      }
+    ]
+  },
+  "publicDocumentContracts": {
+    "packages/contracts/dist": {
+      "PR56": "22b009a691f4147d2a2b2829500491b522101cc2",
+      "composition": "22b009a691f4147d2a2b2829500491b522101cc2"
+    },
+    "packages/contracts/document-application": {
+      "PR56": "dbef8c8bffe37ab840d390874e255a02d5dcd9e3",
+      "composition": "dbef8c8bffe37ab840d390874e255a02d5dcd9e3"
+    },
+    "apps/control/document-application": {
+      "PR56": "635c5fb2169783a45db7f00a28fca219420b896a",
+      "composition": "635c5fb2169783a45db7f00a28fca219420b896a"
+    }
+  },
+  "nativeDatabaseAccess": false,
+  "sharedDecoder": {
+    "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+    "PR55Blob": "9009e421a2ed61c1f4ba5c929ec32cdb4f80533f",
+    "compositionBlob": "9009e421a2ed61c1f4ba5c929ec32cdb4f80533f"
+  }
+}
