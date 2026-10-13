@@ -1,0 +1,109 @@
+✔ independent construction borrows resources and makes no SQL or source calls (15.523918ms)
+✖ independent pending refusal then explicit approval and reconstruction retains exactly one charge/effect (134.394612ms)
+✖ independent reconstructed metadata owner reads immutable proposal before effect (26.180356ms)
+✔ independent default-disabled command refuses without SQL preparation or effect (3.639424ms)
+✔ independent current read denial still applies after lookup reconstruction (37.620372ms)
+✔ independent current preparation revocation survives reconstruction (7.208021ms)
+✔ independent current capability revocation prevents reconstructed execution (7.491017ms)
+✔ independent current approval revocation prevents reconstructed execution (15.63109ms)
+✔ independent rehashed command substitution cannot reuse immutable metadata (8.162847ms)
+✔ independent lost prepare ACK keeps identity/liability without automatic re-effect (11.340997ms)
+✔ independent lost reserve ACK keeps identity/liability without automatic re-effect (27.915636ms)
+✖ independent lost marker ACK keeps identity/liability without automatic re-effect (27.323466ms)
+✖ independent lost settle ACK keeps identity/liability without automatic re-effect (22.55869ms)
+✖ independent lost journal completion ACK preserves retained outcome and never repeats effect (20.417759ms)
+✖ independent cancelled marker retains hold and late ACK cannot resume live settlement (14.344585ms)
+✖ independent retained command read needs fresh authority after reconstruction (16.110351ms)
+✔ independent expired approval/metadata cannot authorize reconstructed execution (6.665706ms)
+✔ independent disabled assembly refuses new lookup before SQL but retained reads still require current authority (14.798267ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 11
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3012.804023
+
+✖ failing tests:
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:37:1
+✖ independent pending refusal then explicit approval and reconstruction retains exactly one charge/effect (134.394612ms)
+  Error [CommandError]: COMMAND_OUTCOME_UNKNOWN
+      at deny (file:///tmp/meri-action-host-durable-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at operate (file:///tmp/meri-action-host-durable-review-20261013/apps/control/commands/executor.mjs:83:54)
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:41:1
+✖ independent reconstructed metadata owner reads immutable proposal before effect (26.180356ms)
+  Error [CommandError]: COMMAND_OUTCOME_UNKNOWN
+      at deny (file:///tmp/meri-action-host-durable-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at operate (file:///tmp/meri-action-host-durable-review-20261013/apps/control/commands/executor.mjs:83:54)
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:47:60
+✖ independent lost marker ACK keeps identity/liability without automatic re-effect (27.323466ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'SETTLED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-host-durable-review-20261013/apps/control/action-host/durable/durable-independent.test.mjs:50:159)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'SETTLED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:47:60
+✖ independent lost settle ACK keeps identity/liability without automatic re-effect (22.55869ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'SETTLED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-host-durable-review-20261013/apps/control/action-host/durable/durable-independent.test.mjs:49:151)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'SETTLED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:52:1
+✖ independent lost journal completion ACK preserves retained outcome and never repeats effect (20.417759ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'UNKNOWN'
+  - 'OUTCOME'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-host-durable-review-20261013/apps/control/action-host/durable/durable-independent.test.mjs:52:299)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'UNKNOWN',
+    expected: 'OUTCOME',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:53:1
+✖ independent cancelled marker retains hold and late ACK cannot resume live settlement (14.344585ms)
+  Error [CommandError]: COMMAND_OUTCOME_UNKNOWN
+      at deny (file:///tmp/meri-action-host-durable-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at operate (file:///tmp/meri-action-host-durable-review-20261013/apps/control/commands/executor.mjs:83:54)
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:54:1
+✖ independent retained command read needs fresh authority after reconstruction (16.110351ms)
+  Error [CommandError]: COMMAND_OUTCOME_UNKNOWN
+      at deny (file:///tmp/meri-action-host-durable-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at operate (file:///tmp/meri-action-host-durable-review-20261013/apps/control/commands/executor.mjs:83:54)
