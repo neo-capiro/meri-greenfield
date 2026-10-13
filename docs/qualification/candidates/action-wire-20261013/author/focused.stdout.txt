@@ -1,0 +1,36 @@
+✔ actual PR42 wire 0 query 200 (27.588807ms)
+✔ actual PR42 wire 1 draft 200 (2.250848ms)
+✔ actual PR42 wire 2 prepare 200 (2.745797ms)
+✔ actual PR42 wire 3 execute 409 (0.374844ms)
+✔ actual PR42 wire 4 execute 200 (1.26396ms)
+✔ actual PR42 wire 5 execute 200 (0.204808ms)
+✔ preserve uncertainty UNKNOWN (0.154132ms)
+✔ preserve uncertainty STORED_NOT_RELEASED (0.089926ms)
+✔ reject success/error status interchange query (0.888045ms)
+✔ reject success/error status interchange draft (0.569526ms)
+✔ reject success/error status interchange prepare (0.537328ms)
+✔ reject success/error status interchange execute (0.821885ms)
+✔ closed/correlated negative 0 (0.308864ms)
+✔ closed/correlated negative 1 (0.270266ms)
+✔ closed/correlated negative 2 (3.593792ms)
+✔ closed/correlated negative 3 (3.443145ms)
+✔ closed/correlated negative 4 (5.356877ms)
+✔ closed/correlated negative 5 (0.93812ms)
+✔ closed/correlated negative 6 (0.761926ms)
+✔ closed/correlated negative 7 (0.245148ms)
+✔ closed/correlated negative 8 (0.922567ms)
+✔ closed/correlated negative 9 (0.248764ms)
+✔ closed/correlated negative 10 (0.302585ms)
+✔ Proxy, accessor, revoked proxy rejected without traps (0.237787ms)
+✔ bounded primitive JSON (0.318178ms)
+✔ route coercion never occurs (0.100722ms)
+✔ deep immutable parsed output (2.131894ms)
+✔ execute pending outcome retained without claimed result (0.176705ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 125.567444

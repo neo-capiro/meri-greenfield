@@ -1,0 +1,79 @@
+{
+  "testedHead": "2077d0177a81caae213a6bb7a434cc00008a5c77",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/.gitattributes",
+      "bytes": 26,
+      "sha256": "4307d53f55986ad5de1381847373f3f55c650b96d6dad9db86186c4e204bb76d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/audit.json",
+      "bytes": 12737,
+      "sha256": "c45268337051a63818e8b0bd1b6c5a96721892fe462ef4a646a70741206f04e9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/audit.py",
+      "bytes": 3212,
+      "sha256": "c0498a81a4a7b27a354bc6792f238a39638d999a3b7df2728da8020d6d7226c9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/capiro-meri-contracts-0.1.1.tgz",
+      "bytes": 175627,
+      "sha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/check.py",
+      "bytes": 587,
+      "sha256": "e9a6309529d0adaf6bc0e1bc4b70a80a63ff98ed5717104e1a06ed3a62053791"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/cleanup.json",
+      "bytes": 251,
+      "sha256": "c21e9c1efb9b02cf0cb3b87ca15661467ace5b6f87e848f344c9ac790afcdb40"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/integrated-check.json",
+      "bytes": 1477,
+      "sha256": "a481394deefd2aac03ff759a97bff0bec023e7439339f2a410f9736f27024098"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 7440,
+      "sha256": "f5bf663050f146cf877fac4a0904413e49cc0a2c3e04d78c1c93ff4e68cd7cb1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/public-pack.json",
+      "bytes": 1429,
+      "sha256": "4043e752453c685da4b77d5b40163a26d7d1636e847c1c1472d26a9f8e3e179b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/public-pack.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/public-pack.stdout.bin",
+      "bytes": 1939,
+      "sha256": "1c971a63ccfae5bb3d39d9fc3f3ee4e1c8d3e3ea1d688be4b4c2f04b1d46d1c3"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRE-20261013.md",
+      "bytes": 4678,
+      "sha256": "98e08bbeb6b1c250df711286a0750ca1e0aedf3422e621c77605486881c02425"
+    }
+  ],
+  "exclusions": [
+    "manifest self-reference",
+    "later publication receipt"
+  ]
+}

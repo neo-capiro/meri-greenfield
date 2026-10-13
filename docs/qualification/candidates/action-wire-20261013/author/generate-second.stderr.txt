@@ -1,0 +1,10 @@
+Error: [action-generated] "onResolve" filter is not a valid Go regular expression: "(?u)^\\.\\/generated-(validator|status)\\.mjs$"
+    at /workspace/meri-read-continuation-20261012/packages/contracts/node_modules/esbuild/lib/main.js:1234:34
+    at responseCallbacks.<computed> (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/esbuild/lib/main.js:886:9)
+    at handleIncomingPacket (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/esbuild/lib/main.js:940:31)
+    at Socket.readFromStdout (/workspace/meri-read-continuation-20261012/packages/contracts/node_modules/esbuild/lib/main.js:864:7)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)

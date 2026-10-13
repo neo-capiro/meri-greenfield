@@ -1,0 +1,94 @@
+{
+  "base": "afcdd9312f3ccdf60a9b7fdb0fa0a42509224707",
+  "source": "3a6e3391b8fb3bb8113496c897f997683a27da2d",
+  "status": "PASS",
+  "originalEntries": 10564,
+  "preservedOriginalEntries": 10561,
+  "authorizedOriginalChanges": [
+    "packages/contracts/README.md",
+    "packages/contracts/package-lock.json",
+    "packages/contracts/package.json"
+  ],
+  "allOriginalTestsAndPublicOutputsPreserved": 144,
+  "lockOnlyVersionChanged": true,
+  "derivedCanonicalSources": [
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "bytes": 4832
+    },
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5",
+      "bytes": 5188
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816",
+      "bytes": 3189
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
+      "bytes": 3827
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "bytes": 15134
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "bytes": 31381
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "bytes": 21023
+    }
+  ],
+  "product": [
+    {
+      "path": "packages/contracts/action-application/schema.mjs",
+      "bytes": 2132,
+      "sha256": "4103c45c77707e244a45d82624c1873a5f3e6d3e42989bfbee4f1b141f2736d9"
+    },
+    {
+      "path": "packages/contracts/action-application/receive.mjs",
+      "bytes": 4337,
+      "sha256": "d4404440530e71bb56bb21d07729b1aab46b8c22e4d06e700fe10da792d81c43"
+    },
+    {
+      "path": "packages/contracts/generate-actions.mjs",
+      "bytes": 6751,
+      "sha256": "72f605755587cad3f445d4324e815c4008ccb47b787333842ac8fc044dffb73e"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.metadata.json",
+      "bytes": 1980,
+      "sha256": "9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.schema.json",
+      "bytes": 67726,
+      "sha256": "a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.d.ts",
+      "bytes": 17721,
+      "sha256": "007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.mjs",
+      "bytes": 1480808,
+      "sha256": "9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"
+    }
+  ],
+  "claims": "Shape/hash correlation only; no runtime, current authority, approval, retry or source-truth acceptance."
+}

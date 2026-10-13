@@ -1,0 +1,209 @@
+{
+  "source": "3a6e3391",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRE-AUTHOR-20261013.md",
+      "bytes": 4603,
+      "sha256": "3b617936637c7a10690a3150b733a364ed0aef4b8cd0720b452879842b70f80d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-install-verification.json",
+      "bytes": 611,
+      "sha256": "fe9b5d2aa2d9bf048acf0685f9e17500cd3a00d4824da57475947efbad8bd942"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-pack.stderr.txt",
+      "bytes": 757,
+      "sha256": "ec7f2fe3b808231fd7b265856be1afca2eaa31b34f7f065b87ba5cbe9452c026"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-pack.stdout.txt",
+      "bytes": 200,
+      "sha256": "208a522a0f234ede986af4f078cfb3f827c98ec8d09165b6ed6e5b83e1c4ebf8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused-stable.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused-stable.stdout.txt",
+      "bytes": 1597,
+      "sha256": "c40ab0cae42ea0f3c5ca51ec16293f176ea4232e9961b84a80b0ee5627700602"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused.stdout.txt",
+      "bytes": 1542,
+      "sha256": "356198fc6cd95fa107f222ebacc2a58b52ee42dc156e4cba08ea98b526a075ad"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/frozen-public.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/frozen-public.stdout.txt",
+      "bytes": 742,
+      "sha256": "5a793f2a60ec7efd2f09a42d78f4c6248a0bd4b3f0a52690caa114ab5c0710dd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-final.stdout.txt",
+      "bytes": 518,
+      "sha256": "dadf2bd1cdb595a4325fc81eac3ed36d40eedac213510435db25384775700ab7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-first.stderr.txt",
+      "bytes": 513,
+      "sha256": "6e4a4fe1edbeef66d0853f969dc0b6f687eee16708fad5c16e6340d9329547d9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-first.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-second.stderr.txt",
+      "bytes": 944,
+      "sha256": "465dbfd37a9d7abe2804357deefd5f799098e20a885971765a74f24009580be2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-second.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-stable.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-stable.stdout.txt",
+      "bytes": 518,
+      "sha256": "be9c889922824aeb4827de631f47ee940118edafdc30026f3c6b42e64626554f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-third.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-third.stdout.txt",
+      "bytes": 518,
+      "sha256": "507d5a12c5bb4c640061a7c1013c021fb2cb900c9c5cded8ccfae760ba03f378"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/handoff.md",
+      "bytes": 1666,
+      "sha256": "b34d7318205d679e5e0b07fea704dcf51866fc496399d33c11347ac74b29832f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/initial-readback.txt",
+      "bytes": 371,
+      "sha256": "555a3d9673b5574676ac768c1477586c477db96670389c24b278c73ed1d4eb0b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install-verification.json",
+      "bytes": 2509,
+      "sha256": "1c980121def6a9cbd9a16c96d4de7038d42dcbb1431d5fc371069747371b81db"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install.stdout.txt",
+      "bytes": 27,
+      "sha256": "e543b9995b4d188c6f7e804880a320c656787e1855e8389da75b9c64425e6f12"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stdout.txt",
+      "bytes": 55,
+      "sha256": "2b4a99257bf7f730099ca6c0e9fb6492904c9633e93d3b713d5962dfc8ae9f01"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-types.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-types.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/outline.md",
+      "bytes": 1039,
+      "sha256": "5d3864ad1703fbc1280b3bfbcc2655711db779f68b44fac82dad109a569ff5ff"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/pack.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/pack.stdout.txt",
+      "bytes": 1939,
+      "sha256": "1c971a63ccfae5bb3d39d9fc3f3ee4e1c8d3e3ea1d688be4b4c2f04b1d46d1c3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/package-check.stderr.txt",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/package-check.stdout.txt",
+      "bytes": 4071,
+      "sha256": "bad722907993dc3789319b80da29dd773e67f15e36169617c0360eabeb8d6465"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/receiver-before-sequence-repair.mjs.txt",
+      "bytes": 4340,
+      "sha256": "dd9ecae91d9adeec74b350e21eefc90a63c20cbcef63c4682a9c7e0f1d6907e0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/source-audit.json",
+      "bytes": 3367,
+      "sha256": "d7ab95a951c7b723fdea9c77f4e0782826ced7d5676156ad02b265d45f087d55"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/types.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/types.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/verify-install.py",
+      "bytes": 3004,
+      "sha256": "2eced5201ef53fd6f85c739c972e6e88cc8268b5a053c02efe469e4bc4e04496"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/verify-packet.py",
+      "bytes": 793,
+      "sha256": "b5e06a1537428198beb22676091aad0159de12e146423bd9c30cd0cbb22f4697"
+    }
+  ],
+  "exclusions": [
+    "manifest.json self-reference",
+    "verification.json verifier output"
+  ]
+}
