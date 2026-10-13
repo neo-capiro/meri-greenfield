@@ -124,7 +124,7 @@ test('operation is mapped but unavailable and public exports stay separate', () 
   const {descriptor}=resolveOperationContract({id:'memory.list_own_proposals',version:'0.2.0'});
   assert.equal(descriptor.availability,'unimplemented');assert.equal(descriptor.handler,null);
   const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url)));
-  assert.equal(pkg.version,'0.1.2');assert.ok(!JSON.stringify(pkg.exports).includes('memory-proposals'));
+  assert.equal(pkg.version,'0.1.3');assert.ok(!JSON.stringify(pkg.exports).includes('memory-proposals'));
 });
 test('family factory import has no process/network/timer effect', () => {
   const source=new URL('../retrieval-0.2/memory-proposals-validation.mjs',import.meta.url).href;

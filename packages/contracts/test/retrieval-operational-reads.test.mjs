@@ -395,7 +395,7 @@ test('operational-read schema objects stay closed and package public exports sta
   const walk = node => { if (!node || typeof node !== 'object') return; if (node.type === 'object') assert.equal(node.additionalProperties, false); for (const child of Object.values(node)) if (child && typeof child === 'object') walk(child); };
   walk(candidateSchema);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
-  assert.equal(pkg.version, '0.1.2');
+  assert.equal(pkg.version, '0.1.3');
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });
