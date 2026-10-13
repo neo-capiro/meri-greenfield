@@ -15,7 +15,9 @@ async function privateInput(t){
  const raw=JSON.stringify(value),path=join(dir,'input.json');await writeFile(path,raw,{mode:0o600});return{dir,path,sha256:sha(raw),now:()=>at};
 }
 test('local CLI independent: inherited native admission refuses ambient PGOPTIONS before driver/pool access',async t=>{
- const f=await privateInput(t),old=process.env.PGOPTIONS;process.env.PGOPTIONS='-c statement_timeout=0';
+ const f=await privateInput(t),old=process.env.PGOPTIONS;
+ const clean=await readLocalActionAdmission({path:f.path,sha256:f.sha256,now:f.now});assert.equal(clean.descriptor.host,'127.0.0.1');
+ process.env.PGOPTIONS='-c statement_timeout=0';
  try{await assert.rejects(readLocalActionAdmission({path:f.path,sha256:f.sha256,now:f.now}),/LOCAL_ACTION_ADMISSION_REQUIRED/);}
  finally{if(old===undefined)delete process.env.PGOPTIONS;else process.env.PGOPTIONS=old;}
 });
