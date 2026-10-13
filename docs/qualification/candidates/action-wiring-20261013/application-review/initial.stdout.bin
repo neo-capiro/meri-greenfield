@@ -1,0 +1,59 @@
+✔ application independent actual query -> edited draft -> proposal -> explicit execution and replay (162.604642ms)
+✔ application independent closed query authority (14.548885ms)
+✔ application independent closed caller execution (13.695672ms)
+✔ application independent closed draft approver (14.820314ms)
+✔ application independent closed prepare approval (13.957036ms)
+✔ application independent wrong method before session ports (18.45411ms)
+✔ application independent wrong content type before session ports (12.926665ms)
+✔ application independent missing credential before session ports (15.025052ms)
+✔ application independent wrong auth scheme before session ports (13.647079ms)
+✔ application independent unknown route and query-string route refuse (13.885447ms)
+✔ application independent malformed JSON {"request": (13.255801ms)
+✔ application independent malformed JSON [] (12.908297ms)
+✔ application independent malformed JSON null (12.257609ms)
+✔ application independent malformed JSON {"request":{}} trailing (12.794217ms)
+✔ application independent byte cap handles multibyte UTF8 before session (12.676929ms)
+✔ application independent body stream cancelled with no later session (25.028941ms)
+✔ application independent revoked opaque session and source denial leak no details (13.224113ms)
+✔ application independent stale or expired resolved session refuses before read (25.376112ms)
+✔ application independent cancelled parked session cannot begin domain work (13.341951ms)
+✔ application independent known short session expiry clips metadata original deadline (30.277365ms)
+✖ application independent query known stored release failure remains RESULT_NOT_RELEASED (28.897369ms)
+✔ application independent opaque query UNKNOWN is preserved without redispatch (15.28992ms)
+✔ application independent forged proposal never reaches source (32.19483ms)
+✔ application independent conflicting server client binding refuses (14.560804ms)
+✔ application independent current canonical read revocation blocks prepare (24.598051ms)
+✔ application independent late execution cancellation cannot return success or retry (47.72378ms)
+✔ application independent false Content-Length cannot evade streaming byte bound (12.912393ms)
+✔ application independent invalid UTF8 is refused rather than replacement decoded (12.75705ms)
+✔ application independent duplicate credential header cannot resolve an identity (12.408085ms)
+✔ application independent output cap after known execution preserves withheld-result outcome (41.077302ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3490.672381
+
+✖ failing tests:
+
+test at apps/control/action-application/application-independent.test.mjs:62:1
+✖ application independent query known stored release failure remains RESULT_NOT_RELEASED (28.897369ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_DISPATCHED'
+  - 'RESULT_NOT_RELEASED'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-wiring-application-review-20261013/apps/control/action-application/application-independent.test.mjs:62:313)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_DISPATCHED',
+    expected: 'RESULT_NOT_RELEASED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
