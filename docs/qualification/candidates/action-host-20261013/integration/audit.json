@@ -1,0 +1,789 @@
+{
+  "base": "f1df1bc20b8f5ef06495c50d885b18ce2af73eb1",
+  "testedHead": "1972ef9df1eb78050154896cc1da251185b4df0a",
+  "cliHead": "aa8ed6d633a7fa969d36a392470bc0875d90e2da",
+  "originalEntriesUnchanged": 10563,
+  "laneManifestMembers": {
+    "binding-author": 16,
+    "binding-review": 11,
+    "durable-author": 16,
+    "durable-review": 36,
+    "integration-review": 37,
+    "local-author": 20,
+    "pilot": 10,
+    "pilot-addendum": 9,
+    "pilot-addendum-review": 11
+  },
+  "acceptedSources": {
+    "7c67345398aa5422f6c760f009b729d082cfeaea": [
+      "apps/control/action-host/index.mjs",
+      "apps/control/action-host/current.mjs",
+      "apps/control/action-host/resolver.mjs"
+    ],
+    "c581c63764f67a9a7a5ee9090cba9e103aa486d7": [
+      "apps/control/action-host/durable/index.mjs"
+    ],
+    "8a3643e3564f676b66edc6b4cc220fb1c4193098": [
+      "apps/control/action-host/local/fixture.mjs",
+      "apps/control/action-host/local/recovery.mjs",
+      "scripts/local-followthrough/host-run.mjs"
+    ]
+  },
+  "ownedGroupsAbsent": [
+    460304,
+    466184,
+    466556
+  ],
+  "passed": 187,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "every PR42 original tree entry unchanged",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-BINDING-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-BINDING-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/binding.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/current.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/resolver.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/binding-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-BINDING-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-BINDING-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/binding-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/durable/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/durable/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/durable/test/durable.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/durable/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-DURABLE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-DURABLE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/durable/durable-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-DURABLE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-DURABLE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/approval-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/combined.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/combined.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/combined.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/criteria.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/dependencies.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final-focused.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final-review.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/fixture-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/fixture-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/fixture-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/null-result-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/pre-replay-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/review-only-commits.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/snapshot-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/verify-author-packet.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/whitespace-authored.exit",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/whitespace-authored.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/whitespace-full.exit",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/durable-review/whitespace-full.txt",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local/recovery-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-INTEGRATION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-INTEGRATION-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/audit-before.py.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/audit-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/audit-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/audit-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/author-packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/coherent-final.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/coherent-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/coherent-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/criteria.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.recovery.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/deadline-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/findings.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/integration-controls-plan.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/oracle-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/review-only-commits.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/verify-author.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/whitespace-authored.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/whitespace-full.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/integration-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local/README.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local/local.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/action-host/local/recovery.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-LOCAL-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-LOCAL-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/dependency-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/initial-direct.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/initial-direct.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/initial-direct.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/repaired-cli.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/repaired-cli.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/local-author/repaired-cli.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained scripts/local-followthrough/host-run.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/capiro-provenance.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/discovery-notes.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/local-references.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/meri-inventory.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/outline.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/pricing-refresh.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/verification.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot/verify.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/capture-public-docs.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/documentation-findings.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/public-retrievals.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/rendered-observations.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/verification.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum/verify.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/criteria.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/final-review.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/independent-doc-observation.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/preservation-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/whitespace.exit",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-host-20261013/pilot-addendum-review/whitespace.txt",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source apps/control/action-host/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source apps/control/action-host/current.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source apps/control/action-host/resolver.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source apps/control/action-host/durable/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source apps/control/action-host/local/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source apps/control/action-host/local/recovery.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted source scripts/local-followthrough/host-run.mjs",
+      "pass": true
+    },
+    {
+      "name": "final pilot merges are documentation only",
+      "pass": true
+    },
+    {
+      "name": "bounded retained result host-cli-first",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-host-20261013/integration/host-cli-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-host-20261013/integration/host-cli-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence host-cli-first",
+      "pass": true
+    },
+    {
+      "name": "bounded retained result host-integrated-final",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-host-20261013/integration/host-integrated-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-host-20261013/integration/host-integrated-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence host-integrated-final",
+      "pass": true
+    },
+    {
+      "name": "bounded retained result host-cli-final",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-host-20261013/integration/host-cli-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-host-20261013/integration/host-cli-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence host-cli-final",
+      "pass": true
+    }
+  ]
+}
