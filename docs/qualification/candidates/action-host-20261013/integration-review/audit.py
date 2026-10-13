@@ -14,7 +14,10 @@ def check(name,value):
  checks.append({'name':name,'passed':bool(value)})
  if not value:raise AssertionError(name)
 a,b,c=tree(base),tree(source),tree('HEAD')
-check('all original entries preserve exact mode/blob',all(b.get(p)==m for p,m in a.items()))
+outline='docs/coordination/tasks/CODEX-ACTION-HOST-20261013.md'
+check('all original entries except authorized root outline preserve exact mode/blob',all(b.get(p)==m for p,m in a.items() if p!=outline))
+check('root outline retains complete original prefix',git('show',source+':'+outline).startswith(git('show',base+':'+outline)))
+check('root outline exact authorized repair allocation',git('show',source+':'+outline)==git('show','61ffc8f2487a010c9baba0c8e18088b42569d90a:'+outline))
 paths=['apps/control/action-host/local/recovery.mjs','apps/control/action-host/local/fixture.mjs','scripts/local-followthrough/host-run.mjs']
 for p in paths:check('reviewed working source '+p,c[p]==b[p] and (root/p).read_bytes()==git('show',source+':'+p))
 for ref,paths2 in [('7c67345398aa5422f6c760f009b729d082cfeaea',['apps/control/action-host/'+p for p in ['index.mjs','current.mjs','resolver.mjs']]),('c581c63764f67a9a7a5ee9090cba9e103aa486d7',['apps/control/action-host/durable/index.mjs'])]:
@@ -29,5 +32,5 @@ for label in ['deadline-before','deadline-real-before','deadline-repaired','cohe
 final=json.loads(Path(__file__).with_name('coherent-final.json').read_text());check('final capture passes',final['exitCode']==0)
 for p in ['packages/contracts/schema.json','packages/contracts/validate.mjs','packages/contracts/retrieval-0.2/operation-catalog.json']:
  if p in a:check('canonical/public preserved '+p,b[p]==a[p])
-result={'source':source,'tree':git('rev-parse',source+'^{tree}').decode().strip(),'base':base,'originalEntries':len(a),'checks':checks,'passed':len(checks),'failed':0,'scope':'Source/local synthetic only; no native database, shared aggregate, production identity or activation qualification.'}
+result={'source':source,'tree':git('rev-parse',source+'^{tree}').decode().strip(),'base':base,'originalEntries':len(a),'unchangedOriginalEntries':len(a)-1,'authorizedMetadataAppend':outline,'checks':checks,'passed':len(checks),'failed':0,'scope':'Source/local synthetic only; no native database, shared aggregate, production identity or activation qualification.'}
 print(json.dumps(result,indent=2))

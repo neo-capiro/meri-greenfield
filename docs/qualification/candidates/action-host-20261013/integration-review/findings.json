@@ -21,5 +21,24 @@
     }
   },
   "repairSource": "bc45f120558625afc35f5a1ca9a126bb11cb743e",
-  "repairPendingReplay": true
+  "repairPendingReplay": false,
+  "repairReplay": {
+    "receipt": "deadline-repaired.json",
+    "passed": 2,
+    "failed": 0
+  },
+  "coherentFailure": {
+    "source": "7879add173b601a377cc9e62900ce23f4843d4ef",
+    "receipt": "coherent-first.json",
+    "passed": 1,
+    "failed": 3,
+    "cause": "Synthetic absent approval threw generic Error; canonical transport conservatively returned UNKNOWN. Local adapter now returns null for specifically absent/mismatched synthetic approval; existing approval policy refuses before dispatch."
+  },
+  "finalReplay": {
+    "source": "8a3643e3564f676b66edc6b4cc220fb1c4193098",
+    "receipt": "coherent-final.json",
+    "passed": 7,
+    "failed": 0,
+    "ownedProcessGroupAbsent": true
+  }
 }
