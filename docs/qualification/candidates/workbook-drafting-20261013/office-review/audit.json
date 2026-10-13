@@ -1,0 +1,54 @@
+{
+  "base": "305648bc66dbb29d70bb27aea45e485dfe664637",
+  "source": "1c3cfb9c97681415286236edd21a829e51b565eb",
+  "originalEntries": 11567,
+  "unchangedOriginalEntries": 11566,
+  "approvedOriginalChanges": [
+    "apps/artifacts/office-transform.mjs"
+  ],
+  "sourceSha256": "bac0619f374729a1197192d065cd16a41b87afd646a56f03e3ab72473cb4989d",
+  "officeArgumentFunctionByteIdentical": true,
+  "allOtherOriginalEntriesIncludingPR53Unchanged": true,
+  "retainedWorkbookObservations": [
+    {
+      "file": "original.xlsx",
+      "sha256": "138e70757ad42e160a24d1203fb59712a903f5a36c922fb7bb78b48e2d0a4869",
+      "cachedD2": 0,
+      "cachedD3": 0,
+      "cachedD4": 0,
+      "D4Formula": "=SUM(D2:D3)",
+      "NotesA2": "=1+1",
+      "NotesA2Type": "s"
+    },
+    {
+      "file": "baseline-original.xlsx",
+      "sha256": "743f61a522c1028e8d23332983ede4db80cd7181643cd2d7a69c9cbedd8ba73d",
+      "cachedD2": 0,
+      "cachedD3": 0,
+      "cachedD4": 0,
+      "D4Formula": "=SUM(D2:D3)",
+      "NotesA2": "=1+1",
+      "NotesA2Type": "s"
+    },
+    {
+      "file": "final-original.xlsx",
+      "sha256": "bec89d910e2b502e3c84822016a7c22be8c97367c77d84e66fc3161440069878",
+      "cachedD2": 1250,
+      "cachedD3": 800,
+      "cachedD4": 2050,
+      "D4Formula": "=SUM(D2:D3)",
+      "NotesA2": "=1+1",
+      "NotesA2Type": "s"
+    }
+  ],
+  "ownedProcessGroupsFreshlyAbsent": [
+    536122,
+    536144,
+    536445,
+    537080,
+    537102,
+    537145
+  ],
+  "dependenciesCreated": false,
+  "nativeQualification": false
+}
