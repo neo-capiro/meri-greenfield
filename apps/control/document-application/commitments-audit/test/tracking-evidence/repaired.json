@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/commitments-audit/test/tracking-native.test.mjs",
+    "apps/control/document-application/commitments-audit/test/compiler.test.mjs"
+  ],
+  "cwd": "/workspace/meri-commitments-native-tracking",
+  "sourceHead": "5e75851721d24f377524e4f72048744e3f2c1ba5",
+  "sourceDiffSha256": "df17870a570c1b597abe7266f5462a3838ab564f1a0c67415aa0c0ddd079236a",
+  "sourceDiffBytes": 508596,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T17:47:01.933901+00:00",
+  "durationSeconds": 4.19,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 284583,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/repaired.stdout.bin",
+      "bytes": 1828,
+      "sha256": "bc23104a465f2cd846ee3366cf46c38ed7857e69393464e16e120f2a559c61d1"
+    },
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserved initial15page diagnostic failure; separately bounded32page Commitments-only inspection keeps oldworkbook caps unchanged. Correct tamper fixtures to clone frozen actual producer DTO before modifying.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

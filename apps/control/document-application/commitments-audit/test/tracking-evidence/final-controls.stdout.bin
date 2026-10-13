@@ -1,0 +1,10 @@
+✔ real DOCX native tracking original/revision preserves immutable bytes, typed proofs, session/revocation and every-page rendering (2286.752568ms)
+✔ renderer failure retains BOTH exact native tracking DOCX downloads and immutable provenance (643.184617ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4829.304299

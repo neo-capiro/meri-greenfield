@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/commitments-audit/test/tracking-native.test.mjs",
+    "apps/control/document-application/commitments-audit/test/compiler.test.mjs",
+    "apps/control/document-application/commitments-audit/test/collection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-commitments-native-tracking",
+  "sourceHead": "5e75851721d24f377524e4f72048744e3f2c1ba5",
+  "sourceDiffSha256": "ea4168327f70121e2fef1d08924c2348ace0b45efc93a9940c4b524fa6599be3",
+  "sourceDiffBytes": 1480527,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T17:47:52.880933+00:00",
+  "durationSeconds": 4.145,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 285221,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/retained-final.stdout.bin",
+      "bytes": 2375,
+      "sha256": "bae10c5a9ddd25972c403155aa3d1d564abb87cf6ffb3d8f41c40c5347699e55"
+    },
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/retained-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root explicitly authorized dual-download retention repair: both DOCX wx-written before first renderer; inspection verifies retained hash, preserve initialmissingrevision failure. Final native tracking+existing compiler/collection regressions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
