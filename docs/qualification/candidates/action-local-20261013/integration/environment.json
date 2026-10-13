@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-13T00:21:45.602821+00:00",
+  "sourceHead": "ca8bc1697961787fce767ac7f91f894b61ba6d71",
+  "databaseExecutables": {
+    "postgres": null,
+    "initdb": null,
+    "pg_ctl": null,
+    "psql": null
+  },
+  "installedPostgresServers": [],
+  "dockerReadOnly": [
+    {
+      "command": [
+        "docker",
+        "context",
+        "inspect",
+        "--format",
+        "{{.Endpoints.docker.Host}}"
+      ],
+      "exitCode": 0,
+      "stdout": "unix:///var/run/docker.sock\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "ps",
+        "--format",
+        "{{.ID}}\t{{.Image}}\t{{.Names}}"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "image",
+        "ls",
+        "--no-trunc",
+        "--format",
+        "{{.Repository}}\t{{.Tag}}\t{{.ID}}"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "canonicalPgDriver": {
+    "exitCode": 0,
+    "result": {
+      "materialized": false
+    }
+  },
+  "missingInput": "Existing isolated synthetic fixture access and materialized pg8.23.1; no native database/config was supplied.",
+  "actionsNotTaken": [
+    "image pull/build",
+    "engine/driver install",
+    "database connect/setup/migration",
+    "cloud or security change"
+  ],
+  "runtimeQualified": false
+}
