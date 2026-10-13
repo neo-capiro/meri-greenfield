@@ -24,8 +24,8 @@
     },
     {
       "path": "../../apps/control/document-application/index.mjs",
-      "sha256": "cd6490b1227fe7637ae3b910b1eacbe537fee620d631b29f3b02ebc93559da6a",
-      "bytes": 6677
+      "sha256": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+      "bytes": 6764
     },
     {
       "path": "artifacts-0.2/artifact.schema.json",
