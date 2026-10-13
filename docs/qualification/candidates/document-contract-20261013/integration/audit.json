@@ -1,0 +1,67 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "head": "037d478eff6faa76398d68cc656b4f2ebdebc16c",
+  "baseline": "4699fdea910ba25c809725630443198c8ae189e4",
+  "baselineEntries": 11556,
+  "unchangedBaselineEntries": 11548,
+  "changedOriginalPaths": [
+    "apps/control/document-application/OUTLINE.md",
+    "apps/control/document-application/README.md",
+    "apps/control/document-application/current.mjs",
+    "apps/control/document-application/index.mjs",
+    "apps/control/document-application/local/fixture.mjs",
+    "packages/contracts/README.md",
+    "packages/contracts/package-lock.json",
+    "packages/contracts/package.json"
+  ],
+  "sourceMembers": 21,
+  "roleManifestMembers": 165,
+  "checks": [
+    {
+      "label": "public-package",
+      "exit": 1,
+      "count": null
+    },
+    {
+      "label": "public-package-local-deps",
+      "exit": 0,
+      "count": 71
+    },
+    {
+      "label": "independent-receiver",
+      "exit": 1,
+      "count": null
+    },
+    {
+      "label": "independent-receiver-vm",
+      "exit": 0,
+      "count": 58
+    },
+    {
+      "label": "document-application",
+      "exit": 1,
+      "count": null
+    },
+    {
+      "label": "document-application-root-bound",
+      "exit": 0,
+      "count": 102
+    },
+    {
+      "label": "public-pack",
+      "exit": 0,
+      "count": null
+    }
+  ],
+  "ownedGroupsAbsent": 7,
+  "capabilities": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mapped": 96,
+    "typedOperations": 97,
+    "sourceEnabled": false,
+    "runtimeAccepted": false
+  }
+}

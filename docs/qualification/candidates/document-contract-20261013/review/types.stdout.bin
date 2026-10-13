@@ -1,0 +1,2 @@
+packages/contracts/test/document-application-independent-types.ts(13,56): error TS2322: Type 'DocumentVersion' is not assignable to type 'AdmittedDocumentVersion'.
+  Property '[admittedVersion]' is missing in type 'DocumentVersion' but required in type '{ readonly [admittedVersion]: true; }'.

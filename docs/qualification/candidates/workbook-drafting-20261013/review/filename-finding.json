@@ -1,0 +1,14 @@
+{
+  "verdict": "HOLD",
+  "source": "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+  "control": "d277f64240b186874243a1e3c9d55f8801439891",
+  "discovery": "Public receiver independent reviewer readiness_author identified bound mismatch; independently reproduced here with actual generator/application",
+  "expected": "canonical title120 produces and releases filename125 including .xlsx",
+  "actual": "actual generation exits0, application502 DOCUMENT_RESULT_REFUSED/RESULT_NOT_RELEASED",
+  "passed": 0,
+  "failed": 1,
+  "receipt": "filename-before.json",
+  "priorAcceptance": "application-acceptance.json is superseded by this actual source finding; prior30 controls remain passed-but-incomplete",
+  "repairOwner": "memory_author",
+  "runtimeQualified": false
+}

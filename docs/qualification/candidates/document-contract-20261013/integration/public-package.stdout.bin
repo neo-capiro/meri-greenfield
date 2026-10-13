@@ -1,0 +1,8 @@
+
+> @capiro/meri-contracts@0.1.2 check
+> npm run check:generated && npm run typecheck && npm run test:public
+
+
+> @capiro/meri-contracts@0.1.2 check:generated
+> node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check
+

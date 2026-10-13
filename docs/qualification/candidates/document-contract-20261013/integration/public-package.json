@@ -1,0 +1,41 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "check"
+  ],
+  "cwd": "/tmp/meri-document-contract-integrated-20261013",
+  "sourceHead": "5da597631bbac01bf3a27ef0a8b59fe18456eb8e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T07:44:34.916340+00:00",
+  "durationSeconds": 0.917,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 565430,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 565467,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.stdout.bin",
+      "bytes": 262,
+      "sha256": "244372199094b8662a1cc3fc6be3db870481e850225c4925e3d7bf13865a27b1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/integration/public-package.stderr.bin",
+      "bytes": 445,
+      "sha256": "85be3912675f8d54e5395676ed306301b0dcb4492c3df865ac9e74d11505bb2f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

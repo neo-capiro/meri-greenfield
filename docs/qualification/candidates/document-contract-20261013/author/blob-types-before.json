@@ -1,0 +1,43 @@
+{
+  "command": [
+    "node",
+    "packages/contracts/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--strict",
+    "--skipLibCheck",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "packages/contracts/test/document-application-public-types.ts"
+  ],
+  "cwd": "/tmp/meri-document-contract-author-20261013",
+  "sourceHead": "5fe3b420de3472ba495ba0cae3b523d7a744be9e",
+  "sourceDiffSha256": "3b27712501eef0118ef78cca889572a77f5b879cbe76946454632f26fc1b7199",
+  "sourceDiffBytes": 7513,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-13T07:37:35.330613+00:00",
+  "durationSeconds": 0.423,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 562364,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stdout.bin",
+      "bytes": 595,
+      "sha256": "b07753765d9dda80e4a0179be4960cd67f105dab8d834edba8f7714ba7ae7bba"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/author/blob-types-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

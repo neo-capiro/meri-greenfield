@@ -1,0 +1,111 @@
+[
+  {
+    "id": "@capiro/meri-contracts@0.1.2",
+    "name": "@capiro/meri-contracts",
+    "version": "0.1.2",
+    "size": 228048,
+    "unpackedSize": 2672473,
+    "shasum": "cd8dbf913b587f4f9bf4e9a482fd832d8c6bf584",
+    "integrity": "sha512-JvT7OeRN3T5HMsmuyeG9ZTBsM7CZaidWlRgYzgJqqhvqcxZE05Ze1p6K2GAVoqpdBnAFAHUYjHYkSFOhrDfjkg==",
+    "filename": "capiro-meri-contracts-0.1.2.tgz",
+    "files": [
+      {
+        "path": "README.md",
+        "size": 14061,
+        "mode": 384
+      },
+      {
+        "path": "THIRD-PARTY-NOTICES.md",
+        "size": 3841,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.d.ts",
+        "size": 17721,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.metadata.json",
+        "size": 1980,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.mjs",
+        "size": 1480808,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.schema.json",
+        "size": 67726,
+        "mode": 384
+      },
+      {
+        "path": "dist/browser.d.ts",
+        "size": 166,
+        "mode": 384
+      },
+      {
+        "path": "dist/browser.mjs",
+        "size": 466002,
+        "mode": 384
+      },
+      {
+        "path": "dist/contracts.d.ts",
+        "size": 4090,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.d.ts",
+        "size": 23960,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.metadata.json",
+        "size": 1996,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.mjs",
+        "size": 498894,
+        "mode": 384
+      },
+      {
+        "path": "dist/document-application.schema.json",
+        "size": 34642,
+        "mode": 384
+      },
+      {
+        "path": "dist/index.d.ts",
+        "size": 85,
+        "mode": 384
+      },
+      {
+        "path": "dist/metadata.d.ts",
+        "size": 485,
+        "mode": 384
+      },
+      {
+        "path": "dist/metadata.mjs",
+        "size": 533,
+        "mode": 384
+      },
+      {
+        "path": "meri.schema.json",
+        "size": 50043,
+        "mode": 384
+      },
+      {
+        "path": "package.json",
+        "size": 2129,
+        "mode": 384
+      },
+      {
+        "path": "validate.mjs",
+        "size": 3311,
+        "mode": 384
+      }
+    ],
+    "entryCount": 19,
+    "bundled": []
+  }
+]

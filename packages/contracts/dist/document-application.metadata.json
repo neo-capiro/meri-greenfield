@@ -1,0 +1,55 @@
+{
+  "packageVersion": "0.1.2",
+  "schemaId": "urn:meri:document-application:0.1.0",
+  "sources": [
+    {
+      "path": "../../apps/control/action-application/http.mjs",
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "bytes": 4832
+    },
+    {
+      "path": "../../apps/control/document-application/current.mjs",
+      "sha256": "37e3c4ae7fddaeec3c232d141d91e8a3969c61515289c04afe22e6ae65888194",
+      "bytes": 5397
+    },
+    {
+      "path": "../../apps/control/document-application/format-admission.mjs",
+      "sha256": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75",
+      "bytes": 1281
+    },
+    {
+      "path": "../../apps/control/document-application/http.mjs",
+      "sha256": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d",
+      "bytes": 2481
+    },
+    {
+      "path": "../../apps/control/document-application/index.mjs",
+      "sha256": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+      "bytes": 6764
+    },
+    {
+      "path": "artifacts-0.2/artifact.schema.json",
+      "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486",
+      "bytes": 40724
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    }
+  ],
+  "schemaSha256": "712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51",
+  "browserInputs": [
+    "artifacts-0.2/artifact-formats.mjs",
+    "document-application/boundary.mjs",
+    "document-application/document-application-receiver.mjs",
+    "document-application/download.mjs",
+    "document-generated:./generated-status.mjs",
+    "document-generated:./generated-validator.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
+    "node_modules/ajv/dist/runtime/equal.js",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js"
+  ]
+}

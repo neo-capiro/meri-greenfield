@@ -1,0 +1,32 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Application family admission and compatible fixture only; root workbook flow/render packet pending separate final integration audit",
+  "authorSource": "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+  "authorTree": "4e15e6fc000922816fe4cd546fd6ebc45f6d89a2",
+  "fixtureSource": "00032028b57141631c3bbd6a6cc34d5d2bcad9e8",
+  "testedHead": "c3068641db6a103adab1933c20ccbd11abc4150a",
+  "testedTree": "10773ad38ab3ab50d23ef02e2dbbff88896d7256",
+  "authorPacket": "fe81f220d3415c6934333b584f2b625f891a8378",
+  "independentBehavior": {
+    "passed": 30,
+    "failed": 0
+  },
+  "cliOnly": {
+    "passed": 2,
+    "failed": 0
+  },
+  "sourceAudit": {
+    "passed": 29,
+    "failed": 0
+  },
+  "authorPacketAudit": {
+    "passed": 45,
+    "failed": 0
+  },
+  "productionCorrectionsRequested": 0,
+  "reviewerPreReplayCorrections": "pre-replay-corrections.json",
+  "runtimeQualified": false,
+  "nativeDatabase": false,
+  "providerCalls": 0,
+  "remaining": "Review final root workbook CLI/flow receipt, recalculated copies and visual previews; no application retest needed unless its bytes change."
+}

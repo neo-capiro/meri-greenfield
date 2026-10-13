@@ -1,0 +1,19 @@
+{
+  "checks": [
+    {
+      "name": "whole",
+      "exitCode": 2,
+      "diagnostic": "docs/qualification/candidates/workbook-drafting-20261013/review/whole-whitespace.bin",
+      "bytes": 240,
+      "sha256": "a4f07c5601e0c36348b9dc68b63f32c5bd982cb54416cbf07c8126f4835b2853"
+    },
+    {
+      "name": "authored",
+      "exitCode": 0,
+      "diagnostic": "docs/qualification/candidates/workbook-drafting-20261013/review/authored-whitespace.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rawFailureUnnormalized": true
+}

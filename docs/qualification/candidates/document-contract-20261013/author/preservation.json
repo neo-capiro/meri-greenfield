@@ -1,0 +1,14 @@
+{
+  "base": "bc8b65cc7186e449cf20b4956e4cd88684b35325",
+  "sourceHead": "5fe3b420de3472ba495ba0cae3b523d7a744be9e",
+  "unchangedOriginalEntries": 11551,
+  "unchangedContractEntries": 307,
+  "oldExportsExact": true,
+  "dependencyLockOnlyVersionChanged": true,
+  "explicitAppDependencies": [
+    "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+    "16a4f883962bd72f9421949df95709f65b286555"
+  ],
+  "publicSchemaSha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+  "qualifiedRuntime": false
+}
