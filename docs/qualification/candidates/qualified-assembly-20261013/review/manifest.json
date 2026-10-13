@@ -1,0 +1,213 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "preManifestReviewHead": "922838be3d38dc3c1feb806a6580118d8bcae0d5",
+  "rootSource": "e2d27150169bb4d9c07bd07152d2c922e2b163c3",
+  "lifecycleSource": "3253960035dbfd8cce4dd1b20925f4f4c7f152ae",
+  "schemaSource": "d560cf999d4e6d03a0cc66ded8a52387776fb48c",
+  "reviewOnlyCommitsBeforeThisManifest": [
+    "12324fc94b419cd31a3c72d42e994a4a3ea40f45",
+    "6437e38335b6687e6615543c2dbb87df278ce63b",
+    "9219e9a5f3a2cc3cfb14d9e1e28618f7315383a2",
+    "38d63589bae6e6cb072bf863349ad438b17f4f6b",
+    "26bbb5c587c88f4d17046f9b12646fc9e3fbaf71",
+    "f381a5fc0e88c280425c5d39878085dee74a3c96",
+    "7854d2c9fc5becd22d68d629bf1c12d1593e321e",
+    "bada28c4120c6c71ee60c42889a30400559a612c",
+    "f72ef6ddf7367e22cfa27b2280dc655eabdd88c1",
+    "432cf15817892dbfe04dedf7d5b32bd5c10710f8",
+    "1d30e688633a9d317513fa0a69a45262c4c2a987",
+    "922838be3d38dc3c1feb806a6580118d8bcae0d5"
+  ],
+  "members": [
+    {
+      "path": "apps/control/qualified-application/independent/application-independent.test.mjs",
+      "bytes": 8550,
+      "sha256": "ceada7ddb68a515d48b9db174882a4ccfd9ccb87492c02ba7767c854adee0cca"
+    },
+    {
+      "path": "apps/control/qualified-application/independent/graph-independent.test.mjs",
+      "bytes": 4339,
+      "sha256": "c36960f670c3e4a43951190b847fceb040a13c4f881e450c8fe659d307516248"
+    },
+    {
+      "path": "apps/control/qualified-application/independent/lifecycle-independent.test.mjs",
+      "bytes": 7305,
+      "sha256": "85645b636e949223b4ba5d2be3de96162e7f4211f39c4195266d28baa40a49bf"
+    },
+    {
+      "path": "apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "bytes": 5905,
+      "sha256": "29a5cae392cd10ec0187fa59e05a4f623e2ae052303110741a27277fb70b34d7"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/REPORT.md",
+      "bytes": 4298,
+      "sha256": "20cee577e0caf2c3665605187542c362a25116fbd1f85291c0eb6c4887a97146"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-corrected.json",
+      "bytes": 1312,
+      "sha256": "599c6deb4ceec9d6d12274070727947a45d64cfa7389e965d67962b62abf348d"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-corrected.stdout.bin",
+      "bytes": 1903,
+      "sha256": "772aab5f57c2cbc680c3d8fbdaf38379a53a4926668ca96227f166433c376abb"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-final.json",
+      "bytes": 1304,
+      "sha256": "4f9294f3f46d4b5c9a59c12ad2093256042e8d6c3d90aa922e72817d7bb8bcde"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-final.stdout.bin",
+      "bytes": 1059,
+      "sha256": "6b3d6e957f3f75480ce54d626cadb9d50b73cac7a42b79487c3fbf52663e23f4"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-first.json",
+      "bytes": 1361,
+      "sha256": "f0591297ef94cd973967bed35903d471f93833d8b524f564e76ed69cacd8ed29"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-first.stdout.bin",
+      "bytes": 1510,
+      "sha256": "49450affb90fa9b19d00a42d70a3fa96b687be5e0cd13fd4e15220ac46261d69"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-independent.json",
+      "bytes": 1316,
+      "sha256": "76c81010c552b3f3e3db82f55924d289a3bc3b609b6ce128a9446a726467390a"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/application-independent.stdout.bin",
+      "bytes": 2750,
+      "sha256": "581bc028f01095fd184fac2579f79aea3a6dd70649fc53b3fd9120ddf373f8f1"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/audit.py",
+      "bytes": 3727,
+      "sha256": "8d018584a776443dc15cbff7b6b3a9a69d2c1af5d17d09a7452083dc023a7566"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/cleanup.json",
+      "bytes": 313,
+      "sha256": "11c87f03d1dfd64e00ba51bf1e3fe14eab07d5e99e6d65e9f6e42c6266fd6a2f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/configuration-before.json",
+      "bytes": 1369,
+      "sha256": "9c9d69b0946a3e415a8687bbae0b05940bf33d103e76a96b3de7391997aa611f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/configuration-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/configuration-before.stdout.bin",
+      "bytes": 8498,
+      "sha256": "60aab3584077eb5f0945ebf1917e4e5073560965dc5f7ec05d93a402114d615e"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/criteria.md",
+      "bytes": 2271,
+      "sha256": "d6dbe1a54acda96865bf041aab6113e12e44c0c6373f7a52117ae3ea379820e2"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/graph-independent.json",
+      "bytes": 1297,
+      "sha256": "69e043ceab5cfa2707061260466b2f83e1d2944f44c6702da19b6fc443542eb2"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/graph-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/graph-independent.stdout.bin",
+      "bytes": 929,
+      "sha256": "c295c17b4112b791b84b526692fe8e0c06f9be0bd175a94eb6935357e67b0857"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.json",
+      "bytes": 1310,
+      "sha256": "511634006177cb8f3afc4539dc5849ee36e0ca44da5ab642d626702e78f45670"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.stdout.bin",
+      "bytes": 1616,
+      "sha256": "ab5beafe0ddf57f0ef39ae6ef8f6953926fb3dd10c4d2066d5026a9d32e93d05"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-packet-audit.json",
+      "bytes": 296,
+      "sha256": "2bcc4e2f3c7bce69eb7fee8113e29ab809a133bdd0531c8ce90768155c85e8e2"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-replay.json",
+      "bytes": 1300,
+      "sha256": "d039a778703f3e0d456358ab3cd3a27c4e77b78f1171fe62ea77f11ef7d72ab9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-replay.stdout.bin",
+      "bytes": 1023,
+      "sha256": "fb20661777fb6f071989332a2e0a20d7939f434753c63e6effb317a23fc44051"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.json",
+      "bytes": 1291,
+      "sha256": "12c81e1baf59123bad7ca4688223810fdae2af4839021e317748b5db32e53a6f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/schema-before.stdout.bin",
+      "bytes": 2042,
+      "sha256": "bab95b7c9b889032dc48e2fcfcc3956904668c193d8ea7d5b56122452f33f0a9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/source-audit.json",
+      "bytes": 11448,
+      "sha256": "ba91f9152f15568b341a4719907cfa457125ff63335d887433f3bc5a77e36ef1"
+    }
+  ]
+}
