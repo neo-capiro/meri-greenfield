@@ -1,0 +1,13 @@
+{
+  "schema": "meri.source-check-failure-ledger/1",
+  "failures": [
+    {
+      "receipt": "integrated-node.json",
+      "sourceHead": "93d8655c5466e4e199c0d6706cedd57391cb2f7a",
+      "cause": "The root command omitted required MERI_REVIEW_SOURCE_ROOT; four composed suites refused during import with explicit source root required.",
+      "classification": "integration harness configuration",
+      "resolution": "Preserve all outputs and rerun with the exact source root in the captured command. Do not change original assertions or harness admission.",
+      "nativeExecution": false
+    }
+  ]
+}

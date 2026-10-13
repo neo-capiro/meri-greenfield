@@ -44,7 +44,7 @@ for manifest in sorted(packet.parent.glob('*/manifest.json')):
  for member in members:
   raw=(root/member['path']).read_bytes();check('retained '+member['path'],len(raw)==member['bytes'] and hashlib.sha256(raw).hexdigest()==member['sha256'])
 receipts=[]
-for label in ['integrated-node','integrated-python','independent-node','independent-python']:
+for label in ['integrated-node-final','integrated-python','independent-node','independent-python']:
  value=json.loads((packet/(label+'.json')).read_text())
  check('passing bounded '+label,value['exitCode']==0 and not value['timedOut'] and value['sourceDiffBytes']==0 and value['ownedProcessGroupAbsent'] and not value['ownedGroupKillRequired'])
  for member in value['streams']:
