@@ -9,10 +9,12 @@ import {prepareOwnedApplicationSchema,verifyOwnedApplicationSchema} from './sche
 
 export function createQualificationApplication(configuration){
  const c=own(configuration,['hostConfiguration','source','lifecycleConfiguration','fixture','originalDeadlineMs','now']);
- const host=admittedHostConfiguration(c.hostConfiguration),admission=own(host.admission,['pool','allocationJson','grantFactsJsons']);
+ const host=admittedHostConfiguration(c.hostConfiguration),rawAdmission=own(host.admission,['pool','allocationJson','grantFactsJsons']);
+ const admission={...rawAdmission,grantFactsJsons:data(rawAdmission.grantFactsJsons)};
  const grants=validateQualificationGrantSet({allocationJson:admission.allocationJson,grantFactsJsons:admission.grantFactsJsons});
  const lookup=own(host.lookup,['pool','credential','scopes']),metadata=own(host.metadata,['pool','preparePolicy']),command=own(host.command,['journalPool','budgetPool','producerContext','approvalStore','contracts','descriptor']);
- const lifecycle=own(c.lifecycleConfiguration,['pythonExecutable','connection','workerObserver','worker','expiresAtMs','limits']);
+ const rawLifecycle=own(c.lifecycleConfiguration,['pythonExecutable','connection','workerObserver','worker','expiresAtMs','limits']);
+ const lifecycle={...rawLifecycle,connection:data(rawLifecycle.connection),worker:data(rawLifecycle.worker),limits:data(rawLifecycle.limits)};
  if(typeof c.now!=='function'||host.now!==c.now||!Number.isSafeInteger(c.originalDeadlineMs)||c.originalDeadlineMs<=c.now()||lifecycle.expiresAtMs>c.originalDeadlineMs||
     lookup.pool!==admission.pool||metadata.pool!==admission.pool||command.journalPool!==admission.pool||command.budgetPool!==admission.pool)throw Error('QUALIFICATION_APPLICATION_CONFIGURATION');
  const originalDeadlineMs=c.originalDeadlineMs,fixture=data(c.fixture),binding=grants.facts[0].binding;
