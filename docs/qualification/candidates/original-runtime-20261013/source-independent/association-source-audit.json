@@ -1,0 +1,31 @@
+{
+  "reviewedCommit": "c22e72be56fbe17f218a20b14522b79416edecfe",
+  "reviewedTree": "da0e6f867d0528d64898641a1611d0b5e83a01e8",
+  "base": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "executableChanges": [
+    "apps/control/conversations/skills/test/read-association.test.mjs",
+    "apps/control/document-application/selected-output/bridge.mjs",
+    "apps/control/document-application/selected-output/session.mjs"
+  ],
+  "onlyAuthorizedExecutableDelta": true,
+  "protectedTreesExact": {
+    "packages/contracts": "ea1bccb778da8415398768903fbe4457d0b543c0",
+    "packages/skills": "5011e635f265379fc9d1f16e532e2ba6cbd44426",
+    "infra": "70c6cfda689ed975f5836a397930ac439742139c"
+  },
+  "rootAssociationReceiptVerified": true,
+  "rootCaptureSourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "rootCaptureSourceDiffBytes": 4347,
+  "wrongSourceOutcomes": {
+    "inspect": {
+      "released": false,
+      "code": "SELECTED_OUTPUT_READ_ASSOCIATION"
+    },
+    "download": {
+      "released": false,
+      "code": "SELECTED_OUTPUT_READ_ASSOCIATION"
+    }
+  },
+  "ownNewArtifactsGenerated": false,
+  "liveNativeAcceptance": false
+}

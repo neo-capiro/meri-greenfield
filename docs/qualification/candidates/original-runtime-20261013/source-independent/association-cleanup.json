@@ -1,0 +1,15 @@
+{
+  "reviewedCommit": "c22e72be56fbe17f218a20b14522b79416edecfe",
+  "removedOwnedBorrowedLinks": [
+    "/workspace/meri-original-control-source-review/node_modules",
+    "/workspace/meri-original-control-source-review/packages/contracts/node_modules",
+    "/workspace/meri-original-control-source-review/packages/window-resolution/node_modules",
+    "/workspace/meri-original-control-source-review/apps/control/conversations/node_modules",
+    "/workspace/meri-original-control-source-review/packages/ui-stream/node_modules"
+  ],
+  "donorTargetsExist": true,
+  "sourceWorktreeClean": true,
+  "captureOwnedProcessGroupAbsent": true,
+  "ownNewArtifactsGenerated": false,
+  "wholeHostCleanupClaim": false
+}
