@@ -1,0 +1,97 @@
+{
+  "source": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-APPLICATION-20261013.md",
+      "bytes": 4598,
+      "sha256": "1494612bb7d1dfd0a12a7d7677b4d0fb482520e496714348cb63ac1db38bb274"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-APPLICATION-20261013.md",
+      "bytes": 2205,
+      "sha256": "217c07207ac072ef06da132c53fa4d9c9343646a3e3b5394c7a2475fba2b5de4"
+    },
+    {
+      "path": "apps/control/action-application/README.md",
+      "bytes": 4009,
+      "sha256": "308b5e3b2d7392e4d2560fd18a50979385fa4268d8d2723aac25ea6213d123b2"
+    },
+    {
+      "path": "apps/control/action-application/application.test.mjs",
+      "bytes": 7861,
+      "sha256": "2fb2a52414a0c492291ec7415dd6b8145cda04396731e766be0925697169279b"
+    },
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "bytes": 4832,
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30"
+    },
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "bytes": 5188,
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5"
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "bytes": 3189,
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/boundary-repaired.json",
+      "bytes": 1295,
+      "sha256": "b5519117ff5ae514396daab06c07d71dcec8290eb4cf8f4b53687aee1145534b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/boundary-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/boundary-repaired.stdout.bin",
+      "bytes": 1333,
+      "sha256": "5bf551343d9a5a80d0170d47a41281a5009e4b9e37c42989c3b2a7c324679114"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/initial.json",
+      "bytes": 1271,
+      "sha256": "de70b0ce2a4a325a363f09d7fa3d0dc19ca910a5fb89c6826fcfff341828e550"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/initial.stdout.bin",
+      "bytes": 1878,
+      "sha256": "8ae2bd38215891221de5c73109ad70c241efc665df4cf88aabd2153fca95fe8e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/source-audit.json",
+      "bytes": 4947,
+      "sha256": "587df34e4e75d640ebf9eb216b01f5f52afd13d8515f9d264587935eba53a07e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/syntax-repaired.json",
+      "bytes": 1290,
+      "sha256": "2ad48b83a16b3dbb1af5300fcbb2a33c605e179dbb0be4b100f7fd62f6399a25"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/syntax-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/syntax-repaired.stdout.bin",
+      "bytes": 3340,
+      "sha256": "b1f752dcdfeada0ca1a2970c44c742d8fc4ff4daec105e6ab10f8669c988e2a5"
+    }
+  ],
+  "scope": "SOURCE_ONLY_INERT_PORTS_NOT_RUNTIME_ACTIVATION"
+}
