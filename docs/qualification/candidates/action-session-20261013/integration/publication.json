@@ -1,0 +1,38 @@
+{
+  "sourceEvidenceFreeze": "29ee5492bb3f4389bd1b671c23b1865dc00a489a",
+  "sessionTestedHead": "e410ae3078c6d9de535bed6dfd4254ec5d918f92",
+  "baselineTestedHead": "3072a01c97bda7b0bdd40381bfd948600af49b24",
+  "pullRequest": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/46",
+    "number": 46,
+    "head": "29ee5492bb3f4389bd1b671c23b1865dc00a489a",
+    "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+    "draft": true,
+    "state": "open",
+    "merged": false
+  },
+  "frontendHandoff": {
+    "id": 6137744461,
+    "url": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6137744461",
+    "author": "neo-capiro"
+  },
+  "checks": {
+    "sessionIntegrated": 184,
+    "baselineControls": 25,
+    "baselineCasesPassed": 6,
+    "baselineCasesExpected": 6,
+    "preservationAudit": 118,
+    "failed": 0,
+    "skipped": 0,
+    "modelCalls": 0,
+    "providerCalls": 0,
+    "nativeDatabase": "UNRUN",
+    "liveIdentityContextAdapters": "UNQUALIFIED",
+    "frontendBrowser": "OWNER_PENDING"
+  },
+  "mainObserved": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "gate": "G1_OPEN",
+  "ownedRuntimeProcessesRemaining": 0,
+  "worktreeDependenciesRemoved": true,
+  "publicationIsNotRuntimeAcceptance": true
+}
