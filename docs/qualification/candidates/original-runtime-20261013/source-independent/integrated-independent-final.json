@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceTree": "1d2832f47c6b32295cf4dd6d8e837d27310bd468",
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/bridge-input-review.test.mjs",
+    "apps/control/conversations/skills/test/retention.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-control-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 6.65,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 4745,
+  "stdoutSha256": "318949428b4a2f042a5a7e32fc00eaea67dbcb519d2f0d51544d8471d37783c5",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
