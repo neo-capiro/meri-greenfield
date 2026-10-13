@@ -1,0 +1,630 @@
+TAP version 13
+# Subtest: materializes verified legacy defaults without mutating strict input
+ok 1 - materializes verified legacy defaults without mutating strict input
+  ---
+  duration_ms: 1.765904
+  type: 'test'
+  ...
+# Subtest: rejects coercion, null numeric values, injected authority and unsupported subjects
+ok 2 - rejects coercion, null numeric values, injected authority and unsupported subjects
+  ---
+  duration_ms: 0.460542
+  type: 'test'
+  ...
+# Subtest: preserves exact numeric bounds and requires message identity for body continuation
+ok 3 - preserves exact numeric bounds and requires message identity for body continuation
+  ---
+  duration_ms: 0.194138
+  type: 'test'
+  ...
+# Subtest: mail external DTO accessors and cycles refuse before executing getters
+ok 4 - mail external DTO accessors and cycles refuse before executing getters
+  ---
+  duration_ms: 0.624355
+  type: 'test'
+  ...
+# Subtest: stored disconnected reads remain transport-only with unknown immutable identities
+ok 5 - stored disconnected reads remain transport-only with unknown immutable identities
+  ---
+  duration_ms: 5.9366
+  type: 'test'
+  ...
+# Subtest: UTF-16 offsets count a surrogate pair as two units and permit its legacy split
+ok 6 - UTF-16 offsets count a surrogate pair as two units and permit its legacy split
+  ---
+  duration_ms: 1.128641
+  type: 'test'
+  ...
+# Subtest: late decisive body section remains an unresolved read despite ending the stored body
+ok 7 - late decisive body section remains an unresolved read despite ending the stored body
+  ---
+  duration_ms: 0.515403
+  type: 'test'
+  ...
+# Subtest: offset beyond stored body is disclosed empty transport, not absent material
+ok 8 - offset beyond stored body is disclosed empty transport, not absent material
+  ---
+  duration_ms: 0.383728
+  type: 'test'
+  ...
+# Subtest: all upstream completeness states stay incomplete and missing differs from empty
+ok 9 - all upstream completeness states stay incomplete and missing differs from empty
+  ---
+  duration_ms: 0.792053
+  type: 'test'
+  ...
+# Subtest: unknown body size and snapshot cannot imply completion
+ok 10 - unknown body size and snapshot cannot imply completion
+  ---
+  duration_ms: 0.701518
+  type: 'test'
+  ...
+# Subtest: selection and exact normalized argument digest must agree with original request
+ok 11 - selection and exact normalized argument digest must agree with original request
+  ---
+  duration_ms: 0.684654
+  type: 'test'
+  ...
+# Subtest: personal/client request and resolved subject agree without broadening authority
+ok 12 - personal/client request and resolved subject agree without broadening authority
+  ---
+  duration_ms: 0.603153
+  type: 'test'
+  ...
+# Subtest: denied source cannot contribute; mixed source accounting keeps eligible stored read
+ok 13 - denied source cannot contribute; mixed source accounting keeps eligible stored read
+  ---
+  duration_ms: 0.499229
+  type: 'test'
+  ...
+# Subtest: message count and continuation use the filtered message collection
+ok 14 - message count and continuation use the filtered message collection
+  ---
+  duration_ms: 0.455655
+  type: 'test'
+  ...
+# Subtest: unknown message totals cannot invent next positions or aggregate totals
+ok 15 - unknown message totals cannot invent next positions or aggregate totals
+  ---
+  duration_ms: 0.895166
+  type: 'test'
+  ...
+# Subtest: body continuation inventory, page bounds and truncation agree
+ok 16 - body continuation inventory, page bounds and truncation agree
+  ---
+  duration_ms: 1.067381
+  type: 'test'
+  ...
+# Subtest: duplicate messages cannot inflate count using another citation or version
+ok 17 - duplicate messages cannot inflate count using another citation or version
+  ---
+  duration_ms: 0.32437
+  type: 'test'
+  ...
+# Subtest: transport refuses absence, evidence-ready, complete enumeration and cursor guarantees
+ok 18 - transport refuses absence, evidence-ready, complete enumeration and cursor guarantees
+  ---
+  duration_ms: 4.164386
+  type: 'test'
+  ...
+# Subtest: empty stored thread page never certifies absence
+ok 19 - empty stored thread page never certifies absence
+  ---
+  duration_ms: 0.231783
+  type: 'test'
+  ...
+# Subtest: concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation
+ok 20 - concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation
+  ---
+  duration_ms: 6.731636
+  type: 'test'
+  ...
+# Subtest: mail descriptor raw-byte schema pins and exact definition IDs cannot drift
+ok 21 - mail descriptor raw-byte schema pins and exact definition IDs cannot drift
+  ---
+  duration_ms: 21.337523
+  type: 'test'
+  ...
+# Subtest: no skill can expose the pending mail operation
+ok 22 - no skill can expose the pending mail operation
+  ---
+  duration_ms: 5.587983
+  type: 'test'
+  ...
+# Subtest: mail schema objects stay closed and package public exports stay 0.1 only
+not ok 23 - mail schema objects stay closed and package public exports stay 0.1 only
+  ---
+  duration_ms: 1.231313
+  type: 'test'
+  location: '/workspace/meri-next-adapters/packages/contracts/test/retrieval-mail.test.mjs:151:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '0.1.2' !== '0.1.0'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '0.1.0'
+  actual: '0.1.2'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-next-adapters/packages/contracts/test/retrieval-mail.test.mjs:154:89)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: mailbox identity and authoritative body lineage cannot be substituted
+ok 24 - mailbox identity and authoritative body lineage cannot be substituted
+  ---
+  duration_ms: 0.987422
+  type: 'test'
+  ...
+# Subtest: list/search defaults are strict inert normalized DATA with no clock invention
+ok 25 - list/search defaults are strict inert normalized DATA with no clock invention
+  ---
+  duration_ms: 1.182561
+  type: 'test'
+  ...
+# Subtest: search literal terms remain distinct AND filters and keyword-free scoped search is valid
+ok 26 - search literal terms remain distinct AND filters and keyword-free scoped search is valid
+  ---
+  duration_ms: 0.208349
+  type: 'test'
+  ...
+# Subtest: list/search getters hidden fields null and nonfinite values are refused without effects
+ok 27 - list/search getters hidden fields null and nonfinite values are refused without effects
+  ---
+  duration_ms: 0.197923
+  type: 'test'
+  ...
+# Subtest: candidate query inclusive anchor is separate from exclusive requester window
+ok 28 - candidate query inclusive anchor is separate from exclusive requester window
+  ---
+  duration_ms: 15.051646
+  type: 'test'
+  ...
+# Subtest: message totals and page-only groups differ; exhausted preview never proves absence
+ok 29 - message totals and page-only groups differ; exhausted preview never proves absence
+  ---
+  duration_ms: 2.257733
+  type: 'test'
+  ...
+# Subtest: continuation binds retained anchor filters actor window and message offset
+ok 30 - continuation binds retained anchor filters actor window and message offset
+  ---
+  duration_ms: 2.673288
+  type: 'test'
+  ...
+# Subtest: dedup is mailbox-specific; order nulls-last and immutable versions are conservative
+ok 31 - dedup is mailbox-specific; order nulls-last and immutable versions are conservative
+  ---
+  duration_ms: 0.975735
+  type: 'test'
+  ...
+# Subtest: authorization source and mailbox scopes are independent of connection state
+ok 32 - authorization source and mailbox scopes are independent of connection state
+  ---
+  duration_ms: 1.76944
+  type: 'test'
+  ...
+# Subtest: preview has no body offsets size guarantee or recipient completeness upgrade
+ok 33 - preview has no body offsets size guarantee or recipient completeness upgrade
+  ---
+  duration_ms: 1.327435
+  type: 'test'
+  ...
+# Subtest: search page operation groups counts filters and all pending descriptor pins are closed
+ok 34 - search page operation groups counts filters and all pending descriptor pins are closed
+  ---
+  duration_ms: 379.1818
+  type: 'test'
+  ...
+# Subtest: cross-mailbox identical internet IDs stay distinct stored candidates
+ok 35 - cross-mailbox identical internet IDs stay distinct stored candidates
+  ---
+  duration_ms: 1.301197
+  type: 'test'
+  ...
+# Subtest: offset ceiling keeps hasMore true with null nextOffset and no completeness
+ok 36 - offset ceiling keeps hasMore true with null nextOffset and no completeness
+  ---
+  duration_ms: 1.895517
+  type: 'test'
+  ...
+# Subtest: empty search and unknown stored totals cannot become complete or absent
+ok 37 - empty search and unknown stored totals cannot become complete or absent
+  ---
+  duration_ms: 0.860925
+  type: 'test'
+  ...
+# Subtest: upcoming calendar inventory materializes verified defaults without mutating strict input
+ok 38 - upcoming calendar inventory materializes verified defaults without mutating strict input
+  ---
+  duration_ms: 1.402717
+  type: 'test'
+  ...
+# Subtest: upcoming calendar inventory rejects coercion, extra authority, bounds and missing trusted clock
+ok 39 - upcoming calendar inventory rejects coercion, extra authority, bounds and missing trusted clock
+  ---
+  duration_ms: 0.609222
+  type: 'test'
+  ...
+# Subtest: bounded calendar page counts returned rows and never claims whole history
+ok 40 - bounded calendar page counts returned rows and never claims whole history
+  ---
+  duration_ms: 9.370834
+  type: 'test'
+  ...
+# Subtest: debrief list and exact-body modes keep distinct normalized selections and defaults
+ok 41 - debrief list and exact-body modes keep distinct normalized selections and defaults
+  ---
+  duration_ms: 0.687939
+  type: 'test'
+  ...
+# Subtest: debrief inputs refuse missing client, foreign fields, mode confusion and cursor substitution
+ok 42 - debrief inputs refuse missing client, foreign fields, mode confusion and cursor substitution
+  ---
+  duration_ms: 0.326354
+  type: 'test'
+  ...
+# Subtest: debrief exact body windows, hashes and decisive reads stay exact
+ok 43 - debrief exact body windows, hashes and decisive reads stay exact
+  ---
+  duration_ms: 7.042127
+  type: 'test'
+  ...
+# Subtest: debrief list pages cannot claim complete history without a completed body pass
+ok 44 - debrief list pages cannot claim complete history without a completed body pass
+  ---
+  duration_ms: 4.096725
+  type: 'test'
+  ...
+# Subtest: meeting reads keep inventory and exact-source-body modes separate
+ok 45 - meeting reads keep inventory and exact-source-body modes separate
+  ---
+  duration_ms: 0.613508
+  type: 'test'
+  ...
+# Subtest: meeting inputs refuse missing/foreign client scope and mode substitution
+ok 46 - meeting inputs refuse missing/foreign client scope and mode substitution
+  ---
+  duration_ms: 0.30429
+  type: 'test'
+  ...
+# Subtest: meeting inventory discloses restricted, omitted and paginated coverage
+ok 47 - meeting inventory discloses restricted, omitted and paginated coverage
+  ---
+  duration_ms: 12.21133
+  type: 'test'
+  ...
+# Subtest: exact meeting source bodies bind hash, byte and window provenance
+ok 48 - exact meeting source bodies bind hash, byte and window provenance
+  ---
+  duration_ms: 7.029297
+  type: 'test'
+  ...
+# Subtest: cursor reuse is disclosed but never authenticated by this pending contract
+ok 49 - cursor reuse is disclosed but never authenticated by this pending contract
+  ---
+  duration_ms: 0.636303
+  type: 'test'
+  ...
+# Subtest: meeting external DTO accessors, cycles and non-finite values refuse before executing getters
+ok 50 - meeting external DTO accessors, cycles and non-finite values refuse before executing getters
+  ---
+  duration_ms: 0.291482
+  type: 'test'
+  ...
+# Subtest: shared collaborators are delegated, not re-implemented, and still have teeth
+ok 51 - shared collaborators are delegated, not re-implemented, and still have teeth
+  ---
+  duration_ms: 1.259365
+  type: 'test'
+  ...
+# Subtest: meeting pages enforce canonical single-subject cardinality and roster rules
+ok 52 - meeting pages enforce canonical single-subject cardinality and roster rules
+  ---
+  duration_ms: 0.844841
+  type: 'test'
+  ...
+# Subtest: meeting pages enforce canonical timezone and calendar-week boundaries
+ok 53 - meeting pages enforce canonical timezone and calendar-week boundaries
+  ---
+  duration_ms: 6.681974
+  type: 'test'
+  ...
+# Subtest: meeting source observations retain their pending timestamp boundary
+ok 54 - meeting source observations retain their pending timestamp boundary
+  ---
+  duration_ms: 0.496966
+  type: 'test'
+  ...
+# Subtest: meeting schema objects stay closed and package public exports stay 0.1 only
+not ok 55 - meeting schema objects stay closed and package public exports stay 0.1 only
+  ---
+  duration_ms: 1.261227
+  type: 'test'
+  location: '/workspace/meri-next-adapters/packages/contracts/test/retrieval-meeting-source.test.mjs:361:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '0.1.2' !== '0.1.0'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '0.1.0'
+  actual: '0.1.2'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-next-adapters/packages/contracts/test/retrieval-meeting-source.test.mjs:365:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: private meeting catalog registration exposes no live handler, public export or skill
+ok 56 - private meeting catalog registration exposes no live handler, public export or skill
+  ---
+  duration_ms: 10.148867
+  type: 'test'
+  ...
+# Subtest: normalizes defaults/nulls and binds the server-selected client
+ok 57 - normalizes defaults/nulls and binds the server-selected client
+  ---
+  duration_ms: 2.446963
+  type: 'test'
+  ...
+# Subtest: strict raw input bounds, numeric coercion and model authority keys refuse
+ok 58 - strict raw input bounds, numeric coercion and model authority keys refuse
+  ---
+  duration_ms: 0.784411
+  type: 'test'
+  ...
+# Subtest: requires canonical trusted actor/subject and rejects client substitution
+ok 59 - requires canonical trusted actor/subject and rejects client substitution
+  ---
+  duration_ms: 0.205575
+  type: 'test'
+  ...
+# Subtest: complete/empty producer queue metadata never becomes approved evidence or absence
+ok 60 - complete/empty producer queue metadata never becomes approved evidence or absence
+  ---
+  duration_ms: 1.110204
+  type: 'test'
+  ...
+# Subtest: selected client permits own firm/private rows and the selected client, rejects another client
+ok 61 - selected client permits own firm/private rows and the selected client, rejects another client
+  ---
+  duration_ms: 0.987142
+  type: 'test'
+  ...
+# Subtest: result actor/tenant/client and pending-fact constants cannot be substituted
+ok 62 - result actor/tenant/client and pending-fact constants cannot be substituted
+  ---
+  duration_ms: 0.68873
+  type: 'test'
+  ...
+# Subtest: restricted proposals redact text/title and remain partial
+ok 63 - restricted proposals redact text/title and remain partial
+  ---
+  duration_ms: 0.464607
+  type: 'test'
+  ...
+# Subtest: truncated/null-text pages cannot claim complete producer coverage
+ok 64 - truncated/null-text pages cannot claim complete producer coverage
+  ---
+  duration_ms: 0.233166
+  type: 'test'
+  ...
+# Subtest: disabled review is unavailable, including continued-request firstPage semantics
+ok 65 - disabled review is unavailable, including continued-request firstPage semantics
+  ---
+  duration_ms: 0.283711
+  type: 'test'
+  ...
+# Subtest: continuation requires retained scope, exact cursor and unchanged page limit
+ok 66 - continuation requires retained scope, exact cursor and unchanged page limit
+  ---
+  duration_ms: 0.651545
+  type: 'test'
+  ...
+# Subtest: final continued page remains partial and must advance beyond prior key
+ok 67 - final continued page remains partial and must advance beyond prior key
+  ---
+  duration_ms: 0.433712
+  type: 'test'
+  ...
+# Subtest: UTF-16 preview caps, date order, duplicates and requested count are enforced
+ok 68 - UTF-16 preview caps, date order, duplicates and requested count are enforced
+  ---
+  duration_ms: 0.848476
+  type: 'test'
+  ...
+# Subtest: inert admission refuses getters/proxies/cycles/sparse data without invocation
+ok 69 - inert admission refuses getters/proxies/cycles/sparse data without invocation
+  ---
+  duration_ms: 0.207387
+  type: 'test'
+  ...
+# Subtest: operation is mapped but unavailable and public exports stay separate
+not ok 70 - operation is mapped but unavailable and public exports stay separate
+  ---
+  duration_ms: 7.488748
+  type: 'test'
+  location: '/workspace/meri-next-adapters/packages/contracts/test/retrieval-memory-proposals.test.mjs:120:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '0.1.2' !== '0.1.0'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '0.1.0'
+  actual: '0.1.2'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-next-adapters/packages/contracts/test/retrieval-memory-proposals.test.mjs:127:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: family factory import has no process/network/timer effect
+ok 71 - family factory import has no process/network/timer effect
+  ---
+  duration_ms: 45.14238
+  type: 'test'
+  ...
+# Subtest: nonfinite proposal timestamps cannot claim complete or restricted coverage
+ok 72 - nonfinite proposal timestamps cannot claim complete or restricted coverage
+  ---
+  duration_ms: 0.983677
+  type: 'test'
+  ...
+# Subtest: nonfinite timestamps refuse in either position before within-page ordering
+ok 73 - nonfinite timestamps refuse in either position before within-page ordering
+  ---
+  duration_ms: 0.468824
+  type: 'test'
+  ...
+# Subtest: nonfinite retained or current timestamps cannot advance a continuation
+ok 74 - nonfinite retained or current timestamps cannot advance a continuation
+  ---
+  duration_ms: 0.656662
+  type: 'test'
+  ...
+# Subtest: finite timestamps preserve offset-aware ordering and equal-instant identity ties
+ok 75 - finite timestamps preserve offset-aware ordering and equal-instant identity ties
+  ---
+  duration_ms: 0.7696
+  type: 'test'
+  ...
+# Subtest: task read materializes verified defaults without mutating strict input
+ok 76 - task read materializes verified defaults without mutating strict input
+  ---
+  duration_ms: 1.812243
+  type: 'test'
+  ...
+# Subtest: task read rejects coercion, extra authority, bounds, unknown status and missing trusted context
+ok 77 - task read rejects coercion, extra authority, bounds, unknown status and missing trusted context
+  ---
+  duration_ms: 0.779595
+  type: 'test'
+  ...
+# Subtest: client-scoped task page pins scope, identity, provenance and honest coverage
+ok 78 - client-scoped task page pins scope, identity, provenance and honest coverage
+  ---
+  duration_ms: 12.839811
+  type: 'test'
+  ...
+# Subtest: authorized-tasks page derives overdue only when unscoped and never invents client scope
+ok 79 - authorized-tasks page derives overdue only when unscoped and never invents client scope
+  ---
+  duration_ms: 0.937749
+  type: 'test'
+  ...
+# Subtest: task pagination resumes only by a disclosed cursor and never claims complete absence
+ok 80 - task pagination resumes only by a disclosed cursor and never claims complete absence
+  ---
+  duration_ms: 1.447724
+  type: 'test'
+  ...
+# Subtest: action-item read keeps the client-scoped exact read distinct from the pending unscoped list
+ok 81 - action-item read keeps the client-scoped exact read distinct from the pending unscoped list
+  ---
+  duration_ms: 0.946651
+  type: 'test'
+  ...
+# Subtest: client-scoped action-item page pins scope, order, identity and provenance
+ok 82 - client-scoped action-item page pins scope, order, identity and provenance
+  ---
+  duration_ms: 8.122547
+  type: 'test'
+  ...
+# Subtest: action-item page resumes page >= 2 only with a cursor and binds linked evidence
+ok 83 - action-item page resumes page >= 2 only with a cursor and binds linked evidence
+  ---
+  duration_ms: 1.149742
+  type: 'test'
+  ...
+# Subtest: operational-read DTO accessors, cycles and non-finite values refuse before executing getters
+ok 84 - operational-read DTO accessors, cycles and non-finite values refuse before executing getters
+  ---
+  duration_ms: 0.313274
+  type: 'test'
+  ...
+# Subtest: shared collaborators are delegated, not re-implemented, and still have teeth
+ok 85 - shared collaborators are delegated, not re-implemented, and still have teeth
+  ---
+  duration_ms: 1.034331
+  type: 'test'
+  ...
+# Subtest: task pages enforce canonical single-subject and authorized-roster identities
+ok 86 - task pages enforce canonical single-subject and authorized-roster identities
+  ---
+  duration_ms: 0.991958
+  type: 'test'
+  ...
+# Subtest: task pages enforce canonical timezone and calendar-month boundaries
+ok 87 - task pages enforce canonical timezone and calendar-month boundaries
+  ---
+  duration_ms: 10.743497
+  type: 'test'
+  ...
+# Subtest: operational source observations retain their pending timestamp boundary
+ok 88 - operational source observations retain their pending timestamp boundary
+  ---
+  duration_ms: 0.549964
+  type: 'test'
+  ...
+# Subtest: operational-read schema objects stay closed and package public exports stay 0.1 only
+not ok 89 - operational-read schema objects stay closed and package public exports stay 0.1 only
+  ---
+  duration_ms: 1.139617
+  type: 'test'
+  location: '/workspace/meri-next-adapters/packages/contracts/test/retrieval-operational-reads.test.mjs:394:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '0.1.2' !== '0.1.0'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '0.1.0'
+  actual: '0.1.2'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-next-adapters/packages/contracts/test/retrieval-operational-reads.test.mjs:398:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: private task and partial action registration preserve the full native successor without a live handler or skill
+ok 90 - private task and partial action registration preserve the full native successor without a live handler or skill
+  ---
+  duration_ms: 10.288484
+  type: 'test'
+  ...
+1..90
+# tests 90
+# suites 0
+# pass 86
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4071.140322

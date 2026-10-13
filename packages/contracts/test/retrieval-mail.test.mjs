@@ -151,7 +151,7 @@ test('no skill can expose the pending mail operation',()=>{
 test('mail schema objects stay closed and package public exports stay 0.1 only',()=>{
   const schema=JSON.parse(readFileSync(new URL('../retrieval-0.2/mail.schema.json',import.meta.url)));
   const walk=node=>{if(!node||typeof node!=='object')return;if(node.type==='object')assert.equal(node.additionalProperties,false);for(const child of Object.values(node))if(child&&typeof child==='object')walk(child);};walk(schema);
-  const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url)));assert.equal(pkg.version,'0.1.0');assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));assert(!pkg.files.includes('retrieval-0.2'));
+  const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url)));assert.equal(pkg.version,'0.1.2');assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));assert(!pkg.files.includes('retrieval-0.2'));
 });
 
 test('mailbox identity and authoritative body lineage cannot be substituted',()=>{
