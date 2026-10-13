@@ -1,0 +1,1298 @@
+{
+  "kind": "OFFLINE_METADATA_ONLY",
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "passed": 322,
+  "failed": 0,
+  "originalEntries": 10564,
+  "oldPacketMembers": 10,
+  "checks": [
+    {
+      "name": "evals/qualification/hermes-session.fixture.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/qualification/hermes-session.fixture.json blob",
+      "passed": true
+    },
+    {
+      "name": "evals/qualification/hermes-session.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/qualification/hermes-session.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/retrieval-r2/manifest.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/retrieval-r2/manifest.json blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/README.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/README.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/cli.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/cli.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/contracts.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/contracts.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/corpus.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/corpus.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/README.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/README.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/admission.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/admission.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/execute.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/execute.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/execution-independent.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/execution-independent.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/test/execution.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/test/execution.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/test/fixtures.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/execution/test/fixtures.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/score.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/score.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/actual-control.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/actual-control.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/cli.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/cli.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/corpus.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/corpus.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/eval-independent.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/eval-independent.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/fixtures.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/fixtures.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/result-fixture.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/result-fixture.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/score.test.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/task-lookup/test/score.test.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "AGENTS.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "AGENTS.md blob",
+      "passed": true
+    },
+    {
+      "name": "docs/IMPLEMENTATION-STANDARDS.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/IMPLEMENTATION-STANDARDS.md blob",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-ACTION-HOST-20261013.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-ACTION-HOST-20261013.md blob",
+      "passed": true
+    },
+    {
+      "name": "docs/plans/MERI-DEPLOYMENT.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/plans/MERI-DEPLOYMENT.md blob",
+      "passed": true
+    },
+    {
+      "name": "docs/ROUTING-EVALUATION.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/ROUTING-EVALUATION.md blob",
+      "passed": true
+    },
+    {
+      "name": "docs/COMPONENTS.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/COMPONENTS.md blob",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/proxy-config.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/proxy-config.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/runtime/bedrock_body.py exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/runtime/bedrock_body.py blob",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/runtime/aws_counter.py exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/runtime/aws_counter.py blob",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/runtime/bedrock_transport.py exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/runtime/bedrock_transport.py blob",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/pilot-proposal.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/pilot-proposal.json blob",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/manifest.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/manifest.json blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/README.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/README.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/README.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/CONTRACT.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/CONTRACT.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/CONTRACT.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/suite-contract.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/suite-contract.json blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/suite-contract.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/live-75-case-spec.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/live-75-case-spec.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/live-75-case-spec.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/live-75-agent-handoff.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/live-75-agent-handoff.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/live-75-agent-handoff.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/original-cases.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/original-cases.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/original-cases.mjs paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/capiro-internal-cases.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/capiro-internal-cases.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/capiro-internal-cases.mjs paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/program-tasks.mjs exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/program-tasks.mjs blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/simple/program-tasks.mjs paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/commitments-deliverables-extension.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/commitments-deliverables-extension.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/commitments-deliverables-extension.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/commitments-deliverables/README.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/commitments-deliverables/README.md blob",
+      "passed": true
+    },
+    {
+      "name": "evals/meri/commitments-deliverables/README.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "docs/meri/implementation/01-Meri-Foundation-and-Reliability.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "docs/meri/implementation/01-Meri-Foundation-and-Reliability.md blob",
+      "passed": true
+    },
+    {
+      "name": "docs/meri/implementation/01-Meri-Foundation-and-Reliability.md paired identity",
+      "passed": true
+    },
+    {
+      "name": ".session5-live/frozen-corpus.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": ".session5-live/frozen-corpus.json blob",
+      "passed": true
+    },
+    {
+      "name": ".session5-live/frozen-corpus.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/README.md exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/README.md blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/README.md paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/amendment/fy27-defense-appropriations-floor-amendment-procurement-plus-up.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/amendment/fy27-defense-appropriations-floor-amendment-procurement-plus-up.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/amendment/fy27-defense-appropriations-floor-amendment-procurement-plus-up.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/amendment/senate-ndaa-managers-package-report-language.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/amendment/senate-ndaa-managers-package-report-language.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/amendment/senate-ndaa-managers-package-report-language.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/appropriations/fy28-dhp-research-line-increase.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/appropriations/fy28-dhp-research-line-increase.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/appropriations/fy28-dhp-research-line-increase.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/appropriations/fy28-shipbuilding-plus-up.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/appropriations/fy28-shipbuilding-plus-up.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/appropriations/fy28-shipbuilding-plus-up.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/authorization/ndaa-new-program-start-authorization.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/authorization/ndaa-new-program-start-authorization.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/authorization/ndaa-new-program-start-authorization.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/authorization/reauthorize-expiring-pilot-program.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/authorization/reauthorize-expiring-pilot-program.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/authorization/reauthorize-expiring-pilot-program.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/coalition/industry-coalition-shared-ask.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/coalition/industry-coalition-shared-ask.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/coalition/industry-coalition-shared-ask.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/coalition/state-coalition-infrastructure-funding.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/coalition/state-coalition-infrastructure-funding.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/coalition/state-coalition-infrastructure-funding.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/earmark/community-project-funding-request.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/earmark/community-project-funding-request.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/earmark/community-project-funding-request.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/earmark/university-research-center-earmark.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/earmark/university-research-center-earmark.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/earmark/university-research-center-earmark.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/procurement/rfp-response-positioning.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/procurement/rfp-response-positioning.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/procurement/rfp-response-positioning.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/procurement/sole-source-justification-defense.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/procurement/sole-source-justification-defense.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/procurement/sole-source-justification-defense.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/regulatory/faa-rulemaking-comment-response.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/regulatory/faa-rulemaking-comment-response.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/regulatory/faa-rulemaking-comment-response.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/regulatory/fda-guidance-engagement.json exact bytes",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/regulatory/fda-guidance-engagement.json blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api-strategy/eval/goldens/regulatory/fda-guidance-engagement.json paired identity",
+      "passed": true
+    },
+    {
+      "name": "complete current eval path census",
+      "passed": true
+    },
+    {
+      "name": "27 paired legacy references",
+      "passed": true
+    },
+    {
+      "name": "zero qualified human provenance",
+      "passed": true
+    },
+    {
+      "name": "unchanged canonical received-real count",
+      "passed": true
+    },
+    {
+      "name": "75 spec and structured identities",
+      "passed": true
+    },
+    {
+      "name": "spec row 01",
+      "passed": true
+    },
+    {
+      "name": "spec row 02",
+      "passed": true
+    },
+    {
+      "name": "spec row 03",
+      "passed": true
+    },
+    {
+      "name": "spec row 04",
+      "passed": true
+    },
+    {
+      "name": "spec row 05",
+      "passed": true
+    },
+    {
+      "name": "spec row 06",
+      "passed": true
+    },
+    {
+      "name": "spec row 07",
+      "passed": true
+    },
+    {
+      "name": "spec row 08",
+      "passed": true
+    },
+    {
+      "name": "spec row 09",
+      "passed": true
+    },
+    {
+      "name": "spec row 10",
+      "passed": true
+    },
+    {
+      "name": "spec row 11",
+      "passed": true
+    },
+    {
+      "name": "spec row 12",
+      "passed": true
+    },
+    {
+      "name": "spec row 13",
+      "passed": true
+    },
+    {
+      "name": "spec row 14",
+      "passed": true
+    },
+    {
+      "name": "spec row 15",
+      "passed": true
+    },
+    {
+      "name": "spec row 16",
+      "passed": true
+    },
+    {
+      "name": "spec row 17",
+      "passed": true
+    },
+    {
+      "name": "spec row 18",
+      "passed": true
+    },
+    {
+      "name": "spec row 19",
+      "passed": true
+    },
+    {
+      "name": "spec row 20",
+      "passed": true
+    },
+    {
+      "name": "spec row 21",
+      "passed": true
+    },
+    {
+      "name": "spec row 22",
+      "passed": true
+    },
+    {
+      "name": "spec row 23",
+      "passed": true
+    },
+    {
+      "name": "spec row 24",
+      "passed": true
+    },
+    {
+      "name": "spec row 25",
+      "passed": true
+    },
+    {
+      "name": "spec row 26",
+      "passed": true
+    },
+    {
+      "name": "spec row 27",
+      "passed": true
+    },
+    {
+      "name": "spec row 28",
+      "passed": true
+    },
+    {
+      "name": "spec row 29",
+      "passed": true
+    },
+    {
+      "name": "spec row 30",
+      "passed": true
+    },
+    {
+      "name": "spec row 31",
+      "passed": true
+    },
+    {
+      "name": "spec row 32",
+      "passed": true
+    },
+    {
+      "name": "spec row 33",
+      "passed": true
+    },
+    {
+      "name": "spec row 34",
+      "passed": true
+    },
+    {
+      "name": "spec row 35",
+      "passed": true
+    },
+    {
+      "name": "spec row 36",
+      "passed": true
+    },
+    {
+      "name": "spec row 37",
+      "passed": true
+    },
+    {
+      "name": "spec row 38",
+      "passed": true
+    },
+    {
+      "name": "spec row 39",
+      "passed": true
+    },
+    {
+      "name": "spec row 40",
+      "passed": true
+    },
+    {
+      "name": "spec row 41",
+      "passed": true
+    },
+    {
+      "name": "spec row 42",
+      "passed": true
+    },
+    {
+      "name": "spec row 43",
+      "passed": true
+    },
+    {
+      "name": "spec row 44",
+      "passed": true
+    },
+    {
+      "name": "spec row 45",
+      "passed": true
+    },
+    {
+      "name": "spec row 46",
+      "passed": true
+    },
+    {
+      "name": "spec row 47",
+      "passed": true
+    },
+    {
+      "name": "spec row 48",
+      "passed": true
+    },
+    {
+      "name": "spec row 49",
+      "passed": true
+    },
+    {
+      "name": "spec row 50",
+      "passed": true
+    },
+    {
+      "name": "spec row 51",
+      "passed": true
+    },
+    {
+      "name": "spec row 52",
+      "passed": true
+    },
+    {
+      "name": "spec row 53",
+      "passed": true
+    },
+    {
+      "name": "spec row 54",
+      "passed": true
+    },
+    {
+      "name": "spec row 55",
+      "passed": true
+    },
+    {
+      "name": "spec row 56",
+      "passed": true
+    },
+    {
+      "name": "spec row 57",
+      "passed": true
+    },
+    {
+      "name": "spec row 58",
+      "passed": true
+    },
+    {
+      "name": "spec row 59",
+      "passed": true
+    },
+    {
+      "name": "spec row 60",
+      "passed": true
+    },
+    {
+      "name": "spec row 61",
+      "passed": true
+    },
+    {
+      "name": "spec row 62",
+      "passed": true
+    },
+    {
+      "name": "spec row 63",
+      "passed": true
+    },
+    {
+      "name": "spec row 64",
+      "passed": true
+    },
+    {
+      "name": "spec row 65",
+      "passed": true
+    },
+    {
+      "name": "spec row 66",
+      "passed": true
+    },
+    {
+      "name": "spec row 67",
+      "passed": true
+    },
+    {
+      "name": "spec row 68",
+      "passed": true
+    },
+    {
+      "name": "spec row 69",
+      "passed": true
+    },
+    {
+      "name": "spec row 70",
+      "passed": true
+    },
+    {
+      "name": "spec row 71",
+      "passed": true
+    },
+    {
+      "name": "spec row 72",
+      "passed": true
+    },
+    {
+      "name": "spec row 73",
+      "passed": true
+    },
+    {
+      "name": "spec row 74",
+      "passed": true
+    },
+    {
+      "name": "spec row 75",
+      "passed": true
+    },
+    {
+      "name": "structured row 01",
+      "passed": true
+    },
+    {
+      "name": "structured row 02",
+      "passed": true
+    },
+    {
+      "name": "structured row 03",
+      "passed": true
+    },
+    {
+      "name": "structured row 04",
+      "passed": true
+    },
+    {
+      "name": "structured row 05",
+      "passed": true
+    },
+    {
+      "name": "structured row 06",
+      "passed": true
+    },
+    {
+      "name": "structured row 07",
+      "passed": true
+    },
+    {
+      "name": "structured row 08",
+      "passed": true
+    },
+    {
+      "name": "structured row 09",
+      "passed": true
+    },
+    {
+      "name": "structured row 10",
+      "passed": true
+    },
+    {
+      "name": "structured row 11",
+      "passed": true
+    },
+    {
+      "name": "structured row 12",
+      "passed": true
+    },
+    {
+      "name": "structured row 13",
+      "passed": true
+    },
+    {
+      "name": "structured row 14",
+      "passed": true
+    },
+    {
+      "name": "structured row 15",
+      "passed": true
+    },
+    {
+      "name": "structured row 16",
+      "passed": true
+    },
+    {
+      "name": "structured row 17",
+      "passed": true
+    },
+    {
+      "name": "structured row 18",
+      "passed": true
+    },
+    {
+      "name": "structured row 19",
+      "passed": true
+    },
+    {
+      "name": "structured row 20",
+      "passed": true
+    },
+    {
+      "name": "structured row 21",
+      "passed": true
+    },
+    {
+      "name": "structured row 22",
+      "passed": true
+    },
+    {
+      "name": "structured row 23",
+      "passed": true
+    },
+    {
+      "name": "structured row 24",
+      "passed": true
+    },
+    {
+      "name": "structured row 25",
+      "passed": true
+    },
+    {
+      "name": "structured row 26",
+      "passed": true
+    },
+    {
+      "name": "structured row 27",
+      "passed": true
+    },
+    {
+      "name": "structured row 28",
+      "passed": true
+    },
+    {
+      "name": "structured row 29",
+      "passed": true
+    },
+    {
+      "name": "structured row 30",
+      "passed": true
+    },
+    {
+      "name": "structured row 31",
+      "passed": true
+    },
+    {
+      "name": "structured row 32",
+      "passed": true
+    },
+    {
+      "name": "structured row 33",
+      "passed": true
+    },
+    {
+      "name": "structured row 34",
+      "passed": true
+    },
+    {
+      "name": "structured row 35",
+      "passed": true
+    },
+    {
+      "name": "structured row 36",
+      "passed": true
+    },
+    {
+      "name": "structured row 37",
+      "passed": true
+    },
+    {
+      "name": "structured row 38",
+      "passed": true
+    },
+    {
+      "name": "structured row 39",
+      "passed": true
+    },
+    {
+      "name": "structured row 40",
+      "passed": true
+    },
+    {
+      "name": "structured row 41",
+      "passed": true
+    },
+    {
+      "name": "structured row 42",
+      "passed": true
+    },
+    {
+      "name": "structured row 43",
+      "passed": true
+    },
+    {
+      "name": "structured row 44",
+      "passed": true
+    },
+    {
+      "name": "structured row 45",
+      "passed": true
+    },
+    {
+      "name": "structured row 46",
+      "passed": true
+    },
+    {
+      "name": "structured row 47",
+      "passed": true
+    },
+    {
+      "name": "structured row 48",
+      "passed": true
+    },
+    {
+      "name": "structured row 49",
+      "passed": true
+    },
+    {
+      "name": "structured row 50",
+      "passed": true
+    },
+    {
+      "name": "structured row 51",
+      "passed": true
+    },
+    {
+      "name": "structured row 52",
+      "passed": true
+    },
+    {
+      "name": "structured row 53",
+      "passed": true
+    },
+    {
+      "name": "structured row 54",
+      "passed": true
+    },
+    {
+      "name": "structured row 55",
+      "passed": true
+    },
+    {
+      "name": "structured row 56",
+      "passed": true
+    },
+    {
+      "name": "structured row 57",
+      "passed": true
+    },
+    {
+      "name": "structured row 58",
+      "passed": true
+    },
+    {
+      "name": "structured row 59",
+      "passed": true
+    },
+    {
+      "name": "structured row 60",
+      "passed": true
+    },
+    {
+      "name": "structured row 61",
+      "passed": true
+    },
+    {
+      "name": "structured row 62",
+      "passed": true
+    },
+    {
+      "name": "structured row 63",
+      "passed": true
+    },
+    {
+      "name": "structured row 64",
+      "passed": true
+    },
+    {
+      "name": "structured row 65",
+      "passed": true
+    },
+    {
+      "name": "structured row 66",
+      "passed": true
+    },
+    {
+      "name": "structured row 67",
+      "passed": true
+    },
+    {
+      "name": "structured row 68",
+      "passed": true
+    },
+    {
+      "name": "structured row 69",
+      "passed": true
+    },
+    {
+      "name": "structured row 70",
+      "passed": true
+    },
+    {
+      "name": "structured row 71",
+      "passed": true
+    },
+    {
+      "name": "structured row 72",
+      "passed": true
+    },
+    {
+      "name": "structured row 73",
+      "passed": true
+    },
+    {
+      "name": "structured row 74",
+      "passed": true
+    },
+    {
+      "name": "structured row 75",
+      "passed": true
+    },
+    {
+      "name": "26 synthetic mechanism cases",
+      "passed": true
+    },
+    {
+      "name": "14 strategy goldens",
+      "passed": true
+    },
+    {
+      "name": "75 adapted IDs distinct from human provenance",
+      "passed": true
+    },
+    {
+      "name": "7 extension scenarios",
+      "passed": true
+    },
+    {
+      "name": "8 extraction entries are not human cases",
+      "passed": true
+    },
+    {
+      "name": "source-selected route",
+      "passed": true
+    },
+    {
+      "name": "pinned SDK version",
+      "passed": true
+    },
+    {
+      "name": "CountTokens source owner exists",
+      "passed": true
+    },
+    {
+      "name": "18 plus18 distinct attempts",
+      "passed": true
+    },
+    {
+      "name": "all six sessions retained",
+      "passed": true
+    },
+    {
+      "name": "token totals",
+      "passed": true
+    },
+    {
+      "name": "exact inference estimate",
+      "passed": true
+    },
+    {
+      "name": "exact inference maximum",
+      "passed": true
+    },
+    {
+      "name": "separate unapproved inference ceiling",
+      "passed": true
+    },
+    {
+      "name": "strict previous18 alternative9",
+      "passed": true
+    },
+    {
+      "name": "no calls or corpus relabeling",
+      "passed": true
+    },
+    {
+      "name": "all prior literal templates preserved",
+      "passed": true
+    },
+    {
+      "name": "all prior packet blobs unchanged",
+      "passed": true
+    },
+    {
+      "name": "all original tree entries preserved",
+      "passed": true
+    },
+    {
+      "name": "exclusive allocated paths",
+      "passed": true
+    }
+  ]
+}
