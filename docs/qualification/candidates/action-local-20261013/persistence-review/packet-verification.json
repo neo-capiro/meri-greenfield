@@ -1,0 +1,198 @@
+{
+  "manifestSha256": "66abe7e29077a758c41b47525b0ad0ff5700cba81522558825b77c5a783ac9cd",
+  "members": 41,
+  "sources": 6,
+  "pass": 47,
+  "fail": 0,
+  "checks": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/audit.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/audit.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/canonical-owners.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/realm-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/row-checker-before-realm-correction.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/row-fixture-before-provenance.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/row-fixture-extension.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/setup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/sparse-read-discovery.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-all-review.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-all-review.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-authored.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-staged-full.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/admission-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/commit-ack-fault-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/result-rows-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/README.md",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+      "pass": true
+    }
+  ],
+  "runtimeAccepted": false
+}

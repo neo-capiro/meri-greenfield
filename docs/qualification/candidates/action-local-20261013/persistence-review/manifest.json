@@ -1,0 +1,253 @@
+{
+  "schema": "meri.independent-review-packet/1",
+  "verdict": "ACCEPT_SOURCE",
+  "source": "bd3de7dd9f522ef1da8bc055b9f9147e3c9d8dda",
+  "authorPacket": "3e62a3a97c887044e0d2ef70248f5ddb38b7e84a",
+  "acceptanceCommit": "0e90fa6e7c7248cf7f209767787dd33346d638d3",
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.json",
+      "bytes": 1315,
+      "sha256": "e1a7ccb11733e0807b192c1201211cedb74da4c652d7dd819ed5420812676cb2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/admission-initial.stdout.bin",
+      "bytes": 991,
+      "sha256": "823160e5b881a9591341b9eb808aef715b41de9b7da9c1d15c5f3b1659e5d673"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/audit.json",
+      "bytes": 13646,
+      "sha256": "6ee7a7577e5c02ac51d8059c0c69589c8aecf0fe82424ef476a271018085afd7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/audit.py",
+      "bytes": 7377,
+      "sha256": "5fd7f8dce040c46c7fc1bd04f06cdc5f707cd248ad7c06e232bc1b3038deef63"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/canonical-owners.json",
+      "bytes": 3210,
+      "sha256": "c381a8d6f3e9e78225437198a66c6ad9b855538c81789d7f2625893e041ef5ba"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/cleanup.json",
+      "bytes": 1725,
+      "sha256": "066865d193918fcd7c0b5b4fe859040fe8ab004d022f3ecc455f5b19ad3fb6b2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.json",
+      "bytes": 1315,
+      "sha256": "c2caeac6db661725d075c44db2dc26a583aeb88e98edca3f51786ba8f5d924aa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/fault-initial.stdout.bin",
+      "bytes": 1308,
+      "sha256": "5a6458efe853d35cfe004d0ed12483aa99838dadfd90cd82cfeee92fa00631cf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.json",
+      "bytes": 1658,
+      "sha256": "be004ac82d11570fc69d9dacfb0a4da1f6b4d5e0d7b7e6cdcd01d48681858798"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior-corrected.stdout.bin",
+      "bytes": 6506,
+      "sha256": "997fc81f04517a5e8908c33bfd1f959417e8757195ab577c99797fd71e312f37"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.json",
+      "bytes": 1638,
+      "sha256": "778d7389a9c43d8f9c5645cd8525dbb7fbee06e824fff3cb4fc6a9650bf43996"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/final-behavior.stdout.bin",
+      "bytes": 9254,
+      "sha256": "2183b4df280e17882a70832b1a73192af7e1b594881829fddd593ec16635957b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.json",
+      "bytes": 1558,
+      "sha256": "abb1246b4abf0be6684324d71b0e0a9052036fbcbd0811b14ba0d625f34e613a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/first-repair.stdout.bin",
+      "bytes": 3305,
+      "sha256": "2ae773ce5c786227bfb770ba4abe320d4864b41df3607acbddcc7598c2df35a8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.json",
+      "bytes": 1418,
+      "sha256": "ddcde5743a48047f3dcfdfa18b059d92cac8aba881b29f9903e3b1d592f334d6"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/ownership-evidence-initial.stdout.bin",
+      "bytes": 6375,
+      "sha256": "7d0e6c3c8a610eb88f2c941188acb87cd56205a0045fccf61f3d4b30fb64e8c8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/realm-correction.json",
+      "bytes": 662,
+      "sha256": "2e8d29aaf08f5595597a86286c5483efa098ae01db233514db28db9d903a2063"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/row-checker-before-realm-correction.mjs.txt",
+      "bytes": 3659,
+      "sha256": "5048a1c1fa7b3f7ff66d2b941f8b8cec9278031a79112883a53ba411d3adde14"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/row-fixture-before-provenance.mjs.txt",
+      "bytes": 2523,
+      "sha256": "d915a9770cbd49428bb00107477eac8dbb1157766ea4ba4e2ec69d839f76e853"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/row-fixture-extension.json",
+      "bytes": 576,
+      "sha256": "7e6197bbcfab468dd69ceff83c95ac8de559a3fbcaf2e5d62cf1bd8d58e26ac6"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/setup.json",
+      "bytes": 1700,
+      "sha256": "ee3e33d7f5674a64e5ae37443b89386610559de8abd512768b139876c893ea30"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/sparse-read-discovery.json",
+      "bytes": 476,
+      "sha256": "36aae9650364fd904daf05e754ae9c322cef4ea9c436cf510e18ffc6c7ae6e45"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/verify-packet.py",
+      "bytes": 1147,
+      "sha256": "e3aeb3242d2861bc6a83d04bf0b6ce386b518ad01b1eb999deea00d88565945f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-all-review.bin",
+      "bytes": 1212,
+      "sha256": "43417f353a651505e8402a079be8c6f11333273dccb60ce9725bfda4575f4d0d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-all-review.json",
+      "bytes": 237,
+      "sha256": "69d2260b6c7eaebde717c533e1ad4984591597225ea2a59d7681801eb35e2db4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-authored.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace-staged-full.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/persistence-review/whitespace.json",
+      "bytes": 818,
+      "sha256": "a44a6e7b16c672fcafb89bc690423f2d1a82472af8e9b49c4dd7100afa87fe5f"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md",
+      "bytes": 4259,
+      "sha256": "29d277709bebab0f981c955b475d7a9c99abbf593ddce1bffe7c5fcb4c6821ac"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md",
+      "bytes": 6882,
+      "sha256": "cbfece11a6278540bfb825e55c95a39445b0373fb19b8b2c97ac8c1700280828"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/admission-independent.test.mjs",
+      "bytes": 4355,
+      "sha256": "bf104d224217fd905324926e54a5f1918fa985d883d5927749798e55d98de0c1"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/commit-ack-fault-independent.test.mjs",
+      "bytes": 5240,
+      "sha256": "47d0b14b1697ca6b9fd568dc1f99a776221828ebc0e0d00134cbd4cf5b92d9df"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool-independent.test.mjs",
+      "bytes": 3632,
+      "sha256": "aa3c486de02a7ebf6d2b96804781ea6ed34f8c76ac2b64b1d22f0fdf969f5e02"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/result-rows-independent.test.mjs",
+      "bytes": 3303,
+      "sha256": "05bdda5f0301d9a403d702ec6b2b8317a4fe3c475f8f664f4e5c947614683c82"
+    }
+  ],
+  "reviewedSources": [
+    {
+      "path": "apps/control/task-lookup/local-integration/README.md",
+      "bytes": 3568,
+      "sha256": "0a2b571b0f65b3bc0b9da6bc104840559137646127e0af97ccc4686595ea2dd7"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/commit-ack-fault.mjs",
+      "bytes": 1392,
+      "sha256": "316c37407a49ebf1968a84e40471f14850ab62cbb394433ba6219c2c072eb256"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "bytes": 5345,
+      "sha256": "924f012927182e7d9152f13b879c1f952ca478e0f5cd373351850b9fc54be46e"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "bytes": 2110,
+      "sha256": "0b0b2967b645ca37bddded12f5f1b1d4d2cf0c1e2cde65dbf13623d08d12c7b8"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "bytes": 13572,
+      "sha256": "643e3401a661fa33cb47638f367bc8f82b2efe96557e0dda4f07ada625636a80"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+      "bytes": 10419,
+      "sha256": "02c67ef6b48381b148d2d6ae6dcf8125851e27cbac2849a4e752418f0a0ed999"
+    }
+  ],
+  "selfExcluded": [
+    "manifest.json",
+    "packet-verification.json"
+  ],
+  "runtimeAccepted": false,
+  "realPostgreSQLCases": "UNRUN"
+}
