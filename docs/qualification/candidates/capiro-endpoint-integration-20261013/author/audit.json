@@ -1,0 +1,54 @@
+{
+  "base": "a0614e7e16d6f92d0ca6eaa192cea7c5def21ec8",
+  "sourceFreeze": "9063f707e2ac618b0dcf5bb0c5165d13914748e6",
+  "docsFreeze": "375bdddc412a5a44edc0892341b4b0950666a396",
+  "originalEntries": 11497,
+  "unchangedOriginalEntries": 11495,
+  "allocatedExistingChanges": [
+    "apps/control/action-host/application-adapters/README.md",
+    "apps/control/action-host/application-adapters/authority-http.mjs"
+  ],
+  "commentOnlyTransportChange": true,
+  "pinnedFiles": 19,
+  "exactAstSelections": 22,
+  "constructorSourceRequests": 0,
+  "source": [
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+      "bytes": 5132,
+      "sha256": "ad7eaa94dc2a2747a23301cd66eb5d6662120ef3b22e18381ff6ff59eb2504e4"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+      "bytes": 7316,
+      "sha256": "d30bdec8e81785eb4635e2e594964493e5cbf0976617470ae8e5f5923bdf390a"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+      "bytes": 4787,
+      "sha256": "cc7355212242320db096c9b7ec2b711ba7c73d1734dfe7f735170c826034fa9e"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+      "bytes": 7514,
+      "sha256": "6d9ff918eab365695125f7e65e486123e9ac0c957bc68bd00a384e814e6099eb"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+      "bytes": 2696,
+      "sha256": "66a8fe272dab84bf551406f2c6451666b209caa244ea6be8b1f05630fea9eb6c"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+      "bytes": 4101,
+      "sha256": "3132dfe886d1b893602c48c63629471663156671d6093975e5a06130c207944f"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+      "bytes": 3668,
+      "sha256": "8d4f415450a215901322cef3714dcaab19a25611222a4532983607c48febd4fa"
+    }
+  ],
+  "checksPassed": true,
+  "scope": "SOURCE_ONLY_MOCKED_EXTERNAL_PORTS_NOT_NATIVE_QUALIFICATION"
+}
