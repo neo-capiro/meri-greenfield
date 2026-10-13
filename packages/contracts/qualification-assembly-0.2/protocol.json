@@ -1,0 +1,54 @@
+{
+  "schema": "meri.qualification-lifecycle/1",
+  "operations": [
+    "prepare",
+    "activate",
+    "inspect",
+    "revoke"
+  ],
+  "requestFields": [
+    "schema",
+    "operation",
+    "connection",
+    "admission",
+    "admissionSha256",
+    "deadlineMs",
+    "grantId"
+  ],
+  "admissionFields": [
+    "fixture",
+    "binding",
+    "qualificationBinding",
+    "allocationSha256",
+    "grants",
+    "originalDeadlineMs"
+  ],
+  "qualificationFields": [
+    "runId",
+    "attempt",
+    "workerArn",
+    "fence",
+    "policyRevision"
+  ],
+  "grantFields": [
+    "grantId",
+    "capabilitySha256",
+    "expiresAtMs"
+  ],
+  "receiptFields": [
+    "schema",
+    "operation",
+    "admissionSha256",
+    "grantId",
+    "status"
+  ],
+  "statuses": [
+    "PREPARED",
+    "ACTIVE",
+    "ADMITTED",
+    "REVOKED",
+    "UNKNOWN",
+    "REFUSED"
+  ],
+  "maxFrameBytes": 131072
+}
