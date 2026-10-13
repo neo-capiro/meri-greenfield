@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-13T01:59:05.893239+00:00",
+  "sourceHead": "6c0af9f83cef11dd00bc14bc99380ea5460deed5",
+  "ownedEarlierGroups": [
+    {
+      "pgid": 448664,
+      "absent": true
+    },
+    {
+      "pgid": 448695,
+      "absent": true
+    },
+    {
+      "pgid": 448713,
+      "absent": true
+    }
+  ],
+  "partialRootRunFound": false,
+  "rerunPerformed": false,
+  "staticAudit": "PASS: 10377 originals, 6 accepted files, 112 evidence members",
+  "creditsResume": "Prior agent usage failures acknowledged; both owners resumed without another reported usage error. No paid/AWS attempt."
+}

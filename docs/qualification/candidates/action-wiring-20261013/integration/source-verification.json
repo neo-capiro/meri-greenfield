@@ -1,6 +1,6 @@
 {
   "base": "a385fed03b6700bbccb158643793d0be29ccc5ed",
-  "sourceHead": "2ae35e9ad02f990d3c4ba284170589a87ac8b773",
+  "sourceHead": "55abfaa6b15bca28e8165be2dec9804f2154a969",
   "originalEntriesUnchanged": 10377,
   "reviewedRunnableFiles": [
     {
@@ -32,6 +32,16 @@
       "path": "scripts/local-followthrough/run.mjs",
       "acceptedSource": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
       "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801"
+    },
+    {
+      "path": "apps/control/action-application/node-http.mjs",
+      "acceptedSource": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+      "sha256": "5483d08f8092c06e3a28784501bc0be0ff94898b613567cb9c6d865452daf5f0"
+    },
+    {
+      "path": "scripts/local-followthrough/http-run.mjs",
+      "acceptedSource": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+      "sha256": "721b40dba0cb7ae6cbeddd3b3bb33f9d0a63c9211a7065b73d47868e047003d2"
     }
   ],
   "componentManifests": [
@@ -59,9 +69,19 @@
       "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/manifest.json",
       "members": 10,
       "sha256": "4a8e91b25fd86fa76c93855f674b34e87d75d4d1c18d64cd08d80b1bbb68cdc8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/manifest.json",
+      "members": 16,
+      "sha256": "d1b4e5360aae6d2b03f99c8e5e0ab30dd7117bcfbf44a36c6c955e9734063fe0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/manifest.json",
+      "members": 20,
+      "sha256": "e4120b947e1b02a6a2eebdb0377bf0a94bab55c2d00571fbf7d6653d116305ba"
     }
   ],
-  "componentManifestMembers": 112,
+  "componentManifestMembers": 148,
   "catalog": {
     "original": 139,
     "selected": 96,

@@ -1,0 +1,1 @@
+{"status":"PASS","mode":"synthetic-local","transport":"loopback-http","nativeDatabase":false,"productionActivated":false,"stats":{"mode":"synthetic-local","sourceReads":1,"taskEffects":1,"metadataRows":1,"lookupRows":1,"commandRows":1,"approvals":1,"closed":false},"cleanup":{"http":{"closed":true,"listening":false,"activeSockets":0},"demoClosed":true}}

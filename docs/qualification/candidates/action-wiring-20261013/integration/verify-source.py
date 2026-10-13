@@ -30,13 +30,16 @@ for ref, paths in {
         'apps/control/action-application/local/demo.mjs',
         'apps/control/action-application/local/flow.mjs',
         'scripts/local-followthrough/run.mjs'],
+    '2c8b793569c9a4b19db5a939909fbefdb8ac3ca8': [
+        'apps/control/action-application/node-http.mjs',
+        'scripts/local-followthrough/http-run.mjs'],
 }.items():
     for path in paths:
         data = blob(head, path)
         assert data == blob(ref, path), path
         sources.append({'path': path, 'acceptedSource': ref, 'sha256': hashlib.sha256(data).hexdigest()})
 manifests = []
-for name in ['application-author', 'application-review', 'local-author', 'local-review', 'eval-proposal']:
+for name in ['application-author', 'application-review', 'local-author', 'local-review', 'eval-proposal', 'http-author', 'http-review']:
     path = f'docs/qualification/candidates/action-wiring-20261013/{name}/manifest.json'
     raw = blob(head, path)
     manifest = json.loads(raw)

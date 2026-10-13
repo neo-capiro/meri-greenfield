@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-13T02:01:21.202392+00:00",
+  "ownedGroups": [
+    {
+      "pgid": 448664,
+      "absent": true
+    },
+    {
+      "pgid": 448695,
+      "absent": true
+    },
+    {
+      "pgid": 448713,
+      "absent": true
+    },
+    {
+      "pgid": 451663,
+      "absent": true
+    },
+    {
+      "pgid": 451668,
+      "absent": true
+    }
+  ],
+  "ownedDependencyLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "ownedLinkRemoved": true,
+      "borrowedTargetRetained": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "ownedLinkRemoved": true,
+      "borrowedTargetRetained": true
+    }
+  ],
+  "previouslyMaterializedOfficialDriverRetained": true,
+  "otherOwnerResourcesTouched": false,
+  "paidCalls": 0,
+  "nativeDatabaseActions": 0
+}

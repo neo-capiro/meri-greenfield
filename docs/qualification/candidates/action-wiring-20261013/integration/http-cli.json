@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "scripts/local-followthrough/http-run.mjs",
+    "--run"
+  ],
+  "cwd": "/tmp/meri-action-wiring-20261013",
+  "sourceHead": "55abfaa6b15bca28e8165be2dec9804f2154a969",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T02:00:01.377368+00:00",
+  "durationSeconds": 3.279,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 451663,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/http-cli.stdout.bin",
+      "bytes": 355,
+      "sha256": "d1096fb7cb661c1dc131eefc62fc97967c4eeed21e06b64752d7821553899c2b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/http-cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root replay of accepted executable HTTP CLI at integrated source; no external service.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
