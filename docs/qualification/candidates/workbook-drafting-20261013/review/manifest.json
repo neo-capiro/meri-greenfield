@@ -1,0 +1,188 @@
+{
+  "source": "16a4f883962bd72f9421949df95709f65b286555",
+  "authorPacket": "374e2285fd5a544b609161fa4c92e54b82d71627",
+  "verdict": "ACCEPT_SOURCE_APPLICATION_ONLY",
+  "wholeFlow": "HOLD",
+  "members": [
+    {
+      "path": "apps/control/document-application/independent/workbook-independent.test.mjs",
+      "bytes": 15678,
+      "sha256": "48a001a3820d2b6b1ff3f8cf409fcc78d74eaa2e27a239badc2295e5dfed5367"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/application-acceptance.json",
+      "bytes": 1127,
+      "sha256": "fb1164845f6f8296526900377a7548cb955ea1e8018b1d3dc754209f26a3f4f5"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/application-repaired-acceptance.json",
+      "bytes": 1394,
+      "sha256": "ee46af95efeeb8d95939000e05fcffc94f96c23dcc4fa2950d03151c1486d108"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/audit.json",
+      "bytes": 3453,
+      "sha256": "9b2af6b7c2819c5abe3e02b3e836b071557808d90aba3e7284be834005a79e01"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/audit.py",
+      "bytes": 3647,
+      "sha256": "97b05bb3af851d2e2e2d48aa5ae43630dd519c7e76fdde10cccfb8d077c7e137"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/author-packet-audit.json",
+      "bytes": 5601,
+      "sha256": "5252d697f0e36622c2d3bd569841e3844645aa02491d7272eeeea57ee2a70347"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/author-packet-audit.py",
+      "bytes": 2415,
+      "sha256": "d11bf54981655c07ec69347d8a31aed824790d27ad192d8e2465ba9ac85b070c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/authored-whitespace.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cleanup.json",
+      "bytes": 3187,
+      "sha256": "dedccdac9598faf02305c68d9e2a8cbb3cfaafa56cdde580a3f746883e1f3a63"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli-independent.test.mjs",
+      "bytes": 1294,
+      "sha256": "f66802ec3e01a87552e1ddbc97cdcf864c1373e9fedf2be540f103dd13a78e4c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.json",
+      "bytes": 1299,
+      "sha256": "c2a99c464dec69dd1b02c2f54b1b775b06524110ab469780da48f22322826201"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/cli.stdout.bin",
+      "bytes": 335,
+      "sha256": "95da2ce70476fbe5073cab66a56d60458723fe6eee47852981b386a16144e8b9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/dependencies.json",
+      "bytes": 1282,
+      "sha256": "d35241892169b169a2b86c76329dc92182ea2867f3bf56a0c3b5b73e9d2f4266"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.json",
+      "bytes": 1334,
+      "sha256": "f534bdd91a573a7ad723070c76b2a7e1cb215bc9c1b19dd40b3b35003759dc91"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-before.stdout.bin",
+      "bytes": 1263,
+      "sha256": "86a6a31a7a1689ba216fc4e9ac9499b8046a8cf48d48937ead6cdc6ea4cd12da"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-finding.json",
+      "bytes": 759,
+      "sha256": "c9082ce7cdafe95e6842f3c39f9b270e4596aa7e6e1362066312869c49b3ee44"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.json",
+      "bytes": 1288,
+      "sha256": "bb7e27622e75b3a83274273c2bbfda36be817b91a1fa1f43248a4a0c566780ad"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/filename-repaired.stdout.bin",
+      "bytes": 3904,
+      "sha256": "e3e1073b55cdf961bd56cc2ef19c169b21e3ccea1946d7c99948b203e45f7863"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/final-application-verdict.json",
+      "bytes": 1323,
+      "sha256": "ba960c405362fe202574d91ec3677f39cd46628aa27cb08a14a34a961df2865c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/first.json",
+      "bytes": 1264,
+      "sha256": "ce671fc48802b191b15cc4b4dfed91423a75e8168f087ee59d2b24a88e993321"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/first.stdout.bin",
+      "bytes": 3538,
+      "sha256": "4a841de00ae07ee909d0a28b707afb34113db8f50d7eeb3619e055d6026828e8"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/office-dependency.json",
+      "bytes": 1063,
+      "sha256": "3f4743e19c893a288a71b6cbc3ae6cb888adb9b30668a43155f9360c6ce4ee30"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/outline.md",
+      "bytes": 3170,
+      "sha256": "e5c4132babab4179386d66094019c990cec9923eb11f9f8d5c42d700521a6f42"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/pre-replay-corrections.json",
+      "bytes": 1004,
+      "sha256": "2dc37e8ae6ecc26871fec5adb42eaca5638512c9892b36089e9ad0a756f51b8c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/repaired-packet-audit.json",
+      "bytes": 7795,
+      "sha256": "cecfa6367f66e828d432322c364a76f1ca22076a3f6af0bc73208e29009879df"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/repaired-packet-audit.py",
+      "bytes": 3332,
+      "sha256": "4ff490f4ef889768900892839d68e7ca3b0dc3494c056d9d26332aef77381765"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/report.md",
+      "bytes": 5249,
+      "sha256": "5e722972b7ab5d299c5a4406ca86dd84fc99dcc5d3605649d8da7823fe974e6e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/test-split.json",
+      "bytes": 958,
+      "sha256": "2b26fd53f9fb11900882a9dcac7740069de2ba76f3432ba0dc1a98ee25b7f278"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/whitespace.json",
+      "bytes": 595,
+      "sha256": "9f6518a08caf6e06d75f2529db648ad5a436f808d0b58b38c17d41cf6dbbbc03"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/review/whole-whitespace.bin",
+      "bytes": 240,
+      "sha256": "a4f07c5601e0c36348b9dc68b63f32c5bd982cb54416cbf07c8126f4835b2853"
+    }
+  ],
+  "excludes": [
+    "manifest.json",
+    "manifest-verification.json"
+  ],
+  "sourceChangesByReviewer": false
+}
