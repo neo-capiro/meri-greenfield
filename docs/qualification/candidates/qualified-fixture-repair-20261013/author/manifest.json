@@ -6,8 +6,8 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-QUALIFIED-FIXTURE-REPAIR-20261013.md",
-      "bytes": 7621,
-      "sha256": "e59546181131efcf26afb0f921a9c53b609b1bde68874ea923d70c53ea82f424"
+      "bytes": 8144,
+      "sha256": "43a058eab2874e76ddd5cd2101a9eff96c2a273ed6e7cb6e7936cb36c4ed97bc"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.json",
@@ -25,14 +25,29 @@
       "sha256": "1fb3c38fd73ff15e185ca195ba075b3995265028809496ecbcbe0eeba5d9349f"
     },
     {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.json",
+      "bytes": 1324,
+      "sha256": "271cd1cadb62d4850dad81557a50a6dcf3d5c8f646d5086cabeb95ba0575d706"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stderr.bin",
+      "bytes": 560,
+      "sha256": "161cb5ea6b0dcc022ff6cec157529edc39ccdaec658807d30a463e9eeb09f873"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.json",
-      "bytes": 11052,
-      "sha256": "2996c684b37f19ff0b191f3b7bf9f6e4b9e05144a1bfc8303b010a678d831e67"
+      "bytes": 12240,
+      "sha256": "432bef9f364f74f11cc30fdcd43d7d1afee4252dd2ed09352a8aa3af89d1c6ee"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py",
-      "bytes": 4687,
-      "sha256": "b78113ffcafe3a279d535e98763efd02fbf8b18cedd2fa5df64179480a5d5a7d"
+      "bytes": 4699,
+      "sha256": "b971e1811218c99e4393dcbc7290a1b7c8c734923b743bdd34be7ad270a9f59f"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/capture-reaped.py",
@@ -273,6 +288,11 @@
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stdout.bin",
       "bytes": 12239,
       "sha256": "c2f9541de34a09a3b29f783e88747c7ec0deb6aa60b39852de6d0dc6b896feeb"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-whitespace-followup.json",
+      "bytes": 227,
+      "sha256": "75040734b1ec827caa1fc1f83bc434bbaa9e5ce2623993c8662ee7a5a4a08265"
     },
     {
       "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace.json",
