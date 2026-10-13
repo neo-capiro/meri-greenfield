@@ -17,3 +17,5 @@ Independent failures remain immutable: baseline0/2 at the complete decoder/insta
 Author manifest19 members+7 source identities match exact Git objects; its three source stages/raw failures,52-check audit, test preimages and cleanup are hash-bound. The complete author report's downstream-limit table agrees with inspected source. All three reviewer process groups are absent; this lane created no dependency links/copies or external resources.
 
 Native catalog object-kind compatibility, actual PostgreSQL execution, schema installation and production/runtime admission remain UNRUN here. The correction is a reviewed bounded source repair for the reported aggregate dimensions. Full native inputs must still pass unchanged identity/ownership/metadata/deadline predicates under the native owner's existing admission.
+
+Whole retained-diff and authored whitespace checks both pass; raw diagnostics are retained.
