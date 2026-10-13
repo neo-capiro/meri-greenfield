@@ -76,10 +76,12 @@ async function openActual(fixture,work){
 const success=(value,stage)=>{assert.equal(value.status,200,`${stage}: ${JSON.stringify(value.body)}`);return value.body;};
 
 test('independent actual graph: same retained selection and proposal across three HTTP hosts, one effect and fresh revocation',async()=>{
- const fixture=await actualFixture();let selected,pending,observed,proposalBytes;
+ const fixture=await actualFixture(),initial=fixture.stats();let selected,pending,observed,proposalBytes;
  try{
   await openActual(fixture,async call=>{
    const wrong=await call('query',{request:{limit:20}},'wrong-synthetic-token');assert.notEqual(wrong.status,200);assert.equal(fixture.stats().sourceReads,0);
+   const oversized=await call('query',{request:{query:'x'.repeat(70000)}});assert.equal(oversized.status,413);assert.equal(fixture.stats().sourceReads,0);
+   assert.equal((await call('approve',{})).status,404);assert.equal(fixture.stats().taskEffects,0);
    const read=success(await call('query',{request:{limit:20}}),'query');assert.equal(read.acceptedTasks,false);assert.equal(read.classification,'recommendations');
    selected={resultReference:read.resultReference,resultSha256:read.resultSha256,actionId:read.observation.result.actions[0].id};
    const corrupt=await call('draft',{selection:{...selected,resultSha256:'0'.repeat(64)}});assert.notEqual(corrupt.status,200);
@@ -87,7 +89,7 @@ test('independent actual graph: same retained selection and proposal across thre
    pending=success(await call('prepare',{draft}),'prepare');assert.equal(pending.status,'approval_required');proposalBytes=JSON.stringify(pending.proposal);
    const denied=await call('execute',{proposal:pending.proposal});assert.notEqual(denied.status,200);assert.equal(denied.body.error.outcome,'NOT_DISPATCHED');assert.equal(fixture.stats().taskEffects,0);
   });
-  const before=fixture.stats();assert.equal(before.sourceReads,1);assert.equal(before.metadataRows,1);assert.equal(before.lookupRows,1);
+  const before=fixture.stats();assert.equal(before.sourceReads,1);assert.equal(before.metadataRows,1);assert.equal(before.lookupRows,initial.lookupRows+1);
   await openActual(fixture,async call=>{
    const draft=success(await call('draft',{selection:selected,edits:{title:pending.draft.task.title,dueDate:null}}),'retained draft');assert.deepEqual(draft.source,pending.draft.source);assert.equal(fixture.stats().sourceReads,1);
    fixture.approve(pending.proposal);
@@ -98,7 +100,7 @@ test('independent actual graph: same retained selection and proposal across thre
    assert.deepEqual(success(await call('execute',{proposal:pending.proposal}),'replay'),observed);assert.equal(fixture.stats().taskEffects,1);
    fixture.revoke();assert.notEqual((await call('draft',{selection:selected})).status,200);assert.notEqual((await call('execute',{proposal:pending.proposal})).status,200);assert.equal(fixture.stats().taskEffects,1);
   });
-  const stats=fixture.stats();assert.equal(stats.hostsOpened,3);assert.equal(stats.sourceReads,1);assert.equal(stats.commandReservations,1);assert.equal(stats.commandChargeMicroUsd,10);assert.equal(stats.lookupChargeMicroUsd,10);
+  const stats=fixture.stats();assert.equal(stats.hostsOpened,3);assert.equal(stats.sourceReads,1);assert.equal(stats.commandReservations,1);assert.equal(stats.commandChargeMicroUsd,'10');assert.equal(stats.lookupChargeMicroUsd,'10');
  }finally{fixture.close();assert.equal(fixture.stats().closed,true);}
 });
 

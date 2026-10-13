@@ -1,0 +1,19 @@
+{
+  "originalControlCommit": "26d66b5c76fa2f3300a2f3b38ef62de410741824",
+  "corrections": [
+    {
+      "expectation": "lookupRows exactly1",
+      "corrected": "initial lookupRows+1",
+      "basis": "inherited action-followthrough/test/fixture.mjs prepares one retained lookup before local host query; tested query still adds exactlyone"
+    },
+    {
+      "expectation": "charge numeric10",
+      "corrected": "charge decimal string10",
+      "basis": "canonical scripted SQL budget column stores numeric integer as string"
+    }
+  ],
+  "observedFailureBeforeCorrection": false,
+  "failureActuallyObserved": "UNKNOWN vs NOT_DISPATCHED before later count checks",
+  "productionChanged": false,
+  "additionalControls": "request ceiling and absent approval HTTP route before query"
+}
