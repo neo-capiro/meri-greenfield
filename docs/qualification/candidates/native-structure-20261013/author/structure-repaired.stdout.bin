@@ -1,0 +1,105 @@
+✔ ordinary rows accepts exact UTF8 1048575 bytes (33.362979ms)
+✔ ordinary rows accepts exact UTF8 1048576 bytes (16.71133ms)
+✔ ordinary default refuses one byte over1MiB even if caller supplies larger second argument (16.877219ms)
+✔ preservation accepts exact UTF8 4194303 bytes (152.795364ms)
+✔ preservation accepts exact UTF8 4194304 bytes (102.670528ms)
+✔ preservation refuses UTF8 byte overflow even with fewer than4MiB JS characters (110.100717ms)
+✔ preservation refuses plain ASCII byte overflow (37.086917ms)
+✔ preservation exact one row; ordinary1024 rows ceiling unchanged (2.062841ms)
+✔ both admissions reject Proxy and accessors without invocation (0.444909ms)
+✖ preservation keeps node and depth guards despite larger byte limit (164.584054ms)
+✔ all3,128,280 bytes survive preparation and reconstruction unchanged (259.752727ms)
+✔ mutating the final byte of every metadata array changes retained signature (822.555277ms)
+✔ changed measured-inventory tail refuses later reconstruction with no additional DDL (206.805011ms)
+✔ oversized preservation refuses before first DDL and releases borrowed connection (34.467173ms)
+✔ post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed (111.77888ms)
+✔ same-size post-DDL last-character mutation remains UNKNOWN (197.297571ms)
+✔ measured inventory with unsupported object still refuses before DDL (61.521174ms)
+✔ large admission does not weaken closed metadata array shape (21.388075ms)
+✔ large admission does not weaken closed metadata array shape (48.930381ms)
+✔ large admission does not weaken closed metadata array shape (38.90986ms)
+✔ nonpreservation query still rejects oversized rows before shape interpretation (17.340146ms)
+✔ preservation SQL alone gets larger limit and retains exact namespace parameters (102.452492ms)
+✔ commit acknowledgement loss stays UNKNOWN with measured inventory (106.513977ms)
+✖ complete8362-record measured inventory retains exact bytes/tail at100000 nodes; next node refuses (1435.056201ms)
+✔ complete 3128280-byte ASCII inventory installs and reconstructs exactly (241.492023ms)
+✔ complete 4194304-byte ASCII inventory installs and reconstructs exactly (284.308555ms)
+✔ complete 4194304-byte multibyte inventory installs and reconstructs exactly (171.229741ms)
+✔ preservation byte+1 ASCII refuses before any DDL (37.225248ms)
+✔ preservation byte+1 multibyte refuses before any DDL (20.860653ms)
+✔ complete measured-size tail change during migration is UNKNOWN, never successful preservation (117.856524ms)
+✔ complete measured-size tail change on reconstruction refuses without rewriting (247.804942ms)
+✔ overflow after submitted migrations remains UNKNOWN and cannot COMMIT (120.820965ms)
+✔ ordinary rows retain exact1MiB/+1 UTF8 boundary and1024 row ceiling (10.44643ms)
+✔ preservation count guard survives scoped byte ceiling (81.380191ms)
+✔ preservation depth guard survives scoped byte ceiling (17.576557ms)
+✖ preservation nodes guard survives scoped byte ceiling (425.044666ms)
+✔ preservation accessor guard survives scoped byte ceiling (9.712859ms)
+✔ preservation proxy guard survives scoped byte ceiling (9.38779ms)
+✔ preservation metadata-shape guard survives scoped byte ceiling (29.995702ms)
+✔ preservation unsupported guard survives scoped byte ceiling (36.472708ms)
+✔ ordinary catalog does not acquire preservation4MiB allowance (57.97542ms)
+✔ 157661-node decoder and157658-node metadata retain all8362 records through install and reconstruction (2284.355933ms)
+✔ full downstream metadata cannot bypass its own structural or byte bounds (67.345292ms)
+✔ ordinary100000 nodes remain strict while preservation250000 exact and+1 use a fixed profile (520.300908ms)
+✔ every retained array tail contributes to the full metadata digest beyond100000 nodes (3537.826533ms)
+✔ tail substitution after DDL at157661 nodes remains UNKNOWN without commit or retry (590.925566ms)
+✔ preservation increased profile retains inert proxy refusal (0.686141ms)
+✔ preservation increased profile retains inert accessor refusal (0.174392ms)
+✔ preservation increased profile retains inert cycle refusal (0.096636ms)
+✔ preservation increased profile retains inert sparse refusal (0.119059ms)
+✔ preservation increased profile retains inert depth refusal (0.347933ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 48
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13346.423219
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-size-independent.test.mjs:49:1
+✖ preservation keeps node and depth guards despite larger byte limit (164.584054ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-size-independent.test.mjs:50:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size-inventory.test.mjs:28:1
+✖ complete8362-record measured inventory retains exact bytes/tail at100000 nodes; next node refuses (1435.056201ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-size-inventory.test.mjs:45:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:43:95
+✖ preservation nodes guard survives scoped byte ceiling (425.044666ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-size.test.mjs:54:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

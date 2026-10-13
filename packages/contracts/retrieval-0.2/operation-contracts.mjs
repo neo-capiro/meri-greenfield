@@ -6,21 +6,25 @@ const fail = message => { throw new Error(message); };
 const JSON_LIMITS = Object.freeze({nodes: 100000, depth: 64, bytes: 16 * 1024 * 1024});
 
 function copyData(value) {
+  return copyDataWithLimits(value, JSON_LIMITS);
+}
+
+function copyDataWithLimits(value, limits) {
   const active = new WeakSet(), pending = [{value, depth: 0}];
   let nodes = 0, scheduled = 1, bytes = 0;
   const addBytes = amount => {
     bytes += amount;
-    if (bytes > JSON_LIMITS.bytes) fail('Operation contract JSON byte limit');
+    if (bytes > limits.bytes) fail('Operation contract JSON byte limit');
   };
   const textBytes = value => {
-    if (value.length > JSON_LIMITS.bytes) fail('Operation contract JSON byte limit');
+    if (value.length > limits.bytes) fail('Operation contract JSON byte limit');
     return Buffer.byteLength(JSON.stringify(value), 'utf8');
   };
   while (pending.length) {
     const item = pending.pop();
     if (item.exit) { active.delete(item.value); continue; }
     const value = item.value;
-    if (++nodes > JSON_LIMITS.nodes || item.depth > JSON_LIMITS.depth)
+    if (++nodes > limits.nodes || item.depth > limits.depth)
       fail('Operation contract JSON structure limit');
     if (value === null || ['string', 'boolean'].includes(typeof value) ||
         (typeof value === 'number' && Number.isFinite(value))) {
@@ -33,7 +37,7 @@ function copyData(value) {
     if (prototype !== (array ? Array.prototype : Object.prototype) && prototype !== null)
       fail('Operation contract requires plain JSON data');
     const names = Reflect.ownKeys(value);
-    if (names.length > JSON_LIMITS.nodes) fail('Operation contract JSON structure limit');
+    if (names.length > limits.nodes) fail('Operation contract JSON structure limit');
     const fields = Object.getOwnPropertyDescriptors(value);
     if (names.some(name => typeof name !== 'string' || !Object.hasOwn(fields[name], 'value') ||
         (!fields[name].enumerable && !(array && name === 'length'))))
@@ -41,7 +45,7 @@ function copyData(value) {
     if (array && (names.length !== fields.length.value + 1 ||
         names.slice(0, -1).some((name, index) => name !== String(index)))) fail('Operation contract sparse array');
     scheduled += names.length - (array ? 1 : 0);
-    if (scheduled > JSON_LIMITS.nodes) fail('Operation contract JSON structure limit');
+    if (scheduled > limits.nodes) fail('Operation contract JSON structure limit');
     addBytes(2);
     active.add(value); pending.push({value, exit: true});
     for (const name of names) if (!(array && name === 'length')) {
@@ -55,6 +59,16 @@ function copyData(value) {
 // Private domain validators may share this exact admission boundary when called
 // outside the resolver. Keep one owner for inert JSON checks and resource limits.
 export {copyData as snapshotOperationData};
+
+// Fixed private catalog-preservation profile, never a caller-controlled override.
+// Keep conservative walker accounting separate from the exact serialized ceiling.
+const PRESERVATION_LIMITS = Object.freeze({...JSON_LIMITS, nodes: 250000});
+export function snapshotPreservationData(value) {
+  const snapshot = copyDataWithLimits(value, PRESERVATION_LIMITS);
+  if (Buffer.byteLength(JSON.stringify(snapshot), 'utf8') > 4 * 1024 * 1024)
+    fail('Operation contract JSON byte limit');
+  return freezeData(snapshot);
+}
 
 function freezeData(value) {
   const pending = [value];

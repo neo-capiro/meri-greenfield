@@ -1,0 +1,15 @@
+{
+  "roleManifestMembers": 48,
+  "groupsAbsent": [
+    568184,
+    568308,
+    568572,
+    569362,
+    569765,
+    570273,
+    572173
+  ],
+  "ownedDependencyLinksRemoved": true,
+  "donorsPreserved": true,
+  "nativeExecuted": false
+}

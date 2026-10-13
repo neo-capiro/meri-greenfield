@@ -1,0 +1,150 @@
+{
+  "base": "67ccac716bd6cbce4ee04e439a085bab75ae21a5",
+  "productionSource": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b",
+  "sourceWithExpectationMap": "ac9d7cdb1fb870619148a81adb69ab6b7409636d",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-STRUCTURE-20261013.md",
+      "bytes": 8050,
+      "sha256": "3cced3c06873b454cbeb51b5690d8ebfebd7c9a1c0054ad45d8c5583868ad337"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/audit.py",
+      "bytes": 4916,
+      "sha256": "d53520848bc81fa5f8519fb1b74ec6f4fae2fd73f9b9b88cb516243e93138b73"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/cleanup.json",
+      "bytes": 1168,
+      "sha256": "a7721be4af0f21d7408c75e01ae312d98fb9d6793857802665aebe1d4658f138"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/schema-size-independent.test.mjs.before.txt",
+      "bytes": 9108,
+      "sha256": "8ccd0b61434667f412542f518970e28d89152f74d2ae3d21153bad2283b85b72"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/schema-size-inventory.test.mjs.before.txt",
+      "bytes": 3669,
+      "sha256": "72f17ebdf209246cf40c860024a3845ad22cd0a151bd61082787f01d40928e2e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/schema-size.test.mjs.before.txt",
+      "bytes": 5759,
+      "sha256": "d5baf55f465c2f992d6cd98c1e08c3096db497237902108500dd6d530e033003"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/source-audit.json",
+      "bytes": 8340,
+      "sha256": "74e08268adfd2edb886511a5acb66c4c793d3f7617202149cc2fbca1998aa16f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-before.json",
+      "bytes": 1362,
+      "sha256": "cba109a2924d6d6571ccb36f7b516621c2fcae929ce659ce98f538b19a645303"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-before.stdout.bin",
+      "bytes": 7339,
+      "sha256": "fe93a530ab40ffeaf1dc6bb4f92d4a37298e2f77a05dacda96771028c644f959"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.json",
+      "bytes": 1667,
+      "sha256": "7878484e7c706f14141a7a543c02500f8ae0a9b1572200fead52968f4900f85f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.stdout.bin",
+      "bytes": 5907,
+      "sha256": "1023ac285fb33e6a7431a8fb8fcffcb45d3a6cd9e4b56d8a85c05142a467551c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-repaired.json",
+      "bytes": 1606,
+      "sha256": "ed1082e2a90b31dc04c7dde60b7da1a4cf10c94e3742ad9d71335f4517740d22"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-repaired.stdout.bin",
+      "bytes": 6772,
+      "sha256": "2180ac7348b34930e165ba228dff2d1336622860117e666793f309e46b3b926b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/test-expectation-map.json",
+      "bytes": 1532,
+      "sha256": "2011de0500b694e9c8d3ee470e5591c825c023e8d4100e71b57afe5b9aaab914"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/test-expectation-map.patch",
+      "bytes": 3966,
+      "sha256": "0befc6be9f3742a06f8e889a2dff6ba9d49287a78b34186cbd56e6cbc8adddea"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "gitBlob": "3bd5067559b09bd66911132282587d5b273c25cb",
+      "bytes": 12704,
+      "sha256": "c77eb34a00fdd22c34a81251a811dda6fa8b299ab1002bd51eda0e488b735657"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "gitBlob": "c4615dfc1ab3138ae59e554f3e2fcf252bb001ac",
+      "bytes": 7976,
+      "sha256": "a1a4ff8cf2c5a79f6423fadfeb873eb69eb18fee1d0f4b0427b0d051abea1430"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-size-independent.test.mjs",
+      "gitBlob": "8a331dda45a4be0a834804e95f54c56830a5f5ec",
+      "bytes": 9108,
+      "sha256": "2f42018ad980db9d832e86a002014e53acfc4c72f83341dbadb9a607ca828e54"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-size-inventory.test.mjs",
+      "gitBlob": "1df968fa0775d24accb00f7a5c28639b7b02d07a",
+      "bytes": 4023,
+      "sha256": "a76cd102b4b8b62c875d0d9344f9a0dd9d72dcf29e7525a3a1c8b4e7dab8942a"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-size.test.mjs",
+      "gitBlob": "cc2c4f52c3b1fd818e8f2a29870a61d734b4f661",
+      "bytes": 5759,
+      "sha256": "2e06f9cb839537e4052d51b5b60c6664b03555f7e57932eede05e2daeb9051e2"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-structure.test.mjs",
+      "gitBlob": "b79e8ca141543c2502d6d981f419cabb45cf2851",
+      "bytes": 6369,
+      "sha256": "a2d3637b05175ce424bb47870cdce8c4000b3173aaf17eb0bf88e9c09ff58973"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "gitBlob": "9009e421a2ed61c1f4ba5c929ec32cdb4f80533f",
+      "bytes": 6129,
+      "sha256": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5"
+    }
+  ],
+  "scope": "source-and-scripted-metadata-only-no-native-inputs",
+  "excludes": [
+    "this manifest to avoid recursive hash"
+  ]
+}
