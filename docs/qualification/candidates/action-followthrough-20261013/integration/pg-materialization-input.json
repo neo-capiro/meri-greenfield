@@ -1,0 +1,18 @@
+{
+  "directory": "/tmp/meri-pg-8.23.1-action-followthrough-20261013",
+  "canonicalSource": "cacbe543941db52cc8dcf085bf96c1919e8c155f",
+  "manifests": [
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package.json",
+      "sha256": "e6ff93a2cfdf3ca49b19b0e40b72bf065a6b885951370b293cdcb861401629e6"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "sha256": "c5ab764dcd9dcd8dee88d2cab3e7412fb9752e3a869c0a1693839c0567d3973a"
+    }
+  ],
+  "registry": "https://registry.npmjs.org",
+  "installScripts": false,
+  "newCredentials": false,
+  "databaseConnection": false
+}
