@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs",
+    "apps/artifacts/test/postgres-service-independent.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/postgres-budget-admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:29:57.096052+00:00",
+  "durationSeconds": 12.546,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 62558,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-repaired-owner.stdout.bin",
+      "bytes": 16479,
+      "sha256": "fc315a991fe1514190f3294b4e36d0d54ae2462f79ccfd8bb568d172d2313910"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-repaired-owner.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

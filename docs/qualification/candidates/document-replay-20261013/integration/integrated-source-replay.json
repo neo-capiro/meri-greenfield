@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/independent/document-replay-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "72c564208c2b7ae00a183ea3998384243bcc4e80",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:33:29.377923+00:00",
+  "durationSeconds": 5.295,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64165,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/integrated-source-replay.stdout.bin",
+      "bytes": 3045,
+      "sha256": "e45336101b09e91c666a116f154b936139b975361b19c81364dd0978cfe91ecd"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/integrated-source-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

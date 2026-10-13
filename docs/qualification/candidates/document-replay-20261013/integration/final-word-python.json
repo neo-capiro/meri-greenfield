@@ -1,0 +1,39 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "apps/artifacts/test",
+    "-p",
+    "test_word_revision.py"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "72c564208c2b7ae00a183ea3998384243bcc4e80",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:35:05.799496+00:00",
+  "durationSeconds": 0.335,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64898,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-word-python.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/final-word-python.stderr.bin",
+      "bytes": 100,
+      "sha256": "11c898d4f67f7557e0f30ab24d9bf91e860d5ad5633b174ac23c56fdfae70125"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

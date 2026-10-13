@@ -1,0 +1,37 @@
+✔ create_word: retained bytes/version/ticket survive reconstructed and concurrent completed repeats (202.286863ms)
+✔ create_excel: retained bytes/version/ticket survive reconstructed and concurrent completed repeats (162.794298ms)
+✔ new invocation UUID overrides only validated version allocation, retaining original artifact/object allocation (101.445413ms)
+✔ completed revision remains published in descendant ancestry and never rewrites original or later head (351.823784ms)
+✔ lost marker ACK recovers only original immutable commit and charge (104.566129ms)
+✔ lost settle ACK recovers only original immutable commit and charge (118.015253ms)
+✔ published premarker interruption recovers while an orphan record remains UNKNOWN (204.596889ms)
+✔ consistent accounting argument corruption is rejected (completed) (96.620661ms)
+✔ consistent accounting argument corruption is rejected (premarker) (93.230961ms)
+✔ legacy complete digest supports exact random version while alias filename and markerless legacy fail closed (215.145883ms)
+✔ identical requests on separate deliveries cannot borrow or erase each others completion (201.203772ms)
+✔ retained parent corruption cannot release or re-execute (100.795468ms)
+✔ retained scope corruption cannot release or re-execute (107.083294ms)
+✔ retained record corruption cannot release or re-execute (104.597238ms)
+✔ retained object corruption cannot release or re-execute (95.819423ms)
+✔ retained head corruption cannot release or re-execute (97.578217ms)
+✔ retained completion corruption cannot release or re-execute (97.718645ms)
+✔ revoked current authority and a narrower current byte ceiling withhold a charged result (100.067827ms)
+✔ revocation after exact object read still withholds release without new effects (104.592642ms)
+✔ original invocation deadline is not renewed by a fresh owner or completed replay (98.438335ms)
+✔ cancellation during replay lookup releases no result and performs no new effect (99.494109ms)
+✔ one generator wins while concurrent uncompleted replay stays UNKNOWN and later returns its result (98.973886ms)
+✔ published concurrent recovery uses identical original completion before first commit ACK resumes (106.327761ms)
+✔ unchanged canonical HTTP returns exact replay200 while other sessions/stores and revocation deny release (179.660553ms)
+✔ private observation never reconciles a marked UNKNOWN hold before current release authority (90.495971ms)
+✔ canonical database grant revocation denies replay even when business/resource ports still allow (103.281698ms)
+✔ publication ancestry accepts exactly1024 nodes with cached target read; longer and cyclic chains fail (6.892053ms)
+✔ legacy scan bounds entries and actual accumulated raw bytes, accepting exact16MiB only (0.648433ms)
+✔ local lookup rejects file/version alias even when its claimed record and digest appear complete (0.107169ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5247.523022
