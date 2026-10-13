@@ -1,0 +1,9 @@
+Error: ENOENT: no such file or directory, open '/tmp/meri-action-wire-author-20261013/apps/control/action-application/http.mjs'
+    at async open (node:internal/fs/promises:697:25)
+    at async readFile (node:internal/fs/promises:1348:14)
+    at async generateActionContracts (file:///tmp/meri-action-wire-author-20261013/packages/contracts/generate-actions.mjs:11:159) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/tmp/meri-action-wire-author-20261013/apps/control/action-application/http.mjs'
+}

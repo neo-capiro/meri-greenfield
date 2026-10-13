@@ -1,0 +1,23 @@
+{
+  "status": "FAIL",
+  "records": [
+    {
+      "label": "pack",
+      "argv": [
+        "npm",
+        "pack",
+        "/tmp/meri-action-wire-author-20261013/packages/contracts",
+        "--ignore-scripts",
+        "--json",
+        "--pack-destination",
+        "/tmp/meri-action-wire-package-acdrg25y"
+      ],
+      "exit": 254,
+      "seconds": 0.27593374252319336,
+      "pid": 462000,
+      "stdoutSha256": "208a522a0f234ede986af4f078cfb3f827c98ec8d09165b6ed6e5b83e1c4ebf8",
+      "stderrSha256": "ec7f2fe3b808231fd7b265856be1afca2eaa31b34f7f065b87ba5cbe9452c026"
+    }
+  ],
+  "ownedTempAbsent": true
+}

@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "package": "@capiro/meri-contracts",
+  "version": "0.1.1",
+  "tarballSha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651",
+  "tarballBytes": 175627,
+  "packIntegrity": "sha512-DQGUUm88mWTb0w7Me7CqvN9l+XTZwgtHD1VymifcyZHZes4O2ZugmxSMmH5Zwzs8m+3OLQS+/ulq8wKQ0ntxpA==",
+  "records": [
+    {
+      "label": "pack",
+      "argv": [
+        "npm",
+        "pack",
+        "/tmp/meri-action-wire-author-20261013/packages/contracts",
+        "--ignore-scripts",
+        "--json",
+        "--pack-destination",
+        "/tmp/meri-action-wire-package-c2_8m3fu"
+      ],
+      "exit": 0,
+      "seconds": 0.33545923233032227,
+      "pid": 462285,
+      "stdoutSha256": "1c971a63ccfae5bb3d39d9fc3f3ee4e1c8d3e3ea1d688be4b4c2f04b1d46d1c3",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "install",
+      "argv": [
+        "npm",
+        "install",
+        "--ignore-scripts",
+        "--omit=dev",
+        "--no-audit",
+        "--no-fund",
+        "/tmp/meri-action-wire-package-c2_8m3fu/capiro-meri-contracts-0.1.1.tgz"
+      ],
+      "exit": 0,
+      "seconds": 0.9115068912506104,
+      "pid": 462297,
+      "stdoutSha256": "e543b9995b4d188c6f7e804880a320c656787e1855e8389da75b9c64425e6f12",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "installed-smoke",
+      "argv": [
+        "node",
+        "smoke.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.08073568344116211,
+      "pid": 462309,
+      "stdoutSha256": "2b4a99257bf7f730099ca6c0e9fb6492904c9633e93d3b713d5962dfc8ae9f01",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "installed-types",
+      "argv": [
+        "node",
+        "/tmp/meri-action-wire-author-20261013/packages/contracts/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "--target",
+        "ES2022",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "consumer.ts"
+      ],
+      "exit": 0,
+      "seconds": 0.3604748249053955,
+      "pid": 462320,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "noPublish": true,
+  "noSourceApplicationExecution": true,
+  "ownedTempAbsent": true
+}

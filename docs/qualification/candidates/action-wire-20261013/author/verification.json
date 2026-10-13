@@ -1,0 +1,195 @@
+{
+  "passed": 47,
+  "failed": 0,
+  "source": "3a6e3391b8fb3bb8113496c897f997683a27da2d",
+  "checks": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRE-AUTHOR-20261013.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-install-verification.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-pack.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/first-pack.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused-stable.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused-stable.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/focused.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/frozen-public.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/frozen-public.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-final.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-first.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-first.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-second.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-second.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-stable.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-stable.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-third.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/generate-third.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/handoff.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/initial-readback.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install-verification.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/install.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-types.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/installed-types.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/outline.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/pack.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/pack.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/package-check.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/package-check.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/receiver-before-sequence-repair.mjs.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/source-audit.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/types.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/types.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/verify-install.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/action-application/schema.mjs",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/action-application/receive.mjs",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/generate-actions.mjs",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.metadata.json",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.schema.json",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.d.ts",
+      "passed": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.mjs",
+      "passed": true
+    }
+  ]
+}

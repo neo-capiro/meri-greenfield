@@ -1,0 +1,9 @@
+Source-only manual initial readback, command output transcribed without modification:
+query 200 PASS
+draft 200 PASS
+prepare 200 PASS
+execute 409 PASS
+execute 200 PASS
+execute 200 PASS
+Generated drift: browser.mjs
+Cause: borrowed whole node_modules symlink changes generated esbuild source labels. Frozen output not modified; own runtime dependency layout corrected next.
