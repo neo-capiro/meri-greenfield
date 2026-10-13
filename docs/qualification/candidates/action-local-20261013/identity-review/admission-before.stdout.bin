@@ -1,0 +1,27 @@
+✖ local CLI independent: inherited native admission refuses ambient PGOPTIONS before driver/pool access (15.058981ms)
+✔ local CLI independent: missing private input cannot touch existing output or disclose its supplied path (47.024223ms)
+✔ local CLI independent: help and malformed argv finish without an admitted fixture (147.336315ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 282.192889
+
+✖ failing tests:
+
+test at scripts/local-action/admission-independent.test.mjs:17:1
+✖ local CLI independent: inherited native admission refuses ambient PGOPTIONS before driver/pool access (15.058981ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-action-local-identity-review-20261013/scripts/local-action/admission-independent.test.mjs:19:6)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /LOCAL_ACTION_ADMISSION_REQUIRED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

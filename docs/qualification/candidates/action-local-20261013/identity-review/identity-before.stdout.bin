@@ -1,0 +1,57 @@
+✔ local case independent: begin uncertainty evicts the owned borrowed connection (14.228508ms)
+✔ local case independent: rollback uncertainty evicts the owned borrowed connection (5.507649ms)
+✔ local case independent: release failure after committed seed prevents later grant-binding ports (5.344645ms)
+✔ local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read (121.787154ms)
+✔ local gateway independent: narrowing client after real source acquisition blocks release and result retention (26.994979ms)
+✔ local gateway independent: narrowing grants after real source acquisition blocks release and result retention (24.83265ms)
+✔ local gateway independent: narrowing sources after real source acquisition blocks release and result retention (25.79786ms)
+✔ local gateway independent: local capability cannot override canonical durable grant revocation (18.037835ms)
+✖ local gateway independent: historical result survives exact task replacement but requires newly issued current credential (38.815289ms)
+✔ local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch (23.923212ms)
+✔ local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports (7.695147ms)
+✔ local identity independent: actual canonical authority consumes owned facts and exposes no token in status (10.359953ms)
+✔ local identity independent: random opaque credential is not caller-supplied claims or portable across owners (3.22ms)
+✔ local identity independent: even valid credential text cannot be issued through raw claims/extra fields (0.914585ms)
+✔ local identity independent: direct policy port rejects altered retained claims and normalized foreign scope (3.370016ms)
+✔ local identity independent: current client change refuses old execution (2.394199ms)
+✔ local identity independent: current grants change refuses old execution (2.096541ms)
+✔ local identity independent: current source change refuses old execution (2.183743ms)
+✔ local identity independent: current revision change refuses old execution (1.527806ms)
+✔ local identity independent: expiry and explicit revoke are exact and close cannot resurrect a token (1.926456ms)
+✔ local identity independent: run replacement requires exact old binding and invalidates task A (1.559515ms)
+✔ local identity independent: reentrant policy narrowing between real owned ports cannot become release authority (0.793563ms)
+✔ local identity independent: abort remains active through actual policy/source ports (0.549005ms)
+✔ local identity independent: bounded token owner refuses overflow and frees only expired or revoked issuance (15.859951ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3036.784248
+
+✖ failing tests:
+
+test at apps/gateway/local-action/test/gateway-independent.test.mjs:45:1
+✖ local gateway independent: historical result survives exact task replacement but requires newly issued current credential (38.815289ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ACCESS_DENIED/. Input:
+  
+  'Error: LOOKUP_UNAVAILABLE'
+  
+      at async TestContext.<anonymous> (file:///tmp/meri-action-local-identity-review-20261013/apps/gateway/local-action/test/gateway-independent.test.mjs:47:125)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LOOKUP_UNAVAILABLE
+        at Object.read (file:///tmp/meri-action-local-identity-review-20261013/apps/control/task-lookup/delivery.mjs:42:144)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-action-local-identity-review-20261013/apps/gateway/local-action/test/gateway-independent.test.mjs:47:125)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /ACCESS_DENIED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

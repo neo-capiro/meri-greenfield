@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/local-action/test/identity-independent.test.mjs",
+    "apps/gateway/local-action/test/gateway-independent.test.mjs",
+    "apps/gateway/local-action/test/case-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-local-identity-review-20261013",
+  "sourceHead": "a6d65a478bcabb4e7f8908a118b9c1591e8cb7d2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:33:46.356142+00:00",
+  "durationSeconds": 3.148,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 429751,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-repaired.stdout.bin",
+      "bytes": 2880,
+      "sha256": "bb8c2f7f3759457c0aa34fe620fa2964e93dca433822f12df3decce5aeb57241"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

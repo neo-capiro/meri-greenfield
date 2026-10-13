@@ -1,0 +1,69 @@
+{
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "reviewHead": "5e8fceb139dd276876d19c5be8bfb2a6862781d3",
+  "originalEntries": 10030,
+  "unchangedEntries": 10030,
+  "changedOriginalEntries": [],
+  "sources": [
+    {
+      "path": "apps/gateway/local-action/identity.mjs",
+      "reference": "351b23190e61b459e94c910da013d1a0ea0a4518",
+      "bytes": 8799,
+      "sha256": "e66fd348e51b01dc76c7c9dfbdc7ea2ae6e7fb33800eba4bb4c64e45b0a06566"
+    },
+    {
+      "path": "apps/gateway/local-action/gateway.mjs",
+      "reference": "351b23190e61b459e94c910da013d1a0ea0a4518",
+      "bytes": 3851,
+      "sha256": "a1c1c69b279ad4a2d7f72488e96c986bae9b536c96fd92fcb49661dac5fd34a6"
+    },
+    {
+      "path": "apps/gateway/local-action/control-authorizer.mjs",
+      "reference": "351b23190e61b459e94c910da013d1a0ea0a4518",
+      "bytes": 4003,
+      "sha256": "5c79923c56fd6999e82fdb2e633cc7478498490a7395acd1c82cb42f80ad3c98"
+    },
+    {
+      "path": "apps/gateway/local-action/case.mjs",
+      "reference": "351b23190e61b459e94c910da013d1a0ea0a4518",
+      "bytes": 8047,
+      "sha256": "e800ce697982cc035044348f106d51fccf1b792e6128dae471d56e059786f0c6"
+    },
+    {
+      "path": "scripts/local-action/admission.mjs",
+      "reference": "bd118a04cdf79b2b6d06464f8f794fdd7c101b52",
+      "bytes": 3470,
+      "sha256": "8a419e7e9c3b4e069c640148591e2ee7644d9ff890c94ea4ad54685753b1cb5a"
+    },
+    {
+      "path": "scripts/local-action/cli.mjs",
+      "reference": "bd118a04cdf79b2b6d06464f8f794fdd7c101b52",
+      "bytes": 4478,
+      "sha256": "de943a9e8f8b84e9033ec3c1eedab939628c74b91cac76257b56b96aafb5df69"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "admission-before.json",
+      "exitCode": 1,
+      "processGroupAbsentNow": true
+    },
+    {
+      "path": "admission-repaired.json",
+      "exitCode": 0,
+      "processGroupAbsentNow": true
+    },
+    {
+      "path": "identity-before.json",
+      "exitCode": 1,
+      "processGroupAbsentNow": true
+    },
+    {
+      "path": "identity-repaired.json",
+      "exitCode": 0,
+      "processGroupAbsentNow": true
+    }
+  ],
+  "scope": "SOURCE_ONLY; inert SQL and HTTP ports; native engine UNRUN",
+  "publicCatalogNativeWorkerFrontendPreserved": true
+}
