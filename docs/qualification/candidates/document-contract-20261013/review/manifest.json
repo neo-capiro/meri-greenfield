@@ -1,0 +1,271 @@
+{
+  "schema": "document-contract-independent-review/1",
+  "source": "e91143dafe2da71546fdfb3b0152807032f4e9b8",
+  "authorPacket": "7fb3705a33db61d249d4d3b7f05109705f87b0d8",
+  "excludes": [
+    "manifest.json self-reference",
+    "verification.json verifier output"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-DOCUMENT-CONTRACT-REVIEW-20261013.md",
+      "bytes": 5860,
+      "sha256": "d8b9772cbdfebd59f4b2a6540bddae9f8dc7d13e35595652c12aa385c1b40342"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/audit.py",
+      "bytes": 5013,
+      "sha256": "dfbc02e29b87c69a0e3662ad287fdb29d00f5562ac005ab885e2eb1ce8a70b67"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.json",
+      "bytes": 1514,
+      "sha256": "d609df784d385b57d36e47d36eea05524ee9f7b3d86b7b55e8901707484eb9b3"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/blob-types-before.stdout.bin",
+      "bytes": 601,
+      "sha256": "cf07a59f4c78d82a7969d07b8c432660d6eb1fc40ad5d714fbcf3ca90da6967e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/capture.py",
+      "bytes": 3365,
+      "sha256": "102524d59550e6e210a21b3da2e242b8a548ec25417a2a9a4c14c5f79b1acfae"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/cleanup.json",
+      "bytes": 2831,
+      "sha256": "2414af9eff22952d5976b3063b43feee738c8acf578af6a5c781a556b2b51311"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/criteria.json",
+      "bytes": 1722,
+      "sha256": "a617c50cde646ab4583876c322816c2a960ad85ba2fea72b8c2673bcf3706e78"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/final.json",
+      "bytes": 1350,
+      "sha256": "bff663526017b4ee3226932928eaaadd869a01ce9b3fc90b8841f5ec08065db6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/final.stdout.bin",
+      "bytes": 3927,
+      "sha256": "ba94f968344c42bdb52fd59151b4f2994694efd7db65d17f21e1effdcca0f688"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/first.json",
+      "bytes": 1350,
+      "sha256": "29e948359a6b788e27c453b5030b899469ab3c8f28daa9431a98c0a8c5942900"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/first.stdout.bin",
+      "bytes": 3558,
+      "sha256": "86e11ad702464a00e1a6dda003e6283b4f2839b3a66b07c6ffacd13ca38d2d6b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.json",
+      "bytes": 2041,
+      "sha256": "88ce08331f2fa7244ea94bcf4a26d28a868a73434b78a0eb323eaa1e3e0e2a33"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/generated-public.stdout.bin",
+      "bytes": 5534,
+      "sha256": "b2a0683b107b6be498630a7b33975ad4652eabb7ac85bf9ccb1d603a63b36bcb"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/packet-audit.json",
+      "bytes": 10550,
+      "sha256": "5edb20bfd9cc55b95cb070be2f6486b7bf3120d5d240555e279627d60fca3da9"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/packet-audit.py",
+      "bytes": 1977,
+      "sha256": "3d99b0c068bc369d088cc9d4137f35a1e59b6d194e47561adf1307da9e851278"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-final-result.json",
+      "bytes": 79581,
+      "sha256": "ea00e1b17c39873b21551334ee76bdab65d4bbe2fdbf7369b46d1231a0f33598"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-fixed-result.json",
+      "bytes": 4765,
+      "sha256": "12282f0b37125a93f851b111f4337fa7721dc9fb20b84462e71bc3750dab4fce"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-local-result.json",
+      "bytes": 79580,
+      "sha256": "c2dec4e29456f70077dffccf757c3989d5ccb2d0109ed018afa9e21232f6d751"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer-result.json",
+      "bytes": 1444,
+      "sha256": "a86886c792c54ba50617369d3d26eef9e3b68c09cb583ec064d542759a31f34c"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-consumer.py",
+      "bytes": 4047,
+      "sha256": "28d86b2bd75a2bde86b62f645df478e15d6364b53975778beebe732c1885aff1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-final.json",
+      "bytes": 1326,
+      "sha256": "b67542192183a345e4dee741ca70868c5f2d6a19987c9d36891dd231e9d9c0d1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-final.stdout.bin",
+      "bytes": 47,
+      "sha256": "10fa4e36c04fded3c76fab16e5104d438cd716cbafca5d94d4bf30c2f143068f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.json",
+      "bytes": 1326,
+      "sha256": "927d1c74051963e6b8cf68234b122a3533b7965cbdf40d6081a30fd6c56c3157"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-fixed.stdout.bin",
+      "bytes": 70,
+      "sha256": "1a8011c56239f69f2432b78ff3d921e4d36a8e3210c8394726285e620eec78ad"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-local.json",
+      "bytes": 1326,
+      "sha256": "20cfb961d18b2a5c6711d9d8028bd14df52c3ed37b71bc41bcaac363b81d08f2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-local.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable-local.stdout.bin",
+      "bytes": 47,
+      "sha256": "10fa4e36c04fded3c76fab16e5104d438cd716cbafca5d94d4bf30c2f143068f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable.json",
+      "bytes": 1301,
+      "sha256": "f66a04767517c41083c4fb00afdd1f98791e7cf7e79cad32fcab004e3c932329"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/portable.stdout.bin",
+      "bytes": 70,
+      "sha256": "41c8d03e7885e2e04ddc177f7d55f2fe11a00c8710b3d7aa242ba5667ea310a2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.json",
+      "bytes": 1525,
+      "sha256": "67c3a73021c474bd3115809d1173c368990d91d98243929eee538ac48006f459"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/public-fixed.stdout.bin",
+      "bytes": 4290,
+      "sha256": "e37d950960de3f30b65d76b851966ed6e78a67834b7026ff25033dbe3eb3d3bd"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.json",
+      "bytes": 1370,
+      "sha256": "2758f7bc159e1f45cbbdf54255fc004feeacf94d9d3583c379e377f929a35712"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/redirect-before.stdout.bin",
+      "bytes": 4625,
+      "sha256": "d22be924d715eb168eaaac6482daf5348fa65d2af034d54926dd6674a4499921"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/source-audit.json",
+      "bytes": 7455,
+      "sha256": "67596cd2d8ddca676cca06abe85c3138ec0ec7e21800f89c19305030ca8a6e19"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.json",
+      "bytes": 1500,
+      "sha256": "dcd3a33320ec433160a2af0f8c5edb21f12755f10cc9820fe73a1240114035d4"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/types-fixed.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/types.json",
+      "bytes": 1490,
+      "sha256": "71cc4061eac818020e28bc68376c93b2b615e2e876872fc04f24037c303fe340"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/types.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/types.stdout.bin",
+      "bytes": 294,
+      "sha256": "f47fa583333860b45ad8017151c2934727ddfed30d91c211ff98389b782d0cdc"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/review/verify.py",
+      "bytes": 1528,
+      "sha256": "ac6fab9f85027d133e0ef88f3894b97292e30948942401fe35b21220a32e08cb"
+    },
+    {
+      "path": "packages/contracts/test/document-application-independent-types.ts",
+      "bytes": 2275,
+      "sha256": "f6839d7484087f887b559c2d64a432f4bb1008cf731035b433285f97d142f92e"
+    },
+    {
+      "path": "packages/contracts/test/document-application-independent.test.mjs",
+      "bytes": 16039,
+      "sha256": "726d321fa6c5e16f76bc2a4b5162d9e9fe387b5dce6215c92be7e52823fceb22"
+    }
+  ]
+}
