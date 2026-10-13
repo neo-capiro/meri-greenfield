@@ -1,0 +1,20 @@
+{
+  "scope": "offline isolated npm package + public TypeScript consumer; no scripts/provider/runtime",
+  "steps": [
+    {
+      "argv": [
+        "npm",
+        "pack",
+        "--ignore-scripts",
+        "--json",
+        "--pack-destination",
+        "/tmp/meri-document-public-consumer-1sc2t6n7"
+      ],
+      "exitCode": 254,
+      "stdout": "{\n  \"error\": {\n    \"code\": \"ENOENT\",\n    \"summary\": \"ENOENT: no such file or directory, mkdir '/home/agent/.npm/_cacache'\",\n    \"detail\": \"This is related to npm not being able to find a file.\"\n  }\n}\n",
+      "stderr": "npm warn tarball tarball data for file:/tmp/meri-document-contract-review-20261013/packages/contracts (null) seems to be corrupted. Trying again.\nnpm warn tarball tarball data for file:/tmp/meri-document-contract-review-20261013/packages/contracts (null) seems to be corrupted. Trying again.\nnpm error code ENOENT\nnpm error syscall mkdir\nnpm error path /home/agent/.npm/_cacache\nnpm error errno -2\nnpm error enoent ENOENT: no such file or directory, mkdir '/home/agent/.npm/_cacache'\nnpm error enoent This is related to npm not being able to find a file.\nnpm error enoent\nnpm error Log files were not written due to an error writing to the directory: /home/agent/.npm/_logs\nnpm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal\n"
+    }
+  ],
+  "passed": false,
+  "failure": "consumer step failed: npm"
+}
