@@ -88,3 +88,7 @@ test('independent actual command interface rechecks retained metadata before cal
  const execution={contractVersion:'0.1.0',proposalId:result.proposal.proposalId,commandSha256:result.proposal.commandSha256,idempotencyKey:result.proposal.command.idempotencyKey,executorBinding:t.binding};
  await assert.rejects(t.tool.executeApproved(result.proposal,execution,'unused-credential'));assert.equal(t.state.executor,0);assert.equal(t.state.inserts,1);
 });
+test('independent hostile trusted-port rejection message accessor stays inert',async()=>{
+ const {CommandError}=await import('../protocol.mjs');let hits=0;const error=new CommandError('unused');Object.defineProperty(error,'message',{get(){hits++;return 'private-error-canary';}});
+ const t=setup({policy:()=>async()=>{throw error;}});await assert.rejects(t.owner.prepare(t.call),e=>!e.message.includes('canary'));assert.equal(hits,0);assert.equal(t.state.inserts,0);
+});

@@ -19,7 +19,7 @@ test('independent store rejects corrupt immutable payload before connecting',asy
  const t=fixture(),p=payload();p.record.request.title='forged';await assert.rejects(t.store.insert(p,()=>{}));assert.equal(t.state.connects,0);assert.equal(t.state.ends,0);
 });
 test('independent store refuses unbounded borrowed connection configuration before resources',()=>{
- for(const key of ['connectionTimeoutMillis','query_timeout'])for(const value of [undefined,0,5001,Infinity]){
+ for(const key of ['connectionTimeoutMillis','query_timeout'])for(const value of [undefined,0,key==='query_timeout'?6001:5001,Infinity]){
   let calls=0;const options={connectionTimeoutMillis:1000,query_timeout:1000};if(value===undefined)delete options[key];else options[key]=value;
   assert.throws(()=>createPostgresApprovalMetadataStore({pool:{options,connect(){calls++;}}}));assert.equal(calls,0);
  }
@@ -35,7 +35,7 @@ test('independent late borrowed-client acquisition is released without issuing S
 });
 test('independent autocommit query error is UNKNOWN with one submitted write and no retry',async()=>{
  const t=fixture({query:async()=>{throw Error('database-private-canary');}});await assert.rejects(t.store.insert(payload(),()=>{}),e=>e.outcome==='UNKNOWN'&&!e.message.includes('canary'));assert.equal(t.calls.length,1);assert.equal(t.releases.length,1);assert.ok(t.releases[0]);assert.equal(t.state.ends,0);
- const q=t.calls[0][0];assert.equal(typeof q.text,'string');assert.match(q.text,/^INSERT/u);assert.ok(Array.isArray(q.values));assert.equal(q.query_timeout,5000);
+ const q=t.calls[0][0];assert.equal(typeof q.text,'string');assert.match(q.text,/^INSERT/u);assert.ok(Array.isArray(q.values));assert.equal(q.query_timeout,1000);
 });
 test('independent corrupt insert acknowledgment is UNKNOWN without compensating SQL',async()=>{
  const t=fixture({query:async()=>({rows:[{private:'not a canonical row'}]})});await assert.rejects(t.store.insert(payload(),()=>{}),e=>e.outcome==='UNKNOWN');assert.equal(t.calls.length,1);assert.equal(t.releases.length,1);assert.equal(t.state.ends,0);
@@ -45,4 +45,7 @@ test('independent source store never turns query failure into read absence',asyn
 });
 test('independent actual empty read is nullable storage data with parameterized tenant and actor',async()=>{
  const t=fixture();assert.equal(await t.store.read({tenantId:'tenant-pg-review',actorId:'actor',proposalId:id(102)},()=>{}),null);assert.equal(t.calls.length,1);assert.match(t.calls[0][0].text,/^SELECT/u);assert.deepEqual(t.calls[0][0].values,['tenant-pg-review','actor',id(102)]);assert.equal(t.releases.length,1);assert.equal(t.state.ends,0);
+});
+test('independent canonical admitted native pool query timeout6000 is compatible with bounded store',()=>{
+ let calls=0;assert.doesNotThrow(()=>createPostgresApprovalMetadataStore({pool:{options:{connectionTimeoutMillis:5000,query_timeout:6000},connect(){calls++;}}}));assert.equal(calls,0);
 });
