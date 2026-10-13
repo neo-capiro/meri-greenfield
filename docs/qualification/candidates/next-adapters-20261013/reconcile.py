@@ -15,6 +15,7 @@ for row in rows:
     assert row['originalRequirement'] == original
     assert locator['planSha256'] == hashlib.sha256(plan_bytes).hexdigest()
     assert locator['rowSha256'] == hashlib.sha256(original.encode()).hexdigest()
+    row['detailedAudit'] = 'docs/qualification/candidates/whole-plan-next-20261013/' + row['detailedAudit']
 
 def bounded(row, description, source):
     row.setdefault('completedBoundedSubcriteria', []).append({
