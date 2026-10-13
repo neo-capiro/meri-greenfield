@@ -1,0 +1,21 @@
+{
+  "source": "e215f1b45d7fe179f7c63c9b607c7f75e91c7748",
+  "firstReplay": {
+    "passed": 64,
+    "failed": 0,
+    "independent": 40,
+    "author": 24,
+    "receipt": "first.json"
+  },
+  "hostileError": {
+    "severity": "source correctness",
+    "verdict": "HOLD pending narrow repair",
+    "sourceSha256": "2d2d390e5d06de2d40cd913357184526b1536f7a69f8c1fe8d6f9147043c9256",
+    "controlCommit": "3b21545a27af5616d6037c75b2a7ba6b09e97b60",
+    "receipt": "hostile-before.json",
+    "passed": 40,
+    "failed": 1,
+    "finding": "The generic code accessor refuses error proxies, but execute reads outcome via unguarded getOwnPropertyDescriptor. A rejected proxy invokes its trap, escapes execution and loses every observation instead of retaining a failed case and completing eligible siblings.",
+    "required": "Exclude proxy/revoked errors before reading own outcome; preserve plain accepted control outcomes and no trap execution."
+  }
+}
