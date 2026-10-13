@@ -1,0 +1,81 @@
+✔ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (325.599282ms)
+✔ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (263.395515ms)
+✔ missing approval is pending with no IDs/effect; cloned source object cannot acquire preparation identity (36.122081ms)
+✔ approved output sourcePinsSha256 substitution refuses before artifact effects (35.601688ms)
+✔ approved output outputBinding substitution refuses before artifact effects (33.753773ms)
+✔ approved output scopes substitution refuses before artifact effects (33.566034ms)
+✔ approved output policyRevision substitution refuses before artifact effects (33.501898ms)
+✔ approved output allocationSha256 substitution refuses before artifact effects (36.472341ms)
+✔ approved output grantId substitution refuses before artifact effects (33.389522ms)
+✔ approved output approvalReceiptId substitution refuses before artifact effects (38.405263ms)
+✔ approved output deadlineMs substitution refuses before artifact effects (30.361133ms)
+✔ approved output maxBytes substitution refuses before artifact effects (33.849134ms)
+✔ native retained source revocation refuses output even though old source decisions and grant remain (32.175939ms)
+✔ current retained evidence evidenceSha256 substitution refuses before generation (35.269944ms)
+✔ current retained evidence sourcePinsSha256 substitution refuses before generation (32.027008ms)
+✔ current retained evidence scopes substitution refuses before generation (33.987019ms)
+✔ current retained evidence policyRevision substitution refuses before generation (31.244836ms)
+✔ current retained evidence checkedAtMs substitution refuses before generation (32.92418ms)
+✔ current retained evidence expiresAtMs substitution refuses before generation (31.53686ms)
+✔ valid-looking different grant ID cannot alias current output producer grant (35.446718ms)
+✔ read refuses unretained/cloned preparation and caller credential before native output reads (28.888436ms)
+✔ quick_skill.commitments_audit: real separate-output original/revision/replay/inspect/download and every-page render (2024.895855ms)
+✔ quick_skill.relationship_brief: real separate-output original/revision/replay/inspect/download and every-page render (1846.373152ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@modelcontextprotocol/sdk' imported from /workspace/meri-original-runtime-artifact-review/apps/worker/conversation/skills/test/mcp.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/worker/conversation/skills/test/mcp.test.mjs (31.711394ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@modelcontextprotocol/sdk' imported from /workspace/meri-original-runtime-artifact-review/apps/worker/conversation/skills/test/selected-runtime.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/worker/conversation/skills/test/selected-runtime.test.mjs (34.861023ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 23
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5707.827567
+
+✖ failing tests:
+
+test at apps/worker/conversation/skills/test/mcp.test.mjs:1:1
+✖ apps/worker/conversation/skills/test/mcp.test.mjs (31.711394ms)
+  'test failed'
+
+test at apps/worker/conversation/skills/test/selected-runtime.test.mjs:1:1
+✖ apps/worker/conversation/skills/test/selected-runtime.test.mjs (34.861023ms)
+  'test failed'

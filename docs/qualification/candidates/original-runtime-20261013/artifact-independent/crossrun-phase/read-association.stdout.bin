@@ -1,0 +1,28 @@
+✖ actual source preparation cannot inspect or download a different original under the same output allocation (1970.325897ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3753.448843
+
+✖ failing tests:
+
+test at docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association.test.mjs:4:1
+✖ actual source preparation cannot inspect or download a different original under the same output allocation (1970.325897ms)
+  AssertionError [ERR_ASSERTION]: Different source preparation released inspection for another original
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association.test.mjs:14:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

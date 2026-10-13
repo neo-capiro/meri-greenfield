@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/conversation/skills/test/mcp.test.mjs",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "d3f39d9dacc9f9b82fd8c44b1b1d58ea038b0015",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:26:43.566805+00:00",
+  "durationSeconds": 2.38,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 308127,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/sdk39.stdout.bin",
+      "bytes": 3871,
+      "sha256": "fb83ad46b77786c047b09396be38e4d785cea16425738b5dd111285be5205c3d"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/sdk39.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "First23 document cases passed; two SDK suites could not load existing adopted dependencies. Borrow scoped existing SDK/UI/window links only in owned worktree and rerun39 previously unexecuted cases, no product change or repeated artifact generation",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

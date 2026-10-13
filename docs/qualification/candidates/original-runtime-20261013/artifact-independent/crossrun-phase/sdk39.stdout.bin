@@ -1,0 +1,47 @@
+✔ quick_skill.relationship_brief: actual adopted SDK server lists only immutable original read tools (34.604825ms)
+✔ quick_skill.commitments_audit: actual adopted SDK server lists only immutable original read tools (17.383593ms)
+✔ actual MCP call preserves exact canonical operation and literal JSON arguments (5.771655ms)
+✔ unlisted MCP operation and extra outer selector cannot change gateway operation (3.364457ms)
+✔ gateway denial is sanitized and never becomes successful source evidence (2.655759ms)
+✔ server rejects altered original asset/unsupported selection before resource allocation (9.849976ms)
+✔ hook-issued delivery ID remains stable across processes; forged or altered tokens never invoke gateway (7.508916ms)
+✔ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (120.260851ms)
+✔ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (68.489316ms)
+✔ install binding substitution refuses before SDK exposure (1.09344ms)
+✔ install skill substitution refuses before SDK exposure (0.755967ms)
+✔ install requestSha256 substitution refuses before SDK exposure (0.879451ms)
+✔ install selectionSha256 substitution refuses before SDK exposure (0.656058ms)
+✔ install baseCatalogSha256 substitution refuses before SDK exposure (0.606885ms)
+✔ install executionCatalogSha256 substitution refuses before SDK exposure (0.560275ms)
+✔ install operations substitution refuses before SDK exposure (0.828265ms)
+✔ install checkedAtMs substitution refuses before SDK exposure (0.703359ms)
+✔ install expiresAtMs substitution refuses before SDK exposure (0.671281ms)
+✔ admission binding substitution refuses before SDK exposure (0.797389ms)
+✔ admission skill substitution refuses before SDK exposure (0.81148ms)
+✔ admission requestSha256 substitution refuses before SDK exposure (0.790719ms)
+✔ admission selectionSha256 substitution refuses before SDK exposure (0.69137ms)
+✔ admission manifestSha256 substitution refuses before SDK exposure (0.71771ms)
+✔ admission catalogSha256 substitution refuses before SDK exposure (0.97888ms)
+✔ admission budgets substitution refuses before SDK exposure (0.989155ms)
+✔ admission allocationSha256 substitution refuses before SDK exposure (0.672352ms)
+✔ admission policyRevision substitution refuses before SDK exposure (0.67088ms)
+✔ admission checkedAtMs substitution refuses before SDK exposure (0.743849ms)
+✔ admission expiresAtMs substitution refuses before SDK exposure (0.633204ms)
+✔ revocation and changed installation after mounting cannot release source result (4.756762ms)
+✔ model source arguments cannot inject authority or substitute a canonical operation (4.063678ms)
+✔ tool-call cap covers denied reads and collector work, without creating another budget owner (19.601175ms)
+✔ task result must be literal successful exact-pin data; altered replay never recompiles (40.678671ms)
+✔ actual single activity query mounts original reads and completes research with explicit pending output without artifact publication (42.195812ms)
+✔ changed current installation and foreign selection refuse before source effect (4.477146ms)
+✔ separately configured output owner cannot return an arbitrary artifact success object (39.219014ms)
+✔ resume cannot substitute source request or immutable original skill pins before mounting (0.940933ms)
+✔ empty/partial installation never permits an unlisted native gateway operation (7.593211ms)
+✔ closing a parked owned gateway read aborts its bounded lifetime and prevents late result publication (11.637151ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2334.155077

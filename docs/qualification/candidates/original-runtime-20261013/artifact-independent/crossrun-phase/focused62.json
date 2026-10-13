@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/selected-output/test/bridge.test.mjs",
+    "apps/control/document-application/selected-output/test/lifecycle.test.mjs",
+    "apps/worker/conversation/skills/test/mcp.test.mjs",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "d3f39d9dacc9f9b82fd8c44b1b1d58ea038b0015",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:25:59.999300+00:00",
+  "durationSeconds": 5.739,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 307523,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/focused62.stdout.bin",
+      "bytes": 5205,
+      "sha256": "a7dc9701b319a29cd99b2bc458498956c326eb426018a31692d997b80973d5d3"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/focused62.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent exact5c533 separate approved output component; original62 focused controls; all new retained copies will be opened/rendered/visually reviewed",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
