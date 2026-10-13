@@ -44,8 +44,8 @@ export async function runMountedReplay(){
   };
   const boot=await send('session',{},f.s.credential);assert.equal(boot.status,200);assert.notEqual(boot.value.credential,f.s.credential);assert.equal(boot.value.context.selectedClientId,f.s.clientId);
   const nativeBearer=await send('query',{request:{limit:20}},f.s.credential);assert.equal(nativeBearer.status,401);
-  const wrongClient=await send('session',{hints:{clientId:randomUUID()}},f.s.credential);assert.equal(wrongClient.status,401);
-  const wrongRun=await send('session',{hints:{runId:randomUUID()}},f.s.credential);assert.equal(wrongRun.status,401);
+  const wrongClient=await send('session',{clientId:randomUUID()},f.s.credential);assert.equal(wrongClient.status,401);
+  const wrongRun=await send('session',{runId:randomUUID()},f.s.credential);assert.equal(wrongRun.status,401);
   const query=await send('query',{request:{limit:20}},boot.value.credential);assert.equal(query.status,503);assert.equal(query.value.error.outcome,'NOT_DISPATCHED');
   assert.equal(f.s.state.sourceReads,0);assert.equal(f.s.state.taskEffects,0);
   currentHost.close();
