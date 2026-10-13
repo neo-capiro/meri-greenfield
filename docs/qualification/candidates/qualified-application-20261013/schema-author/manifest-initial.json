@@ -1,0 +1,109 @@
+{
+  "schema": "meri.qualification-schema-author-packet/1",
+  "base": "3d34bf42983824327c63f96419abcfea8a587407",
+  "source": "20b474036039ec8c15f983d0d6e01d064aef2448",
+  "independentAcceptance": "PENDING",
+  "nativeExecution": "UNRUN_IN_THIS_LANE",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/README-schema.md",
+      "bytes": 6009,
+      "sha256": "75dc04bea002bbafb645f1a78d691ac116546b13177fb2d662eaa592f439fd7f"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "bytes": 10758,
+      "sha256": "d8991c273989f1918eaff096efaddcad441cae9399bcaa834d693f069a5c7b5f"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "bytes": 8381,
+      "sha256": "423d1a9123fbd621a7b4e3b31f39f26d59c11bfbf1191ec200985229c1609033"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.test.mjs",
+      "bytes": 15451,
+      "sha256": "ae7586e5a0b4e08ff6583db0381b3c929cd509c44c555eb22ff61b8110948e1a"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-QUALIFIED-SCHEMA-20261013.md",
+      "bytes": 3706,
+      "sha256": "fa6344cdf5f2da75c0915efd638bda8dd8a2b013ccb65f70c2bdf12bcf28e3fb"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-QUALIFIED-SCHEMA-20261013.md",
+      "bytes": 3120,
+      "sha256": "16ab3d7a61651b08a29ed43c4908510a8cf55ce19a30e1c85d16af39c954b9a5"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/audit.json",
+      "bytes": 1303,
+      "sha256": "8a1e700658eb8bf3dc089a5164d1d5dcb30f033cacb65801375a8d48d36f4ebd"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/audit.py",
+      "bytes": 4021,
+      "sha256": "8cded6881490435f1d9ade0d143fe9fe2f31fc3ba5773b7c35a6bea9af4fca12"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/audit.stdout.bin",
+      "bytes": 5815,
+      "sha256": "5b5ce447f0e07082888a2b9b38712353367496789603055bf4be9d2f06477916"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.json",
+      "bytes": 1270,
+      "sha256": "614f7aa738497d70130bd4f96cbb3c7ac2698f57c054a459078a2c2b28ca2dae"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/corrected.stdout.bin",
+      "bytes": 2817,
+      "sha256": "b6aeec091929b29a76f09a15ef039f8532e0c2fef70aa3d9b7e532ceac6f0d81"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/initial.json",
+      "bytes": 1266,
+      "sha256": "af0e2f7ae1d2c6621d3f3505d80443a78351786eb08e1382821b07e03b573f01"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/initial.stdout.bin",
+      "bytes": 3481,
+      "sha256": "59957385f3ebb15ade29337d8f636778af3af9fbf2f28f0cc2a2160b30f78562"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.json",
+      "bytes": 1266,
+      "sha256": "deb928bb2bf97a4ad350fa2ceae5008f06d968481f0a7d73395b5754f6e7a65b"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-application-20261013/schema-author/receipt.stdout.bin",
+      "bytes": 2916,
+      "sha256": "5d48adc5f7eb1081b31a40b3256613707a852b7a410b5d186d5ca112a913b133"
+    }
+  ]
+}
