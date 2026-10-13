@@ -1,7 +1,8 @@
 /** Explicit local qualification: actual store/gateway over a caller-admitted real pg pool. */
 import assert from 'node:assert/strict';
+import {types} from 'node:util';
 import {createTaskLookupDelivery,createPostgresTaskLookupStore} from '../index.mjs';
-import {options,method,data,code,prepare,canonicalSha256} from '../binding.mjs';
+import {options,method,data,code,prepare,canonicalSha256,uuid} from '../binding.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {assertLocalDescriptor,verifyFixture,readCaseRows} from './fixture-checks.mjs';
 import {createCommitAckFault} from './commit-ack-fault.mjs';
@@ -37,18 +38,22 @@ export async function runLocalActionPersistence(configuration){
  const d=assertLocalDescriptor(descriptor);method(pool,'connect');const query=method(pool,'query');
  assert.equal(typeof openFreshPool,'function');assert.equal(typeof createCase,'function');
  const lifetime=createOperationLifetime({deadlineMs:d.deadlineMs,now:Date.now,errorFactory:failure});
- const run=fn=>lifetime.run(fn),receipts=[],ownedRows=[],owned=new Set();let fixture,initialConsumed,lastConsumed,activeCase='fixture';
+ const run=fn=>lifetime.run(fn),receipts=[],ownedRows=[],owned=new Set();let fixture,initialConsumed,lastConsumed,activeCase='fixture',caseDispose;
  const fresh=createFreshPoolOwner({openFreshPool,originalPool:pool,deadlineMs:d.deadlineMs,signal:lifetime.signal});
- const report={schema:'meri.local-action-persistence/1',status:'HOLD',cases:receipts,ownedRows,realEngineExecutionRequired:true,runtimeQualified:false,sourceTransport:'synthetic-in-process',databaseRestartTested:false,cleanup:{borrowedPoolClosed:false,ownedFreshPoolsClosed:0,ownedRowsDeleted:false,unsettledOperations:0,physicalStopProven:false}};
+ const report={schema:'meri.local-action-persistence/1',status:'HOLD',cases:receipts,ownedRows,realEngineExecutionRequired:true,runtimeQualified:false,sourceTransport:'synthetic-in-process',databaseRestartTested:false,cleanup:{borrowedPoolClosed:false,ownedFreshPoolsClosed:0,ownedRowsDeleted:false,syntheticCasesDisposed:0,unsettledOperations:0,physicalStopProven:false}};
  async function newCase(name){
-  const c=options(await run(()=>createCase({pool,name,deadlineMs:Math.min(d.deadlineMs,Date.now()+45000)})),['gateway','authorize','lookup','readContext','sourceCalls','revokeRead','expectedChargeMicroUsd']);
+  const value=await run(()=>createCase({pool,name,deadlineMs:Math.min(d.deadlineMs,Date.now()+45000)}));
+  const c=options(value,['gateway','authorize','lookup','readContext','sourceCalls','revokeRead','expectedChargeMicroUsd'],['identity','ownedRows','dispose']);
+  if(c.dispose!==undefined){assert.equal(typeof c.dispose,'function');caseDispose=c.dispose;}
+  c.lookup=data(c.lookup);c.readContext=data(c.readContext);
   assert.equal(typeof c.authorize,'function');assert.equal(typeof c.sourceCalls,'function');assert.equal(typeof c.revokeRead,'function');
   assert(Number.isSafeInteger(c.expectedChargeMicroUsd)&&c.expectedChargeMicroUsd>0);
   const b=prepare(c.lookup.request,c.lookup.context,Date.now());assert(b.context.deadlineMs<=d.deadlineMs);
   assert.equal(c.sourceCalls(),0);const delivery=JSON.parse(b.context.deliveryJson);
   const ids=[b.context.binding.runId,b.context.lookupId,b.context.resultReference,b.context.slots.started.eventId,b.context.slots.terminal.eventId];
   for(const id of ids){const key=id.toLowerCase();assert(!owned.has(key),'case identity reuse');owned.add(key);}
-  ownedRows.push(data({name,tenantId:b.context.binding.tenantId,runId:b.context.binding.runId,grantId:delivery.context.grantId,lookupId:b.context.lookupId,resultReference:b.context.resultReference,eventIds:[b.context.slots.started.eventId,b.context.slots.terminal.eventId]}));
+  const idsRecord=data({name,tenantId:b.context.binding.tenantId,runId:b.context.binding.runId,grantId:delivery.context.grantId,lookupId:b.context.lookupId,resultReference:b.context.resultReference,eventIds:[b.context.slots.started.eventId,b.context.slots.terminal.eventId]});
+  if(c.ownedRows!==undefined)assert.deepEqual(data(c.ownedRows),idsRecord);ownedRows.push(idsRecord);
   // Producer only seeds runs/grants and allocation; the delivery has not begun.
   const before=await readCaseRows(pool,c,run);assert.deepEqual([before.lookups.length,before.events.length,before.invocations.length,before.reservations.length],[0,0,0,0]);return c;
  }
@@ -92,12 +97,25 @@ export async function runLocalActionPersistence(configuration){
    }
    const after=await consumed(),charge=(phase==='claim'||phase==='dispatch')?0:c.expectedChargeMicroUsd;
    assert.equal(after-lastConsumed,BigInt(charge));lastConsumed=after;
+   if(caseDispose){await run(()=>caseDispose());caseDispose=undefined;report.cleanup.syntheticCasesDisposed++;}
    receipts.push(data({name,status:'PASS',sourceCalls:c.sourceCalls(),chargedMicroUsd:charge,resultRetained:!(phase==='claim'||phase==='dispatch'),...(fault?{fault:fault.receipt()}:{} )}));
   }
   report.status='PASS';report.initialConsumedMicroUsd=String(initialConsumed);report.finalConsumedMicroUsd=String(lastConsumed);
- }catch(error){report.failure={code:safeCode(error),case:activeCase};}
+ }catch(error){
+  report.failure={code:safeCode(error),case:activeCase};
+  // Only the case owner's closed nonsecret identity receipt is retained on partial setup.
+  try{if(!error||types.isProxy(error))throw Error();const row=data(Object.getOwnPropertyDescriptor(error,'ownedRows')?.value);
+   const r=options(row,['name','tenantId','runId','grantId','lookupId','resultReference','eventIds']);
+   assert.equal(r.name,activeCase);assert.equal(typeof r.tenantId,'string');assert(r.tenantId.length>0&&r.tenantId.length<=128);
+   for(const key of ['runId','grantId','lookupId','resultReference'])uuid(r[key]);
+   assert.equal(r.eventIds.length,2);r.eventIds.forEach(uuid);
+   if(!ownedRows.some(v=>v.lookupId.toLowerCase()===r.lookupId.toLowerCase()))ownedRows.push(row);
+  }catch{}
+ }
  finally{
-  lifetime.close();await fresh.close();Object.assign(report.cleanup,fresh.state());
+  lifetime.close();
+  if(caseDispose){const cleanup=createOperationLifetime({deadlineMs:Date.now()+5000,now:Date.now,errorFactory:failure});try{await cleanup.run(()=>caseDispose());report.cleanup.syntheticCasesDisposed++;}catch{report.status='HOLD';report.cleanup.syntheticCaseDisposeUnknown=true;}finally{cleanup.close();}}
+  await fresh.close();Object.assign(report.cleanup,fresh.state());
   report.cleanup.unsettledOperations=lifetime.pendingOperations();
   if(report.cleanup.unsettledOperations||report.cleanup.acquisitionPending||report.cleanup.freshPoolCleanupUnknown)report.status='HOLD';
  }
