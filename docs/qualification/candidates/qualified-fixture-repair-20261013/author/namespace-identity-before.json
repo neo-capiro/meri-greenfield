@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=empty evidence schema identity",
+    "apps/control/qualified-application/schema-compatibility.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-author-20261013",
+  "sourceHead": "c70698fa207b86771996c2bde5384bef1cfaceb1",
+  "sourceDiffSha256": "65ff127b190000d1d90a6b836322f623962baeb8019c76c086a63a63daf21e28",
+  "sourceDiffBytes": 1423,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T06:15:53.223103+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 511602,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin",
+      "bytes": 1413,
+      "sha256": "201960d2baa88c693ddabbe74d250833202252a7dcf855a521f886c8630ff91d"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
