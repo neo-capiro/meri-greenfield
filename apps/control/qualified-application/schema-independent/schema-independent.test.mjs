@@ -52,3 +52,14 @@ test('emitted namespace SQL preserves underscore literally in the reserved pg_ p
 test('reported user namespace pgx_private prevents every DDL statement',async()=>{
  const h=scripted({onQuery:({text})=>text.startsWith('SELECT nspname')?{rows:[{name:'pgx_private'}]}:undefined});await rejected(h);noDDL(h);assert.equal(h.state.connects,1);
 });
+test('fixed original clock rejects an operation ceiling beyond sixty seconds',async()=>{const h=scripted();h.args.deadlineMs=h.now()+60001;await rejected(h);assert.equal(h.state.connects,0);});
+test('contending installer refuses lock while first owner completes exactly one DDL sequence',async()=>{
+ const started=deferred(),continueDDL=deferred();let lockOwner=null;
+ const first=scripted({onQuery:({text})=>{if(text.includes('pg_try_advisory')){assert.equal(lockOwner,null);lockOwner='first';return{rows:[{acquired:true}]};}if(text===ddl[0]){started.resolve();return continueDDL.promise;}}});
+ const one=install(first.args);await started.promise;
+ const second=scripted({onQuery:({text})=>text.includes('pg_try_advisory')?{rows:[{acquired:lockOwner===null}]}:undefined});await rejected(second);noDDL(second);assert.equal(lockOwner,'first');continueDDL.resolve({rows:[]});await one;
+ assert.deepEqual(texts(first).filter(t=>ddl.includes(t)),ddl);assert.equal(first.state.connects,1);assert.equal(second.state.connects,1);assert.equal(first.state.releases.length,1);assert.equal(second.state.releases.length,1);
+});
+test('late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry',async()=>{
+ const got=deferred(),arrived=deferred(),c=new AbortController();const h=scripted({onQuery:({text})=>{if(text==='COMMIT'){arrived.resolve();return got.promise;}}});h.args.signal=c.signal;const pending=install(h.args);await arrived.promise;c.abort();await assert.rejects(pending,refused('UNKNOWN'));assert.equal(h.state.releases.length,0);got.resolve({rows:[]});await tick();await tick();assert.equal(h.state.releases.length,1);assert(h.state.releases[0] instanceof Error);assert(!texts(h).includes('ROLLBACK'));assert.equal(h.state.connects,1);assert.deepEqual(h.state.ddl,ddl);
+});
