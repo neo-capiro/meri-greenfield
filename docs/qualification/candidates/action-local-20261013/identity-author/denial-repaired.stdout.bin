@@ -1,0 +1,28 @@
+✔ opaque issuer computes canonical claims from closed owned state (10.655165ms)
+✔ forged token changed token foreign issuer restart and close all fail closed (1.412904ms)
+✔ capability expiry and current run deadline deny (1.286714ms)
+✔ revoke denies actual canonical authority without mutating claim history (0.939823ms)
+✔ current policy denies clientAllowed (1.206263ms)
+✔ current policy denies sourceEnabled (1.914618ms)
+✔ current policy denies grants (1.135036ms)
+✔ revision change invalidates existing token; new current token may validate (1.162778ms)
+✔ coherent replacement preserves stable owner and invalidates prior task token (1.868759ms)
+✔ policy ports refuse forged claims wrong operation client grants and source requirements (2.837585ms)
+✔ hostile configuration, calls and signals are inert (0.932361ms)
+✔ abort inside clock callback cannot release an authority fact (0.951701ms)
+✔ actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch (62.11304ms)
+✔ wrong operation before preparation allocates no durable invocation (7.609557ms)
+✔ unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity (20.623869ms)
+✔ actual gateway source is denied after local revocation and production descriptors remain null (6.14766ms)
+✔ gateway only accepts branded identity explicit local transport and exact allocation (4.373854ms)
+✔ real local case composes control current authorizer store owned gateway and source response (60.039153ms)
+✔ control authorizer recomputes binding digest scopes and current capability (3.521984ms)
+✔ failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection (5.31592ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2807.17796
