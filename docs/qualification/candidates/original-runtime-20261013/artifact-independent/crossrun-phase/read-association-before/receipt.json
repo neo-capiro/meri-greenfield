@@ -1,0 +1,79 @@
+{
+  "outcomes": {
+    "inspect": {
+      "released": true,
+      "versionId": "f2d3c50c-8796-4216-8e98-186d5ceff6d4"
+    },
+    "download": {
+      "released": true,
+      "versionId": "f2d3c50c-8796-4216-8e98-186d5ceff6d4",
+      "sha256": "b4367cc3fa1b28892d35f6325c6c3ea076e2e5d40046d10fded8cacacea2aad6"
+    }
+  },
+  "stats": {
+    "mode": "synthetic-local",
+    "sourceConnected": false,
+    "nativeDatabase": false,
+    "nativeQualified": false,
+    "generations": 2,
+    "artifactChecks": 31,
+    "versionCharges": 2,
+    "settled": 2,
+    "unknown": 0,
+    "consumedMicroUsd": "20",
+    "allocations": 1,
+    "grants": 1,
+    "skillId": "quick_skill.mail_history",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "15d72ec14a57ce4f7aebb120a90409bca469fd237a520811311740474b54aecb",
+    "processReceipts": [
+      {
+        "pid": 317273,
+        "exitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "stdoutBytes": 657,
+        "stderrBytes": 0,
+        "stdoutRetainedBytes": 657,
+        "stderrRetainedBytes": 0,
+        "hashScope": "retained bytes",
+        "stdoutSha256": "a6f9e0777188bd64e990a9fe8fd883ae40a3a84605479ee8ac9fcfe094f19885",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEnded": true,
+        "stderrEnded": true,
+        "streamErrors": [],
+        "leaderClosed": true,
+        "groupKillAttempted": true,
+        "groupAbsent": true,
+        "sandboxQualified": false
+      },
+      {
+        "pid": 317274,
+        "exitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "stdoutBytes": 657,
+        "stderrBytes": 0,
+        "stdoutRetainedBytes": 657,
+        "stderrRetainedBytes": 0,
+        "hashScope": "retained bytes",
+        "stdoutSha256": "8f57207e78db31c6fcabe1fe394f610c34ed02d76d71694216c2bc21d91feba8",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEnded": true,
+        "stderrEnded": true,
+        "streamErrors": [],
+        "leaderClosed": true,
+        "groupKillAttempted": true,
+        "groupAbsent": true,
+        "sandboxQualified": false
+      }
+    ],
+    "closed": true,
+    "revoked": false,
+    "cleanup": {
+      "executorDirectoriesAbsent": true,
+      "storeRemoved": true
+    }
+  },
+  "nativeQualified": false
+}

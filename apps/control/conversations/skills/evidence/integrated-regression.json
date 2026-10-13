@@ -1,0 +1,47 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/conversation-public-integration.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/control/conversations/test/lifecycle-workflow.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/stream.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs",
+    "apps/worker/conversation/test/control-application.test.mjs",
+    "apps/worker/conversation/test/lifecycle-activity.test.mjs",
+    "apps/gateway/test/original-tracking-mounted.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:38:48.590115+00:00",
+  "durationSeconds": 10.857,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 314273,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/integrated-regression.stdout.bin",
+      "bytes": 24558,
+      "sha256": "5423a047794c72ce94466cbe7d6550138e5754f90d24a354c39e98a8da9d863b"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/integrated-regression.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final composed conversation/store/Temporal/workflow/SDK activity and canonical budget/source regressions on frozen source; native database integration suites excluded.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association-after.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "8e1c28914524cf4d3a93c1cf63a01b024deec451",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:55:11.878667+00:00",
+  "durationSeconds": 3.732,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 322780,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/association-after.stdout.bin",
+      "bytes": 243,
+      "sha256": "334b106d97ae568f2b850d55fd978305adc22ad79e44be870242185bca31391c"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/association-after.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exactc22 repair: unchanged cross-source inspect/download assertions; distinct AFTER directory and safe fixture setup only; retain/render both originals and every page for independent visual review",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

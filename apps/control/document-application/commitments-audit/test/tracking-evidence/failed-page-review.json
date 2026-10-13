@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "-"
+  ],
+  "cwd": "/workspace/meri-commitments-native-tracking",
+  "sourceHead": "5e75851721d24f377524e4f72048744e3f2c1ba5",
+  "sourceDiffSha256": "c97389173d1d91f431ce969a1275b206d5c0dea542b9e712a560e67e18d92d4b",
+  "sourceDiffBytes": 2454124,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T17:52:02.450272+00:00",
+  "durationSeconds": 0.366,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 287512,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/failed-page-review.stdout.bin",
+      "bytes": 25,
+      "sha256": "7c44171ca50c1abf048bfd83f69212271ec08be38f2d8447eedebba14c886d45"
+    },
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/failed-page-review.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

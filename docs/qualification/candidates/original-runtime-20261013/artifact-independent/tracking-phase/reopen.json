@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/reopen_artifacts.py",
+    "/workspace/meri-original-runtime-artifact-review",
+    "/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/reopen.json",
+    "/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/fresh-artifacts",
+    "/workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/tracking-receipts/final-retained",
+    "/workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/tracking-receipts/initial-failed"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "005c026b6fd4c3523b2c3c7359c5176ec0e8a7bd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:13:09.601800+00:00",
+  "durationSeconds": 0.516,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 299461,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/reopen.stdout.bin",
+      "bytes": 214,
+      "sha256": "d9363e945fc416fe88d9549b65821779418d79702feff6c12e552a01ca341638"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/reopen.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,42 @@
+✔ all8 original operations collect actual canonical pages across6 sources and exact late promise (79.871338ms)
+✔ all required source failures stay visible without inventing absence or a bound promise (3.585544ms)
+✔ call/body caps disclose unbound observations and retain original budgets (15.58183ms)
+✔ foreign binding/subject/window refuses rather than returning a partial authority failure (12.494582ms)
+✔ immutable skill, source body hash, quote and output request provenance cannot be substituted (45.210165ms)
+✔ no mapped Monday board means not-mapped coverage and no unrelated board source call (21.025754ms)
+✔ fresh authorization decision IDs retain exact stable subject and every actual source decision (26.975666ms)
+✔ cancelled collection never reaches later source work (0.669472ms)
+✔ closed original read wrapper preserves a bounded selection and incomplete wider native evidence (41.579113ms)
+✔ original wrapper refuses altered lineage, input hash, extra fields and actual successor source/operation (24.41188ms)
+✔ original task/action/Monday native rows appear visibly and preserve exact proof/identity without becoming body evidence (96.637262ms)
+✔ exact native origin comparison retains unresolved version/semantics and native owner/date never resolves ledger conflicts (74.261046ms)
+✔ source owner/hash/client tampering and derived successor substitution refuse typed original receipts (16.287236ms)
+✔ Monday status/date/optional title remain unverified unversioned metadata with disclosed display caps (31.711851ms)
+✖ real DOCX native tracking original/revision preserves immutable bytes, typed proofs, session/revocation and every-page rendering (1099.558578ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3111.22698
+
+✖ failing tests:
+
+test at apps/control/document-application/commitments-audit/test/tracking-native.test.mjs:66:1
+✖ real DOCX native tracking original/revision preserves immutable bytes, typed proofs, session/revocation and every-page rendering (1099.558578ms)
+  Error: ARTIFACT_PROCESS_FAILED
+      at error (file:///workspace/meri-commitments-native-tracking/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///workspace/meri-commitments-native-tracking/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async inspectCommitmentsAuditCopy (file:///workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/inspection.mjs:18:18)
+      at async runLocalCommitmentsAuditFlow (file:///workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/flow.mjs:45:122)
+      at async TestContext.<anonymous> (file:///workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/test/tracking-native.test.mjs:70:16)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'ARTIFACT_PROCESS_FAILED',
+    receipt: { pid: 282004, exitCode: 2, signal: null, spawnError: null, stdoutBytes: 0, stderrBytes: 31, stdoutRetainedBytes: 0, stderrRetainedBytes: 31, hashScope: 'retained bytes', stdoutSha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', stderrSha256: '34c231161891e50d08f2c9a4802cb45214ad54cc227367016bd96807363e2cdd', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: true, sandboxQualified: false },
+    stdout: <Buffer >,
+    stderr: <Buffer 57 4f 52 4b 42 4f 4f 4b 5f 50 44 46 5f 49 4e 53 50 45 43 54 49 4f 4e 5f 46 41 49 4c 45 44 0a>
+  }

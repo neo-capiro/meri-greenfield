@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/test/pipeline.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "30201e65cbbaa33c447e412692aa0689d98caa61",
+  "sourceDiffSha256": "8125ab332189f253950aebff7c8ac98d36ec4897aec268608c704d6a1065a6dd",
+  "sourceDiffBytes": 5954,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:29:06.777785+00:00",
+  "durationSeconds": 4.396,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 309273,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/canonical-pipeline-second.stdout.bin",
+      "bytes": 563,
+      "sha256": "f8d165504bc7cc5c6840a6b1e23400d64aedc8ad2eadaa7cd927e548f486cb89"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/canonical-pipeline-second.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Resolve actual upstream MCP client from its already pinned worker package public exports, keeping control package dependencies unchanged; initial module-loading failure preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

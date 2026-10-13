@@ -1,0 +1,35 @@
+✔ same canonical submit persists exact original pins only after trusted admission and rechecks before/after start and replay (45.493361ms)
+✔ refused deny native admission leaves no durable request or Temporal start (2.644713ms)
+✔ refused changed native admission leaves no durable request or Temporal start (1.942358ms)
+✔ revocation after durable acceptance blocks Temporal start and exact replay release (5.214134ms)
+✖ opaque session selected-client change during admission prevents durable release (2.618764ms)
+✔ plain worker publication cannot invent an artifact availability event (5.912733ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1753.576234
+
+✖ failing tests:
+
+test at apps/control/conversations/skills/service-admission.test.mjs:14:1
+✖ opaque session selected-client change during admission prevents durable release (2.618764ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /SESSION_CHANGED/. Input:
+  
+  'ActionSessionError: SESSION_REFUSED'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-original-runtime-batch/apps/control/conversations/skills/service-admission.test.mjs:14:292)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: ActionSessionError: SESSION_REFUSED
+        at deny (file:///workspace/meri-original-runtime-batch/apps/control/action-host/session/owner.mjs:10:45)
+        at Object.authenticateSession (file:///workspace/meri-original-runtime-batch/apps/control/action-host/session/owner.mjs:49:526),
+    expected: /SESSION_CHANGED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

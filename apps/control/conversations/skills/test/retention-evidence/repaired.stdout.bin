@@ -1,0 +1,94 @@
+✔ quick_skill.commitments_audit: real original compiler guard retains exact JSON/SDK reads; restart recovers only after completed source with fresh output (190.796819ms)
+✔ quick_skill.relationship_brief: real original compiler guard retains exact JSON/SDK reads; restart recovers only after completed source with fresh output (207.621553ms)
+✔ copied/fabricated compiler preparation is refused before SQL allocation (33.514795ms)
+✔ closed pending request/read/input/selection/preparation/source/scopes pins refuse retention (256.338343ms)
+✔ paused source cannot retain pending or load after a prior retention (61.365375ms)
+✔ waiting-for-approval source cannot retain pending or load after a prior retention (58.097596ms)
+✔ failed source cannot retain pending or load after a prior retention (60.376425ms)
+✔ cancelled source cannot retain pending or load after a prior retention (59.513354ms)
+✔ one immutable pending per source run rejects changed SDK ledger even with valid prepared identity (67.37782ms)
+✔ stored preparation/request/scopes/content digest tampering and changed source writer refuse restart (239.910253ms)
+✔ fresh resource revocation and distinct output grant/session/scope are required before/after recovery (859.55003ms)
+✔ loaded brand prevents changed request/context/base and expires with current output access (74.170828ms)
+✔ lost commit ACK retains uncertainty and exact replay recovers one immutable record (53.67328ms)
+✔ cancelled/parked access never brands or releases retained JSON (56.328805ms)
+✔ old context deadline does not authorize recovery; changed current session alone blocks it (67.156474ms)
+✔ direct journal cannot bypass the original compiler admission owner (20.566029ms)
+✔ source stored request/window/scopes corruption is refused even when row hashes are recomputed (115.838837ms)
+✔ credential/provider/opaque properties and duplicate SDK read identities are never persisted (106.019207ms)
+✔ model booleans and opaque callback properties cannot act as current output access (98.686295ms)
+✔ original pointer with hostile context getters is rejected without getter execution or SQL allocation (22.890116ms)
+✔ concurrent exact retention uses canonical transaction serialization and creates one immutable pending (61.562865ms)
+✔ foreign journal and private native owner diagnostics are rejected without exposing details (51.105589ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ai' imported from /workspace/meri-selected-output-retention/packages/ui-stream/dist/producer.js
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/control/conversations/test/application.test.mjs (67.232016ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ai' imported from /workspace/meri-selected-output-retention/packages/ui-stream/dist/producer.js
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/control/conversations/test/lifecycle.test.mjs (70.401347ms)
+✔ request is immutable and replay survives owner reconstruction (10.288804ms)
+✔ events atomically advance state and stable IDs replay without duplicates (2.823815ms)
+✔ concurrent starting attempts serialize and allow one model admission (1.301447ms)
+✔ stored reads/writes deny foreign tenant (0.841479ms)
+✔ stored reads/writes deny foreign actor (0.652917ms)
+✔ stored reads/writes deny foreign conversation (0.577904ms)
+✔ stored reads/writes deny foreign run (0.604755ms)
+✔ stored reads/writes deny foreign attempt (0.657975ms)
+✔ stored reads/writes deny foreign worker (0.737454ms)
+✔ stored reads/writes deny foreign fence (0.789401ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (1.854454ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (0.626017ms)
+✔ retained event corruption and a sequence hole refuse reconnect (1.381186ms)
+✔ cursor after durable end and oversized publication refuse (1.181818ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 36
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4749.300458
+
+✖ failing tests:
+
+test at apps/control/conversations/test/application.test.mjs:1:1
+✖ apps/control/conversations/test/application.test.mjs (67.232016ms)
+  'test failed'
+
+test at apps/control/conversations/test/lifecycle.test.mjs:1:1
+✖ apps/control/conversations/test/lifecycle.test.mjs (70.401347ms)
+  'test failed'

@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "c43c8b761e10bd911e3f25190354a77a9b8dcd23",
+  "sourceTree": "dbe28202464c844505571a0f808d3aad40f3b372",
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/current-install-admission-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-control-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 1.709,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 5954,
+  "stdoutSha256": "824749c4760bdce5666ea6b6ee4127bd40a59c62a2cc58697e7766efe36d3931",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

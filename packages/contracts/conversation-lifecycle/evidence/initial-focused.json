@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/conversation-lifecycle-public.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "80b6ff7f2a5d9f3bb61e0f024ab6848115715d0974141b21bed4f1ae8504fc26",
+  "sourceDiffBytes": 219067,
+  "captureSha256": "1682a892363b4ecccafa15c64c4fcc8d1e82c2ca2b54df05541e974b281298d8",
+  "startedAt": "2026-10-13T17:31:48.730215+00:00",
+  "durationSeconds": 3.449,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 275246,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/initial-focused.stdout.bin",
+      "bytes": 5884,
+      "sha256": "1e0f11d92bcdde33540e7e6732e052fa37e6a8f3cc6e6843af6b6554e79e8a98"
+    },
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/initial-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Source generator/test capture; prior failed labels retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

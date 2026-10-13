@@ -1,0 +1,21 @@
+✔ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (343.186308ms)
+✔ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (336.607083ms)
+✔ missing approval is pending with no IDs/effect; cloned source object cannot acquire preparation identity (39.282601ms)
+✔ approved output sourcePinsSha256 substitution refuses before artifact effects (31.700238ms)
+✔ approved output outputBinding substitution refuses before artifact effects (32.771417ms)
+✔ approved output scopes substitution refuses before artifact effects (34.122159ms)
+✔ approved output policyRevision substitution refuses before artifact effects (29.361826ms)
+✔ approved output allocationSha256 substitution refuses before artifact effects (31.783422ms)
+✔ approved output grantId substitution refuses before artifact effects (29.202558ms)
+✔ approved output approvalReceiptId substitution refuses before artifact effects (33.415109ms)
+✔ approved output deadlineMs substitution refuses before artifact effects (28.470494ms)
+✔ approved output maxBytes substitution refuses before artifact effects (28.150036ms)
+✔ native retained source revocation refuses output even though old source decisions and grant remain (32.053686ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3131.55967

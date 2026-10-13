@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/commitments-audit/test/tracking-native.test.mjs",
+    "apps/control/document-application/commitments-audit/test/compiler.test.mjs"
+  ],
+  "cwd": "/workspace/meri-commitments-native-tracking",
+  "sourceHead": "5e75851721d24f377524e4f72048744e3f2c1ba5",
+  "sourceDiffSha256": "a860b4a4f29cae04c6a041f5e3bc964a8da6284d78ba1a4347bf95154fd38c6c",
+  "sourceDiffBytes": 30476,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T17:42:37.855980+00:00",
+  "durationSeconds": 3.177,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 281945,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/initial.stdout.bin",
+      "bytes": 3773,
+      "sha256": "c14ce13a3958e92d1d025cb7d8b5c8b900662e43a2813e2f49f14312f52ffc6f"
+    },
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

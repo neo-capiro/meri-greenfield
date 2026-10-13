@@ -1,0 +1,753 @@
+{
+  "state": "delivered",
+  "sourceBinding": {
+    "tenantId": "72000000-0000-4000-8000-000000000020",
+    "actorId": "72000000-0000-4000-8000-000000000021",
+    "conversationId": "11111111-1111-4111-8111-111111111111",
+    "runId": "72000000-0000-4000-8000-000000000001",
+    "attemptId": "72000000-0000-4000-8000-000000000002",
+    "workerId": "72000000-0000-4000-8000-000000000003",
+    "writerFence": 1
+  },
+  "outputBinding": {
+    "tenantId": "72000000-0000-4000-8000-000000000020",
+    "actorId": "72000000-0000-4000-8000-000000000021",
+    "conversationId": "11111111-1111-4111-8111-111111111111",
+    "runId": "22222222-2222-4222-8222-222222222222",
+    "attemptId": "33333333-3333-4333-8333-333333333333",
+    "workerId": "44444444-4444-4444-8444-444444444444",
+    "writerFence": 1
+  },
+  "skill": {
+    "skillId": "quick_skill.commitments_audit",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+    "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+    "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+  },
+  "requestSha256": "6d690e3c051530ad2756e14a3e11405a453302912f4526df29b35f767c5c6014",
+  "selectionSha256": "a2bb3f14470f79810cde70956e25022d0b86cb850f5f00c6223bfbbe2568db89",
+  "inputSha256": "be014546d16ebc17bffa1e3ea9976f5dba9950ec44c5f19be19ae9c7c93cd703",
+  "preparationSha256": "cd3e63c74f4ef115472d41f6a6662c147cc285e678aa8a26c1166da426137d94",
+  "sourceContextSha256": "b2ef0382811cefe052868589093db99132e300a5bd974a26381425c9b200f692",
+  "outputContextSha256": "a9e8ed5f7b7a2e1fe9304da77c46d659cc8c374201f1418406ca6eea5eca5e4c",
+  "sourceArtifactRequestSha256": "5422a43e1b90b4353d4707ff2af077ec0c2836d20712f37fdcede01903917c5c",
+  "artifactRequestSha256": "725128b02847a7b63e56467eb36843db77908a03cb2f13afc585b5128d9d6082",
+  "lineageSha256": "1eaa49793aa238f4c2a191fc4bedd34419244aaa1b7f97c1f20c9322359bba14",
+  "baseVersionId": null,
+  "lineage": {
+    "recipe": "original-selected-docx/1",
+    "sourceBinding": {
+      "tenantId": "72000000-0000-4000-8000-000000000020",
+      "actorId": "72000000-0000-4000-8000-000000000021",
+      "conversationId": "11111111-1111-4111-8111-111111111111",
+      "runId": "72000000-0000-4000-8000-000000000001",
+      "attemptId": "72000000-0000-4000-8000-000000000002",
+      "workerId": "72000000-0000-4000-8000-000000000003",
+      "writerFence": 1
+    },
+    "skill": {
+      "skillId": "quick_skill.commitments_audit",
+      "skillVersion": "1.0.0",
+      "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+      "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+      "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+    },
+    "selection": {
+      "subject": {
+        "kind": "client",
+        "entityType": "client",
+        "entityIds": [
+          "99999999-9999-4999-8999-999999999999"
+        ],
+        "tenantId": "72000000-0000-4000-8000-000000000020",
+        "actorId": "72000000-0000-4000-8000-000000000021",
+        "authorizationDecisionId": "66666666-6666-4666-8666-666666666666",
+        "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "scopes": [
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "rosterVersionId": null
+      },
+      "window": {
+        "basis": "unbounded"
+      },
+      "mondayBoardIds": []
+    },
+    "window": {
+      "basis": "unbounded"
+    },
+    "requestSha256": "6d690e3c051530ad2756e14a3e11405a453302912f4526df29b35f767c5c6014",
+    "selectionSha256": "a2bb3f14470f79810cde70956e25022d0b86cb850f5f00c6223bfbbe2568db89",
+    "inputSha256": "be014546d16ebc17bffa1e3ea9976f5dba9950ec44c5f19be19ae9c7c93cd703",
+    "readsSha256": "8613d74883d019e41e8e9b42514be1dce6d5c129eec159c4905b163c28ab158e",
+    "compilerReadsSha256": "75ebd0657845454653873432fb3c6b2fca2e5d70a27d6e42d448166b90693163",
+    "preparationSha256": "cd3e63c74f4ef115472d41f6a6662c147cc285e678aa8a26c1166da426137d94",
+    "sourceArtifactRequestSha256": "5422a43e1b90b4353d4707ff2af077ec0c2836d20712f37fdcede01903917c5c",
+    "sourceContextSha256": "b2ef0382811cefe052868589093db99132e300a5bd974a26381425c9b200f692",
+    "baseVersionId": null,
+    "outputBinding": {
+      "tenantId": "72000000-0000-4000-8000-000000000020",
+      "actorId": "72000000-0000-4000-8000-000000000021",
+      "conversationId": "11111111-1111-4111-8111-111111111111",
+      "runId": "22222222-2222-4222-8222-222222222222",
+      "attemptId": "33333333-3333-4333-8333-333333333333",
+      "workerId": "44444444-4444-4444-8444-444444444444",
+      "writerFence": 1
+    },
+    "outputAllocationSha256": "c52794a0b58b4ce8c8db7fd12c9220ec7c19a3f16b97ea3dbe4c6c2f26fafdf7",
+    "outputGrantId": "88888888-8888-4888-8888-888888888888",
+    "approvalReceiptId": "72000000-0000-4000-8000-000000000004",
+    "sourceEvidenceSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "sourceDeadlineMs": 1791916261297,
+    "outputDeadlineMs": 1791916281285,
+    "sourceProvenance": {
+      "recipe": "commitments-audit",
+      "skill": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "selection": {
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "99999999-9999-4999-8999-999999999999"
+          ],
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "actorId": "72000000-0000-4000-8000-000000000021",
+          "authorizationDecisionId": "66666666-6666-4666-8666-666666666666",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scopes": [
+            {
+              "tenantId": "72000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "72000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "mondayBoardIds": []
+      },
+      "target": {
+        "query": "briefing"
+      },
+      "asOf": "2026-10-13T18:30:56.291Z",
+      "collectedThrough": "2026-10-13T18:30:56.473Z",
+      "inputSha256": "be014546d16ebc17bffa1e3ea9976f5dba9950ec44c5f19be19ae9c7c93cd703",
+      "tracking": [],
+      "trackingDisplayCodeUnits": 2000,
+      "materials": [],
+      "readsSha256": "75ebd0657845454653873432fb3c6b2fca2e5d70a27d6e42d448166b90693163",
+      "ledgerSha256": "a19c0c17d58d9042baedde7525f01b6c2f33eca33a84d9448f20ff950ce2ba75",
+      "parent": null,
+      "gaps": [
+        {
+          "operation": "mail.search_messages",
+          "reason": "UNAVAILABLE",
+          "request": {
+            "subject": {
+              "kind": "client",
+              "entityId": "99999999-9999-4999-8999-999999999999"
+            },
+            "query": "briefing",
+            "limit": 3,
+            "offset": 0,
+            "asOf": "2026-10-13T18:30:56.291Z"
+          }
+        },
+        {
+          "operation": "meeting.read_client_meetings",
+          "reason": "UNAVAILABLE",
+          "request": {
+            "clientId": "99999999-9999-4999-8999-999999999999",
+            "limit": 3
+          }
+        },
+        {
+          "operation": "meeting.query_debriefs",
+          "reason": "UNAVAILABLE",
+          "request": {
+            "clientId": "99999999-9999-4999-8999-999999999999",
+            "limit": 3,
+            "characterLimit": 2000
+          }
+        },
+        {
+          "operation": "read_client_documents",
+          "reason": "UNAVAILABLE",
+          "request": {
+            "clientId": "99999999-9999-4999-8999-999999999999",
+            "limit": 3
+          }
+        },
+        {
+          "operation": "query_action_items",
+          "reason": "UNAVAILABLE",
+          "request": {
+            "clientId": "99999999-9999-4999-8999-999999999999",
+            "limit": 3
+          }
+        },
+        {
+          "operation": "read_monday_client_boards",
+          "reason": "NOT_MAPPED"
+        }
+      ],
+      "collection": {
+        "calls": 6,
+        "bytes": 3293,
+        "limits": {
+          "maxCalls": 24,
+          "maxPages": 3,
+          "maxRecords": 3,
+          "sectionCodeUnits": 2000,
+          "maxBodyCodeUnits": 120000,
+          "maxSourceBytes": 2097152
+        },
+        "capHits": []
+      }
+    },
+    "sourceEvidence": []
+  },
+  "projection": {
+    "request": {
+      "operation": "create_word",
+      "format": "docx",
+      "title": "Synthetic Commitments Audit",
+      "content": {
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "style": "Title",
+            "runs": [
+              {
+                "text": "Synthetic Commitments Audit"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Commitments Audit | Editable review draft"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Original selected skill quick_skill.commitments_audit@1.0.0"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Audit reference 2026-10-13T18:30:56.291Z; collected through 2026-10-13T18:30:56.473Z"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Exact client/window {\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"authorizationDecisionId\":\"66666666-6666-4666-8666-666666666666\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Commitment ledger"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Promise, suggestion, owner, due date, tracking link and delivery meanings are extracted unverified observations. A native completed flag, URL or quoted passage alone never establishes delivery or acceptance."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "No bound promise observation was compiled in the checked portion. This does not establish that no commitments exist."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Suggestions and unresolved observations"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unbound observation, requires review] promise | Missing exact full version/hash-bound source passage. | I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unbound observation, requires review] same-original-conflicting-owner | Missing exact full version/hash-bound source passage. | I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unbound observation, requires review] claimed-delivery | Missing exact full version/hash-bound source passage. | I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Native tracking appendix"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "These are authorized structured source rows, separate from extracted promise observations. Native status, owner and date remain source assertions. Native completion never verifies delivery or acceptance. No promise link is inferred from title, URL, owner, date or recommendation text."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "No native tracker row was returned in the admitted checked portion; missing reads and bounded pages never establish that no tracking exists."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Coverage and verification appendix"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Every original required source is shown. All source authenticity, current policy, snapshot, enumeration and semantic completion remain unqualified unless separately accepted. Missing or unrequested material is not empty; no negative claim is supported."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | not-read | freshness unknown | enumeration unknown | complete false"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Coverage details {\"sourceId\":\"mail\",\"authority\":\"authoritative\",\"status\":\"not-read\",\"freshness\":\"unknown\",\"asOf\":null,\"retrievedAt\":null,\"snapshotVersionId\":null,\"enumeration\":\"unknown\",\"returnedCount\":0,\"limitations\":[\"Required source has no admitted decisive read.\"],\"continuation\":{\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"mail\"]},\"complete\":false,\"operations\":[],\"sourceWindows\":[],\"selectedWindow\":{\"basis\":\"unbounded\"},\"windowMatch\":\"not-read\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "meetings | not-read | freshness unknown | enumeration unknown | complete false"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Coverage details {\"sourceId\":\"meetings\",\"authority\":\"authoritative\",\"status\":\"not-read\",\"freshness\":\"unknown\",\"asOf\":null,\"retrievedAt\":null,\"snapshotVersionId\":null,\"enumeration\":\"unknown\",\"returnedCount\":0,\"limitations\":[\"Required source has no admitted decisive read.\"],\"continuation\":{\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"meetings\"]},\"complete\":false,\"operations\":[],\"sourceWindows\":[],\"selectedWindow\":{\"basis\":\"unbounded\"},\"windowMatch\":\"not-read\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "client_documents | not-read | freshness unknown | enumeration unknown | complete false"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Coverage details {\"sourceId\":\"client_documents\",\"authority\":\"authoritative\",\"status\":\"not-read\",\"freshness\":\"unknown\",\"asOf\":null,\"retrievedAt\":null,\"snapshotVersionId\":null,\"enumeration\":\"unknown\",\"returnedCount\":0,\"limitations\":[\"Required source has no admitted decisive read.\"],\"continuation\":{\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"client_documents\"]},\"complete\":false,\"operations\":[],\"sourceWindows\":[],\"selectedWindow\":{\"basis\":\"unbounded\"},\"windowMatch\":\"not-read\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "tasks | partial | freshness unknown | enumeration unknown | complete false"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Coverage details {\"sourceId\":\"tasks\",\"authority\":\"authoritative\",\"status\":\"partial\",\"freshness\":\"unknown\",\"asOf\":null,\"retrievedAt\":\"2026-10-13T18:30:56.423Z\",\"snapshotVersionId\":null,\"enumeration\":\"unknown\",\"returnedCount\":0,\"complete\":false,\"limitations\":[\"Native coverage, content hashes and versions are unauthenticated producer assertions; no qualified freshness, history, snapshot or exhaustive absence.\",\"Source authority describes the declared original owner; this receipt does not verify producer identity or authentic current authorization.\",\"Opaque native cursor is forwarded without decoding, authentication or snapshot-safe continuation.\",\"Native read coverage and metadata do not verify semantic conclusions or exhaustive history.\",\"Projection-only or unsupported material: no complete eligible version/hash/body with an observed read time; metadata is not a decisive source excerpt.\"],\"continuation\":{\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[]},\"operations\":[{\"id\":\"query_tasks\",\"version\":\"0.2.0\"}],\"sourceWindows\":[{\"basis\":\"unbounded\"}],\"selectedWindow\":{\"basis\":\"unbounded\"},\"windowMatch\":\"exact\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "action_recommendation | not-read | freshness unknown | enumeration unknown | complete false"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Coverage details {\"sourceId\":\"action_recommendation\",\"authority\":\"authoritative\",\"status\":\"not-read\",\"freshness\":\"unknown\",\"asOf\":null,\"retrievedAt\":null,\"snapshotVersionId\":null,\"enumeration\":\"unknown\",\"returnedCount\":0,\"limitations\":[\"Required source has no admitted decisive read.\"],\"continuation\":{\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"action_recommendation\"]},\"complete\":false,\"operations\":[],\"sourceWindows\":[],\"selectedWindow\":{\"basis\":\"unbounded\"},\"windowMatch\":\"not-read\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "client_knowledge_monday | not-mapped | freshness unknown | enumeration unknown | complete false"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Coverage details {\"sourceId\":\"client_knowledge_monday\",\"authority\":\"derived\",\"status\":\"not-mapped\",\"freshness\":\"unknown\",\"asOf\":null,\"retrievedAt\":null,\"snapshotVersionId\":null,\"enumeration\":\"unknown\",\"returnedCount\":0,\"limitations\":[\"Required source has no admitted decisive read.\"],\"continuation\":{\"cursor\":null,\"requiredReads\":[],\"remainingSources\":[\"client_knowledge_monday\"]},\"complete\":false,\"operations\":[],\"sourceWindows\":[],\"selectedWindow\":{\"basis\":\"unbounded\"},\"windowMatch\":\"not-read\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Missing source/read mail.search_messages: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Missing source/read meeting.read_client_meetings: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Missing source/read meeting.query_debriefs: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Missing source/read read_client_documents: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Missing source/read query_action_items: UNAVAILABLE"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Missing source/read read_monday_client_boards: NOT_MAPPED"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Exact excerpts are bound to supplied gateway records; semantic promise, owner, date and tracking links require verification."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: No qualified delivery/acceptance adapter was supplied. This projection never upgrades native task completion to delivered work."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Current authorization and authenticity are gateway/control duties; hashes alone do not establish either."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 2",
+            "runs": [
+              {
+                "text": "Original skill and immutable revision provenance"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Meri Commitments Audit provenance: {\"recipe\":\"commitments-audit\",\"skill\":{\"skillId\":\"quick_skill.commitments_audit\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d\",\"proseSha256\":\"892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"authorizationDecisionId\":\"66666666-6666-4666-8666-666666666666\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"},\"mondayBoardIds\":[]},\"target\":{\"query\":\"briefing\"},\"asOf\":\"2026-10-13T18:30:56.291Z\",\"collectedThrough\":\"2026-10-13T18:30:56.473Z\",\"inputSha256\":\"be014546d16ebc17bffa1e3ea9976f5dba9950ec44c5f19be19ae9c7c93cd703\",\"tracking\":[],\"trackingDisplayCodeUnits\":2000,\"materials\":[],\"readsSha256\":\"75ebd0657845454653873432fb3c6b2fca2e5d70a27d6e42d448166b90693163\",\"ledgerSha256\":\"a19c0c17d58d9042baedde7525f01b6c2f33eca33a84d9448f20ff950ce2ba75\",\"parent\":null,\"gaps\":[{\"operation\":\"mail.search_messages\",\"reason\":\"UNAVAILABLE\",\"request\":{\"subject\":{\"kind\":\"client\",\"entityId\":\"99999999-9999-4999-8999-999999999999\"},\"query\":\"briefing\",\"limit\":3,\"offset\":0,\"asOf\":\"2026-10-13T18:30:56.291Z\"}},{\"operation\":\"meeting.read_client_meetings\",\"reason\":\"UNAVAILABLE\",\"request\":{\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3}},{\"operation\":\"meeting.query_debriefs\",\"reason\":\"UNAVAILABLE\",\"request\":{\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3,\"characterLimit\":2000}},{\"operation\":\"read_client_documents\",\"reason\":\"UNAVAILABLE\",\"request\":{\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3}},{\"operation\":\"query_action_items\",\"reason\":\"UNAVAILABLE\",\"request\":{\"clientId\":\"99999999-9999-4999-8999-999999999999\",\"limit\":3}},{\"operation\":\"read_monday_client_boards\",\"reason\":\"NOT_MAPPED\"}],\"collection\":{\"calls\":6,\"bytes\":3293,\"limits\":{\"maxCalls\":24,\"maxPages\":3,\"maxRecords\":3,\"sectionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":[]}}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Separately approved output lineage"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Meri separately approved output lineage: {\"recipe\":\"original-selected-docx/1\",\"sourceBinding\":{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"conversationId\":\"11111111-1111-4111-8111-111111111111\",\"runId\":\"72000000-0000-4000-8000-000000000001\",\"attemptId\":\"72000000-0000-4000-8000-000000000002\",\"workerId\":\"72000000-0000-4000-8000-000000000003\",\"writerFence\":1},\"skill\":{\"skillId\":\"quick_skill.commitments_audit\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d\",\"proseSha256\":\"892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"authorizationDecisionId\":\"66666666-6666-4666-8666-666666666666\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"},\"mondayBoardIds\":[]},\"window\":{\"basis\":\"unbounded\"},\"requestSha256\":\"6d690e3c051530ad2756e14a3e11405a453302912f4526df29b35f767c5c6014\",\"selectionSha256\":\"a2bb3f14470f79810cde70956e25022d0b86cb850f5f00c6223bfbbe2568db89\",\"inputSha256\":\"be014546d16ebc17bffa1e3ea9976f5dba9950ec44c5f19be19ae9c7c93cd703\",\"readsSha256\":\"8613d74883d019e41e8e9b42514be1dce6d5c129eec159c4905b163c28ab158e\",\"compilerReadsSha256\":\"75ebd0657845454653873432fb3c6b2fca2e5d70a27d6e42d448166b90693163\",\"preparationSha256\":\"cd3e63c74f4ef115472d41f6a6662c147cc285e678aa8a26c1166da426137d94\",\"sourceArtifactRequestSha256\":\"5422a43e1b90b4353d4707ff2af077ec0c2836d20712f37fdcede01903917c5c\",\"sourceContextSha256\":\"b2ef0382811cefe052868589093db99132e300a5bd974a26381425c9b200f692\",\"baseVersionId\":null,\"outputBinding\":{\"tenantId\":\"72000000-0000-4000-8000-000000000020\",\"actorId\":\"72000000-0000-4000-8000-000000000021\",\"conversationId\":\"11111111-1111-4111-8111-111111111111\",\"runId\":\"22222222-2222-4222-8222-222222222222\",\"attemptId\":\"33333333-3333-4333-8333-333333333333\",\"workerId\":\"44444444-4444-4444-8444-444444444444\",\"writerFence\":1},\"outputAllocationSha256\":\"c52794a0b58b4ce8c8db7fd12c9220ec7c19a3f16b97ea3dbe4c6c2f26fafdf7\",\"outputGrantId\":\"88888888-8888-4888-8888-888888888888\",\"approvalReceiptId\":\"72000000-0000-4000-8000-000000000004\",\"sourceEvidenceSha256\":\"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945\",\"sourceDeadlineMs\":1791916261297,\"outputDeadlineMs\":1791916281285}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "context": {
+      "binding": {
+        "tenantId": "72000000-0000-4000-8000-000000000020",
+        "actorId": "72000000-0000-4000-8000-000000000021",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "scopes": [
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "mailbox",
+          "resourceId": "71000000-0000-4000-8000-000000000071",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [],
+      "assets": [],
+      "deadlineMs": 1791916281285,
+      "maxBytes": 1048576
+    },
+    "baseVersionId": null
+  },
+  "artifact": {
+    "version": {
+      "contractVersion": "0.1.0",
+      "artifactId": "179b85f0-fd46-40e6-80fd-07545b532c88",
+      "versionId": "1df9e29d-f00d-4b0c-bb55-e1b0d80e86d0",
+      "parentVersionId": null,
+      "binding": {
+        "tenantId": "72000000-0000-4000-8000-000000000020",
+        "actorId": "72000000-0000-4000-8000-000000000021",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "e7d9763e-f207-4c73-92ca-0c98aa920bbe",
+        "versionId": "9b4b817381b2e0a952357ae0d693d62f35e306c28bcf2850029f11dd9141d09c",
+        "sha256": "9b4b817381b2e0a952357ae0d693d62f35e306c28bcf2850029f11dd9141d09c",
+        "bytes": 40016,
+        "scopes": [
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "72000000-0000-4000-8000-000000000020",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic Commitments Audit.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "tenantId": "72000000-0000-4000-8000-000000000020",
+          "kind": "mailbox",
+          "resourceId": "71000000-0000-4000-8000-000000000071",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T18:30:56.623Z"
+    },
+    "inspection": {
+      "sha256": "9b4b817381b2e0a952357ae0d693d62f35e306c28bcf2850029f11dd9141d09c",
+      "bytes": 40016,
+      "format": "docx",
+      "nativeOpened": false,
+      "rendered": false,
+      "recalculated": false,
+      "members": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "docProps/core.xml",
+        "docProps/app.xml",
+        "word/document.xml",
+        "word/_rels/document.xml.rels",
+        "word/styles.xml",
+        "word/stylesWithEffects.xml",
+        "word/settings.xml",
+        "word/webSettings.xml",
+        "word/fontTable.xml",
+        "word/theme/theme1.xml",
+        "customXml/item1.xml",
+        "customXml/_rels/item1.xml.rels",
+        "customXml/itemProps1.xml",
+        "word/numbering.xml",
+        "docProps/thumbnail.jpeg"
+      ],
+      "details": {
+        "paragraphs": 42,
+        "tables": 0,
+        "pictures": 0
+      }
+    },
+    "execution": {
+      "requestSha256": "e053f049f69c4268bb2d327a4e11ea0bbe2d221ebf6e9f517eb9afe2191c48cc",
+      "authorizationReceiptId": "bc26e2ff-445d-464f-a45d-4e10dd3382f5",
+      "budgetTicketId": "769db73d-ee62-4ccd-8d90-9b5e522f0a2c",
+      "objectCommitted": true,
+      "versionCommitted": true,
+      "nativeQualified": false
+    }
+  }
+}

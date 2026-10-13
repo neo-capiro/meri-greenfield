@@ -1,0 +1,109 @@
+✔ execution constructor refuses a retention method getter before evaluating it (1.400806ms)
+✔ execution constructor refuses output bridge method proxy before introspection (0.225637ms)
+✔ new optional service admission method cannot execute a configured getter (4.092264ms)
+✔ shared selected-output assertion rejects a state getter without evaluating it (0.467129ms)
+✔ canonical publication rejects a preparation hash getter without evaluating it (0.506928ms)
+✔ invalid current-context timestamps cannot expose the runtime factory (17.537112ms)
+✔ valid native AbortSignal reaches runtime factory with original owner receiver preserved (1.707846ms)
+✔ actual canonical admission precedes storage/start and original pins survive exact replay (24.070619ms)
+✔ exact selected-client revocation during admission refuses before persistence (2.896114ms)
+✔ unconfigured selected output and ordinary worker artifact event cannot mint availability (6.437984ms)
+✖ an expired source context cannot expose a new runtime even with a future context receipt (1.050722ms)
+✖ preparation deadline cancels pending initialization and closes a late-created runtime (3001.048985ms)
+✖ output bridge constructor refuses source-access method getters without effects (0.476944ms)
+✖ output bridge constructor refuses approved-owner proxies without introspection (0.357765ms)
+✖ output read refuses retained-source method getters without evaluating them (0.585436ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 10
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4921.907843
+
+✖ failing tests:
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:26:1
+✖ an expired source context cannot expose a new runtime even with a future context receipt (1.050722ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:26:349)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:27:1
+✖ preparation deadline cancels pending initialization and closes a late-created runtime (3001.048985ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:27:625)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:28:1
+✖ output bridge constructor refuses source-access method getters without effects (0.476944ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:28:234)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:29:1
+✖ output bridge constructor refuses approved-owner proxies without introspection (0.357765ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:29:241)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at ../meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:30:1
+✖ output read refuses retained-source method getters without evaluating them (0.585436ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs:30:509)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

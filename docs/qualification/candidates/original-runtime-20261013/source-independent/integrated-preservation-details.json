@@ -1,0 +1,340 @@
+{
+  "reviewedCommit": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "reviewedTree": "1d2832f47c6b32295cf4dd6d8e837d27310bd468",
+  "protectedPathsExact": [
+    {
+      "path": "packages/contracts/dist/action-application.d.ts",
+      "sha256": "007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.metadata.json",
+      "sha256": "9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.mjs",
+      "sha256": "9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.schema.json",
+      "sha256": "a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.d.ts",
+      "sha256": "638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.mjs",
+      "sha256": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/contracts.d.ts",
+      "sha256": "e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.d.ts",
+      "sha256": "f7e961446b69049cda1b054c695daffc45486da46b3ebf67c6b3a56e875916fe",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.mjs",
+      "sha256": "94465895c6a063536cd4de3ce84d6f736e8475890a663ef80e9c5d748992cea1",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.schema.json",
+      "sha256": "76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.d.ts",
+      "sha256": "1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.metadata.json",
+      "sha256": "49def325d3792f56c99de484efb4193092a3c54dc82df0f4559ed462e9f4288f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.mjs",
+      "sha256": "4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.schema.json",
+      "sha256": "712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/index.d.ts",
+      "sha256": "b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.d.ts",
+      "sha256": "63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.mjs",
+      "sha256": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate.mjs",
+      "sha256": "80c645d6c1ef206e7e67d2d553c4277d33c2f4980c9cddcd2862c4bb1b54e06e",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate-actions.mjs",
+      "sha256": "72f605755587cad3f445d4324e815c4008ccb47b787333842ac8fc044dffb73e",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate-documents.mjs",
+      "sha256": "3a4d40283c64ca8ef8a00bb50b8d2cf36bc35df1b9e3f39b5378a194aac39946",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate-conversations.mjs",
+      "sha256": "e90417a59505251339d46992850e7ccb85f8f645e84e64fbe8c19fa6e9160fcc",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/conversations/http.mjs",
+      "sha256": "2e65b13ceb17ae74afc96490b639b1afc0a5cdce37ffd76ddc2c1eb28fb28b79",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/conversations/events.mjs",
+      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/assets.json",
+      "sha256": "ebe456d0cc4b9dc34fbbc4467e2411ccccebeab424a45b1357007720342a56a5",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/manifest.json",
+      "sha256": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/SKILL.md",
+      "sha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/client_changes/1.0.0/manifest.json",
+      "sha256": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/client_changes/1.0.0/SKILL.md",
+      "sha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/commitments_audit/1.0.0/manifest.json",
+      "sha256": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/commitments_audit/1.0.0/SKILL.md",
+      "sha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/funding_opportunity_match/1.0.0/manifest.json",
+      "sha256": "742dea892a575445ec2b63902cb07fb5f8b5029e24ef31e5bf3f6d29840dac2f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/funding_opportunity_match/1.0.0/SKILL.md",
+      "sha256": "e7211a21a883ec59e43f5d719fbf7e313630e57674667f99f4e875a14b8ce26d",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/hearing_watch/1.0.0/manifest.json",
+      "sha256": "d5492a00eba8e7b56854ed931fb0dea687f00f46861d87d1b0f28ff431b58f8f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/hearing_watch/1.0.0/SKILL.md",
+      "sha256": "d070a99280c30a38d29fa9f2fdc425faa735d30b43cd6ac80fc95cbb69626314",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/mail_history/1.0.0/manifest.json",
+      "sha256": "bfa1a83dbfbe8fb55bb62018791575984dfba623d0dc198f8f79475ec8612b91",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/mail_history/1.0.0/SKILL.md",
+      "sha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/meeting_prep/1.0.0/manifest.json",
+      "sha256": "035f5af6dbc6765d0b300c19714a73fb47d3d25b5c4e0030c9f5617e925f933a",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/meeting_prep/1.0.0/SKILL.md",
+      "sha256": "fe6f7c54e017e9f187344dd6968af7cb36c01a88c622cde868080ab118df3d7f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/pe_deep_dive/1.0.0/manifest.json",
+      "sha256": "0a7a626ea1e43de2b27b71ae1f3aba154c0d15c37ac9767d1ac154bc6ee109d6",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/pe_deep_dive/1.0.0/SKILL.md",
+      "sha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_changes/1.0.0/manifest.json",
+      "sha256": "f81f58191ca1680f0cc9601dd5ca217f968ff7308c3b60b684c6583d20f33ec6",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_changes/1.0.0/SKILL.md",
+      "sha256": "3e76da17d5dc490944b7f5464065cee69742ac554ebe7ceb12f4e3e327ce67b5",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_overlap/1.0.0/manifest.json",
+      "sha256": "d1e00e9218ca8f93c39785a272ca819602b7e5e2e50489c813061c7e6b1d2851",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_overlap/1.0.0/SKILL.md",
+      "sha256": "3abdb87f27d60fd7f8dd85083d8aad8b0413884f297e9ed7e5a143aa50e20e8b",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/regulatory_docket_brief/1.0.0/manifest.json",
+      "sha256": "a0f29652024a5d638224eee339c50170b5fac7890dcd172324b361b4201d2fb0",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/regulatory_docket_brief/1.0.0/SKILL.md",
+      "sha256": "698a96dd6c6de443456a477a04d11e393487a38f8c82d34b68d97b01a7849da2",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/relationship_brief/1.0.0/manifest.json",
+      "sha256": "a4ee2cd51cac83d82326439ec93baf4a50860bdbb110ec1c1f40daa0f1420ace",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/relationship_brief/1.0.0/SKILL.md",
+      "sha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/representation_lookup/1.0.0/manifest.json",
+      "sha256": "9fde84e2d5ff0a6174fd02eb4788bf0fb04cb2b226b624f149f424f38b73856b",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/representation_lookup/1.0.0/SKILL.md",
+      "sha256": "232dec9783f0cec8001043fae72e3e6d38a5b2799c98302571d54bde0d4f6a76",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/research_company/1.0.0/manifest.json",
+      "sha256": "dcede2f73f39ff28d36a71be430c4c3b44946b7280c0ff4d7f5fa33feb059153",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/research_company/1.0.0/SKILL.md",
+      "sha256": "cbee7506868d65de5ef247add8390850de151398b074add2ce69d2aefd63b7ab",
+      "exactBase": true
+    }
+  ],
+  "infraTreeExact": {
+    "base": "70c6cfda689ed975f5836a397930ac439742139c",
+    "reviewed": "70c6cfda689ed975f5836a397930ac439742139c"
+  },
+  "nativeSourceMetadataPinsExact": [
+    {
+      "path": "apps/control/qualification-sdk-fixture",
+      "blob": "01cd97912c035708df216ac2d04172516168234b",
+      "exactBase": true
+    },
+    {
+      "path": "apps/worker/qualification",
+      "blob": "bd8095f429160233d71bca9db81b1c92f3e911da",
+      "exactBase": true
+    },
+    {
+      "path": "docs/qualification/candidates/next-adapters-20261013",
+      "blob": "60ca9e33272ebeb3c2708f193b5121c94bb7c813",
+      "exactBase": true
+    }
+  ],
+  "publicPackageTreeExactSinceVerifiedCheck": {
+    "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+    "tree": "ea1bccb778da8415398768903fbe4457d0b543c0"
+  },
+  "verifiedRootReceipts": [
+    {
+      "path": "apps/control/conversations/skills/evidence/canonical-pipeline-delayed.json",
+      "sha256": "a6e36b80a95350f73caf8305074c21c92b4cefcd9ddecf1ab9fef35f29c7a937",
+      "sourceHead": "30201e65cbbaa33c447e412692aa0689d98caa61",
+      "sourceDiffBytes": 5954,
+      "sourceDiffSha256": "8125ab332189f253950aebff7c8ac98d36ec4897aec268608c704d6a1065a6dd",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "evidenceVerified": true
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/public-final-check.json",
+      "sha256": "2cfb42b50924921fe9c26e302e52af3fdd6aee03ab935941818b2e38ac97fe7e",
+      "sourceHead": "5c533c1bea625fc43928ec620672800c715b2071",
+      "sourceDiffBytes": 0,
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "evidenceVerified": true
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/frozen-source-controls.json",
+      "sha256": "604b729bb4a841045c40ce64194edd8d0bf9cb17065f5662d0b7e65327d08161",
+      "sourceHead": "5c533c1bea625fc43928ec620672800c715b2071",
+      "sourceDiffBytes": 0,
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true,
+      "evidenceVerified": true
+    }
+  ],
+  "pipelineReexecution": false,
+  "pipelineReceiptLimitation": "Root pipeline capture precedes commit71 and records nonzero tracked diff. Reviewed actual frozen test/pipeline/guard code and preserved artifacts;4 passing cases are root evidence, not an independent rerun or native qualification.",
+  "migration0003Applied": false,
+  "paidModelCalls": 0,
+  "nativeDatabaseCalls": 0,
+  "sourceActivation": false,
+  "privatePacketReads": false
+}

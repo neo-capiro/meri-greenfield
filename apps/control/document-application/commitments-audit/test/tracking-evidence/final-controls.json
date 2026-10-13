@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=real DOCX|renderer failure",
+    "apps/control/document-application/commitments-audit/test/tracking-native.test.mjs"
+  ],
+  "cwd": "/workspace/meri-commitments-native-tracking",
+  "sourceHead": "5e75851721d24f377524e4f72048744e3f2c1ba5",
+  "sourceDiffSha256": "c97389173d1d91f431ce969a1275b206d5c0dea542b9e712a560e67e18d92d4b",
+  "sourceDiffBytes": 2454124,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T17:51:13.439547+00:00",
+  "durationSeconds": 4.886,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 287079,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/final-controls.stdout.bin",
+      "bytes": 376,
+      "sha256": "30ca2034d0c2627f1d69b4a93a5e56fc3d164039f7a08f05b396f847b2ac7e82"
+    },
+    {
+      "path": "apps/control/document-application/commitments-audit/test/tracking-evidence/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add meaningful exact retained native version/content conflict and actual renderer-failure dual-download retention controls. Existing final-retained output already opened30pages; filtered followup reuses separate fresh outputs.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

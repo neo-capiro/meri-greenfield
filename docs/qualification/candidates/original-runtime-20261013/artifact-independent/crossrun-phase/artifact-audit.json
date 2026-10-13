@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/audit_artifacts.py"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "8e1c28914524cf4d3a93c1cf63a01b024deec451",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T19:08:21.829530+00:00",
+  "durationSeconds": 0.465,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 330306,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/artifact-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/artifact-audit.stderr.bin",
+      "bytes": 894,
+      "sha256": "63a0a80e816afb59774037b6fe621104fce8013421d6bf501647549242266d3b"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,12 @@
+✔ quick_skill.commitments_audit: full actual mounted task persists awaiting approval through restart (332.312558ms)
+✔ quick_skill.commitments_audit: full actual mounted task publishes real approved DOCX (1014.608895ms)
+✔ quick_skill.relationship_brief: full actual mounted task persists awaiting approval through restart (209.000033ms)
+✔ quick_skill.relationship_brief: full actual mounted task publishes real approved DOCX (896.656115ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4365.289213

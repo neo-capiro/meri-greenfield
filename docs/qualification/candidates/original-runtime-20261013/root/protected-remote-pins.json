@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-13T19:08:16.526134+00:00",
+  "pullRequests": [
+    {
+      "headRefName": "task/meri-document-contract-integrated-20261013",
+      "headRefOid": "70516e5c9681917ce493bbc50e3023494f2e1209",
+      "isDraft": true,
+      "number": 54,
+      "state": "OPEN",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/54",
+      "tree": "877aba389e06ea23671156c9dc062aa6ff36b284"
+    },
+    {
+      "headRefName": "task/meri-preservation-structure-integrated-20261013",
+      "headRefOid": "980c71b7941b7f13f3e1831009076f283aedbe71",
+      "isDraft": true,
+      "number": 55,
+      "state": "OPEN",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/55",
+      "tree": "c47fc3ccd4e5517073a68e90a9e47798b73495a0"
+    },
+    {
+      "headRefName": "task/meri-workbook-drafting-20261013",
+      "headRefOid": "25e0d29d6f0b6c3de284d13e86bc5f1aa0c00d21",
+      "isDraft": true,
+      "number": 56,
+      "state": "OPEN",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/56",
+      "tree": "c0dc04ab385a69de7cbf2a376634e77097b254ec"
+    },
+    {
+      "headRefName": "codex/durable-skills-20261013",
+      "headRefOid": "693372018f3aaaf01a5be11e5df9f797926888f8",
+      "isDraft": true,
+      "number": 63,
+      "state": "OPEN",
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/63",
+      "tree": "4efde017a6e509a20ba8b4c470de76f3ace3a938"
+    }
+  ],
+  "nativeAcceptance": false
+}

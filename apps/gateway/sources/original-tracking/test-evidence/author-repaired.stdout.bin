@@ -1,0 +1,45 @@
+✔ query_tasks: actual mounted adapter decodes Fetch Response and preserves original identity/proofs (32.192534ms)
+✔ query_tasks: native opaque cursor stays opaque and explicitly incomplete (4.659592ms)
+✔ query_tasks: original source identity cannot be substituted with derived successor (0.746247ms)
+✔ query_tasks: fixed route and closed configuration are inert (0.72869ms)
+✔ query_tasks: current revocation/fence/source/budget refusal precedes credential acquisition (2.756655ms)
+✔ query_tasks: credential correlation binds full run, current subject, operation and original source (11.354381ms)
+✔ query_tasks: hostile credential accessors and proxies never execute introspection (2.617797ms)
+✔ query_tasks: original rows, owner/proof and scope corruption cannot settle (15.674966ms)
+✔ query_tasks: direct admission rejects forged authority/input before source effect (2.600441ms)
+✔ query_tasks: mismatched operation and current client decision refuse without credentials (1.710379ms)
+✔ query_tasks: strict Fetch response protocol and body byte decoding retain uncertainty (11.263946ms)
+✔ query_tasks: parked credentials expires and late body is retired (21.340444ms)
+✔ query_tasks: parked fetch expires and late body is retired (22.215033ms)
+✔ query_tasks: parked body expires and late body is retired (21.723258ms)
+✔ query_tasks: revocation after read/settle prevents result release (6.149162ms)
+✔ query_tasks: cancellation cancels acquired body before settlement (2.135966ms)
+✔ query_tasks: passive mount does not enable frozen catalog/production gateway (12.689009ms)
+✔ query_action_items: actual mounted adapter decodes Fetch Response and preserves original identity/proofs (9.59644ms)
+✔ query_action_items: native opaque cursor stays opaque and explicitly incomplete (3.683763ms)
+✔ query_action_items: original source identity cannot be substituted with derived successor (0.29442ms)
+✔ query_action_items: fixed route and closed configuration are inert (0.364446ms)
+✔ query_action_items: current revocation/fence/source/budget refusal precedes credential acquisition (1.366275ms)
+✔ query_action_items: credential correlation binds full run, current subject, operation and original source (9.312976ms)
+✔ query_action_items: hostile credential accessors and proxies never execute introspection (1.951871ms)
+✔ query_action_items: original rows, owner/proof and scope corruption cannot settle (18.613194ms)
+✔ query_action_items: direct admission rejects forged authority/input before source effect (1.748046ms)
+✔ query_action_items: mismatched operation and current client decision refuse without credentials (1.308288ms)
+✔ query_action_items: strict Fetch response protocol and body byte decoding retain uncertainty (11.308663ms)
+✔ query_action_items: parked credentials expires and late body is retired (21.285572ms)
+✔ query_action_items: parked fetch expires and late body is retired (21.843918ms)
+✔ query_action_items: parked body expires and late body is retired (22.017257ms)
+✔ query_action_items: revocation after read/settle prevents result release (5.193432ms)
+✔ query_action_items: cancellation cancels acquired body before settlement (1.926082ms)
+✔ query_action_items: passive mount does not enable frozen catalog/production gateway (9.581358ms)
+✔ tasks: assignedToMe and overdue clock use trusted actor/default without model owner authority (3.030645ms)
+✔ tasks: authorized portfolio scope preserves native overdue disclosure (2.628754ms)
+✔ original action: client-less mode remains unavailable and successor is untouched (0.546187ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2002.743232

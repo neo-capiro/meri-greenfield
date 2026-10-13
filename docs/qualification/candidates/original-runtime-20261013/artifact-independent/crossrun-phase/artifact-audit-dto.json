@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/audit_artifacts.py"
+  ],
+  "cwd": "/workspace/meri-original-runtime-artifact-review",
+  "sourceHead": "8e1c28914524cf4d3a93c1cf63a01b024deec451",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T19:08:45.707806+00:00",
+  "durationSeconds": 1.267,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 330584,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/artifact-audit-dto.stdout.bin",
+      "bytes": 77,
+      "sha256": "81d8cbffb3fc9b7637c1f1d6d0f019843685242484f5b87d0c4beca5c420272e"
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/artifact-audit-dto.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct independent verifier DTO lookup: Relationship keeps typed receipts, Commitments keeps reads; no product or assertion change. Retain initial KeyError.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

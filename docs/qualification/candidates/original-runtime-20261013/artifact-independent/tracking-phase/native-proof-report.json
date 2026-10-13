@@ -1,0 +1,266 @@
+{
+  "status": "PASS",
+  "documents": [
+    {
+      "directory": "/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/fresh-artifacts",
+      "label": "original",
+      "tracking": [
+        {
+          "sourceId": "tasks",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000091",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "engagement_tasks",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000091",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "7e2fab573f7326c6bdc8e0b87ace9d8717faccd495168eb31be114f1c6d1866f",
+            "linkedSources": []
+          },
+          "resultSha256": "2605742d3a3f4b9c2bbbe6abe6f335448c05ca34b532ad39b4257c3ebc7edab8",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "action_recommendation",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000092",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "action_recommendation",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000092",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "92c611f82c15291fbec124d040d91436912021cb6843b7bc5a4b07058d4e6d29",
+            "linkedSources": []
+          },
+          "resultSha256": "467851e5a84ac4de7b2811afb4eb3342afcee42bd92e18052c6407e9f5e0a08d",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "client_knowledge_monday",
+          "nativeRecordId": "101:202",
+          "sourceVersionId": null,
+          "sourceProof": null,
+          "resultSha256": "e2206f51dae3653b57f9a3fb8ce86a1cc50437515654c7cc236f0e616c1bfa2d",
+          "authority": "derived",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        }
+      ]
+    },
+    {
+      "directory": "/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/tracking-phase/fresh-artifacts",
+      "label": "revision",
+      "tracking": [
+        {
+          "sourceId": "tasks",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000091",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "engagement_tasks",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000091",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "7e2fab573f7326c6bdc8e0b87ace9d8717faccd495168eb31be114f1c6d1866f",
+            "linkedSources": []
+          },
+          "resultSha256": "9890420a209921bea412512a19549ac0c629c7bbda6b6a8906513b007bea3ebb",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "action_recommendation",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000092",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "action_recommendation",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000092",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "92c611f82c15291fbec124d040d91436912021cb6843b7bc5a4b07058d4e6d29",
+            "linkedSources": []
+          },
+          "resultSha256": "467851e5a84ac4de7b2811afb4eb3342afcee42bd92e18052c6407e9f5e0a08d",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "client_knowledge_monday",
+          "nativeRecordId": "101:202",
+          "sourceVersionId": null,
+          "sourceProof": null,
+          "resultSha256": "e2206f51dae3653b57f9a3fb8ce86a1cc50437515654c7cc236f0e616c1bfa2d",
+          "authority": "derived",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        }
+      ]
+    },
+    {
+      "directory": "/workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/tracking-receipts/final-retained",
+      "label": "original",
+      "tracking": [
+        {
+          "sourceId": "tasks",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000091",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "engagement_tasks",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000091",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "7e2fab573f7326c6bdc8e0b87ace9d8717faccd495168eb31be114f1c6d1866f",
+            "linkedSources": []
+          },
+          "resultSha256": "6ea1fb2b198030bbc7c678a7b7837d279591db4655ed958bde5d55ac684bc023",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "action_recommendation",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000092",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "action_recommendation",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000092",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "92c611f82c15291fbec124d040d91436912021cb6843b7bc5a4b07058d4e6d29",
+            "linkedSources": []
+          },
+          "resultSha256": "467851e5a84ac4de7b2811afb4eb3342afcee42bd92e18052c6407e9f5e0a08d",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "client_knowledge_monday",
+          "nativeRecordId": "101:202",
+          "sourceVersionId": null,
+          "sourceProof": null,
+          "resultSha256": "e2206f51dae3653b57f9a3fb8ce86a1cc50437515654c7cc236f0e616c1bfa2d",
+          "authority": "derived",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        }
+      ]
+    },
+    {
+      "directory": "/workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/tracking-receipts/final-retained",
+      "label": "revision",
+      "tracking": [
+        {
+          "sourceId": "tasks",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000091",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "engagement_tasks",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000091",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "7e2fab573f7326c6bdc8e0b87ace9d8717faccd495168eb31be114f1c6d1866f",
+            "linkedSources": []
+          },
+          "resultSha256": "5be7aca79fa3451cbc1c4b1a1982891649984b4c01905c6373ad689c65be5af3",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "action_recommendation",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000092",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "action_recommendation",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000092",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "92c611f82c15291fbec124d040d91436912021cb6843b7bc5a4b07058d4e6d29",
+            "linkedSources": []
+          },
+          "resultSha256": "467851e5a84ac4de7b2811afb4eb3342afcee42bd92e18052c6407e9f5e0a08d",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "client_knowledge_monday",
+          "nativeRecordId": "101:202",
+          "sourceVersionId": null,
+          "sourceProof": null,
+          "resultSha256": "e2206f51dae3653b57f9a3fb8ce86a1cc50437515654c7cc236f0e616c1bfa2d",
+          "authority": "derived",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        }
+      ]
+    },
+    {
+      "directory": "/workspace/meri-commitments-native-tracking/apps/control/document-application/commitments-audit/local/tracking-receipts/initial-failed",
+      "label": "original",
+      "tracking": [
+        {
+          "sourceId": "tasks",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000091",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "engagement_tasks",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000091",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "7e2fab573f7326c6bdc8e0b87ace9d8717faccd495168eb31be114f1c6d1866f",
+            "linkedSources": []
+          },
+          "resultSha256": "7beccdf75a86b41f96bc25a5803fbbda5923991637243b8785843f0c06a8ca02",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "action_recommendation",
+          "nativeRecordId": "71000000-0000-4000-8000-000000000092",
+          "sourceVersionId": "2026-10-01T00:00:00.000Z",
+          "sourceProof": {
+            "version": 1,
+            "owner": "action_recommendation",
+            "sourceRecordId": "71000000-0000-4000-8000-000000000092",
+            "currentClientId": "99999999-9999-4999-8999-999999999999",
+            "sourceVersion": "2026-10-01T00:00:00.000Z",
+            "contentSha256": "92c611f82c15291fbec124d040d91436912021cb6843b7bc5a4b07058d4e6d29",
+            "linkedSources": []
+          },
+          "resultSha256": "467851e5a84ac4de7b2811afb4eb3342afcee42bd92e18052c6407e9f5e0a08d",
+          "authority": "authoritative",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        },
+        {
+          "sourceId": "client_knowledge_monday",
+          "nativeRecordId": "101:202",
+          "sourceVersionId": null,
+          "sourceProof": null,
+          "resultSha256": "e2206f51dae3653b57f9a3fb8ce86a1cc50437515654c7cc236f0e616c1bfa2d",
+          "authority": "derived",
+          "deliveryVerified": false,
+          "acceptanceVerified": false
+        }
+      ]
+    }
+  ],
+  "scope": "Literal retained typed native assertions only; no authenticity/current policy/semantic qualification"
+}

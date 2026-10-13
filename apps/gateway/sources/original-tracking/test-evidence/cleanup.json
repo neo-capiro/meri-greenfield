@@ -1,0 +1,32 @@
+{
+  "ownedDependencyLink": "node_modules",
+  "removed": true,
+  "borrowedDependencyTarget": "/workspace/meri-greenfield/node_modules",
+  "donorPreserved": true,
+  "donorMutationAttempted": false,
+  "ownedCaptures": [
+    {
+      "name": "author-final-extended.json",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "author-final.json",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "author-initial.json",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "author-repaired.json",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "baseline.json",
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "allOwnedProcessGroupsAbsent": true,
+  "sourceOnly": true,
+  "priorProcessesAndEvidencePreserved": true
+}

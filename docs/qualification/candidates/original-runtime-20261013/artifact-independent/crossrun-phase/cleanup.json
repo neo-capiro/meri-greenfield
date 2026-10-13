@@ -1,0 +1,79 @@
+{
+  "ownedLinksRemoved": [
+    {
+      "path": "/workspace/meri-greenfield/node_modules",
+      "ownedLink": "node_modules",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "ownedLink": "apps/worker/conversation/node_modules",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "ownedLink": "packages/ui-stream/node_modules",
+      "removed": true
+    },
+    {
+      "path": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "ownedLink": "packages/window-resolution/node_modules",
+      "removed": true
+    }
+  ],
+  "ownedCaptureGroups": [
+    {
+      "capture": "focused62.json",
+      "pgid": 307523,
+      "physicallyAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "artifact-audit-dto.json",
+      "pgid": 330584,
+      "physicallyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "association-after.json",
+      "pgid": 322780,
+      "physicallyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "artifact-audit.json",
+      "pgid": 330306,
+      "physicallyAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "read-association.json",
+      "pgid": 317235,
+      "physicallyAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "capture": "sdk39.json",
+      "pgid": 308127,
+      "physicallyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "final-negative19.json",
+      "pgid": 331446,
+      "physicallyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "capture": "final-sdk39.json",
+      "pgid": 331520,
+      "physicallyAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "primaryArtifactDirectoriesModified": false,
+  "productDiffBytes": 0,
+  "foreignProcessesTouched": false,
+  "existingRootEsbuildZombies": "preserved, unowned host limitation",
+  "nativeOrNetworkOperations": false
+}

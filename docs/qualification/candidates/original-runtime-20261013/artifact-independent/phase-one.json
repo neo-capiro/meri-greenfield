@@ -1,0 +1,53 @@
+{
+  "review": "independent-original-runtime-artifact",
+  "phase": "read-only-interface-audit",
+  "startedAt": "2026-10-13T17:22:00Z",
+  "checkpointAt": "2026-10-13T17:47:00Z",
+  "baseCommit": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "observedMovingRootCommit": "48a26336724eea786bc0a294de09570d91b559e7",
+  "observedMovingRootTree": "8723139a9856e939290bd0fa4a2fdcd5fa5fac05",
+  "verdict": "CHECKPOINT_ONLY_FINAL_CANDIDATE_PENDING",
+  "implementationEdits": false,
+  "testsExecuted": 0,
+  "newArtifactsGenerated": 0,
+  "newArtifactVisualAcceptance": false,
+  "nativeQualification": false,
+  "providerQualification": false,
+  "observations": [
+    {
+      "evidence": ["packages/skills/originals/commitments_audit/1.0.0/manifest.json", "packages/skills/originals/relationship_brief/1.0.0/manifest.json", "apps/gateway/budget/tool-budget-binding.mjs"],
+      "finding": "The immutable original recipes authorize original reads only. An allocation schedule containing create_word must be permitted by its own manifest; the original read allocation cannot silently become the document output allocation."
+    },
+    {
+      "evidence": ["apps/artifacts/postgres-service.mjs", "apps/control/document-application/current.mjs", "apps/control/document-application/format-admission.mjs"],
+      "finding": "The existing document owner binds producer and ArtifactContext to one exact run, scopes and current grant. Source-side prepared identities must remain branded; separately approved output requires explicit immutable lineage and current admission, without replacing the original source context."
+    },
+    {
+      "evidence": ["apps/worker/conversation/skills/output.mjs", "apps/worker/conversation/skills/selected-runtime.mjs"],
+      "finding": "The observed moving SDK checkpoint returns awaiting-output-approval metadata by default with original binding, selected skill, request, selection, input, preparation, artifact request and immutable base digests. It performs no document effect. Cross-run positive output admission is still pending root implementation and independent exact-pin review."
+    },
+    {
+      "evidence": ["apps/worker/conversation/skills/selected-runtime.mjs", "apps/worker/conversation/skills/receipts.mjs"],
+      "finding": "The first draft allowed an installed-operation subset to reach an unlisted tool and drained pending reads before aborting. Concrete concerns were sent to root. The observed moving checkpoint now checks each operation against the current installation before gateway execution and closes the owned read lifetime before a bounded cleanup. These observations are not a final executable acceptance."
+    },
+    {
+      "evidence": ["apps/gateway/sources/original-tracking/projection.mjs", "packages/skills/evidence/typed-reads.mjs", "apps/control/document-application/commitments-audit/compose.mjs", "apps/control/document-application/commitments-audit/rendering.mjs"],
+      "finding": "Original task/action projections must retain native scoped metadata, hashes and declared freshness/snapshot/history limits. Native task status, candidate identity, selected read attempts and a source citation do not establish semantic delivery or exhaustive original-rubric completion. No plain full-body hash/version may be invented for structured tracking projections."
+    }
+  ],
+  "nextCandidateControls": [
+    "Original read binding, skill, request, subject, window, selected input and receipt digest substitution",
+    "Output-run actor, tenant, conversation, scope, policy, current grant, approval, allocation and budget mismatch",
+    "Missing, stale or revoked output approval remains pending without an artifact ID or a fabricated approval-required event",
+    "Prepared WeakMap identity, literal artifact request, original/base version, object hash and provenance preservation",
+    "Current source/resource authority at output approval, effect and release; historical evidence decisions alone are insufficient",
+    "Actual SDK server to canonical gateway to collector to separately approved document owner; inspect, download, replay, session isolation and revocation",
+    "Every newly retained original/revised DOCX page rendered, independently reopened and visually inspected"
+  ],
+  "cleanup": {
+    "ownedDependencyLinks": 0,
+    "ownedProcessesStarted": 0,
+    "ownedListenersStarted": 0,
+    "preExistingHostProcessesTouched": false
+  }
+}

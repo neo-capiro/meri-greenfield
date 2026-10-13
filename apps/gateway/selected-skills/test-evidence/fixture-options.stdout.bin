@@ -1,0 +1,44 @@
+✔ canonical original allocation admission works before persistence and after exact stored request (32.572613ms)
+✔ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (54.630316ms)
+✔ default disabled activation refuses before current installation, SQL or source (3.376521ms)
+✔ partial installation refuses an uninstalled original operation before owned invocation (10.410121ms)
+✔ installation cannot substitute binding (10.152887ms)
+✔ installation cannot substitute skill (3.517712ms)
+✔ installation cannot substitute requestSha256 (3.060959ms)
+✔ installation cannot substitute selectionSha256 (2.94764ms)
+✔ admission refuses current selectedClient mismatch without source execution (2.973007ms)
+✔ admission refuses current grant mismatch without source execution (3.764351ms)
+✔ admission refuses current allocation mismatch without source execution (4.575304ms)
+✔ admission refuses current policy mismatch without source execution (3.184644ms)
+✔ admission refuses current selection mismatch without source execution (2.189886ms)
+✔ admission refuses current manifest mismatch without source execution (2.027492ms)
+✔ current installation qualification revocation refuses before invocation/source (3.780855ms)
+✔ current source revocation after Fetch leaves canonical UNKNOWN and releases no result (24.071327ms)
+✔ registered source bytes are measured, not accepted from UUID or handler metadata (7.892115ms)
+✔ handler executes with its registered receiver (21.741291ms)
+✔ AbortSignal is kept native and pre-abort produces no installation/SQL/source (3.047939ms)
+✔ hostile admission data/getters/proxies are inert before callbacks (2.465819ms)
+✔ missing native installation owner and invented mutation remain refused (2.941941ms)
+✔ native installation rejects selectedClientId substitution before source (2.726639ms)
+✔ native installation rejects policyRevision substitution before source (2.891996ms)
+✔ native installation rejects scopes substitution before source (2.471367ms)
+✔ native installation rejects descriptorSha256 substitution before source (2.529364ms)
+✔ native installation rejects handlerSourceSha256 substitution before source (3.023252ms)
+✔ native installation rejects executionCatalogSha256 substitution before source (2.572748ms)
+✔ expired or parked native installation is bounded and late receipt cannot execute (17.873736ms)
+✔ installation configuration rejects proxy Map without executing its traps (2.706308ms)
+✔ current context expiry clips admission evidence instead of extending native grant (5.434479ms)
+✔ current opaque context after native read cannot change selected client (4.952769ms)
+✔ source failure details never escape configured installation/admission owner (2.657806ms)
+✔ SDK and compiler deliveries consume the SAME original 24-call SQL budget (384.370927ms)
+✔ fresh current decisions are retained while historical selected subject identity stays pinned (22.031395ms)
+✔ configured synthetic fixture retains exact quick_skill.relationship_brief allocation/identities/current clock (30.621864ms)
+✔ configured synthetic fixture retains exact quick_skill.commitments_audit allocation/identities/current clock (20.742917ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2441.290598

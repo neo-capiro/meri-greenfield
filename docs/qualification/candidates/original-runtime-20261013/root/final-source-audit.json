@@ -1,0 +1,23 @@
+{
+  "sourceBase": "693372018f3aaaf01a5be11e5df9f797926888f8",
+  "finalExecutableSource": "c22e72be56fbe17f218a20b14522b79416edecfe",
+  "rawStagedWhitespace": {
+    "exitCode": 2,
+    "stdout": "apps/control/conversations/skills/evidence/conversation-types-final.stdout.bin:4: new blank line at EOF.\n",
+    "stderr": "",
+    "preserved": "Captured tsc stdout retains its real final blank line; no raw evidence rewritten."
+  },
+  "initialSourceWhitespaceIncludingTestEvidence": {
+    "exitCode": 2,
+    "stdout": "apps/gateway/selected-skills/test-evidence/frozen-final.stdout.bin:154: trailing whitespace.\n+  \napps/gateway/selected-skills/test-evidence/frozen-final.stdout.bin:156: trailing whitespace.\n+  \napps/gateway/selected-skills/test-evidence/mounted-hardened.stdout.bin:47: trailing whitespace.\n+  \napps/gateway/selected-skills/test-evidence/mounted-hardened.stdout.bin:49: trailing whitespace.\n+  \n",
+    "stderr": ""
+  },
+  "sourceWhitespace": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": "",
+    "reason": "Exclude both actual evidence directories; prior capture correctly preserved raw whitespace."
+  },
+  "allApplicationDiffAfterFreezeBytes": 42607,
+  "executableDiffAfterFreezeBytes": 0
+}

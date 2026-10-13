@@ -42,6 +42,8 @@ export async function runLocalCommitmentsAuditFlow({fixture,readSource,sourceSta
  assert.notEqual((await send('revise',{deliveryId:'revoked',baseVersionId:original.version.versionId,request:second.request})).status,200);await assert.rejects(compiler.prepare(revisedInput,fixture.artifactOptions.context,{selection:selected}));
  const stats=fixture.stats();assert.equal(stats.generations,2);assert.equal(stats.settled,2);assert.equal(stats.unknown,0);assert.equal(stats.consumedMicroUsd,'20');
  await mkdir(outputDirectory,{recursive:true});await writeFile(join(outputDirectory,'provenance.json'),JSON.stringify({versions:[original.version,revision.version],preparations:[first,second],sourceReads},null,2)+'\n');
+ // Persist both exact authorized downloads before any optional renderer can fail.
+ for(const [index,label]of ['original','revision'].entries())await writeFile(join(outputDirectory,label+'.docx'),copies[index],{flag:'wx',mode:0o600});
  const rendered=[],deadlineMs=Date.now()+90000;for(const [index,label]of ['original','revision'].entries())rendered.push(await inspectCommitmentsAuditCopy({bytes:copies[index],label,pythonExecutable,sofficeExecutable,tempRoot:fixture.directory,outputDirectory,deadlineMs}));
  assert(rendered[0].content.paragraphs.includes('Commitment ledger'));assert(rendered[1].content.paragraphs.includes(revisedInput.title));
  return {versions:[original.version,revision.version],provenance:[first.provenance,second.provenance],sourceReads,rendered,stats,invariants:{originalPreserved:true,exactImmutableParent:true,createReviseReplayNoDuplicateEffects:true,fullBodyHashAndScopesBound:true,semanticClaimsUnverified:true,coverageVisible:true,inspectDownloadVerified:true,foreignSessionRefused:true,revocationRefused:true}};

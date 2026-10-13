@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "01054949a5f0193cc5bbf2f702336f41b18c6583",
+  "retainedRawFailure": "14/15 initial old eight-page diagnostic cap at fifteen pages; revision lost before retention repair",
+  "files": [
+    {
+      "path": "initial.json",
+      "bytes": 1391,
+      "sha256": "bf6b5da3de83d3db81c985b562af20e47f06954ce7155f7fff1e096f01d71aed"
+    },
+    {
+      "path": "initial.stdout.bin",
+      "bytes": 3773,
+      "sha256": "c14ce13a3958e92d1d025cb7d8b5c8b900662e43a2813e2f49f14312f52ffc6f"
+    },
+    {
+      "path": "initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

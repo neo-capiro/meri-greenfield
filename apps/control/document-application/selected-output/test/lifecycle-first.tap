@@ -1,0 +1,25 @@
+✔ quick_skill.commitments_audit: real separate-output original/revision/replay/inspect/download and every-page render (1971.732037ms)
+✖ quick_skill.relationship_brief: real separate-output original/revision/replay/inspect/download and every-page render (376.645303ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4104.691945
+
+✖ failing tests:
+
+test at apps/control/document-application/selected-output/test/lifecycle.test.mjs:3:89
+✖ quick_skill.relationship_brief: real separate-output original/revision/replay/inspect/download and every-page render (376.645303ms)
+  Error: SELECTED_OUTPUT_SOURCE
+      at fail (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/preparation.mjs:9:46)
+      at sourcePreparation (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/preparation.mjs:19:71)
+      at Object.deliver (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/bridge.mjs:12:58)
+      at Object.deliver (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/test/fixture.mjs:30:33)
+      at TestContext.<anonymous> (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/test/lifecycle.test.mjs:5:264)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'SELECTED_OUTPUT_SOURCE'
+  }

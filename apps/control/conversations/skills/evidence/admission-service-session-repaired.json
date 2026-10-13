@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/service-admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "6656d98de7452fe22d43dc3bf07721772ccb7201",
+  "sourceDiffSha256": "7a3941fbdf6fde387f4e3db1f3107f202cd48c40742664561e50da1db6a3cf63",
+  "sourceDiffBytes": 3647,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:10:36.848826+00:00",
+  "durationSeconds": 2.022,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 297573,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/admission-service-session-repaired.stdout.bin",
+      "bytes": 726,
+      "sha256": "f63c856ddde65e8250e0b0a8e074858377795469515f9dca14d20d7fa7d34342"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/admission-service-session-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Actual opaque session owner refuses changed selected-client during reauthentication with SESSION_REFUSED before service SESSION_CHANGED; corrected expected canonical error, retaining no-persistence assertion and both earlier failures.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

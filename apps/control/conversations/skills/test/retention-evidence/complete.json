@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/test/retention.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/application.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-output-retention",
+  "sourceHead": "88b5c4453adfa53631417474829ee38137f0bee3",
+  "sourceDiffSha256": "9ed01a38413df6ab4982480f56ed324df405d112c51eb0f4f9d2d3ffa0ffaab5",
+  "sourceDiffBytes": 68155,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:22:28.358223+00:00",
+  "durationSeconds": 5.564,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 305297,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/complete.stdout.bin",
+      "bytes": 8596,
+      "sha256": "5b5ab0ae41d5e112b91dd584923bda8c101ebc2a87c322587d711668ff94a7f2"
+    },
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/complete.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserve dependency-blocked checks: restore existing pinned Temporal client1.24.0 package via owned canonical conversations dependency link. No new packages or native service execution.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

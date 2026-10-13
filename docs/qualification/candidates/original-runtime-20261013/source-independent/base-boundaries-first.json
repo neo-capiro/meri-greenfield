@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceTree": "cf1e7e7c320e1477b7c1af8a39b4bab7f0cd1dc6",
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/original-runtime-20261013/source-independent/base-boundaries.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 2.024,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1072,
+  "stdoutSha256": "72333a92fd5c8abe04dc79c6df13ea3ac6f1592d2856204534be9c24ae4c0bcd",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

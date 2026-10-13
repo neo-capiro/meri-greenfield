@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/control-composition-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "6656d98de7452fe22d43dc3bf07721772ccb7201",
+  "sourceDiffSha256": "6cebe03d81cf1c9f57d951af7b98f2af573a905678188d7017ffa841e199d35f",
+  "sourceDiffBytes": 25983,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:14:13.733652+00:00",
+  "durationSeconds": 2.226,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 300249,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/independent-control-repaired.stdout.bin",
+      "bytes": 1962,
+      "sha256": "71ca2ed26ded6d3634045f355c157e2d12f34f823a5fb972d680f9dd44766c99"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/independent-control-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Repair all six independent inert-boundary/current-time failures, preserving original failed review evidence.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

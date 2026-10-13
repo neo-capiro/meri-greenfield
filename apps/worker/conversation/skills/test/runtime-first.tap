@@ -1,0 +1,77 @@
+✔ quick_skill.relationship_brief: actual adopted SDK server lists only immutable original read tools (33.843707ms)
+✔ quick_skill.commitments_audit: actual adopted SDK server lists only immutable original read tools (12.517815ms)
+✔ actual MCP call preserves exact canonical operation and literal JSON arguments (4.705952ms)
+✔ unlisted MCP operation and extra outer selector cannot change gateway operation (2.601241ms)
+✔ gateway denial is sanitized and never becomes successful source evidence (2.561011ms)
+✔ server rejects altered original asset/unsupported selection before resource allocation (8.068946ms)
+✖ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector refuses ungranted artifact (125.198378ms)
+✖ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector refuses ungranted artifact (60.758256ms)
+✔ install binding substitution refuses before SDK exposure (1.007439ms)
+✔ install skill substitution refuses before SDK exposure (0.908431ms)
+✔ install requestSha256 substitution refuses before SDK exposure (0.852709ms)
+✔ install selectionSha256 substitution refuses before SDK exposure (0.643247ms)
+✔ install baseCatalogSha256 substitution refuses before SDK exposure (0.581085ms)
+✔ install executionCatalogSha256 substitution refuses before SDK exposure (0.583868ms)
+✔ install operations substitution refuses before SDK exposure (0.73918ms)
+✔ install checkedAtMs substitution refuses before SDK exposure (0.725079ms)
+✔ install expiresAtMs substitution refuses before SDK exposure (0.653893ms)
+✔ admission binding substitution refuses before SDK exposure (0.886029ms)
+✔ admission skill substitution refuses before SDK exposure (0.945066ms)
+✔ admission requestSha256 substitution refuses before SDK exposure (1.025887ms)
+✔ admission selectionSha256 substitution refuses before SDK exposure (0.788323ms)
+✔ admission manifestSha256 substitution refuses before SDK exposure (0.801282ms)
+✔ admission catalogSha256 substitution refuses before SDK exposure (0.788604ms)
+✔ admission budgets substitution refuses before SDK exposure (0.938787ms)
+✔ admission allocationSha256 substitution refuses before SDK exposure (0.766391ms)
+✔ admission policyRevision substitution refuses before SDK exposure (0.820922ms)
+✔ admission checkedAtMs substitution refuses before SDK exposure (0.666581ms)
+✔ admission expiresAtMs substitution refuses before SDK exposure (0.620253ms)
+✔ revocation and changed installation after mounting cannot release source result (4.022004ms)
+✔ model source arguments cannot inject authority or substitute a canonical operation (3.421491ms)
+✔ tool-call cap covers denied reads and collector work, without creating another budget owner (17.761498ms)
+✔ task result must be literal successful exact-pin data; altered replay never recompiles (36.290338ms)
+✔ actual single activity query mounts original reads and fails before completed/artifact publication without output grant (35.651327ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 31
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2502.538925
+
+✖ failing tests:
+
+test at apps/worker/conversation/skills/test/selected-runtime.test.mjs:5:89
+✖ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector refuses ungranted artifact (125.198378ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(r.receipts().some(p=>p.result.messages?.some(m=>m.section?.startInclusive>0)))
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-sdk-skills/apps/worker/conversation/skills/test/selected-runtime.test.mjs:5:1324)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at apps/worker/conversation/skills/test/selected-runtime.test.mjs:5:89
+✖ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector refuses ungranted artifact (60.758256ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(r.receipts().some(p=>p.result.messages?.some(m=>m.section?.startInclusive>0)))
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-sdk-skills/apps/worker/conversation/skills/test/selected-runtime.test.mjs:5:1324)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

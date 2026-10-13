@@ -1,0 +1,180 @@
+{
+  "removedOwnedDependencies": [
+    {
+      "path": "node_modules",
+      "donor": "/workspace/meri-greenfield/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "donor": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "donor": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "donor": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "donor": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "type": "owned copied dependency tree",
+      "entriesRemoved": 2986,
+      "donorPreserved": true
+    },
+    {
+      "path": "docs/qualification/candidates/original-runtime-20261013/root/.npm-cache",
+      "type": "owned npm cache"
+    }
+  ],
+  "ownedCaptureGroups": [
+    {
+      "receipt": "apps/control/conversations/skills/evidence/canonical-pipeline-first.json",
+      "pgid": 308814,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/output-inert-repaired.json",
+      "pgid": 304061,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/independent-control-lifetime-repaired.json",
+      "pgid": 303144,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/public-build-final.json",
+      "pgid": 301502,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/sdk-root-contract-first.json",
+      "pgid": 295676,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/conversation-service-first.json",
+      "pgid": 295108,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/public-build-root.json",
+      "pgid": 298475,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/canonical-pipeline-delayed.json",
+      "pgid": 310195,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/source-version-association-root.json",
+      "pgid": 319586,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/source-version-association-repaired.json",
+      "pgid": 318330,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/public-final-check.json",
+      "pgid": 306139,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/admission-service-repaired.json",
+      "pgid": 296796,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/admission-service-session-repaired.json",
+      "pgid": 297573,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/conversation-types-final.json",
+      "pgid": 314272,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/admission-service-first.json",
+      "pgid": 296536,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/source-current-combined.json",
+      "pgid": 300923,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/installed-public-final.json",
+      "pgid": 313151,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/canonical-pipeline-second.json",
+      "pgid": 309273,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/independent-control-repaired.json",
+      "pgid": 300249,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/frozen-source-controls.json",
+      "pgid": 306140,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/package-final-pack.json",
+      "pgid": 312862,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    },
+    {
+      "receipt": "apps/control/conversations/skills/evidence/integrated-regression.json",
+      "pgid": 314273,
+      "capturedAbsent": true,
+      "currentlyAbsent": true
+    }
+  ],
+  "otherOwnersUntouched": true,
+  "priorPID1ZombiesUntouched": true
+}

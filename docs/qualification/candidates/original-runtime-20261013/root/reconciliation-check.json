@@ -1,0 +1,10 @@
+{
+  "state": "PASS",
+  "exactOriginalRecords": 53,
+  "detailedRows": 16,
+  "wholeOpenBefore": 51,
+  "wholeOpenAfter": 51,
+  "nativeAcceptance": false,
+  "originalLocatorCommitFallback": "Missing historical commit field resolves to18adda only after exact full planSha/rowSha/row checks",
+  "preservedInitialError": "KeyError commit; no output written; original historical locators kept unchanged"
+}

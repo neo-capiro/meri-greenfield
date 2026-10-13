@@ -1,0 +1,33 @@
+{
+  "ownedCaptureGroups": [
+    {
+      "label": "focused21",
+      "pidAndPgid": 298327,
+      "processGroupAbsent": true
+    },
+    {
+      "label": "reopen",
+      "pidAndPgid": 299461,
+      "processGroupAbsent": true
+    },
+    {
+      "label": "reopen-distinct",
+      "pidAndPgid": 301615,
+      "processGroupAbsent": true
+    },
+    {
+      "label": "native-proof",
+      "pidAndPgid": 302958,
+      "processGroupAbsent": true
+    }
+  ],
+  "ownedDependencyLinkRemoved": true,
+  "donorPreserved": true,
+  "ownedProductEdits": false,
+  "primaryAuthorWorktreeUntouched": true,
+  "otherHostProcessesTouched": false,
+  "freshFixtureCleanup": {
+    "executorDirectoriesAbsent": true,
+    "storeRemoved": true
+  }
+}

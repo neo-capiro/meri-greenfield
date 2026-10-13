@@ -43,5 +43,11 @@ export function createPostgresAdmittedRunOwner(configuration){
    return JSON.stringify({binding:c.binding,policyRevision:c.policyRevision,deadlineMs:result,checkedAtMs});
   }finally{life.close();}
  }
- return Object.freeze({currentRun});
+ // Return only a current stored allocation after the SAME canonical native
+ // run/grant/allocation checks; this exposes no credential or grant minting.
+ async function currentAllocation(binding,options){
+  const observed=JSON.parse(await currentRun(binding,options));
+  return JSON.stringify({...observed,allocation:c.a,allocationSha256:c.allocationSha256});
+ }
+ return Object.freeze({currentRun,currentAllocation});
 }

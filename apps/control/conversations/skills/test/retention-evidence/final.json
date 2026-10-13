@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/test/retention.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/application.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-output-retention",
+  "sourceHead": "88b5c4453adfa53631417474829ee38137f0bee3",
+  "sourceDiffSha256": "c15d0ec4ca3cc8e40a42f339ad36e1b3afda9a43b0b27b066100958510350059",
+  "sourceDiffBytes": 59427,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:20:27.774704+00:00",
+  "durationSeconds": 4.882,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 304189,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/final.stdout.bin",
+      "bytes": 6166,
+      "sha256": "9a8ff96bb43e2483f1972f81d6c4ef39fc92b132fbc2d83a6b9214a22600869f"
+    },
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserve second dependency failure: pinned window dependency resolved, existing application/lifecycle suites additionally need pinned AI SDK7.0.137. Borrow owned UI package link to installed donor; no dependency source mutation/install.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

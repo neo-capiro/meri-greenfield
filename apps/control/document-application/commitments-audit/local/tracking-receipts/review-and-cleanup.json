@@ -1,0 +1,411 @@
+{
+  "sourceOnly": true,
+  "finalDocuments": [
+    {
+      "label": "original",
+      "docxSha256": "91de870306ee43e878c74f96a6c4ea3aeb478bf44bee15705ae331d5e7dd8b67",
+      "pagesOpened": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "everyRetainedFinalPageOpened": true,
+      "processesClean": true
+    },
+    {
+      "label": "revision",
+      "docxSha256": "422a080ffaccd1b01e8486b86124c35b3fdb297a410c3f04e48a32c59adc61b8",
+      "pagesOpened": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "everyRetainedFinalPageOpened": true,
+      "processesClean": true
+    }
+  ],
+  "finalPagesOpened": 30,
+  "initialFailedOriginalPagesOpened": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "initialFailedRevision": "Lost by pre-repair flow; not recovered or inspected. Initial failed source/provenance/bytes retained.",
+  "visualFindings": "Native appendix labels/proofs visible, dense JSON wraps inside margins without clipping. Native done/outreach_completed remain unverified; delivery/acceptance false. Dense provenance is a usability limitation.",
+  "successfulDuplicateTestCopiesDisposed": [
+    {
+      "successfulTransientTestCopies": "final",
+      "files": [
+        {
+          "name": "flow-receipt.json",
+          "sha256": "5cd1967d8ae2b70b0e7e065b9b838a933db91688044ac26f98e67963d22ba02e"
+        },
+        {
+          "name": "original-content.json",
+          "sha256": "4091999cf42ca1ffdcf9b769432e2178f35f2ff8f9f3af6f8059023e6bb46f89"
+        },
+        {
+          "name": "original-inspection.json",
+          "sha256": "df4f0cc69863bd4215e507cac95f5b32e5036274f99ea8cfe6f7f1369d6fac44"
+        },
+        {
+          "name": "original-preview-1.png",
+          "sha256": "96cca5f97a9180b45e6f51a0e8fcbfb969c646313b12c946b15c8c6c4016f183"
+        },
+        {
+          "name": "original-preview-10.png",
+          "sha256": "6fdb6418afd645fd86b2f1468fd254fea2f685b4c4bfd6ee97315a9a110ff199"
+        },
+        {
+          "name": "original-preview-11.png",
+          "sha256": "c0f837efc5402f4b2294d625f8ea789badd6beb7284cded69f1a374cf6476a6b"
+        },
+        {
+          "name": "original-preview-12.png",
+          "sha256": "7fdce2fa88398fe4bfbe8587f6e3c549366887bc8efbcb64b1eb8b0cb346ace9"
+        },
+        {
+          "name": "original-preview-13.png",
+          "sha256": "d6ca07be8484776ebdbdef38965964f7e433dba1629e9df23a66065e72865a5c"
+        },
+        {
+          "name": "original-preview-14.png",
+          "sha256": "94690010dc71845ac46cdc5fa19e099de7bba6f1bd668761e2791b362eace54a"
+        },
+        {
+          "name": "original-preview-15.png",
+          "sha256": "e5ae5d7d3fe33fdf43730a1b8a2c97bacef850e54a0e4eb9913e3b2d20d100b0"
+        },
+        {
+          "name": "original-preview-2.png",
+          "sha256": "0db4087a92e7812038c7b46e96cba57df278f9c92a9713ed82bf0df0b31f5cce"
+        },
+        {
+          "name": "original-preview-3.png",
+          "sha256": "8de4ba09892e0e2068489d23605799361d9d38487b1dde6d22a97b60b86ee572"
+        },
+        {
+          "name": "original-preview-4.png",
+          "sha256": "f5b6ee28c681b2c8376938bddeeddde9d5ccb667cf470f49f738a211bab116b0"
+        },
+        {
+          "name": "original-preview-5.png",
+          "sha256": "cdd8c7f987781151ea7bba0b3d94e06c6b3a521bc06c6bb4f17d71acd6b810e9"
+        },
+        {
+          "name": "original-preview-6.png",
+          "sha256": "81b63e0304ab3302b0bd4f84f0dd1a43e939462bc73a62fa8ceaa82bd5b48fa5"
+        },
+        {
+          "name": "original-preview-7.png",
+          "sha256": "44b21791ed36349dac535e21d4e87dcd407ef5f722fad78cf12d7a00fec569bb"
+        },
+        {
+          "name": "original-preview-8.png",
+          "sha256": "81e4bbed11ace902a3e95f6606d97029d964b25526c73a697dc617ce72c0334d"
+        },
+        {
+          "name": "original-preview-9.png",
+          "sha256": "666a28647d312aa9aeb8491cecadb154fb4d88d9df9a8fcc1aee3b72f4e194ca"
+        },
+        {
+          "name": "original-preview.pdf",
+          "sha256": "155ef2a934c620b29fbeb1ab9368e8ad7a6b40d1a1c20e6dc9ebc67c55238365"
+        },
+        {
+          "name": "original.docx",
+          "sha256": "55cafe9443e96b42872e4e04215608b2a81c609b8065470c4ee6887ecb63beb6"
+        },
+        {
+          "name": "provenance.json",
+          "sha256": "7a75e4f71855c262aabd34322cd8def11be61574b9fed96fc510e9623e944e6f"
+        },
+        {
+          "name": "revision-content.json",
+          "sha256": "aaff68e0f9f0589551b7972e6f9af636b4e5f4ec4e3ff7b97b251b7940993e13"
+        },
+        {
+          "name": "revision-inspection.json",
+          "sha256": "7126561770c11d2e78127ab17a24ca4f1c052e4823d02104f5f08324b74c8da1"
+        },
+        {
+          "name": "revision-preview-1.png",
+          "sha256": "3b464b399419a1da61a4179b5c479ea94d7e94caadeee15ea5ff4a70ecd8ddb5"
+        },
+        {
+          "name": "revision-preview-10.png",
+          "sha256": "b642b33cd08820452b28a8fedb517d622ad8b53221cdf040dd53a6cb5635e28a"
+        },
+        {
+          "name": "revision-preview-11.png",
+          "sha256": "4d5d7ce72b0bfb182bc96a1275941b2cd7fbaacf2e0000e1cbee35658d303bb6"
+        },
+        {
+          "name": "revision-preview-12.png",
+          "sha256": "7fdce2fa88398fe4bfbe8587f6e3c549366887bc8efbcb64b1eb8b0cb346ace9"
+        },
+        {
+          "name": "revision-preview-13.png",
+          "sha256": "d6ca07be8484776ebdbdef38965964f7e433dba1629e9df23a66065e72865a5c"
+        },
+        {
+          "name": "revision-preview-14.png",
+          "sha256": "94690010dc71845ac46cdc5fa19e099de7bba6f1bd668761e2791b362eace54a"
+        },
+        {
+          "name": "revision-preview-15.png",
+          "sha256": "5278b2c850921972d18d353341f60d6facafeede62daddc58d931bd4756ddfbd"
+        },
+        {
+          "name": "revision-preview-2.png",
+          "sha256": "0db4087a92e7812038c7b46e96cba57df278f9c92a9713ed82bf0df0b31f5cce"
+        },
+        {
+          "name": "revision-preview-3.png",
+          "sha256": "6c4cac037cc66a418214754c5ea7f37c72999eb1446ce5a4268b261b99741c63"
+        },
+        {
+          "name": "revision-preview-4.png",
+          "sha256": "f5b6ee28c681b2c8376938bddeeddde9d5ccb667cf470f49f738a211bab116b0"
+        },
+        {
+          "name": "revision-preview-5.png",
+          "sha256": "cdd8c7f987781151ea7bba0b3d94e06c6b3a521bc06c6bb4f17d71acd6b810e9"
+        },
+        {
+          "name": "revision-preview-6.png",
+          "sha256": "81b63e0304ab3302b0bd4f84f0dd1a43e939462bc73a62fa8ceaa82bd5b48fa5"
+        },
+        {
+          "name": "revision-preview-7.png",
+          "sha256": "44b21791ed36349dac535e21d4e87dcd407ef5f722fad78cf12d7a00fec569bb"
+        },
+        {
+          "name": "revision-preview-8.png",
+          "sha256": "9915ff077b468163f5204360b9e7542434d0beddf611a0eedd39ceeeeb467b40"
+        },
+        {
+          "name": "revision-preview-9.png",
+          "sha256": "666a28647d312aa9aeb8491cecadb154fb4d88d9df9a8fcc1aee3b72f4e194ca"
+        },
+        {
+          "name": "revision-preview.pdf",
+          "sha256": "27878f9d4baf3b184ee38fff51bd2c806f6b4d189653ee6e0893d460e0f565cf"
+        },
+        {
+          "name": "revision.docx",
+          "sha256": "4c0dca7f6f07a0bf2c8795ab2bb759f89fc082deec49ab47c37d06ff6c8789bd"
+        }
+      ],
+      "reason": "Successful duplicate test output; primary exact final-retained pair and all failed evidence remain retained."
+    },
+    {
+      "successfulTransientTestCopies": "final-controls",
+      "files": [
+        {
+          "name": "flow-receipt.json",
+          "sha256": "8ac8e5767b9dc86062f6d1b6b630e6fc08e2a3182ec76f693abe718a93d20bec"
+        },
+        {
+          "name": "original-content.json",
+          "sha256": "b59b990bf1d8c294d196a05373c0add68214016af264f8dd87bc9f951a7ee303"
+        },
+        {
+          "name": "original-inspection.json",
+          "sha256": "4cc5def8288e52a1656677015215b75171285cd51ada2e8c1177914bffaa6ec2"
+        },
+        {
+          "name": "original-preview-1.png",
+          "sha256": "194e02b3162cafd8df380ac17463ada627347efbba9c9fcc65ed9a18e303656f"
+        },
+        {
+          "name": "original-preview-10.png",
+          "sha256": "a51bef6bb3eb37fd155341e1b914f764a172597a1ab61df04986e238398862d8"
+        },
+        {
+          "name": "original-preview-11.png",
+          "sha256": "9000e045645bf3731b045220d6e96623e14726765802724b66596685024fd92a"
+        },
+        {
+          "name": "original-preview-12.png",
+          "sha256": "7fdce2fa88398fe4bfbe8587f6e3c549366887bc8efbcb64b1eb8b0cb346ace9"
+        },
+        {
+          "name": "original-preview-13.png",
+          "sha256": "d6ca07be8484776ebdbdef38965964f7e433dba1629e9df23a66065e72865a5c"
+        },
+        {
+          "name": "original-preview-14.png",
+          "sha256": "94690010dc71845ac46cdc5fa19e099de7bba6f1bd668761e2791b362eace54a"
+        },
+        {
+          "name": "original-preview-15.png",
+          "sha256": "058056969278903b2b787eaef53b64ae86e447e3faa122c393d8a3d3410c0a1c"
+        },
+        {
+          "name": "original-preview-2.png",
+          "sha256": "0db4087a92e7812038c7b46e96cba57df278f9c92a9713ed82bf0df0b31f5cce"
+        },
+        {
+          "name": "original-preview-3.png",
+          "sha256": "42ba266dcbbc5745c3b7575f73078a06a603482f7a1e3fa9d883e2b80bd4f18a"
+        },
+        {
+          "name": "original-preview-4.png",
+          "sha256": "f5b6ee28c681b2c8376938bddeeddde9d5ccb667cf470f49f738a211bab116b0"
+        },
+        {
+          "name": "original-preview-5.png",
+          "sha256": "cdd8c7f987781151ea7bba0b3d94e06c6b3a521bc06c6bb4f17d71acd6b810e9"
+        },
+        {
+          "name": "original-preview-6.png",
+          "sha256": "81b63e0304ab3302b0bd4f84f0dd1a43e939462bc73a62fa8ceaa82bd5b48fa5"
+        },
+        {
+          "name": "original-preview-7.png",
+          "sha256": "44b21791ed36349dac535e21d4e87dcd407ef5f722fad78cf12d7a00fec569bb"
+        },
+        {
+          "name": "original-preview-8.png",
+          "sha256": "5cac36d5e24c267ccbc34bc1f3222470039a11861db974d4639c2f325156729b"
+        },
+        {
+          "name": "original-preview-9.png",
+          "sha256": "666a28647d312aa9aeb8491cecadb154fb4d88d9df9a8fcc1aee3b72f4e194ca"
+        },
+        {
+          "name": "original-preview.pdf",
+          "sha256": "756487fcf0c1eb2c685322efef7ddfa92048857c7042043dba55e1596932114c"
+        },
+        {
+          "name": "original.docx",
+          "sha256": "5da12b6830358ab61e1816c4bafa3d165a166d32f0dc8354da134ff47e606bdf"
+        },
+        {
+          "name": "provenance.json",
+          "sha256": "ada407c7db13f0cde3ac37309f612de5e01fb72fe29b7d271f71c05f60c9d2a8"
+        },
+        {
+          "name": "revision-content.json",
+          "sha256": "bf3876b3e577e289fb96a1ef6cc522527716ecf8e521f146edc83dd18591f5ec"
+        },
+        {
+          "name": "revision-inspection.json",
+          "sha256": "fd04e73c709f944ead079472215cf4fbb72e9fba7ade559736dec87cf9a5616c"
+        },
+        {
+          "name": "revision-preview-1.png",
+          "sha256": "f92a63fb9e1c721d1d5258905aa5e65427af3fbaed4626f9c38243115421b043"
+        },
+        {
+          "name": "revision-preview-10.png",
+          "sha256": "81814fcfecd16895ec3b7380629d5d87ac1de633e0113750588be8a3aa0cc9dd"
+        },
+        {
+          "name": "revision-preview-11.png",
+          "sha256": "dc907904d8f4005168e006873e9c91e05500e2126f1791db1f80f4e6f8d39147"
+        },
+        {
+          "name": "revision-preview-12.png",
+          "sha256": "7fdce2fa88398fe4bfbe8587f6e3c549366887bc8efbcb64b1eb8b0cb346ace9"
+        },
+        {
+          "name": "revision-preview-13.png",
+          "sha256": "d6ca07be8484776ebdbdef38965964f7e433dba1629e9df23a66065e72865a5c"
+        },
+        {
+          "name": "revision-preview-14.png",
+          "sha256": "94690010dc71845ac46cdc5fa19e099de7bba6f1bd668761e2791b362eace54a"
+        },
+        {
+          "name": "revision-preview-15.png",
+          "sha256": "13a19000e537e7973cbd2f800148577ef1657ea8c584620c198d2eb35174ca20"
+        },
+        {
+          "name": "revision-preview-2.png",
+          "sha256": "0db4087a92e7812038c7b46e96cba57df278f9c92a9713ed82bf0df0b31f5cce"
+        },
+        {
+          "name": "revision-preview-3.png",
+          "sha256": "a5f38be41a08d3ca8291d29d490c39713c7d0288405262fb7bdfe59f95a1a26f"
+        },
+        {
+          "name": "revision-preview-4.png",
+          "sha256": "f5b6ee28c681b2c8376938bddeeddde9d5ccb667cf470f49f738a211bab116b0"
+        },
+        {
+          "name": "revision-preview-5.png",
+          "sha256": "cdd8c7f987781151ea7bba0b3d94e06c6b3a521bc06c6bb4f17d71acd6b810e9"
+        },
+        {
+          "name": "revision-preview-6.png",
+          "sha256": "81b63e0304ab3302b0bd4f84f0dd1a43e939462bc73a62fa8ceaa82bd5b48fa5"
+        },
+        {
+          "name": "revision-preview-7.png",
+          "sha256": "44b21791ed36349dac535e21d4e87dcd407ef5f722fad78cf12d7a00fec569bb"
+        },
+        {
+          "name": "revision-preview-8.png",
+          "sha256": "cdb58a190364b9aec4e60788254aba03d4ef269e549e2390c8c88ca36bea3b1d"
+        },
+        {
+          "name": "revision-preview-9.png",
+          "sha256": "666a28647d312aa9aeb8491cecadb154fb4d88d9df9a8fcc1aee3b72f4e194ca"
+        },
+        {
+          "name": "revision-preview.pdf",
+          "sha256": "e08936111eb508792fdacec19e614a7de6b34a03d884e9b9a527174bb9339aec"
+        },
+        {
+          "name": "revision.docx",
+          "sha256": "5e5fc78bda31560fe1f92443fffbf9273bcab54e8c44c88862cef4f58741efed"
+        }
+      ],
+      "reason": "Successful duplicate test output; primary exact final-retained pair and all failed evidence remain retained."
+    }
+  ],
+  "prechangeFilesAndReceiptsPreserved": true,
+  "sharedWorkbookRendererUnchanged": true,
+  "ownedDependencyLinkRemoved": true,
+  "donorPreserved": true,
+  "allOwnedCaptureProcessGroupsAbsent": true,
+  "checks": "20/20 combined;2/2 focused actual version-content conflict/dual-download renderer-failure controls,21 unique cases;initial14/15 diagnostic8page failure retained."
+}

@@ -1,0 +1,66 @@
+✔ canonical original allocation admission works before persistence and after exact stored request (34.991008ms)
+✔ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (58.256411ms)
+✔ default disabled activation refuses before current installation, SQL or source (3.440384ms)
+✖ partial installation refuses an uninstalled original operation before owned invocation (12.809058ms)
+✔ installation cannot substitute binding (8.394494ms)
+✔ installation cannot substitute skill (3.169721ms)
+✔ installation cannot substitute requestSha256 (2.998215ms)
+✔ installation cannot substitute selectionSha256 (3.175479ms)
+✔ admission refuses current selectedClient mismatch without source execution (2.614374ms)
+✔ admission refuses current grant mismatch without source execution (4.387054ms)
+✔ admission refuses current allocation mismatch without source execution (3.80006ms)
+✔ admission refuses current policy mismatch without source execution (3.431361ms)
+✔ admission refuses current selection mismatch without source execution (2.326455ms)
+✔ admission refuses current manifest mismatch without source execution (2.13501ms)
+✔ current installation qualification revocation refuses before invocation/source (2.97415ms)
+✔ current source revocation after Fetch leaves canonical UNKNOWN and releases no result (25.007127ms)
+✔ registered source bytes are measured, not accepted from UUID or handler metadata (6.079646ms)
+✔ handler executes with its registered receiver (27.175558ms)
+✔ AbortSignal is kept native and pre-abort produces no installation/SQL/source (4.742434ms)
+✔ hostile admission data/getters/proxies are inert before callbacks (2.52456ms)
+✔ missing native installation owner and invented mutation remain refused (3.037424ms)
+✔ native installation rejects selectedClientId substitution before source (3.016193ms)
+✔ native installation rejects policyRevision substitution before source (2.637639ms)
+✔ native installation rejects scopes substitution before source (2.572251ms)
+✔ native installation rejects descriptorSha256 substitution before source (3.34369ms)
+✔ native installation rejects handlerSourceSha256 substitution before source (4.161388ms)
+✔ native installation rejects executionCatalogSha256 substitution before source (2.731508ms)
+✔ expired or parked native installation is bounded and late receipt cannot execute (18.044547ms)
+✔ installation configuration rejects proxy Map without executing its traps (2.917535ms)
+✔ current context expiry clips admission evidence instead of extending native grant (5.782733ms)
+✔ current opaque context after native read cannot change selected client (5.069331ms)
+✔ source failure details never escape configured installation/admission owner (2.781392ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 31
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2030.433516
+
+✖ failing tests:
+
+test at apps/gateway/selected-skills/mount.test.mjs:19:1
+✖ partial installation refuses an uninstalled original operation before owned invocation (12.809058ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /UNAVAILABLE/. Input:
+  
+  'GatewayDenied: INTERNAL_ERROR'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-original-admission-mount/apps/gateway/selected-skills/mount.test.mjs:19:154)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: INTERNAL_ERROR
+        at safeFailure (file:///workspace/meri-original-admission-mount/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at Object.execute (file:///workspace/meri-original-admission-mount/apps/gateway/selected-skills/mount.mjs:30:23)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-original-admission-mount/apps/gateway/selected-skills/mount.test.mjs:19:154)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /UNAVAILABLE/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

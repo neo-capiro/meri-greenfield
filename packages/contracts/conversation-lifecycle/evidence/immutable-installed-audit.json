@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "packages/contracts/conversation-lifecycle/evidence/audit.mjs"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "a8de7d4a7742f1688317f4995e6d9b4058ac0e79faf332b25a12938aead9dafe",
+  "sourceDiffBytes": 225200,
+  "captureSha256": "1682a892363b4ecccafa15c64c4fcc8d1e82c2ca2b54df05541e974b281298d8",
+  "startedAt": "2026-10-13T17:38:32.857078+00:00",
+  "durationSeconds": 0.064,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 279308,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/immutable-installed-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "packages/contracts/conversation-lifecycle/evidence/immutable-installed-audit.stderr.bin",
+      "bytes": 2071,
+      "sha256": "a613d00307cad3f4aafd0a3bb1ee7862304c1b73e958988bdc879719b0e98f56"
+    }
+  ],
+  "rerunReason": "Source generator/test capture; prior failed labels retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

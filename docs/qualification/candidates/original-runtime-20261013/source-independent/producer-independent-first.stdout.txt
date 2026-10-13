@@ -1,0 +1,20 @@
+✔ query_tasks: actual Fetch mount preserves native empty assertion but refuses verified absence (26.371234ms)
+✔ query_tasks: source authority coherence rejects foreign claims scope before broker/Fetch (1.498653ms)
+✔ query_tasks: mismatched request digest and successor identity refuse before broker/Fetch (0.747328ms)
+✔ query_tasks: borrowed adapter uses original receiver without cloning its unused state (1.183061ms)
+✔ query_tasks: authority revocation after native body prevents settlement/release (3.296073ms)
+✔ query_tasks: forged native original owner identity never settles even if HTTP succeeds (1.971441ms)
+✔ query_action_items: actual Fetch mount preserves native empty assertion but refuses verified absence (6.11921ms)
+✔ query_action_items: source authority coherence rejects foreign claims scope before broker/Fetch (0.940437ms)
+✔ query_action_items: mismatched request digest and successor identity refuse before broker/Fetch (0.600118ms)
+✔ query_action_items: borrowed adapter uses original receiver without cloning its unused state (0.952015ms)
+✔ query_action_items: authority revocation after native body prevents settlement/release (2.523236ms)
+✔ query_action_items: forged native original owner identity never settles even if HTTP succeeds (1.454948ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1721.048423

@@ -1,0 +1,127 @@
+✔ same canonical submit persists exact original pins only after trusted admission and rechecks before/after start and replay (51.164865ms)
+✔ refused deny native admission leaves no durable request or Temporal start (2.938531ms)
+✔ refused changed native admission leaves no durable request or Temporal start (2.183623ms)
+✔ revocation after durable acceptance blocks Temporal start and exact replay release (5.674549ms)
+✔ opaque session selected-client change during admission prevents durable release (2.463752ms)
+✔ plain worker publication cannot invent an artifact availability event (8.887471ms)
+✔ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (382.72169ms)
+✔ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (312.018158ms)
+✔ missing approval is pending with no IDs/effect; cloned source object cannot acquire preparation identity (39.474697ms)
+✔ approved output sourcePinsSha256 substitution refuses before artifact effects (40.535372ms)
+✔ approved output outputBinding substitution refuses before artifact effects (33.27287ms)
+✔ approved output scopes substitution refuses before artifact effects (40.615341ms)
+✔ approved output policyRevision substitution refuses before artifact effects (33.762857ms)
+✔ approved output allocationSha256 substitution refuses before artifact effects (51.798241ms)
+✔ approved output grantId substitution refuses before artifact effects (35.683521ms)
+✔ approved output approvalReceiptId substitution refuses before artifact effects (43.291079ms)
+✔ approved output deadlineMs substitution refuses before artifact effects (33.551765ms)
+✔ approved output maxBytes substitution refuses before artifact effects (34.597869ms)
+✔ native retained source revocation refuses output even though old source decisions and grant remain (32.526444ms)
+✔ current retained evidence evidenceSha256 substitution refuses before generation (40.627079ms)
+✔ current retained evidence sourcePinsSha256 substitution refuses before generation (32.762687ms)
+✔ current retained evidence scopes substitution refuses before generation (35.194941ms)
+✔ current retained evidence policyRevision substitution refuses before generation (31.591847ms)
+✔ current retained evidence checkedAtMs substitution refuses before generation (38.196967ms)
+✔ current retained evidence expiresAtMs substitution refuses before generation (31.158049ms)
+✔ valid-looking different grant ID cannot alias current output producer grant (35.676361ms)
+✔ read refuses unretained/cloned preparation and caller credential before native output reads (28.116433ms)
+✔ canonical original allocation admission works before persistence and after exact stored request (33.37355ms)
+✔ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (64.637136ms)
+✔ default disabled activation refuses before current installation, SQL or source (5.939986ms)
+✔ partial installation refuses an uninstalled original operation before owned invocation (13.316889ms)
+✔ installation cannot substitute binding (3.736103ms)
+✔ installation cannot substitute skill (3.064389ms)
+✔ installation cannot substitute requestSha256 (3.188495ms)
+✔ installation cannot substitute selectionSha256 (3.141725ms)
+✔ admission refuses current selectedClient mismatch without source execution (8.192152ms)
+✔ admission refuses current grant mismatch without source execution (5.124888ms)
+✔ admission refuses current allocation mismatch without source execution (11.472363ms)
+✔ admission refuses current policy mismatch without source execution (4.255068ms)
+✔ admission refuses current selection mismatch without source execution (2.787495ms)
+✔ admission refuses current manifest mismatch without source execution (2.258194ms)
+✔ current installation qualification revocation refuses before invocation/source (3.244448ms)
+✔ current source revocation after Fetch leaves canonical UNKNOWN and releases no result (25.047709ms)
+✔ registered source bytes are measured, not accepted from UUID or handler metadata (12.435953ms)
+✔ handler executes with its registered receiver (20.717909ms)
+✔ AbortSignal is kept native and pre-abort produces no installation/SQL/source (3.164639ms)
+✔ hostile admission data/getters/proxies are inert before callbacks (8.323107ms)
+✔ missing native installation owner and invented mutation remain refused (3.030829ms)
+✔ native installation rejects selectedClientId substitution before source (3.122426ms)
+✔ native installation rejects policyRevision substitution before source (3.99539ms)
+✔ native installation rejects scopes substitution before source (2.531123ms)
+✔ native installation rejects descriptorSha256 substitution before source (2.750861ms)
+✔ native installation rejects handlerSourceSha256 substitution before source (6.209649ms)
+✔ native installation rejects executionCatalogSha256 substitution before source (3.77436ms)
+✔ expired or parked native installation is bounded and late receipt cannot execute (19.715731ms)
+✔ installation configuration rejects proxy Map without executing its traps (3.169927ms)
+✔ current context expiry clips admission evidence instead of extending native grant (6.035989ms)
+✔ current opaque context after native read cannot change selected client (5.62149ms)
+✔ source failure details never escape configured installation/admission owner (2.465274ms)
+✔ SDK and compiler deliveries consume the SAME original 24-call SQL budget (386.38553ms)
+✖ fresh current decisions are retained while historical selected subject identity stays pinned (25.044534ms)
+✔ quick_skill.relationship_brief: actual adopted SDK server lists only immutable original read tools (33.236585ms)
+✔ quick_skill.commitments_audit: actual adopted SDK server lists only immutable original read tools (12.991603ms)
+✔ actual MCP call preserves exact canonical operation and literal JSON arguments (5.089916ms)
+✔ unlisted MCP operation and extra outer selector cannot change gateway operation (3.136968ms)
+✔ gateway denial is sanitized and never becomes successful source evidence (2.265205ms)
+✔ server rejects altered original asset/unsupported selection before resource allocation (8.370378ms)
+✔ hook-issued delivery ID remains stable across processes; forged or altered tokens never invoke gateway (7.263023ms)
+✔ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (118.883786ms)
+✔ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (57.177309ms)
+✔ install binding substitution refuses before SDK exposure (1.11777ms)
+✔ install skill substitution refuses before SDK exposure (0.800867ms)
+✔ install requestSha256 substitution refuses before SDK exposure (0.871161ms)
+✔ install selectionSha256 substitution refuses before SDK exposure (0.628159ms)
+✔ install baseCatalogSha256 substitution refuses before SDK exposure (0.603031ms)
+✔ install executionCatalogSha256 substitution refuses before SDK exposure (0.633476ms)
+✔ install operations substitution refuses before SDK exposure (0.820265ms)
+✔ install checkedAtMs substitution refuses before SDK exposure (0.700036ms)
+✔ install expiresAtMs substitution refuses before SDK exposure (0.665595ms)
+✔ admission binding substitution refuses before SDK exposure (0.86946ms)
+✔ admission skill substitution refuses before SDK exposure (0.874677ms)
+✔ admission requestSha256 substitution refuses before SDK exposure (0.808408ms)
+✔ admission selectionSha256 substitution refuses before SDK exposure (0.649931ms)
+✔ admission manifestSha256 substitution refuses before SDK exposure (0.666526ms)
+✔ admission catalogSha256 substitution refuses before SDK exposure (0.653407ms)
+✔ admission budgets substitution refuses before SDK exposure (0.802239ms)
+✔ admission allocationSha256 substitution refuses before SDK exposure (0.678634ms)
+✔ admission policyRevision substitution refuses before SDK exposure (0.665624ms)
+✔ admission checkedAtMs substitution refuses before SDK exposure (0.648199ms)
+✔ admission expiresAtMs substitution refuses before SDK exposure (0.663071ms)
+✔ revocation and changed installation after mounting cannot release source result (4.784449ms)
+✔ model source arguments cannot inject authority or substitute a canonical operation (3.741661ms)
+✔ tool-call cap covers denied reads and collector work, without creating another budget owner (24.881911ms)
+✔ task result must be literal successful exact-pin data; altered replay never recompiles (30.453807ms)
+✔ actual single activity query mounts original reads and completes research with explicit pending output without artifact publication (38.404026ms)
+✔ changed current installation and foreign selection refuse before source effect (4.700043ms)
+✔ separately configured output owner cannot return an arbitrary artifact success object (37.305515ms)
+✔ resume cannot substitute source request or immutable original skill pins before mounting (0.938763ms)
+✔ empty/partial installation never permits an unlisted native gateway operation (7.74315ms)
+✔ closing a parked owned gateway read aborts its bounded lifetime and prevents late result publication (9.788727ms)
+ℹ tests 100
+ℹ suites 0
+ℹ pass 99
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5094.182282
+
+✖ failing tests:
+
+test at apps/gateway/selected-skills/mount.test.mjs:38:1
+✖ fresh current decisions are retained while historical selected subject identity stays pinned (25.044534ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-batch/apps/gateway/selected-skills/mount.test.mjs:38:1274)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

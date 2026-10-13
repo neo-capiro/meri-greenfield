@@ -1,0 +1,36 @@
+{
+  "reviewedCommit": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "removedLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-greenfield/packages/contracts/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "target": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true
+    }
+  ],
+  "captureHashesVerified": true,
+  "ownedProcessGroupAbsent": true,
+  "sourceCheckWorktreeClean": true,
+  "donorEdits": false,
+  "productEdits": false,
+  "entireHostCleanupClaim": false
+}

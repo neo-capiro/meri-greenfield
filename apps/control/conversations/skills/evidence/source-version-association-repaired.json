@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "8f66e128ba2714c2ac929b40b8bc3dfa9b4084a65895b643b22785759a726022",
+  "sourceDiffBytes": 4347,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:47:10.059515+00:00",
+  "durationSeconds": 1.92,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 318330,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/source-version-association-repaired.stdout.bin",
+      "bytes": 1437,
+      "sha256": "980f0ddeac55f1d8f3798fd172ad44cb1d59e38d672c70893cbeab662d906874"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/source-version-association-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Repair independently reproduced wrong sourcePrepared/version association by reading exact existing immutable version/spec/request/lineage after authorized inspection; preserve same-scope failure evidence.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,65 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "5c533c1bea625fc43928ec620672800c715b2071",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:24:11.272717+00:00",
+  "durationSeconds": 6.222,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 306139,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 306203,
+      "status": 0
+    },
+    {
+      "pid": 306222,
+      "status": 0
+    },
+    {
+      "pid": 306241,
+      "status": 0
+    },
+    {
+      "pid": 306280,
+      "status": 0
+    },
+    {
+      "pid": 306307,
+      "status": 0
+    },
+    {
+      "pid": 306549,
+      "status": 0
+    },
+    {
+      "pid": 306568,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/public-final-check.stdout.bin",
+      "bytes": 14003,
+      "sha256": "408a8ffe09998c22c2057d4b00ee773dc891066bd823631c2fc9b73dd1376d5a"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/public-final-check.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Frozen coherent 0.1.4 package after source metadata regeneration and lifecycle addition; old application schemas/receivers preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,10 @@
+{
+  "removedOwnedLinks": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "captureVerified": true,
+  "worktreeClean": true,
+  "donorEdits": false,
+  "entireHostCleanupClaim": false
+}

@@ -1,0 +1,16 @@
+{
+  "initialControls": 10,
+  "currentControls": 16,
+  "initialSha256": "19e489a6680097756a1590fe455fb1ff359887b7f15308793e4941698b4249e9",
+  "currentSha256": "4cee3b96f056b250fc48fd5573ee3f8daa8a3fe366111281bbfc6cf1b494f289",
+  "unchangedOriginalControlBodies": 9,
+  "fixtureOnlyCorrection": "Reconstruct service after changing its borrowed admission method, because the repaired constructor captures that method once; same refusal/no-persistence/no-start assertions.",
+  "additionalControls": [
+    "expired source context",
+    "initialization deadline/late close",
+    "source-access getter",
+    "approved-output proxy",
+    "retained-source getter",
+    "successful lifetime handoff/original close receiver"
+  ]
+}

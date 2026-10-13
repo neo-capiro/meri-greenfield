@@ -1,0 +1,570 @@
+{
+  "producer": {
+    "commit": "692480d5c0aed72d9db083b7bafb6684b9786241",
+    "tree": "f731bdce6b8af1236fba949d7b63f10f45ed0dc0"
+  },
+  "publicLifecycle": {
+    "commit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+    "tree": "f7b27912084f1be5eadd31695f77e0599a153720"
+  },
+  "base": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "producerChanges": [
+    "apps/gateway/sources/original-tracking/IMPLEMENTATION.md",
+    "apps/gateway/sources/original-tracking/handler.mjs",
+    "apps/gateway/sources/original-tracking/http-adapter.mjs",
+    "apps/gateway/sources/original-tracking/mount.mjs",
+    "apps/gateway/sources/original-tracking/projection.mjs",
+    "apps/gateway/sources/original-tracking/protocol-reference.json",
+    "apps/gateway/sources/original-tracking/request-context.mjs",
+    "apps/gateway/sources/original-tracking/test-evidence/author-final-extended.json",
+    "apps/gateway/sources/original-tracking/test-evidence/author-final-extended.stderr.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-final-extended.stdout.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-final.json",
+    "apps/gateway/sources/original-tracking/test-evidence/author-final.stderr.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-final.stdout.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-initial.json",
+    "apps/gateway/sources/original-tracking/test-evidence/author-initial.stderr.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-initial.stdout.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-repaired.json",
+    "apps/gateway/sources/original-tracking/test-evidence/author-repaired.stderr.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/author-repaired.stdout.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/baseline.json",
+    "apps/gateway/sources/original-tracking/test-evidence/baseline.stderr.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/baseline.stdout.bin",
+    "apps/gateway/sources/original-tracking/test-evidence/capture-reaped.py",
+    "apps/gateway/sources/original-tracking/test-evidence/cleanup.json",
+    "apps/gateway/test/original-tracking-mounted.test.mjs"
+  ],
+  "producerChangesExclusivelyOwned": true,
+  "nativeProtocolDataReferences": [
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "bytes": 44992,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "bytes": 44992,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-task-read.helpers.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "05254964f77173df35f6c4b68ec11b8550ebefed",
+      "sha256": "3f2ec7cd10ba3dcb3d5ae8126a36241d3b995070dc6cd33f517f9d694aa6c9e9",
+      "bytes": 10560,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-task-read.helpers.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "05254964f77173df35f6c4b68ec11b8550ebefed",
+      "sha256": "3f2ec7cd10ba3dcb3d5ae8126a36241d3b995070dc6cd33f517f9d694aa6c9e9",
+      "bytes": 10560,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-task-read.proof.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "c8c1a5a51b4505fb796aa1014858c49e1900e8c5",
+      "sha256": "4b6de679a1ed491b55367221de9afbcb9e9517718d5d115f7f07b0b71fc4284d",
+      "bytes": 5795,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-task-read.proof.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "c8c1a5a51b4505fb796aa1014858c49e1900e8c5",
+      "sha256": "4b6de679a1ed491b55367221de9afbcb9e9517718d5d115f7f07b0b71fc4284d",
+      "bytes": 5795,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "9d1d56c9f2beea428ba94c4f206def1ce7bd2e38",
+      "sha256": "6b15f7c230330e23a887b440a0ee539759c96c718af1150b62fa443bf38dac29",
+      "bytes": 8211,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "9d1d56c9f2beea428ba94c4f206def1ce7bd2e38",
+      "sha256": "6b15f7c230330e23a887b440a0ee539759c96c718af1150b62fa443bf38dac29",
+      "bytes": 8211,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-action-item-read.proof.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "02c910e5b01868a57923644fb23f93c58ef1638b",
+      "sha256": "5a4c3c3ffb1de3e370fe656dffb2e0bcadee7e6abce79ce1479f920e48efb4fd",
+      "bytes": 6374,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-action-item-read.proof.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "02c910e5b01868a57923644fb23f93c58ef1638b",
+      "sha256": "5a4c3c3ffb1de3e370fe656dffb2e0bcadee7e6abce79ce1479f920e48efb4fd",
+      "bytes": 6374,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "ee3a6844a184f87eede5eaf88dee687bb407472b",
+      "sha256": "a45690a2b4ec64cffe6a827eb96f5aa41a5f19fc401bcc9237827b28f8a617fc",
+      "bytes": 17927,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "ee3a6844a184f87eede5eaf88dee687bb407472b",
+      "sha256": "a45690a2b4ec64cffe6a827eb96f5aa41a5f19fc401bcc9237827b28f8a617fc",
+      "bytes": 17927,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "a451aa69bf0f3ce4dd12823f976259848328992e",
+      "sha256": "ee2d9b33cc31cbbaed7ed30fdd8b5e7234b2a3d222f318934a2fc890ae0adf00",
+      "bytes": 3409,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "a451aa69bf0f3ce4dd12823f976259848328992e",
+      "sha256": "ee2d9b33cc31cbbaed7ed30fdd8b5e7234b2a3d222f318934a2fc890ae0adf00",
+      "bytes": 3409,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+      "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0",
+      "bytes": 499454,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+      "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0",
+      "bytes": 499454,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+      "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca",
+      "bytes": 2604,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+      "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca",
+      "bytes": 2604,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+      "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346",
+      "bytes": 22931,
+      "exact": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+      "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346",
+      "bytes": 22931,
+      "exact": true
+    }
+  ],
+  "nativeProtocolImports": 0,
+  "nativeProtocolExecutions": 0,
+  "liveQualification": false,
+  "priorDistFilesExact": 18,
+  "preservedPublicAndOriginalPaths": [
+    {
+      "path": "packages/contracts/dist/action-application.d.ts",
+      "bytes": 17721,
+      "sha256": "007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.metadata.json",
+      "bytes": 1980,
+      "sha256": "9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.mjs",
+      "bytes": 1480808,
+      "sha256": "9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/action-application.schema.json",
+      "bytes": 67726,
+      "sha256": "a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.d.ts",
+      "bytes": 166,
+      "sha256": "638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.mjs",
+      "bytes": 466002,
+      "sha256": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/contracts.d.ts",
+      "bytes": 4090,
+      "sha256": "e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.d.ts",
+      "bytes": 14179,
+      "sha256": "f7e961446b69049cda1b054c695daffc45486da46b3ebf67c6b3a56e875916fe",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.metadata.json",
+      "bytes": 2374,
+      "sha256": "d2df1c4391e0cc8e338251106651ead59fc824cc784780aa4d506d8a1cf2672f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.mjs",
+      "bytes": 1587179,
+      "sha256": "94465895c6a063536cd4de3ce84d6f736e8475890a663ef80e9c5d748992cea1",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/conversation-application.schema.json",
+      "bytes": 39210,
+      "sha256": "76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.d.ts",
+      "bytes": 23960,
+      "sha256": "1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.metadata.json",
+      "bytes": 1996,
+      "sha256": "49def325d3792f56c99de484efb4193092a3c54dc82df0f4559ed462e9f4288f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.mjs",
+      "bytes": 498894,
+      "sha256": "4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/document-application.schema.json",
+      "bytes": 34642,
+      "sha256": "712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/index.d.ts",
+      "bytes": 85,
+      "sha256": "b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.d.ts",
+      "bytes": 485,
+      "sha256": "63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.mjs",
+      "bytes": 533,
+      "sha256": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate.mjs",
+      "bytes": 4538,
+      "sha256": "80c645d6c1ef206e7e67d2d553c4277d33c2f4980c9cddcd2862c4bb1b54e06e",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate-actions.mjs",
+      "bytes": 6751,
+      "sha256": "72f605755587cad3f445d4324e815c4008ccb47b787333842ac8fc044dffb73e",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate-documents.mjs",
+      "bytes": 8830,
+      "sha256": "3a4d40283c64ca8ef8a00bb50b8d2cf36bc35df1b9e3f39b5378a194aac39946",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/generate-conversations.mjs",
+      "bytes": 8268,
+      "sha256": "e90417a59505251339d46992850e7ccb85f8f645e84e64fbe8c19fa6e9160fcc",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/conversations/service.mjs",
+      "bytes": 8029,
+      "sha256": "193760a9451b29dc3b59fd5e5c81d3f3e8a27f8591607050b734ad2344da4bae",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/conversations/http.mjs",
+      "bytes": 5425,
+      "sha256": "2e65b13ceb17ae74afc96490b639b1afc0a5cdce37ffd76ddc2c1eb28fb28b79",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/conversations/events.mjs",
+      "bytes": 2000,
+      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4",
+      "exactBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 330499,
+      "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/assets.json",
+      "bytes": 5995,
+      "sha256": "ebe456d0cc4b9dc34fbbc4467e2411ccccebeab424a45b1357007720342a56a5",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/manifest.json",
+      "bytes": 2375,
+      "sha256": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
+      "exactBase": true
+    },
+    {
+      "path": "apps/control/document-application/research-brief/SKILL.md",
+      "bytes": 2206,
+      "sha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/client_changes/1.0.0/manifest.json",
+      "bytes": 4135,
+      "sha256": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/client_changes/1.0.0/SKILL.md",
+      "bytes": 3402,
+      "sha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/commitments_audit/1.0.0/manifest.json",
+      "bytes": 3523,
+      "sha256": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/commitments_audit/1.0.0/SKILL.md",
+      "bytes": 4059,
+      "sha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/funding_opportunity_match/1.0.0/manifest.json",
+      "bytes": 3143,
+      "sha256": "742dea892a575445ec2b63902cb07fb5f8b5029e24ef31e5bf3f6d29840dac2f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/funding_opportunity_match/1.0.0/SKILL.md",
+      "bytes": 3472,
+      "sha256": "e7211a21a883ec59e43f5d719fbf7e313630e57674667f99f4e875a14b8ce26d",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/hearing_watch/1.0.0/manifest.json",
+      "bytes": 3100,
+      "sha256": "d5492a00eba8e7b56854ed931fb0dea687f00f46861d87d1b0f28ff431b58f8f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/hearing_watch/1.0.0/SKILL.md",
+      "bytes": 3404,
+      "sha256": "d070a99280c30a38d29fa9f2fdc425faa735d30b43cd6ac80fc95cbb69626314",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/mail_history/1.0.0/manifest.json",
+      "bytes": 2696,
+      "sha256": "bfa1a83dbfbe8fb55bb62018791575984dfba623d0dc198f8f79475ec8612b91",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/mail_history/1.0.0/SKILL.md",
+      "bytes": 3433,
+      "sha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/meeting_prep/1.0.0/manifest.json",
+      "bytes": 4608,
+      "sha256": "035f5af6dbc6765d0b300c19714a73fb47d3d25b5c4e0030c9f5617e925f933a",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/meeting_prep/1.0.0/SKILL.md",
+      "bytes": 3427,
+      "sha256": "fe6f7c54e017e9f187344dd6968af7cb36c01a88c622cde868080ab118df3d7f",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/pe_deep_dive/1.0.0/manifest.json",
+      "bytes": 3256,
+      "sha256": "0a7a626ea1e43de2b27b71ae1f3aba154c0d15c37ac9767d1ac154bc6ee109d6",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/pe_deep_dive/1.0.0/SKILL.md",
+      "bytes": 3373,
+      "sha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_changes/1.0.0/manifest.json",
+      "bytes": 5884,
+      "sha256": "f81f58191ca1680f0cc9601dd5ca217f968ff7308c3b60b684c6583d20f33ec6",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_changes/1.0.0/SKILL.md",
+      "bytes": 3486,
+      "sha256": "3e76da17d5dc490944b7f5464065cee69742ac554ebe7ceb12f4e3e327ce67b5",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_overlap/1.0.0/manifest.json",
+      "bytes": 5317,
+      "sha256": "d1e00e9218ca8f93c39785a272ca819602b7e5e2e50489c813061c7e6b1d2851",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/portfolio_overlap/1.0.0/SKILL.md",
+      "bytes": 3341,
+      "sha256": "3abdb87f27d60fd7f8dd85083d8aad8b0413884f297e9ed7e5a143aa50e20e8b",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/regulatory_docket_brief/1.0.0/manifest.json",
+      "bytes": 3170,
+      "sha256": "a0f29652024a5d638224eee339c50170b5fac7890dcd172324b361b4201d2fb0",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/regulatory_docket_brief/1.0.0/SKILL.md",
+      "bytes": 3515,
+      "sha256": "698a96dd6c6de443456a477a04d11e393487a38f8c82d34b68d97b01a7849da2",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/relationship_brief/1.0.0/manifest.json",
+      "bytes": 3855,
+      "sha256": "a4ee2cd51cac83d82326439ec93baf4a50860bdbb110ec1c1f40daa0f1420ace",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/relationship_brief/1.0.0/SKILL.md",
+      "bytes": 3432,
+      "sha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/representation_lookup/1.0.0/manifest.json",
+      "bytes": 3106,
+      "sha256": "9fde84e2d5ff0a6174fd02eb4788bf0fb04cb2b226b624f149f424f38b73856b",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/representation_lookup/1.0.0/SKILL.md",
+      "bytes": 3420,
+      "sha256": "232dec9783f0cec8001043fae72e3e6d38a5b2799c98302571d54bde0d4f6a76",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/research_company/1.0.0/manifest.json",
+      "bytes": 4873,
+      "sha256": "dcede2f73f39ff28d36a71be430c4c3b44946b7280c0ff4d7f5fa33feb059153",
+      "exactBase": true
+    },
+    {
+      "path": "packages/skills/originals/research_company/1.0.0/SKILL.md",
+      "bytes": 3605,
+      "sha256": "cbee7506868d65de5ef247add8390850de151398b074add2ce69d2aefd63b7ab",
+      "exactBase": true
+    }
+  ],
+  "tarball": {
+    "sha256": "7073392959163525e85598c088dfdb4b829b780737d3612b381b801e363c3291",
+    "packageVersion": "0.1.4",
+    "allPriorDistFilesExact": true,
+    "privateLifecycleSourcePresent": false
+  },
+  "publicPackageVersion": "0.1.4",
+  "originalAssets": 14,
+  "modelCalls": 0,
+  "nativeDbCalls": 0,
+  "networkCalls": 0
+}

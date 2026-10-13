@@ -1,0 +1,14 @@
+✔ current retained checkpoint exposes only selector/hash/full binding/sequence and no secret object (78.145713ms)
+✔ actual inspection refuses jointly recomputed but unretained immutable checkpoint content (43.612576ms)
+✔ inspection refuses changed selected client during trusted read and returns no checkpoint hash (38.237812ms)
+✔ pending pause without an APPLIED checkpoint cannot fabricate an inspection selector (14.650218ms)
+✔ public request and current history WeakMap provenance survive no caller-created clone (61.3971ms)
+✔ public inspection retains full fence binding and refuses secret additions (37.818685ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2047.714241

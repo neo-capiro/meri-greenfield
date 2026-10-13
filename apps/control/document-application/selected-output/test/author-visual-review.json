@@ -1,0 +1,178 @@
+{
+  "reviewedAtUtc": "2026-10-13T18:11:00Z",
+  "reviewer": "SDK/output author (independent review pending)",
+  "pageCount": 38,
+  "pages": [
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-1.png",
+      "sha256": "96efed28b570b20d76db4b7d0eaf47e8215c761ba81eb95bf46ef5b9733c29cb"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-2.png",
+      "sha256": "84c2ae5423334738a74a977478f8770466c1add31a4460be4440234dd2dd0e1b"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-3.png",
+      "sha256": "10a1bec8c68bbeec5923b7c2629ea43183adff38e69ba2772b43f6c362d8d768"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-4.png",
+      "sha256": "7551f705ee61cd428d4b8ecbfca3b84f58dfc77b42b1f05d030dac139f33fca1"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-5.png",
+      "sha256": "0b435ea731bd3b634bec45831b2a7a503e1b8d4c59fd4c9661e2610c36670557"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-6.png",
+      "sha256": "13a80c06946d0b5aa94863709807795e0da07dcbdae53d585c1c0eac31a0cd7e"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-7.png",
+      "sha256": "22e9c9c0cc533857c8cdcc1d24facefdeb0fa34842d852cf2d215c6dd0a8a5de"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-8.png",
+      "sha256": "626062123c5b7ba6b28a80d80494fa99f2751c0b6d69b70323f83b03cdedc136"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original-page-9.png",
+      "sha256": "45df5c0d07d45e2c5442563d90200cefad768f3ba44aa3c2e4f84841c288269c"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-1.png",
+      "sha256": "430c4b7be69fa6bb352ad2e98d89e5f6e0e218a8c09c4717d93ba51daf392510"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-2.png",
+      "sha256": "84c2ae5423334738a74a977478f8770466c1add31a4460be4440234dd2dd0e1b"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-3.png",
+      "sha256": "10a1bec8c68bbeec5923b7c2629ea43183adff38e69ba2772b43f6c362d8d768"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-4.png",
+      "sha256": "7551f705ee61cd428d4b8ecbfca3b84f58dfc77b42b1f05d030dac139f33fca1"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-5.png",
+      "sha256": "0b435ea731bd3b634bec45831b2a7a503e1b8d4c59fd4c9661e2610c36670557"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-6.png",
+      "sha256": "b95bf3fe8101c4f233a00c9ba62ff1afdf777c09854851c9b39fbcf49280cbfe"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-7.png",
+      "sha256": "22e9c9c0cc533857c8cdcc1d24facefdeb0fa34842d852cf2d215c6dd0a8a5de"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-8.png",
+      "sha256": "57c4e705f74c025556a4b3efe472660052b189e1d78479b60ff3ccb09dbb2e93"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision-page-9.png",
+      "sha256": "7d202b90676b158cfbb34783de3462c9e13f880036a77705d005a18d79503644"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-1.png",
+      "sha256": "e6deb036739c2629491d09a0c918ac0c6163e4f36687816b22d3bc1c76645d8e"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-10.png",
+      "sha256": "ccc0e967bbc2ef2a30c5a05fa36f2c65691993f305c15ed0cbcf4e564e592568"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-2.png",
+      "sha256": "237462edff0f13aa536b0d7bb7857babce63b053e493dbc283bcc1342a06af28"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-3.png",
+      "sha256": "124696787f10b19f96fc31c4ef6d83db2640e9ecd31dc8edafa959e1ead81d5b"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-4.png",
+      "sha256": "3f850a7602cc1424559868c956d866c22059ee2c13f72a20b662b0b70d3687d3"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-5.png",
+      "sha256": "f71ea2073dd70b7acd00e0aca1e4fe1a17769bfad4aff175ffc0ba7cc3fa11e4"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-6.png",
+      "sha256": "fa7e02e8148d9a026901f7b98e29f56a79839d1e8ae840dd5fa855b94d6f0045"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-7.png",
+      "sha256": "969e02cbb800bc394e459513fa8b9fb59824869f65ef5b020ab85f4922c9cc99"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-8.png",
+      "sha256": "e59935a4e9e67a69ec26c0992989707eac251722f81697da5959d1ea20b0e409"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original-page-9.png",
+      "sha256": "1eea1fcec3fd73afa95e64fb4e1dde5110268fdeb7881d4d249ca836b4c92a76"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-1.png",
+      "sha256": "2f7e8caed97f635d9af1176568ba60590fde7fa79d2274309aeb515bb64093b3"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-10.png",
+      "sha256": "569d9bd14f1d525ff2c5e0929ed3d3c6e7ff272113360255577239098942c5c7"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-2.png",
+      "sha256": "237462edff0f13aa536b0d7bb7857babce63b053e493dbc283bcc1342a06af28"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-3.png",
+      "sha256": "b47174394e66bbbf1d28f1325a77f2dc50f41c50cb647a7b318d6d3980dbd5b7"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-4.png",
+      "sha256": "0c961e95f007e3bcac80622ca138dcc5734ee7177d6b970bb761cef5c3a33846"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-5.png",
+      "sha256": "5d9b0c860601330380d6812e1c232c11d4ecd0cb857c3099496532be2b1562ab"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-6.png",
+      "sha256": "ac66bbe7cf947d3d940cc8553c9b90efc98df74d7358820496a3c9f764a01ea2"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-7.png",
+      "sha256": "535de819032520d831da71898943ed8b22aafadd539efb2fa24a9d7af7ebdc29"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-8.png",
+      "sha256": "fe239b4fec2a8295f8ee3d9b1875f0f83f2524a1cc83314834c43d0f64c0c0f9"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision-page-9.png",
+      "sha256": "3b4d3927810049b2f75c4c60e2c28d59369963c18751f168e41d69c55b0e9df6"
+    }
+  ],
+  "documents": [
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/original.docx",
+      "sha256": "74e0a59b3e3cf56c90d08dc7a4afe686a0e4c9ae266f79135732d3331430bef3"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/commitments_audit/revision.docx",
+      "sha256": "709e737df28453ca0d21cff175407cb73622b166c95b9dd7629a0798a5991fbe"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/original.docx",
+      "sha256": "62b5a41fef8a6433e5d01b8cdf471d50a32264dac625f70100e116de59cd7ceb"
+    },
+    {
+      "path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/revision.docx",
+      "sha256": "77c4f420f8348db670252a5726877b58e591d62ef32081316fab08e9fa96fab3"
+    }
+  ],
+  "findings": "All38 final retained rendered pages individually opened. No clipping, overlap, missing glyphs or missing pages. Long original coverage/provenance appendix text wraps inside margins; final Relationship page ends with partial blank space. Source-only local synthetic native fixture; no actual grant/admission/source-access acceptance."
+}

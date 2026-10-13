@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/original-runtime-20261013/root/installed-audit.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:36:27.452726+00:00",
+  "durationSeconds": 0.465,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 313151,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/installed-public-final.stdout.bin",
+      "bytes": 3849,
+      "sha256": "883522761ca4e14b76f67b9c45048b68e91ce62910f92e5e8c298fea625ed1df"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/installed-public-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Actual extracted final public tarball runtime/types and exact prior receiving/schema/API bytes; one intentional backend service metadata receipt change.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

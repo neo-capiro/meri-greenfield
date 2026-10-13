@@ -1,0 +1,14 @@
+✔ same canonical submit persists exact original pins only after trusted admission and rechecks before/after start and replay (43.382477ms)
+✔ refused deny native admission leaves no durable request or Temporal start (2.689657ms)
+✔ refused changed native admission leaves no durable request or Temporal start (1.882554ms)
+✔ revocation after durable acceptance blocks Temporal start and exact replay release (4.851556ms)
+✔ opaque session selected-client change during admission prevents durable release (1.984065ms)
+✔ plain worker publication cannot invent an artifact availability event (5.459692ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1970.235104

@@ -1,0 +1,36 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "apps/control/conversations",
+    "run",
+    "typecheck"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:38:48.587991+00:00",
+  "durationSeconds": 3.653,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 314272,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/conversation-types-final.stdout.bin",
+      "bytes": 72,
+      "sha256": "d28d0d8d0bfc8177073603548b355127a1e053747abdd0949e5f2acaf126e204"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/conversation-types-final.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Final existing strict Temporal workflow and SDK options typecheck after selected runtime composition; no compiler/gate relaxation.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

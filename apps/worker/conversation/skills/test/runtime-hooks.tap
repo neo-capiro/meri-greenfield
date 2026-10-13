@@ -1,0 +1,41 @@
+✔ quick_skill.relationship_brief: actual adopted SDK server lists only immutable original read tools (52.323104ms)
+✔ quick_skill.commitments_audit: actual adopted SDK server lists only immutable original read tools (15.834535ms)
+✔ actual MCP call preserves exact canonical operation and literal JSON arguments (5.400515ms)
+✔ unlisted MCP operation and extra outer selector cannot change gateway operation (3.246909ms)
+✔ gateway denial is sanitized and never becomes successful source evidence (2.481746ms)
+✔ server rejects altered original asset/unsupported selection before resource allocation (8.186295ms)
+✔ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector refuses ungranted artifact (128.830395ms)
+✔ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector refuses ungranted artifact (55.775579ms)
+✔ install binding substitution refuses before SDK exposure (1.044219ms)
+✔ install skill substitution refuses before SDK exposure (0.82379ms)
+✔ install requestSha256 substitution refuses before SDK exposure (0.822789ms)
+✔ install selectionSha256 substitution refuses before SDK exposure (0.655078ms)
+✔ install baseCatalogSha256 substitution refuses before SDK exposure (0.672765ms)
+✔ install executionCatalogSha256 substitution refuses before SDK exposure (0.598374ms)
+✔ install operations substitution refuses before SDK exposure (0.691703ms)
+✔ install checkedAtMs substitution refuses before SDK exposure (0.704241ms)
+✔ install expiresAtMs substitution refuses before SDK exposure (0.61637ms)
+✔ admission binding substitution refuses before SDK exposure (0.919343ms)
+✔ admission skill substitution refuses before SDK exposure (0.880655ms)
+✔ admission requestSha256 substitution refuses before SDK exposure (0.893264ms)
+✔ admission selectionSha256 substitution refuses before SDK exposure (0.831882ms)
+✔ admission manifestSha256 substitution refuses before SDK exposure (1.009848ms)
+✔ admission catalogSha256 substitution refuses before SDK exposure (1.108085ms)
+✔ admission budgets substitution refuses before SDK exposure (1.080303ms)
+✔ admission allocationSha256 substitution refuses before SDK exposure (0.985321ms)
+✔ admission policyRevision substitution refuses before SDK exposure (1.036628ms)
+✔ admission checkedAtMs substitution refuses before SDK exposure (0.978061ms)
+✔ admission expiresAtMs substitution refuses before SDK exposure (1.104579ms)
+✔ revocation and changed installation after mounting cannot release source result (4.868139ms)
+✔ model source arguments cannot inject authority or substitute a canonical operation (3.790319ms)
+✔ tool-call cap covers denied reads and collector work, without creating another budget owner (19.143197ms)
+✔ task result must be literal successful exact-pin data; altered replay never recompiles (35.279492ms)
+✔ actual single activity query mounts original reads and fails before completed/artifact publication without output grant (36.949917ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2476.468656

@@ -1,6 +1,8 @@
 /** Editable presentation of the existing commitment ledger, without new semantic claims. */
 export const marker='Meri Commitments Audit provenance: ';
 const p=(text,style='Normal')=>({kind:'paragraph',style,runs:[{text}]});
+const display=(value,cap)=>{const text=JSON.stringify(value);if(text.length<=cap)return text;let prefix=text.slice(0,cap);
+ if(/[\uD800-\uDBFF]$/u.test(prefix))prefix=prefix.slice(0,-1);return prefix+' [display truncated; exact native metadata retained in provenance]';};
 export function blocks(input,selection,ledger,unresolved,provenance){
  const out=[p(input.title,'Title'),p('Commitments Audit | Editable review draft'),p('Original selected skill quick_skill.commitments_audit@1.0.0'),
   p('Audit reference '+input.asOf+'; collected through '+ledger.asOf),p('Exact client/window '+JSON.stringify({subject:selection.subject,window:selection.window})),
@@ -19,6 +21,20 @@ export function blocks(input,selection,ledger,unresolved,provenance){
  if(!ledger.commitments.length)out.push(p('No bound promise observation was compiled in the checked portion. This does not establish that no commitments exist.'));
  out.push(p('Suggestions and unresolved observations','Heading 1'));for(const row of ledger.suggestions)out.push(p('[suggestion, unverified] '+row.passage.quote));
  for(const row of unresolved)out.push(p('[unbound observation, requires review] '+row.id+' | '+row.reason+' | '+(row.passage?.quote??'')));
+ out.push(p('Native tracking appendix','Heading 1'),p('These are authorized structured source rows, separate from extracted promise observations. Native status, owner and date remain source assertions. Native completion never verifies delivery or acceptance. No promise link is inferred from title, URL, owner, date or recommendation text.'));
+ for(const row of provenance.tracking??[]){
+  const text=value=>display(value,provenance.trackingDisplayCodeUnits??2000);
+  out.push(p(row.sourceId+' / '+row.nativeRecordId+' | '+row.recordKind,'Heading 2'),p('Native title '+text(row.title)+'; status '+text(row.status)+' [unverified].'),
+   p('Native owner '+text(row.owner)+'; '+row.dueDateKind+' '+text(row.dueDate)+'; created '+text(row.createdAt)+'; updated '+text(row.updatedAt)+'. These values do not resolve conflicting extracted owner/date observations.'),
+   p('Declared authority '+row.authority+'; source version '+JSON.stringify(row.sourceVersionId)+' | '+row.versionStatus+'.'),
+   p('Native completion '+JSON.stringify(row.nativeCompletion)+'; deliveryVerified: false; acceptanceVerified: false.'),
+   p('Original source proof '+text(row.sourceProof)+'. A native content digest is not a full-body excerpt hash or verified source authenticity.'),
+   p('Native origin '+JSON.stringify(row.nativeOrigin)+'; associations '+JSON.stringify(row.nativeAssociations)+'; promise linkage '+JSON.stringify(row.linkage)+'.'),
+   p('Exact read receipt '+text(row.receipt)),p('Tracking window and coverage '+text(row.coverage)));
+  if(row.mondayMetadata)out.push(p('Managed Monday metadata '+text(row.mondayMetadata)+'. No native version, body proof or completed delivery is supplied.'));
+  if(row.recommendationMetadata)out.push(p('Native recommendation metadata '+text(row.recommendationMetadata)+'. Recommendation outcome text is not accepted work or verified delivery.'));
+ }
+ if(!(provenance.tracking??[]).length)out.push(p('No native tracker row was returned in the admitted checked portion; missing reads and bounded pages never establish that no tracking exists.'));
  out.push(p('Coverage and verification appendix','Heading 1'),p('Every original required source is shown. All source authenticity, current policy, snapshot, enumeration and semantic completion remain unqualified unless separately accepted. Missing or unrequested material is not empty; no negative claim is supported.'));
  for(const cell of ledger.coverage)out.push(p(cell.sourceId+' | '+cell.status+' | freshness '+cell.freshness+' | enumeration '+cell.enumeration+' | complete '+cell.complete),
   p('Coverage details '+JSON.stringify(cell)));

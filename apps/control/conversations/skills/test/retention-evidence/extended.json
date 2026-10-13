@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/test/retention.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/application.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-output-retention",
+  "sourceHead": "88b5c4453adfa53631417474829ee38137f0bee3",
+  "sourceDiffSha256": "1dbc71fc057b560cc552477791a4c2ad7705cca253b2be4547bcd78bd6d84d67",
+  "sourceDiffBytes": 41380,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:16:34.629475+00:00",
+  "durationSeconds": 5.192,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 301926,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/extended.stdout.bin",
+      "bytes": 6041,
+      "sha256": "4d4ae371b129e88210681a6d069256b56de2d672e5a81552aebde3e8f11432e5"
+    },
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/extended.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial29passes retained; strengthen SDK identity uniqueness/current-brand clock and add direct-journal, stored request/scope, private data, boolean, accessor and concurrent replay controls.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

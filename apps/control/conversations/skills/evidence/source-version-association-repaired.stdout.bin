@@ -1,0 +1,24 @@
+✖ actual source preparation cannot inspect or download a different original under the same output allocation (26.228619ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1862.237435
+
+✖ failing tests:
+
+test at ../meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association.test.mjs:4:1
+✖ actual source preparation cannot inspect or download a different original under the same output allocation (26.228619ms)
+  Error: EEXIST: file already exists, mkdir '/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association-before/'
+      at async mkdir (node:internal/fs/promises:916:10)
+      at async TestContext.<anonymous> (file:///workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association.test.mjs:5:105)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    errno: -17,
+    code: 'EEXIST',
+    syscall: 'mkdir',
+    path: '/workspace/meri-original-runtime-artifact-review/docs/qualification/candidates/original-runtime-20261013/artifact-independent/crossrun-phase/read-association-before/'
+  }

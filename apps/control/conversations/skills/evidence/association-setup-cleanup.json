@@ -1,0 +1,14 @@
+{
+  "path": "/tmp/meri-document-fixture-ny2Ern",
+  "source": "Root source-version-association-repaired capture318330 created fixture before fixed BEFORE directory EEXIST; exact only candidate in captured18:47:10\u201318:47:12 interval",
+  "observedAt": "2026-10-13T18:52:37.468901+00:00",
+  "entries": [
+    "store",
+    "store/heads",
+    "store/locks",
+    "store/objects",
+    "store/versions"
+  ],
+  "containedFiles": false,
+  "removed": true
+}

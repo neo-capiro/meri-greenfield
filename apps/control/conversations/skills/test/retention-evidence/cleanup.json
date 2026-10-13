@@ -1,0 +1,85 @@
+{
+  "sourceBase": "88b5c4453adfa53631417474829ee38137f0bee3",
+  "sourceOnly": true,
+  "liveNativeCalls": false,
+  "migrationApplied": false,
+  "ownedLinks": [
+    {
+      "ownedLink": "node_modules",
+      "removed": true,
+      "donor": "/workspace/meri-greenfield/node_modules",
+      "donorPreserved": true,
+      "donorMutationAttempted": false
+    },
+    {
+      "ownedLink": "packages/window-resolution/node_modules",
+      "removed": true,
+      "donor": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules",
+      "donorPreserved": true,
+      "donorMutationAttempted": false
+    },
+    {
+      "ownedLink": "packages/ui-stream/node_modules",
+      "removed": true,
+      "donor": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "donorPreserved": true,
+      "donorMutationAttempted": false
+    },
+    {
+      "ownedLink": "apps/control/conversations/node_modules",
+      "removed": true,
+      "donor": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "donorPreserved": true,
+      "donorMutationAttempted": false
+    }
+  ],
+  "allOwnedCaptureProcessGroupsAbsent": true,
+  "captures": [
+    {
+      "name": "complete.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 305297,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "extended.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 301926,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "final.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 304189,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "initial.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 299030,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "repaired.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 303266,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "apps/control/conversations/skills/retention.mjs",
+      "sha256": "a83d55bc3b9ed662bf219484f7ac77fb6d30f392d2cb3fb7f48d98f5b2608ca8"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "sha256": "3ecc22443a03c695086493414c9bacde950b83f7ec31fe1cfeec56720b52e1cc"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "sha256": "25d9fc720e0f4a0345e017d5a20285b27d04af55e3cc953d261664ce31db2245"
+    }
+  ],
+  "failuresPreserved": true,
+  "unrelatedFilesPreserved": true
+}

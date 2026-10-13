@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:conversation-lifecycle:0.1.0",
+  "$defs": {
+    "ConversationLifecycleControlRequest": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
+              "const": "steer"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100000,
+              "allOf": [
+                {
+                  "pattern": "\\S"
+                },
+                {
+                  "pattern": "^[^\\u0000-\\u0008\\u000b\\u000c\\u000e-\\u001f]*$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "controlId",
+            "intent",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
+              "const": "pause"
+            }
+          },
+          "required": [
+            "controlId",
+            "intent"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
+              "const": "approval.wait"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "controlId",
+            "intent",
+            "proposalId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
+              "const": "resume"
+            },
+            "checkpointId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "checkpointSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "controlId",
+            "intent",
+            "checkpointId",
+            "checkpointSha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "controlId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "intent": {
+              "const": "fork"
+            },
+            "checkpointId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            "checkpointSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "controlId",
+            "intent",
+            "checkpointId",
+            "checkpointSha256"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ConversationLifecycleControlReceipt": {
+      "type": "object",
+      "properties": {
+        "controlId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "intent": {
+          "enum": [
+            "steer",
+            "pause",
+            "approval.wait",
+            "resume",
+            "fork"
+          ]
+        },
+        "sourceBinding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "inputSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "state": {
+          "enum": [
+            "PENDING",
+            "DISPATCHING",
+            "APPLIED",
+            "UNKNOWN"
+          ]
+        },
+        "checkpointId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetBinding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "admissionReceiptId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retirementReceiptId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "controlId",
+        "intent",
+        "sourceBinding",
+        "inputSha256",
+        "state",
+        "checkpointId",
+        "targetBinding",
+        "admissionReceiptId",
+        "retirementReceiptId",
+        "replayed"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationCheckpointInspectionRequest": {
+      "type": "object",
+      "properties": {
+        "checkpointId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "checkpointId"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationCheckpointInspectionReceipt": {
+      "type": "object",
+      "properties": {
+        "checkpointId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "checkpointSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceBinding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "lastEventSequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "checkpointId",
+        "checkpointSha256",
+        "sourceBinding",
+        "lastEventSequence"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationLifecycleErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "SESSION_REFUSED",
+                "UNSUPPORTED_MEDIA_TYPE",
+                "LIFECYCLE_INPUT_REFUSED",
+                "REQUEST_TOO_LARGE",
+                "SESSION_CHANGED",
+                "SCOPE_REFUSED",
+                "STALE_WRITER",
+                "LIFECYCLE_REPLAY_REFUSED",
+                "LIFECYCLE_STATE_REFUSED",
+                "CHECKPOINT_REFUSED",
+                "APPROVAL_REFUSED",
+                "CANCELLED",
+                "DEADLINE",
+                "LIFECYCLE_EFFECT_UNKNOWN"
+              ]
+            },
+            "outcome": {
+              "enum": [
+                "NOT_DISPATCHED",
+                "UNKNOWN"
+              ]
+            }
+          },
+          "required": [
+            "code",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

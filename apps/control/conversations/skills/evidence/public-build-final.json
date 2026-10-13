@@ -1,0 +1,57 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "c43c8b761e10bd911e3f25190354a77a9b8dcd23",
+  "sourceDiffSha256": "e07a8302ab592bde97324c12f61c0bd0f5cb62b62edff8fd27cd2b276215b4cc",
+  "sourceDiffBytes": 4498,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:16:09.631727+00:00",
+  "durationSeconds": 2.232,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 301502,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 301526,
+      "status": 0
+    },
+    {
+      "pid": 301564,
+      "status": 0
+    },
+    {
+      "pid": 301627,
+      "status": 0
+    },
+    {
+      "pid": 301655,
+      "status": 0
+    },
+    {
+      "pid": 301676,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/public-build-final.stdout.bin",
+      "bytes": 3044,
+      "sha256": "b8d8f72229fdc4b67ab3a339d6a4c6a337db0ebb00e5931a5b041308bac228c6"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/public-build-final.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Current public metadata after canonical service receiver capture; five generators and unchanged additive routes/receiving contracts.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
