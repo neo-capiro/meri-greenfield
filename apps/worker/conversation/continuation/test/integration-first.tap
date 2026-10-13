@@ -1,0 +1,102 @@
+✔ SDK resume: exact supported option delta, immutable request/skill/scopes, independent target (16.821339ms)
+✔ SDK fork: exact supported option delta, immutable request/skill/scopes, independent target (0.909684ms)
+✔ exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback (0.698038ms)
+✔ continuation checkpointHash substitution refuses (0.630458ms)
+✔ continuation requestHash substitution refuses (0.639421ms)
+✔ continuation prompt substitution refuses (0.695345ms)
+✔ continuation requestId substitution refuses (0.600954ms)
+✔ continuation window substitution refuses (0.478022ms)
+✔ continuation skill substitution refuses (0.466574ms)
+✔ continuation scope substitution refuses (0.61825ms)
+✔ continuation sdk substitution refuses (0.568476ms)
+✔ continuation cli substitution refuses (0.560915ms)
+✔ continuation image substitution refuses (0.44406ms)
+✔ continuation tenant substitution refuses (0.480245ms)
+✔ continuation actor substitution refuses (0.474727ms)
+✔ continuation run substitution refuses (0.462458ms)
+✔ continuation attempt substitution refuses (0.453484ms)
+✔ continuation worker substitution refuses (0.384602ms)
+✔ continuation fence substitution refuses (0.4033ms)
+✔ continuation conversation substitution refuses (0.380426ms)
+✔ continuation sourceSessionAlias substitution refuses (0.331984ms)
+✔ continuation workspaceBinding substitution refuses (0.407736ms)
+✔ continuation opaqueScope substitution refuses (0.417701ms)
+✔ fork cannot reuse original conversation/session and does not retire original task (0.814351ms)
+✔ workspace paths and exact object scopes use canonical validation (1.376178ms)
+✔ request/context accessor and proxy refusal is inert (0.230773ms)
+✔ single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded (1.429177ms)
+✔ input invalid/mutating messages cannot inject SDK authority or configuration (0.314458ms)
+✔ closing input discards queued work and completes a parked iterator without an abrupt stream error (1.374796ms)
+✔ steer preserves exact UUID; local duplicate never redispatches nor claims durable success (1.454264ms)
+✔ pause: owned interrupt receiver, honest still-queued receipt and one close (0.833079ms)
+✔ waitForApproval: owned interrupt receiver, honest still-queued receipt and one close (0.55078ms)
+✔ older interrupt API undefined receipt never becomes proof of empty queue or physical retirement (0.372965ms)
+✔ SDK interrupt failure stays UNKNOWN and discloses no private diagnostics (0.554094ms)
+✔ approval wait proposal metadata is immutable context; it never changes SDK permission mode (0.505943ms)
+✔ cleanup attempts owned Query close even when input close fails; private diagnostics stay hidden (0.368889ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.481797ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.367817ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.329541ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.355569ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.377212ms)
+✔ parked interrupt deadline is bounded and late receipt cannot rerun SDK (25.705389ms)
+✔ parked interrupt cancellation is bounded and late receipt cannot rerun SDK (1.077674ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ai' imported from /workspace/meri-sdk-continuation/packages/ui-stream/dist/producer.js
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/worker/conversation/test/activity.test.mjs (143.713882ms)
+✔ actual activity streams literal composed UUID inputs, claims once, observes exact echo and closes terminal input (19.107742ms)
+✔ terminal result never acknowledges an unobserved steering UUID and never repeats UNKNOWN delivery (2.042299ms)
+✔ durable claimed-false barrier prevents SDK control input (1.16315ms)
+✔ pause: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event (3.956828ms)
+✔ waitForApproval: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event (1.620521ms)
+✔ resume: actual activity passes pinned native restore before one supported SDK query (3.435953ms)
+✔ fork: actual activity passes pinned native restore before one supported SDK query (1.45203ms)
+✔ native restore checkpointSha256 substitution refuses before SDK (1.292723ms)
+✔ native restore workspaceSha256 substitution refuses before SDK (0.932537ms)
+✔ native restore opaqueSessionSha256 substitution refuses before SDK (1.022081ms)
+✔ native restore contextSha256 substitution refuses before SDK (0.902042ms)
+✔ native restore sourceRequestSha256 substitution refuses before SDK (0.892138ms)
+✔ native restore binding substitution refuses before SDK (0.680163ms)
+✔ native restore scopes substitution refuses before SDK (0.707102ms)
+✔ native restore checkedAtMs substitution refuses before SDK (0.797437ms)
+✔ native restore expiresAtMs substitution refuses before SDK (0.763155ms)
+✔ native capture checkpointSha256 substitution refuses checkpoint ACK and retains UNKNOWN (1.540242ms)
+✔ native capture workspaceReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN (1.225654ms)
+✔ native capture opaqueSessionReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN (1.117092ms)
+✔ native capture sourceRequestSha256 substitution refuses checkpoint ACK and retains UNKNOWN (1.252674ms)
+✔ native capture contextSha256 substitution refuses checkpoint ACK and retains UNKNOWN (1.236891ms)
+✔ native capture sessionId substitution refuses checkpoint ACK and retains UNKNOWN (1.333103ms)
+✔ native capture checkedAtMs substitution refuses checkpoint ACK and retains UNKNOWN (1.252664ms)
+✔ native capture expiresAtMs substitution refuses checkpoint ACK and retains UNKNOWN (1.441224ms)
+✔ invalid lifecycle ports fail before invoking SDK (0.386465ms)
+ℹ tests 69
+ℹ suites 0
+ℹ pass 68
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1967.849874
+
+✖ failing tests:
+
+test at apps/worker/conversation/test/activity.test.mjs:1:1
+✖ apps/worker/conversation/test/activity.test.mjs (143.713882ms)
+  'test failed'

@@ -1,0 +1,77 @@
+✔ SDK resume: exact supported option delta, immutable request/skill/scopes, independent target (18.084915ms)
+✔ SDK fork: exact supported option delta, immutable request/skill/scopes, independent target (0.85541ms)
+✔ exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback (0.708823ms)
+✔ continuation checkpointHash substitution refuses (0.671097ms)
+✔ continuation requestHash substitution refuses (0.597558ms)
+✔ continuation prompt substitution refuses (0.657066ms)
+✔ continuation requestId substitution refuses (0.726209ms)
+✔ continuation window substitution refuses (0.485491ms)
+✔ continuation skill substitution refuses (0.474094ms)
+✔ continuation scope substitution refuses (0.654081ms)
+✔ continuation sdk substitution refuses (0.554944ms)
+✔ continuation cli substitution refuses (0.543667ms)
+✔ continuation image substitution refuses (0.575154ms)
+✔ continuation tenant substitution refuses (0.463899ms)
+✔ continuation actor substitution refuses (0.455827ms)
+✔ continuation run substitution refuses (0.412712ms)
+✔ continuation attempt substitution refuses (0.579971ms)
+✔ continuation worker substitution refuses (0.396339ms)
+✔ continuation fence substitution refuses (0.362368ms)
+✔ continuation conversation substitution refuses (0.395878ms)
+✔ continuation sourceSessionAlias substitution refuses (0.319955ms)
+✔ continuation workspaceBinding substitution refuses (0.406443ms)
+✔ continuation opaqueScope substitution refuses (0.375558ms)
+✔ fork cannot reuse original conversation/session and does not retire original task (0.7746ms)
+✔ workspace paths and exact object scopes use canonical validation (1.391797ms)
+✔ request/context accessor and proxy refusal is inert (0.218955ms)
+✔ single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded (1.404014ms)
+✔ input invalid/mutating messages cannot inject SDK authority or configuration (0.291894ms)
+✔ closing input discards queued work and completes a parked iterator without an abrupt stream error (1.408201ms)
+✔ steer preserves exact UUID; local duplicate never redispatches nor claims durable success (1.415452ms)
+✔ pause: owned interrupt receiver, honest still-queued receipt and one close (0.701732ms)
+✔ waitForApproval: owned interrupt receiver, honest still-queued receipt and one close (0.53194ms)
+✔ older interrupt API undefined receipt never becomes proof of empty queue or physical retirement (0.402738ms)
+✔ SDK interrupt failure stays UNKNOWN and discloses no private diagnostics (0.535435ms)
+✔ approval wait proposal metadata is immutable context; it never changes SDK permission mode (0.481655ms)
+✔ cleanup attempts owned Query close even when input close fails; private diagnostics stay hidden (0.334487ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.490509ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.360936ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.315228ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.325654ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.334126ms)
+✔ parked interrupt deadline is bounded and late receipt cannot rerun SDK (26.43188ms)
+✔ parked interrupt cancellation is bounded and late receipt cannot rerun SDK (0.973876ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@js-temporal/polyfill' imported from /workspace/meri-sdk-continuation/packages/window-resolution/index.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/worker/conversation/test/activity.test.mjs (89.36003ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 43
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1799.405543
+
+✖ failing tests:
+
+test at apps/worker/conversation/test/activity.test.mjs:1:1
+✖ apps/worker/conversation/test/activity.test.mjs (89.36003ms)
+  'test failed'
