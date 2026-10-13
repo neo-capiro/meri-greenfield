@@ -22,9 +22,9 @@ function method(value,key){
 }
 export function configuration(value){
  const c=own(value,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);
- const o=own(c.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled']);
+ const o=own(c.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
  const limits=data(c.limits);own(limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']);
- if(Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216||typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean')fail('DOCUMENT_CONFIGURATION',500);
+ if(Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216||typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean'||o.namespace!==undefined&&!['qualification','product'].includes(o.namespace))fail('DOCUMENT_CONFIGURATION',500);
  const context=data(v.context(o.context)),formatAdmission=admitDocumentDescriptor(o.descriptor),descriptor=formatAdmission.descriptor;
  if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(c.selectedClientId??'')||!context.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===c.selectedClientId))fail('DOCUMENT_CONFIGURATION',500);
  for(const fn of ['authorize','ids','newReservationId'])if(typeof o[fn]!=='function')fail('DOCUMENT_CONFIGURATION',500);

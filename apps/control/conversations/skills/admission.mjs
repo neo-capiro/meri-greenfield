@@ -10,7 +10,7 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=()=>Object.assign(Error('SKILL_ADMISSION_REFUSED'),{code:'SKILL_ADMISSION_REFUSED'}),fail=()=>{throw fault();};
 export function createOriginalSkillAdmissionOwner(configuration){
  const c=own(configuration,['binding','admittedRun','loadConversation','readSelection','readCurrentContext','readForSkill','now'],['maxRequestMs']);
- const binding=data(c.binding),runOwner=own(c.admittedRun,['currentAllocation'],['currentRun']),maxRequestMs=c.maxRequestMs??3000;
+ const binding=data(c.binding),runOwner=own(c.admittedRun,['currentAllocation'],['currentRun','withCurrentAllocation']),maxRequestMs=c.maxRequestMs??3000;
  validateShape('RunBinding',binding);
  if(typeof runOwner.currentAllocation!=='function'||['loadConversation','readSelection','readCurrentContext','readForSkill','now'].some(k=>typeof c[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail();
  function lifetime(signal){return createOperationLifetime({deadlineMs:c.now()+maxRequestMs,now:c.now,signal,errorFactory:fault});}
