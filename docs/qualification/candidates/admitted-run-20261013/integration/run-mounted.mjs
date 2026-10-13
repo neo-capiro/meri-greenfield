@@ -46,7 +46,7 @@ export async function runMountedReplay(){
   const nativeBearer=await send('query',{request:{limit:20}},f.s.credential);assert.equal(nativeBearer.status,401);
   const wrongClient=await send('session',{clientId:randomUUID()},f.s.credential);assert.equal(wrongClient.status,401);
   const wrongRun=await send('session',{runId:randomUUID()},f.s.credential);assert.equal(wrongRun.status,401);
-  const query=await send('query',{request:{limit:20}},boot.value.credential);assert.equal(query.status,503);assert.equal(query.value.error.code,'UNAVAILABLE');assert.equal(query.value.error.outcome,'UNKNOWN');
+  const query=await send('query',{request:{limit:20}},boot.value.credential);assert.equal(query.status,502);assert.equal(query.value.error.code,'UNAVAILABLE');assert.equal(query.value.error.outcome,'UNKNOWN');
   assert.equal(f.s.state.sourceReads,0);assert.equal(f.s.state.taskEffects,0);
   currentHost.close();
   assert.equal((await currentHost.app.handle(new Request('http://local.invalid/api/action-followthrough/session',{method:'POST'}))).status,503);
