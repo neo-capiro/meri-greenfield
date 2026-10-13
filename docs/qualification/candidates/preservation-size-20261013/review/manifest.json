@@ -1,0 +1,82 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceFreeze": "2444edc0d6bcfb5771bf26eda9e1c8eb06525783",
+  "testedHead": "6577a77c380ae8052f5ad723e282e53cf6e6ed9a",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/schema-size-independent.test.mjs",
+      "bytes": 9108,
+      "sha256": "8ccd0b61434667f412542f518970e28d89152f74d2ae3d21153bad2283b85b72"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PRESERVATION-SIZE-REVIEW-20261013.md",
+      "bytes": 1799,
+      "sha256": "2658339820304535e9b1aeb2d18dc5d0aa751180602a32c6ec543787b6929ce4"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/README.md",
+      "bytes": 1688,
+      "sha256": "c90228fb23e6566371fec082a9099723672c6a1d8e672659af2629d050400281"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/audit.json",
+      "bytes": 1322,
+      "sha256": "f81e264a1722d2ea86dac27a981539560f30b3c2a345fcc55eae8ed382f777a6"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/audit.py",
+      "bytes": 2473,
+      "sha256": "0f87e3a4e3247ed5369c6895ecca241d9ecad3224b7517cb91495ce9c3700a99"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.json",
+      "bytes": 1272,
+      "sha256": "e55875e06ff597d9a0143ac446c2b9a35847c3943cd6ddcdc9ef848e18c3b3de"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/baseline.stdout.bin",
+      "bytes": 12064,
+      "sha256": "bf6263fff95d6987884ba8c66a640ac7d21e05f4c3f28d245eba413a921933a9"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/cleanup.json",
+      "bytes": 301,
+      "sha256": "90c9e12a55cbc5f47cd06c4020a0d5906346d05027350a3606af3394b7d03d13"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/criteria.md",
+      "bytes": 929,
+      "sha256": "6ae6124eb48fe2d698db58c5aeef02906ed20039be28a1b20da297c30bdd4e46"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/final.json",
+      "bytes": 1265,
+      "sha256": "d04824aa45178422f6f18b02dce1f336de069f981e9700bc6d3c35cafe45abd1"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/final.stdout.bin",
+      "bytes": 2043,
+      "sha256": "bc40e5ec54fcf0d75417af86109b3ff21cc5d32c1e3180402b788a2085ebacb8"
+    }
+  ]
+}

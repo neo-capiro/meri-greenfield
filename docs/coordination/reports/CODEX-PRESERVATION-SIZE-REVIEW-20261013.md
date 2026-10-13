@@ -1,0 +1,9 @@
+# Preservation-size independent review — 2026-10-13
+
+**ACCEPT_SOURCE** `2444edc0d6bcfb5771bf26eda9e1c8eb06525783` against baseline `a16e52ef5bd8d570c995dff298facbc0d1969000`.
+
+The change admits up to 4 MiB of serialized UTF-8 rows only for the exact fixed preservation SQL. Ordinary rows retain 1 MiB / 1,024 rows, preservation requires exactly one row, and existing inert/depth/node limits and full metadata hashing/comparison remain unchanged. No metadata is truncated or replaced with a partial digest. Only two allocated production modules changed; audit verified 11,565 baseline entries, 11,563 unchanged, including all original tests, preservation SQL, migrations and native fixture.
+
+The unchanged independent suite passed **23/23** at reviewer test/source merge `6577a77c380ae8052f5ad723e282e53cf6e6ed9a` in 1.824seconds. It covers exact UTF-8 boundaries, a complete synthetic 3,128,280-byte snapshot, all 12-array and final-character mutation detection, installation/reconstruction equality, unsupported and hostile data, row/node/depth bounds, ordinary-query refusal, before-DDL overflow, after-DDL UNKNOWN and lost COMMIT acknowledgement. The baseline 13/23 pass is retained, including the reproduced pre-DDL measured-size refusal; missing-helper baseline negatives are not acceptance evidence. No independent assertion was weakened or corrected.
+
+Evidence and reproducible source audit are in `docs/qualification/candidates/preservation-size-20261013/review/`. Groups 528800/529623 are freshly absent with no timeout/kill. No dependency links, servers or external resources were created. This accepts the bounded source correction only; the synthetic metadata is not a native inventory copy, and no native database installation or retry has been performed or qualified by this review.
