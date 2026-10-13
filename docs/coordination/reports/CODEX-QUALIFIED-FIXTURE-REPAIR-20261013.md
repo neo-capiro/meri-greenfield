@@ -26,7 +26,7 @@ The exact native-owner descriptor example is in apps/control/qualified-applicati
 - Initial compatibility baseline0/2 retained. Sequence bigint SQL-contract negative0/1 retained, repaired by text casts for exact int64 settings. Reviewer namespace OID finding independently reproduced0/1 and repaired; same-name empty namespace recreation now refuses.
 - Earlier145/146 focused result retained: an existing independent fixture intercepted the first DDL before recording its private ddl array, so the new post-DDL namespace observation lacked targets. Fixture now derives observations from its actual captured query log; all assertions unchanged.
 - Earlier10/11 lifecycle/application result retained: the inherited application harness required MERI_REVIEW_SOURCE_ROOT. Corrected environment-only replay14/14; no assertion changed.
-- Source diff whitespace check PASS. Every capture has a180-second owner timeout and recorded owned group absence; no group required kill. Seven owned dependency links removed; donor untouched.
+- Source diff whitespace check PASS. Full packet whitespace check refuses four preserved raw assertion-output lines; whitespace.json retains the actual failure, and raw evidence is not normalized. Every capture has a180-second owner timeout and recorded owned group absence; no group required kill. Seven owned dependency links removed; donor untouched.
 
 ## Limits
 
