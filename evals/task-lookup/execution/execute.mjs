@@ -19,10 +19,13 @@ export function createTaskLookupExecution(configuration){
   const observations=data.cases.map((c,i)=>({caseId:c.caseId,caseSha256:c.caseSha256,attemptId:data.runBindings.find(b=>b.caseId===c.caseId).binding.attemptId,runId:data.runId,configSha256:data.configSha256,sourceSetSha256:c.sourceSetSha256,status:'ineligible',reason:'NOT_STARTED',route:null,authorization:[],delivery:null,read:null,claims:{absence:false,exhaustive:false,acceptedTasks:false},traceSha256:hash(traces[i].trace),startedAt:stamp(),completedAt:stamp(),failure:null}));
   for(const [i,t]of traces.entries())t.traceSha256=observations[i].traceSha256;
   let retainedBytes=size({capture:{run,observations},traces})+4096;
-  if(retainedBytes>maxCaptureBytes)error('EXEC_CAPTURE_CAPACITY');
+  // Reserve every remaining case's bounded failure/omission record before effects.
+  const reserves=data.cases.map(c=>size(c.request)+4*Buffer.byteLength(JSON.stringify(c.caseId))+2048);let remainingReserve=reserves.reduce((a,b)=>a+b,0);
+  if(retainedBytes+remainingReserve>maxCaptureBytes)error('EXEC_CAPTURE_CAPACITY');
   const l=createOperationLifetime({deadlineMs:data.deadlineMs,now,signal:signal?.aborted?undefined:signal,errorFactory:exception});let captureExhausted=false,unsettledPredecessor=false;let callSequence=0;const pending=new Map();let lifecycle;
   try{
    for(const [index,c]of data.cases.entries()){
+    remainingReserve-=reserves[index];
     const oldSize=size({observation:observations[index],trace:traces[index]});const o=snapshot(observations[index]),t=snapshot(traces[index].trace),binding=data.runBindings.find(b=>b.caseId===c.caseId).binding;
     let active=true,stage='prepare',lookupStarted=false;
     const track=async(name,fn,args)=>{const key=++callSequence;pending.set(key,{port:name,caseId:c.caseId,callId:key});try{return await fn(...args);}finally{pending.delete(key);}};
@@ -68,7 +71,7 @@ export function createTaskLookupExecution(configuration){
     const readStart=t.authorization.findIndex(a=>a.phase==='before_read');o.authorization=readStart<0?[]:snapshot(t.authorization.slice(readStart));
     let trace={caseId:c.caseId,traceSha256:hash(t),trace:t};o.traceSha256=trace.traceSha256;
     let nextSize=size({observation:o,trace});
-    if(retainedBytes-oldSize+nextSize>maxCaptureBytes){
+    if(retainedBytes-oldSize+nextSize+remainingReserve>maxCaptureBytes){
      const fullHash=trace.traceSha256,observedBytes=nextSize;captureExhausted=true;
      o.status='failed';o.reason='EXEC_CAPTURE_LIMIT';o.failure=failure(o.reason,t.read||t.lookup?'RESULT_NOT_RELEASED':lookupStarted?'UNKNOWN':'NOT_DISPATCHED');o.authorization=[];o.delivery=null;o.read=null;
      trace={caseId:c.caseId,traceSha256:null,trace:{caseId:c.caseId,mode:c.mode,runnerSha256:c.runnerSha256,startedAt:o.startedAt,completedAt:o.completedAt,omittedTraceSha256:fullHash,observedPairBytes:observedBytes,reason:'EXEC_CAPTURE_LIMIT',unsettledCalls:t.unsettledCalls,physicalStopProven:false}};

@@ -1,0 +1,32 @@
+✔ actual control lookup/read produces scorer-ready captured output without gold or qualification (45.402975ms)
+✔ unsupported original stays ineligible with no preparation or control calls (4.902194ms)
+✔ unsupported correct-evidence stays ineligible with no preparation or control calls (4.654201ms)
+✔ actual read receipt denial captures authority and safe error (10.45706ms)
+✔ actual read throw denial captures authority and safe error (14.251527ms)
+✔ lookup denial is not misrepresented as supported read denial (5.918443ms)
+✔ durable ACK uncertainty retains UNKNOWN and does not retry (10.451691ms)
+✔ invalid independent input pins or host binding refuses before ports (3.325693ms)
+✔ invalid independent input pins or host binding refuses before ports (2.782536ms)
+✔ invalid independent input pins or host binding refuses before ports (4.18155ms)
+✔ invalid independent input pins or host binding refuses before ports (3.253484ms)
+✔ invalid independent input pins or host binding refuses before ports (2.921695ms)
+✔ gold inserted into runner is rejected even with recomputed projection pin (3.100804ms)
+✔ prepared context cannot substitute host producer or selected client (3.618053ms)
+✔ abort parked prepare returns bounded failure and pending-call truth (11.002229ms)
+✔ abort parked gateway returns bounded failure and pending-call truth (6.303872ms)
+✔ abort parked read returns bounded failure and pending-call truth (9.535703ms)
+✔ abort parked authorize returns bounded failure and pending-call truth (8.530392ms)
+✔ shorter lookup authorization expiry cannot be expanded for later read (7.940023ms)
+✔ preaborted run retains failed case and invokes no host ports (3.336429ms)
+✔ all three splits retain exact pins and denominators across supported and unsupported modes (19.125489ms)
+✔ capture exhaustion retains digest and blocks remaining supported cases (23.964758ms)
+✔ an empty typed corpus yields no port calls and zero denominator, never task success (3.642339ms)
+✔ unsettled predecessor never starts a sibling lookup (8.254286ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2910.944845
