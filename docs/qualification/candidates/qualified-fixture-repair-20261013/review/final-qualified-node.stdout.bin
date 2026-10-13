@@ -1,0 +1,103 @@
+✔ explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data (28.738116ms)
+✔ legacy strict descriptor preserves original signature algorithm (14.766976ms)
+✔ reconstruction binds mapping scope and retained fingerprint without DDL (25.60735ms)
+✔ mapped identity retains address refusal (3.581653ms)
+✔ mapped identity retains port refusal (2.680208ms)
+✔ mapped identity retains version refusal (2.356638ms)
+✔ mapped identity retains start_ms refusal (2.124894ms)
+✔ mapped identity retains system_identifier refusal (1.963341ms)
+✔ mapped identity retains database refusal (1.884132ms)
+✔ mapped identity retains username refusal (1.957963ms)
+✔ mapped identity retains fsync refusal (1.634276ms)
+✔ mapped identity retains synchronous_commit refusal (3.781109ms)
+✔ dial pool host substitution refuses before connection (0.659872ms)
+✔ dial pool port substitution refuses before connection (0.476326ms)
+✔ dial pool database substitution refuses before connection (0.368574ms)
+✔ dial pool user substitution refuses before connection (0.690768ms)
+✔ closed compatibility admission: unpairedAddress (0.602395ms)
+✔ closed compatibility admission: unpairedPort (0.400572ms)
+✔ closed compatibility admission: hostName (6.566389ms)
+✔ closed compatibility admission: scopedIPv6 (1.362427ms)
+✔ closed compatibility admission: booleanPort (0.575695ms)
+✔ closed compatibility admission: zeroPort (0.345549ms)
+✔ closed compatibility admission: nullScope (0.504869ms)
+✔ closed compatibility admission: wrongMode (0.630848ms)
+✔ closed compatibility admission: emptyScope (0.353752ms)
+✔ closed compatibility admission: overLimit (0.607302ms)
+✔ closed compatibility admission: duplicate (0.452009ms)
+✔ closed compatibility admission: public (0.453531ms)
+✔ closed compatibility admission: target (0.432109ms)
+✔ closed compatibility admission: system (0.913143ms)
+✔ closed compatibility admission: unknownLeaf (0.322865ms)
+✔ closed compatibility admission: unknownFixture (0.198448ms)
+✔ namespace missing refuses before DDL (7.834877ms)
+✔ namespace undeclared refuses before DDL (3.177726ms)
+✔ namespace wrongOwner refuses before DDL (2.469421ms)
+✔ namespace targetCollision refuses before DDL (2.706809ms)
+✔ namespace duplicate refuses before DDL (4.149818ms)
+✔ legacy mode still refuses25 undeclared schemas (1.985625ms)
+✔ public target row type collision refuses before any migration (3.35997ms)
+✔ unsupported evidence catalog classes fail closed before DDL (2.471144ms)
+✔ changed preserved relations prevents success after DDL (8.693768ms)
+✔ changed preserved columns prevents success after DDL (8.707889ms)
+✔ changed preserved defaults prevents success after DDL (8.016309ms)
+✔ changed preserved constraints prevents success after DDL (7.766694ms)
+✔ changed preserved indexes prevents success after DDL (8.846127ms)
+✔ changed preserved views prevents success after DDL (9.532789ms)
+✔ changed preserved types prevents success after DDL (8.835571ms)
+✔ changed preserved sequences prevents success after DDL (8.824704ms)
+✔ changed preserved triggers prevents success after DDL (8.421058ms)
+✔ changed preserved dependencies prevents success after DDL (9.595613ms)
+✔ changed preserved comments prevents success after DDL (8.010981ms)
+✔ changed preserved labels prevents success after DDL (7.956799ms)
+✔ namespace ACL mutation is detected after DDL (14.706885ms)
+✔ empty namespace recreation changes exact preserved identity (8.378774ms)
+✔ actual namespace query projects namespace OID losslessly (0.177277ms)
+✔ actual sequence catalog query preserves all bigint settings as text (0.354924ms)
+✖ actual catalog query covers supported metadata and refuses unsupported owners (4.70337ms)
+✔ scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership (4.419483ms)
+✔ unknown COMMIT remains unknown with compatibility enabled and no retry (8.958045ms)
+✔ new server/scope facts survive detached fixture normalization (0.563697ms)
+✔ preserved namespace OID refuses invalid undefined (3.042824ms)
+✔ preserved namespace OID refuses invalid null (2.9608ms)
+✔ preserved namespace OID refuses invalid 0 (1.883681ms)
+✔ preserved namespace OID refuses invalid 0 (2.321829ms)
+✔ preserved namespace OID refuses invalid -1 (2.730014ms)
+✔ preserved namespace OID refuses invalid 1.0 (1.866756ms)
+✔ preserved namespace OID refuses invalid 4294967296 (1.798182ms)
+✔ distinct int64 sequence settings retain distinct fingerprints (20.002996ms)
+✔ reconstruction refuses changed preserved OID against trusted original signature (22.105867ms)
+✔ reconstruction cannot substitute a newly matching server mapping under old hash (18.182129ms)
+✔ catalog relation identities remain fixed despite implicit pg_temp search precedence (0.421063ms)
+✔ catalog metadata builtin cast types are independent of pg_temp (0.239379ms)
+ℹ tests 72
+ℹ suites 0
+ℹ pass 71
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 425.231175
+
+✖ failing tests:
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:53:1
+✖ actual catalog query covers supported metadata and refuses unsupported owners (4.70337ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(preservationSQL.includes('nspname=ANY($1::text[])'))
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:56:342)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

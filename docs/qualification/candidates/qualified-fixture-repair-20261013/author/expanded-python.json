@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python",
+    "-B",
+    "-m",
+    "unittest",
+    "apps.proxy.qualification.assembly.test_lifecycle",
+    "apps.proxy.qualification.assembly.test_fixture_compatibility"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-author-20261013",
+  "sourceHead": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "sourceDiffSha256": "c7f58036b63db8973761db36613ad488ebeb098f226100ad1b83c5bfb1da66fc",
+  "sourceDiffBytes": 23977,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T06:09:40.511435+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 509934,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stderr.bin",
+      "bytes": 116,
+      "sha256": "3bb9ab1d3878f8a402ad905bdabf56344719dc1a1bc4700a19c6e39705520894"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

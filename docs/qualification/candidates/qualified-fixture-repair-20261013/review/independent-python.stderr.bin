@@ -1,0 +1,247 @@
+test_actual_fixture_verifier_uses_server_not_dial (test_compatibility_independent.CompatibilityIndependent.test_actual_fixture_verifier_uses_server_not_dial) ... ERROR
+test_closed_fixture_bool_port (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_bool_port) ... ok
+test_closed_fixture_fixture_extra (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_fixture_extra) ... ok
+test_closed_fixture_hostname (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_hostname) ... ok
+test_closed_fixture_ipv6_zone (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_ipv6_zone) ... ok
+test_closed_fixture_leaf_extra (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_leaf_extra) ... ok
+test_closed_fixture_public (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_public) ... ok
+test_closed_fixture_scope_duplicate (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_duplicate) ... ok
+test_closed_fixture_scope_empty (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_empty) ... ok
+test_closed_fixture_scope_null (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_null) ... ok
+test_closed_fixture_scope_overlimit (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_scope_overlimit) ... ok
+test_closed_fixture_system (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_system) ... ok
+test_closed_fixture_target (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_target) ... ok
+test_closed_fixture_unpaired_address (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_unpaired_address) ... ok
+test_closed_fixture_unpaired_port (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_unpaired_port) ... ok
+test_closed_fixture_zero_port (test_compatibility_independent.CompatibilityIndependent.test_closed_fixture_zero_port) ... ok
+test_dial_dbname (test_compatibility_independent.CompatibilityIndependent.test_dial_dbname) ... FAIL
+test_dial_host (test_compatibility_independent.CompatibilityIndependent.test_dial_host) ... FAIL
+test_dial_port (test_compatibility_independent.CompatibilityIndependent.test_dial_port) ... FAIL
+test_dial_user (test_compatibility_independent.CompatibilityIndependent.test_dial_user) ... FAIL
+test_full_compatibility_facts_in_original_admission_hash (test_compatibility_independent.CompatibilityIndependent.test_full_compatibility_facts_in_original_admission_hash) ... FAIL
+test_legacy_server_fallback_remains (test_compatibility_independent.CompatibilityIndependent.test_legacy_server_fallback_remains) ... ERROR
+test_mapped_server_and25_scope_preserved_in_actual_decode (test_compatibility_independent.CompatibilityIndependent.test_mapped_server_and25_scope_preserved_in_actual_decode) ... ERROR
+test_observed_identity_address (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_address) ... FAIL
+test_observed_identity_database (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_database) ... FAIL
+test_observed_identity_fsync (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_fsync) ... FAIL
+test_observed_identity_port (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_port) ... FAIL
+test_observed_identity_started_ms (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_started_ms) ... FAIL
+test_observed_identity_synchronous_commit (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_synchronous_commit) ... FAIL
+test_observed_identity_system_identifier (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_system_identifier) ... FAIL
+test_observed_identity_username (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_username) ... FAIL
+test_observed_identity_version (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_version) ... FAIL
+test_query_returning_after_deadline_prevents_fetch (test_compatibility_independent.CompatibilityIndependent.test_query_returning_after_deadline_prevents_fetch) ... ERROR
+
+======================================================================
+ERROR: test_actual_fixture_verifier_uses_server_not_dial (test_compatibility_independent.CompatibilityIndependent.test_actual_fixture_verifier_uses_server_not_dial)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 65, in test_actual_fixture_verifier_uses_server_not_dial
+    QualificationLifecycle(s, a, deadline_ms=NOW+10000, now_ms=lambda: NOW).verify_fixture()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 131, in __init__
+    self.value, self.binding = admission(value)
+                               ^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 37, in admission
+    b = RunBinding(q['runId'], q['attempt'], q['workerArn'], q['fence'], q['policyRevision'])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in __init__
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/state/grants.py", line 35, in __post_init__
+    raise StateDenied("INVALID_WORKER_IDENTITY")
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+======================================================================
+ERROR: test_legacy_server_fallback_remains (test_compatibility_independent.CompatibilityIndependent.test_legacy_server_fallback_remains)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 71, in test_legacy_server_fallback_remains
+    QualificationLifecycle(s, a, deadline_ms=NOW+10000, now_ms=lambda: NOW).verify_fixture()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 131, in __init__
+    self.value, self.binding = admission(value)
+                               ^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 37, in admission
+    b = RunBinding(q['runId'], q['attempt'], q['workerArn'], q['fence'], q['policyRevision'])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in __init__
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/state/grants.py", line 35, in __post_init__
+    raise StateDenied("INVALID_WORKER_IDENTITY")
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+======================================================================
+ERROR: test_mapped_server_and25_scope_preserved_in_actual_decode (test_compatibility_independent.CompatibilityIndependent.test_mapped_server_and25_scope_preserved_in_actual_decode)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 60, in test_mapped_server_and25_scope_preserved_in_actual_decode
+    self.assertEqual(decode(encode(f)), f)
+                     ^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/bridge.py", line 26, in decode
+    admission(value['admission']); integer(value['deadlineMs'])
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 37, in admission
+    b = RunBinding(q['runId'], q['attempt'], q['workerArn'], q['fence'], q['policyRevision'])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in __init__
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/state/grants.py", line 35, in __post_init__
+    raise StateDenied("INVALID_WORKER_IDENTITY")
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+======================================================================
+ERROR: test_query_returning_after_deadline_prevents_fetch (test_compatibility_independent.CompatibilityIndependent.test_query_returning_after_deadline_prevents_fetch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 76, in test_query_returning_after_deadline_prevents_fetch
+    owner = QualificationLifecycle(s, a, deadline_ms=NOW+10000, now_ms=lambda: clock[0])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 131, in __init__
+    self.value, self.binding = admission(value)
+                               ^^^^^^^^^^^^^^^^
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/assembly/lifecycle.py", line 37, in admission
+    b = RunBinding(q['runId'], q['attempt'], q['workerArn'], q['fence'], q['policyRevision'])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in __init__
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/proxy/qualification/state/grants.py", line 35, in __post_init__
+    raise StateDenied("INVALID_WORKER_IDENTITY")
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+======================================================================
+FAIL: test_dial_dbname (test_compatibility_independent.CompatibilityIndependent.test_dial_dbname)
+----------------------------------------------------------------------
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 123, in check
+    with self.assertRaisesRegex(ValueError,'CONNECTION_FIXTURE_MISMATCH'): decode(encode(f))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "CONNECTION_FIXTURE_MISMATCH" does not match "INVALID_WORKER_IDENTITY"
+
+======================================================================
+FAIL: test_dial_host (test_compatibility_independent.CompatibilityIndependent.test_dial_host)
+----------------------------------------------------------------------
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 123, in check
+    with self.assertRaisesRegex(ValueError,'CONNECTION_FIXTURE_MISMATCH'): decode(encode(f))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "CONNECTION_FIXTURE_MISMATCH" does not match "INVALID_WORKER_IDENTITY"
+
+======================================================================
+FAIL: test_dial_port (test_compatibility_independent.CompatibilityIndependent.test_dial_port)
+----------------------------------------------------------------------
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 123, in check
+    with self.assertRaisesRegex(ValueError,'CONNECTION_FIXTURE_MISMATCH'): decode(encode(f))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "CONNECTION_FIXTURE_MISMATCH" does not match "INVALID_WORKER_IDENTITY"
+
+======================================================================
+FAIL: test_dial_user (test_compatibility_independent.CompatibilityIndependent.test_dial_user)
+----------------------------------------------------------------------
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 123, in check
+    with self.assertRaisesRegex(ValueError,'CONNECTION_FIXTURE_MISMATCH'): decode(encode(f))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "CONNECTION_FIXTURE_MISMATCH" does not match "INVALID_WORKER_IDENTITY"
+
+======================================================================
+FAIL: test_full_compatibility_facts_in_original_admission_hash (test_compatibility_independent.CompatibilityIndependent.test_full_compatibility_facts_in_original_admission_hash)
+----------------------------------------------------------------------
+apps.proxy.qualification.state.pricing.StateDenied: INVALID_WORKER_IDENTITY
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 84, in test_full_compatibility_facts_in_original_admission_hash
+    with self.assertRaisesRegex(ValueError, 'ADMISSION_HASH'): decode(encode(value))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "ADMISSION_HASH" does not match "INVALID_WORKER_IDENTITY"
+
+======================================================================
+FAIL: test_observed_identity_address (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_address)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_database (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_database)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_fsync (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_fsync)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_port (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_port)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_started_ms (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_started_ms)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_synchronous_commit (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_synchronous_commit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_system_identifier (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_system_identifier)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_username (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_username)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_observed_identity_version (test_compatibility_independent.CompatibilityIndependent.test_observed_identity_version)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py", line 117, in check
+    self.assertEqual(len(s.queries),1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.006s
+
+FAILED (failures=14, errors=4)

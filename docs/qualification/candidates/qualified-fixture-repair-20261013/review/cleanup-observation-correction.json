@@ -1,0 +1,7 @@
+{
+  "reason": "The lifetime rejects before the borrowed transaction completes asynchronous rollback/release. One event-loop turn observes the existing owned cleanup; assertion remains exactly one release, no pool close or DDL. No production change.",
+  "beforeSha256": "4380f5258810b734aeaf6764e77eff220e3822e2ded4250ee26c66fae13cfd65",
+  "afterSha256": "903d08ee1f2964aa6bb1092291783b27586cf2d8d9331bfa0ea47e92fd83f3b1",
+  "priorReceipt": "first.json",
+  "priorControls": "495db8a84a4a70c588bf2f5a049febe08c90dc4f"
+}

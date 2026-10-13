@@ -1,0 +1,178 @@
+✔ explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data (30.905382ms)
+✔ legacy strict descriptor preserves original signature algorithm (12.895653ms)
+✔ reconstruction binds mapping scope and retained fingerprint without DDL (26.890723ms)
+✔ mapped identity retains address refusal (3.459139ms)
+✔ mapped identity retains port refusal (2.514259ms)
+✔ mapped identity retains version refusal (2.492777ms)
+✔ mapped identity retains start_ms refusal (2.42851ms)
+✔ mapped identity retains system_identifier refusal (3.431438ms)
+✔ mapped identity retains database refusal (4.005976ms)
+✔ mapped identity retains username refusal (2.606778ms)
+✔ mapped identity retains fsync refusal (3.730427ms)
+✔ mapped identity retains synchronous_commit refusal (2.751055ms)
+✔ dial pool host substitution refuses before connection (0.807815ms)
+✔ dial pool port substitution refuses before connection (0.449435ms)
+✔ dial pool database substitution refuses before connection (0.381824ms)
+✔ dial pool user substitution refuses before connection (0.394483ms)
+✔ closed compatibility admission: unpairedAddress (0.418418ms)
+✔ closed compatibility admission: unpairedPort (0.374643ms)
+✔ closed compatibility admission: hostName (3.234431ms)
+✔ closed compatibility admission: scopedIPv6 (1.190589ms)
+✔ closed compatibility admission: booleanPort (0.381564ms)
+✔ closed compatibility admission: zeroPort (0.317237ms)
+✔ closed compatibility admission: nullScope (0.423276ms)
+✔ closed compatibility admission: wrongMode (0.953914ms)
+✔ closed compatibility admission: emptyScope (0.262294ms)
+✔ closed compatibility admission: overLimit (0.721314ms)
+✔ closed compatibility admission: duplicate (0.357298ms)
+✔ closed compatibility admission: public (0.377928ms)
+✔ closed compatibility admission: target (0.427042ms)
+✔ closed compatibility admission: system (0.28617ms)
+✔ closed compatibility admission: unknownLeaf (0.349786ms)
+✔ closed compatibility admission: unknownFixture (0.197587ms)
+✔ namespace missing refuses before DDL (8.759456ms)
+✔ namespace undeclared refuses before DDL (5.57558ms)
+✔ namespace wrongOwner refuses before DDL (2.371664ms)
+✔ namespace targetCollision refuses before DDL (2.313457ms)
+✔ namespace duplicate refuses before DDL (2.558155ms)
+✔ legacy mode still refuses25 undeclared schemas (4.698312ms)
+✔ public target row type collision refuses before any migration (3.258112ms)
+✔ unsupported evidence catalog classes fail closed before DDL (4.102536ms)
+✔ changed preserved relations prevents success after DDL (12.150473ms)
+✔ changed preserved columns prevents success after DDL (10.416076ms)
+✔ changed preserved defaults prevents success after DDL (11.177521ms)
+✔ changed preserved constraints prevents success after DDL (11.841608ms)
+✔ changed preserved indexes prevents success after DDL (8.765395ms)
+✔ changed preserved views prevents success after DDL (9.937707ms)
+✔ changed preserved types prevents success after DDL (9.12079ms)
+✔ changed preserved sequences prevents success after DDL (8.264503ms)
+✔ changed preserved triggers prevents success after DDL (14.673366ms)
+✔ changed preserved dependencies prevents success after DDL (11.013445ms)
+✔ changed preserved comments prevents success after DDL (8.711635ms)
+✔ changed preserved labels prevents success after DDL (8.30967ms)
+✔ namespace ACL mutation is detected after DDL (8.012604ms)
+✖ empty namespace recreation changes exact preserved identity (10.925663ms)
+✖ actual namespace query projects namespace OID losslessly (0.276105ms)
+✖ actual sequence catalog query preserves all bigint settings as text (0.874224ms)
+✔ actual catalog query covers supported metadata and refuses unsupported owners (0.979713ms)
+✖ scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership (7.465772ms)
+✔ unknown COMMIT remains unknown with compatibility enabled and no retry (9.829761ms)
+✔ new server/scope facts survive detached fixture normalization (0.524128ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 56
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 376.504244
+
+✖ failing tests:
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:50:1
+✖ empty namespace recreation changes exact preserved identity (10.925663ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:50:147)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:51:1
+✖ actual namespace query projects namespace OID losslessly (0.276105ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\boid\s*::\s*text\s+AS\s+oid\b/i. Input:
+  
+  "SELECT nspname AS name,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname"
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:51:77)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "SELECT nspname AS name,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname",
+    expected: /\boid\s*::\s*text\s+AS\s+oid\b/i,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:52:1
+✖ actual sequence catalog query preserves all bigint settings as text (0.874224ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /'seqstart'\s*,\s*s\.seqstart::text/. Input:
+  
+  'WITH ns AS (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname=ANY($1::text[])),\n' +
+    ' rel AS (SELECT c.* FROM pg_catalog.pg_class c WHERE c.relnamespace IN (SELECT oid FROM ns)),\n' +
+    ' typ AS (SELECT t.* FROM pg_catalog.pg_type t WHERE t.typnamespace IN (SELECT oid FROM ns)),\n' +
+    ' objects AS (\n' +
+    " SELECT 'pg_class'::regclass::oid AS classid,oid AS objid FROM rel UNION ALL\n" +
+    " SELECT 'pg_type'::regclass::oid,oid FROM typ UNION ALL\n" +
+    " SELECT 'pg_constraint'::regclass::oid,oid FROM pg_catalog.pg_constraint WHERE conrelid IN (SELECT oid FROM rel) UNION ALL\n" +
+    " SELECT 'pg_attrdef'::regclass::oid,oid FROM pg_catalog.pg_attrdef WHERE adrelid IN (SELECT oid FROM rel) UNION ALL\n" +
+    " SELECT 'pg_rewrite'::regclass::oid,oid FROM pg_catalog.pg_rewrite WHERE ev_class IN (SELECT oid FROM rel) UNION ALL\n" +
+    " SELECT 'pg_trigger'::regclass::oid,oid FROM pg_catalog.pg_trigger WHERE tgrelid IN (SELECT oid FROM rel))\n" +
+    ' SELECT\n' +
+    ' (SELECT count(*)::int FROM (\n' +
+    " SELECT oid FROM rel WHERE relkind NOT IN ('r','v','i','S') OR relispartition\n" +
+    ' UNION ALL SELECT inhrelid FROM pg_catalog.pg_inherits WHERE inhrelid IN (SELECT oid FROM rel) OR inhparent IN (SELECT oid FROM rel)\n' +
+    " UNION ALL SELECT oid FROM typ t WHERE NOT ((t.typtype='c' AND t.typrelid IN (SELECT oid FROM rel WHERE relkind IN ('r','v'))) OR (t.typtype='b' AND t.typelem IN (SELECT oid FROM typ WHERE typtype='c' AND typrelid IN (SELECT oid FROM rel WHERE relkind IN ('r','v')))))\n" +
+    " UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d WHERE d.refclassid='pg_namespace'::regclass AND d.refobjid IN (SELECT oid FROM ns) AND d.classid NOT IN ('pg_class'::regclass,'pg_type'::regclass,'pg_constraint'::regclass)\n" +
+    ' UNION ALL SELECT oid FROM pg_catalog.pg_proc WHERE pronamespace IN (SELECT oid FROM ns)\n' +
+    ' UNION ALL SELECT oid FROM pg_catalog.pg_extension WHERE extnamespace IN (SELECT oid FROM ns)\n' +
+    " UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid WHERE d.deptype='e'\n" +
+    ' UNION ALL SELECT oid FROM pg_catalog.pg_policy WHERE polrelid IN (SELECT oid FROM rel)\n' +
+    ' UNION ALL SELECT oid FROM pg_catalog.pg_trigger WHERE tgrelid IN (SELECT oid FROM rel) AND NOT tgisinternal\n' +
+    " UNION ALL SELECT w.oid FROM pg_catalog.pg_rewrite w JOIN rel ON rel.oid=w.ev_class WHERE rel.relkind<>'v' OR w.rulename<>'_RETURN'\n" +
+    ' ) unsupported) AS unsupported,\n' +
+    ' jsonb_build_object(\n' +
+    " 'relations',COALESCE((SELECT jsonb_agg(to_jsonb(r)-ARRAY['relpages','reltuples','relallvisible','relallfrozen','relfrozenxid','relminmxid'] ORDER BY r.oid) FROM rel r),'[]'::jsonb),\n" +
+    " 'columns',COALESCE((SELECT jsonb_agg(to_jsonb(a) ORDER BY a.attrelid,a.attnum) FROM pg_catalog.pg_attribute a WHERE a.attrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'defaults',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.oid) FROM pg_catalog.pg_attrdef d WHERE d.adrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'constraints',COALESCE((SELECT jsonb_agg(to_jsonb(k) ORDER BY k.oid) FROM pg_catalog.pg_constraint k WHERE k.conrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'indexes',COALESCE((SELECT jsonb_agg(to_jsonb(i) ORDER BY i.indexrelid) FROM pg_catalog.pg_index i WHERE i.indrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'views',COALESCE((SELECT jsonb_agg(to_jsonb(w) ORDER BY w.oid) FROM pg_catalog.pg_rewrite w WHERE w.ev_class IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'types',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM typ t),'[]'::jsonb),\n" +
+    " 'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'triggers',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM pg_catalog.pg_trigger t WHERE t.tgrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n" +
+    " 'dependencies',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classid,d.objid,d.objsubid,d.refclassid,d.refobjid,d.refobjsubid,d.deptype) FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid),'[]'::jsonb),\n" +
+    " 'comments',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid) FROM pg_catalog.pg_description d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb),\n" +
+    " 'labels',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid,d.provider) FROM pg_catalog.pg_seclabel d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb)\n" +
+    ' ) AS metadata'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:52:163)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "WITH ns AS (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname=ANY($1::text[])),\n rel AS (SELECT c.* FROM pg_catalog.pg_class c WHERE c.relnamespace IN (SELECT oid FROM ns)),\n typ AS (SELECT t.* FROM pg_catalog.pg_type t WHERE t.typnamespace IN (SELECT oid FROM ns)),\n objects AS (\n SELECT 'pg_class'::regclass::oid AS classid,oid AS objid FROM rel UNION ALL\n SELECT 'pg_type'::regclass::oid,oid FROM typ UNION ALL\n SELECT 'pg_constraint'::regclass::oid,oid FROM pg_catalog.pg_constraint WHERE conrelid IN (SELECT oid FROM rel) UNION ALL\n SELECT 'pg_attrdef'::regclass::oid,oid FROM pg_catalog.pg_attrdef WHERE adrelid IN (SELECT oid FROM rel) UNION ALL\n SELECT 'pg_rewrite'::regclass::oid,oid FROM pg_catalog.pg_rewrite WHERE ev_class IN (SELECT oid FROM rel) UNION ALL\n SELECT 'pg_trigger'::regclass::oid,oid FROM pg_catalog.pg_trigger WHERE tgrelid IN (SELECT oid FROM rel))\n SELECT\n (SELECT count(*)::int FROM (\n SELECT oid FROM rel WHERE relkind NOT IN ('r','v','i','S') OR relispartition\n UNION ALL SELECT inhrelid FROM pg_catalog.pg_inherits WHERE inhrelid IN (SELECT oid FROM rel) OR inhparent IN (SELECT oid FROM rel)\n UNION ALL SELECT oid FROM typ t WHERE NOT ((t.typtype='c' AND t.typrelid IN (SELECT oid FROM rel WHERE relkind IN ('r','v'))) OR (t.typtype='b' AND t.typelem IN (SELECT oid FROM typ WHERE typtype='c' AND typrelid IN (SELECT oid FROM rel WHERE relkind IN ('r','v')))))\n UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d WHERE d.refclassid='pg_namespace'::regclass AND d.refobjid IN (SELECT oid FROM ns) AND d.classid NOT IN ('pg_class'::regclass,'pg_type'::regclass,'pg_constraint'::regclass)\n UNION ALL SELECT oid FROM pg_catalog.pg_proc WHERE pronamespace IN (SELECT oid FROM ns)\n UNION ALL SELECT oid FROM pg_catalog.pg_extension WHERE extnamespace IN (SELECT oid FROM ns)\n UNION ALL SELECT d.objid FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid WHERE d.deptype='e'\n UNION ALL SELECT oid FROM pg_catalog.pg_policy WHERE polrelid IN (SELECT oid FROM rel)\n UNION ALL SELECT oid FROM pg_catalog.pg_trigger WHERE tgrelid IN (SELECT oid FROM rel) AND NOT tgisinternal\n UNION ALL SELECT w.oid FROM pg_catalog.pg_rewrite w JOIN rel ON rel.oid=w.ev_class WHERE rel.relkind<>'v' OR w.rulename<>'_RETURN'\n ) unsupported) AS unsupported,\n jsonb_build_object(\n 'relations',COALESCE((SELECT jsonb_agg(to_jsonb(r)-ARRAY['relpages','reltuples','relallvisible','relallfrozen','relfrozenxid','relminmxid'] ORDER BY r.oid) FROM rel r),'[]'::jsonb),\n 'columns',COALESCE((SELECT jsonb_agg(to_jsonb(a) ORDER BY a.attrelid,a.attnum) FROM pg_catalog.pg_attribute a WHERE a.attrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'defaults',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.oid) FROM pg_catalog.pg_attrdef d WHERE d.adrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'constraints',COALESCE((SELECT jsonb_agg(to_jsonb(k) ORDER BY k.oid) FROM pg_catalog.pg_constraint k WHERE k.conrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'indexes',COALESCE((SELECT jsonb_agg(to_jsonb(i) ORDER BY i.indexrelid) FROM pg_catalog.pg_index i WHERE i.indrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'views',COALESCE((SELECT jsonb_agg(to_jsonb(w) ORDER BY w.oid) FROM pg_catalog.pg_rewrite w WHERE w.ev_class IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'types',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM typ t),'[]'::jsonb),\n 'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'triggers',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM pg_catalog.pg_trigger t WHERE t.tgrelid IN (SELECT oid FROM rel)),'[]'::jsonb),\n 'dependencies',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classid,d.objid,d.objsubid,d.refclassid,d.refobjid,d.refobjsubid,d.deptype) FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid),'[]'::jsonb),\n 'comments',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid) FROM pg_catalog.pg_description d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb),\n 'labels',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid,d.provider) FROM pg_catalog.pg_seclabel d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb)\n ) AS metadata",
+    expected: /'seqstart'\s*,\s*s\.seqstart::text/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:58:1
+✖ scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership (7.465772ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-review-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:58:298)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
