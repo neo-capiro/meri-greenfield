@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "python3",
+    "docs/qualification/candidates/document-replay-20261013/artifact-review/final/verify_replay_artifacts.py"
+  ],
+  "cwd": "/workspace/meri-document-replay-artifact-review",
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "implementationDiffBytes": 0,
+  "startedAt": "2026-10-13T10:36:06.882541+00:00",
+  "durationSeconds": 0.368,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 65989,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/final-exact-artifacts.stdout.txt",
+      "bytes": 7265,
+      "sha256": "1d24627a3b6ad6e2a91a8666bd844cd64a4caa9047a9b89771f0302b0fcba214"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/final-exact-artifacts.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}

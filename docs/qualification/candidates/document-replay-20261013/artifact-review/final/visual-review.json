@@ -1,0 +1,96 @@
+{
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "reviewedTree": "ddada7cac8a4c9175e3a8433a9532009af008e7a",
+  "completedAt": "2026-10-13T10:41:39.758749+00:00",
+  "nativeQualified": false,
+  "pages": [
+    {
+      "version": "original",
+      "page": 1,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/original-preview-1.png",
+      "bytes": 113728,
+      "sha256": "30cd917acd2e6505d2672163e0a60795366bae3738fc3bbe828aa8d50b9b65c1",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "All facts/citation locators/context/proposed language readable; coverage begins; no clipping."
+    },
+    {
+      "version": "original",
+      "page": 2,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/original-preview-2.png",
+      "bytes": 130402,
+      "sha256": "0e2fd50673ac43d511807bc86a9e3fa7dbeff1a9218a75c23df609e0a3635345",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "Coverage/unavailable source and F1 decisive text/identity/authorization/hash/scope readable; no clipping."
+    },
+    {
+      "version": "original",
+      "page": 3,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/original-preview-3.png",
+      "bytes": 138958,
+      "sha256": "0a958a479fb8799ab861587d4123762b856417d93f5bce661410a874da0fb3f4",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "Unverified/conflicting claim, both passages/bindings, missing evidence and provenance start readable; no clipping."
+    },
+    {
+      "version": "original",
+      "page": 4,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/original-preview-4.png",
+      "bytes": 27883,
+      "sha256": "91221f29f2ed75da9445b5c4789112e4e7ccf7919976038b9a7f5a074a2308ba",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "Complete recipe/immutable parent provenance continuation readable; sparse page remains; no missing text."
+    },
+    {
+      "version": "revision",
+      "page": 1,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/revision-preview-1.png",
+      "bytes": 113826,
+      "sha256": "803a1349d22ca891f93532c8e723d72062f4acedbc73e8d34722a0b1bdf8c048",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "All facts/citation locators/context/proposed language readable; coverage begins; no clipping."
+    },
+    {
+      "version": "revision",
+      "page": 2,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/revision-preview-2.png",
+      "bytes": 130315,
+      "sha256": "3e7128b5f458c6c876e40e1776e746b589c7bb7f6d5afaf83457040db7cbb6ba",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "Coverage/unavailable source and F1 decisive text/identity/authorization/hash/scope readable; no clipping."
+    },
+    {
+      "version": "revision",
+      "page": 3,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/revision-preview-3.png",
+      "bytes": 139368,
+      "sha256": "ca90774d93847b69f9bd84c09708f7304d051cf9615d0cc6acaf0800e3dd06bd",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "Unverified/conflicting claim, both passages/bindings, missing evidence and provenance start readable; no clipping."
+    },
+    {
+      "version": "revision",
+      "page": 4,
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observed-artifacts/revision-preview-4.png",
+      "bytes": 50271,
+      "sha256": "2e15cc69d92fe55e29fcfd00dfa00a8549d5a074f49d8f807ef95453cf081bd2",
+      "openedWith": "functions.view_image",
+      "detail": "original",
+      "decision": "PASS",
+      "observation": "Complete recipe/immutable parent provenance continuation readable; sparse page remains; no missing text."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "node",
+    "--experimental-loader",
+    "./docs/qualification/candidates/document-replay-20261013/artifact-review/final/installed-dependencies.mjs",
+    "docs/qualification/candidates/document-replay-20261013/artifact-review/final/observe-replay-flow.mjs",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice"
+  ],
+  "cwd": "/workspace/meri-document-replay-artifact-review",
+  "reviewedCommit": "74a548cb51e33e7f959c898529e0fcbe6c1a11e6",
+  "implementationDiffBytes": 0,
+  "startedAt": "2026-10-13T10:34:01.822261+00:00",
+  "durationSeconds": 4.093,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64421,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/final-http23-and-render.stdout.txt",
+      "bytes": 2777,
+      "sha256": "bebf1db761b1b896943280c12deeb9d1feffc8d1f401978b780dfb7bf90267d5"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/final-http23-and-render.stderr.txt",
+      "bytes": 440,
+      "sha256": "7b485d64605b7ef80bd898e117bef1019cdb0f6876ee58d91a4fecd788c8c2d8"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}
