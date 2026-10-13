@@ -1,0 +1,12 @@
+✔ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (432.2457ms)
+✔ lost setup acknowledgement is terminal and exposes only owned identifiers (3.582074ms)
+✔ actual three host recovery keeps same proposal and accounting across reconstruction (471.81565ms)
+✔ help and invalid arguments are inert and closed (0.749617ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3569.0459

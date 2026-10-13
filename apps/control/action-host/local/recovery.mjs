@@ -9,9 +9,10 @@ const failurePhases=new WeakMap();
 export const localHostRecoveryFailurePhase=error=>failurePhases.get(error)??'INITIALIZATION';
 
 export async function runLocalHostRecovery(configuration){
- const {mode,openHost,approve,revoke,stats,receiveResponse=(_route,_status,text)=>JSON.parse(text)}=own(configuration,['mode','openHost','approve','revoke','stats'],['receiveResponse']);
+ const {mode,openHost,approve,revoke,stats,receiveResponse=(_route,_status,text)=>JSON.parse(text),deadlineMs=Date.now()+30000,signal}=own(configuration,['mode','openHost','approve','revoke','stats'],['receiveResponse','deadlineMs','signal']);
  if(mode!=='synthetic-local'||[openHost,approve,revoke,stats,receiveResponse].some(value=>typeof value!=='function'))throw Error('LOCAL_HOST_CONFIGURATION');
- const cutoff=Date.now()+30000,lifetime=createOperationLifetime({deadlineMs:cutoff,now:Date.now,errorFactory:code=>new Error(code)});
+ if(!Number.isSafeInteger(deadlineMs)||deadlineMs>Date.now()+30000)throw Error('LOCAL_HOST_CONFIGURATION');
+ const cutoff=deadlineMs,lifetime=createOperationLifetime({deadlineMs:cutoff,now:Date.now,signal,errorFactory:code=>new Error(code)});
  const closed=[],applications=new Set();let selected,pending,observed,refusal,replay,revoked,phase='INITIALIZATION';
  async function withHost(work){
   lifetime.check();const remaining=cutoff-Date.now();if(remaining<=0)throw Error('LOCAL_HOST_DEADLINE');

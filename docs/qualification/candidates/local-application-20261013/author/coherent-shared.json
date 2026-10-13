@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/local-integration/local.test.mjs",
+    "apps/control/action-host/local/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-author-20261013",
+  "sourceHead": "8dd08aa2b8016b316bda1ca773ed1a2a66143501",
+  "sourceDiffSha256": "f85eb467dd74c317fd23943313a23d4ca12bf74672fafec590658ce36e15a21e",
+  "sourceDiffBytes": 7345,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:09:14.371222+00:00",
+  "durationSeconds": 3.647,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 470757,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/author/coherent-shared.stdout.bin",
+      "bytes": 508,
+      "sha256": "02d24daec0e3a568174acc373fdf8f88800db53e2ba2ad75a720fe0884d2c774"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/author/coherent-shared.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
