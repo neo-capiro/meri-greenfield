@@ -1,0 +1,2 @@
+*.stdout.bin -diff -text
+*.stderr.bin -diff -text
