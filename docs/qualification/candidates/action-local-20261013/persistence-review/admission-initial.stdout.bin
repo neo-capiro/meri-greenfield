@@ -1,0 +1,18 @@
+✔ independent descriptor is detached closed correlation and never an admission capability (1.914129ms)
+✔ independent bad host refuses before any pool or case port (2.058266ms)
+✔ independent bad database refuses before any pool or case port (0.327833ms)
+✔ independent bad user refuses before any pool or case port (0.295344ms)
+✔ independent bad mode refuses before any pool or case port (0.337137ms)
+✔ independent bad deadlineMs refuses before any pool or case port (3.687655ms)
+✔ independent descriptor getters and Proxy have no effects (0.391039ms)
+✔ independent wrong local migration hash holds before any SQL without closing borrowed pool (6.310521ms)
+✔ independent wrong cluster identity stops after read-only identity query before any case (2.807252ms)
+✔ independent native query rejection is sanitized and never closes borrowed owner (1.641038ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2461.127123
