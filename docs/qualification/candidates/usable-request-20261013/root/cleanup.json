@@ -1,0 +1,49 @@
+{
+  "removedBorrowedLinks": [
+    {
+      "path": "/workspace/meri-next-batch/node_modules",
+      "borrowedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "/workspace/meri-next-batch/packages/ui-stream/node_modules",
+      "borrowedLinkRemoved": true,
+      "donorPreserved": true
+    }
+  ],
+  "ownedCopiedContractDependenciesRemoved": true,
+  "donorContractDependenciesPreserved": true,
+  "nativeDBOrModelOrCloudProcessesStarted": false,
+  "captureGroupsAbsent": [
+    {
+      "label": "integrated-final",
+      "group": 100996,
+      "absent": true
+    },
+    {
+      "label": "public-final",
+      "group": 101050,
+      "absent": true
+    },
+    {
+      "label": "sdk-temporal-types-final",
+      "group": 100994,
+      "absent": true
+    },
+    {
+      "label": "ui-types-final",
+      "group": 101051,
+      "absent": true
+    },
+    {
+      "label": "reliability-eleven-final",
+      "group": 102273,
+      "absent": true
+    },
+    {
+      "label": "reliability-eleven-integrated",
+      "group": 103443,
+      "absent": true
+    }
+  ]
+}

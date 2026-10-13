@@ -1,0 +1,2185 @@
+TAP version 13
+# {"case":"changed fresh current scope","before":1,"after":1,"state":"queued"}
+# Subtest: Current changed scope refuses worker publication before any durable event mutation
+ok 1 - Current changed scope refuses worker publication before any durable event mutation
+  ---
+  duration_ms: 16.525728
+  type: 'test'
+  ...
+# {"case":"concurrent activities","results":[{"status":"fulfilled","value":{"state":"completed"}},{"status":"rejected","error":"EXECUTION_FAILED"}],"queries":1,"closed":1,"state":"completed"}
+# {"case":"calendar rollover replay","original":{"basis":"calendar-week","startInclusive":"2026-09-28T04:00:00Z","endExclusive":"2026-10-05T04:00:00Z","timezone":"America/New_York","weekStartsOn":"monday"},"replay":{"run":{"binding":{"tenantId":"tenant-a","actorId":"actor-a","conversationId":"00000001-0000-4000-8000-000000000000","runId":"00000002-0000-4000-8000-000000000000","attemptId":"00000003-0000-4000-8000-000000000000","workerId":"00000004-0000-4000-8000-000000000000","writerFence":1},"state":"queued","scopes":[{"tenantId":"tenant-a","kind":"client","resourceId":"00000005-0000-4000-8000-000000000000","policyRevision":"policy1"}],"createdAt":"2026-10-12T03:59:59.000Z","policyRevision":"policy1","versions":{"imageDigest":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","sdk":"0.3.295","cli":"2.1.295","contracts":"0.1.0","skillsDigest":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","checkpointFormat":"0.1.0"}},"requestId":"00000607-0000-4000-8000-000000000000","lastSequence":1,"replayed":true},"starts":2,"requests":1}
+# Subtest: Losing concurrent activity cannot poison the legitimate starting owner
+ok 2 - Losing concurrent activity cannot poison the legitimate starting owner
+  ---
+  duration_ms: 30.768655
+  type: 'test'
+  ...
+# Subtest: Exact calendar request replay retains original resolution across week rollover
+ok 3 - Exact calendar request replay retains original resolution across week rollover
+  ---
+  duration_ms: 11.808768
+  type: 'test'
+  ...
+# {"case":"HTTP outer deadline","status":408,"body":{"error":{"code":"DEADLINE"}}}
+# Subtest: HTTP original lifetime bounds a slow service even if it ignores cancellation
+ok 4 - HTTP original lifetime bounds a slow service even if it ignores cancellation
+  ---
+  duration_ms: 14.703106
+  type: 'test'
+  ...
+# {"case":"blocked failure observer cleanup","settled":true,"closed":1}
+# {"case":"event sequence column alias","error":"STORE_CORRUPT"}
+# {"case":"event ID column alias","error":"STORE_CORRUPT"}
+# Subtest: Failure observation cannot park SDK Query cleanup after original activity deadline
+ok 5 - Failure observation cannot park SDK Query cleanup after original activity deadline
+  ---
+  duration_ms: 40.418497
+  type: 'test'
+  ...
+# Subtest: Retained event sequence column alias refuses disclosure despite consistent JSON hash
+ok 6 - Retained event sequence column alias refuses disclosure despite consistent JSON hash
+  ---
+  duration_ms: 4.178803
+  type: 'test'
+  ...
+# Subtest: Retained event ID column alias refuses disclosure despite consistent JSON hash
+ok 7 - Retained event ID column alias refuses disclosure despite consistent JSON hash
+  ---
+  duration_ms: 3.017763
+  type: 'test'
+  ...
+# {"case":"cancel stored-scope change","error":"SCOPE_REFUSED","before":1,"after":1,"state":"queued"}
+# {"case":"fiscal config absent on exact replay","replay":{"run":{"binding":{"tenantId":"tenant-a","actorId":"actor-a","conversationId":"00000001-0000-4000-8000-000000000000","runId":"00000002-0000-4000-8000-000000000000","attemptId":"00000003-0000-4000-8000-000000000000","workerId":"00000004-0000-4000-8000-000000000000","writerFence":1},"state":"queued","scopes":[{"tenantId":"tenant-a","kind":"client","resourceId":"00000005-0000-4000-8000-000000000000","policyRevision":"policy1"}],"createdAt":"2026-10-13T11:57:56.095Z","policyRevision":"policy1","versions":{"imageDigest":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","sdk":"0.3.295","cli":"2.1.295","contracts":"0.1.0","skillsDigest":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","checkpointFormat":"0.1.0"}},"requestId":"00000006-0000-4000-8000-000000000000","lastSequence":1,"replayed":true},"before":{"basis":"fiscal-year","calendarId":"state-florida","year":2027,"stage":"appropriated","revisionId":"law-v2","timezone":"America/New_York","startInclusive":"2026-07-01T04:00:00Z","endExclusive":"2027-07-01T04:00:00Z"}}
+# {"case":"SDK immutable calendar context","window":{"basis":"calendar-week","startInclusive":"2026-10-05T04:00:00Z","endExclusive":"2026-10-12T04:00:00Z","timezone":"America/New_York","weekStartsOn":"monday"},"contextIncludesExactStart":true,"contextIncludesExactEnd":true,"contextIncludesTimezone":true}
+# {"case":"SDK close diagnostics","rawDiagnosticReleased":false,"state":"completed"}
+# Subtest: Cancellation binds current scopes to the exact locked run before append
+ok 8 - Cancellation binds current scopes to the exact locked run before append
+  ---
+  duration_ms: 16.498037
+  type: 'test'
+  ...
+# Subtest: Immutable fiscal replay uses retained window when current configuration is absent
+ok 9 - Immutable fiscal replay uses retained window when current configuration is absent
+  ---
+  duration_ms: 9.189372
+  type: 'test'
+  ...
+# Subtest: The sole SDK query receives the persisted exact normalized window
+ok 10 - The sole SDK query receives the persisted exact normalized window
+  ---
+  duration_ms: 38.905489
+  type: 'test'
+  ...
+# Subtest: SDK close failure never releases raw provider diagnostics from activity
+ok 11 - SDK close failure never releases raw provider diagnostics from activity
+  ---
+  duration_ms: 12.193455
+  type: 'test'
+  ...
+# Subtest: create_word: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+ok 12 - create_word: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+  ---
+  duration_ms: 355.538438
+  type: 'test'
+  ...
+# Subtest: create_excel: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+ok 13 - create_excel: retained bytes/version/ticket survive reconstructed and concurrent completed repeats
+  ---
+  duration_ms: 308.562514
+  type: 'test'
+  ...
+# Subtest: new invocation UUID overrides only validated version allocation, retaining original artifact/object allocation
+ok 14 - new invocation UUID overrides only validated version allocation, retaining original artifact/object allocation
+  ---
+  duration_ms: 183.238776
+  type: 'test'
+  ...
+# Subtest: completed revision remains published in descendant ancestry and never rewrites original or later head
+ok 15 - completed revision remains published in descendant ancestry and never rewrites original or later head
+  ---
+  duration_ms: 467.620099
+  type: 'test'
+  ...
+# Subtest: lost marker ACK recovers only original immutable commit and charge
+ok 16 - lost marker ACK recovers only original immutable commit and charge
+  ---
+  duration_ms: 178.611866
+  type: 'test'
+  ...
+# Subtest: lost settle ACK recovers only original immutable commit and charge
+ok 17 - lost settle ACK recovers only original immutable commit and charge
+  ---
+  duration_ms: 165.560054
+  type: 'test'
+  ...
+# Subtest: published premarker interruption recovers while an orphan record remains UNKNOWN
+ok 18 - published premarker interruption recovers while an orphan record remains UNKNOWN
+  ---
+  duration_ms: 267.147706
+  type: 'test'
+  ...
+# Subtest: consistent accounting argument corruption is rejected (completed)
+ok 19 - consistent accounting argument corruption is rejected (completed)
+  ---
+  duration_ms: 150.52566
+  type: 'test'
+  ...
+# Subtest: consistent accounting argument corruption is rejected (premarker)
+ok 20 - consistent accounting argument corruption is rejected (premarker)
+  ---
+  duration_ms: 161.526401
+  type: 'test'
+  ...
+# Subtest: legacy complete digest supports exact random version while alias filename and markerless legacy fail closed
+ok 21 - legacy complete digest supports exact random version while alias filename and markerless legacy fail closed
+  ---
+  duration_ms: 254.260275
+  type: 'test'
+  ...
+# Subtest: identical requests on separate deliveries cannot borrow or erase each others completion
+ok 22 - identical requests on separate deliveries cannot borrow or erase each others completion
+  ---
+  duration_ms: 266.444939
+  type: 'test'
+  ...
+# Subtest: retained parent corruption cannot release or re-execute
+ok 23 - retained parent corruption cannot release or re-execute
+  ---
+  duration_ms: 120.224415
+  type: 'test'
+  ...
+# Subtest: retained scope corruption cannot release or re-execute
+ok 24 - retained scope corruption cannot release or re-execute
+  ---
+  duration_ms: 117.730719
+  type: 'test'
+  ...
+# Subtest: retained record corruption cannot release or re-execute
+ok 25 - retained record corruption cannot release or re-execute
+  ---
+  duration_ms: 118.397517
+  type: 'test'
+  ...
+# Subtest: retained object corruption cannot release or re-execute
+ok 26 - retained object corruption cannot release or re-execute
+  ---
+  duration_ms: 166.603653
+  type: 'test'
+  ...
+# Subtest: retained head corruption cannot release or re-execute
+ok 27 - retained head corruption cannot release or re-execute
+  ---
+  duration_ms: 154.911416
+  type: 'test'
+  ...
+# Subtest: retained completion corruption cannot release or re-execute
+ok 28 - retained completion corruption cannot release or re-execute
+  ---
+  duration_ms: 121.206545
+  type: 'test'
+  ...
+# Subtest: revoked current authority and a narrower current byte ceiling withhold a charged result
+ok 29 - revoked current authority and a narrower current byte ceiling withhold a charged result
+  ---
+  duration_ms: 118.435974
+  type: 'test'
+  ...
+# Subtest: revocation after exact object read still withholds release without new effects
+ok 30 - revocation after exact object read still withholds release without new effects
+  ---
+  duration_ms: 109.676668
+  type: 'test'
+  ...
+# Subtest: original invocation deadline is not renewed by a fresh owner or completed replay
+ok 31 - original invocation deadline is not renewed by a fresh owner or completed replay
+  ---
+  duration_ms: 106.315181
+  type: 'test'
+  ...
+# Subtest: cancellation during replay lookup releases no result and performs no new effect
+ok 32 - cancellation during replay lookup releases no result and performs no new effect
+  ---
+  duration_ms: 132.730981
+  type: 'test'
+  ...
+# Subtest: one generator wins while concurrent uncompleted replay stays UNKNOWN and later returns its result
+ok 33 - one generator wins while concurrent uncompleted replay stays UNKNOWN and later returns its result
+  ---
+  duration_ms: 135.877615
+  type: 'test'
+  ...
+# Subtest: published concurrent recovery uses identical original completion before first commit ACK resumes
+ok 34 - published concurrent recovery uses identical original completion before first commit ACK resumes
+  ---
+  duration_ms: 121.758643
+  type: 'test'
+  ...
+# Subtest: unchanged canonical HTTP returns exact replay200 while other sessions/stores and revocation deny release
+ok 35 - unchanged canonical HTTP returns exact replay200 while other sessions/stores and revocation deny release
+  ---
+  duration_ms: 183.744772
+  type: 'test'
+  ...
+# Subtest: private observation never reconciles a marked UNKNOWN hold before current release authority
+ok 36 - private observation never reconciles a marked UNKNOWN hold before current release authority
+  ---
+  duration_ms: 113.138589
+  type: 'test'
+  ...
+# Subtest: canonical database grant revocation denies replay even when business/resource ports still allow
+ok 37 - canonical database grant revocation denies replay even when business/resource ports still allow
+  ---
+  duration_ms: 140.491577
+  type: 'test'
+  ...
+# Subtest: canonical expired-grant denies completed replay independently of permissive resource ports
+ok 38 - canonical expired-grant denies completed replay independently of permissive resource ports
+  ---
+  duration_ms: 105.828146
+  type: 'test'
+  ...
+# Subtest: canonical stale-run-fence denies completed replay independently of permissive resource ports
+ok 39 - canonical stale-run-fence denies completed replay independently of permissive resource ports
+  ---
+  duration_ms: 102.657076
+  type: 'test'
+  ...
+# Subtest: canonical missing-run denies completed replay independently of permissive resource ports
+ok 40 - canonical missing-run denies completed replay independently of permissive resource ports
+  ---
+  duration_ms: 121.839404
+  type: 'test'
+  ...
+# Subtest: canonical quarantined-budget denies completed replay independently of permissive resource ports
+ok 41 - canonical quarantined-budget denies completed replay independently of permissive resource ports
+  ---
+  duration_ms: 132.700931
+  type: 'test'
+  ...
+# Subtest: canonical capability-mismatch denies completed replay independently of permissive resource ports
+ok 42 - canonical capability-mismatch denies completed replay independently of permissive resource ports
+  ---
+  duration_ms: 110.834797
+  type: 'test'
+  ...
+# Subtest: canonical grant revoked after replay bytes prevents marker mutation and release
+ok 43 - canonical grant revoked after replay bytes prevents marker mutation and release
+  ---
+  duration_ms: 131.724644
+  type: 'test'
+  ...
+# Subtest: canonical grant revoked while completion ACK is parked still withholds final replay release
+ok 44 - canonical grant revoked while completion ACK is parked still withholds final replay release
+  ---
+  duration_ms: 123.596907
+  type: 'test'
+  ...
+# Subtest: canonical database time beyond original invocation deadline denies despite unexpired host-time lease
+ok 45 - canonical database time beyond original invocation deadline denies despite unexpired host-time lease
+  ---
+  duration_ms: 110.840856
+  type: 'test'
+  ...
+# Subtest: publication ancestry accepts exactly1024 nodes with cached target read; longer and cyclic chains fail
+ok 46 - publication ancestry accepts exactly1024 nodes with cached target read; longer and cyclic chains fail
+  ---
+  duration_ms: 7.758924
+  type: 'test'
+  ...
+# Subtest: legacy scan bounds entries and actual accumulated raw bytes, accepting exact16MiB only
+ok 47 - legacy scan bounds entries and actual accumulated raw bytes, accepting exact16MiB only
+  ---
+  duration_ms: 0.632318
+  type: 'test'
+  ...
+# Subtest: local lookup rejects file/version alias even when its claimed record and digest appear complete
+ok 48 - local lookup rejects file/version alias even when its claimed record and digest appear complete
+  ---
+  duration_ms: 0.102794
+  type: 'test'
+  ...
+# Subtest: create_word completed create replay reconstructs owner and returns identical immutable result
+ok 49 - create_word completed create replay reconstructs owner and returns identical immutable result
+  ---
+  duration_ms: 225.272822
+  type: 'test'
+  ...
+# Subtest: create_excel completed create replay reconstructs owner and returns identical immutable result
+ok 50 - create_excel completed create replay reconstructs owner and returns identical immutable result
+  ---
+  duration_ms: 216.177356
+  type: 'test'
+  ...
+# Subtest: completed exact revision replays after a newer head and preserves original bytes
+ok 51 - completed exact revision replays after a newer head and preserves original bytes
+  ---
+  duration_ms: 418.053121
+  type: 'test'
+  ...
+# Subtest: lost prepare acknowledgement uses retained evidence without duplicate effects
+ok 52 - lost prepare acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 170.384481
+  type: 'test'
+  ...
+# Subtest: lost reserve acknowledgement uses retained evidence without duplicate effects
+ok 53 - lost reserve acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 16.47999
+  type: 'test'
+  ...
+# Subtest: lost marker acknowledgement uses retained evidence without duplicate effects
+ok 54 - lost marker acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 158.486487
+  type: 'test'
+  ...
+# Subtest: lost settle acknowledgement uses retained evidence without duplicate effects
+ok 55 - lost settle acknowledgement uses retained evidence without duplicate effects
+  ---
+  duration_ms: 134.795113
+  type: 'test'
+  ...
+# Subtest: generator interruption remains UNKNOWN with no repeat effects
+ok 56 - generator interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 16.608351
+  type: 'test'
+  ...
+# Subtest: object interruption remains UNKNOWN with no repeat effects
+ok 57 - object interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 125.126719
+  type: 'test'
+  ...
+# Subtest: version-before-write interruption remains UNKNOWN with no repeat effects
+ok 58 - version-before-write interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 139.207564
+  type: 'test'
+  ...
+# Subtest: unpublished-version interruption remains UNKNOWN with no repeat effects
+ok 59 - unpublished-version interruption remains UNKNOWN with no repeat effects
+  ---
+  duration_ms: 122.808435
+  type: 'test'
+  ...
+# Subtest: lost-commit-ack after publication recovers exact server-correlated version before completion marker
+ok 60 - lost-commit-ack after publication recovers exact server-correlated version before completion marker
+  ---
+  duration_ms: 125.643183
+  type: 'test'
+  ...
+# Subtest: malformed-commit-ack after publication recovers exact server-correlated version before completion marker
+ok 61 - malformed-commit-ack after publication recovers exact server-correlated version before completion marker
+  ---
+  duration_ms: 108.568612
+  type: 'test'
+  ...
+# Subtest: cancel after published version before ACK can be recovered with same original lease
+ok 62 - cancel after published version before ACK can be recovered with same original lease
+  ---
+  duration_ms: 141.329333
+  type: 'test'
+  ...
+# Subtest: concurrent completed repeats return one immutable version and one charge
+ok 63 - concurrent completed repeats return one immutable version and one charge
+  ---
+  duration_ms: 187.044897
+  type: 'test'
+  ...
+# Subtest: concurrent first repeats yield one physical generation; unresolved waiter later recovers
+ok 64 - concurrent first repeats yield one physical generation; unresolved waiter later recovers
+  ---
+  duration_ms: 123.020442
+  type: 'test'
+  ...
+# Subtest: concurrent repeat after publication settles the same original marker while original ACK is parked
+ok 65 - concurrent repeat after publication settles the same original marker while original ACK is parked
+  ---
+  duration_ms: 113.42053
+  type: 'test'
+  ...
+# Subtest: distinct deliveries with identical input are distinct artifacts and never borrow completion
+ok 66 - distinct deliveries with identical input are distinct artifacts and never borrow completion
+  ---
+  duration_ms: 246.582498
+  type: 'test'
+  ...
+# Subtest: request/base/context/credential substitution cannot recover a completed result
+ok 67 - request/base/context/credential substitution cannot recover a completed result
+  ---
+  duration_ms: 107.356366
+  type: 'test'
+  ...
+# Subtest: new revision against stale immutable base remains UNKNOWN; completed original replay succeeds
+ok 68 - new revision against stale immutable base remains UNKNOWN; completed original replay succeeds
+  ---
+  duration_ms: 345.856916
+  type: 'test'
+  ...
+# Subtest: current revocation denies replay and retained reads while historical accounting remains available
+ok 69 - current revocation denies replay and retained reads while historical accounting remains available
+  ---
+  duration_ms: 104.029722
+  type: 'test'
+  ...
+# Subtest: missing or conflicting object evidence cannot release or re-execute
+ok 70 - missing or conflicting object evidence cannot release or re-execute
+  ---
+  duration_ms: 110.099034
+  type: 'test'
+  ...
+# Subtest: missing or conflicting record evidence cannot release or re-execute
+ok 71 - missing or conflicting record evidence cannot release or re-execute
+  ---
+  duration_ms: 117.933186
+  type: 'test'
+  ...
+# Subtest: missing or conflicting publication evidence cannot release or re-execute
+ok 72 - missing or conflicting publication evidence cannot release or re-execute
+  ---
+  duration_ms: 142.120673
+  type: 'test'
+  ...
+# Subtest: missing or conflicting marker evidence cannot release or re-execute
+ok 73 - missing or conflicting marker evidence cannot release or re-execute
+  ---
+  duration_ms: 142.365014
+  type: 'test'
+  ...
+# Subtest: legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN
+ok 74 - legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN
+  ---
+  duration_ms: 130.508734
+  type: 'test'
+  ...
+# Subtest: replay retains exact byte hash and fresh release receipt
+ok 75 - replay retains exact byte hash and fresh release receipt
+  ---
+  duration_ms: 141.337628
+  type: 'test'
+  ...
+# Subtest: original persisted deadline cannot be extended by a later replay
+ok 76 - original persisted deadline cannot be extended by a later replay
+  ---
+  duration_ms: 107.619964
+  type: 'test'
+  ...
+# Subtest: durable revoked authority blocks replay even when other current ports allow
+ok 77 - durable revoked authority blocks replay even when other current ports allow
+  ---
+  duration_ms: 133.740426
+  type: 'test'
+  ...
+# Subtest: durable expired authority blocks replay even when other current ports allow
+ok 78 - durable expired authority blocks replay even when other current ports allow
+  ---
+  duration_ms: 121.022018
+  type: 'test'
+  ...
+# Subtest: durable run-fence authority blocks replay even when other current ports allow
+ok 79 - durable run-fence authority blocks replay even when other current ports allow
+  ---
+  duration_ms: 149.181988
+  type: 'test'
+  ...
+# Subtest: durable quarantined authority blocks replay even when other current ports allow
+ok 80 - durable quarantined authority blocks replay even when other current ports allow
+  ---
+  duration_ms: 108.120746
+  type: 'test'
+  ...
+# Subtest: durable grant revocation after replay bytes prevents completion marker and release
+ok 81 - durable grant revocation after replay bytes prevents completion marker and release
+  ---
+  duration_ms: 125.047824
+  type: 'test'
+  ...
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 82 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 25.344851
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 83 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 4.949024
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 84 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 4.623467
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 85 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 3.470509
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 86 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 3.207546
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 87 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 3.129198
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 88 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 3.024791
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 89 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 3.063679
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 90 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 3.118513
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 91 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 29.608478
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 92 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 10.510798
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 93 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 6.532737
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 94 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 4.528885
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 95 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.242613
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 96 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 21.912829
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 97 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 11.321381
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 98 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 2.611913
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 99 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 2.532304
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 100 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 0.674019
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 101 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.630034
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 102 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.481251
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 103 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.499719
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 104 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.571947
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 105 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.605677
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 106 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.628101
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 107 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.463793
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 108 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.520219
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 109 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 1.02135
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 110 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.114099
+  type: 'test'
+  ...
+# Subtest: live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+ok 111 - live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+  ---
+  duration_ms: 35.053446
+  type: 'test'
+  ...
+# Subtest: upstream reader cancellation reaches the owned live event source
+ok 112 - upstream reader cancellation reaches the owned live event source
+  ---
+  duration_ms: 0.815341
+  type: 'test'
+  ...
+# Subtest: live producer suppresses internal source error details
+ok 113 - live producer suppresses internal source error details
+  ---
+  duration_ms: 0.607139
+  type: 'test'
+  ...
+# Subtest: independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources
+ok 114 - independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources
+  ---
+  duration_ms: 633.102874
+  type: 'test'
+  ...
+# Subtest: independent current actor substitution refuses before generation
+ok 115 - independent current actor substitution refuses before generation
+  ---
+  duration_ms: 8.854305
+  type: 'test'
+  ...
+# Subtest: independent current tenant substitution refuses before generation
+ok 116 - independent current tenant substitution refuses before generation
+  ---
+  duration_ms: 8.324601
+  type: 'test'
+  ...
+# Subtest: independent current attempt substitution refuses before generation
+ok 117 - independent current attempt substitution refuses before generation
+  ---
+  duration_ms: 11.319161
+  type: 'test'
+  ...
+# Subtest: independent current fence substitution refuses before generation
+ok 118 - independent current fence substitution refuses before generation
+  ---
+  duration_ms: 7.909819
+  type: 'test'
+  ...
+# Subtest: independent current client substitution refuses before generation
+ok 119 - independent current client substitution refuses before generation
+  ---
+  duration_ms: 7.104862
+  type: 'test'
+  ...
+# Subtest: independent current scope revision substitution refuses before generation
+ok 120 - independent current scope revision substitution refuses before generation
+  ---
+  duration_ms: 10.598049
+  type: 'test'
+  ...
+# Subtest: independent full canonical descriptor cannot omit grants or source requirements
+ok 121 - independent full canonical descriptor cannot omit grants or source requirements
+  ---
+  duration_ms: 9.874685
+  type: 'test'
+  ...
+# Subtest: independent constructor snapshots caller context, scopes, limits and descriptor
+ok 122 - independent constructor snapshots caller context, scopes, limits and descriptor
+  ---
+  duration_ms: 104.561088
+  type: 'test'
+  ...
+# Subtest: independent create replay and changed intent cannot generate or charge again
+ok 123 - independent create replay and changed intent cannot generate or charge again
+  ---
+  duration_ms: 142.011011
+  type: 'test'
+  ...
+# Subtest: independent stale revision leaves both committed versions unchanged and preserves uncertain effect
+ok 124 - independent stale revision leaves both committed versions unchanged and preserves uncertain effect
+  ---
+  duration_ms: 281.097155
+  type: 'test'
+  ...
+# Subtest: independent completed download withheld on final session denial remains RESULT_NOT_RELEASED
+ok 125 - independent completed download withheld on final session denial remains RESULT_NOT_RELEASED
+  ---
+  duration_ms: 80.839794
+  type: 'test'
+  ...
+# Subtest: independent object acknowledgement then revocation retains UNKNOWN and no second write on replay
+ok 126 - independent object acknowledgement then revocation retains UNKNOWN and no second write on replay
+  ---
+  duration_ms: 79.619553
+  type: 'test'
+  ...
+# Subtest: independent original cutoff aborts parked current-state receipt before effects
+ok 127 - independent original cutoff aborts parked current-state receipt before effects
+  ---
+  duration_ms: 40.896776
+  type: 'test'
+  ...
+# Subtest: independent newly shortened artifact expiry bounds the next parked executor
+ok 128 - independent newly shortened artifact expiry bounds the next parked executor
+  ---
+  duration_ms: 147.499045
+  type: 'test'
+  ...
+# Subtest: independent cancellation during response acquisition denies exact old version
+ok 129 - independent cancellation during response acquisition denies exact old version
+  ---
+  duration_ms: 91.069697
+  type: 'test'
+  ...
+# Subtest: independent raw binding injection has no authority/effect
+ok 130 - independent raw binding injection has no authority/effect
+  ---
+  duration_ms: 11.374093
+  type: 'test'
+  ...
+# Subtest: independent raw scopes injection has no authority/effect
+ok 131 - independent raw scopes injection has no authority/effect
+  ---
+  duration_ms: 8.569281
+  type: 'test'
+  ...
+# Subtest: independent raw credential injection has no authority/effect
+ok 132 - independent raw credential injection has no authority/effect
+  ---
+  duration_ms: 4.513086
+  type: 'test'
+  ...
+# Subtest: independent raw path injection has no authority/effect
+ok 133 - independent raw path injection has no authority/effect
+  ---
+  duration_ms: 4.934388
+  type: 'test'
+  ...
+# Subtest: independent raw baseVersionId injection has no authority/effect
+ok 134 - independent raw baseVersionId injection has no authority/effect
+  ---
+  duration_ms: 8.112303
+  type: 'test'
+  ...
+# Subtest: independent hostile errors and request objects execute no getters or proxy traps
+ok 135 - independent hostile errors and request objects execute no getters or proxy traps
+  ---
+  duration_ms: 19.62879
+  type: 'test'
+  ...
+# Subtest: independent oversized and malformed UTF8 bodies refuse before source work
+ok 136 - independent oversized and malformed UTF8 bodies refuse before source work
+  ---
+  duration_ms: 6.15593
+  type: 'test'
+  ...
+# Subtest: independent parked incoming body aborts under original deadline
+ok 137 - independent parked incoming body aborts under original deadline
+  ---
+  duration_ms: 35.086665
+  type: 'test'
+  ...
+# Subtest: independent no activation by default and separate tool/native credentials refused
+ok 138 - independent no activation by default and separate tool/native credentials refused
+  ---
+  duration_ms: 5.504352
+  type: 'test'
+  ...
+# Subtest: independent CLI help and invalid arguments remain inert and preserve environment
+ok 139 - independent CLI help and invalid arguments remain inert and preserve environment
+  ---
+  duration_ms: 0.394442
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected authority port cannot trigger reflection or erase uncertainty
+ok 140 - independent hostile rejected authority port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 17.01481
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected session-late port cannot trigger reflection or erase uncertainty
+ok 141 - independent hostile rejected session-late port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 23.718121
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected executor port cannot trigger reflection or erase uncertainty
+ok 142 - independent hostile rejected executor port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 25.939767
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected version-read port cannot trigger reflection or erase uncertainty
+ok 143 - independent hostile rejected version-read port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 70.468744
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected object-get port cannot trigger reflection or erase uncertainty
+ok 144 - independent hostile rejected object-get port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 98.403265
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected object-put port cannot trigger reflection or erase uncertainty
+ok 145 - independent hostile rejected object-put port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 49.719043
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty
+ok 146 - independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 63.884722
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected ids port cannot trigger reflection or erase uncertainty
+ok 147 - independent hostile rejected ids port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 8.148272
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty
+ok 148 - independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 11.768825
+  type: 'test'
+  ...
+# Subtest: independent hostile own error getters remain untouched
+ok 149 - independent hostile own error getters remain untouched
+  ---
+  duration_ms: 10.430559
+  type: 'test'
+  ...
+# Subtest: independent lost immutable-version acknowledgement is initially UNKNOWN then published-byte replay recovers without redispatch
+ok 150 - independent lost immutable-version acknowledgement is initially UNKNOWN then published-byte replay recovers without redispatch
+  ---
+  duration_ms: 92.270556
+  type: 'test'
+  ...
+# Subtest: independent source IDs, exact Unicode passage bytes and honest claim/coverage semantics
+ok 151 - independent source IDs, exact Unicode passage bytes and honest claim/coverage semantics
+  ---
+  duration_ms: 27.711208
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign actor
+ok 152 - independent refusal: foreign actor
+  ---
+  duration_ms: 3.971434
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign tenant
+ok 153 - independent refusal: foreign tenant
+  ---
+  duration_ms: 3.334349
+  type: 'test'
+  ...
+# Subtest: independent refusal: other run
+ok 154 - independent refusal: other run
+  ---
+  duration_ms: 3.512706
+  type: 'test'
+  ...
+# Subtest: independent refusal: other attempt
+ok 155 - independent refusal: other attempt
+  ---
+  duration_ms: 3.514158
+  type: 'test'
+  ...
+# Subtest: independent refusal: other fence
+ok 156 - independent refusal: other fence
+  ---
+  duration_ms: 3.412997
+  type: 'test'
+  ...
+# Subtest: independent refusal: changed selector
+ok 157 - independent refusal: changed selector
+  ---
+  duration_ms: 3.304685
+  type: 'test'
+  ...
+# Subtest: independent refusal: source operation
+ok 158 - independent refusal: source operation
+  ---
+  duration_ms: 7.498683
+  type: 'test'
+  ...
+# Subtest: independent refusal: source identity
+ok 159 - independent refusal: source identity
+  ---
+  duration_ms: 3.593638
+  type: 'test'
+  ...
+# Subtest: independent refusal: authorization decision
+ok 160 - independent refusal: authorization decision
+  ---
+  duration_ms: 3.750323
+  type: 'test'
+  ...
+# Subtest: independent refusal: source version
+ok 161 - independent refusal: source version
+  ---
+  duration_ms: 3.453358
+  type: 'test'
+  ...
+# Subtest: independent refusal: record identity
+ok 162 - independent refusal: record identity
+  ---
+  duration_ms: 3.421961
+  type: 'test'
+  ...
+# Subtest: independent refusal: raw text with retained hash
+ok 163 - independent refusal: raw text with retained hash
+  ---
+  duration_ms: 3.378015
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof hash
+ok 164 - independent refusal: proof hash
+  ---
+  duration_ms: 3.446958
+  type: 'test'
+  ...
+# Subtest: independent refusal: record hash
+ok 165 - independent refusal: record hash
+  ---
+  duration_ms: 3.397063
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign evidence scope
+ok 166 - independent refusal: foreign evidence scope
+  ---
+  duration_ms: 3.478625
+  type: 'test'
+  ...
+# Subtest: independent refusal: foreign client subject
+ok 167 - independent refusal: foreign client subject
+  ---
+  duration_ms: 3.314169
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof observed time
+ok 168 - independent refusal: proof observed time
+  ---
+  duration_ms: 3.319457
+  type: 'test'
+  ...
+# Subtest: independent refusal: proof update later than observed
+ok 169 - independent refusal: proof update later than observed
+  ---
+  duration_ms: 3.540528
+  type: 'test'
+  ...
+# Subtest: independent refusal: future retrieval
+ok 170 - independent refusal: future retrieval
+  ---
+  duration_ms: 3.556532
+  type: 'test'
+  ...
+# Subtest: independent refusal: missing citation proof
+ok 171 - independent refusal: missing citation proof
+  ---
+  duration_ms: 3.405365
+  type: 'test'
+  ...
+# Subtest: independent refusal: extra citation proof
+ok 172 - independent refusal: extra citation proof
+  ---
+  duration_ms: 6.045384
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace congress
+ok 173 - exact subject read filter cannot omit or replace congress
+  ---
+  duration_ms: 7.245042
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace session
+ok 174 - exact subject read filter cannot omit or replace session
+  ---
+  duration_ms: 8.603809
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace billId
+ok 175 - exact subject read filter cannot omit or replace billId
+  ---
+  duration_ms: 22.500795
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace billVersion
+ok 176 - exact subject read filter cannot omit or replace billVersion
+  ---
+  duration_ms: 49.001618
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace fiscalYear
+ok 177 - exact subject read filter cannot omit or replace fiscalYear
+  ---
+  duration_ms: 6.917541
+  type: 'test'
+  ...
+# Subtest: exact subject read filter cannot omit or replace budgetStage
+ok 178 - exact subject read filter cannot omit or replace budgetStage
+  ---
+  duration_ms: 6.767477
+  type: 'test'
+  ...
+# Subtest: canonical candidate envelope cannot serve as a decisive full read
+ok 179 - canonical candidate envelope cannot serve as a decisive full read
+  ---
+  duration_ms: 4.090754
+  type: 'test'
+  ...
+# Subtest: partial/stale coverage remains visible and never changes free-form verification
+ok 180 - partial/stale coverage remains visible and never changes free-form verification
+  ---
+  duration_ms: 10.466913
+  type: 'test'
+  ...
+# Subtest: decisive subject filters cannot contain contradictory exact-version assertions
+ok 181 - decisive subject filters cannot contain contradictory exact-version assertions
+  ---
+  duration_ms: 3.693268
+  type: 'test'
+  ...
+# Subtest: missing immutable citation version and false excerpt keep explicit negative statuses
+ok 182 - missing immutable citation version and false excerpt keep explicit negative statuses
+  ---
+  duration_ms: 15.727651
+  type: 'test'
+  ...
+# Subtest: untrusted input getter and Proxy execute no traps
+ok 183 - untrusted input getter and Proxy execute no traps
+  ---
+  duration_ms: 4.946506
+  type: 'test'
+  ...
+# Subtest: recipe/prose/catalog pins and future as-of refuse before source dispatch
+ok 184 - recipe/prose/catalog pins and future as-of refuse before source dispatch
+  ---
+  duration_ms: 24.773533
+  type: 'test'
+  ...
+# Subtest: prepared guard captures immutable authority context and exact full request identity
+ok 185 - prepared guard captures immutable authority context and exact full request identity
+  ---
+  duration_ms: 6.738644
+  type: 'test'
+  ...
+# Subtest: preabort and parked source cancellation release no prepared result or subsequent reads
+ok 186 - preabort and parked source cancellation release no prepared result or subsequent reads
+  ---
+  duration_ms: 4.671343
+  type: 'test'
+  ...
+# Subtest: private binder preserves the original borrowed authority receiver and call resource
+ok 187 - private binder preserves the original borrowed authority receiver and call resource
+  ---
+  duration_ms: 6.060858
+  type: 'test'
+  ...
+# Subtest: private binder must pin context digest even if returned prepared context mutates after binding
+ok 188 - private binder must pin context digest even if returned prepared context mutates after binding
+  ---
+  duration_ms: 6.197933
+  type: 'test'
+  ...
+# Subtest: private binder refuses authority accessor or Proxy without invoking getter/traps
+ok 189 - private binder refuses authority accessor or Proxy without invoking getter/traps
+  ---
+  duration_ms: 5.585264
+  type: 'test'
+  ...
+# Subtest: private binder captures borrowed check while retaining owner fields and original revocation
+ok 190 - private binder captures borrowed check while retaining owner fields and original revocation
+  ---
+  duration_ms: 6.4103
+  type: 'test'
+  ...
+# Subtest: private binder denies changed request context base and hostile intent before any policy effect
+ok 191 - private binder denies changed request context base and hostile intent before any policy effect
+  ---
+  duration_ms: 6.90332
+  type: 'test'
+  ...
+# Subtest: private binder preserves inert configuration admission before reading or spreading outer ports
+ok 192 - private binder preserves inert configuration admission before reading or spreading outer ports
+  ---
+  duration_ms: 5.830031
+  type: 'test'
+  ...
+# Subtest: independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup
+ok 193 - independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup
+  ---
+  duration_ms: 613.643762
+  type: 'test'
+  ...
+# Subtest: actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes
+ok 194 - actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes
+  ---
+  duration_ms: 915.444227
+  type: 'test'
+  ...
+# Subtest: Word txt remains in its original grant family
+ok 195 - Word txt remains in its original grant family
+  ---
+  duration_ms: 110.374454
+  type: 'test'
+  ...
+# Subtest: Word docx remains in its original grant family
+ok 196 - Word docx remains in its original grant family
+  ---
+  duration_ms: 194.250298
+  type: 'test'
+  ...
+# Subtest: create_word cannot dispatch create_excel/xlsx through create
+ok 197 - create_word cannot dispatch create_excel/xlsx through create
+  ---
+  duration_ms: 25.351036
+  type: 'test'
+  ...
+# Subtest: create_word cannot dispatch create_excel/xlsx through revise
+ok 198 - create_word cannot dispatch create_excel/xlsx through revise
+  ---
+  duration_ms: 11.69362
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/txt through create
+ok 199 - create_excel cannot dispatch create_word/txt through create
+  ---
+  duration_ms: 4.411068
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/txt through revise
+ok 200 - create_excel cannot dispatch create_word/txt through revise
+  ---
+  duration_ms: 5.088144
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/docx through create
+ok 201 - create_excel cannot dispatch create_word/docx through create
+  ---
+  duration_ms: 21.660632
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/docx through revise
+ok 202 - create_excel cannot dispatch create_word/docx through revise
+  ---
+  duration_ms: 12.396822
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_excel/pdf through create
+ok 203 - create_excel cannot dispatch create_excel/pdf through create
+  ---
+  duration_ms: 12.604184
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_excel/pdf through revise
+ok 204 - create_excel cannot dispatch create_excel/pdf through revise
+  ---
+  duration_ms: 5.257807
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_powerpoint/xlsx through create
+ok 205 - create_excel cannot dispatch create_powerpoint/xlsx through create
+  ---
+  duration_ms: 5.642373
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_powerpoint/xlsx through revise
+ok 206 - create_excel cannot dispatch create_powerpoint/xlsx through revise
+  ---
+  duration_ms: 4.542625
+  type: 'test'
+  ...
+# Subtest: Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format
+ok 207 - Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format
+  ---
+  duration_ms: 4.617918
+  type: 'test'
+  ...
+# Subtest: raw context cannot choose workbook authority
+ok 208 - raw context cannot choose workbook authority
+  ---
+  duration_ms: 4.136838
+  type: 'test'
+  ...
+# Subtest: raw credential cannot choose workbook authority
+ok 209 - raw credential cannot choose workbook authority
+  ---
+  duration_ms: 15.01758
+  type: 'test'
+  ...
+# Subtest: raw scopes cannot choose workbook authority
+ok 210 - raw scopes cannot choose workbook authority
+  ---
+  duration_ms: 5.388924
+  type: 'test'
+  ...
+# Subtest: raw descriptor cannot choose workbook authority
+ok 211 - raw descriptor cannot choose workbook authority
+  ---
+  duration_ms: 6.35414
+  type: 'test'
+  ...
+# Subtest: raw operation cannot choose workbook authority
+ok 212 - raw operation cannot choose workbook authority
+  ---
+  duration_ms: 4.913492
+  type: 'test'
+  ...
+# Subtest: Word application cannot release an Excel version through inspect or download
+ok 213 - Word application cannot release an Excel version through inspect or download
+  ---
+  duration_ms: 194.060594
+  type: 'test'
+  ...
+# Subtest: Excel application cannot release a Word version through inspect or download
+ok 214 - Excel application cannot release a Word version through inspect or download
+  ---
+  duration_ms: 78.731086
+  type: 'test'
+  ...
+# Subtest: separate workbook stores and session tokens cannot release another instance version
+ok 215 - separate workbook stores and session tokens cannot release another instance version
+  ---
+  duration_ms: 204.041968
+  type: 'test'
+  ...
+# Subtest: Excel current tenant substitution refuses before accounting
+ok 216 - Excel current tenant substitution refuses before accounting
+  ---
+  duration_ms: 8.150411
+  type: 'test'
+  ...
+# Subtest: Excel current actor substitution refuses before accounting
+ok 217 - Excel current actor substitution refuses before accounting
+  ---
+  duration_ms: 6.810935
+  type: 'test'
+  ...
+# Subtest: Excel current fence substitution refuses before accounting
+ok 218 - Excel current fence substitution refuses before accounting
+  ---
+  duration_ms: 4.711209
+  type: 'test'
+  ...
+# Subtest: Excel current client substitution refuses before accounting
+ok 219 - Excel current client substitution refuses before accounting
+  ---
+  duration_ms: 12.103143
+  type: 'test'
+  ...
+# Subtest: Excel remains unavailable by default without closing borrowed session
+ok 220 - Excel remains unavailable by default without closing borrowed session
+  ---
+  duration_ms: 5.401102
+  type: 'test'
+  ...
+# Subtest: Excel original deadline aborts parked current authority before dispatch
+ok 221 - Excel original deadline aborts parked current authority before dispatch
+  ---
+  duration_ms: 41.504642
+  type: 'test'
+  ...
+# Subtest: Excel completed bytes remain withheld after object-read session revocation
+ok 222 - Excel completed bytes remain withheld after object-read session revocation
+  ---
+  duration_ms: 236.914564
+  type: 'test'
+  ...
+# Subtest: a canonical Word descriptor cannot turn an Excel-only allocation into Word generation
+ok 223 - a canonical Word descriptor cannot turn an Excel-only allocation into Word generation
+  ---
+  duration_ms: 9.764254
+  type: 'test'
+  ...
+# INDEPENDENT_WORKBOOK_PROCESSES [{"pid":101593,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101595,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101592,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101594,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101596,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101597,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101598,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101599,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101600,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101644,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":101652,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false}]
+# Subtest: canonical 120-character Excel title releases its 125-character filename
+ok 224 - canonical 120-character Excel title releases its 125-character filename
+  ---
+  duration_ms: 207.25355
+  type: 'test'
+  ...
+# Subtest: one SDK query persists streamed text once, hides reasoning and completes durable run
+ok 225 - one SDK query persists streamed text once, hides reasoning and completes durable run
+  ---
+  duration_ms: 29.717483
+  type: 'test'
+  ...
+# Subtest: nonstreamed final assistant text is displayed with a valid generated UUID
+ok 226 - nonstreamed final assistant text is displayed with a valid generated UUID
+  ---
+  duration_ms: 10.72616
+  type: 'test'
+  ...
+# Subtest: SDK mirror never leaks diagnostics or makes a duplicate model query
+ok 227 - SDK mirror never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 24.163442
+  type: 'test'
+  ...
+# Subtest: SDK missing never leaks diagnostics or makes a duplicate model query
+ok 228 - SDK missing never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 11.062865
+  type: 'test'
+  ...
+# Subtest: SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+ok 229 - SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 9.236398
+  type: 'test'
+  ...
+# Subtest: SDK duplicate never leaks diagnostics or makes a duplicate model query
+ok 230 - SDK duplicate never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 9.545131
+  type: 'test'
+  ...
+# Subtest: SDK subagent never leaks diagnostics or makes a duplicate model query
+ok 231 - SDK subagent never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 8.343891
+  type: 'test'
+  ...
+# Subtest: revocation during query stops publication and closes SDK before another result
+ok 232 - revocation during query stops publication and closes SDK before another result
+  ---
+  duration_ms: 6.336443
+  type: 'test'
+  ...
+# Subtest: output limit fails instead of truncating a completed response
+ok 233 - output limit fails instead of truncating a completed response
+  ---
+  duration_ms: 8.76414
+  type: 'test'
+  ...
+# Subtest: late SDK iterator is bounded by deadline and closed without a second query
+ok 234 - late SDK iterator is bounded by deadline and closed without a second query
+  ---
+  duration_ms: 42.12394
+  type: 'test'
+  ...
+# Subtest: SDK options reject ambient config, wrong workspace and upstream keys
+ok 235 - SDK options reject ambient config, wrong workspace and upstream keys
+  ---
+  duration_ms: 0.515533
+  type: 'test'
+  ...
+# Subtest: final assistant frame repairs a missing streamed suffix without duplicate prefix
+ok 236 - final assistant frame repairs a missing streamed suffix without duplicate prefix
+  ---
+  duration_ms: 10.206953
+  type: 'test'
+  ...
+# Subtest: a conflicting final text refuses completion instead of silently dropping the mismatch
+ok 237 - a conflicting final text refuses completion instead of silently dropping the mismatch
+  ---
+  duration_ms: 7.744703
+  type: 'test'
+  ...
+# Subtest: runtime preparation mismatch records a failed run without invoking SDK
+ok 238 - runtime preparation mismatch records a failed run without invoking SDK
+  ---
+  duration_ms: 6.471576
+  type: 'test'
+  ...
+# {"case":"Kathmandu45minute offset","request":{"basis":"calendar-year","timezone":"Asia/Kathmandu","offset":0},"referenceAt":"2026-01-01T00:00:00Z","actual":{"basis":"calendar-year","startInclusive":"2025-12-31T18:15:00Z","endExclusive":"2026-12-31T18:15:00Z","timezone":"Asia/Kathmandu","weekStartsOn":null},"elapsedHours":8760}
+# {"case":"Berlin Sunday DST fall","request":{"basis":"calendar-week","timezone":"Europe/Berlin","offset":0,"weekStartsOn":"sunday"},"referenceAt":"2026-10-25T12:00:00Z","actual":{"basis":"calendar-week","startInclusive":"2026-10-24T22:00:00Z","endExclusive":"2026-10-31T23:00:00Z","timezone":"Europe/Berlin","weekStartsOn":"sunday"},"elapsedHours":169}
+# {"case":"Lord Howe half hour fall","request":{"basis":"calendar-week","timezone":"Australia/Lord_Howe","offset":0,"weekStartsOn":"monday"},"referenceAt":"2026-04-05T12:00:00Z","actual":{"basis":"calendar-week","startInclusive":"2026-03-29T13:00:00Z","endExclusive":"2026-04-05T13:30:00Z","timezone":"Australia/Lord_Howe","weekStartsOn":"monday"},"elapsedHours":168.5}
+# {"case":"New York March month","request":{"basis":"calendar-month","timezone":"America/New_York","offset":0},"referenceAt":"2026-03-31T23:00:00Z","actual":{"basis":"calendar-month","startInclusive":"2026-03-01T05:00:00Z","endExclusive":"2026-04-01T04:00:00Z","timezone":"America/New_York","weekStartsOn":null},"elapsedHours":743}
+# {"case":"Samoa December skipped day","request":{"basis":"calendar-month","timezone":"Pacific/Apia","offset":0},"referenceAt":"2011-12-29T12:00:00Z","actual":{"basis":"calendar-month","startInclusive":"2011-12-01T10:00:00Z","endExclusive":"2011-12-31T10:00:00Z","timezone":"Pacific/Apia","weekStartsOn":null},"elapsedHours":720}
+# {"case":"UTC Sunday prior year boundary","request":{"basis":"calendar-week","timezone":"Etc/UTC","offset":0,"weekStartsOn":"sunday"},"referenceAt":"2026-01-01T12:00:00Z","actual":{"basis":"calendar-week","startInclusive":"2025-12-28T00:00:00Z","endExclusive":"2026-01-04T00:00:00Z","timezone":"Etc/UTC","weekStartsOn":"sunday"},"elapsedHours":168}
+# {"case":"Local previous leap-year start","request":{"basis":"calendar-year","timezone":"Pacific/Kiritimati","offset":-1},"referenceAt":"2025-01-01T00:00:00Z","actual":{"basis":"calendar-year","startInclusive":"2023-12-31T10:00:00Z","endExclusive":"2024-12-31T10:00:00Z","timezone":"Pacific/Kiritimati","weekStartsOn":null},"elapsedHours":8784}
+# {"case":"maximum relative duration","actual":{"basis":"relative-duration","startInclusive":"2016-10-05T12:34:56.123456789Z","endExclusive":"2026-10-13T12:34:56.123456789Z","timezone":"America/New_York","weekStartsOn":null}}
+# {"case":"exact nonfederal fiscal","actual":{"basis":"fiscal-year","calendarId":"florida-state","year":2027,"stage":"appropriated","revisionId":"enrolled-exact-v2","timezone":"America/New_York","startInclusive":"2026-07-01T04:00:00Z","endExclusive":"2027-07-01T04:00:00Z"}}
+# Subtest: Kathmandu45minute offset
+ok 239 - Kathmandu45minute offset
+  ---
+  duration_ms: 10.070328
+  type: 'test'
+  ...
+# Subtest: Berlin Sunday DST fall
+ok 240 - Berlin Sunday DST fall
+  ---
+  duration_ms: 2.151694
+  type: 'test'
+  ...
+# Subtest: Lord Howe half hour fall
+ok 241 - Lord Howe half hour fall
+  ---
+  duration_ms: 1.349121
+  type: 'test'
+  ...
+# Subtest: New York March month
+ok 242 - New York March month
+  ---
+  duration_ms: 1.394049
+  type: 'test'
+  ...
+# Subtest: Samoa December skipped day
+ok 243 - Samoa December skipped day
+  ---
+  duration_ms: 1.043233
+  type: 'test'
+  ...
+# Subtest: UTC Sunday prior year boundary
+ok 244 - UTC Sunday prior year boundary
+  ---
+  duration_ms: 1.041381
+  type: 'test'
+  ...
+# Subtest: Local previous leap-year start
+ok 245 - Local previous leap-year start
+  ---
+  duration_ms: 0.812067
+  type: 'test'
+  ...
+# Subtest: Reference local boundary nanoseconds select current week
+ok 246 - Reference local boundary nanoseconds select current week
+  ---
+  duration_ms: 1.494769
+  type: 'test'
+  ...
+# Subtest: Relative duration preserves nanoseconds and maximum3660 elapsed days
+ok 247 - Relative duration preserves nanoseconds and maximum3660 elapsed days
+  ---
+  duration_ms: 0.747781
+  type: 'test'
+  ...
+# Subtest: Explicit nanosecond representation remains byte exact
+ok 248 - Explicit nanosecond representation remains byte exact
+  ---
+  duration_ms: 0.502653
+  type: 'test'
+  ...
+# Subtest: Canonical millisecond resolution refuses submillisecond-only intervals
+ok 249 - Canonical millisecond resolution refuses submillisecond-only intervals
+  ---
+  duration_ms: 0.485868
+  type: 'test'
+  ...
+# Subtest: Fiscal selection never synthesizes federal October rollover
+ok 250 - Fiscal selection never synthesizes federal October rollover
+  ---
+  duration_ms: 0.668702
+  type: 'test'
+  ...
+# Subtest: Fiscal source identity is exact, including case of revision
+ok 251 - Fiscal source identity is exact, including case of revision
+  ---
+  duration_ms: 0.379589
+  type: 'test'
+  ...
+# Subtest: Fiscal ambiguous bounds cannot be resolved by array order
+ok 252 - Fiscal ambiguous bounds cannot be resolved by array order
+  ---
+  duration_ms: 0.484757
+  type: 'test'
+  ...
+# Subtest: Malformed unrelated fiscal source is refused rather than ignored
+ok 253 - Malformed unrelated fiscal source is refused rather than ignored
+  ---
+  duration_ms: 0.393439
+  type: 'test'
+  ...
+# Subtest: Calendar resolution uses explicit reference even when ambient clock fails
+ok 254 - Calendar resolution uses explicit reference even when ambient clock fails
+  ---
+  duration_ms: 0.814471
+  type: 'test'
+  ...
+# Subtest: Repeated or skipped midnight is a typed refusal
+ok 255 - Repeated or skipped midnight is a typed refusal
+  ---
+  duration_ms: 1.146338
+  type: 'test'
+  ...
+# Subtest: Imports start no timers, network, filesystem writes or globalTemporal mutation
+ok 256 - Imports start no timers, network, filesystem writes or globalTemporal mutation
+  ---
+  duration_ms: 1803.717035
+  type: 'test'
+  ...
+# Subtest: independent raw14-asset hashes/pins match exact loader values, canonical catalog and original selected inventory
+ok 257 - independent raw14-asset hashes/pins match exact loader values, canonical catalog and original selected inventory
+  ---
+  duration_ms: 108.825914
+  type: 'test'
+  ...
+# Subtest: every exact14 asset refuses execution through unchanged canonical unavailable operation validator
+ok 258 - every exact14 asset refuses execution through unchanged canonical unavailable operation validator
+  ---
+  duration_ms: 55.991146
+  type: 'test'
+  ...
+# Subtest: selection refuses inherited/coercible identifiers and omitted/wildcard versions without invoking conversion
+ok 259 - selection refuses inherited/coercible identifiers and omitted/wildcard versions without invoking conversion
+  ---
+  duration_ms: 0.270816
+  type: 'test'
+  ...
+# Subtest: Commitments source-read operation must bind the actual mail source, not merely be another allowed operation
+ok 260 - Commitments source-read operation must bind the actual mail source, not merely be another allowed operation
+  ---
+  duration_ms: 7.641279
+  type: 'test'
+  ...
+# Subtest: Commitments source-read operation must bind exact declared Monday source authority
+ok 261 - Commitments source-read operation must bind exact declared Monday source authority
+  ---
+  duration_ms: 2.455359
+  type: 'test'
+  ...
+# Subtest: actual source authority remains visible on every returned coverage cell and bound passage
+ok 262 - actual source authority remains visible on every returned coverage cell and bound passage
+  ---
+  duration_ms: 2.427797
+  type: 'test'
+  ...
+# Subtest: foreign client record scopes cannot bind even when tenant, context and all byte/version hashes match
+ok 263 - foreign client record scopes cannot bind even when tenant, context and all byte/version hashes match
+  ---
+  duration_ms: 0.951195
+  type: 'test'
+  ...
+# Subtest: zero record scopes cannot be marked a bound source excerpt
+ok 264 - zero record scopes cannot be marked a bound source excerpt
+  ---
+  duration_ms: 0.932998
+  type: 'test'
+  ...
+# Subtest: different worker identity and current policy revision refuse unchanged passage bytes
+ok 265 - different worker identity and current policy revision refuse unchanged passage bytes
+  ---
+  duration_ms: 1.780267
+  type: 'test'
+  ...
+# Subtest: correct source hash with altered bytes, and correct bytes with altered source hash both refuse
+ok 266 - correct source hash with altered bytes, and correct bytes with altered source hash both refuse
+  ---
+  duration_ms: 1.857233
+  type: 'test'
+  ...
+# Subtest: candidate/snippet and missing decisive read cannot verify a promise or claim full coverage
+ok 267 - candidate/snippet and missing decisive read cannot verify a promise or claim full coverage
+  ---
+  duration_ms: 3.239553
+  type: 'test'
+  ...
+# Subtest: complete/stale inconsistency refuses and disclosed partial stale read never supports absence
+ok 268 - complete/stale inconsistency refuses and disclosed partial stale read never supports absence
+  ---
+  duration_ms: 2.254918
+  type: 'test'
+  ...
+# Subtest: unmapped Monday and entirely absent reads remain visible without false absence
+ok 269 - unmapped Monday and entirely absent reads remain visible without false absence
+  ---
+  duration_ms: 0.45352
+  type: 'test'
+  ...
+# Subtest: suggestion/delivery classifications and all semantic owner/date/tracking outputs stay unverified despite exact bound quotes
+ok 270 - suggestion/delivery classifications and all semantic owner/date/tracking outputs stay unverified despite exact bound quotes
+  ---
+  duration_ms: 2.107408
+  type: 'test'
+  ...
+# Subtest: distinct original records cannot be semantically deduplicated by equal extracted owner/date or similar quote
+ok 271 - distinct original records cannot be semantically deduplicated by equal extracted owner/date or similar quote
+  ---
+  duration_ms: 1.673297
+  type: 'test'
+  ...
+# Subtest: model attempts to inject completion/verification/citation authority or mutations are refused
+ok 272 - model attempts to inject completion/verification/citation authority or mutations are refused
+  ---
+  duration_ms: 6.185597
+  type: 'test'
+  ...
+# Subtest: retained current evidence and projection are deep immutable snapshots
+ok 273 - retained current evidence and projection are deep immutable snapshots
+  ---
+  duration_ms: 1.666817
+  type: 'test'
+  ...
+# Subtest: allowed operation from another source cannot bind a mail passage
+ok 274 - allowed operation from another source cannot bind a mail passage
+  ---
+  duration_ms: 7.674468
+  type: 'test'
+  ...
+# Subtest: Monday source authority cannot be promoted above its canonical operation requirement
+ok 275 - Monday source authority cannot be promoted above its canonical operation requirement
+  ---
+  duration_ms: 2.281499
+  type: 'test'
+  ...
+# Subtest: actual canonical source authority is retained in coverage and bound passages
+ok 276 - actual canonical source authority is retained in coverage and bound passages
+  ---
+  duration_ms: 2.510221
+  type: 'test'
+  ...
+# Subtest: all 14 original identities have an explicit immutable asset; 13 absent recipes are implemented
+ok 277 - all 14 original identities have an explicit immutable asset; 13 absent recipes are implemented
+  ---
+  duration_ms: 203.66421
+  type: 'test'
+  ...
+# Subtest: research_company: workflow-specific evidence and original explicit-selection prose
+ok 278 - research_company: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.394601
+  type: 'test'
+  ...
+# Subtest: relationship_brief: workflow-specific evidence and original explicit-selection prose
+ok 279 - relationship_brief: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.096164
+  type: 'test'
+  ...
+# Subtest: client_changes: workflow-specific evidence and original explicit-selection prose
+ok 280 - client_changes: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.150105
+  type: 'test'
+  ...
+# Subtest: portfolio_changes: workflow-specific evidence and original explicit-selection prose
+ok 281 - portfolio_changes: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.107621
+  type: 'test'
+  ...
+# Subtest: portfolio_overlap: workflow-specific evidence and original explicit-selection prose
+ok 282 - portfolio_overlap: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.066329
+  type: 'test'
+  ...
+# Subtest: mail_history: workflow-specific evidence and original explicit-selection prose
+ok 283 - mail_history: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.14032
+  type: 'test'
+  ...
+# Subtest: meeting_prep: workflow-specific evidence and original explicit-selection prose
+ok 284 - meeting_prep: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.07314
+  type: 'test'
+  ...
+# Subtest: commitments_audit: workflow-specific evidence and original explicit-selection prose
+ok 285 - commitments_audit: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.102243
+  type: 'test'
+  ...
+# Subtest: funding_opportunity_match: workflow-specific evidence and original explicit-selection prose
+ok 286 - funding_opportunity_match: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.175022
+  type: 'test'
+  ...
+# Subtest: pe_deep_dive: workflow-specific evidence and original explicit-selection prose
+ok 287 - pe_deep_dive: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.062644
+  type: 'test'
+  ...
+# Subtest: hearing_watch: workflow-specific evidence and original explicit-selection prose
+ok 288 - hearing_watch: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.069945
+  type: 'test'
+  ...
+# Subtest: representation_lookup: workflow-specific evidence and original explicit-selection prose
+ok 289 - representation_lookup: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.039069
+  type: 'test'
+  ...
+# Subtest: regulatory_docket_brief: workflow-specific evidence and original explicit-selection prose
+ok 290 - regulatory_docket_brief: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.03344
+  type: 'test'
+  ...
+# Subtest: existing bounded Bill Watch bytes, manifest and accepted pins stay exact
+ok 291 - existing bounded Bill Watch bytes, manifest and accepted pins stay exact
+  ---
+  duration_ms: 7.592264
+  type: 'test'
+  ...
+# Subtest: asset selection has no implicit latest, fuzzy identity, mutable pin or shared returned state
+ok 292 - asset selection has no implicit latest, fuzzy identity, mutable pin or shared returned state
+  ---
+  duration_ms: 5.643011
+  type: 'test'
+  ...
+# Subtest: a fresh loader refuses jointly changed prose and self-declared hash against immutable index
+ok 293 - a fresh loader refuses jointly changed prose and self-declared hash against immutable index
+  ---
+  duration_ms: 1766.361926
+  type: 'test'
+  ...
+# Subtest: exact original promise is bound with scope/version/hash and visible six-source coverage; no task mutation
+ok 294 - exact original promise is bound with scope/version/hash and visible six-source coverage; no task mutation
+  ---
+  duration_ms: 17.200001
+  type: 'test'
+  ...
+# Subtest: suggestions remain separate and exact duplicate promise origins merge without semantic merging
+ok 295 - suggestions remain separate and exact duplicate promise origins merge without semantic merging
+  ---
+  duration_ms: 3.252837
+  type: 'test'
+  ...
+# Subtest: conflicting owner/date evidence stays conflicting, including contradictions from related tracking
+ok 296 - conflicting owner/date evidence stays conflicting, including contradictions from related tracking
+  ---
+  duration_ms: 2.59376
+  type: 'test'
+  ...
+# Subtest: completed native task and free-form delivery claim cannot establish delivery or acceptance
+ok 297 - completed native task and free-form delivery claim cannot establish delivery or acceptance
+  ---
+  duration_ms: 2.004666
+  type: 'test'
+  ...
+# Subtest: unread sources and unmapped Monday are visible and never support absence
+ok 298 - unread sources and unmapped Monday are visible and never support absence
+  ---
+  duration_ms: 1.370085
+  type: 'test'
+  ...
+# Subtest: disconnected/unavailable mapped Monday retains source failure and continuation
+ok 299 - disconnected/unavailable mapped Monday retains source failure and continuation
+  ---
+  duration_ms: 1.808122
+  type: 'test'
+  ...
+# Subtest: refuses foreign tenant without a ledger
+ok 300 - refuses foreign tenant without a ledger
+  ---
+  duration_ms: 1.039168
+  type: 'test'
+  ...
+# Subtest: refuses foreign actor without a ledger
+ok 301 - refuses foreign actor without a ledger
+  ---
+  duration_ms: 0.995523
+  type: 'test'
+  ...
+# Subtest: refuses different conversation without a ledger
+ok 302 - refuses different conversation without a ledger
+  ---
+  duration_ms: 0.977536
+  type: 'test'
+  ...
+# Subtest: refuses different run without a ledger
+ok 303 - refuses different run without a ledger
+  ---
+  duration_ms: 0.994571
+  type: 'test'
+  ...
+# Subtest: refuses different attempt without a ledger
+ok 304 - refuses different attempt without a ledger
+  ---
+  duration_ms: 0.94707
+  type: 'test'
+  ...
+# Subtest: refuses obsolete fence without a ledger
+ok 305 - refuses obsolete fence without a ledger
+  ---
+  duration_ms: 0.898437
+  type: 'test'
+  ...
+# Subtest: refuses different decision without a ledger
+ok 306 - refuses different decision without a ledger
+  ---
+  duration_ms: 0.901692
+  type: 'test'
+  ...
+# Subtest: refuses substituted bytes without a ledger
+ok 307 - refuses substituted bytes without a ledger
+  ---
+  duration_ms: 0.869314
+  type: 'test'
+  ...
+# Subtest: refuses substituted hash without a ledger
+ok 308 - refuses substituted hash without a ledger
+  ---
+  duration_ms: 1.156695
+  type: 'test'
+  ...
+# Subtest: refuses snippet without a ledger
+ok 309 - refuses snippet without a ledger
+  ---
+  duration_ms: 1.107842
+  type: 'test'
+  ...
+# Subtest: refuses future read without a ledger
+ok 310 - refuses future read without a ledger
+  ---
+  duration_ms: 0.950596
+  type: 'test'
+  ...
+# Subtest: refuses unknown operation without a ledger
+ok 311 - refuses unknown operation without a ledger
+  ---
+  duration_ms: 0.951136
+  type: 'test'
+  ...
+# Subtest: refuses other window without a ledger
+ok 312 - refuses other window without a ledger
+  ---
+  duration_ms: 10.798882
+  type: 'test'
+  ...
+# Subtest: refuses unmapped Monday read without a ledger
+ok 313 - refuses unmapped Monday read without a ledger
+  ---
+  duration_ms: 1.677385
+  type: 'test'
+  ...
+# Subtest: refuses wrong Monday boards without a ledger
+ok 314 - refuses wrong Monday boards without a ledger
+  ---
+  duration_ms: 1.394471
+  type: 'test'
+  ...
+# Subtest: refuses record-version substitution without a ledger
+ok 315 - refuses record-version substitution without a ledger
+  ---
+  duration_ms: 1.469443
+  type: 'test'
+  ...
+# Subtest: refuses quote mismatch without a ledger
+ok 316 - refuses quote mismatch without a ledger
+  ---
+  duration_ms: 1.377816
+  type: 'test'
+  ...
+# Subtest: refuses quote range without a ledger
+ok 317 - refuses quote range without a ledger
+  ---
+  duration_ms: 1.261652
+  type: 'test'
+  ...
+# Subtest: refuses invented tracking source without a ledger
+ok 318 - refuses invented tracking source without a ledger
+  ---
+  duration_ms: 1.544125
+  type: 'test'
+  ...
+# Subtest: refuses orphan delivery link without a ledger
+ok 319 - refuses orphan delivery link without a ledger
+  ---
+  duration_ms: 1.462352
+  type: 'test'
+  ...
+# Subtest: refuses invalid due date without a ledger
+ok 320 - refuses invalid due date without a ledger
+  ---
+  duration_ms: 1.312268
+  type: 'test'
+  ...
+# Subtest: refuses duplicate ID without a ledger
+ok 321 - refuses duplicate ID without a ledger
+  ---
+  duration_ms: 1.349053
+  type: 'test'
+  ...
+# Subtest: refuses duplicate source without a ledger
+ok 322 - refuses duplicate source without a ledger
+  ---
+  duration_ms: 1.892348
+  type: 'test'
+  ...
+# Subtest: refuses model-completed property without a ledger
+ok 323 - refuses model-completed property without a ledger
+  ---
+  duration_ms: 1.562132
+  type: 'test'
+  ...
+# Subtest: accessors and extra options do not run during input admission
+ok 324 - accessors and extra options do not run during input admission
+  ---
+  duration_ms: 0.235393
+  type: 'test'
+  ...
+# Subtest: current Monday week
+ok 325 - current Monday week
+  ---
+  duration_ms: 8.772294
+  type: 'test'
+  ...
+# Subtest: previous Monday week
+ok 326 - previous Monday week
+  ---
+  duration_ms: 1.223405
+  type: 'test'
+  ...
+# Subtest: current Sunday week
+ok 327 - current Sunday week
+  ---
+  duration_ms: 0.878627
+  type: 'test'
+  ...
+# Subtest: Sunday belongs to the previous Monday week
+ok 328 - Sunday belongs to the previous Monday week
+  ---
+  duration_ms: 0.941622
+  type: 'test'
+  ...
+# Subtest: exact Monday boundary belongs to the current week
+ok 329 - exact Monday boundary belongs to the current week
+  ---
+  duration_ms: 0.795993
+  type: 'test'
+  ...
+# Subtest: spring DST week has 167 elapsed hours
+ok 330 - spring DST week has 167 elapsed hours
+  ---
+  duration_ms: 0.88026
+  type: 'test'
+  ...
+# Subtest: fall DST week has 169 elapsed hours
+ok 331 - fall DST week has 169 elapsed hours
+  ---
+  duration_ms: 0.642784
+  type: 'test'
+  ...
+# Subtest: month is based on local date before UTC rollover
+ok 332 - month is based on local date before UTC rollover
+  ---
+  duration_ms: 0.935663
+  type: 'test'
+  ...
+# Subtest: previous month across year rollover
+ok 333 - previous month across year rollover
+  ---
+  duration_ms: 0.809885
+  type: 'test'
+  ...
+# Subtest: leap February
+ok 334 - leap February
+  ---
+  duration_ms: 0.782974
+  type: 'test'
+  ...
+# Subtest: current year uses local year
+ok 335 - current year uses local year
+  ---
+  duration_ms: 0.745188
+  type: 'test'
+  ...
+# Subtest: previous year includes leap day
+ok 336 - previous year includes leap day
+  ---
+  duration_ms: 0.648293
+  type: 'test'
+  ...
+# Subtest: half-hour DST transition
+ok 337 - half-hour DST transition
+  ---
+  duration_ms: 0.637636
+  type: 'test'
+  ...
+# Subtest: skipped civil date inside a week
+ok 338 - skipped civil date inside a week
+  ---
+  duration_ms: 0.584656
+  type: 'test'
+  ...
+# Subtest: repeated fall hour is unambiguous when the trusted reference is an instant
+ok 339 - repeated fall hour is unambiguous when the trusted reference is an instant
+  ---
+  duration_ms: 1.148041
+  type: 'test'
+  ...
+# Subtest: a non-existent midnight boundary is refused without shifting the week
+ok 340 - a non-existent midnight boundary is refused without shifting the week
+  ---
+  duration_ms: 0.758948
+  type: 'test'
+  ...
+# Subtest: an ambiguous midnight boundary is refused without selecting an offset
+ok 341 - an ambiguous midnight boundary is refused without selecting an offset
+  ---
+  duration_ms: 0.448553
+  type: 'test'
+  ...
+# Subtest: relative days stay elapsed 24-hour durations through DST
+ok 342 - relative days stay elapsed 24-hour durations through DST
+  ---
+  duration_ms: 0.563325
+  type: 'test'
+  ...
+# Subtest: explicit timestamps are preserved byte-exact, without calendar reinterpretation
+ok 343 - explicit timestamps are preserved byte-exact, without calendar reinterpretation
+  ---
+  duration_ms: 0.25311
+  type: 'test'
+  ...
+# Subtest: unbounded is explicit and immutable
+ok 344 - unbounded is explicit and immutable
+  ---
+  duration_ms: 0.183595
+  type: 'test'
+  ...
+# Subtest: fiscal identity preserves exact year, calendar, stage, revision and bounds
+ok 345 - fiscal identity preserves exact year, calendar, stage, revision and bounds
+  ---
+  duration_ms: 0.548232
+  type: 'test'
+  ...
+# Subtest: fiscal year substitution is unavailable, never inferred
+ok 346 - fiscal year substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.23973
+  type: 'test'
+  ...
+# Subtest: fiscal calendarId substitution is unavailable, never inferred
+ok 347 - fiscal calendarId substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.180601
+  type: 'test'
+  ...
+# Subtest: fiscal stage substitution is unavailable, never inferred
+ok 348 - fiscal stage substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.191957
+  type: 'test'
+  ...
+# Subtest: fiscal revisionId substitution is unavailable, never inferred
+ok 349 - fiscal revisionId substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.15312
+  type: 'test'
+  ...
+# Subtest: fiscal timezone substitution is unavailable, never inferred
+ok 350 - fiscal timezone substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.152278
+  type: 'test'
+  ...
+# Subtest: missing fiscal configuration is disclosed as unavailable
+ok 351 - missing fiscal configuration is disclosed as unavailable
+  ---
+  duration_ms: 0.191226
+  type: 'test'
+  ...
+# Subtest: duplicate fiscal records are refused even with equal bounds
+ok 352 - duplicate fiscal records are refused even with equal bounds
+  ---
+  duration_ms: 0.295382
+  type: 'test'
+  ...
+# Subtest: conflicting fiscal bounds for one identity are refused
+ok 353 - conflicting fiscal bounds for one identity are refused
+  ---
+  duration_ms: 0.322113
+  type: 'test'
+  ...
+# Subtest: malformed trusted fiscal configuration cannot supply a window
+ok 354 - malformed trusted fiscal configuration cannot supply a window
+  ---
+  duration_ms: 0.548993
+  type: 'test'
+  ...
+# Subtest: referenceAt is required, UTC and valid; ambient time cannot substitute
+ok 355 - referenceAt is required, UTC and valid; ambient time cannot substitute
+  ---
+  duration_ms: 0.546099
+  type: 'test'
+  ...
+# Subtest: leap-second timestamps are refused rather than normalized to a different instant
+ok 356 - leap-second timestamps are refused rather than normalized to a different instant
+  ---
+  duration_ms: 0.315823
+  type: 'test'
+  ...
+# Subtest: invalid timezone, offsets, policy, duration and free-form fields are rejected by canonical contracts
+ok 357 - invalid timezone, offsets, policy, duration and free-form fields are rejected by canonical contracts
+  ---
+  duration_ms: 0.337597
+  type: 'test'
+  ...
+# Subtest: resolution leaves request and trusted configuration untouched and returns a frozen object
+ok 358 - resolution leaves request and trusted configuration untouched and returns a frozen object
+  ---
+  duration_ms: 0.924516
+  type: 'test'
+  ...
+# Subtest: package import creates no timers, connections, global Temporal or output
+ok 359 - package import creates no timers, connections, global Temporal or output
+  ---
+  duration_ms: 1613.976628
+  type: 'test'
+  ...
+1..359
+# tests 359
+# suites 0
+# pass 359
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 20150.734028

@@ -1,0 +1,52 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/stream.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs",
+    "packages/skills/test/assets.test.mjs",
+    "packages/skills/test/commitments.test.mjs",
+    "packages/skills/commitments/review-regression.test.mjs",
+    "packages/window-resolution/test/window-resolution.test.mjs",
+    "docs/qualification/candidates/usable-request-20261013/calendar-independent/calendar-independent.test.mjs",
+    "docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs",
+    "/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs",
+    "/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs",
+    "/workspace/meri-lifecycle-reliability-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/independent.test.mjs",
+    "apps/artifacts/independent/document-replay-independent.test.mjs",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-next-batch",
+  "sourceHead": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T11:57:52.364297+00:00",
+  "durationSeconds": 20.191,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 100996,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/integrated-final.stdout.bin",
+      "bytes": 82511,
+      "sha256": "7e535646c29f3ab23d6e8a509c0a7a1520ebed2f267c63763e4bb700a82bbb13"
+    },
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/integrated-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
