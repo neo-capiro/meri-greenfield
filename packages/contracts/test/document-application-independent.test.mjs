@@ -2,6 +2,7 @@
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {webcrypto} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
@@ -73,3 +74,13 @@ test('download consumes bounded stream EOF and cancels stalled body',async()=>{l
 test('download respects already cancelled caller',async()=>{const c=new AbortController();c.abort();await rejects(()=>receiveDocumentDownload(binary('txt'),success.txt.version,{signal:c.signal}));});
 test('received binary is detached from source buffer',async()=>{const b=downloads.txt.bytes.slice(),r=binary('txt',()=>{},b),out=await receiveDocumentDownload(r,success.txt.version);b.fill(0);assert.deepEqual(out.bytes,downloads.txt.bytes);});
 test('standalone browser module works with no Node or private graph',async()=>{const source=await readFile(new URL('../dist/document-application.mjs',import.meta.url),'utf8');const ctx=vm.createContext({TextEncoder,TextDecoder,Uint8Array,ArrayBuffer,DataView,Response,Request,Headers,ReadableStream,AbortController,AbortSignal,setTimeout,clearTimeout,crypto:webcrypto});const module=new vm.SourceTextModule(source,{context:ctx});await module.link(()=>{throw Error('External module forbidden');});await module.evaluate();const r=module.namespace.receiveDocumentRequest('create',encode({deliveryId:'browser',request:specs.txt}));assert.equal(r.request.format,'txt');const out=await module.namespace.receiveDocumentResponse('create',200,raws.txt,r);assert.equal(out.version.previewStatus,'pending');});
+
+test('native fetch followed redirect200 is refused despite exact bytes and headers',async()=>{
+ const server=createServer((req,res)=>{if(req.url==='/redirect'){res.writeHead(302,{location:'/file'});res.end();}else{res.writeHead(200,downloads.txt.headers);res.end(downloads.txt.bytes);}});
+ try{await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});const response=await fetch('http://127.0.0.1:'+server.address().port+'/redirect',{signal:AbortSignal.timeout(2000)});assert.equal(response.status,200);assert.equal(response.redirected,true);await rejects(()=>receiveDocumentDownload(response,success.txt.version));}
+ finally{server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
+});
+test('stream read error never yields verified bytes',()=>{const body=new ReadableStream({start(c){c.error(Error('synthetic reader failure'));}});return rejects(()=>receiveDocumentDownload(new Response(body,{headers:downloads.txt.headers}),success.txt.version));});
+test('extra byte after exact version bytes refuses',()=>{const body=new ReadableStream({start(c){c.enqueue(downloads.txt.bytes);c.enqueue(new Uint8Array([0]));c.close();}});return rejects(()=>receiveDocumentDownload(new Response(body,{headers:downloads.txt.headers}),success.txt.version));});
+test('hostile route and status do not coerce unknown objects',async()=>{let calls=0;const bad={[Symbol.toPrimitive](){calls++;throw Error('coerced');}};assert.throws(()=>receiveDocumentRequest(bad,encode({})),DocumentResponseError);await rejects(()=>receiveDocumentResponse('create',bad,raws.txt,requests.txt));assert.equal(calls,0);});
+test('request refuses escaped lone surrogate and concatenated JSON',()=>{for(const text of ['{"deliveryId":"x","request":{"operation":"create_word","format":"txt","title":"X","content":{"text":"\\ud800"}}}', '{}{}'])assert.throws(()=>receiveDocumentRequest('create',encode(text)),DocumentResponseError);});
