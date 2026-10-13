@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "5c533c1bea625fc43928ec620672800c715b2071",
+  "sourceTree": "ba53b13b34a4cfe8d34428b849f8b1d382b22106",
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/bridge-input-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-control-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 1.775,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2014,
+  "stdoutSha256": "725a1120940f02d7ce1dd9a443ac62120c46506133a0d2919230e3e32d54b935",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
