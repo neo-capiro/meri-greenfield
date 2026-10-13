@@ -1,0 +1,75 @@
+{"schema":"meri-contract-distribution/1","check":true,"records":[{"path":"browser.mjs","bytes":466002,"sha256":"3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"},{"path":"contracts.d.ts","bytes":4090,"sha256":"e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"},{"path":"index.d.ts","bytes":85,"sha256":"b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"},{"path":"browser.d.ts","bytes":166,"sha256":"638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"},{"path":"metadata.mjs","bytes":533,"sha256":"63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"},{"path":"metadata.d.ts","bytes":485,"sha256":"63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"}]}
+[{"path":"action-application.mjs","bytes":1480808,"sha256":"9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"},{"path":"action-application.d.ts","bytes":17721,"sha256":"007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"},{"path":"action-application.schema.json","bytes":67726,"sha256":"a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"},{"path":"action-application.metadata.json","bytes":1980,"sha256":"9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"}]
+[{"path":"document-application.mjs","bytes":498894,"sha256":"4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde"},{"path":"document-application.d.ts","bytes":23960,"sha256":"1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31"},{"path":"document-application.schema.json","bytes":34642,"sha256":"712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51"},{"path":"document-application.metadata.json","bytes":1996,"sha256":"49def325d3792f56c99de484efb4193092a3c54dc82df0f4559ed462e9f4288f"}]
+node:internal/fs/promises:697
+  return new FileHandle(await PromisePrototypeThen(
+                        ^
+
+Error: ENOENT: no such file or directory, open '/tmp/meri-document-contract-review-20261013/docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json'
+    at async open (node:internal/fs/promises:697:25)
+    at async readFile (node:internal/fs/promises:1348:14)
+    at async file:///tmp/meri-document-contract-review-20261013/packages/contracts/test/action-application-public.test.mjs:5:23 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/tmp/meri-document-contract-review-20261013/docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json'
+}
+
+Node.js v24.19.0
+✖ test/action-application-public.test.mjs (56.831868ms)
+✔ public txt request/receipt/verified binary (44.934479ms)
+✔ public docx request/receipt/verified binary (3.534903ms)
+✔ public xlsx request/receipt/verified binary (3.401363ms)
+✔ revision parent and inspect current-byte receipt (4.541416ms)
+✔ refuse receipt extra (1.207815ms)
+✔ refuse receipt hash (0.656717ms)
+✔ refuse receipt bytes (0.389365ms)
+✔ refuse receipt mime (0.366711ms)
+✔ refuse receipt filename (0.338249ms)
+✔ refuse receipt parent (1.638653ms)
+✔ refuse receipt native (0.524177ms)
+✔ refuse receipt recalc (0.422295ms)
+✔ refuse receipt preview (0.412911ms)
+✔ refuse receipt scope (0.353982ms)
+✔ refuse receipt tenant (0.360992ms)
+✔ refuse receipt size (0.32569ms)
+✔ strict UTF8, JSON bounds and inert bytes (1.058932ms)
+✔ typed-array overrides are not observed (0.261714ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.277787ms)
+✔ local request and version provenance cannot be reconstructed by shape (1.190609ms)
+✔ download header content-type refuses (0.501554ms)
+✔ download header content-length refuses (0.521965ms)
+✔ download header content-disposition refuses (0.508184ms)
+✔ download header cache-control refuses (0.563096ms)
+✔ download header x-content-type-options refuses (0.507343ms)
+✔ download header content-encoding refuses (0.461694ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (21.920768ms)
+✔ preabort/native Response brands and own getters (2.272145ms)
+✔ error status and uncertainty preserved without version or bytes (0.994675ms)
+✔ download JSON path accepts errors only (0.50575ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (133.936519ms)
+✔ isolated package consumer exposes document export without private files/dependencies (107.381553ms)
+✔ canonical 125-character docx filename remains usable (1.627777ms)
+✔ canonical 125-character xlsx filename remains usable (1.448637ms)
+✔ native followed redirect with exact final bytes remains refused (29.624578ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (29.059158ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (4.976831ms)
+✔ structural validation deliberately grants no tenant authorization (0.468464ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (0.95828ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (75.974752ms)
+✔ generator help and invalid arguments exit before generation (139.292863ms)
+✔ generated distribution check is independent of caller working directory (932.889758ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 42
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1557.121977
+
+✖ failing tests:
+
+test at test/action-application-public.test.mjs:1:1
+✖ test/action-application-public.test.mjs (56.831868ms)
+  'test failed'
