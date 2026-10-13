@@ -1,0 +1,40 @@
+{
+  "baseline": "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+  "baselineTree": "c9fe3ebb35213af65a70c01563855dfe08ed2606",
+  "sameFailureOnUnchangedBaselineAndCandidate": true,
+  "unchangedComparedPaths": [
+    "packages/contracts/retrieval-0.2/",
+    "packages/contracts/test/vertical-final-integration-independent.test.mjs",
+    "docs/qualification/candidates/vertical-source-20261012/vertical-final-review/pr37-identities.json"
+  ],
+  "failure": "HistoricalPR37 all84 descriptor/callback snapshot disagrees with lateraccepted actions.query descriptor. Currentcanonicalcatalog/body and historicalsnapshot tests untouched.",
+  "expected": "f86b3316cd727bd6edfd6bd1c544f2fba5ae2269814b150a28cda4e999ebcfca",
+  "actual": "7db58f4c6274657311825cff0017bcff49e1d0aa52a20dfe99d27a989d30a587",
+  "rawReceipts": [
+    {
+      "stdout": {
+        "path": "contracts-final.stdout.gz",
+        "rawBytes": 913096,
+        "rawSha256": "eaf890da18bd549c614227375ba78c0330d33c84100167cf9f32a265e3b0fed6"
+      },
+      "stderr": {
+        "path": "contracts-final.stderr.gz",
+        "rawBytes": 0,
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stdout": {
+        "path": "historical-vertical-baseline.stdout.gz",
+        "rawBytes": 10904,
+        "rawSha256": "59eab50bc9343399967c724a99dfd1679ef981380f30cbaa86340cba6a769684"
+      },
+      "stderr": {
+        "path": "historical-vertical-baseline.stderr.gz",
+        "rawBytes": 0,
+        "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "notClosed": true
+}
