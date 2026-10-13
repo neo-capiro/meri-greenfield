@@ -74,3 +74,14 @@ test('fixed UTF16 page boundary splitting a surrogate pair is refused by the can
  const full='a'.repeat(1999)+'😀'+' exact retained suffix',i=makeInput();i.quotes=[];
  await assert.rejects(prepare(make(unicodeSource(full)),i),/Lone surrogate is not allowed/u);
 });
+test('cancelling a parked read preserves the typed lifetime outcome and aborts its source signal',async()=>{
+ const controller=new AbortController();let began,observedSignal;const started=new Promise(resolve=>began=resolve);
+ const compiler=make(call=>new Promise((resolve,reject)=>{observedSignal=call.signal;call.signal.addEventListener('abort',()=>reject(call.signal.reason),{once:true});began();}));
+ const pending=compiler.prepare(makeInput(),unitContext(),{selection:selected(unitContext()),signal:controller.signal});await started;controller.abort();
+ await assert.rejects(pending,error=>error.code==='MAIL_HISTORY_CANCELLED'&&error===observedSignal.reason);assert.equal(observedSignal.aborted,true);
+});
+test('a parked read deadline preserves the typed lifetime outcome and aborts its source signal',{timeout:3000},async()=>{
+ const context=unitContext();context.deadlineMs=NOW+100;let observedSignal;
+ const compiler=make(call=>new Promise((resolve,reject)=>{observedSignal=call.signal;call.signal.addEventListener('abort',()=>reject(call.signal.reason),{once:true});}));
+ await assert.rejects(compiler.prepare(makeInput(),context,{selection:selected(context)}),error=>error.code==='MAIL_HISTORY_DEADLINE'&&error===observedSignal.reason);assert.equal(observedSignal.aborted,true);
+});
