@@ -19,7 +19,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  const contextSha256=continuationContextSha256(saved.request,saved.run.scopes),abort=new AbortController();
  const poll=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal:AbortSignal.any([life.signal,abort.signal]),errorFactory:fault});
  const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll}),pending=new Map();
- let stopped=false,held=false,after=0,sessionId=null,error;const failed=Promise.withResolvers(),heldResult=Promise.withResolvers(),initialized=Promise.withResolvers();
+ let stopped=false,held=false,after=0,sessionId=null,error,wakeIdle;const failed=Promise.withResolvers(),heldResult=Promise.withResolvers(),initialized=Promise.withResolvers();
  const ack=(entry,outcome,sdkUserMessageId)=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,
  commandSha256:entry.commandSha256,outcome,...(sdkUserMessageId===undefined?{}:{sdkUserMessageId})},signal:poll.signal});
  function envelope(raw){const e=data(own(raw,['controlSequence','commandSha256','command'])),c=assertWorkerControl(e.command);
@@ -47,8 +47,8 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    pending.set(entry.command.controlId,entry);after=entry.controlSequence;
    if(entry.command.action==='steer')await adapter.apply(entry.command);else {await pause(entry);break;}
   }
-  if(!stopped&&!held)await poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,pollMs);
-   function done(){signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);reject(fault('CANCELLED'));}
+  if(!stopped&&!held)await poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,pollMs);wakeIdle=done;
+   function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}
    signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();}));
  }}catch(e){if(!stopped){error=fault('LIFECYCLE_EXECUTION_UNKNOWN');failed.resolve(error);heldResult.reject(error);}}
  }
@@ -70,7 +70,12 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  }
  let finishing;
  function finish(){return finishing??=finishOnce();}
- async function finishOnce(){stopped=true;abort.abort();await pumping;
+ async function finishOnce(){stopped=true;wakeIdle?.();if(!sessionId)abort.abort();
+  // Stop new claims immediately, then drain the already bounded current-authority
+  // read. Cancelling that read on a successful result can invalidate the opaque
+  // session needed by the activity's final publication. Deadline/caller abort
+  // still cancels the read and refuses completion through the existing owner.
+  await pumping;abort.abort();
   // A dispatched but unacknowledged UUID remains UNKNOWN, never re-enqueued.
   for(const entry of pending.values()){const cleanup=createOperationLifetime({deadlineMs:now()+100,now,errorFactory:fault});
    try{await cleanup.run(signal=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256,outcome:'UNKNOWN'},signal}));}
