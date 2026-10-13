@@ -1,0 +1,80 @@
+{
+  "scope": "ACCEPT_SOURCE_RUNTIME_HOLD",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "bytes": 12491,
+      "sha256": "1fc77874417f0e8b05598e15919bbaac892f759692f73d3cee224d56d8dfc694"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "bytes": 9030,
+      "sha256": "2c39f712d3fe3d4338e44b3539200009c7dade5b3c2cd8db8477c77eb5196f27"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PRESERVATION-SIZE-INTEGRATION-20261013.md",
+      "bytes": 3168,
+      "sha256": "19f4e80f5b5bba26cbfb0da2899cdf807e026138b3c247ab13671b8fc6fcb678"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory-manifest.json",
+      "bytes": 1445,
+      "sha256": "6367f93b3ecc3cddc466a889ad1a2981d4b4d61ff0a325635c2b07d53adf1822"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/manifest.json",
+      "bytes": 3987,
+      "sha256": "e2f66e4228101c8aaeb4fdca207653d8e7cb4f235f8c70986847c5fd3d66dad7"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/audit.json",
+      "bytes": 2930,
+      "sha256": "9380876983b04f5d63e12150e3a6c292f0940e5a09fc3109b23606a6c0589dc0"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.json",
+      "bytes": 1306,
+      "sha256": "07d4777a642e4994530229feaf00926145c440a81b14321fa5d90ddaa92f4400"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.stdout.bin",
+      "bytes": 234,
+      "sha256": "fe364edb6d9e7c5fb27469ee7b9eecb6a1bf7f5fca983520be7b634a3e1148f7"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-schema.json",
+      "bytes": 1525,
+      "sha256": "7fe1947e40b2c36a3cb8924fa61b05e643429a5bfdf6f4bcf28990520bc81587"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-schema.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-schema.stdout.bin",
+      "bytes": 10244,
+      "sha256": "76f96e362853be2b18b045c9d85121c54aeb4ad6f2528947e0edab3669394f38"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/source-blobs.json",
+      "bytes": 471,
+      "sha256": "69c9e629951c816cf6dad998319ef873ef345bc75dfd821b852c84df9fddb559"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/manifest.json",
+      "bytes": 4540,
+      "sha256": "ba5f5f6ba3fa367c4892845ba7a4a35eda79f1dd445118527a054b0f96f9b8eb"
+    }
+  ]
+}
