@@ -1,0 +1,33 @@
+{
+  "checks": [
+    {
+      "name": "staged-full",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "authored",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "apps/control/task-lookup/local-integration",
+        "docs/coordination/reports/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md",
+        "docs/coordination/tasks/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md"
+      ],
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rawEvidenceNeverNormalized": true
+}
