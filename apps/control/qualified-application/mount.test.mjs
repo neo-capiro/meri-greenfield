@@ -8,13 +8,23 @@ import {receiveActionResponse} from '../../../packages/contracts/dist/action-app
 import {createPostgresToolBudget} from '../../gateway/budget/postgres-tool-budget.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 
+// Explicit scripted SQL routing, never a native PostgreSQL or installation claim.
+function combinedFixturePool(t){
+ return {options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){let client,pending=[];
+  return {async query(sql,args){const text=typeof sql==='string'?sql:sql.text;
+   if(!client&&(text==='BEGIN'||text.startsWith('SET LOCAL'))){pending.push([sql,args]);return {rows:[]};}
+   if(!client){const pool=text.includes('meri_approval_metadata')?t.metadata.pool:text.includes('meri_command_journal')?t.journal.pool:text.includes('meri_task_lookup')?t.lookup.pool:t.h.pool;client=await pool.connect();for(const q of pending)await client.query(...q);pending=[];}
+   return client.query(sql,args);
+  },release(error){client?.release(error);}};
+ }};
+}
 function fixtureConfiguration(t){
- const {source:ignored,...command}=t.config.command;
+ const {source:ignored,...command}=t.config.command,pool=combinedFixturePool(t);
  const write={origin:'https://qualified-action.invalid',getCredentials:t.p.source.getCredentials,async fetchImpl(url,init){
   assert.equal(url,'https://qualified-action.invalid/clio/tools/create_task');t.s.active(init.signal);const args=JSON.parse(init.body);t.s.state.taskEffects++;
   return new Response(JSON.stringify({tool:'create_task',generatedAt:new Date(t.now()).toISOString(),created:true,task:{id:randomUUID(),title:args.title,status:'todo',dueDate:args.dueDate??null,clientId:args.clientId,createdAt:new Date(t.now()).toISOString()}}),{headers:{'content-type':'application/json'}});
  }};
- return {hostConfiguration:{...t.config,command},source:{read:t.p.source,command:write}};
+ return {hostConfiguration:{...t.config,admission:{...t.config.admission,pool},lookup:{...t.config.lookup,pool},metadata:{...t.config.metadata,pool},command:{...command,budgetPool:pool,journalPool:pool}},source:{read:t.p.source,command:write}};
 }
 
 test('persisted qualification graph executes typed fixture and retained approval replay over three actual HTTP hosts',async()=>{
@@ -35,6 +45,7 @@ test('persisted qualification graph executes typed fixture and retained approval
 test('both read and command accidental live origins and opaque command source overrides are refused before I/O',async()=>{
  const t=await admittedFixture();try{const c=fixtureConfiguration(t);for(const k of ['read','command'])assert.throws(()=>createQualificationActionHost({...c,source:{...c.source,[k]:{...c.source[k],origin:'https://real.example.com'}}}));
   assert.throws(()=>createQualificationActionHost({...c,hostConfiguration:{...c.hostConfiguration,command:{...c.hostConfiguration.command,source:t.p.commandSource}}}));
+  for(const key of ['lookup','metadata'])assert.throws(()=>createQualificationActionHost({...c,hostConfiguration:{...c.hostConfiguration,[key]:{...c.hostConfiguration[key],pool:t.config[key].pool}}}),/POOL_MISMATCH/);
   assert.equal(t.s.state.sourceReads,0);assert.equal(t.s.state.taskEffects,0);
  }finally{t.close();}
 });

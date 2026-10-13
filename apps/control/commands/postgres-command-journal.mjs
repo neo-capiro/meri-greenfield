@@ -37,12 +37,12 @@ export function createPostgresCommandJournal(options){
    throw primary;
   }finally{try{client?.release(evict);}catch{if(!primary)deny('COMMAND_CONNECTION_CLEANUP');}}
  }
- const select='SELECT * FROM meri_command_journal WHERE tenant_id=$1 AND actor_id=$2 AND (idempotency_key=$3 OR command_id=$4) FOR UPDATE';
+ const select='SELECT * FROM public.meri_command_journal WHERE tenant_id=$1 AND actor_id=$2 AND (idempotency_key=$3 OR command_id=$4) FOR UPDATE';
  async function locked(q,k){const r=await q(select,[k.tenant,k.actor,k.idem,k.id]);if(r.rows.length!==1)deny('COMMAND_IDEMPOTENCY_CONFLICT');return rowValue(r.rows[0],k);}
  async function claim(payload,executor,check){
   const k=key(payload),e=data(executor);
   return transact(async q=>{
-   const r=await q(`INSERT INTO meri_command_journal
+   const r=await q(`INSERT INTO public.meri_command_journal
     (tenant_id,actor_id,idempotency_key,command_id,command_sha256,proposal_sha256,payload_sha256,payload,executor,state)
     VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,'CLAIMED') ON CONFLICT DO NOTHING RETURNING *`,
     [k.tenant,k.actor,k.idem,k.id,k.commandHash,k.proposalHash,k.payloadHash,JSON.stringify(k.payload),JSON.stringify(e)]);
@@ -56,14 +56,14 @@ export function createPostgresCommandJournal(options){
    const row=await locked(q,k);
    if(row.state==='OUTCOME'){if(!same(row.outcome,observation))deny('COMMAND_OUTCOME_CONFLICT');return row;}
    if(row.state!=='CLAIMED')deny('COMMAND_OUTCOME_UNKNOWN');
-   const r=await q("UPDATE meri_command_journal SET state='OUTCOME', outcome=$5::jsonb, updated_at=clock_timestamp() WHERE tenant_id=$1 AND actor_id=$2 AND idempotency_key=$3 AND command_id=$4 AND state='CLAIMED' RETURNING *",[k.tenant,k.actor,k.idem,k.id,JSON.stringify(observation)]);
+   const r=await q("UPDATE public.meri_command_journal SET state='OUTCOME', outcome=$5::jsonb, updated_at=clock_timestamp() WHERE tenant_id=$1 AND actor_id=$2 AND idempotency_key=$3 AND command_id=$4 AND state='CLAIMED' RETURNING *",[k.tenant,k.actor,k.idem,k.id,JSON.stringify(observation)]);
    if(r.rows.length!==1)deny('COMMAND_OUTCOME_UNKNOWN');return rowValue(r.rows[0],k);
   },check);
  }
  async function markUnknown(payload,check){
   const k=key(payload);return transact(async q=>{
    const row=await locked(q,k);if(row.state!=='CLAIMED')return row;
-   const r=await q("UPDATE meri_command_journal SET state='UNKNOWN', updated_at=clock_timestamp() WHERE tenant_id=$1 AND actor_id=$2 AND idempotency_key=$3 AND command_id=$4 AND state='CLAIMED' RETURNING *",[k.tenant,k.actor,k.idem,k.id]);
+   const r=await q("UPDATE public.meri_command_journal SET state='UNKNOWN', updated_at=clock_timestamp() WHERE tenant_id=$1 AND actor_id=$2 AND idempotency_key=$3 AND command_id=$4 AND state='CLAIMED' RETURNING *",[k.tenant,k.actor,k.idem,k.id]);
    if(r.rows.length!==1)deny('COMMAND_OUTCOME_UNKNOWN');return rowValue(r.rows[0],k);
   },check);
  }

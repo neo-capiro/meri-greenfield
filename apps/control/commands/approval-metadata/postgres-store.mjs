@@ -23,14 +23,14 @@ export function createPostgresApprovalMetadataStore(configuration){
  }
  async function insert(value,check){
   const p=immutablePayload(value),r=p.record;
-  return statement('INSERT INTO meri_approval_metadata (tenant_id,actor_id,proposal_id,command_id,idempotency_key,command_sha256,payload_sha256,payload) VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb) RETURNING payload,payload_sha256',
+  return statement('INSERT INTO public.meri_approval_metadata (tenant_id,actor_id,proposal_id,command_id,idempotency_key,command_sha256,payload_sha256,payload) VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb) RETURNING payload,payload_sha256',
    [r.binding.tenantId,r.binding.actorId,r.proposalId,r.commandId,r.idempotencyKey,p.commandSha256,canonicalSha256(p),JSON.stringify(p)],check,true,result=>{
     if(result.length!==1)deny('COMMAND_PREPARATION_REFUSED');const got=decoded(result[0]);if(canonicalSha256(got)!==canonicalSha256(p))deny('COMMAND_PREPARATION_REFUSED');return got;
    });
  }
  async function read(value,check){
   const k=readKey(value);
-  return statement('SELECT payload,payload_sha256 FROM meri_approval_metadata WHERE tenant_id=$1 AND actor_id=$2 AND proposal_id=$3',[k.tenantId,k.actorId,k.proposalId],check,false,result=>{
+  return statement('SELECT payload,payload_sha256 FROM public.meri_approval_metadata WHERE tenant_id=$1 AND actor_id=$2 AND proposal_id=$3',[k.tenantId,k.actorId,k.proposalId],check,false,result=>{
    if(!result.length)return null;const p=decoded(result[0]),r=p.record;
    if(r.binding.tenantId!==k.tenantId||r.binding.actorId!==k.actorId||r.proposalId.toLowerCase()!==k.proposalId.toLowerCase())deny('COMMAND_PREPARATION_REFUSED');return p;
   });
