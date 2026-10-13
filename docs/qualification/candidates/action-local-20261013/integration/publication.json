@@ -1,0 +1,33 @@
+{
+  "schema": "meri.source-publication/1",
+  "observedAt": "2026-10-13T00:43:01.116Z",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/40",
+  "number": 40,
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "mergeable": true,
+  "mergeableState": "clean",
+  "head": {
+    "branch": "task/meri-action-local-20261013",
+    "sha": "79c91d09bde8b7853860e973f647886b02c9b04b"
+  },
+  "base": {
+    "branch": "task/meri-task-slice-20261012",
+    "sha": "d68615c9861315ac1c6ee616697f7ad0093d9192"
+  },
+  "preservedPr39": {
+    "head": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+    "state": "open",
+    "draft": true,
+    "merged": false
+  },
+  "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "testedSource": "f8ee0a61577dcb332559f9c0a152f521846b5331",
+  "acceptance": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "nativeDatabaseCasesRun": 0,
+  "exact694Passed": 694,
+  "newSourceChecksPassed": 131,
+  "note": "This receipt records the observed published evidence head. Its containing commit adds only this receipt; final containing head is reported in the completion handoff."
+}
