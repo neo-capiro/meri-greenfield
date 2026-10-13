@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+  "sourceTree": "f7b27912084f1be5eadd31695f77e0599a153720",
+  "command": [
+    "node",
+    "packages/contracts/conversation-lifecycle/evidence/audit.mjs"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 0.403,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 3709,
+  "stdoutSha256": "676ba446553edf1702c9792dc01961ee043f08bf091c31dcf67a96da89400cfc",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

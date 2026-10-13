@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+  "sourceTree": "f7b27912084f1be5eadd31695f77e0599a153720",
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 1.068,
+  "subreaper": true,
+  "adoptedChildrenReaped": [
+    {
+      "pid": 287740,
+      "status": 0
+    }
+  ],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 344,
+  "stdoutSha256": "5cf7b4ea52ce805047d8e38a4739e86afad063309072ad480217a9f067bb7112",
+  "stderrBytes": 445,
+  "stderrSha256": "85be3912675f8d54e5395676ed306301b0dcb4492c3df865ac9e74d11505bb2f"
+}

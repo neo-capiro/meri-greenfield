@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+  "sourceTree": "f7b27912084f1be5eadd31695f77e0599a153720",
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-original-runtime-source-review/docs/qualification/candidates/original-runtime-20261013/source-independent/lifecycle-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-lifecycle-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 2.074,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 747,
+  "stdoutSha256": "951ea4c41369c8994f4417fd24d9dda7300720d6e24143af55ea14920a62aa2e",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

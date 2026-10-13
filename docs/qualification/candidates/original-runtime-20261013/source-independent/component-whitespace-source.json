@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "e5f969f2293e391b5c4420b3c81a61777acc8d4d",
+  "sourceTree": "c810d9e1fdb5f5245586ba7d58950f99f8a937b3",
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    "docs/qualification/candidates/original-runtime-20261013/source-independent/*.mjs",
+    "docs/qualification/candidates/original-runtime-20261013/source-independent/*.py",
+    "docs/qualification/candidates/original-runtime-20261013/source-independent/*.md",
+    "docs/qualification/candidates/original-runtime-20261013/source-independent/*.json"
+  ],
+  "cwd": "/workspace/meri-original-runtime-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 0.003,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

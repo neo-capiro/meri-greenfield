@@ -1,0 +1,152 @@
+{
+  "removed": [
+    {
+      "root": "/workspace/meri-original-producer-source-review",
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "root": "/workspace/meri-original-producer-source-review",
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-greenfield/packages/contracts/node_modules",
+      "removed": true
+    },
+    {
+      "root": "/workspace/meri-public-lifecycle-source-review",
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "root": "/workspace/meri-public-lifecycle-source-review",
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true
+    },
+    {
+      "root": "/workspace/meri-public-lifecycle-source-review",
+      "path": "apps/control/conversations/node_modules",
+      "target": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "removed": true
+    },
+    {
+      "root": "/workspace/meri-public-lifecycle-source-review",
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true
+    },
+    {
+      "root": "/workspace/meri-public-lifecycle-source-review",
+      "path": "packages/contracts/node_modules",
+      "ownedCopyRemoved": true
+    }
+  ],
+  "receiptsVerified": [
+    {
+      "label": "producer-independent-first",
+      "sourceCommit": "692480d5c0aed72d9db083b7bafb6684b9786241",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "producer-owner-focused",
+      "sourceCommit": "692480d5c0aed72d9db083b7bafb6684b9786241",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "lifecycle-independent-first",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 1,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "lifecycle-independent-repaired",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "lifecycle-owner-focused",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "public-package-focused",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 1,
+      "adoptedChildrenReaped": [
+        {
+          "pid": 287740,
+          "status": 0
+        }
+      ],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "public-package-local-dependencies",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [
+        {
+          "pid": 288396,
+          "status": 0
+        },
+        {
+          "pid": 288417,
+          "status": 0
+        },
+        {
+          "pid": 288438,
+          "status": 0
+        },
+        {
+          "pid": 288478,
+          "status": 0
+        },
+        {
+          "pid": 288499,
+          "status": 0
+        },
+        {
+          "pid": 288730,
+          "status": 0
+        },
+        {
+          "pid": 288780,
+          "status": 0
+        }
+      ],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "component-audit",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "public-installed-audit",
+      "sourceCommit": "cd033ae7890fab4b4df887bfb7f663e12c785362",
+      "exitCode": 0,
+      "adoptedChildrenReaped": [],
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "donorEdits": false,
+  "productEdits": false,
+  "sourceCheckWorktreesClean": true,
+  "entireHostCleanupClaim": false,
+  "limits": [
+    "Existing PID1 zombies and other owners processes are outside this review.",
+    "Exact component acceptance does not accept root integration or authentic live/native producer state."
+  ]
+}

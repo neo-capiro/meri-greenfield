@@ -1,0 +1,50 @@
+✔ real Fetch inspection and public receiving expose only exact authorized checkpoint selector/hash (135.017672ms)
+✔ inspection refuses foreign/missing selector and injected authority with zero native reads (33.272067ms)
+✔ inspection fresh revoke before or during trusted read prevents release (70.737783ms)
+✔ inspection rejects changed trusted immutable proof and unsafe HTTP/body shapes (42.934857ms)
+✔ checkpoint inspection refuses another opaque session and changed current binding before native read (29.498797ms)
+✔ trusted checkpoint read is bounded by original operation lifetime and never releases a late hash (129.052732ms)
+✔ actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack (70.326962ms)
+✔ pause fences worker messages before checkpoint; exact readback publishes paused and immutable history (48.401176ms)
+✔ approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume (55.996001ms)
+✔ resume uses immutable checkpoint and fresh target, with retirement only resume (83.079555ms)
+✔ fork uses immutable checkpoint and fresh target, with retirement only resume (61.772551ms)
+✔ native retirement UNKNOWN is a durable barrier and identical replay performs no second effect (43.143488ms)
+✔ current revoke blocks control/claim/ack/checkpoint with no second effect (11.777965ms)
+✔ legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED (38.965435ms)
+✔ control redundant conversation_id cannot be relabelled even with untouched projection hash (13.251486ms)
+✔ control redundant run_id cannot be relabelled even with untouched projection hash (12.793966ms)
+✔ control redundant control_sequence cannot be relabelled even with untouched projection hash (12.375193ms)
+✔ private Fetch route strictness and uncertainty contain no raw credentials (11.77516ms)
+✔ upstream Temporal signal is wake-only and never directly sends SDK text (0.413525ms)
+✔ fork reads trusted immutable checkpoint while original remains running and independently writable (37.290855ms)
+✔ resume target requires a fresh existing session; old credential cannot execute target (64.301102ms)
+✔ restart cannot redeliver a durable DISPATCHING/UNKNOWN steer and APPLIED cannot regress (47.820473ms)
+✔ checkpoint redundant conversation_id cannot select another originating owner (32.802299ms)
+✔ checkpoint redundant run_id cannot select another originating owner (48.456449ms)
+✔ checkpoint redundant checkpoint_id cannot select another originating owner (31.462457ms)
+✔ checkpoint redundant control_id cannot select another originating owner (31.8008ms)
+✔ control persisted sourceRequestSha256 must match immutable source even if projection hash is recomputed (20.964566ms)
+✔ control persisted contextSha256 must match immutable source even if projection hash is recomputed (12.991089ms)
+✔ control persisted commandSha256 must match immutable source even if projection hash is recomputed (12.712274ms)
+✔ resume refuses native target worker substitution before target publication (44.571191ms)
+✔ resume refuses native target fence substitution before target publication (54.299769ms)
+✔ resume refuses native target scope substitution before target publication (41.850024ms)
+✔ malformed UTF8/JSON and over-budget Fetch bytes are refused before durable control (13.842365ms)
+✔ dispatcher lifecycle is opt-in and preserves legacy start definition (0.250592ms)
+✔ multiple authorized clients do not permit changing the exact source selected subject on admission (47.031505ms)
+✔ fresh target session with another in-scope selected client cannot load a persisted continuation (71.826552ms)
+✔ parked native admission then authenticated cancel prevents pause resume target/start/continued (64.568839ms)
+ℹ {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+✔ parked native admission then authenticated cancel prevents approval.wait resume target/start/continued (67.432488ms)
+ℹ {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+✔ parked native admission rechecks retained hold inside target insertion transaction (54.84627ms)
+✔ parked native admission rechecks retained proof inside target insertion transaction (62.417874ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3526.731022
