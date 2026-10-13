@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-10-13T03:14:00Z",
+  "refReadMethod": "git ls-remote origin exact named refs",
+  "refs": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "pr44": "c47d5c2815026b399624df5eb76db0bc460cbb7a",
+      "pr43": "83d1d8b2ae4604ca259be17461ae71ca60f5fb6e"
+    }
+  ],
+  "commentReadbacks": [
+    {
+      "id": 6136525551,
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6136525551",
+      "returnedAuthor": "neo-capiro"
+    },
+    {
+      "id": 6137056397,
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6137056397",
+      "returnedAuthor": "neo-capiro"
+    },
+    {
+      "id": 6137189801,
+      "url": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6137189801",
+      "returnedAuthor": "neo-capiro"
+    },
+    {
+      "id": 6137233691,
+      "url": "https://github.com/neo-capiro/meri-greenfield/pull/44#issuecomment-6137233691",
+      "returnedAuthor": "neo-capiro"
+    }
+  ],
+  "ownerRepliesObserved": false,
+  "nativeEvidence": "Separate owner; not inspected or accepted here"
+}

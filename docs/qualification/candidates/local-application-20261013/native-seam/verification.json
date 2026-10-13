@@ -1,0 +1,205 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "originalEntries": 10853,
+  "checks": [
+    {
+      "name": "base identities exact",
+      "passed": true
+    },
+    {
+      "name": "scripts/local-action/admission.mjs",
+      "passed": true
+    },
+    {
+      "name": "scripts/local-action/cli.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/task-lookup/local-integration/run-persistence.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/task-lookup/local-integration/fresh-pool.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/local-action/case.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/local-action/gateway.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/local-action/identity.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/local-action/control-authorizer.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/gateway/budget/postgres-budget-store.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/durable/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/durable/test/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/index.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/resolver.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/local/fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/action-host/local/recovery.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/durable-executor.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/intent.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/source-http.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/approval-metadata/owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/postgres-command-journal.mjs",
+      "passed": true
+    },
+    {
+      "name": "packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/action-application/receive.mjs",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+      "passed": true
+    },
+    {
+      "name": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "passed": true
+    },
+    {
+      "name": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "passed": true
+    },
+    {
+      "name": "apps/control/commands/migrations/0001_commands.sql",
+      "passed": true
+    },
+    {
+      "name": "apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "six exact existing migrations",
+      "passed": true
+    },
+    {
+      "name": "thirteen existing relations",
+      "passed": true
+    },
+    {
+      "name": "no new migration id",
+      "passed": true
+    },
+    {
+      "name": "driver pin exact",
+      "passed": true
+    },
+    {
+      "name": "PR40 gateway admits only one operation at this base",
+      "passed": true
+    },
+    {
+      "name": "one immutable allocation per run",
+      "passed": true
+    },
+    {
+      "name": "PR44 independent budget fixtures",
+      "passed": true
+    },
+    {
+      "name": "PR40 case empty source",
+      "passed": true
+    },
+    {
+      "name": "PR40 existing CLI empty prerequisite",
+      "passed": true
+    },
+    {
+      "name": "recovery synchronous graph at inspected base",
+      "passed": true
+    },
+    {
+      "name": "old synthetic database flag retained in source",
+      "passed": true
+    },
+    {
+      "name": "proposal not implemented by discovery",
+      "passed": true
+    },
+    {
+      "name": "native evidence ownership boundary",
+      "passed": true
+    },
+    {
+      "name": "no execution actions",
+      "passed": true
+    },
+    {
+      "name": "all original tracked entries exact",
+      "passed": true
+    }
+  ],
+  "passed": 49,
+  "failed": 0,
+  "scope": "Read-only source/metadata discovery; no target code imported or executed."
+}

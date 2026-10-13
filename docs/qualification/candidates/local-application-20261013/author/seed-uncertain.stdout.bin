@@ -1,0 +1,11 @@
+✔ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (373.89501ms)
+✔ lost setup acknowledgement is terminal and exposes only owned identifiers (3.924859ms)
+✔ committed seed with lost acknowledgement remains terminal and never reseeds (5.087667ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3151.999763

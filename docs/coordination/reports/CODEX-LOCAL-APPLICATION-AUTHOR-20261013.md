@@ -1,0 +1,21 @@
+# Shared-pool local application author
+
+Base334890d930fbdb209044c30ff552409bcb86240e. Final codefc76ac68f8e2b2b0de6f214326a7f67b9a7ef661. Isolated branch task/meri-local-application-author-20261013.
+
+Implemented actual one-pool case: inert construction, explicit canonical transaction/grant setup, one immutable allocation with actions.query+create_task and two distinct scoped capabilities/grants, fresh canonical service/host reconstruction, nonempty synthetic source, task approval/execution/replay, and bounded accounting observation. No accepted owner or public contract changed beyond the two allocated local gateway/recovery seams. New shared runner always uses the committed public response receiver over actual loopback HTTP. Source/identity/policy fixtures are explicitly synthetic; production catalog stays disabled.
+
+Module boundaries: state owns immutable synthetic identities/allocation; ports owns synthetic current policy and source envelopes; case composes existing stores/owners and explicit setup; run owns admitted-pool reconstruction and readback. Test routing reuses one budget harness, plus existing table-specific inert fixtures. Fresh pool aliasing is refused; only fresh owned pools close; initial pool is borrowed. Setup uncertainty is terminal with owned row identifiers. Approval/revocation and all later ports share the original finite cutoff. Direct accounting has its own bounded lifetime and checked queries.
+
+Checks and evidence, all owned groups absent/no timeout/no forced kill:
+
+- initial-shared: module-load failure from importing source receiver without generated companion; repaired to the existing committed public distribution, no public files changed. Group470156.
+- public-entry-repaired: full actual flow/accounting passed until author's final test incorrectly expected ALREADY_ATTEMPTED after revocation; correct result was LOCAL_CASE_REFUSED. Group470457. Preserved test/preimage8dd08aa2; same no-reseed assertion moved before revocation, additional post-revocation refusal assertion retained.
+- coherent-shared:4/4 including actual shared-pool full flow plus original unchanged local tests. Group470757. One allocation, two grant bindings/reservations, aggregate consumed20, sourceReads1, taskEffects1, same proposal replay, two fresh pool facades closed.
+- seed-uncertain:3/3 final focused tests including true lost acknowledgement after scripted seed COMMIT, retained two grant rows and refused second setup. Group471989. Earlier connect-failure test name mentions acknowledgement, but its evidence is pre-seed acquisition failure; the added case supplies the distinct committed-uncertainty evidence.
+- Reviewer reported18/18 against873a1a4b, including original-cutoff final readback/late connect and graph cleanup. It separately retained a failing direct-readback parked-lock control against873a, repaired by finalfc76. Final exactfc76 replay reported32/32 (19 independent,3 author,2 legacy local,8 legacy gateway), plus3 unchanged legacy parked-callback checks. Independent preservation audit10,854 base/10,852 unchanged; source acceptance ready, final packet audit separately owned.
+
+Draft7c562b59 preserved static findings: initial outer-lifetime gap, fresh-pool identity omission and unbounded standalone accounting. Subsequent freezes retain each repair and failed capture. No assertion/catalog/schema or legacy fixture was weakened. The test module import and test oracle failures are distinguished from source defects.
+
+Native execution is UNRUN. `database-readback` is the query DTO, not proof of real storage when supplied a scripted pool. Native owner must observe real initial/final aggregate counters and lookup/events/journal alongside reservation/allocation facts. There is no driver installation, migration, external source/model/provider, paid call or native restart here. README contains exact setup/fresh-pool API, six existing schemas, ownership and native observation recipe. Root owns any standalone CLI/receipt, which will label scripted pool evidence. Remaining gates are native admission/execution and live identity/source qualification, not missing source composition.
+
+Author merge sequence from base:7c562b59 →8dd08aa2 →873a1a4b →fc76ac68 →final documentation/evidence commit. Source/runtime claims remain distinct.

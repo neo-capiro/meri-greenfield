@@ -1,0 +1,321 @@
+✔ host independent actual Fetch query/draft/prepare/pending/approved effect and replay (221.700288ms)
+✔ host independent fresh query identities and event reservations come from host owner (74.384631ms)
+✔ host independent body tenant is not authority (32.617534ms)
+✔ host independent request client is not authority (26.704444ms)
+✔ host independent header identity cannot override authenticated principal (41.776131ms)
+✔ host independent absent credential refuses without any owner calls (23.259495ms)
+✔ host independent auth expired refuses before owner read (23.25597ms)
+✔ host independent auth stale refuses before owner read (20.285716ms)
+✔ host independent current stale refuses before owner read (14.846098ms)
+✔ host independent current expired refuses before owner read (14.388961ms)
+✔ host independent auth hash substitution refuses before owner read (20.558365ms)
+✔ host independent tenant substitution refuses before owner read (14.885667ms)
+✔ host independent actor substitution refuses before owner read (19.668227ms)
+✔ host independent run substitution refuses before owner read (17.635711ms)
+✔ host independent selected client outside scopes refuses before owner read (17.6147ms)
+✔ host independent reserve receipt binds exact fresh authentication (17.063682ms)
+✔ host independent credential receipt binds exact fresh authentication (17.267588ms)
+✔ host independent changed revision during same request refuses (17.948042ms)
+✔ host independent changed binding during same request refuses (19.393534ms)
+✔ host independent changed client during same request refuses (19.507134ms)
+✔ host independent changed scopes during same request refuses (18.1933ms)
+✔ host independent abort parked authBefore starts no later domain work (28.366893ms)
+✔ host independent abort parked currentBefore starts no later domain work (15.343486ms)
+✔ host independent shrink-only expiry crosses metadata boundary (44.112023ms)
+✔ host independent query acknowledged then revoked is RESULT_NOT_RELEASED (28.187304ms)
+✔ host independent query uncertain ACK remains UNKNOWN with no redispatch (15.078727ms)
+✔ host independent actual metadata revoked insertion retains STORED_NOT_RELEASED (60.107038ms)
+✔ host independent actual metadata unknown insertion retains UNKNOWN (48.774321ms)
+✔ host independent observed command denied host release is RESULT_NOT_RELEASED (59.418403ms)
+✔ host independent changed execution receipt binding refuses before effect (52.563688ms)
+✔ host independent hostile getter receipt is inert (16.189938ms)
+✔ host independent hostile proxy receipt is inert (18.503566ms)
+✔ actual host application query/draft/proposal/explicit approval executes once and replays (228.928704ms)
+✔ host denies receipt hash before reservation/effect (16.892634ms)
+✔ host denies actor before reservation/effect (18.394862ms)
+✔ host denies client before reservation/effect (18.90588ms)
+✔ host denies scopes before reservation/effect (23.154102ms)
+✔ host denies expired before reservation/effect (22.166682ms)
+✔ host denies stale before reservation/effect (23.857815ms)
+✔ credential receipt cannot substitute actor or stale authentication (66.909603ms)
+✔ host mutation during reservation is refused before credential issuance (24.46602ms)
+✔ fresh host revocation after actual stored query preserves result liability (48.820441ms)
+✔ metadata ACK followed by host revocation preserves stored proposal (65.491697ms)
+✔ parked authentication cancellation cannot begin reservation (18.849471ms)
+✔ host snapshots configured command binding rather than retaining caller alias (52.965532ms)
+✔ host own-data receipts reject getters without executing them (17.114708ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async file:///tmp/meri-local-application-20261013/apps/control/action-host/durable/durable-independent.test.mjs:13:17 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/durable/durable-independent.test.mjs (3012.662958ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/durable/test/durable.test.mjs (3170.857243ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/local-integration/allocation-independent.test.mjs (2950.133615ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/local-integration/application-independent.test.mjs (2929.925408ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/local-integration/local.test.mjs (2778.416618ms)
+✔ independent async graph: query refusal closes listener then owned graph once (39.275082ms)
+✔ independent async graph: invalid graph credential still closes acquired ownership (0.752662ms)
+✔ independent async graph: total cutoff refuses parked acquisition and closes late graph exactly once (61.192209ms)
+✔ independent async graph: rejected acquisition starts no listener or approval (0.733703ms)
+✔ independent async graph: cleanup failure is surfaced and borrowed application is not disposed (8.669653ms)
+✔ independent async graph: uncooperative cleanup cannot park caller forever (1006.284183ms)
+✔ actual three host recovery keeps same proposal and accounting across reconstruction (373.182871ms)
+✔ help and invalid arguments are inert and closed (0.454563ms)
+✔ independent: runner total deadline settles while approve ignores cancellation (102.436324ms)
+✔ independent: runner total deadline settles while revoke ignores cancellation (100.38423ms)
+✔ independent: unaccelerated thirty-second cutoff closes listeners and settles parked approve (30001.133873ms)
+✔ independent actual graph: same retained selection and proposal across three HTTP hosts, one effect and fresh revocation (2721.491278ms)
+✔ independent actual runner closes all three owned sockets and reports only synthetic recovery (182.603301ms)
+✔ independent runner failure closes listener without retrying or changing proposals (10.577717ms)
+✔ independent CLI import/help/invalid are inert and explicit run is finite and secret-free (3083.448874ms)
+✔ local case independent: begin uncertainty evicts the owned borrowed connection (15.219889ms)
+✔ local case independent: rollback uncertainty evicts the owned borrowed connection (5.825026ms)
+✔ local case independent: release failure after committed seed prevents later grant-binding ports (5.929203ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/gateway/local-action/test/gateway-independent.test.mjs (2590.81385ms)
+✔ local identity independent: actual canonical authority consumes owned facts and exposes no token in status (13.27822ms)
+✔ local identity independent: random opaque credential is not caller-supplied claims or portable across owners (4.136237ms)
+✔ local identity independent: even valid credential text cannot be issued through raw claims/extra fields (1.174175ms)
+✔ local identity independent: direct policy port rejects altered retained claims and normalized foreign scope (3.598289ms)
+✔ local identity independent: current client change refuses old execution (3.158849ms)
+✔ local identity independent: current grants change refuses old execution (2.319947ms)
+✔ local identity independent: current source change refuses old execution (2.404425ms)
+✔ local identity independent: current revision change refuses old execution (1.78303ms)
+✔ local identity independent: expiry and explicit revoke are exact and close cannot resurrect a token (2.368881ms)
+✔ local identity independent: run replacement requires exact old binding and invalidates task A (1.594257ms)
+✔ local identity independent: reentrant policy narrowing between real owned ports cannot become release authority (1.172863ms)
+✔ local identity independent: abort remains active through actual policy/source ports (0.542365ms)
+✔ local identity independent: bounded token owner refuses overflow and frees only expired or revoked issuance (28.868185ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-local-application-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/gateway/local-action/test/identity.test.mjs (2666.138243ms)
+✔ independent public receiver actual PR42 query/read (218.644255ms)
+✔ independent public receiver actual PR42 draft/draft (2.565627ms)
+✔ independent public receiver actual PR42 prepare/pending (2.524214ms)
+✔ independent public receiver actual PR42 execute/executed (1.246224ms)
+✔ independent public receiver actual PR42 execute/replay (0.184277ms)
+✔ independent actual pending approval error and indeterminate accounting remain non-success (0.341503ms)
+✔ independent public error UNAUTHENTICATED/401 (0.168013ms)
+✔ independent public error ACCESS_DENIED/403 (0.126991ms)
+✔ independent public error DEADLINE/408 (0.105118ms)
+✔ independent public error CANCELLED/499 (0.222765ms)
+✔ independent public error COMMAND_APPROVAL_REFUSED/409 (0.075263ms)
+✔ independent public error COMMAND_OUTCOME_UNKNOWN/502 (0.126931ms)
+✔ independent receiver preserves UNKNOWN without retry/approval fields (0.631259ms)
+✔ independent receiver preserves RESULT_NOT_RELEASED without retry/approval fields (0.116636ms)
+✔ independent receiver preserves STORED_NOT_RELEASED without retry/approval fields (0.122584ms)
+✔ independent receiver preserves NOT_STORED without retry/approval fields (0.150316ms)
+✔ independent receiver preserves READ_UNAVAILABLE without retry/approval fields (0.094482ms)
+✔ independent receiving refusal accepted recommendation (0.527543ms)
+✔ independent receiving refusal unknown query field (0.389796ms)
+✔ independent receiving refusal query digest (4.753555ms)
+✔ independent receiving refusal event binding (2.701842ms)
+✔ independent receiving refusal event result ref (1.753827ms)
+✔ independent receiving refusal draft digest (0.838901ms)
+✔ independent receiving refusal recommendation hash (6.538559ms)
+✔ independent receiving refusal prepare approval confusion (0.389215ms)
+✔ independent receiving refusal proposal digest (1.170079ms)
+✔ independent receiving refusal proposal task substitution (0.940754ms)
+✔ independent receiving refusal prepare client substitution (0.946813ms)
+✔ independent receiving refusal execute approval confusion (0.388564ms)
+✔ independent receiving refusal execute unknown key (0.170496ms)
+✔ independent receiving refusal execute tenant-scope mismatch (0.185399ms)
+✔ independent route and status cannot reclassify an actual payload (0.456426ms)
+✔ independent malformed primitive JSON  (0.12645ms)
+✔ independent malformed primitive JSON null (0.156275ms)
+✔ independent malformed primitive JSON [] (0.067802ms)
+✔ independent malformed primitive JSON {} (0.05313ms)
+✔ independent malformed primitive JSON {"error": (0.051587ms)
+✔ independent malformed primitive JSON {"error":{}} trailing (0.129915ms)
+✔ independent receiving refuses effectful objects without reading any traps (0.25921ms)
+✔ independent explicit byte and nesting bounds refuse safely (0.143986ms)
+✔ independent package has no public approval, credential or execution method (0.249825ms)
+✔ independent generated browser receiver has no external/private/Node imports (58.008608ms)
+✔ independent receiving accepts canonical nonconsecutive reserved event sequence (5.747911ms)
+✔ independent receiving accepts actual original A recommendation prepared under current B (38.752222ms)
+✔ actual PR42 wire 0 query 200 (25.615895ms)
+✔ actual PR42 wire 1 draft 200 (1.674958ms)
+✔ actual PR42 wire 2 prepare 200 (2.66112ms)
+✔ actual PR42 wire 3 execute 409 (0.356726ms)
+✔ actual PR42 wire 4 execute 200 (1.376198ms)
+✔ actual PR42 wire 5 execute 200 (0.207953ms)
+✔ preserve uncertainty UNKNOWN (0.202374ms)
+✔ preserve uncertainty STORED_NOT_RELEASED (0.109104ms)
+✔ reject success/error status interchange query (0.768546ms)
+✔ reject success/error status interchange draft (0.409465ms)
+✔ reject success/error status interchange prepare (0.321022ms)
+✔ reject success/error status interchange execute (0.840273ms)
+✔ closed/correlated negative 0 (0.30598ms)
+✔ closed/correlated negative 1 (0.218719ms)
+✔ closed/correlated negative 2 (2.671035ms)
+✔ closed/correlated negative 3 (2.77431ms)
+✔ closed/correlated negative 4 (1.741819ms)
+✔ closed/correlated negative 5 (0.633272ms)
+✔ closed/correlated negative 6 (0.560443ms)
+✔ closed/correlated negative 7 (0.210987ms)
+✔ closed/correlated negative 8 (0.708865ms)
+✔ closed/correlated negative 9 (0.256586ms)
+✔ closed/correlated negative 10 (0.150246ms)
+✔ Proxy, accessor, revoked proxy rejected without traps (0.222074ms)
+✔ bounded primitive JSON (0.323016ms)
+✔ route coercion never occurs (0.100541ms)
+✔ deep immutable parsed output (1.613345ms)
+✔ execute pending outcome retained without claimed result (0.137727ms)
+✔ interleaved events retain increasing sequence (2.373147ms)
+ℹ tests 157
+ℹ suites 0
+ℹ pass 150
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 44745.32985
+
+✖ failing tests:
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:1:1
+✖ apps/control/action-host/durable/durable-independent.test.mjs (3012.662958ms)
+  'test failed'
+
+test at apps/control/action-host/durable/test/durable.test.mjs:1:1
+✖ apps/control/action-host/durable/test/durable.test.mjs (3170.857243ms)
+  'test failed'
+
+test at apps/control/action-host/local-integration/allocation-independent.test.mjs:1:1
+✖ apps/control/action-host/local-integration/allocation-independent.test.mjs (2950.133615ms)
+  'test failed'
+
+test at apps/control/action-host/local-integration/application-independent.test.mjs:1:1
+✖ apps/control/action-host/local-integration/application-independent.test.mjs (2929.925408ms)
+  'test failed'
+
+test at apps/control/action-host/local-integration/local.test.mjs:1:1
+✖ apps/control/action-host/local-integration/local.test.mjs (2778.416618ms)
+  'test failed'
+
+test at apps/gateway/local-action/test/gateway-independent.test.mjs:1:1
+✖ apps/gateway/local-action/test/gateway-independent.test.mjs (2590.81385ms)
+  'test failed'
+
+test at apps/gateway/local-action/test/identity.test.mjs:1:1
+✖ apps/gateway/local-action/test/identity.test.mjs (2666.138243ms)
+  'test failed'

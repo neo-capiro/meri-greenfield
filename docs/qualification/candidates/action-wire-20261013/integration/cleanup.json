@@ -1,0 +1,13 @@
+{
+  "removedOwnedPaths": [
+    "node_modules",
+    "packages/contracts/node_modules",
+    "/tmp/meri-action-wire-root-cache-20261013"
+  ],
+  "ownedGroupsAbsent": [
+    464704,
+    465114
+  ],
+  "donorUnchanged": true,
+  "otherOwnersUntouched": true
+}

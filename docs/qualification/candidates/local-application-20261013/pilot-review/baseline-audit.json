@@ -1,0 +1,12 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "candidate": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "passed": 10869,
+  "failed": 0,
+  "originalCount": 10853,
+  "newPaths": [],
+  "targetExecution": false,
+  "rawArchive": "baseline-audit.json.gz",
+  "uncompressedSha256": "234ae3992ce22c45ff788a3a8bfeb3770a59f89ef3595c359f766cff63188f73",
+  "uncompressedBytes": 1869498
+}

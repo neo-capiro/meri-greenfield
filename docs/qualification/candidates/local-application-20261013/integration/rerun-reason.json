@@ -1,0 +1,10 @@
+{
+  "firstLabel": "integrated-check",
+  "failure": "Root omitted the existing fixture harness's required MERI_REVIEW_SOURCE_ROOT environment variable. Seven test files refused import with explicit source root required; original guard unchanged.",
+  "repair": "Rerun the exact same test paths with env MERI_REVIEW_SOURCE_ROOT=/tmp/meri-local-application-20261013 visible in the captured command.",
+  "rerunLabel": "integrated-final",
+  "sourceChangedForRerun": false,
+  "firstOwnedProcessGroup": 473648,
+  "firstOwnedProcessGroupAbsent": true,
+  "priorRawFailureRetained": true
+}

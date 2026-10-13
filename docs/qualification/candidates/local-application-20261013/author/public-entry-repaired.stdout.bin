@@ -1,0 +1,34 @@
+✖ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (365.008315ms)
+✔ lost setup acknowledgement is terminal and exposes only owned identifiers (4.909834ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3089.371254
+
+✖ failing tests:
+
+test at apps/control/action-host/local-integration/local.test.mjs:5:1
+✖ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (365.008315ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ALREADY_ATTEMPTED/. Input:
+  
+  'Error: LOCAL_CASE_REFUSED'
+  
+      at async TestContext.<anonymous> (file:///tmp/meri-local-application-author-20261013/apps/control/action-host/local-integration/local.test.mjs:7:469)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LOCAL_CASE_REFUSED
+        at active (file:///tmp/meri-local-application-author-20261013/apps/control/action-host/local-integration/state.mjs:26:136)
+        at Object.setup (file:///tmp/meri-local-application-author-20261013/apps/control/action-host/local-integration/case.mjs:26:54)
+        at TestContext.<anonymous> (file:///tmp/meri-local-application-author-20261013/apps/control/action-host/local-integration/local.test.mjs:7:492)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    expected: /ALREADY_ATTEMPTED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

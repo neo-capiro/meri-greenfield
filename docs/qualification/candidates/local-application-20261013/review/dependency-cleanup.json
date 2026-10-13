@@ -1,0 +1,13 @@
+{
+  "removedOwnedRuntimeCopies": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "donorTouched": false,
+  "nodeModulesAbsent": true
+}

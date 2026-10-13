@@ -1,0 +1,38 @@
+{
+  "handoffStatus": "WAIT_FOR_REVIEWED_SOURCE_FREEZE_THEN_NATIVE_OWNER_EXECUTION",
+  "nativeEvidenceStatement": "Native execution and evidence belong to the separate owner and are not inspected or accepted here.",
+  "ownerInputs": [
+    "Existing admitted isolated synthetic fixture pool and openFreshPool()->{pool,close}; exact same database/cluster/server identity verified by original native guard. No new engine/resource/credential is requested.",
+    "Private native admission values for host/port/database/user/password/systemIdentifier/serverStartTime/serverVersion/t0Ms/workDeadlineMs/cleanupDeadlineMs/stateLockSha256/migrationSha256. Existing parser's exact field set and ambient-variable refusal remain; no expired-window reset by this lane.",
+    "Exact reviewed source/tree and diff identity, canonical pg8.23.1 lock/driver and six source migration pins from schema-inputs.json.",
+    "Read-only observed identity/schema checks for existing thirteen relations, current command relation/search_path resolution and installation provenance. The two command schemas may be missing from a prior lookup-only fixture; report exact missing tables, without auto-migration.",
+    "Admitted retained fixture: preserve existing rows and observed initial consumed/held/quarantined state, and use fresh owned case identifiers. Existing PR40 CLI empty:true must not be imposed on a nonempty admitted fixture.",
+    "Owner-approved original work/cleanup deadlines and bounded process supervisor (at most240seconds); finite connection/query timeouts, observed pool cleanup and process-group absence. Cooperative source waits alone do not prove physical cancellation."
+  ],
+  "expectedCaseEvidence": [
+    "Before any effect: one newly owned synthetic run, two grant facts, one shared allocation hash; seed/bind acknowledgments and original baseline budget retained.",
+    "Host1 on initial pool: actual HTTP query/draft/prepare; returned typed nonempty recommendation; same unapproved proposal refuses before command reservation/effect. Lookup charge may already be settled; do not label whole run uncharged.",
+    "Host2 on genuinely fresh pool/new services: reread exact result reference/hash with current authority, no source reread; approve exact existing proposal through explicit synthetic operator; one command effect/OUTCOME journal and command completion/reservation settlement.",
+    "Host3 on another fresh pool/new services: identical original proposal replay with exact retained observation, no new effect/invocation/reservation/charge; then current read and execution revocation refuse release/effect.",
+    "Fixed owned-row readback: one lookup plus its two events, one approval metadata record, one command journal, separate read/command invocation/reservation identities under the same run allocation; total charge delta equals declared read+command schedule, zero replay delta.",
+    "Record every failed/unrun stage and ambiguous ACK/cleanup outcome. Close two owned fresh pools and all listeners; initial pool remains caller-owned. Preserve all owned rows for fixture-owner teardown.",
+    "Native execution and evidence belong to the separate owner and are not inspected or accepted here."
+  ],
+  "explicitNonClaims": [
+    "database restart or power-loss durability",
+    "actual Capiro task creation",
+    "live session/approval/source authorization",
+    "provider/model calls or quality",
+    "general sandbox/SDK image admission",
+    "G1 or deployment acceptance"
+  ],
+  "sourceWorkMayProceedNow": true,
+  "actionsPerformedHere": {
+    "databaseConnections": 0,
+    "sqlStatements": 0,
+    "nativeSdkExecutions": 0,
+    "providerCalls": 0,
+    "installs": 0,
+    "productionEdits": 0
+  }
+}

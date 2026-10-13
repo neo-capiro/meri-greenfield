@@ -9,24 +9,30 @@ const failurePhases=new WeakMap();
 export const localHostRecoveryFailurePhase=error=>failurePhases.get(error)??'INITIALIZATION';
 
 export async function runLocalHostRecovery(configuration){
- const {mode,openHost,approve,revoke,stats}=own(configuration,['mode','openHost','approve','revoke','stats']);
- if(mode!=='synthetic-local'||[openHost,approve,revoke,stats].some(value=>typeof value!=='function'))throw Error('LOCAL_HOST_CONFIGURATION');
- const cutoff=Date.now()+30000,lifetime=createOperationLifetime({deadlineMs:cutoff,now:Date.now,errorFactory:code=>new Error(code)});
+ const {mode,openHost,approve,revoke,stats,receiveResponse=(_route,_status,text)=>JSON.parse(text),deadlineMs=Date.now()+30000,signal}=own(configuration,['mode','openHost','approve','revoke','stats'],['receiveResponse','deadlineMs','signal']);
+ if(mode!=='synthetic-local'||[openHost,approve,revoke,stats,receiveResponse].some(value=>typeof value!=='function'))throw Error('LOCAL_HOST_CONFIGURATION');
+ if(!Number.isSafeInteger(deadlineMs)||deadlineMs>Date.now()+30000)throw Error('LOCAL_HOST_CONFIGURATION');
+ const cutoff=deadlineMs,lifetime=createOperationLifetime({deadlineMs:cutoff,now:Date.now,signal,errorFactory:code=>new Error(code)});
  const closed=[],applications=new Set();let selected,pending,observed,refusal,replay,revoked,phase='INITIALIZATION';
  async function withHost(work){
   lifetime.check();const remaining=cutoff-Date.now();if(remaining<=0)throw Error('LOCAL_HOST_DEADLINE');
-  const {app,credential}=own(openHost(),['app','credential']);
-  if(applications.has(app)||typeof credential!=='string'||!credential)throw Error('LOCAL_HOST_RECONSTRUCTION');
-  applications.add(app);
-  const server=await listenActionApplication({app,host:'127.0.0.1',port:0,lifetimeMs:Math.min(10000,remaining)});
+  let graph,server,graphClosed=false;
+  const closeGraph=async value=>{if(graphClosed)return;graphClosed=true;if(value?.closeGraph){const cleanup=createOperationLifetime({deadlineMs:Date.now()+1000,now:Date.now,errorFactory:code=>new Error(code)});try{await cleanup.run(()=>value.closeGraph());}finally{cleanup.close();}}};
   try{
+   graph=await lifetime.run(async signal=>{const opened=own(await openHost({signal,deadlineMs:cutoff}),['app','credential'],['closeGraph']);if(opened.closeGraph!==undefined&&typeof opened.closeGraph!=='function')throw Error('LOCAL_HOST_CONFIGURATION');try{lifetime.check();return opened;}catch(error){await closeGraph(opened);throw error;}});
+   const {app,credential}=graph;
+   if(applications.has(app)||typeof credential!=='string'||!credential)throw Error('LOCAL_HOST_RECONSTRUCTION');
+   applications.add(app);lifetime.check();
+   server=await lifetime.run(async()=>{const opened=await listenActionApplication({app,host:'127.0.0.1',port:0,lifetimeMs:Math.min(10000,cutoff-Date.now())});try{lifetime.check();return opened;}catch(error){await opened.close();throw error;}});
    const call=async(route,body)=>{
     const response=await fetch(`${server.origin}/api/action-followthrough/${route}`,{method:'POST',redirect:'error',signal:lifetime.signal,
      headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)});
-    return {status:response.status,body:await response.json()};
+    const text=await response.text();const value=await lifetime.run(()=>receiveResponse(route,response.status,text));
+    return {status:response.status,body:value};
    };
    return await work(call);
-  }finally{await server.close();const status=server.status();closed.push(status);assert.deepEqual(status,{closed:true,listening:false,activeSockets:0});}
+  }finally{try{if(server){await server.close();const status=server.status();closed.push(status);assert.deepEqual(status,{closed:true,listening:false,activeSockets:0});}}finally{if(graph)await closeGraph(graph);}}
+
  }
  const ok=value=>{assert.equal(value.status,200,'local host request refused');return value.body;};
  try{

@@ -1,0 +1,445 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "candidate": "a20f1a2dea79a19fdd17c3485a9448db478dd080",
+  "checks": [
+    {
+      "name": "all-originals-byte-identical",
+      "pass": true,
+      "detail": {
+        "count": 10853,
+        "mismatches": []
+      }
+    },
+    {
+      "name": "exclusive-author-scope",
+      "pass": true,
+      "detail": [
+        "docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+        "docs/coordination/tasks/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+        "docs/qualification/candidates/local-application-20261013/pilot/aws-page-read.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/cases.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/direct-price-list-reads.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/manifest.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/pricing.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/public-evidence.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/review-correction.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/source-identities.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/verification.json",
+        "docs/qualification/candidates/local-application-20261013/pilot/verify.py"
+      ]
+    },
+    {
+      "name": "eighteen-each-36",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "max-input",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "max-output",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "conditional-prior-decimal",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "wire-query-read",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "one-actual-synthetic-recommendation",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "recommendation-not-task",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no-invented-evidence",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "absence-not-supported",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "draft-exact-edit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prepare-not-approval",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "unapproved-no-dispatch",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "historical-explicit-approval-only",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "historical-replay-identical",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "qualified-human-corpus-zero",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "case-ids",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "literal-prompts",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "truthful-human-origin",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "implemented-exact-routes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "no-pilot-task-writes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "fresh-transport-not-gold",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p01-gold",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p02-coverage-gold",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p03-draft-gold",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p04-pending-gold",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p05-unapproved-gold",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p06-source-refusal",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "p06-resolver-owner",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "caps-preserved",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "cap-unapproved",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "exact-priced-route",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "unknown-rate-not-fabricated",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "zero-count-fee",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "old-calculation-conditional",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "uncertainty-no-retry",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "unpaid-tests-not-blocked",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "real-request-label-only",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:AGENTS.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/ROUTING-EVALUATION.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:evals/retrieval-r2/manifest.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/index.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/http.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/session.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/local/demo.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/local/flow.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/local/local.test.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-application/local/local-independent.test.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-followthrough/index.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/control/action-followthrough/selection.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/proxy/qualification/proxy-config.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/proxy/qualification/runtime/bedrock_body.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:apps/worker/qualification/package.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:packages/contracts/package.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:scripts/local-followthrough/run.mjs",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "source-pin:docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest-members-complete",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/aws-page-read.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/cases.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/direct-price-list-reads.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/pricing.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/public-evidence.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/review-correction.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/source-identities.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/verification.json",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/qualification/candidates/local-application-20261013/pilot/verify.py",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/coordination/tasks/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "manifest:docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "retained-direct-failures",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "author-audit49",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "prior-timing-ceilings",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "demo-max30-unmodified",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "correction-preserved",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "passed": 81,
+  "failed": 0,
+  "originalCount": 10853,
+  "newPaths": [
+    "docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+    "docs/coordination/tasks/CODEX-LOCAL-APPLICATION-PILOT-20261013.md",
+    "docs/qualification/candidates/local-application-20261013/pilot/aws-page-read.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/cases.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/direct-price-list-reads.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/manifest.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/pricing.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/public-evidence.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/review-correction.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/source-identities.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/verification.json",
+    "docs/qualification/candidates/local-application-20261013/pilot/verify.py"
+  ],
+  "targetExecution": false
+}

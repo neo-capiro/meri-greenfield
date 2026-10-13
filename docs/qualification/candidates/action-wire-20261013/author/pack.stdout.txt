@@ -1,0 +1,91 @@
+[
+  {
+    "id": "@capiro/meri-contracts@0.1.1",
+    "name": "@capiro/meri-contracts",
+    "version": "0.1.1",
+    "size": 175627,
+    "unpackedSize": 2107490,
+    "shasum": "7e858b14eb1c5399a9f443bb92e7d1c14481a022",
+    "integrity": "sha512-DQGUUm88mWTb0w7Me7CqvN9l+XTZwgtHD1VymifcyZHZes4O2ZugmxSMmH5Zwzs8m+3OLQS+/ulq8wKQ0ntxpA==",
+    "filename": "capiro-meri-contracts-0.1.1.tgz",
+    "files": [
+      {
+        "path": "README.md",
+        "size": 8945,
+        "mode": 384
+      },
+      {
+        "path": "THIRD-PARTY-NOTICES.md",
+        "size": 3841,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.d.ts",
+        "size": 17721,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.metadata.json",
+        "size": 1980,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.mjs",
+        "size": 1480808,
+        "mode": 384
+      },
+      {
+        "path": "dist/action-application.schema.json",
+        "size": 67726,
+        "mode": 384
+      },
+      {
+        "path": "dist/browser.d.ts",
+        "size": 166,
+        "mode": 384
+      },
+      {
+        "path": "dist/browser.mjs",
+        "size": 466002,
+        "mode": 384
+      },
+      {
+        "path": "dist/contracts.d.ts",
+        "size": 4090,
+        "mode": 384
+      },
+      {
+        "path": "dist/index.d.ts",
+        "size": 85,
+        "mode": 384
+      },
+      {
+        "path": "dist/metadata.d.ts",
+        "size": 485,
+        "mode": 384
+      },
+      {
+        "path": "dist/metadata.mjs",
+        "size": 533,
+        "mode": 384
+      },
+      {
+        "path": "meri.schema.json",
+        "size": 50043,
+        "mode": 384
+      },
+      {
+        "path": "package.json",
+        "size": 1754,
+        "mode": 384
+      },
+      {
+        "path": "validate.mjs",
+        "size": 3311,
+        "mode": 384
+      }
+    ],
+    "entryCount": 15,
+    "bundled": []
+  }
+]

@@ -1,0 +1,9 @@
+# Independent concrete local-application pilot review
+
+Base `73c854ea41f764eb3e3e84bfd0a0cb73fa29a329`. Criteria frozen before candidate inspection. Own task/report and local-application-20261013/pilot-review only. No source changes, provider/model/account API, native/SQL/service/cloud actions or recursive delegation; public documentation reads and offline metadata checks only. Bound 15–25 minutes; subprocess maximum 240 seconds.
+
+1. Six literal requests must map concretely to implemented selected operations and meaningful observable outcomes. Distinguish model routing from direct typed/application replay. Do not label recommendations as accepted tasks or pending proposals as approvals.
+2. Human authorship/provenance must remain truthful. Generated examples/approval are not human-origin requests. Separate exact gold/authority decisions needing a person from source/fixtures/configuration the technical owner can prepare. Do not turn routine technical preparation into generic external blockers.
+3. Check official public AWS standard pricing for Bedrock Sonnet4.6 US geographic route from us-east-1. Match model/region/route/tier/input/output dimensions; do not assume a10% uplift from another provider/table. Retain missing or ambiguous prices rather than fabricate a match. Published rates are not authenticated account tariff/availability.
+4. Preserve ceilings18 inference+18 CountTokens=36 operations,8000 input/256 output per inference,144000/4608 total; decimal arithmetic and unapproved spend cap. CountTokens public API fee is zero; uncertainty consumes slots and no retry/spend authority follows.
+5. Ordinary isolated unpaid synthetic source tests remain permitted independently of future paid pilot admission. No generic runtime gate should block those tests. Preserve original sealed packets and failed lookup/ambiguous datum evidence. Verify exact hashes and scope before ACCEPT_DOCUMENTATION/HOLD.

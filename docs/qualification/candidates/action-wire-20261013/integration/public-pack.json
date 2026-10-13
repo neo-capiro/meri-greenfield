@@ -1,0 +1,41 @@
+{
+  "command": [
+    "npm",
+    "pack",
+    "./packages/contracts",
+    "--ignore-scripts",
+    "--offline",
+    "--json",
+    "--cache",
+    "/tmp/meri-action-wire-root-cache-20261013",
+    "--pack-destination",
+    "docs/qualification/candidates/action-wire-20261013/integration"
+  ],
+  "cwd": "/tmp/meri-action-wire-20261013",
+  "sourceHead": "2077d0177a81caae213a6bb7a434cc00008a5c77",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T02:41:28.904718+00:00",
+  "durationSeconds": 0.416,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 465114,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/public-pack.stdout.bin",
+      "bytes": 1939,
+      "sha256": "1c971a63ccfae5bb3d39d9fc3f3ee4e1c8d3e3ea1d688be4b4c2f04b1d46d1c3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wire-20261013/integration/public-pack.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=direct readback",
+    "apps/control/action-host/local-integration/application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-review-20261013",
+  "sourceHead": "9c8cccd80305363e9421b5796e79278e6b0be1bd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:11:51.383946+00:00",
+  "durationSeconds": 2.923,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 472309,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/direct-readback-before.stdout.bin",
+      "bytes": 1060,
+      "sha256": "86da6cf2a1d6015141eb005a7cddb8d52a259d7c3dd20454056cf33bcac0d3cb"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/review/direct-readback-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

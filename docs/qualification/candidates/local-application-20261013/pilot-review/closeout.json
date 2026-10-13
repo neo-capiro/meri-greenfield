@@ -1,0 +1,20 @@
+{
+  "reviewedDocumentation": "a20f1a2dea79a19fdd17c3485a9448db478dd080",
+  "reviewDecisionCommit": "20001ff38a37bfcd6ed0bc67f84a7d56147bf7dd",
+  "whitespace": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "baselineArchiveReadback": true,
+  "resources": {
+    "dependencyCopies": 0,
+    "targetImports": 0,
+    "backgroundProcesses": 0,
+    "providerCalls": 0,
+    "accountCalls": 0,
+    "databaseConnections": 0,
+    "nativeExecution": false
+  },
+  "cleanup": "All foreground metadata checks complete; no owned asynchronous resource or dependency to remove. Worktree and evidence retained."
+}

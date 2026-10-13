@@ -1,0 +1,30 @@
+✖ independent direct readback: original cutoff after parked budget lock prevents new clock/read SQL (235.608949ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2864.91334
+
+✖ failing tests:
+
+test at apps/control/action-host/local-integration/application-independent.test.mjs:37:1
+✖ independent direct readback: original cutoff after parked budget lock prevents new clock/read SQL (235.608949ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'pending'
+  - 'refused'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-local-application-review-20261013/apps/control/action-host/local-integration/application-independent.test.mjs:41:13)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pending',
+    expected: 'refused',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,55 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "scope": "Source gap discovery; implementation proposed/allocated, not yet accepted",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-LOCAL-APPLICATION-NATIVE-SEAM-20261013.md",
+      "bytes": 6990,
+      "sha256": "650b527c3e88504fc2ae7d19254b590eba2e767bb71472f3f7cfe9bc9717cf11"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-LOCAL-APPLICATION-NATIVE-SEAM-20261013.md",
+      "bytes": 1589,
+      "sha256": "5ae0cc01337377974c44ec76ac5e904eb2a8cba510f5ef7631b676d4053c05b2"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/closeout.json",
+      "bytes": 223,
+      "sha256": "a744f96254f5aa1c506d7e02157510dbfd0ec1ad36a32b72d859043e719224d9"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/native-owner-handoff.json",
+      "bytes": 3714,
+      "sha256": "cd88474d5e68a3b02bd2b8c1745c4de8bcb393f5093bb7c07e33781c39d12c4c"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/schema-inputs.json",
+      "bytes": 2776,
+      "sha256": "1f0efb46db4e6d8a33dba1836b793faed307551d77ca645583f31e7c797562bd"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/seam-proposal.json",
+      "bytes": 5473,
+      "sha256": "2589ff90bde31713e3558c311eef0bd75e48a18431dfd317ebe7dba11e10162f"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/source-identities.json",
+      "bytes": 6253,
+      "sha256": "a66da6b1991c27c9b11b0d1bdb1eadacfef3ba3442de21a6339bfff5a59b6ff3"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/verification.json",
+      "bytes": 4844,
+      "sha256": "befca64ac45c3cbf37e19f0450ac7540addb47480fe4b35aaa4efd062f5c4545"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/native-seam/verify.py",
+      "bytes": 3483,
+      "sha256": "8d3374ac6eb68651b21db7cc000cd8cc252960dc8e876777007edcdaaac042d9"
+    }
+  ],
+  "exclusions": [
+    "manifest.json (self)",
+    "manifest-verification.json (binds manifest)"
+  ]
+}

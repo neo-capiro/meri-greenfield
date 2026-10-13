@@ -1,0 +1,91 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "authorCandidate": "a20f1a2dea79a19fdd17c3485a9448db478dd080",
+  "verdict": "ACCEPT_DOCUMENTATION",
+  "paidExecution": "HOLD",
+  "exclusions": [
+    "this self-referential manifest"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-LOCAL-APPLICATION-PILOT-REVIEW-20261013.md",
+      "bytes": 5284,
+      "sha256": "840d5bca5a9acf519f35f4e1d8423f3eb328d4fc61f2a050ab3550f191f4615d"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-LOCAL-APPLICATION-PILOT-REVIEW-20261013.md",
+      "bytes": 1924,
+      "sha256": "76ded8af86a7620214d10237f44d5b15ff35213dba71ac4a64c8857a670916cf"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/audit-initial.py.txt",
+      "bytes": 3413,
+      "sha256": "857986caedfcaf0685d9807b29a35f238640763d8ccacd9a634a5d1de4a286d2"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/audit.py",
+      "bytes": 8884,
+      "sha256": "cc4675a931e975b33307b7bb7a8ea4489d109b82eefdd2042e58ba3f3bd21d1a"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/author-verifier-replay.json",
+      "bytes": 4966,
+      "sha256": "8d6bfc1094a26707d1bc6844ffbeb53af7cd3fbf63817c6799c4073d621e4380"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/baseline-audit.json",
+      "bytes": 388,
+      "sha256": "c724128d12ff79338ef3aff6dfe9eb78771be40a6b01968da019bfdd69cae575"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/baseline-audit.json.gz",
+      "bytes": 75381,
+      "sha256": "168b952338c20d4ea6ae393e0f3f9a0f52fbada9df05133fce2ff0b62c0baf4c"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/closeout.json",
+      "bytes": 610,
+      "sha256": "baa713f84a3da50065c3ae9ea01f6e072c029660c2176c9a7019569a2adf67b5"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/decision.json",
+      "bytes": 911,
+      "sha256": "c3f7ed627695409771466ad0a55678c502c594dd30bda42c63964392201bbe8a"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/final-audit.json",
+      "bytes": 11573,
+      "sha256": "06e327cb61462b17c65e7bce1f9f39e4cb66867d833b6e3bc88b2d7d90de6138"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/historical-preservation-inputs.json",
+      "bytes": 1496,
+      "sha256": "5955b0a65d776701238b4114cabb4cc55886925bf364329483fec6358ad40009"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/initial-candidate-audit.json",
+      "bytes": 10939,
+      "sha256": "f0ba5b7ed1a4043c60be7e72222469ec53bf832a8df77e2b8992eb8abbf43655"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/observed-wire-gold.json",
+      "bytes": 1632,
+      "sha256": "c27e86bd224bb8f3f57f0058c561cc9cdfe2c4236e7ff94ef197ba5d16c33793"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/public-source-observations.json",
+      "bytes": 2849,
+      "sha256": "3725d5bb75a753ce5c99ea69be00a152c2b421c7821ed414f5f873a43e4a7bbf"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/review-corrections.json",
+      "bytes": 813,
+      "sha256": "00c61def13c2828c67215a95a5b65c72a74b32c3768d1914f672c6d75980566e"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot-review/source-identities.json",
+      "bytes": 2462,
+      "sha256": "fc039da0a7930432455d070e0741457d7c0eb0e877082cffc4acbb87708d6f7a"
+    }
+  ]
+}

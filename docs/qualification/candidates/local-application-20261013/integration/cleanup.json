@@ -1,0 +1,29 @@
+{
+  "removed": [
+    {
+      "path": "node_modules",
+      "ownedSymlinkRemoved": true,
+      "borrowedTargetUnchanged": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "ownedSymlinkRemoved": true,
+      "borrowedTargetUnchanged": true
+    }
+  ],
+  "donorExists": true,
+  "ownedGroups": [
+    {
+      "pgid": 473648,
+      "absent": true
+    },
+    {
+      "pgid": 474036,
+      "absent": true
+    },
+    {
+      "pgid": 474092,
+      "absent": true
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+✔ independent shared allocation: read executes through actual owned budget while command stays inaccessible actions.query (86.332458ms)
+✔ independent shared allocation: read executes through actual owned budget while command stays inaccessible create_task (34.116066ms)
+✔ independent shared allocation refuses command only (7.047753ms)
+✔ independent shared allocation refuses extra operation (6.729304ms)
+✔ independent shared allocation refuses wrong command version (6.26799ms)
+✔ independent shared allocation refuses different second operation (6.344646ms)
+✔ independent shared allocation refuses duplicate read (4.26457ms)
+✔ independent shared ledger: exact pending proposal, one charge per effect, fresh-pool retained replay and revocation over HTTP/public receiver (356.876717ms)
+✔ independent runner refuses borrowed initial pool returned as fresh without disposing it (128.940949ms)
+✔ independent runner closes owned fresh pool when asynchronous graph construction rejects (119.948673ms)
+✔ independent runner bounds late fresh-pool acquisition and eventually closes the owned arrival (843.060533ms)
+✔ independent runner original cutoff bounds final accounting connect without late queries or false success (1044.622688ms)
+✔ independent async graph: query refusal closes listener then owned graph once (47.043202ms)
+✔ independent async graph: invalid graph credential still closes acquired ownership (1.01112ms)
+✔ independent async graph: total cutoff refuses parked acquisition and closes late graph exactly once (60.547644ms)
+✔ independent async graph: rejected acquisition starts no listener or approval (1.119833ms)
+✔ independent async graph: cleanup failure is surfaced and borrowed application is not disposed (7.270427ms)
+✔ independent async graph: uncooperative cleanup cannot park caller forever (1008.606146ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5899.513832

@@ -1,0 +1,62 @@
+{
+  "source": "retained synthetic wire receipt; read-only, not a new execution",
+  "queryRequest": {
+    "request": {
+      "limit": 20
+    }
+  },
+  "queryStatus": 200,
+  "classification": "recommendations",
+  "acceptedTasks": false,
+  "returned": 1,
+  "total": 1,
+  "record": {
+    "id": "abcdef00-0000-4000-8000-000000000101",
+    "clientId": "abcdef00-0000-4000-8000-000000000009",
+    "title": "Issue",
+    "body": "Recommend",
+    "recordKind": "action_recommendation",
+    "recommendation": true,
+    "acceptedAsTask": false,
+    "evidence": [],
+    "nativeCompletion": {
+      "completed": false,
+      "evidence": null,
+      "establishesDeliveryOrAcceptance": false,
+      "note": "Recommendation only"
+    }
+  },
+  "pageCoverage": {
+    "sourceStatus": "healthy",
+    "sourceReason": null,
+    "complete": true,
+    "partial": false,
+    "paginationComplete": true,
+    "hasMore": false,
+    "nextCursor": null,
+    "totalIsExactForScope": true,
+    "absenceSupported": false,
+    "note": "Structural page assertion only"
+  },
+  "draftStatus": "draft",
+  "draftTask": {
+    "title": "Review the synthetic recommendation",
+    "clientId": "abcdef00-0000-4000-8000-000000000009",
+    "dueDate": null
+  },
+  "prepareStatus": "approval_required",
+  "executeBeforeApproval": {
+    "httpStatus": 409,
+    "response": {
+      "error": {
+        "code": "COMMAND_APPROVAL_REFUSED",
+        "outcome": "NOT_DISPATCHED"
+      }
+    }
+  },
+  "historicalSeparateExplicitFixtureApproval": true,
+  "approvedReplaySameReceipt": true,
+  "newPilotApproval": false,
+  "newModelRoutingEvidence": false,
+  "currentHumanGoldAccepted": false
+}

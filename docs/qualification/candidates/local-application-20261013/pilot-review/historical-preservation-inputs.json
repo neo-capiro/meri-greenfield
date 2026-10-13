@@ -1,0 +1,39 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "inputs": [
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/capiro-provenance.json",
+      "bytes": 46483,
+      "sha256": "156593178b13c7d96cead1b7957db70dae84776be8b28e01c38762cc4041168a",
+      "blob": "6801bcacf03420c41d983cadda01c83bf5545578"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "bytes": 13792,
+      "sha256": "c401feda6047ac2467c43cdedfbb4e19695143bb35c1711a9f7a036e8d49d941",
+      "blob": "d17403fc59bcce6caa52cacb22a84ee51173c2f5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/manifest.json",
+      "bytes": 2299,
+      "sha256": "3610c67e8b8859487e0caae3e6d6cd3125cad44a778aa6e07321fa949e02d788",
+      "blob": "e33086880caee9cdf8b2622bb123a441dd639d3d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/manifest.json",
+      "bytes": 2146,
+      "sha256": "3c2bbda326c5ff190867bf8825e82d33c380034af161710fd805e671466ad1c0",
+      "blob": "c921e1267c3e21713561b36e202bc7abdf6726b9"
+    }
+  ],
+  "qualifiedHumanCases": 0,
+  "newPilotHumanProvenanceEstablished": false,
+  "priorAssumedRatesAreNotVerifiedAwsRates": true,
+  "priorConditionalMaximumUsd": "0.551232",
+  "priorConditionalRatesUsdPerMillion": {
+    "input": "3.30",
+    "output": "16.50"
+  },
+  "verifiedCurrentMaximumUsd": null,
+  "sealedPacketMustRemainByteIdentical": true
+}

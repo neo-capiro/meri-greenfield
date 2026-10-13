@@ -1,0 +1,183 @@
+{
+  "base": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+  "references": [
+    {
+      "path": "AGENTS.md",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "docs/ROUTING-EVALUATION.md",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+    },
+    {
+      "path": "evals/retrieval-r2/manifest.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "fdfde41dbf67cbcfc6eec372a2679647f70182c9",
+      "bytes": 568,
+      "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f"
+    },
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "a102d9242292ed818f0c27ab55a392947379dcde",
+      "bytes": 5188,
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5"
+    },
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "cf933d08ee56e4c07a883b48097e50d45e5ad077",
+      "bytes": 4832,
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30"
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "06b188a12b99b586a7c55b9b5333d01036d52a01",
+      "bytes": 3189,
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816"
+    },
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "940d52e8027f8e2769541c3ebac05b76008930c6",
+      "bytes": 10707,
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9"
+    },
+    {
+      "path": "apps/control/action-application/local/flow.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "eb7a89dd14ab6eac1a141055befa080f77e81f4c",
+      "bytes": 1914,
+      "sha256": "77f373b1d19fb6b366b9dd52c85226cdf50acb24712278eb57f9ca10745694b5"
+    },
+    {
+      "path": "apps/control/action-application/local/local.test.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "c7779a2bad29c8f8abdf75a5745bf9f847b465fb",
+      "bytes": 4523,
+      "sha256": "af5ac57d81102fe9d05d6d660829acc6be17ef53c93bf6492425893a7f49422d"
+    },
+    {
+      "path": "apps/control/action-application/local/local-independent.test.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "7b6a59e6ad1365e8d4ef196ba57186ed8fd12de2",
+      "bytes": 11476,
+      "sha256": "52e5130d23fac411509396858af2dd882f567fe530b03fc459089402d8517c52"
+    },
+    {
+      "path": "apps/control/action-followthrough/index.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "e46d749d7c3295b00a091395955a50777ca94742",
+      "bytes": 5861,
+      "sha256": "7ce5567c4c505904eaa0a39d1fbb96dfe4941bda7f5709c653afdd840672d042"
+    },
+    {
+      "path": "apps/control/action-followthrough/selection.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "6b9faf95c0431c0efb0cd6f29d27cf9afce1c604",
+      "bytes": 4505,
+      "sha256": "6cb431744db5fc69749be6ee49cc0505835bd771e80c384b78981e4a9c7e33a3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "b2b795d2f321b1cba9f8de8e8135a6a21ac25edb",
+      "bytes": 32825,
+      "sha256": "a9c795ea12314018fa2bb708d22492c48aeb2ce1ace874d91b678d1ef3cf0ff9"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "ecbacb3e4dc776fb371ca5a051598643d79a73ce",
+      "bytes": 4554,
+      "sha256": "6b1159e2a6be46ee37ce54abef4270f47d20a7d3cabeb7ed01e67a9f63f21095"
+    },
+    {
+      "path": "apps/proxy/qualification/proxy-config.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "bf9856302a580e476e2943140a779df353261344",
+      "bytes": 842,
+      "sha256": "f320c67c4ba1d20b8acbdb4f339878749d9a8438964665ab77151ff2886d5c83"
+    },
+    {
+      "path": "apps/proxy/qualification/runtime/bedrock_body.py",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "6973259b5ee804d1fdf91211f9626ca6f18c0eb8",
+      "bytes": 8297,
+      "sha256": "8102362fc7c3daecf2f34d54b4a47cf5c5affc9eda7d24067688b86ee592a149"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "4444358a33c48c9edc88eba68066833b6e1490a5",
+      "bytes": 1240,
+      "sha256": "c14736fe666c6f1674d96794f8b55011501aa0b430f29b8ed23772d79cabea5b"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "e089d85a69067c6ddfc1850dacc96fcf13566959",
+      "bytes": 1754,
+      "sha256": "693564eebec85be85ab3e5fd94b2de6620207f841f411b7cd5d4f29f250706c9"
+    },
+    {
+      "path": "scripts/local-followthrough/run.mjs",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "ea649d4e3342ae23c27378cfa935b33c5fe47bb3",
+      "bytes": 1577,
+      "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "08db9aade97fbdab6102a8e38f01aded4c457aec",
+      "bytes": 11701,
+      "sha256": "1ec57a3e4f1586d80092491d54f2334886e162ce974a43746f1736bd5799ca10"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "d17403fc59bcce6caa52cacb22a84ee51173c2f5",
+      "bytes": 13792,
+      "sha256": "c401feda6047ac2467c43cdedfbb4e19695143bb35c1711a9f7a036e8d49d941"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "d039cc2ef74189ae65d5eb30c8b126c57bb00efc",
+      "bytes": 2990,
+      "sha256": "7058cab4f33616074f557eecb0bf577442222dfaccc6a30f089c0272eb22ed78"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+      "commit": "73c854ea41f764eb3e3e84bfd0a0cb73fa29a329",
+      "blob": "f6f5cdd2a5ffacf0b8e2760ecf7414d95950bda6",
+      "bytes": 1993,
+      "sha256": "7bb20cb0febae3792025cf9279f7b8c93abd33852010b3b2ff4e9d8eb270fda7"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "priorAuditReuse": "Prior audited21 Meri eval files +27 Capiro refs, no qualified human origin. This lane checks exact synthetic owner fixtures only, not a second exhaustive inventory.",
+  "sourceOnly": "No imports, server execution, SQL/native checks or model/provider invocation in this lane."
+}
