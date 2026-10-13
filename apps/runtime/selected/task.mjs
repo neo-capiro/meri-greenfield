@@ -14,6 +14,7 @@ export function createTaskSelectedSkills({native,now=Date.now,sourceEnabled=fals
  async function prepare(raw){
   if(!sourceEnabled)throw fault('UNAVAILABLE');if(active.size>=64)throw fault('SELECTED_SESSION_LIMIT');const args=own(raw,['binding','versions','request','scopes'],['signal','continuation','sourceRequest']);nativeSignal(args.signal);
   const binding=data(args.binding),request=data(args.request),scopes=data(args.scopes);validateShape('RunBinding',binding);validateShape('RuntimeVersions',args.versions);
+  if(args.continuation!==undefined)throw fault('SELECTED_CONTINUATION_UNAVAILABLE');scopes.forEach(scope=>validateShape('Scope',scope));
   const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!same(selected.pin,request.skill))throw fault('SELECTED_TASK_PIN_REFUSED');
   const life=createOperationLifetime({deadlineMs:now()+selected.manifest.budgets.maxRuntimeSeconds*1000,now,signal:args.signal,errorFactory:fault});let server,closed=false,attempted,completion;
   try{

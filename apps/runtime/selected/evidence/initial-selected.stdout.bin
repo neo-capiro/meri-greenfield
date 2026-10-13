@@ -1,0 +1,41 @@
+✖ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (11.615997ms)
+✖ revoked current task refuses compiler and publication; serialized prepared injection is rejected (2.145076ms)
+✔ source inactive task performs no RPC and inactive control performs no current authority read (0.901403ms)
+✔ native SETTLED marker binds exact returned body and allocation; retained delivery never redispatches (1.665772ms)
+✔ native marker hash refuses body release (0.898259ms)
+✔ native marker bytes refuses body release (0.710829ms)
+✔ native marker allocation refuses body release (0.762145ms)
+✔ native marker operation refuses body release (0.641285ms)
+✔ native marker expired refuses body release (0.681386ms)
+✔ native marker revoked refuses body release (0.747984ms)
+✔ unknown result persists without body and a repeated SDK delivery cannot claim again (1.18794ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 9
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1894.448987
+
+✖ failing tests:
+
+test at apps/runtime/selected/test/selected.test.mjs:23:1
+✖ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (11.615997ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-selected-runtime/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-selected-runtime/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at Object.prepare (file:///workspace/meri-native-selected-runtime/apps/runtime/selected/task.mjs:15:116)
+      at TestContext.<anonymous> (file:///workspace/meri-native-selected-runtime/apps/runtime/selected/test/selected.test.mjs:23:246)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/runtime/selected/test/selected.test.mjs:29:1
+✖ revoked current task refuses compiler and publication; serialized prepared injection is rejected (2.145076ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-selected-runtime/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-selected-runtime/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at Object.prepare (file:///workspace/meri-native-selected-runtime/apps/runtime/selected/task.mjs:15:116)
+      at TestContext.<anonymous> (file:///workspace/meri-native-selected-runtime/apps/runtime/selected/test/selected.test.mjs:29:164)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

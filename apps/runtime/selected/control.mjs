@@ -20,7 +20,7 @@ export function createSelectedControl(configuration){
   return createSelectedSkillExecutionRuntime({...args,gateway:{execute}});
  }});
  async function withTask(operation,raw,capability,signal,body){if(closed)throw fault('SELECTED_CONTROL_CLOSED');if(c.sourceEnabled!==true)throw fault('UNAVAILABLE');nativeSignal(signal);const input=assertSelectedRequest(operation,raw),life=createOperationLifetime({deadlineMs:c.now()+3000,now:c.now,signal,errorFactory:fault});let pinned;
-  async function fresh(){const started=c.now(),task=data(await life.run(signal=>c.loadCurrentTask({capability,binding:input.binding,requestSha256:input.requestSha256,operation,signal})));own(task,['binding','versions','request','scopes','selectedClientId','checkedAtMs','expiresAtMs']);
+  async function fresh(){const started=c.now(),task=data(await life.run(signal=>c.loadCurrentTask({capability,binding:input.binding,requestSha256:input.requestSha256,inputSha256:hash(input),operation,signal})));own(task,['binding','versions','request','scopes','selectedClientId','checkedAtMs','expiresAtMs']);
    if(!same(task.binding,input.binding)||hash(task.request)!==input.requestSha256||task.checkedAtMs<started||task.checkedAtMs>c.now()||!Number.isSafeInteger(task.checkedAtMs)||!Number.isSafeInteger(task.expiresAtMs)||task.expiresAtMs<=c.now())throw fault('SELECTED_TASK_AUTHORITY_REFUSED');
    const stable={binding:task.binding,versions:task.versions,request:task.request,scopes:task.scopes,selectedClientId:task.selectedClientId};if(pinned&&!same(pinned,stable))throw fault('SELECTED_TASK_AUTHORITY_CHANGED');pinned??=stable;life.limitDeadline(task.expiresAtMs);return task;
   }

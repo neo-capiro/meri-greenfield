@@ -1,0 +1,22 @@
+✔ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (133.150249ms)
+✔ revoked current task refuses compiler and publication; serialized prepared injection is rejected (9.688007ms)
+✔ source inactive task performs no RPC and inactive control performs no current authority read (0.767897ms)
+✔ native SETTLED marker binds exact returned body and allocation; retained delivery never redispatches (1.449256ms)
+✔ native marker hash refuses body release (0.815538ms)
+✔ native marker bytes refuses body release (0.643051ms)
+✔ native marker allocation refuses body release (0.673387ms)
+✔ native marker operation refuses body release (0.654007ms)
+✔ native marker rawRequest refuses body release (0.615219ms)
+✔ native marker expired refuses body release (0.646747ms)
+✔ native marker revoked refuses body release (0.627558ms)
+✔ unknown result persists without body and a repeated SDK delivery cannot claim again (1.109728ms)
+✔ normalized native arguments digest is accepted only with exact immutable raw request (0.673897ms)
+✔ same UNKNOWN delivery with changed argument cannot redispatch under a different journal key (0.609952ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2029.769094
