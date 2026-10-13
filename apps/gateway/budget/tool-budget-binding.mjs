@@ -33,10 +33,7 @@ export function allocation(raw) {
   }
   return a;
 }
-export function invocation(raw, a) {
-  const i = snapshot(raw);
-  keys(i, ['invocationId', 'grantId', 'binding', 'qualificationBinding', 'capabilitySha256', 'allocationSha256']);
-  if (typeof i.invocationId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(i.invocationId) || !UUID.test(i.grantId)) refuse('INVALID_INVOCATION_ID');
+function validateGrantBinding(i, a) {
   publicShape('RunBinding', i.binding); digest(i.capabilitySha256); digest(i.allocationSha256);
   const q = i.qualificationBinding;
   keys(q, ['runId', 'attempt', 'workerArn', 'fence', 'policyRevision']);
@@ -45,6 +42,19 @@ export function invocation(raw, a) {
       typeof q.workerArn !== 'string' || !/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[0-9a-f]{32}$/.test(q.workerArn)) refuse('INVALID_QUALIFICATION_MAPPING');
   if (!same(a.run, Object.fromEntries(Object.keys(a.run).map(k => [k, i.binding[k]]))) || canonicalSha256(a) !== i.allocationSha256) refuse('ALLOCATION_BINDING_MISMATCH');
   return i;
+}
+/** Full immutable grant identity, independent of any invocation identifier. */
+export function parseToolGrantFacts(raw, a) {
+  const i = snapshot(raw);
+  keys(i, ['grantId', 'binding', 'qualificationBinding', 'capabilitySha256', 'allocationSha256']);
+  if (!UUID.test(i.grantId)) refuse('INVALID_INVOCATION_ID');
+  return validateGrantBinding(i, a);
+}
+export function invocation(raw, a) {
+  const i = snapshot(raw);
+  keys(i, ['invocationId', 'grantId', 'binding', 'qualificationBinding', 'capabilitySha256', 'allocationSha256']);
+  if (typeof i.invocationId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(i.invocationId) || !UUID.test(i.grantId)) refuse('INVALID_INVOCATION_ID');
+  return validateGrantBinding(i, a);
 }
 export function grantFacts(i) { const { invocationId: ignored, ...facts } = i; return facts; }
 export function assertAuthority(i, claims, credentialSha256) {

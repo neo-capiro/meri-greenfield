@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+    "apps/control/admitted-runs/independent/mount-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-admitted-run-review-20261013",
+  "sourceHead": "888f68c4e607966ddbfb6964548099eef14f3b3c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:38:08.417437+00:00",
+  "durationSeconds": 3.279,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 490672,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/review/final-independent.stdout.bin",
+      "bytes": 5717,
+      "sha256": "d45dfa9ef13bf40f61b5e558a40a6aa88dd396d1068a8abb5a693021748b8791"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/review/final-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

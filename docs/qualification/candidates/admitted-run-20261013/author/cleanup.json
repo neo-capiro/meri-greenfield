@@ -1,0 +1,42 @@
+{
+  "observedAt": "2026-10-13T04:39:38.143959+00:00",
+  "groups": [
+    {
+      "capture": "final-author.json",
+      "pgid": 490854,
+      "physicallyAbsent": true
+    },
+    {
+      "capture": "first-author.json",
+      "pgid": 488426,
+      "physicallyAbsent": true
+    },
+    {
+      "capture": "focused-repaired.json",
+      "pgid": 489425,
+      "physicallyAbsent": true
+    },
+    {
+      "capture": "host-receipt-repaired.json",
+      "pgid": 490248,
+      "physicallyAbsent": true
+    },
+    {
+      "capture": "repaired-author.json",
+      "pgid": 488870,
+      "physicallyAbsent": true
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "node_modules",
+      "removedOwnedSymlinkOnly": true,
+      "donorUntouched": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules"
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "removedOwnedSymlinkOnly": true,
+      "donorUntouched": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules"
+    }
+  ]
+}

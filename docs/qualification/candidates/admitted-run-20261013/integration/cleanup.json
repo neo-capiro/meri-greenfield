@@ -1,0 +1,31 @@
+{
+  "ownedDependencyLinks": [
+    {
+      "path": "node_modules",
+      "borrowedTarget": "/workspace/meri-read-continuation-20261012/node_modules",
+      "ownedLinkRemoved": true,
+      "borrowedTargetPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "borrowedTarget": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "ownedLinkRemoved": true,
+      "borrowedTargetPreserved": true
+    }
+  ],
+  "ownedProcessGroups": [
+    {
+      "label": "integrated-check",
+      "ownedPidAndPgid": 491565,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "mounted-http",
+      "ownedPidAndPgid": 491132,
+      "freshlyAbsent": true
+    }
+  ],
+  "callerPoolsDisposed": false,
+  "otherOwnersStopped": false,
+  "nativeJobsStarted": false
+}

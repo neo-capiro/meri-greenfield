@@ -1,0 +1,49 @@
+{
+  "kind": "ADMITTED_RUN_SOURCE_PUBLICATION",
+  "readback": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/48",
+    "number": 48,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "mergeable": true,
+    "mergeableState": "clean",
+    "head": "8a53acef2b5f87228935de4b3693e6e805c66a6e",
+    "base": "84c2ca01d0bce025a0003b6e724d675a05f2975a",
+    "baseRef": "task/meri-application-adapters-20261013",
+    "updatedAt": "2026-10-13T04:45:07Z"
+  },
+  "sourceEvidenceFreeze": "8a53acef2b5f87228935de4b3693e6e805c66a6e",
+  "sourceEvidenceTree": "d6b73399f8d9f8ac5b746d6e431b19654610b944",
+  "productionFreeze": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "independentReview": "370a0892921163abaacdec43def47c511f2aa2eb",
+  "rootManifest": {
+    "members": 15,
+    "sha256": "a4868fba3a148a038fc47a7ab7e19f86ebd78ccf16254e6628851d61b2c39db3"
+  },
+  "validation": {
+    "integrated": {
+      "passed": 565,
+      "failed": 0,
+      "skipped": 0
+    },
+    "independent": {
+      "passed": 65,
+      "failed": 0
+    },
+    "author": {
+      "passed": 20,
+      "failed": 0
+    },
+    "mountedHttp": "PASS fixture-isolated, scripted SQL",
+    "nativeRuntime": "UNRUN"
+  },
+  "mainReadback": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "gates": {
+    "G0": "ACCEPTED",
+    "G1": "OPEN",
+    "G2throughG7": "UNENTERED"
+  },
+  "publicationOnlyFollowup": true,
+  "sourceEnabled": false
+}

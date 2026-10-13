@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+    "apps/control/admitted-runs/independent/mount-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-admitted-run-review-20261013",
+  "sourceHead": "e5babd672987674962ac4d62bb702a3ae17f67d2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:35:39.200060+00:00",
+  "durationSeconds": 2.976,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 489817,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/review/repaired-plus-host.stdout.bin",
+      "bytes": 6826,
+      "sha256": "22cc6f28b92ea116e7ff030db5cd20eb27186654cbf4bc2971376dfd0e8d49bf"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/review/repaired-plus-host.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

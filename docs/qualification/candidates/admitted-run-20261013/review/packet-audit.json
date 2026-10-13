@@ -1,0 +1,11 @@
+{
+  "authorPacket": "d8e20691dd1417cc79c051bdfa0940c0763cae0c",
+  "productionSource": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "sourceTestDocs": "6b282c8cb57c0c95122be159e8ddd67f040d658c",
+  "manifestPath": "docs/qualification/candidates/admitted-run-20261013/author/manifest.json",
+  "manifestSha256": "6485791905c9b2f82f9e1f839c79400edb6a7a242bb7b69bf93fd7415f52a25b",
+  "verifiedMembers": 22,
+  "freshlyAbsentAuthorGroups": 5,
+  "status": "PASS",
+  "scope": "METADATA_ONLY_NO_BEHAVIOR_RERUN"
+}

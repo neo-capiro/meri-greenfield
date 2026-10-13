@@ -1,0 +1,29 @@
+{
+  "source": "f996c54f487369c47e0b52e9fc2d8d9b851edf47",
+  "capture": "first-author",
+  "passed": 13,
+  "failed": 3,
+  "sourceDefects": [
+    "Known grant expiry was not clipped before later retained-facts SQL could park",
+    "Mount did not yet require shared budget pool or configured read/command credential coverage"
+  ],
+  "fixtureCorrection": "HTTP mismatched hint refusal is canonical 401, not author-assumed403; original assertion/preimage retained in initial source and raw",
+  "setupDiagnostics": [
+    "git sparse-checkout add --no-cone unsupported; repeated without flag, no source effect",
+    "capture helper --help interpreted as label and refused before process allocation",
+    "Initial evidence git add refused paths outside sparse definition; added only owned evidence pattern and staged again, no source change."
+  ],
+  "localWrapper": "Canonical branded identity.status currently snapshots own state without clock/IO; restored sanitization catch nevertheless through one shared error translator.",
+  "secondCapture": {
+    "label": "repaired-author",
+    "passed": 15,
+    "failed": 1,
+    "fixtureCorrection": "Existing source-disabled durable service throws UNAVAILABLE without outcome; accepted application conservatively returns UNKNOWN after queryStarted. Characterize exact canonical envelope; no accepted owner edit and no effect claimed."
+  },
+  "thirdCapture": {
+    "label": "host-receipt-repaired",
+    "passed": 64,
+    "failed": 2,
+    "fixtureCorrection": "New host receipt negatives expected direct403 ACCESS_DENIED; accepted action application catches resolveSession refusal and emits401 UNAUTHENTICATED/NOT_DISPATCHED. Production bytes unchanged; no expected rejection removed."
+  }
+}
