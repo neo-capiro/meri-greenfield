@@ -95,3 +95,9 @@ test('independent hostile own error getters remain untouched',async t=>{
  let touched=0;const error=Object.defineProperties(new Error('safe fixture'),{code:{get(){touched++;throw Error('SECRET');}},message:{get(){touched++;throw Error('SECRET');}}});
  const a=await setup(t,c=>{c.artifactOptions.authorize=async()=>{throw error;};return c;});await reject(await a.post('create',{deliveryId:'getter',request:text()}),'UNKNOWN');assert.equal(touched,0);
 });
+test('independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch',async t=>{
+ let retained;const a=await setup(t,c=>{const commit=c.artifactOptions.versions.commit;c.artifactOptions.versions={...c.artifactOptions.versions,async commit(value,...args){await commit(value,...args);retained=structuredClone(value.version);throw Error('COMMIT_ACK_LOST');}};return c;});
+ const body={deliveryId:'lost-commit-ack',request:text()};await reject(await a.post('create',body),'UNKNOWN');assert.ok(retained);assert.equal(a.f.stats().unknown,1);assert.equal(a.f.stats().settled,0);
+ const download=await a.post('download',{versionId:retained.versionId});assert.equal(download.status,200);assert.equal(await download.text(),text().content.text);
+ await reject(await a.post('create',body),'UNKNOWN');assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);
+});
