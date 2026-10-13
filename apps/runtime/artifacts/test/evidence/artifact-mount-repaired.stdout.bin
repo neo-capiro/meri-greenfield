@@ -1,0 +1,12 @@
+✔ missing native owner returns503 without creating artifact authority (3.459716ms)
+✔ real original compiler and generator traverse actual HTTP mount and reviewed S3/PG ports for create/revise/inspect/download (612.04042ms)
+✔ typed XLSX full replacement preserves original, exact parent and immutable bytes (429.734019ms)
+✔ boolean admission, session-owner substitution and caller context never grant publication (16.763082ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3369.256417

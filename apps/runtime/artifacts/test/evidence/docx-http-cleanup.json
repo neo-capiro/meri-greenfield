@@ -1,0 +1,72 @@
+{
+  "http": {
+    "closed": true,
+    "listening": false,
+    "activeSockets": 0
+  },
+  "fixture": {
+    "mode": "synthetic-local",
+    "sourceConnected": false,
+    "nativeDatabase": false,
+    "nativeQualified": false,
+    "generations": 2,
+    "artifactChecks": 23,
+    "versionCharges": 2,
+    "settled": 2,
+    "unknown": 0,
+    "consumedMicroUsd": "20",
+    "allocations": 1,
+    "grants": 1,
+    "skillId": "quick_skill.relationship_brief",
+    "skillVersion": "1.0.0",
+    "manifestSha256": "c465302acce3a7fc4f3f12513ebd9d55306adb9d068bc33feefebf469514e31c",
+    "processReceipts": [
+      {
+        "pid": 367855,
+        "exitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "stdoutBytes": 657,
+        "stderrBytes": 0,
+        "stdoutRetainedBytes": 657,
+        "stderrRetainedBytes": 0,
+        "hashScope": "retained bytes",
+        "stdoutSha256": "8deb73f6a2b5a5a17f13ca2b672748ee3e8986fed7bfe619d4522264d806c828",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEnded": true,
+        "stderrEnded": true,
+        "streamErrors": [],
+        "leaderClosed": true,
+        "groupKillAttempted": true,
+        "groupAbsent": true,
+        "sandboxQualified": false
+      },
+      {
+        "pid": 367856,
+        "exitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "stdoutBytes": 657,
+        "stderrBytes": 0,
+        "stdoutRetainedBytes": 657,
+        "stderrRetainedBytes": 0,
+        "hashScope": "retained bytes",
+        "stdoutSha256": "d844004c6abdcf4840c61b1ddfa2f229a914aacbb3c81c465941a3c048ced15d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutEnded": true,
+        "stderrEnded": true,
+        "streamErrors": [],
+        "leaderClosed": true,
+        "groupKillAttempted": true,
+        "groupAbsent": true,
+        "sandboxQualified": false
+      }
+    ],
+    "closed": true,
+    "revoked": false,
+    "cleanup": {
+      "executorDirectoriesAbsent": true,
+      "storeRemoved": true
+    }
+  }
+}

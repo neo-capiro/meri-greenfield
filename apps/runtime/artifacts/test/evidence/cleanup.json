@@ -1,0 +1,24 @@
+{
+  "sourceBase": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "ownedLinksAbsent": true,
+  "donorsBeforeSha256": {
+    "/workspace/meri-greenfield/node_modules/ajv/package.json": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+    "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3/package.json": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881"
+  },
+  "donorsAfterSha256": {
+    "/workspace/meri-greenfield/node_modules/ajv/package.json": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+    "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3/package.json": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881"
+  },
+  "donorsPreserved": true,
+  "capturedProcessGroupsAbsent": true,
+  "finalChecks": {
+    "pass": 6,
+    "fail": 0
+  },
+  "retainedDocx": 4,
+  "renderedPages": 16,
+  "producerOpenedPages": 16,
+  "nativeAWSDBModelCalls": 0,
+  "sharedFilesChanged": 0,
+  "publication": "Local source checkpoint only; parent owns native/shared integration and current publication"
+}
