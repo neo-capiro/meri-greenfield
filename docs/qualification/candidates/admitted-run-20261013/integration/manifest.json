@@ -1,0 +1,82 @@
+{
+  "kind": "ADMITTED_RUN_SOURCE_INTEGRATION",
+  "headBeforeManifest": "6d45c1530f085161bb1d7a5629656679b4d4a489",
+  "productionFreeze": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ADMITTED-RUN-INTEGRATION-20261013.md",
+      "bytes": 8031,
+      "sha256": "d071f3365e7beb66e71a0febf06a5c4e658e98fbe6f29d2ac1eb7687a6a74397"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ADMITTED-RUN-INTEGRATION-20261013.md",
+      "bytes": 2928,
+      "sha256": "37b1965d0759eb5ffe8d2b36b47ab4783110c374cc005b0b98add3611414b947"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/.gitattributes",
+      "bytes": 12,
+      "sha256": "89dddfc52a6d1b734a50dacfb9ba5ae46fbdd74c9e619fef3567a0301950b9f1"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/audit.json",
+      "bytes": 11676,
+      "sha256": "0dc74a707ef7fa3185f7767024a3afbc3b4521628b105858b67d26ac46854f11"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/audit.py",
+      "bytes": 5211,
+      "sha256": "f8870b620ee80d8f1d7b24a499a83197da7625d8c71f4e51a4e772f8376b79fd"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/cleanup.json",
+      "bytes": 802,
+      "sha256": "0570acd5c21f5b4d089a47356750abd754cc1f611cee4e5da91cb83edd580e2e"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/integrated-check.json",
+      "bytes": 3384,
+      "sha256": "a2dde25185c49ca06f28e8288591257ec17698a77990136f9709090133e43e90"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 50400,
+      "sha256": "bbf42a01c0fffa29a3b466951addc6b89f0741063ee114835e18fd5b5d105ba8"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.json",
+      "bytes": 1277,
+      "sha256": "60a821c5f31268b9cb862381b0df058e4a48d3df20da1d74739dad5927cb62ed"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.stdout.bin",
+      "bytes": 957,
+      "sha256": "84f3648d93e6ea1d29c65f32414c4c0f5d6a652e456b8712fbc684bc127ab93e"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/run-mounted.mjs",
+      "bytes": 7864,
+      "sha256": "eaaef1f3243b133b50844119eba3516cab1eab71e2ba6f3a7230e5c7a8db186d"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/source-identities.json",
+      "bytes": 1727,
+      "sha256": "95c5507eb1c12bbc6f8aada9e68a948eaa7e8f386ac7f24537ab76de5ee66a4d"
+    }
+  ]
+}
