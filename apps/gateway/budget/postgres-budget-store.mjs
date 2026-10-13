@@ -1,10 +1,13 @@
 /** Owned transactions over a trusted pg 8.23.1-compatible pool. No import-time I/O. */
+import {budgetTables} from './namespace.mjs';
 export class BudgetStateDenied extends Error {}
 export class BudgetCommitUncertain extends BudgetStateDenied {}
 export const refuse = code => { throw new BudgetStateDenied(code); };
 
 export class PostgresBudgetStore {
-  constructor(pool) {
+  constructor(pool,{namespace}={}) {
+    this.tables=budgetTables(namespace);
+    if(!this.tables)refuse('BUDGET_NAMESPACE_REFUSED');
     if (!pool || typeof pool.connect !== 'function') refuse('TRUSTED_POOL_REQUIRED');
     this.pool = pool;
   }
@@ -36,7 +39,7 @@ export class PostgresBudgetStore {
     return result;
   }
   async lock(client) {
-    const row = (await client.query('SELECT * FROM meri_qualification.budget WHERE id=1 FOR UPDATE')).rows[0];
+    const row = (await client.query(`SELECT * FROM ${this.tables.budget} WHERE id=1 FOR UPDATE`)).rows[0];
     if (!row) refuse('BUDGET_UNAVAILABLE');
     const now = (await client.query('SELECT clock_timestamp() AS now')).rows[0]?.now;
     if (!(now instanceof Date) || !Number.isFinite(now.getTime())) refuse('DATABASE_TIME_UNAVAILABLE');

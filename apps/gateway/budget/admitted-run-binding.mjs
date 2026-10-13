@@ -3,8 +3,9 @@ import {canonicalSha256,validateShape} from '../../../packages/contracts/validat
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {allocation,parseToolGrantFacts,same} from './tool-budget-binding.mjs';
 import {refuse} from './postgres-budget-store.mjs';
+import {budgetTables} from './namespace.mjs';
 export function admittedConfiguration(value){
- const c=own(value,['pool','allocationJson','grantFactsJsons','now','limits']);
+ const c=own(value,['pool','allocationJson','grantFactsJsons','now','limits'],['namespace']);if(!budgetTables(c.namespace))refuse('BUDGET_NAMESPACE_REFUSED');
  const limits=data(own(c.limits,['maxRequestMs','maxFactBytes']));
  if(!c.pool||typeof c.pool.connect!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>30000||!Number.isSafeInteger(limits.maxFactBytes)||limits.maxFactBytes<1||limits.maxFactBytes>131072)refuse('ADMITTED_RUN_CONFIGURATION');
  const {allocation:a,facts}=parseAdmittedGrantSet(c);const first=facts[0];

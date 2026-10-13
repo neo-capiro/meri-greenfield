@@ -1,53 +1,50 @@
-/** Fresh read-only currentRun over the existing canonical admission and budget records. */
+/** Current admission and trusted SQL effects over one canonical budget lease. */
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {PostgresBudgetStore,BudgetStateDenied,refuse} from './postgres-budget-store.mjs';
 import {same} from './tool-budget-binding.mjs';
-import {admittedConfiguration,currentInput,integer,dbTime,assertRun} from './admitted-run-binding.mjs';
+import {admittedConfiguration,currentInput} from './admitted-run-binding.mjs';
+import {readCurrentAdmission} from './admitted-run-current.mjs';
 export function createPostgresAdmittedRunOwner(configuration){
- const c=admittedConfiguration(configuration),store=new PostgresBudgetStore(c.pool);
- async function currentRun(value,options){
-  const input=currentInput(value,options);
+ const c=admittedConfiguration(configuration),store=new PostgresBudgetStore(c.pool,{namespace:c.namespace});
+ function lifetime(input){
   if(!same(input.binding,c.binding))refuse('ADMITTED_RUN_REFUSED');
   const started=c.now();if(!Number.isSafeInteger(started)||started<0)refuse('ADMITTED_RUN_REFUSED');
-  const life=createOperationLifetime({deadlineMs:started+c.limits.maxRequestMs,now:c.now,signal:input.signal,errorFactory:()=>new BudgetStateDenied('ADMITTED_RUN_STOPPED')});
+  if(input.deadlineMs!==undefined&&!Number.isSafeInteger(input.deadlineMs))refuse('ADMITTED_RUN_REFUSED');
+  const life=createOperationLifetime({deadlineMs:Math.min(started+c.limits.maxRequestMs,input.deadlineMs??Infinity),now:c.now,signal:input.signal,errorFactory:()=>new BudgetStateDenied('ADMITTED_RUN_STOPPED')});
   const check=()=>{life.check();if(input.signal?.aborted)refuse('ADMITTED_RUN_STOPPED');};
+  return{life,check,started};
+ }
+ const checked=(raw,check)=>{const query=raw.query;return Object.freeze({async query(...args){check();const result=await query.call(raw,...args);check();return result;}});};
+ const observation=(deadlineMs,checkedAtMs)=>({binding:c.binding,policyRevision:c.policyRevision,deadlineMs,checkedAtMs});
+ async function currentRun(value,options){
+  const input=currentInput(value,options),{life,check,started}=lifetime(input);
   try{
-   const result=await life.run(()=>store.transact(async raw=>{
-    const client={async query(...args){check();const result=await raw.query(...args);check();return result;}};
-    const budget=await store.lock(client);check();if(budget.quarantined!==false)refuse('ADMITTED_RUN_REFUSED');
-    const run=(await client.query('SELECT * FROM meri_qualification.runs WHERE run_id=$1',[c.binding.runId])).rows;
-    if(run.length!==1)refuse('ADMITTED_RUN_REFUSED');assertRun(run[0],c.facts[0]);
-    const allocations=(await client.query('SELECT * FROM meri_qualification.tool_run_allocations WHERE run_id=$1',[c.binding.runId])).rows;
-    const installed=allocations[0];
-    if(allocations.length!==1||installed.run_id!==c.binding.runId||installed.allocation_sha256!==c.allocationSha256||!same(installed.allocation,c.a)||integer(installed.max_tool_calls)!==c.a.budgets.maxToolCalls||integer(installed.max_cost_micro_usd)!==c.a.budgets.maxCostMicroUSD)refuse('ADMITTED_RUN_REFUSED');
-    const began=dbTime(installed.started_at),databaseNow=dbTime(budget.now);
-    if(began>databaseNow)refuse('ADMITTED_RUN_REFUSED');
-    let deadline=Math.min(began+c.a.budgets.maxRuntimeSeconds*1000,Date.parse(c.a.schedule.expiresAt));
-    if(!Number.isSafeInteger(deadline)||deadline<=databaseNow)refuse('ADMITTED_RUN_REFUSED');
-    life.limitDeadline(deadline);check();
-    for(const f of c.facts){
-     const grants=(await client.query('SELECT * FROM meri_qualification.grants WHERE grant_id=$1',[f.grantId])).rows;
-     const grant=grants[0];if(grants.length!==1)refuse('ADMITTED_RUN_REFUSED');assertRun(grant,f);
-     if(grant.grant_id!==f.grantId||grant.state!=='ACTIVE'||grant.capability_sha256!==f.capabilitySha256)refuse('ADMITTED_RUN_REFUSED');
-     deadline=Math.min(deadline,dbTime(grant.expires_at));
-     if(deadline<=databaseNow)refuse('ADMITTED_RUN_REFUSED');
-     life.limitDeadline(deadline);check();
-     const bindings=(await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1',[f.grantId])).rows,bound=bindings[0];
-     if(bindings.length!==1||bound.grant_id!==f.grantId||bound.run_id!==c.binding.runId||!same(bound.facts,f))refuse('ADMITTED_RUN_REFUSED');
-    }
-    const finalNow=dbTime((await client.query('SELECT clock_timestamp() AS now')).rows[0]?.now);
-    if(!Number.isSafeInteger(deadline)||finalNow<databaseNow||deadline<=finalNow||deadline<=c.now())refuse('ADMITTED_RUN_REFUSED');
-    life.limitDeadline(deadline);check();return deadline;
-   },check));
-   const checkedAtMs=c.now();check();if(!Number.isSafeInteger(checkedAtMs)||checkedAtMs<started||checkedAtMs>=result)refuse('ADMITTED_RUN_REFUSED');
-   return JSON.stringify({binding:c.binding,policyRevision:c.policyRevision,deadlineMs:result,checkedAtMs});
+   const deadline=await life.run(()=>store.transact(raw=>readCurrentAdmission({c,store,client:checked(raw,check),life,check}),check));
+   const at=c.now();check();if(!Number.isSafeInteger(at)||at<started||at>=deadline)refuse('ADMITTED_RUN_REFUSED');
+   return JSON.stringify(observation(deadline,at));
   }finally{life.close();}
  }
- // Return only a current stored allocation after the SAME canonical native
- // run/grant/allocation checks; this exposes no credential or grant minting.
  async function currentAllocation(binding,options){
   const observed=JSON.parse(await currentRun(binding,options));
   return JSON.stringify({...observed,allocation:c.a,allocationSha256:c.allocationSha256});
  }
- return Object.freeze({currentRun,currentAllocation});
+ async function withCurrentAllocation(value,effect){
+  const v=own(value,['binding'],['signal','deadlineMs']);
+  if(typeof effect!=='function')refuse('ADMITTED_EFFECT_REFUSED');
+  const input={...currentInput(v.binding,{signal:v.signal}),deadlineMs:v.deadlineMs}, {life,check}=lifetime(input);
+  try{return await life.run(()=>store.transact(async raw=>{
+   const client=checked(raw,check);const deadline=await readCurrentAdmission({c,store,client,life,check,locked:true});
+   let active=true;const pending=new Set();
+   const port=Object.freeze({query(...args){if(!active)return Promise.reject(new BudgetStateDenied('ADMITTED_EFFECT_CLOSED'));const work=client.query(...args);pending.add(work);work.then(()=>pending.delete(work),()=>pending.delete(work));return work;}});
+   let result;try{
+    const current=data({...observation(deadline,c.now()),allocation:c.a,allocationSha256:c.allocationSha256});
+    // An optional second trusted callback argument can only shorten the lease.
+    result=await life.run(()=>effect(Object.freeze({client:port,current}),life.limitDeadline));check();
+   }finally{active=false;}
+   if(pending.size)refuse('ADMITTED_EFFECT_PENDING');
+   await readCurrentAdmission({c,store,client,life,check,locked:true});check();return result;
+  },check));}finally{life.close();}
+ }
+ return Object.freeze({currentRun,currentAllocation,withCurrentAllocation});
 }

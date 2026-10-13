@@ -4,6 +4,7 @@ import { invocation, same, grantFacts } from './tool-budget-binding.mjs';
 import { assertHistoricalGrant, outcomeSnapshot } from './tool-budget-outcome.mjs';
 import { deliveryRecord, assertInvocationRecord, completionRecord } from './tool-invocation-record.mjs';
 import { refuse } from './postgres-budget-store.mjs';
+import {data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 
 export function createToolInvocationOwner({ a, store, admit, storedAllocation, makeInvocation, settleRow, now }) {
   const active = (call, deadline) => {
@@ -11,12 +12,12 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
     if (call.signal?.aborted || !Number.isSafeInteger(current) || !Number.isSafeInteger(deadline) || current >= deadline) refuse('INVOCATION_STOPPED');
   };
   const checkedClient = (client, check) => ({ async query(...args) { check(); const result=await client.query(...args); check(); return result; } });
-  const read = async (client, d) => (await client.query('SELECT * FROM meri_qualification.tool_invocations WHERE run_id=$1 AND producer_key_sha256=$2', [a.run.runId, d.key])).rows[0];
+  const read = async (client, d) => (await client.query(`SELECT * FROM ${store.tables.tool_invocations} WHERE run_id=$1 AND producer_key_sha256=$2`, [a.run.runId, d.key])).rows[0];
   async function historical(client, d) {
     const installed = await storedAllocation(client, d.context);
     if (installed.run_id !== a.run.runId) refuse('ALLOCATION_MISMATCH');
-    const bound = (await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1', [d.context.grantId])).rows[0];
-    const grant = (await client.query('SELECT * FROM meri_qualification.grants WHERE grant_id=$1', [d.context.grantId])).rows[0];
+    const bound = (await client.query(`SELECT * FROM ${store.tables.tool_grant_bindings} WHERE grant_id=$1`, [d.context.grantId])).rows[0];
+    const grant = (await client.query(`SELECT * FROM ${store.tables.grants} WHERE grant_id=$1`, [d.context.grantId])).rows[0];
     assertHistoricalGrant(d.context, bound, grant); return installed;
   }
   async function prepared(client, d) {
@@ -26,7 +27,7 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
   }
   async function accounting(client, row, d, budget) {
     if (!row.reservation_id) return null;
-    const reservation = (await client.query('SELECT * FROM meri_qualification.tool_reservations WHERE invocation_id=$1', [row.invocation_id])).rows[0];
+    const reservation = (await client.query(`SELECT * FROM ${store.tables.tool_reservations} WHERE invocation_id=$1`, [row.invocation_id])).rows[0];
     if (!reservation || reservation.reservation_id !== row.reservation_id) refuse('INVOCATION_CLAIM_MISMATCH');
     const result = outcomeSnapshot({ allocation:a, invocation:invocation(JSON.stringify(row.facts),a),
       expected:{operation:d.operation,argumentsSha256:row.arguments_sha256},row:reservation,now:budget.now });
@@ -53,7 +54,7 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
         installed.started_at.getTime()+a.budgets.maxRuntimeSeconds*1000);
       active(call,deadlineMs); if(budget.now.getTime()>=deadlineMs)refuse('INVOCATION_STOPPED');
       const facts={...grantFacts(d.context),invocationId:`owned_${randomUUID()}`};
-      await client.query('INSERT INTO meri_qualification.tool_invocations(invocation_id,run_id,producer_key_sha256,delivery,facts,raw_request_sha256,operation,deadline_ms) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',
+      await client.query(`INSERT INTO ${store.tables.tool_invocations}(invocation_id,run_id,producer_key_sha256,delivery,facts,raw_request_sha256,operation,deadline_ms) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
         [facts.invocationId,a.run.runId,d.key,d.delivery,facts,d.rawRequestSha256,d.operation,deadlineMs]);
       active(call,deadlineMs);
       return Object.freeze({invocationJson:JSON.stringify(facts),rawRequestSha256:d.rawRequestSha256,operation:d.operation,deadlineMs});
@@ -71,7 +72,7 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
       const row=await prepared(client,d);limitDeadline(Number(row.deadline_ms));active(call,deadlineMs());
       if(row.invocation_id!==i.invocationId||row.reservation_id!==null||!same(row.operation,call.operation))refuse('INVOCATION_ALREADY_CLAIMED');
       if(budget.now.getTime()>=Number(row.deadline_ms))refuse('INVOCATION_STOPPED');
-      await client.query('UPDATE meri_qualification.tool_invocations SET reservation_id=$2,arguments_sha256=$3 WHERE invocation_id=$1',
+      await client.query(`UPDATE ${store.tables.tool_invocations} SET reservation_id=$2,arguments_sha256=$3 WHERE invocation_id=$1`,
         [i.invocationId,call.reservationId,call.argumentsSha256]);
       active(call,deadlineMs());
     }, (client,call)=>checkedClient(client,()=>active(call,deadlineMs())), call=>active(call,deadlineMs()));
@@ -87,7 +88,7 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
         const marker=completionRecord(row,call);
         if(call.outputBytes>Number(observed.reservation.max_output_bytes))refuse('OUTPUT_BUDGET_EXCEEDED');
         if(row.completion!==null&&!same(row.completion,marker))refuse('COMPLETION_MISMATCH');
-        if(row.completion===null)await client.query('UPDATE meri_qualification.tool_invocations SET completion=$2 WHERE invocation_id=$1',[i.invocationId,marker]);
+        if(row.completion===null)await client.query(`UPDATE ${store.tables.tool_invocations} SET completion=$2 WHERE invocation_id=$1`,[i.invocationId,marker]);
         active(call,deadline);
       },()=>active(call,deadline));
       // Marker ACK is a separate recoverable boundary. No new port after cancellation/expiry.
@@ -146,5 +147,17 @@ export function createToolInvocationOwner({ a, store, admit, storedAllocation, m
         reservationId:row.reservation_id,accounting:observed?.result??null,resultDelivered:false});
     },live?()=>active(live.call,live.deadline):undefined);
   }
-  return Object.freeze({prepare,bind,reconcile});
+  // Caller is the canonical current-allocation lease, not an external request.
+  async function readCompletion(client,d,current,limitDeadline){
+    const row=await prepared(client,d);
+    const deadlineMs=Math.min(current.deadlineMs,Number(row.deadline_ms));
+    if(!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())refuse('INVOCATION_STOPPED');
+    limitDeadline(deadlineMs);
+    const observed=await accounting(client,row,d,{now:new Date(current.checkedAtMs)}),marker=completion(row,observed);
+    if(observed?.result.state!=='SETTLED'||!marker)refuse('COMPLETION_NOT_SETTLED');
+    if(now()>=deadlineMs)refuse('INVOCATION_STOPPED');
+    return data({stage:'SETTLED',binding:d.context.binding,grantId:d.context.grantId,
+      allocationSha256:d.context.allocationSha256,producerKeySha256:d.key,deadlineMs,checkedAtMs:now(),...marker});
+  }
+  return Object.freeze({prepare,bind,reconcile,readCompletion});
 }
