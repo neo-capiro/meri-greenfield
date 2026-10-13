@@ -17,7 +17,7 @@ bt,st,pt=tree(base),tree(source),tree(packet)
 changed=[p for p,v in bt.items() if st.get(p)!=v]
 check('all base entries unchanged at source',not changed)
 check('all base entries unchanged at packet',all(pt.get(p)==v for p,v in bt.items()))
-files=['apps/control/qualified-application/'+n for n in ['schema.mjs','schema-contract.mjs','schema.test.mjs']]
+files=['apps/control/qualified-application/'+n for n in ['schema.mjs','schema-contract.mjs','schema.test.mjs','schema.fixture.mjs']]
 for p in files:
  check('source equals packet '+p,blob(source,p)==blob(packet,p))
  check('source equals review checkout '+p,blob(source,p)==(root/p).read_bytes())
@@ -30,7 +30,12 @@ for name,p,h in migrations:
 a=blob(initial,files[0]);b=blob(source,files[0]);old=b"nspname NOT LIKE 'pg_%'";new=b"left(nspname,3)<>'pg_'"
 check('namespace repair is only installer production delta',old in a and b==a.replace(old,new))
 check('schema contract unchanged',blob(initial,files[1])==blob(source,files[1]))
-check('all original author tests preserved prefix',blob(source,files[2]).startswith(blob(initial,files[2])))
+old_tests=blob(initial,files[2]);new_tests=blob(source,files[2]);marker=b'const ddls='
+check('all original author assertion section preserved byte-for-byte',new_tests[new_tests.index(marker):].startswith(old_tests[old_tests.index(marker):]))
+old_fixture=old_tests[old_tests.index(b'const root='):old_tests.index(marker)]
+new_fixture=blob(source,files[3]);new_fixture=new_fixture[new_fixture.index(b'const root='):new_fixture.index(b'\nexport {')].rstrip()+b'\n'
+check('fixture extraction only approved descriptor override',new_fixture==old_fixture.replace(b'const f=fixture(),',b'const f=fixture(options.fixture),'))
+check('product schema does not import scripted fixture',b'schema.fixture' not in b)
 text=b.decode()
 check('canonical transaction owner reused',"new PostgresBudgetStore(pool)" in text and "from '../../gateway/budget/postgres-budget-store.mjs'" in text)
 check('canonical lifetime owner reused',"from '../../../packages/runtime/operation-lifetime.mjs'" in text)

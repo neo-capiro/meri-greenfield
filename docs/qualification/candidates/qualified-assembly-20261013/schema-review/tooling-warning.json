@@ -1,0 +1,8 @@
+{
+  "operation": "git commit of independent controls",
+  "commit": "60059bbe908402a4f8f2a4c51be1a35c86180abc",
+  "exitCode": 0,
+  "warning": "Automatic git maintenance reported cannot lock ref: .lock No such file or directory, failed reflog, task gc failed; command still committed successfully.",
+  "rawLocation": "retained tool response; output was truncated at 14685 tokens, not falsely represented as a complete local log",
+  "response": "No manual GC or other-ref edits. Subsequent own mutations use per-command gc.auto=0. Source behavior results unaffected."
+}
