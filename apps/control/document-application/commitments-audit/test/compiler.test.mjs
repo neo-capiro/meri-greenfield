@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createCommitmentsAuditCompiler} from '../compose.mjs';
 import {admitPreparedCommitmentsAudit} from '../compose.mjs';
 import {asset} from '../source.mjs';
-import {sourcePage,makeInput,selection,unitContext,NOW} from './fixtures.mjs';
+import {sourcePage,makeInput,selection,unitContext,NOW,uid} from './fixtures.mjs';
 function setup({source=sourcePage,limits={}}={}){const context=unitContext(),selected=selection(context),calls=[];
  const compiler=createCommitmentsAuditCompiler({now:()=>NOW,limits,async readSource(call){calls.push(call);return source(call);}});return {context,selected,calls,compiler};}
 test('all8 original operations collect actual canonical pages across6 sources and exact late promise',async()=>{
@@ -39,5 +39,10 @@ test('immutable skill, source body hash, quote and output request provenance can
 test('no mapped Monday board means not-mapped coverage and no unrelated board source call',async()=>{
  const f=setup();f.selected.mondayBoardIds=[];const p=await f.compiler.prepare(makeInput(),f.context,{selection:f.selected});
  assert.equal(f.calls.some(c=>c.operation.id==='read_monday_client_boards'),false);assert.ok(p.ledger.coverage.some(c=>c.sourceId==='client_knowledge_monday'&&c.status==='not-mapped'));
+});
+test('fresh authorization decision IDs retain exact stable subject and every actual source decision',async()=>{
+ const f=setup({source:call=>{const page=sourcePage(call);if(page.subject)page.subject={...page.subject,authorizationDecisionId:uid(90)};return page;}});
+ const p=await f.compiler.prepare(makeInput(),f.context,{selection:f.selected});assert.equal(p.ledger.commitments[0].promise.authorizationDecisionId,uid(90));
+ assert.ok(p.context.evidence.every(e=>e.authorizationDecisionId===uid(90)));
 });
 test('cancelled collection never reaches later source work',async()=>{const f=setup(),controller=new AbortController();controller.abort();await assert.rejects(f.compiler.prepare(makeInput(),f.context,{selection:f.selected,signal:controller.signal}));assert.equal(f.calls.length,0);});

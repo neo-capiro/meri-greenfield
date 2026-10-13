@@ -38,9 +38,10 @@ export function createCommitmentsAuditCompiler({readSource,readBase,now,limits={
    const ledger=compileCommitmentsAudit({observations:usable},{context:evidenceContext,reads:collection.reads});
    const evidence=[...bound.records.values()].map(({record,source,authorizationDecisionId})=>({sourceId:record.sourceId,recordId:record.recordId,
     sourceVersionId:record.recordVersionId,citationId:record.citationId,contentSha256:record.contentSha256,scopes:record.scopes,
-    authorizationDecisionId,observedAt:source.retrievedAt,sourceUpdatedAt:source.asOf??null}));
+    authorizationDecisionId,observedAt:source.retrievedAt,sourceUpdatedAt:record.metadata?.sourceUpdatedAt??source.asOf??null}));
    for(const current of evidence)if(retainedEvidence.some(prior=>prior.sourceId===current.sourceId&&prior.recordId===current.recordId&&prior.sourceVersionId===current.sourceVersionId&&prior.contentSha256!==current.contentSha256))fail('COMMITMENTS_SOURCE_VERSION_CONFLICT');
    const provenance={recipe:'commitments-audit',skill:i.skill,selection:selected,target:i.target,asOf:i.asOf,collectedThrough:evidenceContext.asOf,inputSha256:v.hash(i),
+    materials:[...bound.records.values()].map(({record,authorizationDecisionIds,verification})=>({sourceId:record.sourceId,recordId:record.recordId,recordVersionId:record.recordVersionId,citationId:record.citationId,contentSha256:record.contentSha256,scopes:record.scopes,metadata:record.metadata,authorizationDecisionIds,verification})),
     readsSha256:v.hash(collection.reads),ledgerSha256:v.hash(ledger),parent,gaps:collection.gaps,collection:{...collection.stats(),capHits:collection.capHits}};
    const request=v.request({operation:'create_word',format:'docx',title:i.title,content:{blocks:blocks(i,selected,ledger,unresolved,provenance)}}),nextContext=v.context({...context,evidence});life.check();
    const result=data({request,context:nextContext,baseVersionId:base?.versionId??null,provenance,ledger,unresolved,reads:collection.reads});prepared.set(result,{requestSha256:v.hash(request),contextSha256:v.hash(nextContext),baseVersionId:result.baseVersionId});return result;

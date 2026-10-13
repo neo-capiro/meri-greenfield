@@ -22,6 +22,7 @@ export function blocks(input,selection,ledger,unresolved,provenance){
  out.push(p('Coverage and verification appendix','Heading 1'),p('Every original required source is shown. All source authenticity, current policy, snapshot, enumeration and semantic completion remain unqualified unless separately accepted. Missing or unrequested material is not empty; no negative claim is supported.'));
  for(const cell of ledger.coverage)out.push(p(cell.sourceId+' | '+cell.status+' | freshness '+cell.freshness+' | enumeration '+cell.enumeration+' | complete '+cell.complete),
   p('Coverage details '+JSON.stringify(cell)));
+ for(const material of provenance.materials){out.push(p('Retained material '+material.sourceId+' / '+material.recordId+' / '+material.recordVersionId),p('Citation '+material.citationId+'; local derived references are presentation keys, not native citations or proof of authority. Metadata '+JSON.stringify(material.metadata)));}
  for(const gap of provenance.gaps)out.push(p('Missing source/read '+gap.operation+': '+gap.reason));for(const cap of provenance.collection.capHits)out.push(p('Read cap '+JSON.stringify(cap)));
  ledger.limitations.forEach(limit=>out.push(p('Limitation: '+limit)));
  out.push(p('Original skill and immutable revision provenance','Heading 2'),p(marker+JSON.stringify(provenance)));return out;

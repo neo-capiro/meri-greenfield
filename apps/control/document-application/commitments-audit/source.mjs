@@ -5,6 +5,7 @@ import {artifactValidators as v,assertSubject,assertWindow,resolveOperationContr
 import {selectSkill} from '../../../../packages/skills/index.mjs';
 export const asset=selectSkill('quick_skill.commitments_audit','1.0.0');
 export const same=(a,b)=>v.hash(a)===v.hash(b);
+const stableSubject=subject=>{const {authorizationDecisionId,...rest}=subject;return rest;};
 export const fail=code=>{throw Object.assign(new Error(code),{code});};
 export function input(raw){const i=own(v.snapshot(raw),['skill','title','target','asOf','observations']);
  if(!same(i.skill,asset.pin))fail('COMMITMENTS_SKILL_PIN');
@@ -29,7 +30,7 @@ export function createCollection({readSource,context,selected,asOf,query,deadlin
   ['mail.search_messages','meeting.read_client_meetings','meeting.query_debriefs'].includes(id)?{nowMs:Date.parse(asOf)}:{};
  async function read(id,request,previousPage){life.check();const operation=asset.manifest.allowedOperations.find(ref=>ref.id===id);if(!operation)fail('COMMITMENTS_OPERATION');
   if(calls>=limits.maxCalls){capHits.push({operation:id,kind:'tool-call-cap'});gaps.push({operation:id,reason:'TOOL_CALL_CAP',request});return null;}
-  const contract=resolveOperationContract(operation),normalizationContext={...normalization(id),...(previousPage?{previousPage}:{})};
+  const contract=resolveOperationContract(operation);let normalizationContext={...normalization(id),...(previousPage?{previousPage}:{})};
   const normalized=contract.normalizeInput(request,normalizationContext);calls++;let raw;
   try{raw=v.snapshot(await life.run(signal=>readSource({...v.snapshot({operation,request,binding:context.binding,subject:selected.subject,window:selected.window,
    normalizationContext,deadlineMs}),signal})));}
@@ -38,10 +39,11 @@ export function createCollection({readSource,context,selected,asOf,query,deadlin
   life.check();bytes+=Buffer.byteLength(JSON.stringify(raw));if(bytes>limits.maxSourceBytes)fail('COMMITMENTS_SOURCE_BYTES');
   let result=raw;
   if(contract.binding.dispatchProfile==='bound-projection/1'){own(raw,['binding','subject','operation','argumentsSha256','result']);
-   if(!same(raw.binding,context.binding)||!same(raw.subject,selected.subject)||!same(raw.operation,operation)||raw.argumentsSha256!==normalized.argumentsSha256)fail('COMMITMENTS_SOURCE_BINDING');result=raw.result;}
+   if(!same(raw.binding,context.binding)||!same(stableSubject(raw.subject),stableSubject(selected.subject))||!same(raw.operation,operation)||raw.argumentsSha256!==normalized.argumentsSha256)fail('COMMITMENTS_SOURCE_BINDING');result=raw.result;}
+  if(id==='read_client_documents'&&same(result.binding,context.binding)&&same(stableSubject(result.subject),stableSubject(selected.subject)))normalizationContext={binding:context.binding,subject:result.subject};
   contract.assertOutput(result,{request,...normalizationContext});
-  if(result.binding&&(!same(result.binding,context.binding)||!same(result.subject,selected.subject)))fail('COMMITMENTS_SOURCE_BINDING');
-  if(result.window&&!same(result.window,selected.window))fail('COMMITMENTS_SOURCE_WINDOW');
+  if(result.binding&&(!same(result.binding,context.binding)||!same(stableSubject(result.subject),stableSubject(selected.subject))))fail('COMMITMENTS_SOURCE_BINDING');
+  if(result.window&&result.window.basis!=='unbounded'&&!same(result.window,selected.window))fail('COMMITMENTS_SOURCE_WINDOW');
   const receipt={operation,request,normalizationContext,resultSha256:v.hash(raw),result:raw};reads.push(receipt);return result;
  }
  const clientId=selected.subject.entityIds[0],range=selected.window.basis==='unbounded'?{}:{from:selected.window.startInclusive,to:selected.window.endExclusive};

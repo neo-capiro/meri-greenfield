@@ -1,0 +1,6 @@
+{
+  "event": "Parent reported upstream file-download callback failure after completed DOCX checks",
+  "error": "upstream file-download HTTP503; invalid_value/url; status400",
+  "scope": "tool callback, not application/test failure",
+  "handling": "No failed URL reopened or retried. One filesystem sanity/readback verified both retained DOCX hashes and closed owned executor/store state. Completed checks and all sixteen already opened pages preserved."
+}
