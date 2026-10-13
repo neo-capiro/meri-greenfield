@@ -1,0 +1,22 @@
+✔ actual host application query/draft/proposal/explicit approval executes once and replays (171.699797ms)
+✔ host denies receipt hash before reservation/effect (14.717551ms)
+✔ host denies actor before reservation/effect (14.601918ms)
+✔ host denies client before reservation/effect (20.160316ms)
+✔ host denies scopes before reservation/effect (15.296271ms)
+✔ host denies expired before reservation/effect (14.838032ms)
+✔ host denies stale before reservation/effect (13.706614ms)
+✔ credential receipt cannot substitute actor or stale authentication (29.942435ms)
+✔ host mutation during reservation is refused before credential issuance (14.166535ms)
+✔ fresh host revocation after actual stored query preserves result liability (30.055726ms)
+✔ metadata ACK followed by host revocation preserves stored proposal (54.919148ms)
+✔ parked authentication cancellation cannot begin reservation (14.016789ms)
+✔ host snapshots configured command binding rather than retaining caller alias (35.722225ms)
+✔ host own-data receipts reject getters without executing them (13.867906ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3018.821774
