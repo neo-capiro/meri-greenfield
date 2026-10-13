@@ -4,7 +4,7 @@ import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 const refused=()=>{throw Error('APPLICATION_AUTHORITY_REFUSED');};
-const getters=Object.fromEntries(['status','headers','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
+const getters=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 function cancel(response){try{if(response&&!types.isProxy(response)&&response instanceof Response){const body=getters.body.call(response);if(body)Promise.resolve(body.cancel()).catch(()=>{});}}catch{}}
 export function createCapiroApplicationAuthorityClient(configuration){
  const {origin,fetchImpl,now,limits,enabled=false}=own(configuration,['origin','fetchImpl','now','limits'],['enabled']);
@@ -20,10 +20,10 @@ export function createCapiroApplicationAuthorityClient(configuration){
   const life=createOperationLifetime({deadlineMs,now,signal:call.signal,errorFactory:()=>Error('APPLICATION_AUTHORITY_REFUSED')});
   let reader,response,acquired=false,complete=false;
   try{
-   response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(`${base}${applicationAuthorityRoutes[kind]}`,{method:'POST',redirect:'error',headers:{authorization:`Bearer ${call.credential}`,'content-type':'application/json','accept':'application/json'},body:JSON.stringify(args),signal}));pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;});acquired=true;life.check();
+   response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(`${base}${applicationAuthorityRoutes[kind]}`,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:`Bearer ${call.credential}`,'content-type':'application/json','accept':'application/json'},body:JSON.stringify(args),signal}));pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;});acquired=true;life.check();
    if(!response||types.isProxy(response)||!(response instanceof Response))refused();
    const status=getters.status.call(response),headers=getters.headers.call(response),body=getters.body.call(response),header=k=>Headers.prototype.get.call(headers,k);
-   if(status!==200||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!body)refused();
+   if(status!==200||getters.redirected.call(response)||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!body)refused();
    const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>bound.maxResponseBytes))refused();
    reader=body.getReader();let count=0;const chunks=[];
    for(;;){const part=await life.run(()=>reader.read());life.check();if(part.done){complete=true;break;}if(!(part.value instanceof Uint8Array))refused();count+=part.value.byteLength;if(count>bound.maxResponseBytes)refused();chunks.push(part.value);}
