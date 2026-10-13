@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=hostile|actual metadata",
+    "apps/control/action-application/application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-wiring-application-review-20261013",
+  "sourceHead": "cf906e016e752047837658b95c9d2b60aca136d5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:32:12.571387+00:00",
+  "durationSeconds": 2.93,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 445364,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.stdout.bin",
+      "bytes": 2703,
+      "sha256": "8bd8adfe134938138f93b9bd5a2beea674bbd44fd74adb5231bc522c9f268c55"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

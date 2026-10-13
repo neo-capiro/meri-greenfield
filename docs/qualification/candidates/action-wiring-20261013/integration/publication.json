@@ -1,0 +1,57 @@
+{
+  "checkedAt": "2026-10-13 02:04:12 UTC",
+  "sourcePublication": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/42",
+    "head": "69226d1d4223a333e2dc8bdc5b42363aa55c9b5b",
+    "base": "a385fed03b6700bbccb158643793d0be29ccc5ed",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "mergeable": true,
+    "mergeableState": "clean"
+  },
+  "publishedSourceAndEvidence": "69226d1d4223a333e2dc8bdc5b42363aa55c9b5b",
+  "testedIntegratedSource": "55abfaa6b15bca28e8165be2dec9804f2154a969",
+  "baseVerified": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/41",
+    "number": 41,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "a385fed03b6700bbccb158643793d0be29ccc5ed",
+    "branch": "task/meri-action-followthrough-20261013",
+    "base": "cacbe543941db52cc8dcf085bf96c1919e8c155f",
+    "author": "neo-capiro"
+  },
+  "mainVerified": {
+    "head": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+  },
+  "frontendVerified": {
+    "url": "https://github.com/neo-capiro/capiro-frontend/pull/16",
+    "number": 16,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "7c87678730538958ace9762f824dc3e588bf445b",
+    "branch": "integration/capiro-newsletter-port-20261012",
+    "base": "3a83e874383d9129726689bb8fc66438c2f18f18",
+    "author": "neo-capiro"
+  },
+  "frontendHandoff": {
+    "url": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6136525551",
+    "id": 6136525551,
+    "exactBodyReadback": true,
+    "body": "Backend source handoff for a separate frontend successor: [Meri PR42](https://github.com/neo-capiro/meri-greenfield/pull/42), published source/evidence `69226d1d4223a333e2dc8bdc5b42363aa55c9b5b`. This does not change this frozen shipping head `7c87678730538958ace9762f824dc3e588bf445b`.\n\nThe recommendation → draft → immutable pending proposal → separately approved execution/replay flow is implemented and independently reviewed. **124/124 integrated checks pass**, plus actual loopback HTTP CLI; one task effect, identical replay, listener closed/zero sockets. Run `node scripts/local-followthrough/http-run.mjs --run` with the existing pinned Node24 dependencies. This is bounded synthetic local evidence, not a deployed backend or native database/provider qualification.\n\n[API and trusted-session contract](https://github.com/neo-capiro/meri-greenfield/blob/69226d1d4223a333e2dc8bdc5b42363aa55c9b5b/apps/control/action-application/README.md), [actual Fetch wire examples](https://github.com/neo-capiro/meri-greenfield/blob/69226d1d4223a333e2dc8bdc5b42363aa55c9b5b/docs/qualification/candidates/action-wiring-20261013/integration/wire-fixtures.json), [HTTP mount/ownership](https://github.com/neo-capiro/meri-greenfield/blob/69226d1d4223a333e2dc8bdc5b42363aa55c9b5b/docs/coordination/reports/CODEX-ACTION-WIRING-HTTP-20261013.md), and [full handoff](https://github.com/neo-capiro/meri-greenfield/blob/69226d1d4223a333e2dc8bdc5b42363aa55c9b5b/docs/coordination/reports/CODEX-ACTION-WIRING-20261013.md) are frozen at that source.\n\nThe new POST routes are `/api/action-followthrough/query` with `{request}`, `/draft` with `{selection,edits?}`, `/prepare` with `{draft}`, and `/execute` with `{proposal}`. Use a separate authenticated JSON adapter alongside the existing AI SDK stream consumer; preserve canonical UIEvent validation/projection. Opaque session authority, current tenant/client/scopes and execution authorization stay server-owned. No approval HTTP route exists; the fixture approval method is not browser authority. Pending proposals must remain visibly pending, and uncertain/known-stored error outcomes must not trigger automatic retry.\n\nPlease wire selection/edit/pending presentation in a successor branch after agreeing the action-result validation boundary; preserve current public0.1 exports and do not import private backend modules into the browser. Qualified host bindings and frontend browser verification remain separate work."
+  },
+  "checks": {
+    "combined": 124,
+    "fail": 0,
+    "skip": 0,
+    "httpCli": "PASS",
+    "componentManifestMembers": 148,
+    "rootManifestMembers": 28,
+    "originalEntriesUnchanged": 10377
+  },
+  "changesAfterTestedSource": "Documentation/evidence/publication receipt only; accepted runnable bytes unchanged.",
+  "scope": "Source-only draft; no merge, production activation, customer data, paid calls, native publication or infrastructure actions."
+}

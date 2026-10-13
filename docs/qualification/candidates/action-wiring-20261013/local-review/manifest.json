@@ -1,0 +1,202 @@
+{
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "source": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+  "composedSource": "6f76cf0ee3b8f84fc27a3aab68e38c67275b26ab",
+  "applicationDependency": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "authorPacket": "22d291f904bce5455f3f3334d4c1cb61f21fe566",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeQualified": false,
+  "excludedSelfAndVerification": true,
+  "entries": [
+    {
+      "path": "apps/control/action-application/local/local-independent.test.mjs",
+      "bytes": 11476,
+      "sha256": "52e5130d23fac411509396858af2dd882f567fe530b03fc459089402d8517c52"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-LOCAL-REVIEW-20261013.md",
+      "bytes": 3872,
+      "sha256": "479f5b002da0693995e1065fbc6ae5bc44195d77e65526ae6e955e39f200e76d"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-LOCAL-REVIEW-20261013.md",
+      "bytes": 2046,
+      "sha256": "c8107371372a0f5590f3d309200b8befaf422cc7b2e04b494196e6d944b10c4d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/audit-correction.json",
+      "bytes": 286,
+      "sha256": "9889cae9b9b273ca6074a1ad3243509df048742deb5c950f8c31e90b320daf5c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/audit-initial-empty-output.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/audit-initial.py.txt",
+      "bytes": 2569,
+      "sha256": "d6a103e2919bedba29787c83bc4302060681939a92763ae2b829be563451b8b2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/audit-initial.stderr.bin",
+      "bytes": 955,
+      "sha256": "3196ae1781b873755464cd2129b08262e0891abe87c2a3b9ad865776dd8f4c1f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/audit-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/audit.py",
+      "bytes": 2721,
+      "sha256": "8d57658c2bc59320d41d5ae20a657a0c53aa284b4d2bf69fedb3684ade7b18b3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/author-packet-audit.json",
+      "bytes": 306,
+      "sha256": "6b57b2761278db254ecb7be3957fb2e338da87a41cc814dcb5f83e1cee010ffa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/cleanup.json",
+      "bytes": 749,
+      "sha256": "e072074eda0f30168e7395a8c06a907ec6fc5dc311184a62feafd5a16e382320"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/criteria.json",
+      "bytes": 203,
+      "sha256": "ffa8dd0dfc805e40069e1e747fb773ab6f3032e71aede1e78d731303d4d57367"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/dependencies.json",
+      "bytes": 1355,
+      "sha256": "75dc755a4cd316ff02c2faeda72a369c38a54766dde92eecdf7e13b52ceca385"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/expanded.json",
+      "bytes": 1334,
+      "sha256": "2a51bf7cf8d688a67a5fbc028778a62ffcf57d61c49c69da023c6774385b5124"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/expanded.stdout.bin",
+      "bytes": 4056,
+      "sha256": "d189efb930e982148f48068deb2dd1f3f793c53b90ce8f88faf2a0aee5b3fe2b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/final-audit.json",
+      "bytes": 3067,
+      "sha256": "11440669d2040cb8c6ef1d42f7c357c1d9fd4c7a8bd263ad7d94329b22719a47"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/final.json",
+      "bytes": 1401,
+      "sha256": "a9298e86c0acef783c0d1bea0fc60fddb6b33eff494f069bfb909126db773dce"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/final.stdout.bin",
+      "bytes": 4058,
+      "sha256": "302742285280508b54ab4c978d6fac3038d2ad1fcdb07b19553c4af944173cfd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/first.json",
+      "bytes": 1268,
+      "sha256": "ab97344829bbc934f4413525007accdf086f2de8456238c1ae37341a641041a1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/first.stdout.bin",
+      "bytes": 1711,
+      "sha256": "6a6a48f54958216d5012117b3515d1605e5379ce4b3e00512cc621f8507b642f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/initial-audit.json",
+      "bytes": 2610,
+      "sha256": "264a1da24c1e44e6aac5e084cd5deb6e71ea7b5ba6427370ceb38c903ac772bc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/pre-replay-fixture-correction.json",
+      "bytes": 270,
+      "sha256": "afe9e3ab08716c87c32adbf1c1f31e262d1623c161ea098e3064b8f03dc4cfdb"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/repeated-query.json",
+      "bytes": 1404,
+      "sha256": "566bd3e8277ad1e580d4ea8c0e8ba79d3f2e784a6165bb7767cad43535c1887e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/repeated-query.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/repeated-query.stdout.bin",
+      "bytes": 222,
+      "sha256": "e3e05b2e142f85f5fa9149a55bfee400ec1834005f13a2863b1b27fbb39c72bc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/sparse-fixed.json",
+      "bytes": 1354,
+      "sha256": "5db537291b7a8c4d83c3cbbba3e86dae7f5ad6dcca1b1797d81bdd4a87abfebf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/sparse-fixed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/sparse-fixed.stdout.bin",
+      "bytes": 2847,
+      "sha256": "08b3e9ae61b2092a613ea86a65f6c5e6973ece14e7c20d082e473fd23bd7df77"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/verify-author-packet.py",
+      "bytes": 1993,
+      "sha256": "c00bbe25fe08cf784c7c2fba73a11a60b643fc60b56f1546129046a2fea3d2fa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/whitespace-full.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/whitespace.json",
+      "bytes": 103,
+      "sha256": "8386218ec31d48ed6149c6364a46611558c83e5f5b4f4daf237d2dba01d9674a"
+    }
+  ]
+}

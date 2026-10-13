@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "AGENTS.md",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "docs/ROUTING-EVALUATION.md",
+      "blob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "docs/COMPONENTS.md",
+      "blob": "65e2b07f6c73012357b620fcedc5eecd44e8ea76",
+      "bytes": 8930,
+      "sha256": "d41dae59bf7b350a3a2c8c95bad55a3f571e1220060bea3f52798f8f9f98f3a7"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "apps/proxy/qualification/proxy-config.json",
+      "blob": "bf9856302a580e476e2943140a779df353261344",
+      "bytes": 842,
+      "sha256": "f320c67c4ba1d20b8acbdb4f339878749d9a8438964665ab77151ff2886d5c83"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "apps/proxy/qualification/runtime/bedrock_body.py",
+      "blob": "6973259b5ee804d1fdf91211f9626ca6f18c0eb8",
+      "bytes": 8297,
+      "sha256": "8102362fc7c3daecf2f34d54b4a47cf5c5affc9eda7d24067688b86ee592a149"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "apps/proxy/qualification/policy.fixture.json",
+      "blob": "4a8ebc604f86faf8c172c863b275d86288a60292",
+      "bytes": 7489,
+      "sha256": "5cb7e7de6e49f5b60ff0f949a59d3dc79080a9c318a819e80f0dc1941aa656b7"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "evals/task-lookup/execution/README.md",
+      "blob": "eaab3cc1629dc3e4db2cbeb2a19cf95145754c30",
+      "bytes": 6127,
+      "sha256": "603db5dc3af50666736f39b03d80db160e603f9c56a40924f60c90eaa5dd4cce"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "evals/task-lookup/execution/execute.mjs",
+      "blob": "84bcac625d1d6dd048ae3783a192742e61800d0e",
+      "bytes": 9699,
+      "sha256": "d7bd0b15454809996bd055014eb0ba792576e50eb29b531a3311363fe2a48cac"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "evals/task-lookup/score.mjs",
+      "blob": "2fefb31ea4f6b0bd3c8ee73afd3ab7e378c7f1ba",
+      "bytes": 11169,
+      "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414"
+    },
+    {
+      "commit": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+      "path": "evals/retrieval-r2/manifest.json",
+      "blob": "fdfde41dbf67cbcfc6eec372a2679647f70182c9",
+      "bytes": 568,
+      "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f"
+    },
+    {
+      "commit": "563a814b87b0a629d7358cf7d936e6a611615ac4",
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-20261013.md",
+      "blob": "64be1c1b8717dbd35c1965751bf4bd32e675fba2",
+      "bytes": 6765,
+      "sha256": "4df0c6839459b12027c24678b91857f97e785cf7d7df8cc83063b58bb3ef7c2e"
+    },
+    {
+      "commit": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+      "path": "scripts/local-followthrough/run.mjs",
+      "blob": "ea649d4e3342ae23c27378cfa935b33c5fe47bb3",
+      "bytes": 1577,
+      "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801"
+    },
+    {
+      "commit": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+      "path": "apps/control/action-application/README.md",
+      "blob": "8c8f6dad2997e9dad18d5f7bac84e4648f0f506b",
+      "bytes": 4009,
+      "sha256": "308b5e3b2d7392e4d2560fd18a50979385fa4268d8d2723aac25ea6213d123b2"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "base": "a385fed03b6700bbccb158643793d0be29ccc5ed",
+  "sourceHead": "2ae35e9ad02f990d3c4ba284170589a87ac8b773",
+  "originalEntriesUnchanged": 10377,
+  "reviewedRunnableFiles": [
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "acceptedSource": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5"
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "acceptedSource": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816"
+    },
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "acceptedSource": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30"
+    },
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "acceptedSource": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9"
+    },
+    {
+      "path": "apps/control/action-application/local/flow.mjs",
+      "acceptedSource": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+      "sha256": "77f373b1d19fb6b366b9dd52c85226cdf50acb24712278eb57f9ca10745694b5"
+    },
+    {
+      "path": "scripts/local-followthrough/run.mjs",
+      "acceptedSource": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+      "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801"
+    }
+  ],
+  "componentManifests": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-author/manifest.json",
+      "members": 18,
+      "sha256": "5bc5cae59983ca8ba9353c1ad02232867fc9d792c044ff452a1e2cbc7dfe6abf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/manifest.json",
+      "members": 20,
+      "sha256": "dcaf35826519d6d896eeb85a96e5b4eff4967e6cfd2ed5abbe4ddbac0ce4fdab"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/manifest.json",
+      "members": 26,
+      "sha256": "2dbc3c2a4fcfc14285165af78b8895b067d8756b3267a8fa6cf47ea5bf037e89"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/manifest.json",
+      "members": 38,
+      "sha256": "3931335b1d02446687e78b37cae33a1a9388e68b6123a67238700eb66128ebde"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/manifest.json",
+      "members": 10,
+      "sha256": "4a8e91b25fd86fa76c93855f674b34e87d75d4d1c18d64cd08d80b1bbb68cdc8"
+    }
+  ],
+  "componentManifestMembers": 112,
+  "catalog": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "unavailable": 97
+  },
+  "authoredWhitespaceExitCode": 0,
+  "pilotArithmeticVerified": "0.551232",
+  "paidCalls": 0,
+  "runtimeQualifiedByThisPacket": false
+}

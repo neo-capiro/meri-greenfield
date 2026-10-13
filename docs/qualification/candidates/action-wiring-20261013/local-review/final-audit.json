@@ -1,0 +1,100 @@
+{
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "candidate": "6f76cf0ee3b8f84fc27a3aab68e38c67275b26ab",
+  "applicationDependency": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "originalEntries": 10378,
+  "originalChanged": 0,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "bytes": 10707,
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9",
+      "blob": "940d52e8027f8e2769541c3ebac05b76008930c6"
+    },
+    {
+      "path": "apps/control/action-application/local/flow.mjs",
+      "bytes": 1914,
+      "sha256": "77f373b1d19fb6b366b9dd52c85226cdf50acb24712278eb57f9ca10745694b5",
+      "blob": "eb7a89dd14ab6eac1a141055befa080f77e81f4c"
+    },
+    {
+      "path": "apps/control/action-application/local/local.test.mjs",
+      "bytes": 4523,
+      "sha256": "af5ac57d81102fe9d05d6d660829acc6be17ef53c93bf6492425893a7f49422d",
+      "blob": "c7779a2bad29c8f8abdf75a5745bf9f847b465fb"
+    },
+    {
+      "path": "scripts/local-followthrough/run.mjs",
+      "bytes": 1577,
+      "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801",
+      "blob": "ea649d4e3342ae23c27378cfa935b33c5fe47bb3"
+    },
+    {
+      "path": "apps/control/action-application/local/README.md",
+      "bytes": 5903,
+      "sha256": "1852fc37863dde901b736ca57235707805f865166c8bfabd49d0678fab3f09b9",
+      "blob": "f194fe6fb622bd65790f95d7d4f98a88b1359893"
+    },
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "bytes": 5188,
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5",
+      "blob": "a102d9242292ed818f0c27ab55a392947379dcde"
+    },
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "bytes": 4832,
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "blob": "cf933d08ee56e4c07a883b48097e50d45e5ad077"
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "bytes": 3189,
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816",
+      "blob": "06b188a12b99b586a7c55b9b5333d01036d52a01"
+    },
+    {
+      "path": "apps/control/action-application/README.md",
+      "bytes": 4009,
+      "sha256": "308b5e3b2d7392e4d2560fd18a50979385fa4268d8d2723aac25ea6213d123b2",
+      "blob": "8c8f6dad2997e9dad18d5f7bac84e4648f0f506b"
+    }
+  ],
+  "checks": 10409,
+  "passed": 10409,
+  "failed": [],
+  "receipts": [
+    {
+      "path": "first.json",
+      "exitCode": 1,
+      "pid": 444622,
+      "absent": true
+    },
+    {
+      "path": "sparse-fixed.json",
+      "exitCode": 0,
+      "pid": 444665,
+      "absent": true
+    },
+    {
+      "path": "expanded.json",
+      "exitCode": 0,
+      "pid": 445068,
+      "absent": true
+    },
+    {
+      "path": "final.json",
+      "exitCode": 0,
+      "pid": 446806,
+      "absent": true
+    },
+    {
+      "path": "repeated-query.json",
+      "exitCode": 0,
+      "pid": 447054,
+      "absent": true
+    }
+  ],
+  "runtimeQualified": false,
+  "databaseExecuted": false
+}

@@ -1,0 +1,44 @@
+{
+  "base": "f1a075e2eb6c63ee8b1785ad9a94f552a98f45f8",
+  "source": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+  "baseEntriesPreserved": 10498,
+  "onlyNewPaths": [
+    "apps/control/action-application/http.test.mjs",
+    "apps/control/action-application/node-http.mjs",
+    "docs/coordination/tasks/CODEX-ACTION-WIRING-HTTP-20261013.md",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/capture-reaped.py",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/initial.json",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/initial.stderr.bin",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/initial.stdout.bin",
+    "scripts/local-followthrough/http-run.mjs"
+  ],
+  "rawHashesVerified": [
+    "docs/qualification/candidates/action-wiring-20261013/http-author/initial.stdout.bin",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/initial.stderr.bin",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stdout.bin",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stderr.bin",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.stdout.bin",
+    "docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.stderr.bin"
+  ],
+  "cleanup": [
+    {
+      "label": "initial",
+      "pgid": 449586,
+      "absent": true,
+      "exitCode": 1
+    },
+    {
+      "label": "repaired",
+      "pgid": 449939,
+      "absent": true,
+      "exitCode": 0
+    },
+    {
+      "label": "http-cli",
+      "pgid": 450293,
+      "absent": true,
+      "exitCode": 0
+    }
+  ],
+  "dependencies": "Only two owned symlinks removed; donor untouched."
+}

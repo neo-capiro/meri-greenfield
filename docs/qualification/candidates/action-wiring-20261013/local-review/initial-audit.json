@@ -1,0 +1,82 @@
+{
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "candidate": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+  "applicationDependency": "01d6afb952f5a0ad6df8db594188ee5a3954dc3c",
+  "originalEntries": 10378,
+  "originalChanged": 0,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "bytes": 10707,
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9",
+      "blob": "940d52e8027f8e2769541c3ebac05b76008930c6"
+    },
+    {
+      "path": "apps/control/action-application/local/flow.mjs",
+      "bytes": 1914,
+      "sha256": "77f373b1d19fb6b366b9dd52c85226cdf50acb24712278eb57f9ca10745694b5",
+      "blob": "eb7a89dd14ab6eac1a141055befa080f77e81f4c"
+    },
+    {
+      "path": "apps/control/action-application/local/local.test.mjs",
+      "bytes": 4523,
+      "sha256": "af5ac57d81102fe9d05d6d660829acc6be17ef53c93bf6492425893a7f49422d",
+      "blob": "c7779a2bad29c8f8abdf75a5745bf9f847b465fb"
+    },
+    {
+      "path": "scripts/local-followthrough/run.mjs",
+      "bytes": 1577,
+      "sha256": "10b46e3c51285fa8627c186dec4f5add38fa831cfebe8aad1497de31f8c4b801",
+      "blob": "ea649d4e3342ae23c27378cfa935b33c5fe47bb3"
+    },
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "bytes": 5152,
+      "sha256": "d0d52842338e78d4603288a822c9c3e23f8649c89a9a50d758c63a22c2393037",
+      "blob": "5138d30fbe6ef70126fd590d78eb687beaca742c"
+    },
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "bytes": 4505,
+      "sha256": "ba63fac0559b65dd764c8a61eaaa2ebdbe03edbf6d4dfb6f0c5e939adbb2294a",
+      "blob": "f77196964824dc29ff03f792b433403998e1bd85"
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "bytes": 3189,
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816",
+      "blob": "06b188a12b99b586a7c55b9b5333d01036d52a01"
+    },
+    {
+      "path": "apps/control/action-application/README.md",
+      "bytes": 3748,
+      "sha256": "60975b5d1da7e371a1b8f13862acc2343739e9b8ee3f1f5e58bc4b96482b2145",
+      "blob": "6d00dfdfc5cbf74049d60930fce9af5c22006b6e"
+    }
+  ],
+  "checks": 10402,
+  "passed": 10402,
+  "failed": [],
+  "receipts": [
+    {
+      "path": "first.json",
+      "exitCode": 1,
+      "pid": 444622,
+      "absent": true
+    },
+    {
+      "path": "sparse-fixed.json",
+      "exitCode": 0,
+      "pid": 444665,
+      "absent": true
+    },
+    {
+      "path": "expanded.json",
+      "exitCode": 0,
+      "pid": 445068,
+      "absent": true
+    }
+  ],
+  "runtimeQualified": false,
+  "databaseExecuted": false
+}

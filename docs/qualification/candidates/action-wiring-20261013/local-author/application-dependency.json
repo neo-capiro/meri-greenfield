@@ -1,0 +1,26 @@
+{
+  "source": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "files": [
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5",
+      "bytes": 5188
+    },
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30",
+      "bytes": 4832
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816",
+      "bytes": 3189
+    },
+    {
+      "path": "apps/control/action-application/README.md",
+      "sha256": "308b5e3b2d7392e4d2560fd18a50979385fa4268d8d2723aac25ea6213d123b2",
+      "bytes": 4009
+    }
+  ],
+  "localExecutableSource": "5fed7fcf558fa74f3b368fb81f3245847a552ee5"
+}

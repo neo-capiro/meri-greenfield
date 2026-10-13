@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-application/local/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-wiring-local-20261013",
+  "sourceHead": "5fed7fcf558fa74f3b368fb81f3245847a552ee5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:29:21.547573+00:00",
+  "durationSeconds": 3.077,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 444282,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.stdout.bin",
+      "bytes": 968,
+      "sha256": "c71356af423804b6f5c39b60175747fac1b5634d1edc13bdf985a791b35ace3f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

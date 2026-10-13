@@ -1,0 +1,859 @@
+{
+  "scope": "ACTUAL_FETCH_REQUEST_RESPONSE_SYNTHETIC_LOCAL_ONLY",
+  "sourceHead": "2ae35e9ad02f990d3c4ba284170589a87ac8b773",
+  "routePrefix": "/api/action-followthrough/",
+  "method": "POST",
+  "authentication": "Opaque session credential omitted; headers are not authority hints.",
+  "noHttpListenerOrDatabaseEngine": true,
+  "approval": "Separate fixture-only trusted call; no approve HTTP route exists.",
+  "rawCaptures": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/local-cli.stdout.bin",
+      "sha256": "3273bdd33828be01bdbc507699ce03e5bcdc59660d45f3d01c9257b85cfa3d6f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/integration/wire-outcomes.stdout.bin",
+      "sha256": "bfa7c736aefd5fc93e1d068520e68fc2bf878865d905fe0105b2f29a04b2accf"
+    }
+  ],
+  "steps": [
+    {
+      "route": "query",
+      "request": {
+        "request": {
+          "limit": 20
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "lookupId": "1ea7fef1-2cea-43f4-8829-fbb54465762a",
+        "resultReference": "63ea6c68-bfbf-4d3d-ab22-08ea727b962a",
+        "resultSha256": "7b225228e4f42dae73f9f995de0be7d83bb3255b052be2ed862ac0b5b9a08480",
+        "classification": "recommendations",
+        "acceptedTasks": false,
+        "events": [
+          {
+            "contractVersion": "0.1.0",
+            "eventId": "77b012dc-380b-45a4-8c1c-4233dd25d5b8",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "sequence": 1,
+            "createdAt": "2026-10-12T20:00:00.032Z",
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "client",
+                "resourceId": "abcdef00-0000-4000-8000-000000000009",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "type": "tool.started",
+            "data": {
+              "requestId": "bc96152d-47bc-4e46-9399-f0519c25e061",
+              "tool": "actions.query@0.2.0"
+            }
+          },
+          {
+            "contractVersion": "0.1.0",
+            "eventId": "9e025d5f-839b-4491-9d57-fb67c5fe376a",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "sequence": 2,
+            "createdAt": "2026-10-12T20:00:00.081Z",
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "client",
+                "resourceId": "abcdef00-0000-4000-8000-000000000009",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "type": "tool.completed",
+            "data": {
+              "requestId": "bc96152d-47bc-4e46-9399-f0519c25e061",
+              "resultReference": "63ea6c68-bfbf-4d3d-ab22-08ea727b962a"
+            }
+          }
+        ],
+        "observation": {
+          "binding": {
+            "tenantId": "tenant",
+            "actorId": "actor",
+            "conversationId": "00000000-0000-4000-8000-000000000001",
+            "runId": "00000000-0000-4000-8000-000000000002",
+            "attemptId": "00000000-0000-4000-8000-000000000003",
+            "workerId": "00000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "abcdef00-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "tenant",
+            "actorId": "actor",
+            "authorizationDecisionId": "f7f2685e-69e5-4c9f-ada6-daf8262a3798",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "client",
+                "resourceId": "abcdef00-0000-4000-8000-000000000009",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "operation": {
+            "id": "actions.query",
+            "version": "0.2.0"
+          },
+          "argumentsSha256": "5fe2c3e8af05f96dc43d0c8f5968d0947adf4c7de225b848ff67829ca0250233",
+          "result": {
+            "kind": "action-item-client-scoped-page",
+            "contractVersion": "0.2.0",
+            "operation": {
+              "id": "query_action_items",
+              "version": "0.2.0"
+            },
+            "requestId": "ea27784d-cf40-46e3-8109-19d7b037e246",
+            "traceId": "41c122e5-c440-4e6e-afa6-1ebff593bb9e",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "abcdef00-0000-4000-8000-000000000009"
+              ],
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "authorizationDecisionId": "f7f2685e-69e5-4c9f-ada6-daf8262a3798",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "tenant",
+                  "kind": "client",
+                  "resourceId": "abcdef00-0000-4000-8000-000000000009",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "d1c72860384a6fab0beac5475e29d1498f3d8826bd07ab0ead41c872ff9ea1ba",
+            "appliedFilters": [],
+            "generatedAt": "2026-10-12T00:00:00.000Z",
+            "sources": [
+              {
+                "sourceId": "action_items_complete",
+                "authority": "derived",
+                "snapshotVersionId": null,
+                "adapterVersion": "0.2.0",
+                "status": "partial",
+                "synchronizedAt": null,
+                "asOf": null,
+                "retrievedAt": "2026-10-12T20:00:00.059Z",
+                "freshness": "unknown"
+              }
+            ],
+            "coverage": {
+              "sourcesRequested": [
+                "action_items_complete"
+              ],
+              "sourcesChecked": [
+                "action_items_complete"
+              ],
+              "sourcesUnavailable": [],
+              "enumeration": "unknown",
+              "enumerableTotal": null,
+              "returnedCount": 1,
+              "truncated": false,
+              "historySupport": "unsupported",
+              "limitations": [
+                "Native coverage is a source assertion; no qualified freshness, snapshot or exhaustive absence.",
+                "Receipt lineage does not authenticate native cursor contents or establish current source truth."
+              ]
+            },
+            "selection": {
+              "clientId": "abcdef00-0000-4000-8000-000000000009",
+              "actionItemId": null,
+              "status": null,
+              "sort": "deadline",
+              "page": 1,
+              "limit": 20,
+              "cursorApplied": false
+            },
+            "order": "deadline-asc_nulls-last_priority-desc_id-asc-owner-unconfirmed",
+            "snapshotVersionId": null,
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "scope": {
+              "actionItemId": null,
+              "status": null,
+              "sort": "deadline",
+              "page": 1,
+              "limit": 20,
+              "cursorApplied": false
+            },
+            "total": 1,
+            "returned": 1,
+            "actions": [
+              {
+                "id": "abcdef00-0000-4000-8000-000000000101",
+                "districtKey": null,
+                "clientId": "abcdef00-0000-4000-8000-000000000009",
+                "clientName": "Client",
+                "peCode": null,
+                "programId": null,
+                "deltaId": null,
+                "actionType": "protect_funding",
+                "issueTitle": "Issue",
+                "whatChanged": "Changed",
+                "whyItMatters": "Matters",
+                "recommendedAction": "Recommend",
+                "targetAudience": [],
+                "suggestedArtifactType": null,
+                "deadline": null,
+                "deadlineSource": null,
+                "ownerUserId": null,
+                "priority": 1,
+                "confidence": {},
+                "uncertainty": null,
+                "evidence": [],
+                "status": "new",
+                "dismissalReason": null,
+                "outcome": null,
+                "createdAt": "2026-10-12T00:00:00.000Z",
+                "updatedAt": "2026-10-12T00:00:00.000Z",
+                "title": "Issue",
+                "body": "Recommend",
+                "recordKind": "action_recommendation",
+                "recommendation": true,
+                "acceptedAsTask": false,
+                "nativeCompletion": {
+                  "completed": false,
+                  "evidence": null,
+                  "establishesDeliveryOrAcceptance": false,
+                  "note": "Recommendation only"
+                },
+                "sourceProof": {
+                  "version": 1,
+                  "owner": "action_recommendation",
+                  "sourceRecordId": "abcdef00-0000-4000-8000-000000000101",
+                  "currentClientId": "abcdef00-0000-4000-8000-000000000009",
+                  "sourceVersion": "2026-10-12T00:00:00.000Z",
+                  "contentSha256": "fdea539ca1e4351e6271ab617867c40c5d9a65e59ce6dc9a5f1806f1cf81a5ea",
+                  "linkedSources": []
+                }
+              }
+            ],
+            "pageCoverage": {
+              "sourceStatus": "healthy",
+              "sourceReason": null,
+              "complete": true,
+              "partial": false,
+              "paginationComplete": true,
+              "hasMore": false,
+              "nextCursor": null,
+              "totalIsExactForScope": true,
+              "absenceSupported": false,
+              "note": "Structural page assertion only"
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "evidenceReady": false,
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          }
+        }
+      }
+    },
+    {
+      "route": "draft",
+      "request": {
+        "selection": {
+          "resultReference": "63ea6c68-bfbf-4d3d-ab22-08ea727b962a",
+          "resultSha256": "7b225228e4f42dae73f9f995de0be7d83bb3255b052be2ed862ac0b5b9a08480",
+          "actionId": "abcdef00-0000-4000-8000-000000000101"
+        },
+        "edits": {
+          "title": "Review the synthetic recommendation",
+          "dueDate": null
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "status": "draft",
+        "source": {
+          "resultReference": "63ea6c68-bfbf-4d3d-ab22-08ea727b962a",
+          "resultSha256": "7b225228e4f42dae73f9f995de0be7d83bb3255b052be2ed862ac0b5b9a08480",
+          "actionId": "abcdef00-0000-4000-8000-000000000101",
+          "lookupId": "1ea7fef1-2cea-43f4-8829-fbb54465762a",
+          "actionSha256": "b2e53a17138d2f689c32064a1f6f5548047443b5e335fcbc3945dad05c3744b6",
+          "originalBinding": {
+            "tenantId": "tenant",
+            "actorId": "actor",
+            "conversationId": "00000000-0000-4000-8000-000000000001",
+            "runId": "00000000-0000-4000-8000-000000000002",
+            "attemptId": "00000000-0000-4000-8000-000000000003",
+            "workerId": "00000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "clientId": "abcdef00-0000-4000-8000-000000000009"
+        },
+        "recommendation": {
+          "id": "abcdef00-0000-4000-8000-000000000101",
+          "districtKey": null,
+          "clientId": "abcdef00-0000-4000-8000-000000000009",
+          "clientName": "Client",
+          "peCode": null,
+          "programId": null,
+          "deltaId": null,
+          "actionType": "protect_funding",
+          "issueTitle": "Issue",
+          "whatChanged": "Changed",
+          "whyItMatters": "Matters",
+          "recommendedAction": "Recommend",
+          "targetAudience": [],
+          "suggestedArtifactType": null,
+          "deadline": null,
+          "deadlineSource": null,
+          "ownerUserId": null,
+          "priority": 1,
+          "confidence": {},
+          "uncertainty": null,
+          "evidence": [],
+          "status": "new",
+          "dismissalReason": null,
+          "outcome": null,
+          "createdAt": "2026-10-12T00:00:00.000Z",
+          "updatedAt": "2026-10-12T00:00:00.000Z",
+          "title": "Issue",
+          "body": "Recommend",
+          "recordKind": "action_recommendation",
+          "recommendation": true,
+          "acceptedAsTask": false,
+          "nativeCompletion": {
+            "completed": false,
+            "evidence": null,
+            "establishesDeliveryOrAcceptance": false,
+            "note": "Recommendation only"
+          },
+          "sourceProof": {
+            "version": 1,
+            "owner": "action_recommendation",
+            "sourceRecordId": "abcdef00-0000-4000-8000-000000000101",
+            "currentClientId": "abcdef00-0000-4000-8000-000000000009",
+            "sourceVersion": "2026-10-12T00:00:00.000Z",
+            "contentSha256": "fdea539ca1e4351e6271ab617867c40c5d9a65e59ce6dc9a5f1806f1cf81a5ea",
+            "linkedSources": []
+          }
+        },
+        "task": {
+          "title": "Review the synthetic recommendation",
+          "clientId": "abcdef00-0000-4000-8000-000000000009",
+          "dueDate": null
+        },
+        "draftSha256": "60d8a8608ab37c28bc729a29e108378ea63697e89ca8ff9a46ad655f22caf866"
+      }
+    },
+    {
+      "route": "prepare",
+      "request": {
+        "draft": {
+          "status": "draft",
+          "source": {
+            "resultReference": "63ea6c68-bfbf-4d3d-ab22-08ea727b962a",
+            "resultSha256": "7b225228e4f42dae73f9f995de0be7d83bb3255b052be2ed862ac0b5b9a08480",
+            "actionId": "abcdef00-0000-4000-8000-000000000101",
+            "lookupId": "1ea7fef1-2cea-43f4-8829-fbb54465762a",
+            "actionSha256": "b2e53a17138d2f689c32064a1f6f5548047443b5e335fcbc3945dad05c3744b6",
+            "originalBinding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "clientId": "abcdef00-0000-4000-8000-000000000009"
+          },
+          "recommendation": {
+            "id": "abcdef00-0000-4000-8000-000000000101",
+            "districtKey": null,
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "clientName": "Client",
+            "peCode": null,
+            "programId": null,
+            "deltaId": null,
+            "actionType": "protect_funding",
+            "issueTitle": "Issue",
+            "whatChanged": "Changed",
+            "whyItMatters": "Matters",
+            "recommendedAction": "Recommend",
+            "targetAudience": [],
+            "suggestedArtifactType": null,
+            "deadline": null,
+            "deadlineSource": null,
+            "ownerUserId": null,
+            "priority": 1,
+            "confidence": {},
+            "uncertainty": null,
+            "evidence": [],
+            "status": "new",
+            "dismissalReason": null,
+            "outcome": null,
+            "createdAt": "2026-10-12T00:00:00.000Z",
+            "updatedAt": "2026-10-12T00:00:00.000Z",
+            "title": "Issue",
+            "body": "Recommend",
+            "recordKind": "action_recommendation",
+            "recommendation": true,
+            "acceptedAsTask": false,
+            "nativeCompletion": {
+              "completed": false,
+              "evidence": null,
+              "establishesDeliveryOrAcceptance": false,
+              "note": "Recommendation only"
+            },
+            "sourceProof": {
+              "version": 1,
+              "owner": "action_recommendation",
+              "sourceRecordId": "abcdef00-0000-4000-8000-000000000101",
+              "currentClientId": "abcdef00-0000-4000-8000-000000000009",
+              "sourceVersion": "2026-10-12T00:00:00.000Z",
+              "contentSha256": "fdea539ca1e4351e6271ab617867c40c5d9a65e59ce6dc9a5f1806f1cf81a5ea",
+              "linkedSources": []
+            }
+          },
+          "task": {
+            "title": "Review the synthetic recommendation",
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "dueDate": null
+          },
+          "draftSha256": "60d8a8608ab37c28bc729a29e108378ea63697e89ca8ff9a46ad655f22caf866"
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "status": "approval_required",
+        "draft": {
+          "status": "draft",
+          "source": {
+            "resultReference": "63ea6c68-bfbf-4d3d-ab22-08ea727b962a",
+            "resultSha256": "7b225228e4f42dae73f9f995de0be7d83bb3255b052be2ed862ac0b5b9a08480",
+            "actionId": "abcdef00-0000-4000-8000-000000000101",
+            "lookupId": "1ea7fef1-2cea-43f4-8829-fbb54465762a",
+            "actionSha256": "b2e53a17138d2f689c32064a1f6f5548047443b5e335fcbc3945dad05c3744b6",
+            "originalBinding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "clientId": "abcdef00-0000-4000-8000-000000000009"
+          },
+          "recommendation": {
+            "id": "abcdef00-0000-4000-8000-000000000101",
+            "districtKey": null,
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "clientName": "Client",
+            "peCode": null,
+            "programId": null,
+            "deltaId": null,
+            "actionType": "protect_funding",
+            "issueTitle": "Issue",
+            "whatChanged": "Changed",
+            "whyItMatters": "Matters",
+            "recommendedAction": "Recommend",
+            "targetAudience": [],
+            "suggestedArtifactType": null,
+            "deadline": null,
+            "deadlineSource": null,
+            "ownerUserId": null,
+            "priority": 1,
+            "confidence": {},
+            "uncertainty": null,
+            "evidence": [],
+            "status": "new",
+            "dismissalReason": null,
+            "outcome": null,
+            "createdAt": "2026-10-12T00:00:00.000Z",
+            "updatedAt": "2026-10-12T00:00:00.000Z",
+            "title": "Issue",
+            "body": "Recommend",
+            "recordKind": "action_recommendation",
+            "recommendation": true,
+            "acceptedAsTask": false,
+            "nativeCompletion": {
+              "completed": false,
+              "evidence": null,
+              "establishesDeliveryOrAcceptance": false,
+              "note": "Recommendation only"
+            },
+            "sourceProof": {
+              "version": 1,
+              "owner": "action_recommendation",
+              "sourceRecordId": "abcdef00-0000-4000-8000-000000000101",
+              "currentClientId": "abcdef00-0000-4000-8000-000000000009",
+              "sourceVersion": "2026-10-12T00:00:00.000Z",
+              "contentSha256": "fdea539ca1e4351e6271ab617867c40c5d9a65e59ce6dc9a5f1806f1cf81a5ea",
+              "linkedSources": []
+            }
+          },
+          "task": {
+            "title": "Review the synthetic recommendation",
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "dueDate": null
+          },
+          "draftSha256": "60d8a8608ab37c28bc729a29e108378ea63697e89ca8ff9a46ad655f22caf866"
+        },
+        "proposal": {
+          "proposalId": "df4793a5-4312-4b00-a6d5-7f639be0c40a",
+          "command": {
+            "contractVersion": "0.1.0",
+            "commandId": "eb1dd361-81bb-464e-b72f-6a23c53cdda5",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "action": "task.create",
+            "arguments": {
+              "title": "Review the synthetic recommendation",
+              "clientId": "abcdef00-0000-4000-8000-000000000009",
+              "dueDate": null
+            },
+            "attachments": [],
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "tenant",
+                "resourceId": "tenant",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "idempotencyKey": "17fb193c-a6dd-4aa5-8d34-a66ad11b842d"
+          },
+          "commandSha256": "2352fb7c9558b59ce7271bc58c38c4208fe19a198a72b9322532fcc87dbf23f8",
+          "createdAt": "2026-10-12T20:00:00.129Z",
+          "expiresAt": "2026-10-12T20:00:10.000Z",
+          "requiredApprover": {
+            "tenantId": "tenant",
+            "actorId": "reviewer"
+          }
+        }
+      }
+    },
+    {
+      "route": "execute",
+      "phase": "BEFORE_SEPARATE_APPROVAL",
+      "request": {
+        "proposal": {
+          "proposalId": "df4793a5-4312-4b00-a6d5-7f639be0c40a",
+          "command": {
+            "contractVersion": "0.1.0",
+            "commandId": "eb1dd361-81bb-464e-b72f-6a23c53cdda5",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "action": "task.create",
+            "arguments": {
+              "title": "Review the synthetic recommendation",
+              "clientId": "abcdef00-0000-4000-8000-000000000009",
+              "dueDate": null
+            },
+            "attachments": [],
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "tenant",
+                "resourceId": "tenant",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "idempotencyKey": "17fb193c-a6dd-4aa5-8d34-a66ad11b842d"
+          },
+          "commandSha256": "2352fb7c9558b59ce7271bc58c38c4208fe19a198a72b9322532fcc87dbf23f8",
+          "createdAt": "2026-10-12T20:00:00.129Z",
+          "expiresAt": "2026-10-12T20:00:10.000Z",
+          "requiredApprover": {
+            "tenantId": "tenant",
+            "actorId": "reviewer"
+          }
+        }
+      },
+      "httpStatus": 409,
+      "response": {
+        "error": {
+          "code": "COMMAND_APPROVAL_REFUSED",
+          "outcome": "NOT_DISPATCHED"
+        }
+      }
+    },
+    {
+      "route": "execute",
+      "phase": "AFTER_EXPLICIT_FIXTURE_ONLY_APPROVAL",
+      "request": {
+        "proposal": {
+          "proposalId": "df4793a5-4312-4b00-a6d5-7f639be0c40a",
+          "command": {
+            "contractVersion": "0.1.0",
+            "commandId": "eb1dd361-81bb-464e-b72f-6a23c53cdda5",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "action": "task.create",
+            "arguments": {
+              "title": "Review the synthetic recommendation",
+              "clientId": "abcdef00-0000-4000-8000-000000000009",
+              "dueDate": null
+            },
+            "attachments": [],
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "tenant",
+                "resourceId": "tenant",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "idempotencyKey": "17fb193c-a6dd-4aa5-8d34-a66ad11b842d"
+          },
+          "commandSha256": "2352fb7c9558b59ce7271bc58c38c4208fe19a198a72b9322532fcc87dbf23f8",
+          "createdAt": "2026-10-12T20:00:00.129Z",
+          "expiresAt": "2026-10-12T20:00:10.000Z",
+          "requiredApprover": {
+            "tenantId": "tenant",
+            "actorId": "reviewer"
+          }
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "status": "observed",
+        "outcome": {
+          "receipt": {
+            "receiptId": "75670084-6eae-4cc2-8ee8-33d7df0a2774",
+            "commandId": "eb1dd361-81bb-464e-b72f-6a23c53cdda5",
+            "commandSha256": "2352fb7c9558b59ce7271bc58c38c4208fe19a198a72b9322532fcc87dbf23f8",
+            "idempotencyKey": "17fb193c-a6dd-4aa5-8d34-a66ad11b842d",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "outcome": "succeeded",
+            "sourceTransactionId": null,
+            "completedAt": "2026-10-12T20:00:00.171Z",
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "tenant",
+                "resourceId": "tenant",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "authorizationDecisionId": "00000000-0000-4000-8000-000000000010"
+          },
+          "result": {
+            "id": "00000000-0000-4000-8000-000000000030",
+            "title": "Review the synthetic recommendation",
+            "status": "todo",
+            "dueDate": null,
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "createdAt": "2026-10-12T20:00:00.167Z"
+          }
+        }
+      }
+    },
+    {
+      "route": "execute",
+      "phase": "REPLAY_OF_SAME_IMMUTABLE_PROPOSAL",
+      "request": {
+        "proposal": {
+          "proposalId": "df4793a5-4312-4b00-a6d5-7f639be0c40a",
+          "command": {
+            "contractVersion": "0.1.0",
+            "commandId": "eb1dd361-81bb-464e-b72f-6a23c53cdda5",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "action": "task.create",
+            "arguments": {
+              "title": "Review the synthetic recommendation",
+              "clientId": "abcdef00-0000-4000-8000-000000000009",
+              "dueDate": null
+            },
+            "attachments": [],
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "tenant",
+                "resourceId": "tenant",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "idempotencyKey": "17fb193c-a6dd-4aa5-8d34-a66ad11b842d"
+          },
+          "commandSha256": "2352fb7c9558b59ce7271bc58c38c4208fe19a198a72b9322532fcc87dbf23f8",
+          "createdAt": "2026-10-12T20:00:00.129Z",
+          "expiresAt": "2026-10-12T20:00:10.000Z",
+          "requiredApprover": {
+            "tenantId": "tenant",
+            "actorId": "reviewer"
+          }
+        }
+      },
+      "httpStatus": 200,
+      "response": {
+        "status": "observed",
+        "outcome": {
+          "receipt": {
+            "receiptId": "75670084-6eae-4cc2-8ee8-33d7df0a2774",
+            "commandId": "eb1dd361-81bb-464e-b72f-6a23c53cdda5",
+            "commandSha256": "2352fb7c9558b59ce7271bc58c38c4208fe19a198a72b9322532fcc87dbf23f8",
+            "idempotencyKey": "17fb193c-a6dd-4aa5-8d34-a66ad11b842d",
+            "binding": {
+              "tenantId": "tenant",
+              "actorId": "actor",
+              "conversationId": "00000000-0000-4000-8000-000000000001",
+              "runId": "00000000-0000-4000-8000-000000000002",
+              "attemptId": "00000000-0000-4000-8000-000000000003",
+              "workerId": "00000000-0000-4000-8000-000000000004",
+              "writerFence": 1
+            },
+            "outcome": "succeeded",
+            "sourceTransactionId": null,
+            "completedAt": "2026-10-12T20:00:00.171Z",
+            "scopes": [
+              {
+                "tenantId": "tenant",
+                "kind": "tenant",
+                "resourceId": "tenant",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "authorizationDecisionId": "00000000-0000-4000-8000-000000000010"
+          },
+          "result": {
+            "id": "00000000-0000-4000-8000-000000000030",
+            "title": "Review the synthetic recommendation",
+            "status": "todo",
+            "dueDate": null,
+            "clientId": "abcdef00-0000-4000-8000-000000000009",
+            "createdAt": "2026-10-12T20:00:00.167Z"
+          }
+        }
+      }
+    }
+  ],
+  "separateUncertaintyExamples": [
+    {
+      "scenario": "UNKNOWN",
+      "httpStatus": 502,
+      "headers": {
+        "contentType": "application/json; charset=utf-8",
+        "cacheControl": "no-store"
+      },
+      "body": {
+        "error": {
+          "code": "COMMAND_PREPARATION_REFUSED",
+          "outcome": "UNKNOWN"
+        }
+      },
+      "observedSyntheticBoundary": {
+        "metadataRows": 1,
+        "taskEffects": 0
+      },
+      "automaticRetryAllowed": false
+    },
+    {
+      "scenario": "STORED_NOT_RELEASED",
+      "httpStatus": 502,
+      "headers": {
+        "contentType": "application/json; charset=utf-8",
+        "cacheControl": "no-store"
+      },
+      "body": {
+        "error": {
+          "code": "COMMAND_PREPARATION_REFUSED",
+          "outcome": "STORED_NOT_RELEASED"
+        }
+      },
+      "observedSyntheticBoundary": {
+        "metadataRows": 1,
+        "taskEffects": 0
+      },
+      "automaticRetryAllowed": false
+    }
+  ],
+  "cleanup": {
+    "mode": "synthetic-local",
+    "sourceReads": 1,
+    "taskEffects": 1,
+    "metadataRows": 1,
+    "lookupRows": 1,
+    "commandRows": 1,
+    "approvals": 0,
+    "closed": true
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "six distinct literal prompt templates, not received real corpus",
+      "passed": true
+    },
+    {
+      "name": "provider and identity",
+      "passed": true
+    },
+    {
+      "name": "bounded sessions and all provider requests",
+      "passed": true
+    },
+    {
+      "name": "total input/output limits",
+      "passed": true
+    },
+    {
+      "name": "exact maximum arithmetic",
+      "passed": true
+    },
+    {
+      "name": "exact estimate arithmetic",
+      "passed": true
+    },
+    {
+      "name": "new bounded proposal, no old allowance reuse",
+      "passed": true
+    },
+    {
+      "name": "prices and runtime not manufactured",
+      "passed": true
+    },
+    {
+      "name": "no extra model services/cache",
+      "passed": true
+    },
+    {
+      "name": "full main gates preserved",
+      "passed": true
+    },
+    {
+      "name": "six pinned frontend source references without bodies",
+      "passed": true
+    },
+    {
+      "name": "reference:AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "reference:docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "reference:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "reference:docs/ROUTING-EVALUATION.md",
+      "passed": true
+    },
+    {
+      "name": "reference:docs/COMPONENTS.md",
+      "passed": true
+    },
+    {
+      "name": "reference:apps/proxy/qualification/proxy-config.json",
+      "passed": true
+    },
+    {
+      "name": "reference:apps/proxy/qualification/runtime/bedrock_body.py",
+      "passed": true
+    },
+    {
+      "name": "reference:apps/proxy/qualification/policy.fixture.json",
+      "passed": true
+    },
+    {
+      "name": "reference:evals/task-lookup/execution/README.md",
+      "passed": true
+    },
+    {
+      "name": "reference:evals/task-lookup/execution/execute.mjs",
+      "passed": true
+    },
+    {
+      "name": "reference:evals/task-lookup/score.mjs",
+      "passed": true
+    },
+    {
+      "name": "reference:evals/retrieval-r2/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "reference:docs/coordination/tasks/CODEX-ACTION-WIRING-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "reference:scripts/local-followthrough/run.mjs",
+      "passed": true
+    },
+    {
+      "name": "reference:apps/control/action-application/README.md",
+      "passed": true
+    },
+    {
+      "name": "exclusive allocated paths",
+      "passed": true
+    },
+    {
+      "name": "all original tracked tree entries preserved",
+      "passed": true
+    }
+  ],
+  "passed": 28,
+  "failed": 0,
+  "baselineEntriesVerified": 10378,
+  "paidCalls": 0,
+  "nativeOrDatabaseExecution": false
+}

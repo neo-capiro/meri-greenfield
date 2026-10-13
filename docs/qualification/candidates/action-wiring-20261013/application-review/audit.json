@@ -1,0 +1,249 @@
+{
+  "decision": "PASS",
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "source": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "authorPacket": "91c840d4582e94be28b694e878225141fc6805e2",
+  "originalEntries": 10378,
+  "production": [
+    {
+      "path": "apps/control/action-application/http.mjs",
+      "bytes": 4832,
+      "sha256": "eb11bac0cc7c26a8658b8e702e3e31ffc1eab38b6bd1de01bd0e0847411b6a30"
+    },
+    {
+      "path": "apps/control/action-application/index.mjs",
+      "bytes": 5188,
+      "sha256": "a69d9f50386e4cc144be772fdd337aede8a5b112d60418b56af79d2462e460b5"
+    },
+    {
+      "path": "apps/control/action-application/session.mjs",
+      "bytes": 3189,
+      "sha256": "f039691e9bcda51b1d4b65a6c1827755afd87cf3f395ddfcffbee13d786c2816"
+    }
+  ],
+  "authorManifestMembers": 18,
+  "authorManifestSha256": "5bc5cae59983ca8ba9353c1ad02232867fc9d792c044ff452a1e2cbc7dfe6abf",
+  "captures": [
+    {
+      "label": "initial",
+      "passed": 29,
+      "failed": 1,
+      "pgid": 444067,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "actual-read-negative",
+      "passed": 0,
+      "failed": 1,
+      "pgid": 444827,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "error-metadata-negative",
+      "passed": 1,
+      "failed": 3,
+      "pgid": 445364,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "repaired",
+      "passed": 36,
+      "failed": 0,
+      "pgid": 446116,
+      "freshlyAbsent": true
+    }
+  ],
+  "passed": 47,
+  "total": 47,
+  "checks": [
+    {
+      "name": "all original entries identical at 7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+      "pass": true
+    },
+    {
+      "name": "all original entries identical at 91c840d4582e94be28b694e878225141fc6805e2",
+      "pass": true
+    },
+    {
+      "name": "all original entries identical at HEAD",
+      "pass": true
+    },
+    {
+      "name": "exact tested/author source http.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact tested/author source index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact tested/author source session.mjs",
+      "pass": true
+    },
+    {
+      "name": "only allocated three production files, README and author test added",
+      "pass": true
+    },
+    {
+      "name": "all97 remain unavailable",
+      "pass": true
+    },
+    {
+      "name": "scope139/96/43 preserved",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-ACTION-WIRING-APPLICATION-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-ACTION-WIRING-APPLICATION-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/README.md",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/application.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/session.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/boundary-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/boundary-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/boundary-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/syntax-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/syntax-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/application-author/syntax-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts initial",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup initial",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence initial",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/actual-read-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/actual-read-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts actual-read-negative",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup actual-read-negative",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence actual-read-negative",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts error-metadata-negative",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup error-metadata-negative",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence error-metadata-negative",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/application-review/repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts repaired",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup repaired",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence repaired",
+      "pass": true
+    }
+  ],
+  "runtime": "UNRUN / HOLD"
+}

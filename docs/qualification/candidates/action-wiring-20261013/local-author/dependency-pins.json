@@ -1,0 +1,55 @@
+{
+  "nodeVersion": "v24.19.0",
+  "packages": [
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    },
+    {
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "integrity": "sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    },
+    {
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "integrity": "sha512-bab9+WefZljqQ8jT0qRwVmTyzAUU63K97QIQD3agynIBrb6sa5M2eAy8Hv8K3p4V9+ONVYZKtGYl4Dg+/5Gumw==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    },
+    {
+      "name": "fast-uri",
+      "version": "3.1.8",
+      "integrity": "sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    },
+    {
+      "name": "fast-deep-equal",
+      "version": "3.1.3",
+      "integrity": "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    },
+    {
+      "name": "json-schema-traverse",
+      "version": "1.0.0",
+      "integrity": "sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    },
+    {
+      "name": "require-from-string",
+      "version": "2.0.2",
+      "integrity": "sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==",
+      "rootAndContractsLockMatch": true,
+      "installedVersionMatch": true
+    }
+  ],
+  "method": "Owned physical copies of existing installed closure; no install/network/archive verification in this lane"
+}

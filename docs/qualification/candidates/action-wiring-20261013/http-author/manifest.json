@@ -1,0 +1,85 @@
+{
+  "source": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+  "members": [
+    {
+      "path": "apps/control/action-application/node-http.mjs",
+      "bytes": 4820,
+      "sha256": "5483d08f8092c06e3a28784501bc0be0ff94898b613567cb9c6d865452daf5f0"
+    },
+    {
+      "path": "apps/control/action-application/http.test.mjs",
+      "bytes": 3760,
+      "sha256": "65f94675b00bf02bc51d5a644883471d13ab9c5869332a82222bc72cea163cd2"
+    },
+    {
+      "path": "scripts/local-followthrough/http-run.mjs",
+      "bytes": 2130,
+      "sha256": "721b40dba0cb7ae6cbeddd3b3bb33f9d0a63c9211a7065b73d47868e047003d2"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-HTTP-20261013.md",
+      "bytes": 1564,
+      "sha256": "e442da4b0e57c4448d219734d2ca7fd2aed0ca7199b62c6b621d60b274f11171"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-HTTP-20261013.md",
+      "bytes": 3296,
+      "sha256": "a8706bf2c452c01d4790186ef49f1da14ac80e425d165e42fc81de72485a14f3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.json",
+      "bytes": 1238,
+      "sha256": "0d44238251ece476af29067fe34704fdbf1963c4f1d3abfd835d40ebdd195767"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.stdout.bin",
+      "bytes": 355,
+      "sha256": "d1096fb7cb661c1dc131eefc62fc97967c4eeed21e06b64752d7821553899c2b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/initial.json",
+      "bytes": 1243,
+      "sha256": "daa09c31392e063b4b2fba5402727a82eb577203c3fcb085029ac326f677d7cd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/initial.stdout.bin",
+      "bytes": 1523,
+      "sha256": "1c5f5b3f1da105d7c0cdcf61a2b8e3b265c54d0e32753d2e60f686eab0efb9bf"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.json",
+      "bytes": 1244,
+      "sha256": "826ff8e1b999f9ff70d393918e03dc8d491865786b2493804742f26e8c123fe8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stdout.bin",
+      "bytes": 670,
+      "sha256": "500ac54a4bbb29d98c5e138b2c71f6e7e6db3f7f4304eca1fd5248fa3d793c15"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-author/source-audit.json",
+      "bytes": 1729,
+      "sha256": "81fdbddb79a0d25554ead287ec35a7da1b1ecfe4a2e2f91fe3cf5f0d1679c3db"
+    }
+  ]
+}

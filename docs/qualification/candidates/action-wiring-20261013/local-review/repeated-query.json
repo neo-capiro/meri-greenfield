@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=fresh repeated queries",
+    "apps/control/action-application/local/local-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-wiring-local-review-20261013",
+  "sourceHead": "733366853a86aa3f86fd95889a95bdcddf804a6b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:35:39.582209+00:00",
+  "durationSeconds": 2.873,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 447054,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/repeated-query.stdout.bin",
+      "bytes": 222,
+      "sha256": "e3e05b2e142f85f5fa9149a55bfee400ec1834005f13a2863b1b27fbb39c72bc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/local-review/repeated-query.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Additional actual repeated-query control checks fresh result IDs and locally reserved event slots; no original assertions changed.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

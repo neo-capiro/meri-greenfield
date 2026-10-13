@@ -1,0 +1,40 @@
+{
+  "ownedDependencyCopiesRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-uri",
+    "fast-deep-equal",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "donorUntouched": true,
+  "ownedCaptures": [
+    {
+      "receipt": "cli-final.json",
+      "pgid": 446554,
+      "absent": true,
+      "killRequired": false
+    },
+    {
+      "receipt": "cli-initial.json",
+      "pgid": 444417,
+      "absent": true,
+      "killRequired": false
+    },
+    {
+      "receipt": "dependency-final.json",
+      "pgid": 446450,
+      "absent": true,
+      "killRequired": false
+    },
+    {
+      "receipt": "initial.json",
+      "pgid": 444282,
+      "absent": true,
+      "killRequired": false
+    }
+  ],
+  "listenerStarted": false,
+  "realDatabaseConnected": false
+}
