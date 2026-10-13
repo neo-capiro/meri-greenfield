@@ -1,0 +1,34 @@
+{
+  "scope": "owned author worktree only",
+  "groups": [
+    {
+      "label": "author-node",
+      "pgid": 497973,
+      "physicallyAbsent": true
+    },
+    {
+      "label": "author-python",
+      "pgid": 498511,
+      "physicallyAbsent": true
+    }
+  ],
+  "dependencyLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "removedOwnedLink": true,
+      "donorUntouched": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "removedOwnedLink": true,
+      "donorUntouched": true
+    }
+  ],
+  "bytecodeDirectories": [
+    "apps/proxy/qualification/assembly/__pycache__",
+    "apps/proxy/qualification/state/__pycache__"
+  ],
+  "runtimeDependency": "retained public JSONata file outside repository while root/reviewer borrow it; no vendored runtime"
+}

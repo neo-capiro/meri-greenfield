@@ -1,0 +1,36 @@
+✔ fixed Python bridge invokes real canonical Grants over scripted SQL; recovery reads without reseed (525.221528ms)
+✔ worker refusal leaves PENDING and never auto-activates/reseeds/compensates (107.741324ms)
+✔ preflight permits only missing schema digest, never returns authority or starts child (27.211893ms)
+✔ same fixture connection and full grant context required before process (22.297836ms)
+✔ parked owned process is killed and close observed at original short deadline (85.838586ms)
+✔ stderr/error content is discarded and no automatic retry follows unknown receipt (36.274565ms)
+✔ post-mutation wrong receipt cannot admit or allow reattempt (69.678034ms)
+✔ bounded stdout flood closes owned child without releasing content (56.330281ms)
+✔ bounded stderr flood closes owned child without releasing content (37.402801ms)
+✔ aborted and extended caller cutoffs cannot refresh constructor original deadline (59.446765ms)
+✔ actual owner expressions admit exact synthetic running task and private ENI; observation is one use (110.779027ms)
+✔ refuses foreign task (47.940036ms)
+✔ refuses foreign run (50.724372ms)
+✔ refuses image (54.46259ms)
+✔ refuses stopped (71.110121ms)
+✔ refuses worker stopped (59.661379ms)
+✔ refuses override (43.130697ms)
+✔ refuses pending ENI (54.245604ms)
+✔ refuses public IP (72.858861ms)
+✔ refuses foreign ENI (57.19057ms)
+✔ refuses extra container (46.456301ms)
+✔ refuses missing tag (32.951768ms)
+✔ caller Boolean/lookalike observation cannot grant activation (31.284562ms)
+✔ parked read ends at caller original cutoff (48.956677ms)
+✔ late observation and cross-owner token refuse (105.851698ms)
+✔ raw getters/proxies are never inspected by observer (30.723091ms)
+✔ runtime hash and unbranded compilation refuse before reads (1.046393ms)
+✔ forbidden historical worker image is refused even with structurally compiled pins (16.988781ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3769.690267
