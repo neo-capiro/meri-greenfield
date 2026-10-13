@@ -51,7 +51,7 @@ export async function main(argv){
     await verifyDatabase(opened.pool,admitted.native,{empty:true});
     const openFreshPool=async()=>{
       const fresh=await openNativePool(admitted.native);
-      try{await verifyDatabase(fresh.pool,admitted.native);return fresh;}
+      try{await verifyDatabase(fresh.pool,admitted.native);return {pool:fresh.pool,close:()=>fresh.close()};}
       catch(error){await fresh.close();throw error;}
     };
     const createCase=createLocalActionCaseFactory({mode:'synthetic-local',assertStoredBinding:assertTaskLookupStoredBinding});
