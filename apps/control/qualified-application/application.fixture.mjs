@@ -23,7 +23,7 @@ export async function createApplicationFixture(){
   sql.h.state().run=rows.run;sql.h.state().grants.clear();
   for(const [id,row]of Object.entries(rows.grants))sql.h.state().grants.set(id,{...row,expires_at:new Date(row.expires_at)});
  }
- function pool(){return {options:{connectionTimeoutMillis:5000,query_timeout:6000},async connect(){let client,pending=[];
+ function pool(){return {options:{host:schema.f.host,port:schema.f.port,database:schema.f.database,user:schema.f.user,connectionTimeoutMillis:5000,query_timeout:6000},async connect(){let client,pending=[];
   return {async query(statement,args){const text=typeof statement==='string'?statement:statement.text;statements.push(text);
    if(!client&&(text==='BEGIN'||text.startsWith('SET LOCAL'))){pending.push([statement,args]);return {rows:[]};}
    if(!client){if(text.startsWith('SELECT current_database()')){schema.state.budget.consumed_micro_usd=sql.h.state().budget.consumed_micro_usd;schema.state.budget.quarantined=sql.h.state().budget.quarantined;client=await schema.pool.connect();}else{await currentGrantRows();client=await sql.pool.connect();}

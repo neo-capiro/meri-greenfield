@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs",
+    "apps/control/document-application/test/research-brief.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209",
+  "sourceHead": "9ac7e468c1238cadfdd6f7645a98b6a54a78ca0e",
+  "sourceDiffSha256": "d9fbfa0e8487ad90d6f583a89f4ba351776db9a4c29a168fb8efc1010c0ed35c",
+  "sourceDiffBytes": 2019,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T09:21:11.490376+00:00",
+  "durationSeconds": 2.682,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 36494,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/inert-binding-final.stdout.bin",
+      "bytes": 4374,
+      "sha256": "76acb27548a8dec5119a1b95267c547089d8d97a7b3591122a4352904e523692"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/inert-binding-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

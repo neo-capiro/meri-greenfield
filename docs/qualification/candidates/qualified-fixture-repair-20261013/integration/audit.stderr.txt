@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-repair-20261013/docs/qualification/candidates/qualified-fixture-repair-20261013/integration/audit.py", line 45, in <module>
+    raw=(root/member['path']).read_bytes();check('retained '+member['path'],len(raw)==member['bytes'] and hashlib.sha256(raw).hexdigest()==member['sha256'])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/meri-qualified-fixture-repair-20261013/docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.json'

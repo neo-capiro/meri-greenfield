@@ -1,0 +1,25 @@
+{
+  "verdict": "ACCEPT_SOURCE_SUPPLEMENT",
+  "supplement": "9e323dc1cfd061ff9da9ae2d234b70a6f4d3df7e",
+  "productionFreeze": "2444edc0d6bcfb5771bf26eda9e1c8eb06525783",
+  "productionAndPreviousTestsUnchanged": true,
+  "testPath": "apps/control/qualified-application/schema-size-inventory.test.mjs",
+  "testSha256": "72f17ebdf209246cf40c860024a3845ad22cd0a151bd61082787f01d40928e2e",
+  "independentReplay": {
+    "tests": 1,
+    "passed": 1,
+    "durationSeconds": 1.321,
+    "ownedGroup": 531994,
+    "freshlyAbsent": true
+  },
+  "dimensions": {
+    "rows": 1,
+    "arrays": 12,
+    "records": 8362,
+    "columnsUtf8Bytes": 1110747,
+    "rowEnvelopeUtf8Bytes": 3128280,
+    "nodes": 100000
+  },
+  "nativeInventoryCopied": false,
+  "nativeInstallationClaimed": false
+}

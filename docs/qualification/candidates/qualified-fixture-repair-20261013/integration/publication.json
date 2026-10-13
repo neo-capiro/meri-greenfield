@@ -1,0 +1,18 @@
+{
+  "schema": "meri.source-publication-receipt/1",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/51",
+  "number": 51,
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "head": "task/meri-qualified-fixture-repair-20261013",
+  "headSha": "9835a8b1cf5d313b37742d469f5a5bbb76afed50",
+  "base": "task/meri-qualified-assembly-20261013",
+  "baseSha": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "createdAt": "2026-10-13T06:36:54Z",
+  "sourceFreeze": "9835a8b1cf5d313b37742d469f5a5bbb76afed50",
+  "sourceTree": "b04cd92abeb16daf02c138909902975d01134cd1",
+  "acceptedSource": "4f4da0b67d0b062a84b9196a4b70b012df30f213",
+  "independentReview": "025af58ccf4cf15d21a899c3c3829f8c4798965e",
+  "runtimeQualified": false
+}

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/meri-qualified-fixture-author-20261013/docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py", line 17, in <module>
+    check('exclusive allocated source paths',set(changed)==set(allowed))
+  File "/tmp/meri-qualified-fixture-author-20261013/docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py", line 16, in check
+    if not condition:raise AssertionError(name)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: exclusive allocated source paths

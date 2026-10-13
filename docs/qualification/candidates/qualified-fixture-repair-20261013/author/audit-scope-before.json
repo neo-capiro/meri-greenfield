@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-author-20261013",
+  "sourceHead": "97f5602ba9acf1afde17992d4c4dbfe2edf8dde6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T06:27:50.371295+00:00",
+  "durationSeconds": 0.032,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 514723,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stderr.bin",
+      "bytes": 560,
+      "sha256": "161cb5ea6b0dcc022ff6cec157529edc39ccdaec658807d30a463e9eeb09f873"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

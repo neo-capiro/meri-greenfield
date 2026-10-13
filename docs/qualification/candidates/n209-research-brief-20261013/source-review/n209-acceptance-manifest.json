@@ -1,0 +1,108 @@
+{
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "reviewedTree": "bc288d53ce03e926833a26366e53216837f4fa2b",
+  "decision": "ACCEPT_SOURCE",
+  "nativeRuntimeAccepted": false,
+  "checks": {
+    "independent": 43,
+    "author": 16,
+    "public": 71,
+    "hostSourceNode": 20,
+    "hostSourcePython": 4,
+    "generated": true,
+    "typecheck": true,
+    "sourceWhitespace": true
+  },
+  "files": [
+    {
+      "path": "n209-acceptance-host-source-node.json",
+      "bytes": 938,
+      "sha256": "fb35e0e3fe4d38481f195d81924da93dae78b7f86d99184d093bd5cf86a9c266"
+    },
+    {
+      "path": "n209-acceptance-host-source-node.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-acceptance-host-source-node.stdout.txt",
+      "bytes": 4528,
+      "sha256": "343410bc3cbab85f62d0e9502856de49f1c67d922034f73ce7958524d0c7abc7"
+    },
+    {
+      "path": "n209-acceptance-host-source-python.json",
+      "bytes": 826,
+      "sha256": "059b99678c61e146889e43ebe7d5f778de9103c9282fb3e3ed68db7b942f0d90"
+    },
+    {
+      "path": "n209-acceptance-host-source-python.stderr.txt",
+      "bytes": 102,
+      "sha256": "d094b1bd2c8318c96097f80c50da282add5b2972970a77046de8db6c8935f6ca"
+    },
+    {
+      "path": "n209-acceptance-host-source-python.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-acceptance-independent.json",
+      "bytes": 994,
+      "sha256": "5a3923ac6880fec0b0d0389828daee0ed828d6340ace040a3d837872c5ac6d56"
+    },
+    {
+      "path": "n209-acceptance-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-acceptance-independent.stdout.txt",
+      "bytes": 10756,
+      "sha256": "affbed81d10ae2dd369e7a03c61303ecc891cad8d022f6f7a3cc789f19a6a735"
+    },
+    {
+      "path": "n209-acceptance-public-distribution.json",
+      "bytes": 807,
+      "sha256": "d76e6826a5c48e97bea9fbb294a22c6b90956a09808f97b87174d77e0137ae2b"
+    },
+    {
+      "path": "n209-acceptance-public-distribution.stderr.txt",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "n209-acceptance-public-distribution.stdout.txt",
+      "bytes": 6760,
+      "sha256": "d6a843c86ad011fc8bf87481011f34875de6a770ffb4a79017f20f1765769864"
+    },
+    {
+      "path": "n209-acceptance-report.md",
+      "bytes": 5495,
+      "sha256": "86401f4843dbca6908d904e19a5645ba5371c0b58c4282e752bc831ebdfaf23f"
+    },
+    {
+      "path": "n209-acceptance-source-audit.json",
+      "bytes": 5393,
+      "sha256": "e0cac2856be00279bbbbf3a0bf63a51c228fa8afed93807b65db3f531e163ad1"
+    },
+    {
+      "path": "n209-acceptance-source-whitespace.json",
+      "bytes": 931,
+      "sha256": "5ae4c63095d3bd78352587863a48d635a608680ad2071cf9bececb2a4bfe3bf0"
+    },
+    {
+      "path": "n209-acceptance-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-acceptance-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/control/document-application/independent/research-brief-independent.test.mjs",
+      "bytes": 25271,
+      "sha256": "a126e2bfeb52e5d81bc2c20cd445173b1b7408fefc73e9f2ae23bbd7ce6b1e98"
+    }
+  ]
+}

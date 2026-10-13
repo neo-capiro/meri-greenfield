@@ -1,0 +1,2032 @@
+TAP version 13
+# Subtest: explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data
+ok 1 - explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data
+  ---
+  duration_ms: 16.805741
+  type: 'test'
+  ...
+# Subtest: legacy strict descriptor preserves original signature algorithm
+ok 2 - legacy strict descriptor preserves original signature algorithm
+  ---
+  duration_ms: 7.013359
+  type: 'test'
+  ...
+# Subtest: reconstruction binds mapping scope and retained fingerprint without DDL
+ok 3 - reconstruction binds mapping scope and retained fingerprint without DDL
+  ---
+  duration_ms: 15.996488
+  type: 'test'
+  ...
+# Subtest: mapped identity retains address refusal
+ok 4 - mapped identity retains address refusal
+  ---
+  duration_ms: 1.854148
+  type: 'test'
+  ...
+# Subtest: mapped identity retains port refusal
+ok 5 - mapped identity retains port refusal
+  ---
+  duration_ms: 1.44826
+  type: 'test'
+  ...
+# Subtest: mapped identity retains version refusal
+ok 6 - mapped identity retains version refusal
+  ---
+  duration_ms: 1.641359
+  type: 'test'
+  ...
+# Subtest: mapped identity retains start_ms refusal
+ok 7 - mapped identity retains start_ms refusal
+  ---
+  duration_ms: 1.120259
+  type: 'test'
+  ...
+# Subtest: mapped identity retains system_identifier refusal
+ok 8 - mapped identity retains system_identifier refusal
+  ---
+  duration_ms: 1.20848
+  type: 'test'
+  ...
+# Subtest: mapped identity retains database refusal
+ok 9 - mapped identity retains database refusal
+  ---
+  duration_ms: 1.313709
+  type: 'test'
+  ...
+# Subtest: mapped identity retains username refusal
+ok 10 - mapped identity retains username refusal
+  ---
+  duration_ms: 1.56817
+  type: 'test'
+  ...
+# Subtest: mapped identity retains fsync refusal
+ok 11 - mapped identity retains fsync refusal
+  ---
+  duration_ms: 1.175632
+  type: 'test'
+  ...
+# Subtest: mapped identity retains synchronous_commit refusal
+ok 12 - mapped identity retains synchronous_commit refusal
+  ---
+  duration_ms: 1.980147
+  type: 'test'
+  ...
+# Subtest: dial pool host substitution refuses before connection
+ok 13 - dial pool host substitution refuses before connection
+  ---
+  duration_ms: 0.466399
+  type: 'test'
+  ...
+# Subtest: dial pool port substitution refuses before connection
+ok 14 - dial pool port substitution refuses before connection
+  ---
+  duration_ms: 0.269133
+  type: 'test'
+  ...
+# Subtest: dial pool database substitution refuses before connection
+ok 15 - dial pool database substitution refuses before connection
+  ---
+  duration_ms: 0.192828
+  type: 'test'
+  ...
+# Subtest: dial pool user substitution refuses before connection
+ok 16 - dial pool user substitution refuses before connection
+  ---
+  duration_ms: 0.177526
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: unpairedAddress
+ok 17 - closed compatibility admission: unpairedAddress
+  ---
+  duration_ms: 0.227401
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: unpairedPort
+ok 18 - closed compatibility admission: unpairedPort
+  ---
+  duration_ms: 0.22653
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: hostName
+ok 19 - closed compatibility admission: hostName
+  ---
+  duration_ms: 2.146416
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: scopedIPv6
+ok 20 - closed compatibility admission: scopedIPv6
+  ---
+  duration_ms: 0.755682
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: booleanPort
+ok 21 - closed compatibility admission: booleanPort
+  ---
+  duration_ms: 0.26053
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: zeroPort
+ok 22 - closed compatibility admission: zeroPort
+  ---
+  duration_ms: 0.205508
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: nullScope
+ok 23 - closed compatibility admission: nullScope
+  ---
+  duration_ms: 0.188873
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: wrongMode
+ok 24 - closed compatibility admission: wrongMode
+  ---
+  duration_ms: 0.180922
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: emptyScope
+ok 25 - closed compatibility admission: emptyScope
+  ---
+  duration_ms: 0.161171
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: overLimit
+ok 26 - closed compatibility admission: overLimit
+  ---
+  duration_ms: 0.426419
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: duplicate
+ok 27 - closed compatibility admission: duplicate
+  ---
+  duration_ms: 0.24017
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: public
+ok 28 - closed compatibility admission: public
+  ---
+  duration_ms: 0.236745
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: target
+ok 29 - closed compatibility admission: target
+  ---
+  duration_ms: 0.255292
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: system
+ok 30 - closed compatibility admission: system
+  ---
+  duration_ms: 0.453269
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: unknownLeaf
+ok 31 - closed compatibility admission: unknownLeaf
+  ---
+  duration_ms: 0.206379
+  type: 'test'
+  ...
+# Subtest: closed compatibility admission: unknownFixture
+ok 32 - closed compatibility admission: unknownFixture
+  ---
+  duration_ms: 0.122894
+  type: 'test'
+  ...
+# Subtest: namespace missing refuses before DDL
+ok 33 - namespace missing refuses before DDL
+  ---
+  duration_ms: 4.280354
+  type: 'test'
+  ...
+# Subtest: namespace undeclared refuses before DDL
+ok 34 - namespace undeclared refuses before DDL
+  ---
+  duration_ms: 1.791624
+  type: 'test'
+  ...
+# Subtest: namespace wrongOwner refuses before DDL
+ok 35 - namespace wrongOwner refuses before DDL
+  ---
+  duration_ms: 1.243052
+  type: 'test'
+  ...
+# Subtest: namespace targetCollision refuses before DDL
+ok 36 - namespace targetCollision refuses before DDL
+  ---
+  duration_ms: 1.093018
+  type: 'test'
+  ...
+# Subtest: namespace duplicate refuses before DDL
+ok 37 - namespace duplicate refuses before DDL
+  ---
+  duration_ms: 2.913816
+  type: 'test'
+  ...
+# Subtest: legacy mode still refuses25 undeclared schemas
+ok 38 - legacy mode still refuses25 undeclared schemas
+  ---
+  duration_ms: 3.199094
+  type: 'test'
+  ...
+# Subtest: public target row type collision refuses before any migration
+ok 39 - public target row type collision refuses before any migration
+  ---
+  duration_ms: 1.885225
+  type: 'test'
+  ...
+# Subtest: unsupported evidence catalog classes fail closed before DDL
+ok 40 - unsupported evidence catalog classes fail closed before DDL
+  ---
+  duration_ms: 1.535921
+  type: 'test'
+  ...
+# Subtest: changed preserved relations prevents success after DDL
+ok 41 - changed preserved relations prevents success after DDL
+  ---
+  duration_ms: 9.44368
+  type: 'test'
+  ...
+# Subtest: changed preserved columns prevents success after DDL
+ok 42 - changed preserved columns prevents success after DDL
+  ---
+  duration_ms: 5.502004
+  type: 'test'
+  ...
+# Subtest: changed preserved defaults prevents success after DDL
+ok 43 - changed preserved defaults prevents success after DDL
+  ---
+  duration_ms: 5.135225
+  type: 'test'
+  ...
+# Subtest: changed preserved constraints prevents success after DDL
+ok 44 - changed preserved constraints prevents success after DDL
+  ---
+  duration_ms: 5.187052
+  type: 'test'
+  ...
+# Subtest: changed preserved indexes prevents success after DDL
+ok 45 - changed preserved indexes prevents success after DDL
+  ---
+  duration_ms: 4.969627
+  type: 'test'
+  ...
+# Subtest: changed preserved views prevents success after DDL
+ok 46 - changed preserved views prevents success after DDL
+  ---
+  duration_ms: 4.788014
+  type: 'test'
+  ...
+# Subtest: changed preserved types prevents success after DDL
+ok 47 - changed preserved types prevents success after DDL
+  ---
+  duration_ms: 5.464428
+  type: 'test'
+  ...
+# Subtest: changed preserved sequences prevents success after DDL
+ok 48 - changed preserved sequences prevents success after DDL
+  ---
+  duration_ms: 5.84573
+  type: 'test'
+  ...
+# Subtest: changed preserved triggers prevents success after DDL
+ok 49 - changed preserved triggers prevents success after DDL
+  ---
+  duration_ms: 5.431257
+  type: 'test'
+  ...
+# Subtest: changed preserved dependencies prevents success after DDL
+ok 50 - changed preserved dependencies prevents success after DDL
+  ---
+  duration_ms: 5.060723
+  type: 'test'
+  ...
+# Subtest: changed preserved comments prevents success after DDL
+ok 51 - changed preserved comments prevents success after DDL
+  ---
+  duration_ms: 5.074373
+  type: 'test'
+  ...
+# Subtest: changed preserved labels prevents success after DDL
+ok 52 - changed preserved labels prevents success after DDL
+  ---
+  duration_ms: 5.040343
+  type: 'test'
+  ...
+# Subtest: namespace ACL mutation is detected after DDL
+ok 53 - namespace ACL mutation is detected after DDL
+  ---
+  duration_ms: 4.951529
+  type: 'test'
+  ...
+# Subtest: empty namespace recreation changes exact preserved identity
+ok 54 - empty namespace recreation changes exact preserved identity
+  ---
+  duration_ms: 4.927383
+  type: 'test'
+  ...
+# Subtest: actual namespace query projects namespace OID losslessly
+ok 55 - actual namespace query projects namespace OID losslessly
+  ---
+  duration_ms: 0.137115
+  type: 'test'
+  ...
+# Subtest: actual sequence catalog query preserves all bigint settings as text
+ok 56 - actual sequence catalog query preserves all bigint settings as text
+  ---
+  duration_ms: 0.185178
+  type: 'test'
+  ...
+# Subtest: actual catalog query covers supported metadata and refuses unsupported owners
+ok 57 - actual catalog query covers supported metadata and refuses unsupported owners
+  ---
+  duration_ms: 0.128483
+  type: 'test'
+  ...
+# Subtest: scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership
+ok 58 - scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership
+  ---
+  duration_ms: 5.135965
+  type: 'test'
+  ...
+# Subtest: unknown COMMIT remains unknown with compatibility enabled and no retry
+ok 59 - unknown COMMIT remains unknown with compatibility enabled and no retry
+  ---
+  duration_ms: 5.981472
+  type: 'test'
+  ...
+# Subtest: new server/scope facts survive detached fixture normalization
+ok 60 - new server/scope facts survive detached fixture normalization
+  ---
+  duration_ms: 0.410735
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid undefined
+ok 61 - preserved namespace OID refuses invalid undefined
+  ---
+  duration_ms: 2.646316
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid null
+ok 62 - preserved namespace OID refuses invalid null
+  ---
+  duration_ms: 1.32164
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid 0
+ok 63 - preserved namespace OID refuses invalid 0
+  ---
+  duration_ms: 1.091476
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid 0
+ok 64 - preserved namespace OID refuses invalid 0
+  ---
+  duration_ms: 1.611114
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid -1
+ok 65 - preserved namespace OID refuses invalid -1
+  ---
+  duration_ms: 1.770834
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid 1.0
+ok 66 - preserved namespace OID refuses invalid 1.0
+  ---
+  duration_ms: 1.066548
+  type: 'test'
+  ...
+# Subtest: preserved namespace OID refuses invalid 4294967296
+ok 67 - preserved namespace OID refuses invalid 4294967296
+  ---
+  duration_ms: 1.035532
+  type: 'test'
+  ...
+# Subtest: distinct int64 sequence settings retain distinct fingerprints
+ok 68 - distinct int64 sequence settings retain distinct fingerprints
+  ---
+  duration_ms: 12.910695
+  type: 'test'
+  ...
+# Subtest: reconstruction refuses changed preserved OID against trusted original signature
+ok 69 - reconstruction refuses changed preserved OID against trusted original signature
+  ---
+  duration_ms: 13.453569
+  type: 'test'
+  ...
+# Subtest: reconstruction cannot substitute a newly matching server mapping under old hash
+ok 70 - reconstruction cannot substitute a newly matching server mapping under old hash
+  ---
+  duration_ms: 11.272911
+  type: 'test'
+  ...
+# Subtest: catalog relation identities remain fixed despite implicit pg_temp search precedence
+ok 71 - catalog relation identities remain fixed despite implicit pg_temp search precedence
+  ---
+  duration_ms: 0.433059
+  type: 'test'
+  ...
+# Subtest: catalog metadata builtin cast types are independent of pg_temp
+ok 72 - catalog metadata builtin cast types are independent of pg_temp
+  ---
+  duration_ms: 0.243275
+  type: 'test'
+  ...
+# Subtest: namespace query must not hide pgx_private through SQL underscore wildcard
+ok 73 - namespace query must not hide pgx_private through SQL underscore wildcard
+  ---
+  duration_ms: 6.237907
+  type: 'test'
+  ...
+# Subtest: independent engine identity address refuses before DDL
+ok 74 - independent engine identity address refuses before DDL
+  ---
+  duration_ms: 5.0856
+  type: 'test'
+  ...
+# Subtest: independent engine identity username refuses before DDL
+ok 75 - independent engine identity username refuses before DDL
+  ---
+  duration_ms: 1.773387
+  type: 'test'
+  ...
+# Subtest: independent engine identity system_identifier refuses before DDL
+ok 76 - independent engine identity system_identifier refuses before DDL
+  ---
+  duration_ms: 1.141531
+  type: 'test'
+  ...
+# Subtest: independent engine identity start_ms refuses before DDL
+ok 77 - independent engine identity start_ms refuses before DDL
+  ---
+  duration_ms: 1.884174
+  type: 'test'
+  ...
+# Subtest: independent engine identity fsync refuses before DDL
+ok 78 - independent engine identity fsync refuses before DDL
+  ---
+  duration_ms: 1.069232
+  type: 'test'
+  ...
+# Subtest: independent engine identity synchronous_commit refuses before DDL
+ok 79 - independent engine identity synchronous_commit refuses before DDL
+  ---
+  duration_ms: 1.133628
+  type: 'test'
+  ...
+# Subtest: own and inherited hostile port accessors and proxy cannot run during admission
+ok 80 - own and inherited hostile port accessors and proxy cannot run during admission
+  ---
+  duration_ms: 0.389744
+  type: 'test'
+  ...
+# Subtest: verify without retained digest and install with a retained digest allocate nothing
+ok 81 - verify without retained digest and install with a retained digest allocate nothing
+  ---
+  duration_ms: 0.279709
+  type: 'test'
+  ...
+# Subtest: cancel during borrowed acquisition releases late client and sends no SQL
+ok 82 - cancel during borrowed acquisition releases late client and sends no SQL
+  ---
+  duration_ms: 12.338538
+  type: 'test'
+  ...
+# Subtest: cancellation while advisory lock waits prevents first migration after it returns
+ok 83 - cancellation while advisory lock waits prevents first migration after it returns
+  ---
+  duration_ms: 11.532591
+  type: 'test'
+  ...
+# Subtest: first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal
+ok 84 - first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal
+  ---
+  duration_ms: 2.078144
+  type: 'test'
+  ...
+# Subtest: host clock crossing original cutoff after identity cannot proceed to ownership or DDL
+ok 85 - host clock crossing original cutoff after identity cannot proceed to ownership or DDL
+  ---
+  duration_ms: 1.318015
+  type: 'test'
+  ...
+# Subtest: mapped server identity is independent from loopback dial identity
+ok 86 - mapped server identity is independent from loopback dial identity
+  ---
+  duration_ms: 19.329653
+  type: 'test'
+  ...
+# Subtest: explicit25 unrelated schemas are retained through install and reconstruction
+ok 87 - explicit25 unrelated schemas are retained through install and reconstruction
+  ---
+  duration_ms: 17.96644
+  type: 'test'
+  ...
+# Subtest: dial host mismatch refuses before allocation
+ok 88 - dial host mismatch refuses before allocation
+  ---
+  duration_ms: 1.055983
+  type: 'test'
+  ...
+# Subtest: dial port mismatch refuses before allocation
+ok 89 - dial port mismatch refuses before allocation
+  ---
+  duration_ms: 0.249755
+  type: 'test'
+  ...
+# Subtest: mapped server address mismatch preserves engine gates
+ok 90 - mapped server address mismatch preserves engine gates
+  ---
+  duration_ms: 2.298644
+  type: 'test'
+  ...
+# Subtest: mapped server port mismatch preserves engine gates
+ok 91 - mapped server port mismatch preserves engine gates
+  ---
+  duration_ms: 1.46863
+  type: 'test'
+  ...
+# Subtest: mapped server system_identifier mismatch preserves engine gates
+ok 92 - mapped server system_identifier mismatch preserves engine gates
+  ---
+  duration_ms: 2.127548
+  type: 'test'
+  ...
+# Subtest: mapped server fsync mismatch preserves engine gates
+ok 93 - mapped server fsync mismatch preserves engine gates
+  ---
+  duration_ms: 1.426367
+  type: 'test'
+  ...
+# Subtest: invalid paired server shape {"serverAddress":"172.17.0.2"}
+ok 94 - invalid paired server shape {"serverAddress":"172.17.0.2"}
+  ---
+  duration_ms: 0.317365
+  type: 'test'
+  ...
+# Subtest: invalid paired server shape {"serverPort":5432}
+ok 95 - invalid paired server shape {"serverPort":5432}
+  ---
+  duration_ms: 0.232879
+  type: 'test'
+  ...
+# Subtest: invalid paired server shape {"serverAddress":"db.local","serverPort":5432}
+ok 96 - invalid paired server shape {"serverAddress":"db.local","serverPort":5432}
+  ---
+  duration_ms: 2.247708
+  type: 'test'
+  ...
+# Subtest: invalid paired server shape {"serverAddress":"::1%lo","serverPort":5432}
+ok 97 - invalid paired server shape {"serverAddress":"::1%lo","serverPort":5432}
+  ---
+  duration_ms: 0.70084
+  type: 'test'
+  ...
+# Subtest: invalid paired server shape {"serverAddress":"172.17.0.2","serverPort":0}
+ok 98 - invalid paired server shape {"serverAddress":"172.17.0.2","serverPort":0}
+  ---
+  duration_ms: 0.150245
+  type: 'test'
+  ...
+# Subtest: declared evidence namespace set/owner/target mismatch refuses before DDL
+ok 99 - declared evidence namespace set/owner/target mismatch refuses before DDL
+  ---
+  duration_ms: 3.217602
+  type: 'test'
+  ...
+# Subtest: declared evidence namespace set/owner/target mismatch refuses before DDL
+ok 100 - declared evidence namespace set/owner/target mismatch refuses before DDL
+  ---
+  duration_ms: 1.50855
+  type: 'test'
+  ...
+# Subtest: declared evidence namespace set/owner/target mismatch refuses before DDL
+ok 101 - declared evidence namespace set/owner/target mismatch refuses before DDL
+  ---
+  duration_ms: 1.427559
+  type: 'test'
+  ...
+# Subtest: declared evidence namespace set/owner/target mismatch refuses before DDL
+ok 102 - declared evidence namespace set/owner/target mismatch refuses before DDL
+  ---
+  duration_ms: 1.340108
+  type: 'test'
+  ...
+# Subtest: closed scope refuses duplicates reserved names and invalid owners
+ok 103 - closed scope refuses duplicates reserved names and invalid owners
+  ---
+  duration_ms: 0.420039
+  type: 'test'
+  ...
+# Subtest: closed scope refuses duplicates reserved names and invalid owners
+ok 104 - closed scope refuses duplicates reserved names and invalid owners
+  ---
+  duration_ms: 0.225267
+  type: 'test'
+  ...
+# Subtest: closed scope refuses duplicates reserved names and invalid owners
+ok 105 - closed scope refuses duplicates reserved names and invalid owners
+  ---
+  duration_ms: 0.195893
+  type: 'test'
+  ...
+# Subtest: closed scope refuses duplicates reserved names and invalid owners
+ok 106 - closed scope refuses duplicates reserved names and invalid owners
+  ---
+  duration_ms: 0.142183
+  type: 'test'
+  ...
+# Subtest: closed scope refuses duplicates reserved names and invalid owners
+ok 107 - closed scope refuses duplicates reserved names and invalid owners
+  ---
+  duration_ms: 0.173449
+  type: 'test'
+  ...
+# Subtest: legacy strict mode still refuses unrelated declared-looking namespaces
+ok 108 - legacy strict mode still refuses unrelated declared-looking namespaces
+  ---
+  duration_ms: 2.478764
+  type: 'test'
+  ...
+# Subtest: scoped mode does not permit unrelated public relations or target collisions
+ok 109 - scoped mode does not permit unrelated public relations or target collisions
+  ---
+  duration_ms: 2.432866
+  type: 'test'
+  ...
+# Subtest: unsupported evidence class refuses before migration
+ok 110 - unsupported evidence class refuses before migration
+  ---
+  duration_ms: 2.851142
+  type: 'test'
+  ...
+# Subtest: populated25 schema metadata is exact across install/reconstruction without row reads
+ok 111 - populated25 schema metadata is exact across install/reconstruction without row reads
+  ---
+  duration_ms: 21.497361
+  type: 'test'
+  ...
+# Subtest: changed preserved relations metadata refuses reconstruction
+ok 112 - changed preserved relations metadata refuses reconstruction
+  ---
+  duration_ms: 19.570213
+  type: 'test'
+  ...
+# Subtest: changed preserved columns metadata refuses reconstruction
+ok 113 - changed preserved columns metadata refuses reconstruction
+  ---
+  duration_ms: 18.795944
+  type: 'test'
+  ...
+# Subtest: changed preserved defaults metadata refuses reconstruction
+ok 114 - changed preserved defaults metadata refuses reconstruction
+  ---
+  duration_ms: 17.699541
+  type: 'test'
+  ...
+# Subtest: changed preserved constraints metadata refuses reconstruction
+ok 115 - changed preserved constraints metadata refuses reconstruction
+  ---
+  duration_ms: 18.296815
+  type: 'test'
+  ...
+# Subtest: changed preserved indexes metadata refuses reconstruction
+ok 116 - changed preserved indexes metadata refuses reconstruction
+  ---
+  duration_ms: 25.197125
+  type: 'test'
+  ...
+# Subtest: changed preserved views metadata refuses reconstruction
+ok 117 - changed preserved views metadata refuses reconstruction
+  ---
+  duration_ms: 21.965593
+  type: 'test'
+  ...
+# Subtest: changed preserved types metadata refuses reconstruction
+ok 118 - changed preserved types metadata refuses reconstruction
+  ---
+  duration_ms: 18.480441
+  type: 'test'
+  ...
+# Subtest: changed preserved sequences metadata refuses reconstruction
+ok 119 - changed preserved sequences metadata refuses reconstruction
+  ---
+  duration_ms: 17.280403
+  type: 'test'
+  ...
+# Subtest: changed preserved dependencies metadata refuses reconstruction
+ok 120 - changed preserved dependencies metadata refuses reconstruction
+  ---
+  duration_ms: 17.450658
+  type: 'test'
+  ...
+# Subtest: changed preserved comments metadata refuses reconstruction
+ok 121 - changed preserved comments metadata refuses reconstruction
+  ---
+  duration_ms: 20.264194
+  type: 'test'
+  ...
+# Subtest: changed preserved labels metadata refuses reconstruction
+ok 122 - changed preserved labels metadata refuses reconstruction
+  ---
+  duration_ms: 27.672249
+  type: 'test'
+  ...
+# Subtest: metadata changing during migration yields UNKNOWN before COMMIT
+ok 123 - metadata changing during migration yields UNKNOWN before COMMIT
+  ---
+  duration_ms: 9.303349
+  type: 'test'
+  ...
+# Subtest: mapped schema digest cannot be reused for changed mapped identity even when engine echoes it
+ok 124 - mapped schema digest cannot be reused for changed mapped identity even when engine echoes it
+  ---
+  duration_ms: 9.422539
+  type: 'test'
+  ...
+# Subtest: public target type collision refuses before any DDL
+ok 125 - public target type collision refuses before any DDL
+  ---
+  duration_ms: 1.678344
+  type: 'test'
+  ...
+# Subtest: target namespace ownership is checked after install
+ok 126 - target namespace ownership is checked after install
+  ---
+  duration_ms: 1.591805
+  type: 'test'
+  ...
+# Subtest: dial database must match trusted fixture
+ok 127 - dial database must match trusted fixture
+  ---
+  duration_ms: 0.347961
+  type: 'test'
+  ...
+# Subtest: dial user must match trusted fixture
+ok 128 - dial user must match trusted fixture
+  ---
+  duration_ms: 0.215493
+  type: 'test'
+  ...
+# Subtest: sequence bigint settings are transported losslessly as text, never JS numbers
+ok 129 - sequence bigint settings are transported losslessly as text, never JS numbers
+  ---
+  duration_ms: 16.705963
+  type: 'test'
+  ...
+# Subtest: empty evidence schema identity includes namespace OID to detect replacement
+ok 130 - empty evidence schema identity includes namespace OID to detect replacement
+  ---
+  duration_ms: 9.501286
+  type: 'test'
+  ...
+# Subtest: catalog identity literals cannot resolve through implicit temporary schemas
+ok 131 - catalog identity literals cannot resolve through implicit temporary schemas
+  ---
+  duration_ms: 6.309955
+  type: 'test'
+  ...
+# Subtest: catalog snapshot builtin cast types cannot resolve through temporary schemas
+ok 132 - catalog snapshot builtin cast types cannot resolve through temporary schemas
+  ---
+  duration_ms: 6.168382
+  type: 'test'
+  ...
+# Subtest: actual entry applies only exact six migration bytes in order once and returns detached pinned receipt
+ok 133 - actual entry applies only exact six migration bytes in order once and returns detached pinned receipt
+  ---
+  duration_ms: 16.874474
+  type: 'test'
+  ...
+# Subtest: reconstruction requires retained full digest; populated accounting remains an observation
+ok 134 - reconstruction requires retained full digest; populated accounting remains an observation
+  ---
+  duration_ms: 14.89605
+  type: 'test'
+  ...
+# Subtest: retained digest detects constraint replacement without DDL
+ok 135 - retained digest detects constraint replacement without DDL
+  ---
+  duration_ms: 10.453994
+  type: 'test'
+  ...
+# Subtest: retained digest detects default replacement without DDL
+ok 136 - retained digest detects default replacement without DDL
+  ---
+  duration_ms: 9.678522
+  type: 'test'
+  ...
+# Subtest: retained digest detects index replacement without DDL
+ok 137 - retained digest detects index replacement without DDL
+  ---
+  duration_ms: 9.043931
+  type: 'test'
+  ...
+# Subtest: retained digest detects view replacement without DDL
+ok 138 - retained digest detects view replacement without DDL
+  ---
+  duration_ms: 8.906796
+  type: 'test'
+  ...
+# Subtest: retained digest detects collation replacement without DDL
+ok 139 - retained digest detects collation replacement without DDL
+  ---
+  duration_ms: 8.921698
+  type: 'test'
+  ...
+# Subtest: pre-admission host cannot reach borrowed pool
+ok 140 - pre-admission host cannot reach borrowed pool
+  ---
+  duration_ms: 0.395222
+  type: 'test'
+  ...
+# Subtest: pre-admission database cannot reach borrowed pool
+ok 141 - pre-admission database cannot reach borrowed pool
+  ---
+  duration_ms: 0.445327
+  type: 'test'
+  ...
+# Subtest: pre-admission user cannot reach borrowed pool
+ok 142 - pre-admission user cannot reach borrowed pool
+  ---
+  duration_ms: 0.212759
+  type: 'test'
+  ...
+# Subtest: pre-admission mode cannot reach borrowed pool
+ok 143 - pre-admission mode cannot reach borrowed pool
+  ---
+  duration_ms: 0.191898
+  type: 'test'
+  ...
+# Subtest: pre-admission fixtureCase cannot reach borrowed pool
+ok 144 - pre-admission fixtureCase cannot reach borrowed pool
+  ---
+  duration_ms: 0.158477
+  type: 'test'
+  ...
+# Subtest: pre-admission port cannot reach borrowed pool
+ok 145 - pre-admission port cannot reach borrowed pool
+  ---
+  duration_ms: 0.123035
+  type: 'test'
+  ...
+# Subtest: pre-admission system cannot reach borrowed pool
+ok 146 - pre-admission system cannot reach borrowed pool
+  ---
+  duration_ms: 0.111307
+  type: 'test'
+  ...
+# Subtest: pre-admission timestamp cannot reach borrowed pool
+ok 147 - pre-admission timestamp cannot reach borrowed pool
+  ---
+  duration_ms: 0.189875
+  type: 'test'
+  ...
+# Subtest: pre-admission version cannot reach borrowed pool
+ok 148 - pre-admission version cannot reach borrowed pool
+  ---
+  duration_ms: 0.18036
+  type: 'test'
+  ...
+# Subtest: pre-admission hash cannot reach borrowed pool
+ok 149 - pre-admission hash cannot reach borrowed pool
+  ---
+  duration_ms: 0.217355
+  type: 'test'
+  ...
+# Subtest: pre-admission extra cannot reach borrowed pool
+ok 150 - pre-admission extra cannot reach borrowed pool
+  ---
+  duration_ms: 0.164417
+  type: 'test'
+  ...
+# Subtest: actual server database mismatch stops before DDL
+ok 151 - actual server database mismatch stops before DDL
+  ---
+  duration_ms: 3.031492
+  type: 'test'
+  ...
+# Subtest: actual server username mismatch stops before DDL
+ok 152 - actual server username mismatch stops before DDL
+  ---
+  duration_ms: 1.109041
+  type: 'test'
+  ...
+# Subtest: actual server address mismatch stops before DDL
+ok 153 - actual server address mismatch stops before DDL
+  ---
+  duration_ms: 1.023934
+  type: 'test'
+  ...
+# Subtest: actual server port mismatch stops before DDL
+ok 154 - actual server port mismatch stops before DDL
+  ---
+  duration_ms: 0.962382
+  type: 'test'
+  ...
+# Subtest: actual server version mismatch stops before DDL
+ok 155 - actual server version mismatch stops before DDL
+  ---
+  duration_ms: 0.915061
+  type: 'test'
+  ...
+# Subtest: actual server start_ms mismatch stops before DDL
+ok 156 - actual server start_ms mismatch stops before DDL
+  ---
+  duration_ms: 2.752855
+  type: 'test'
+  ...
+# Subtest: actual server system_identifier mismatch stops before DDL
+ok 157 - actual server system_identifier mismatch stops before DDL
+  ---
+  duration_ms: 1.006097
+  type: 'test'
+  ...
+# Subtest: actual server fsync mismatch stops before DDL
+ok 158 - actual server fsync mismatch stops before DDL
+  ---
+  duration_ms: 1.131416
+  type: 'test'
+  ...
+# Subtest: actual server synchronous_commit mismatch stops before DDL
+ok 159 - actual server synchronous_commit mismatch stops before DDL
+  ---
+  duration_ms: 4.664935
+  type: 'test'
+  ...
+# Subtest: actual server search_path mismatch stops before DDL
+ok 160 - actual server search_path mismatch stops before DDL
+  ---
+  duration_ms: 1.199317
+  type: 'test'
+  ...
+# Subtest: no reset or retry for lock
+ok 161 - no reset or retry for lock
+  ---
+  duration_ms: 1.490073
+  type: 'test'
+  ...
+# Subtest: no reset or retry for namespace
+ok 162 - no reset or retry for namespace
+  ---
+  duration_ms: 4.79242
+  type: 'test'
+  ...
+# Subtest: no reset or retry for existingRelation
+ok 163 - no reset or retry for existingRelation
+  ---
+  duration_ms: 0.99471
+  type: 'test'
+  ...
+# Subtest: post-DDL missing refusal preserves uncertainty
+ok 164 - post-DDL missing refusal preserves uncertainty
+  ---
+  duration_ms: 3.309699
+  type: 'test'
+  ...
+# Subtest: post-DDL duplicate refusal preserves uncertainty
+ok 165 - post-DDL duplicate refusal preserves uncertainty
+  ---
+  duration_ms: 2.881508
+  type: 'test'
+  ...
+# Subtest: post-DDL type refusal preserves uncertainty
+ok 166 - post-DDL type refusal preserves uncertainty
+  ---
+  duration_ms: 2.87664
+  type: 'test'
+  ...
+# Subtest: post-DDL nullable refusal preserves uncertainty
+ok 167 - post-DDL nullable refusal preserves uncertainty
+  ---
+  duration_ms: 3.551251
+  type: 'test'
+  ...
+# Subtest: post-DDL owner refusal preserves uncertainty
+ok 168 - post-DDL owner refusal preserves uncertainty
+  ---
+  duration_ms: 3.011512
+  type: 'test'
+  ...
+# Subtest: post-DDL rowSecurity refusal preserves uncertainty
+ok 169 - post-DDL rowSecurity refusal preserves uncertainty
+  ---
+  duration_ms: 3.624831
+  type: 'test'
+  ...
+# Subtest: post-DDL trigger refusal preserves uncertainty
+ok 170 - post-DDL trigger refusal preserves uncertainty
+  ---
+  duration_ms: 3.13026
+  type: 'test'
+  ...
+# Subtest: post-DDL rule refusal preserves uncertainty
+ok 171 - post-DDL rule refusal preserves uncertainty
+  ---
+  duration_ms: 3.022189
+  type: 'test'
+  ...
+# Subtest: post-DDL invalidConstraint refusal preserves uncertainty
+ok 172 - post-DDL invalidConstraint refusal preserves uncertainty
+  ---
+  duration_ms: 3.179314
+  type: 'test'
+  ...
+# Subtest: post-DDL missingConstraint refusal preserves uncertainty
+ok 173 - post-DDL missingConstraint refusal preserves uncertainty
+  ---
+  duration_ms: 2.875619
+  type: 'test'
+  ...
+# Subtest: post-DDL duplicateConstraint refusal preserves uncertainty
+ok 174 - post-DDL duplicateConstraint refusal preserves uncertainty
+  ---
+  duration_ms: 2.77642
+  type: 'test'
+  ...
+# Subtest: post-DDL invalidIndex refusal preserves uncertainty
+ok 175 - post-DDL invalidIndex refusal preserves uncertainty
+  ---
+  duration_ms: 5.169707
+  type: 'test'
+  ...
+# Subtest: post-DDL deferrable refusal preserves uncertainty
+ok 176 - post-DDL deferrable refusal preserves uncertainty
+  ---
+  duration_ms: 3.033906
+  type: 'test'
+  ...
+# Subtest: post-DDL generated refusal preserves uncertainty
+ok 177 - post-DDL generated refusal preserves uncertainty
+  ---
+  duration_ms: 3.309078
+  type: 'test'
+  ...
+# Subtest: fresh schema refuses consumed budget
+ok 178 - fresh schema refuses consumed budget
+  ---
+  duration_ms: 5.080973
+  type: 'test'
+  ...
+# Subtest: fresh schema refuses quarantine budget
+ok 179 - fresh schema refuses quarantine budget
+  ---
+  duration_ms: 4.653393
+  type: 'test'
+  ...
+# Subtest: fresh schema refuses cap budget
+ok 180 - fresh schema refuses cap budget
+  ---
+  duration_ms: 5.258259
+  type: 'test'
+  ...
+# Subtest: fresh schema refuses any preexisting task row
+ok 181 - fresh schema refuses any preexisting task row
+  ---
+  duration_ms: 4.542306
+  type: 'test'
+  ...
+# Subtest: pre-abort has no connection
+ok 182 - pre-abort has no connection
+  ---
+  duration_ms: 0.344326
+  type: 'test'
+  ...
+# Subtest: pre-deadline has no connection
+ok 183 - pre-deadline has no connection
+  ---
+  duration_ms: 0.202634
+  type: 'test'
+  ...
+# Subtest: deadline returned by identity prevents any migration
+ok 184 - deadline returned by identity prevents any migration
+  ---
+  duration_ms: 1.402892
+  type: 'test'
+  ...
+# Subtest: deadline returned by first DDL allows rollback only
+ok 185 - deadline returned by first DDL allows rollback only
+  ---
+  duration_ms: 5.100092
+  type: 'test'
+  ...
+# Subtest: borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened
+ok 186 - borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened
+  ---
+  duration_ms: 11.867071
+  type: 'test'
+  ...
+# Subtest: remaining original budget narrows statement timeout
+ok 187 - remaining original budget narrows statement timeout
+  ---
+  duration_ms: 5.594052
+  type: 'test'
+  ...
+# Subtest: failed BEGIN cannot produce success or retry
+ok 188 - failed BEGIN cannot produce success or retry
+  ---
+  duration_ms: 1.851274
+  type: 'test'
+  ...
+# Subtest: failed COMMIT cannot produce success or retry
+ok 189 - failed COMMIT cannot produce success or retry
+  ---
+  duration_ms: 4.719673
+  type: 'test'
+  ...
+# Subtest: failed release cannot produce success or retry
+ok 190 - failed release cannot produce success or retry
+  ---
+  duration_ms: 4.786081
+  type: 'test'
+  ...
+# Subtest: failed ROLLBACK cannot produce success or retry
+ok 191 - failed ROLLBACK cannot produce success or retry
+  ---
+  duration_ms: 1.443323
+  type: 'test'
+  ...
+# Subtest: late connection after cancellation is released exactly once without SQL
+ok 192 - late connection after cancellation is released exactly once without SQL
+  ---
+  duration_ms: 1.269161
+  type: 'test'
+  ...
+# Subtest: late DDL ACK after cancellation cannot resume migrations or claim physical stop
+ok 193 - late DDL ACK after cancellation cannot resume migrations or claim physical stop
+  ---
+  duration_ms: 1.844213
+  type: 'test'
+  ...
+# Subtest: malformed acquired client with release is disposed without SQL
+ok 194 - malformed acquired client with release is disposed without SQL
+  ---
+  duration_ms: 1.061892
+  type: 'test'
+  ...
+# Subtest: hostile options getter and pool Proxy execute no traps
+ok 195 - hostile options getter and pool Proxy execute no traps
+  ---
+  duration_ms: 0.475532
+  type: 'test'
+  ...
+# Subtest: hostile result rows getter never executes and is sanitized
+ok 196 - hostile result rows getter never executes and is sanitized
+  ---
+  duration_ms: 1.189512
+  type: 'test'
+  ...
+# Subtest: emitted namespace SQL preserves underscore literally in the reserved pg_ prefix
+ok 197 - emitted namespace SQL preserves underscore literally in the reserved pg_ prefix
+  ---
+  duration_ms: 6.212168
+  type: 'test'
+  ...
+# Subtest: reported user namespace pgx_private prevents every DDL statement
+ok 198 - reported user namespace pgx_private prevents every DDL statement
+  ---
+  duration_ms: 1.275231
+  type: 'test'
+  ...
+# Subtest: fixed original clock rejects an operation ceiling beyond sixty seconds
+ok 199 - fixed original clock rejects an operation ceiling beyond sixty seconds
+  ---
+  duration_ms: 0.295413
+  type: 'test'
+  ...
+# Subtest: contending installer refuses lock while first owner completes exactly one DDL sequence
+ok 200 - contending installer refuses lock while first owner completes exactly one DDL sequence
+  ---
+  duration_ms: 6.834951
+  type: 'test'
+  ...
+# Subtest: late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry
+ok 201 - late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry
+  ---
+  duration_ms: 4.634815
+  type: 'test'
+  ...
+# Subtest: ordinary rows accepts exact UTF8 1048575 bytes
+ok 202 - ordinary rows accepts exact UTF8 1048575 bytes
+  ---
+  duration_ms: 11.075785
+  type: 'test'
+  ...
+# Subtest: ordinary rows accepts exact UTF8 1048576 bytes
+ok 203 - ordinary rows accepts exact UTF8 1048576 bytes
+  ---
+  duration_ms: 10.188236
+  type: 'test'
+  ...
+# Subtest: ordinary default refuses one byte over1MiB even if caller supplies larger second argument
+ok 204 - ordinary default refuses one byte over1MiB even if caller supplies larger second argument
+  ---
+  duration_ms: 5.200753
+  type: 'test'
+  ...
+# Subtest: preservation accepts exact UTF8 4194303 bytes
+ok 205 - preservation accepts exact UTF8 4194303 bytes
+  ---
+  duration_ms: 48.149647
+  type: 'test'
+  ...
+# Subtest: preservation accepts exact UTF8 4194304 bytes
+ok 206 - preservation accepts exact UTF8 4194304 bytes
+  ---
+  duration_ms: 47.885531
+  type: 'test'
+  ...
+# Subtest: preservation refuses UTF8 byte overflow even with fewer than4MiB JS characters
+ok 207 - preservation refuses UTF8 byte overflow even with fewer than4MiB JS characters
+  ---
+  duration_ms: 34.308196
+  type: 'test'
+  ...
+# Subtest: preservation refuses plain ASCII byte overflow
+ok 208 - preservation refuses plain ASCII byte overflow
+  ---
+  duration_ms: 20.678264
+  type: 'test'
+  ...
+# Subtest: preservation exact one row; ordinary1024 rows ceiling unchanged
+ok 209 - preservation exact one row; ordinary1024 rows ceiling unchanged
+  ---
+  duration_ms: 1.883382
+  type: 'test'
+  ...
+# Subtest: both admissions reject Proxy and accessors without invocation
+ok 210 - both admissions reject Proxy and accessors without invocation
+  ---
+  duration_ms: 0.460249
+  type: 'test'
+  ...
+# Subtest: preservation keeps node and depth guards despite larger byte limit
+ok 211 - preservation keeps node and depth guards despite larger byte limit
+  ---
+  duration_ms: 27.332074
+  type: 'test'
+  ...
+# Subtest: all3,128,280 bytes survive preparation and reconstruction unchanged
+ok 212 - all3,128,280 bytes survive preparation and reconstruction unchanged
+  ---
+  duration_ms: 140.539778
+  type: 'test'
+  ...
+# Subtest: mutating the final byte of every metadata array changes retained signature
+ok 213 - mutating the final byte of every metadata array changes retained signature
+  ---
+  duration_ms: 374.878574
+  type: 'test'
+  ...
+# Subtest: changed measured-inventory tail refuses later reconstruction with no additional DDL
+ok 214 - changed measured-inventory tail refuses later reconstruction with no additional DDL
+  ---
+  duration_ms: 119.155972
+  type: 'test'
+  ...
+# Subtest: oversized preservation refuses before first DDL and releases borrowed connection
+ok 215 - oversized preservation refuses before first DDL and releases borrowed connection
+  ---
+  duration_ms: 19.319878
+  type: 'test'
+  ...
+# Subtest: post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed
+ok 216 - post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed
+  ---
+  duration_ms: 53.304761
+  type: 'test'
+  ...
+# Subtest: same-size post-DDL last-character mutation remains UNKNOWN
+ok 217 - same-size post-DDL last-character mutation remains UNKNOWN
+  ---
+  duration_ms: 59.341216
+  type: 'test'
+  ...
+# Subtest: measured inventory with unsupported object still refuses before DDL
+ok 218 - measured inventory with unsupported object still refuses before DDL
+  ---
+  duration_ms: 16.152482
+  type: 'test'
+  ...
+# Subtest: large admission does not weaken closed metadata array shape
+ok 219 - large admission does not weaken closed metadata array shape
+  ---
+  duration_ms: 6.692918
+  type: 'test'
+  ...
+# Subtest: large admission does not weaken closed metadata array shape
+ok 220 - large admission does not weaken closed metadata array shape
+  ---
+  duration_ms: 16.967344
+  type: 'test'
+  ...
+# Subtest: large admission does not weaken closed metadata array shape
+ok 221 - large admission does not weaken closed metadata array shape
+  ---
+  duration_ms: 16.236708
+  type: 'test'
+  ...
+# Subtest: nonpreservation query still rejects oversized rows before shape interpretation
+ok 222 - nonpreservation query still rejects oversized rows before shape interpretation
+  ---
+  duration_ms: 8.938294
+  type: 'test'
+  ...
+# Subtest: preservation SQL alone gets larger limit and retains exact namespace parameters
+ok 223 - preservation SQL alone gets larger limit and retains exact namespace parameters
+  ---
+  duration_ms: 59.382088
+  type: 'test'
+  ...
+# Subtest: commit acknowledgement loss stays UNKNOWN with measured inventory
+ok 224 - commit acknowledgement loss stays UNKNOWN with measured inventory
+  ---
+  duration_ms: 65.676108
+  type: 'test'
+  ...
+# Subtest: complete8362-record measured inventory retains exact bytes/tail at100000 nodes;100001 now passes and250001 refuses
+ok 225 - complete8362-record measured inventory retains exact bytes/tail at100000 nodes;100001 now passes and250001 refuses
+  ---
+  duration_ms: 975.97541
+  type: 'test'
+  ...
+# Subtest: complete 3128280-byte ASCII inventory installs and reconstructs exactly
+ok 226 - complete 3128280-byte ASCII inventory installs and reconstructs exactly
+  ---
+  duration_ms: 183.733263
+  type: 'test'
+  ...
+# Subtest: complete 4194304-byte ASCII inventory installs and reconstructs exactly
+ok 227 - complete 4194304-byte ASCII inventory installs and reconstructs exactly
+  ---
+  duration_ms: 192.344737
+  type: 'test'
+  ...
+# Subtest: complete 4194304-byte multibyte inventory installs and reconstructs exactly
+ok 228 - complete 4194304-byte multibyte inventory installs and reconstructs exactly
+  ---
+  duration_ms: 102.938311
+  type: 'test'
+  ...
+# Subtest: preservation byte+1 ASCII refuses before any DDL
+ok 229 - preservation byte+1 ASCII refuses before any DDL
+  ---
+  duration_ms: 19.591096
+  type: 'test'
+  ...
+# Subtest: preservation byte+1 multibyte refuses before any DDL
+ok 230 - preservation byte+1 multibyte refuses before any DDL
+  ---
+  duration_ms: 14.035541
+  type: 'test'
+  ...
+# Subtest: complete measured-size tail change during migration is UNKNOWN, never successful preservation
+ok 231 - complete measured-size tail change during migration is UNKNOWN, never successful preservation
+  ---
+  duration_ms: 65.279414
+  type: 'test'
+  ...
+# Subtest: complete measured-size tail change on reconstruction refuses without rewriting
+ok 232 - complete measured-size tail change on reconstruction refuses without rewriting
+  ---
+  duration_ms: 121.193204
+  type: 'test'
+  ...
+# Subtest: overflow after submitted migrations remains UNKNOWN and cannot COMMIT
+ok 233 - overflow after submitted migrations remains UNKNOWN and cannot COMMIT
+  ---
+  duration_ms: 59.032664
+  type: 'test'
+  ...
+# Subtest: ordinary rows retain exact1MiB/+1 UTF8 boundary and1024 row ceiling
+ok 234 - ordinary rows retain exact1MiB/+1 UTF8 boundary and1024 row ceiling
+  ---
+  duration_ms: 5.235064
+  type: 'test'
+  ...
+# Subtest: preservation count guard survives scoped byte ceiling
+ok 235 - preservation count guard survives scoped byte ceiling
+  ---
+  duration_ms: 30.540802
+  type: 'test'
+  ...
+# Subtest: preservation depth guard survives scoped byte ceiling
+ok 236 - preservation depth guard survives scoped byte ceiling
+  ---
+  duration_ms: 7.022723
+  type: 'test'
+  ...
+# Subtest: preservation nodes guard survives scoped byte ceiling
+ok 237 - preservation nodes guard survives scoped byte ceiling
+  ---
+  duration_ms: 25.837555
+  type: 'test'
+  ...
+# Subtest: preservation accessor guard survives scoped byte ceiling
+ok 238 - preservation accessor guard survives scoped byte ceiling
+  ---
+  duration_ms: 6.087772
+  type: 'test'
+  ...
+# Subtest: preservation proxy guard survives scoped byte ceiling
+ok 239 - preservation proxy guard survives scoped byte ceiling
+  ---
+  duration_ms: 6.309915
+  type: 'test'
+  ...
+# Subtest: preservation metadata-shape guard survives scoped byte ceiling
+ok 240 - preservation metadata-shape guard survives scoped byte ceiling
+  ---
+  duration_ms: 20.366987
+  type: 'test'
+  ...
+# Subtest: preservation unsupported guard survives scoped byte ceiling
+ok 241 - preservation unsupported guard survives scoped byte ceiling
+  ---
+  duration_ms: 17.458069
+  type: 'test'
+  ...
+# Subtest: ordinary catalog does not acquire preservation4MiB allowance
+ok 242 - ordinary catalog does not acquire preservation4MiB allowance
+  ---
+  duration_ms: 34.806825
+  type: 'test'
+  ...
+# Subtest: complete measured dimensions pass both decoding stages without truncation
+ok 243 - complete measured dimensions pass both decoding stages without truncation
+  ---
+  duration_ms: 264.476586
+  type: 'test'
+  ...
+# Subtest: complete measured dimensions install and reconstruct with all six exact migrations and original hash
+ok 244 - complete measured dimensions install and reconstruct with all six exact migrations and original hash
+  ---
+  duration_ms: 705.226702
+  type: 'test'
+  ...
+# Subtest: entire relations tail participates in pre/post migration preservation
+ok 245 - entire relations tail participates in pre/post migration preservation
+  ---
+  duration_ms: 322.00139
+  type: 'test'
+  ...
+# Subtest: entire columns tail participates in pre/post migration preservation
+ok 246 - entire columns tail participates in pre/post migration preservation
+  ---
+  duration_ms: 326.378127
+  type: 'test'
+  ...
+# Subtest: entire defaults tail participates in pre/post migration preservation
+ok 247 - entire defaults tail participates in pre/post migration preservation
+  ---
+  duration_ms: 312.065516
+  type: 'test'
+  ...
+# Subtest: entire constraints tail participates in pre/post migration preservation
+ok 248 - entire constraints tail participates in pre/post migration preservation
+  ---
+  duration_ms: 305.414555
+  type: 'test'
+  ...
+# Subtest: entire indexes tail participates in pre/post migration preservation
+ok 249 - entire indexes tail participates in pre/post migration preservation
+  ---
+  duration_ms: 302.866394
+  type: 'test'
+  ...
+# Subtest: entire views tail participates in pre/post migration preservation
+ok 250 - entire views tail participates in pre/post migration preservation
+  ---
+  duration_ms: 319.034303
+  type: 'test'
+  ...
+# Subtest: entire types tail participates in pre/post migration preservation
+ok 251 - entire types tail participates in pre/post migration preservation
+  ---
+  duration_ms: 316.01094
+  type: 'test'
+  ...
+# Subtest: entire sequences tail participates in pre/post migration preservation
+ok 252 - entire sequences tail participates in pre/post migration preservation
+  ---
+  duration_ms: 318.724885
+  type: 'test'
+  ...
+# Subtest: entire triggers tail participates in pre/post migration preservation
+ok 253 - entire triggers tail participates in pre/post migration preservation
+  ---
+  duration_ms: 309.203916
+  type: 'test'
+  ...
+# Subtest: entire dependencies tail participates in pre/post migration preservation
+ok 254 - entire dependencies tail participates in pre/post migration preservation
+  ---
+  duration_ms: 312.35475
+  type: 'test'
+  ...
+# Subtest: entire comments tail participates in pre/post migration preservation
+ok 255 - entire comments tail participates in pre/post migration preservation
+  ---
+  duration_ms: 314.701087
+  type: 'test'
+  ...
+# Subtest: entire labels tail participates in pre/post migration preservation
+ok 256 - entire labels tail participates in pre/post migration preservation
+  ---
+  duration_ms: 314.373335
+  type: 'test'
+  ...
+# Subtest: entire relations tail participates in reconstruction digest
+ok 257 - entire relations tail participates in reconstruction digest
+  ---
+  duration_ms: 603.896526
+  type: 'test'
+  ...
+# Subtest: entire columns tail participates in reconstruction digest
+ok 258 - entire columns tail participates in reconstruction digest
+  ---
+  duration_ms: 588.311012
+  type: 'test'
+  ...
+# Subtest: entire defaults tail participates in reconstruction digest
+ok 259 - entire defaults tail participates in reconstruction digest
+  ---
+  duration_ms: 644.314059
+  type: 'test'
+  ...
+# Subtest: entire constraints tail participates in reconstruction digest
+ok 260 - entire constraints tail participates in reconstruction digest
+  ---
+  duration_ms: 601.53133
+  type: 'test'
+  ...
+# Subtest: entire indexes tail participates in reconstruction digest
+ok 261 - entire indexes tail participates in reconstruction digest
+  ---
+  duration_ms: 612.511972
+  type: 'test'
+  ...
+# Subtest: entire views tail participates in reconstruction digest
+ok 262 - entire views tail participates in reconstruction digest
+  ---
+  duration_ms: 597.810515
+  type: 'test'
+  ...
+# Subtest: entire types tail participates in reconstruction digest
+ok 263 - entire types tail participates in reconstruction digest
+  ---
+  duration_ms: 582.147122
+  type: 'test'
+  ...
+# Subtest: entire sequences tail participates in reconstruction digest
+ok 264 - entire sequences tail participates in reconstruction digest
+  ---
+  duration_ms: 579.5302
+  type: 'test'
+  ...
+# Subtest: entire triggers tail participates in reconstruction digest
+ok 265 - entire triggers tail participates in reconstruction digest
+  ---
+  duration_ms: 579.29329
+  type: 'test'
+  ...
+# Subtest: entire dependencies tail participates in reconstruction digest
+ok 266 - entire dependencies tail participates in reconstruction digest
+  ---
+  duration_ms: 577.323026
+  type: 'test'
+  ...
+# Subtest: entire comments tail participates in reconstruction digest
+ok 267 - entire comments tail participates in reconstruction digest
+  ---
+  duration_ms: 630.910286
+  type: 'test'
+  ...
+# Subtest: entire labels tail participates in reconstruction digest
+ok 268 - entire labels tail participates in reconstruction digest
+  ---
+  duration_ms: 580.724537
+  type: 'test'
+  ...
+# Subtest: preservation fixed total node boundary 249999
+ok 269 - preservation fixed total node boundary 249999
+  ---
+  duration_ms: 100.259632
+  type: 'test'
+  ...
+# Subtest: preservation fixed total node boundary 250000
+ok 270 - preservation fixed total node boundary 250000
+  ---
+  duration_ms: 95.504584
+  type: 'test'
+  ...
+# Subtest: preservation fixed total node boundary 250001
+ok 271 - preservation fixed total node boundary 250001
+  ---
+  duration_ms: 67.875303
+  type: 'test'
+  ...
+# Subtest: preservation exact serialized bytes 4194304 multibyte=false
+ok 272 - preservation exact serialized bytes 4194304 multibyte=false
+  ---
+  duration_ms: 20.322788
+  type: 'test'
+  ...
+# Subtest: preservation exact serialized bytes 4194304 multibyte=true
+ok 273 - preservation exact serialized bytes 4194304 multibyte=true
+  ---
+  duration_ms: 9.554384
+  type: 'test'
+  ...
+# Subtest: preservation exact serialized bytes 4194305 multibyte=false
+ok 274 - preservation exact serialized bytes 4194305 multibyte=false
+  ---
+  duration_ms: 22.630278
+  type: 'test'
+  ...
+# Subtest: preservation exact serialized bytes 4194305 multibyte=true
+ok 275 - preservation exact serialized bytes 4194305 multibyte=true
+  ---
+  duration_ms: 7.587141
+  type: 'test'
+  ...
+# Subtest: preservation exact depth 64
+ok 276 - preservation exact depth 64
+  ---
+  duration_ms: 0.507217
+  type: 'test'
+  ...
+# Subtest: preservation exact depth 65
+ok 277 - preservation exact depth 65
+  ---
+  duration_ms: 0.171205
+  type: 'test'
+  ...
+# Subtest: preservation inert proxy refuses without hook execution
+ok 278 - preservation inert proxy refuses without hook execution
+  ---
+  duration_ms: 0.131005
+  type: 'test'
+  ...
+# Subtest: preservation inert accessor refuses without hook execution
+ok 279 - preservation inert accessor refuses without hook execution
+  ---
+  duration_ms: 0.049674
+  type: 'test'
+  ...
+# Subtest: preservation inert cycle refuses without hook execution
+ok 280 - preservation inert cycle refuses without hook execution
+  ---
+  duration_ms: 0.035863
+  type: 'test'
+  ...
+# Subtest: preservation inert sparse refuses without hook execution
+ok 281 - preservation inert sparse refuses without hook execution
+  ---
+  duration_ms: 0.028753
+  type: 'test'
+  ...
+# Subtest: preservation inert hidden refuses without hook execution
+ok 282 - preservation inert hidden refuses without hook execution
+  ---
+  duration_ms: 0.034491
+  type: 'test'
+  ...
+# Subtest: preservation inert symbol refuses without hook execution
+ok 283 - preservation inert symbol refuses without hook execution
+  ---
+  duration_ms: 0.05364
+  type: 'test'
+  ...
+# Subtest: preservation inert nan refuses without hook execution
+ok 284 - preservation inert nan refuses without hook execution
+  ---
+  duration_ms: 0.037456
+  type: 'test'
+  ...
+# Subtest: preservation inert infinity refuses without hook execution
+ok 285 - preservation inert infinity refuses without hook execution
+  ---
+  duration_ms: 0.130094
+  type: 'test'
+  ...
+# Subtest: ordinary node/depth/byte/row limits remain separate and unchanged
+ok 286 - ordinary node/depth/byte/row limits remain separate and unchanged
+  ---
+  duration_ms: 121.653268
+  type: 'test'
+  ...
+# Subtest: exact row count, closed metadata and unsupported-object refusal remain
+ok 287 - exact row count, closed metadata and unsupported-object refusal remain
+  ---
+  duration_ms: 0.517382
+  type: 'test'
+  ...
+# Subtest: post-DDL node overflow cannot commit or claim rollback success
+ok 288 - post-DDL node overflow cannot commit or claim rollback success
+  ---
+  duration_ms: 203.669011
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement preserves UNKNOWN and does not retry
+ok 289 - lost COMMIT acknowledgement preserves UNKNOWN and does not retry
+  ---
+  duration_ms: 322.943222
+  type: 'test'
+  ...
+# Subtest: complete measured metadata independently passes the downstream snapshot choke point
+ok 290 - complete measured metadata independently passes the downstream snapshot choke point
+  ---
+  duration_ms: 114.561435
+  type: 'test'
+  ...
+# Subtest: ordinary callers cannot widen resource limits with a second argument
+ok 291 - ordinary callers cannot widen resource limits with a second argument
+  ---
+  duration_ms: 22.482879
+  type: 'test'
+  ...
+# Subtest: 157661-node decoder and157658-node metadata retain all8362 records through install and reconstruction
+ok 292 - 157661-node decoder and157658-node metadata retain all8362 records through install and reconstruction
+  ---
+  duration_ms: 1190.469275
+  type: 'test'
+  ...
+# Subtest: full downstream metadata cannot bypass its own structural or byte bounds
+ok 293 - full downstream metadata cannot bypass its own structural or byte bounds
+  ---
+  duration_ms: 30.860198
+  type: 'test'
+  ...
+# Subtest: ordinary100000 nodes remain strict while preservation250000 exact and+1 use a fixed profile
+ok 294 - ordinary100000 nodes remain strict while preservation250000 exact and+1 use a fixed profile
+  ---
+  duration_ms: 246.749197
+  type: 'test'
+  ...
+# Subtest: every retained array tail contributes to the full metadata digest beyond100000 nodes
+ok 295 - every retained array tail contributes to the full metadata digest beyond100000 nodes
+  ---
+  duration_ms: 1818.695919
+  type: 'test'
+  ...
+# Subtest: tail substitution after DDL at157661 nodes remains UNKNOWN without commit or retry
+ok 296 - tail substitution after DDL at157661 nodes remains UNKNOWN without commit or retry
+  ---
+  duration_ms: 306.416642
+  type: 'test'
+  ...
+# Subtest: preservation increased profile retains inert proxy refusal
+ok 297 - preservation increased profile retains inert proxy refusal
+  ---
+  duration_ms: 0.496523
+  type: 'test'
+  ...
+# Subtest: preservation increased profile retains inert accessor refusal
+ok 298 - preservation increased profile retains inert accessor refusal
+  ---
+  duration_ms: 0.093155
+  type: 'test'
+  ...
+# Subtest: preservation increased profile retains inert cycle refusal
+ok 299 - preservation increased profile retains inert cycle refusal
+  ---
+  duration_ms: 0.045717
+  type: 'test'
+  ...
+# Subtest: preservation increased profile retains inert sparse refusal
+ok 300 - preservation increased profile retains inert sparse refusal
+  ---
+  duration_ms: 0.048932
+  type: 'test'
+  ...
+# Subtest: preservation increased profile retains inert depth refusal
+ok 301 - preservation increased profile retains inert depth refusal
+  ---
+  duration_ms: 0.180373
+  type: 'test'
+  ...
+# Subtest: installs exactly the six unchanged files, then verifies13 relations and empty accounting
+ok 302 - installs exactly the six unchanged files, then verifies13 relations and empty accounting
+  ---
+  duration_ms: 19.835566
+  type: 'test'
+  ...
+# Subtest: reconstruction permits retained accounting but binds original complete catalog hash
+ok 303 - reconstruction permits retained accounting but binds original complete catalog hash
+  ---
+  duration_ms: 16.10131
+  type: 'test'
+  ...
+# Subtest: identity database mismatch refuses before DDL
+ok 304 - identity database mismatch refuses before DDL
+  ---
+  duration_ms: 2.180544
+  type: 'test'
+  ...
+# Subtest: identity username mismatch refuses before DDL
+ok 305 - identity username mismatch refuses before DDL
+  ---
+  duration_ms: 1.601972
+  type: 'test'
+  ...
+# Subtest: identity address mismatch refuses before DDL
+ok 306 - identity address mismatch refuses before DDL
+  ---
+  duration_ms: 1.967675
+  type: 'test'
+  ...
+# Subtest: identity port mismatch refuses before DDL
+ok 307 - identity port mismatch refuses before DDL
+  ---
+  duration_ms: 1.386328
+  type: 'test'
+  ...
+# Subtest: identity version mismatch refuses before DDL
+ok 308 - identity version mismatch refuses before DDL
+  ---
+  duration_ms: 1.225764
+  type: 'test'
+  ...
+# Subtest: identity start_ms mismatch refuses before DDL
+ok 309 - identity start_ms mismatch refuses before DDL
+  ---
+  duration_ms: 1.289567
+  type: 'test'
+  ...
+# Subtest: identity system_identifier mismatch refuses before DDL
+ok 310 - identity system_identifier mismatch refuses before DDL
+  ---
+  duration_ms: 1.314103
+  type: 'test'
+  ...
+# Subtest: identity fsync mismatch refuses before DDL
+ok 311 - identity fsync mismatch refuses before DDL
+  ---
+  duration_ms: 2.247321
+  type: 'test'
+  ...
+# Subtest: identity synchronous_commit mismatch refuses before DDL
+ok 312 - identity synchronous_commit mismatch refuses before DDL
+  ---
+  duration_ms: 1.289417
+  type: 'test'
+  ...
+# Subtest: identity search_path mismatch refuses before DDL
+ok 313 - identity search_path mismatch refuses before DDL
+  ---
+  duration_ms: 1.176212
+  type: 'test'
+  ...
+# Subtest: closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client
+ok 314 - closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client
+  ---
+  duration_ms: 0.666971
+  type: 'test'
+  ...
+# Subtest: install refuses partial namespaces, preexisting relation and same fixture reapply
+ok 315 - install refuses partial namespaces, preexisting relation and same fixture reapply
+  ---
+  duration_ms: 10.690102
+  type: 'test'
+  ...
+# Subtest: concurrent installers cannot both acquire fixed transaction lock
+ok 316 - concurrent installers cannot both acquire fixed transaction lock
+  ---
+  duration_ms: 8.770398
+  type: 'test'
+  ...
+# Subtest: post-install missing corruption is UNKNOWN, never retry/success
+ok 317 - post-install missing corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 4.335842
+  type: 'test'
+  ...
+# Subtest: post-install nullable corruption is UNKNOWN, never retry/success
+ok 318 - post-install nullable corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 4.029837
+  type: 'test'
+  ...
+# Subtest: post-install type corruption is UNKNOWN, never retry/success
+ok 319 - post-install type corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 3.300364
+  type: 'test'
+  ...
+# Subtest: post-install constraint corruption is UNKNOWN, never retry/success
+ok 320 - post-install constraint corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 3.497642
+  type: 'test'
+  ...
+# Subtest: post-install unvalidated corruption is UNKNOWN, never retry/success
+ok 321 - post-install unvalidated corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 3.245585
+  type: 'test'
+  ...
+# Subtest: post-install index corruption is UNKNOWN, never retry/success
+ok 322 - post-install index corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 3.581824
+  type: 'test'
+  ...
+# Subtest: post-install trigger corruption is UNKNOWN, never retry/success
+ok 323 - post-install trigger corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 3.349436
+  type: 'test'
+  ...
+# Subtest: post-install owner corruption is UNKNOWN, never retry/success
+ok 324 - post-install owner corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 6.488185
+  type: 'test'
+  ...
+# Subtest: post-install view corruption is UNKNOWN, never retry/success
+ok 325 - post-install view corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 4.17599
+  type: 'test'
+  ...
+# Subtest: post-install rowSecurity corruption is UNKNOWN, never retry/success
+ok 326 - post-install rowSecurity corruption is UNKNOWN, never retry/success
+  ---
+  duration_ms: 3.209002
+  type: 'test'
+  ...
+# Subtest: reconstruction catches changed check definition even when type/counts remain
+ok 327 - reconstruction catches changed check definition even when type/counts remain
+  ---
+  duration_ms: 12.136849
+  type: 'test'
+  ...
+# Subtest: fresh install requires exact empty application rows and zero unquarantined accounting
+ok 328 - fresh install requires exact empty application rows and zero unquarantined accounting
+  ---
+  duration_ms: 15.343416
+  type: 'test'
+  ...
+# Subtest: migration, commit and release errors preserve UNKNOWN and no retry
+ok 329 - migration, commit and release errors preserve UNKNOWN and no retry
+  ---
+  duration_ms: 11.43653
+  type: 'test'
+  ...
+# Subtest: unknown errors are not reflected or evaluated
+ok 330 - unknown errors are not reflected or evaluated
+  ---
+  duration_ms: 1.811747
+  type: 'test'
+  ...
+# Subtest: owner query timeout6000 is admitted and shorter bound is preserved for every query
+ok 331 - owner query timeout6000 is admitted and shorter bound is preserved for every query
+  ---
+  duration_ms: 6.598015
+  type: 'test'
+  ...
+# Subtest: late acquisition is released with no BEGIN or DDL after original deadline
+ok 332 - late acquisition is released with no BEGIN or DDL after original deadline
+  ---
+  duration_ms: 60.145919
+  type: 'test'
+  ...
+# Subtest: cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL
+ok 333 - cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL
+  ---
+  duration_ms: 13.467486
+  type: 'test'
+  ...
+# Subtest: absolute clock advancement after identity prevents migration despite responsive ports
+ok 334 - absolute clock advancement after identity prevents migration despite responsive ports
+  ---
+  duration_ms: 1.365908
+  type: 'test'
+  ...
+# Subtest: receipt binds original cutoff and reports port observation without native qualification
+ok 335 - receipt binds original cutoff and reports port observation without native qualification
+  ---
+  duration_ms: 5.770311
+  type: 'test'
+  ...
+# Subtest: namespace query excludes only literal pg_ prefix and refuses user pgx_private
+ok 336 - namespace query excludes only literal pg_ prefix and refuses user pgx_private
+  ---
+  duration_ms: 1.473205
+  type: 'test'
+  ...
+# Subtest: reusable scripted fixture binds configured target identity without allocating a database
+ok 337 - reusable scripted fixture binds configured target identity without allocating a database
+  ---
+  duration_ms: 5.547636
+  type: 'test'
+  ...
+1..337
+# tests 337
+# suites 0
+# pass 337
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21277.976772

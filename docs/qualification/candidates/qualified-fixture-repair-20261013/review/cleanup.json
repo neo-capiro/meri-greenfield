@@ -1,0 +1,79 @@
+{
+  "groups": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.json",
+      "group": 516165,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.json",
+      "group": 515777,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.json",
+      "group": 515236,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.json",
+      "group": 514570,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.json",
+      "group": 514368,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.json",
+      "group": 513770,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.json",
+      "group": 513585,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.json",
+      "group": 513562,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.json",
+      "group": 513245,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.json",
+      "group": 512341,
+      "absent": true,
+      "timeout": false,
+      "kill": false
+    }
+  ],
+  "dependenciesInstalledCopiedOrLinked": false,
+  "ownedDependencyCleanupRequired": false,
+  "borrowedDonorsUntouched": true,
+  "databaseContainerOrProviderActions": false,
+  "sourceWorktreesAndEvidencePreserved": true
+}

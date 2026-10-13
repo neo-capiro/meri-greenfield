@@ -1,0 +1,150 @@
+{
+  "fixtureSetupFailureDirectories": [
+    {
+      "path": "/tmp/meri-lifecycle-test-g26ZIN",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "62db403ac54ff9fd410db02e03a32ce6874f9ae0636f86380198d5c75cb80a6c",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-fvurCr",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "d28d2d449fea6be3165f3c59bcd14a6a1aa57d60a3e52b5a2460924bc3168832",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-dTLYzR",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "6881f7ae199f49ebf5e81e869b3b225938ff74d1797c1d39c14b8b2696e5fbba",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-tukc5z",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "d2bbefb2c149ed7a8b7822e1ac5d9ff955e4106ce2de77ea3cac890f3d4f2fa8",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-gDQZM1",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "3378a194af7f5d1bbc8fbb8c5416437e1d47529d510a710d951b8948584d2451",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-qFKb1y",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "bad10d94ecef63da912f66fbed1b49c5c1298838dca9d5b0479e2e9808880098",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-WE0iIz",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "5decff63bbd8141077d1ce762e38209651ccf846fecbf3ed527eb396b30bf376",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-B52wrc",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "79e07259a0df6689fec72d643b772d216d754a39f95017829b4f502663e717c3",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-XAiqrQ",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "2cc714c31412f5982c7b99a2a1139ae0df6be18fb8fe9b28bd2b7a7ec112b93e",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-6R6iOi",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "600f5df2e00c8dde0e6feaa2c2e546a791abded4aec1d00426ad262b3a8f7fd3",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-P8pHJN",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "7e73e7d66d79f22e6cc73a75dbda08f94a1fe832652e5c34f0becc0f946854dc",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-3IAlY0",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "4e0216605fb0ad1ad93c8cd5f6a5f2d2b83d7fc0585aac2b2b835bde2d1ec91f",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-jGfjZZ",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "1d9d053244fd6f0d1cc235abce5bca20aa94111b2d5b969ccd83be5716b4b9a1",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-wQQwlH",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "790a77b503b7dc290134d4f722b76798bfe0a66d92a321a2a467bb23bd46f3b2",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-7lKpbM",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "286e139663abdfeac27786ebf31b878d438fae45e0db8b8a94d5a1661bdafb7d",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-Z9Qnuu",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "54944c189e1bfa8387cfa79e9d2004677b3e5064623bf9047dda58ba0ba47b93",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-7cqvgt",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "07f6976654af544b27633c3a999ebd6e5ca2cad0fd85a3a1c6c5d9c6fec5cb26",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-RzBcKR",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "29500aea84ea8ec1a17e5a9b16b3e84f819b0e02cef9bb060ec577ff9f413159",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-E685ga",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "07060ea60cbb3194e7d98005c9e25d95dd3eb591d7ed5ea80c4c1367153f281e",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-zRVoS0",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "b9e23ff993bfea27f5358b00016a53393d63ea850cb439e530697ac772d40de5",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-RYqcbH",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "71e83525777b98aa99d8b3c456435c9d925ae827ccdff06aa20f359b52d5ddc7",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-OXXZR2",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "26bee368eab686797ea46a8728cc19653c72ae7c9a10b6cc5d4d7ba6486d8b54",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-XrMG7B",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "85fd724e6c0963024ad65e63e2e191491884aa9c35d32544037b49bd72cf9a00",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-lifecycle-test-dXcnWo",
+      "ownership": "exact fixture script bound to isolated review worktree",
+      "scriptSha256": "12d9d46e5e512634969b3ba02ffee69eff3a77869118b373e1724ab424e463d1",
+      "absent": true
+    }
+  ],
+  "count": 24,
+  "noProductOrPrivateResourcesTouched": true
+}

@@ -1,0 +1,11 @@
+# Independent PR49 fixture compatibility review
+
+Base PR49: b5243ae164f68c7591b039e8365d9897390543d2. First candidate:25ddfcec8e5896e868572e443f9dd32a004d40a2. Criteria were relayed to root/author before implementation; this file is committed after the requested candidate-based worktree exists and before candidate production inspection. Read-only preparation inspected only the PR49 implementation. No database, Docker, provider, customer or private-native packet execution/access is authorized.
+
+Own only compatibility-independent/ tests and this review packet. Never edit production or older test/fixture files. Root allocated narrowly necessary older fixture dial/namespace observations to author; original assertions must remain.
+
+- Required dial host/port retain loopback identity; optional paired numeric serverAddress/serverPort bind observed SQL endpoint separately. Preserve exact database/user/system/start/version/fsync/synchronous checks. Verify Node pool options and Python connection stay bound to the dial tuple. Full fixture facts survive immutable Node/Python admission hashing.
+- Optional closed schemaScope preserves exactly declared unrelated schemas with name/owner, at most128; default strict behavior remains unchanged. Reject malformed/duplicate/reserved/public/target/undeclared or ownership collisions. Both canonical target namespaces must be absent, public stays empty, and six migrations stay byte-identical.
+- Inspect fingerprint coverage, including relevant namespace/object identity/ownership and supported column/default/constraint/index/view/sequence metadata. Explicitly refuse unsupported classes; never equate metadata hash with row-data or native preservation proof. Recheck after installation and bind scope/fingerprint to retained reconstruction digest.
+- Replay legacy negatives, mapped endpoint positive/wrong server negatives,25 declared-schema preservation and reconstruction, target/owner/metadata mutation refusal, exact original deadline and UNKNOWN cleanup. Python closed-shape parity must be tested through inert ports only.
+- Preserve all failures, source pins, old original assertions and owned process cleanup. No migration rewrite/reset/retry or unapproved global policy. Final ACCEPT_SOURCE/HOLD is separate from native engine/runtime acceptance.

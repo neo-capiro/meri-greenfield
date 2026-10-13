@@ -1,0 +1,37 @@
+{
+  "label": "schema-bound-rerun",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "apps/control/qualified-application/schema.test.mjs",
+    "apps/control/qualified-application/schema-compatibility.test.mjs",
+    "apps/control/qualified-application/schema-size.test.mjs",
+    "apps/control/qualified-application/schema-size-independent.test.mjs",
+    "apps/control/qualified-application/schema-size-inventory.test.mjs",
+    "apps/control/qualified-application/schema-structure.test.mjs",
+    "apps/control/qualified-application/schema-structure-independent.test.mjs",
+    "apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs",
+    "apps/control/qualified-application/independent/schema-independent.test.mjs",
+    "apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 25.336,
+  "processReaped": true,
+  "stdoutBytes": 79351,
+  "stderrBytes": 0,
+  "stdoutSha256": "883bc601c74125b084b0a1d3035ca810410991efdc2c975d0e0057740c0bb1a6",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

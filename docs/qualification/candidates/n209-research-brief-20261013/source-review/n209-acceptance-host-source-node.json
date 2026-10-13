@@ -1,0 +1,28 @@
+{
+  "label": "n209-acceptance-host-source-node",
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "apps/control/qualified-application/schema-host-address.test.mjs",
+    "apps/gateway/test/postgres-budget-host-address.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 0.3,
+  "processReaped": true,
+  "stdoutBytes": 4528,
+  "stderrBytes": 0,
+  "stdoutSha256": "343410bc3cbab85f62d0e9502856de49f1c67d922034f73ce7958524d0c7abc7",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

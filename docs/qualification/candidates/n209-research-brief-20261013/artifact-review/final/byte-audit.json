@@ -1,0 +1,56 @@
+{
+  "reviewedCommit": "086cb8960a8cd314d97b484198660c171d63272f",
+  "reviewedTree": "05f5f71e3eb93cd0096f0b14d16ea6b011d87dae",
+  "renderedArtifactSourcePin": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "retainedRepairEvidenceCommit": "bfc01957d45a5625f255030d38435bf1d3703e3a",
+  "checks": [
+    {
+      "name": "All emitted artifact/compiler/read/recipe/HTTP input bytes unchanged from rendered57 pin",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+        "086cb8960a8cd314d97b484198660c171d63272f",
+        "--",
+        "apps/artifacts",
+        "apps/control/document-application/research-brief/compose.mjs",
+        "apps/control/document-application/research-brief/evidence.mjs",
+        "apps/control/document-application/research-brief/input.mjs",
+        "apps/control/document-application/research-brief/skill.mjs",
+        "apps/control/document-application/research-brief/SKILL.md",
+        "apps/control/document-application/research-brief/manifest.json",
+        "apps/control/document-application/research-brief/local",
+        "apps/control/document-application/current.mjs",
+        "apps/control/document-application/index.mjs",
+        "packages/contracts",
+        "docs/qualification/candidates/n209-research-brief-20261013/integration/repaired-final-artifacts"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Public owner and entire contracts remain exact composition bytes",
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "45c2de24f41402ae3a938a7df09eff78db90d94c",
+        "086cb8960a8cd314d97b484198660c171d63272f",
+        "--",
+        "apps/control/document-application/current.mjs",
+        "apps/control/document-application/index.mjs",
+        "packages/contracts"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeQualified": false
+}

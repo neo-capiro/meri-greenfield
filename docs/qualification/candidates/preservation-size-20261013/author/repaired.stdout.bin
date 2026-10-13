@@ -1,0 +1,2880 @@
+✖ explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data (14.739506ms)
+✖ legacy strict descriptor preserves original signature algorithm (5.889511ms)
+✖ reconstruction binds mapping scope and retained fingerprint without DDL (3.221206ms)
+✔ mapped identity retains address refusal (3.743152ms)
+✔ mapped identity retains port refusal (4.075556ms)
+✔ mapped identity retains version refusal (3.977829ms)
+✔ mapped identity retains start_ms refusal (2.581253ms)
+✔ mapped identity retains system_identifier refusal (3.314066ms)
+✔ mapped identity retains database refusal (2.782426ms)
+✔ mapped identity retains username refusal (2.523517ms)
+✔ mapped identity retains fsync refusal (1.739036ms)
+✔ mapped identity retains synchronous_commit refusal (2.423215ms)
+✔ dial pool host substitution refuses before connection (0.592842ms)
+✔ dial pool port substitution refuses before connection (0.627064ms)
+✔ dial pool database substitution refuses before connection (0.403577ms)
+✔ dial pool user substitution refuses before connection (0.319711ms)
+✔ closed compatibility admission: unpairedAddress (0.460192ms)
+✔ closed compatibility admission: unpairedPort (0.373712ms)
+✔ closed compatibility admission: hostName (2.88454ms)
+✔ closed compatibility admission: scopedIPv6 (1.157131ms)
+✔ closed compatibility admission: booleanPort (0.881006ms)
+✔ closed compatibility admission: zeroPort (0.354283ms)
+✔ closed compatibility admission: nullScope (0.300562ms)
+✔ closed compatibility admission: wrongMode (0.312921ms)
+✔ closed compatibility admission: emptyScope (0.394914ms)
+✔ closed compatibility admission: overLimit (0.635026ms)
+✔ closed compatibility admission: duplicate (0.632142ms)
+✔ closed compatibility admission: public (0.316636ms)
+✔ closed compatibility admission: target (0.463016ms)
+✔ closed compatibility admission: system (0.65814ms)
+✔ closed compatibility admission: unknownLeaf (0.447013ms)
+✔ closed compatibility admission: unknownFixture (0.200471ms)
+✖ namespace missing refuses before DDL (10.204402ms)
+✖ namespace undeclared refuses before DDL (5.362693ms)
+✖ namespace wrongOwner refuses before DDL (2.301012ms)
+✖ namespace targetCollision refuses before DDL (3.36274ms)
+✖ namespace duplicate refuses before DDL (3.826888ms)
+✖ legacy mode still refuses25 undeclared schemas (2.993464ms)
+✖ public target row type collision refuses before any migration (2.488664ms)
+✖ unsupported evidence catalog classes fail closed before DDL (3.405673ms)
+✖ changed preserved relations prevents success after DDL (2.579871ms)
+✖ changed preserved columns prevents success after DDL (4.613611ms)
+✖ changed preserved defaults prevents success after DDL (3.280035ms)
+✖ changed preserved constraints prevents success after DDL (2.361418ms)
+✖ changed preserved indexes prevents success after DDL (3.395208ms)
+✖ changed preserved views prevents success after DDL (2.882141ms)
+✖ changed preserved types prevents success after DDL (3.18381ms)
+✖ changed preserved sequences prevents success after DDL (5.009452ms)
+✖ changed preserved triggers prevents success after DDL (3.665074ms)
+✖ changed preserved dependencies prevents success after DDL (2.976133ms)
+✖ changed preserved comments prevents success after DDL (1.905127ms)
+✖ changed preserved labels prevents success after DDL (2.186965ms)
+✖ namespace ACL mutation is detected after DDL (3.37654ms)
+✖ empty namespace recreation changes exact preserved identity (2.669106ms)
+✔ actual namespace query projects namespace OID losslessly (0.341323ms)
+✔ actual sequence catalog query preserves all bigint settings as text (0.194153ms)
+✔ actual catalog query covers supported metadata and refuses unsupported owners (0.238158ms)
+✔ scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership (6.061269ms)
+✖ unknown COMMIT remains unknown with compatibility enabled and no retry (3.082147ms)
+✔ new server/scope facts survive detached fixture normalization (1.279555ms)
+✖ preserved namespace OID refuses invalid undefined (4.098846ms)
+✖ preserved namespace OID refuses invalid null (2.271888ms)
+✖ preserved namespace OID refuses invalid 0 (2.11355ms)
+✖ preserved namespace OID refuses invalid 0 (2.596386ms)
+✖ preserved namespace OID refuses invalid -1 (2.351042ms)
+✖ preserved namespace OID refuses invalid 1.0 (2.39973ms)
+✖ preserved namespace OID refuses invalid 4294967296 (4.50263ms)
+✖ distinct int64 sequence settings retain distinct fingerprints (2.823017ms)
+✖ reconstruction refuses changed preserved OID against trusted original signature (2.331267ms)
+✖ reconstruction cannot substitute a newly matching server mapping under old hash (5.827247ms)
+✔ catalog relation identities remain fixed despite implicit pg_temp search precedence (0.523047ms)
+✔ catalog metadata builtin cast types are independent of pg_temp (0.368925ms)
+✖ mapped server identity is independent from loopback dial identity (15.423945ms)
+✖ explicit25 unrelated schemas are retained through install and reconstruction (7.621046ms)
+✔ dial host mismatch refuses before allocation (1.191743ms)
+✔ dial port mismatch refuses before allocation (0.368895ms)
+✔ mapped server address mismatch preserves engine gates (5.248376ms)
+✔ mapped server port mismatch preserves engine gates (3.284842ms)
+✔ mapped server system_identifier mismatch preserves engine gates (3.582409ms)
+✔ mapped server fsync mismatch preserves engine gates (1.929513ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2"} (0.667234ms)
+✔ invalid paired server shape {"serverPort":5432} (0.503958ms)
+✔ invalid paired server shape {"serverAddress":"db.local","serverPort":5432} (3.822781ms)
+✔ invalid paired server shape {"serverAddress":"::1%lo","serverPort":5432} (1.504604ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2","serverPort":0} (0.403847ms)
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (5.717462ms)
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (9.282375ms)
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (5.254275ms)
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (3.238993ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (1.049329ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.41882ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (1.065674ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.39221ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.364649ms)
+✖ legacy strict mode still refuses unrelated declared-looking namespaces (3.529751ms)
+✖ scoped mode does not permit unrelated public relations or target collisions (2.345989ms)
+✖ unsupported evidence class refuses before migration (3.453926ms)
+✖ populated25 schema metadata is exact across install/reconstruction without row reads (5.403069ms)
+✖ changed preserved relations metadata refuses reconstruction (6.602393ms)
+✖ changed preserved columns metadata refuses reconstruction (3.862521ms)
+✖ changed preserved defaults metadata refuses reconstruction (3.203309ms)
+✖ changed preserved constraints metadata refuses reconstruction (2.429104ms)
+✖ changed preserved indexes metadata refuses reconstruction (3.470631ms)
+✖ changed preserved views metadata refuses reconstruction (4.81207ms)
+✖ changed preserved types metadata refuses reconstruction (2.222805ms)
+✖ changed preserved sequences metadata refuses reconstruction (1.70808ms)
+✖ changed preserved dependencies metadata refuses reconstruction (1.846308ms)
+✖ changed preserved comments metadata refuses reconstruction (4.16788ms)
+✖ changed preserved labels metadata refuses reconstruction (3.094937ms)
+✖ metadata changing during migration yields UNKNOWN before COMMIT (2.756527ms)
+✖ mapped schema digest cannot be reused for changed mapped identity even when engine echoes it (2.622826ms)
+✖ public target type collision refuses before any DDL (6.60654ms)
+✖ target namespace ownership is checked after install (4.167329ms)
+✔ dial database must match trusted fixture (0.431539ms)
+✔ dial user must match trusted fixture (0.223747ms)
+✖ sequence bigint settings are transported losslessly as text, never JS numbers (3.349128ms)
+✖ empty evidence schema identity includes namespace OID to detect replacement (4.139718ms)
+✖ catalog identity literals cannot resolve through implicit temporary schemas (2.267041ms)
+✖ catalog snapshot builtin cast types cannot resolve through temporary schemas (1.986138ms)
+✖ actual entry applies only exact six migration bytes in order once and returns detached pinned receipt (19.442411ms)
+✖ reconstruction requires retained full digest; populated accounting remains an observation (4.928574ms)
+✖ retained digest detects constraint replacement without DDL (3.203119ms)
+✖ retained digest detects default replacement without DDL (3.404792ms)
+✖ retained digest detects index replacement without DDL (5.338903ms)
+✖ retained digest detects view replacement without DDL (2.533351ms)
+✖ retained digest detects collation replacement without DDL (3.098301ms)
+✔ pre-admission host cannot reach borrowed pool (1.223771ms)
+✔ pre-admission database cannot reach borrowed pool (0.504258ms)
+✔ pre-admission user cannot reach borrowed pool (0.541494ms)
+✔ pre-admission mode cannot reach borrowed pool (0.443637ms)
+✔ pre-admission fixtureCase cannot reach borrowed pool (0.414644ms)
+✔ pre-admission port cannot reach borrowed pool (0.377418ms)
+✔ pre-admission system cannot reach borrowed pool (0.853163ms)
+✔ pre-admission timestamp cannot reach borrowed pool (0.588345ms)
+✔ pre-admission version cannot reach borrowed pool (1.296571ms)
+✔ pre-admission hash cannot reach borrowed pool (0.567925ms)
+✔ pre-admission extra cannot reach borrowed pool (0.329165ms)
+✔ actual server database mismatch stops before DDL (11.949358ms)
+✔ actual server username mismatch stops before DDL (4.565118ms)
+✔ actual server address mismatch stops before DDL (3.016799ms)
+✔ actual server port mismatch stops before DDL (4.030775ms)
+✔ actual server version mismatch stops before DDL (4.683957ms)
+✔ actual server start_ms mismatch stops before DDL (2.621564ms)
+✔ actual server system_identifier mismatch stops before DDL (2.567082ms)
+✔ actual server fsync mismatch stops before DDL (2.502576ms)
+✔ actual server synchronous_commit mismatch stops before DDL (4.764598ms)
+✔ actual server search_path mismatch stops before DDL (2.086359ms)
+✔ no reset or retry for lock (3.634068ms)
+✔ no reset or retry for namespace (3.545825ms)
+✔ no reset or retry for existingRelation (2.55285ms)
+✖ post-DDL missing refusal preserves uncertainty (2.788275ms)
+✖ post-DDL duplicate refusal preserves uncertainty (5.766396ms)
+✖ post-DDL type refusal preserves uncertainty (2.237857ms)
+✖ post-DDL nullable refusal preserves uncertainty (2.341944ms)
+✖ post-DDL owner refusal preserves uncertainty (2.687493ms)
+✖ post-DDL rowSecurity refusal preserves uncertainty (2.954234ms)
+✖ post-DDL trigger refusal preserves uncertainty (4.32751ms)
+✖ post-DDL rule refusal preserves uncertainty (2.679041ms)
+✖ post-DDL invalidConstraint refusal preserves uncertainty (2.794384ms)
+✖ post-DDL missingConstraint refusal preserves uncertainty (7.686199ms)
+✖ post-DDL duplicateConstraint refusal preserves uncertainty (5.015676ms)
+✖ post-DDL invalidIndex refusal preserves uncertainty (3.942982ms)
+✖ post-DDL deferrable refusal preserves uncertainty (1.857635ms)
+✖ post-DDL generated refusal preserves uncertainty (2.165057ms)
+✖ fresh schema refuses consumed budget (2.191959ms)
+✖ fresh schema refuses quarantine budget (2.707403ms)
+✖ fresh schema refuses cap budget (4.257195ms)
+✖ fresh schema refuses any preexisting task row (2.581313ms)
+✔ pre-abort has no connection (0.63774ms)
+✔ pre-deadline has no connection (0.214893ms)
+✔ deadline returned by identity prevents any migration (2.093079ms)
+✖ deadline returned by first DDL allows rollback only (2.826031ms)
+✖ borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened (3.087735ms)
+✖ remaining original budget narrows statement timeout (1.737484ms)
+✔ failed BEGIN cannot produce success or retry (1.694009ms)
+✖ failed COMMIT cannot produce success or retry (1.325524ms)
+✖ failed release cannot produce success or retry (1.478435ms)
+✖ failed ROLLBACK cannot produce success or retry (1.809052ms)
+✔ late connection after cancellation is released exactly once without SQL (8.644275ms)
+✖ late DDL ACK after cancellation cannot resume migrations or claim physical stop (8.584887ms)
+✔ malformed acquired client with release is disposed without SQL (2.479701ms)
+✔ hostile options getter and pool Proxy execute no traps (0.865262ms)
+✔ hostile result rows getter never executes and is sanitized (2.547082ms)
+✖ emitted namespace SQL preserves underscore literally in the reserved pg_ prefix (4.862525ms)
+✔ reported user namespace pgx_private prevents every DDL statement (3.02432ms)
+✔ fixed original clock rejects an operation ceiling beyond sixty seconds (0.429145ms)
+✖ contending installer refuses lock while first owner completes exactly one DDL sequence (2.985582ms)
+✖ late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry (3.480717ms)
+✖ complete 3128280-byte ASCII inventory installs and reconstructs exactly (25.44722ms)
+✖ complete 4194304-byte ASCII inventory installs and reconstructs exactly (26.601826ms)
+✖ complete 4194304-byte multibyte inventory installs and reconstructs exactly (10.723143ms)
+✖ preservation byte+1 ASCII refuses before any DDL (13.192429ms)
+✖ preservation byte+1 multibyte refuses before any DDL (8.718086ms)
+✖ complete measured-size tail change during migration is UNKNOWN, never successful preservation (11.970871ms)
+✖ complete measured-size tail change on reconstruction refuses without rewriting (7.915509ms)
+✖ overflow after submitted migrations remains UNKNOWN and cannot COMMIT (10.991186ms)
+✔ ordinary rows retain exact1MiB/+1 UTF8 boundary and1024 row ceiling (8.197453ms)
+✔ preservation count guard survives scoped byte ceiling (12.976813ms)
+✔ preservation depth guard survives scoped byte ceiling (8.610965ms)
+✔ preservation nodes guard survives scoped byte ceiling (6.880802ms)
+✔ preservation accessor guard survives scoped byte ceiling (13.334252ms)
+✔ preservation proxy guard survives scoped byte ceiling (7.844922ms)
+✔ preservation metadata-shape guard survives scoped byte ceiling (6.83265ms)
+✔ preservation unsupported guard survives scoped byte ceiling (7.026391ms)
+✖ ordinary catalog does not acquire preservation4MiB allowance (7.735999ms)
+✖ installs exactly the six unchanged files, then verifies13 relations and empty accounting (10.226586ms)
+✖ reconstruction permits retained accounting but binds original complete catalog hash (4.002772ms)
+✔ identity database mismatch refuses before DDL (2.963729ms)
+✔ identity username mismatch refuses before DDL (1.736142ms)
+✔ identity address mismatch refuses before DDL (2.021682ms)
+✔ identity port mismatch refuses before DDL (2.836207ms)
+✔ identity version mismatch refuses before DDL (6.025094ms)
+✔ identity start_ms mismatch refuses before DDL (1.791075ms)
+✔ identity system_identifier mismatch refuses before DDL (1.88113ms)
+✔ identity fsync mismatch refuses before DDL (1.507127ms)
+✔ identity synchronous_commit mismatch refuses before DDL (4.966843ms)
+✔ identity search_path mismatch refuses before DDL (2.462525ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (1.104982ms)
+✖ install refuses partial namespaces, preexisting relation and same fixture reapply (2.098558ms)
+✖ concurrent installers cannot both acquire fixed transaction lock (2.090625ms)
+✖ post-install missing corruption is UNKNOWN, never retry/success (2.711159ms)
+✖ post-install nullable corruption is UNKNOWN, never retry/success (3.3834ms)
+✖ post-install type corruption is UNKNOWN, never retry/success (1.731084ms)
+✖ post-install constraint corruption is UNKNOWN, never retry/success (6.56684ms)
+✖ post-install unvalidated corruption is UNKNOWN, never retry/success (1.739668ms)
+✖ post-install index corruption is UNKNOWN, never retry/success (1.480027ms)
+✖ post-install trigger corruption is UNKNOWN, never retry/success (2.99813ms)
+✖ post-install owner corruption is UNKNOWN, never retry/success (1.606326ms)
+✖ post-install view corruption is UNKNOWN, never retry/success (1.695571ms)
+✖ post-install rowSecurity corruption is UNKNOWN, never retry/success (2.174306ms)
+✖ reconstruction catches changed check definition even when type/counts remain (1.700217ms)
+✖ fresh install requires exact empty application rows and zero unquarantined accounting (5.27475ms)
+✖ migration, commit and release errors preserve UNKNOWN and no retry (2.265048ms)
+✖ unknown errors are not reflected or evaluated (2.893353ms)
+✖ owner query timeout6000 is admitted and shorter bound is preserved for every query (1.92111ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (61.133976ms)
+✖ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (6.11496ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (2.955526ms)
+✖ receipt binds original cutoff and reports port observation without native qualification (1.898136ms)
+✖ namespace query excludes only literal pg_ prefix and refuses user pgx_private (2.448303ms)
+✖ reusable scripted fixture binds configured target identity without allocating a database (3.417462ms)
+ℹ tests 241
+ℹ suites 0
+ℹ pass 109
+ℹ fail 132
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 509.366164
+
+✖ failing tests:
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:34:1
+✖ explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data (14.739506ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:35:74)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:39:1
+✖ legacy strict descriptor preserves original signature algorithm (5.889511ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:39:133)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:40:1
+✖ reconstruction binds mapping scope and retained fingerprint without DDL (3.221206ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:40:98)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:325
+✖ namespace missing refuses before DDL (10.204402ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:442)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:325
+✖ namespace undeclared refuses before DDL (5.362693ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:442)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:325
+✖ namespace wrongOwner refuses before DDL (2.301012ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:442)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:325
+✖ namespace targetCollision refuses before DDL (3.36274ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:442)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:325
+✖ namespace duplicate refuses before DDL (3.826888ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:44:442)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:45:1
+✖ legacy mode still refuses25 undeclared schemas (2.993464ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:45:174)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:46:1
+✖ public target row type collision refuses before any migration (2.488664ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:46:203)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:47:1
+✖ unsupported evidence catalog classes fail closed before DDL (3.405673ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'preservation'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:47:109)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'preservation',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved relations prevents success after DDL (2.579871ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved columns prevents success after DDL (4.613611ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved defaults prevents success after DDL (3.280035ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved constraints prevents success after DDL (2.361418ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved indexes prevents success after DDL (3.395208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved views prevents success after DDL (2.882141ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved types prevents success after DDL (3.18381ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved sequences prevents success after DDL (5.009452ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved triggers prevents success after DDL (3.665074ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved dependencies prevents success after DDL (2.976133ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved comments prevents success after DDL (1.905127ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:153
+✖ changed preserved labels prevents success after DDL (2.186965ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:48:308)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:49:1
+✖ namespace ACL mutation is detected after DDL (3.37654ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:49:136)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:50:1
+✖ empty namespace recreation changes exact preserved identity (2.669106ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:50:147)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:59:1
+✖ unknown COMMIT remains unknown with compatibility enabled and no retry (3.082147ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:94)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:59:175)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid undefined (4.098846ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid null (2.271888ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid 0 (2.11355ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid 0 (2.596386ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid -1 (2.351042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid 1.0 (2.39973ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:69
+✖ preserved namespace OID refuses invalid 4294967296 (4.50263ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'identity'
+  - 'ownership'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:12:135)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:61:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'identity',
+    expected: 'ownership',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:62:1
+✖ distinct int64 sequence settings retain distinct fingerprints (2.823017ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:62:276)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:63:1
+✖ reconstruction refuses changed preserved OID against trusted original signature (2.331267ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:63:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:64:1
+✖ reconstruction cannot substitute a newly matching server mapping under old hash (5.827247ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs:64:106)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:8:1
+✖ mapped server identity is independent from loopback dial identity (15.423945ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:10:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:12:1
+✖ explicit25 unrelated schemas are retained through install and reconstruction (7.621046ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:13:69)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:25:216
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (5.717462ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:25:216
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (9.282375ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:25:216
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (5.254275ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:25:216
+✖ declared evidence namespace set/owner/target mismatch refuses before DDL (3.238993ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:26:80)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:31:1
+✖ legacy strict mode still refuses unrelated declared-looking namespaces (3.529751ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:31:120)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:31:120)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:32:1
+✖ scoped mode does not permit unrelated public relations or target collisions (2.345989ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:32:192)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:32:192)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:33:1
+✖ unsupported evidence class refuses before migration (3.453926ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:33:143)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:33:143)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:35:1
+✖ populated25 schema metadata is exact across install/reconstruction without row reads (5.403069ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:36:158)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved relations metadata refuses reconstruction (6.602393ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved columns metadata refuses reconstruction (3.862521ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved defaults metadata refuses reconstruction (3.203309ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved constraints metadata refuses reconstruction (2.429104ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved indexes metadata refuses reconstruction (3.470631ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved views metadata refuses reconstruction (4.81207ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved types metadata refuses reconstruction (2.222805ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved sequences metadata refuses reconstruction (1.70808ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved dependencies metadata refuses reconstruction (1.846308ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved comments metadata refuses reconstruction (4.16788ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:40:142
+✖ changed preserved labels metadata refuses reconstruction (3.094937ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:41:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:44:1
+✖ metadata changing during migration yields UNKNOWN before COMMIT (2.756527ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:46:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:46:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:48:1
+✖ mapped schema digest cannot be reused for changed mapped identity even when engine echoes it (2.622826ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:49:39)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:52:1
+✖ public target type collision refuses before any DDL (6.60654ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:52:186)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:52:186)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:53:1
+✖ target namespace ownership is checked after install (4.167329ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:55:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:55:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:58:1
+✖ sequence bigint settings are transported losslessly as text, never JS numbers (3.349128ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:60:81)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:65:1
+✖ empty evidence schema identity includes namespace OID to detect replacement (4.139718ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:67:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:71:1
+✖ catalog identity literals cannot resolve through implicit temporary schemas (2.267041ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:72:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:78:1
+✖ catalog snapshot builtin cast types cannot resolve through temporary schemas (1.986138ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:79:61)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:11:1
+✖ actual entry applies only exact six migration bytes in order once and returns detached pinned receipt (19.442411ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:12:29)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:16:1
+✖ reconstruction requires retained full digest; populated accounting remains an observation (4.928574ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async retained (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:9:53)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:17:13)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:295
+✖ retained digest detects constraint replacement without DDL (3.203119ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async retained (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:9:53)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:379)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:295
+✖ retained digest detects default replacement without DDL (3.404792ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async retained (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:9:53)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:379)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:295
+✖ retained digest detects index replacement without DDL (5.338903ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async retained (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:9:53)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:379)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:295
+✖ retained digest detects view replacement without DDL (2.533351ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async retained (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:9:53)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:379)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:295
+✖ retained digest detects collation replacement without DDL (3.098301ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async retained (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:9:53)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:20:379)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL missing refusal preserves uncertainty (2.788275ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL duplicate refusal preserves uncertainty (5.766396ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL type refusal preserves uncertainty (2.237857ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL nullable refusal preserves uncertainty (2.341944ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL owner refusal preserves uncertainty (2.687493ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL rowSecurity refusal preserves uncertainty (2.954234ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL trigger refusal preserves uncertainty (4.32751ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL rule refusal preserves uncertainty (2.679041ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL invalidConstraint refusal preserves uncertainty (2.794384ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL missingConstraint refusal preserves uncertainty (7.686199ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL duplicateConstraint refusal preserves uncertainty (5.015676ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL invalidIndex refusal preserves uncertainty (3.942982ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL deferrable refusal preserves uncertainty (1.857635ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:589
+✖ post-DDL generated refusal preserves uncertainty (2.165057ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:24:694)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:25:135
+✖ fresh schema refuses consumed budget (2.191959ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:25:373)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:25:135
+✖ fresh schema refuses quarantine budget (2.707403ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:25:373)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:25:135
+✖ fresh schema refuses cap budget (4.257195ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:25:373)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:26:1
+✖ fresh schema refuses any preexisting task row (2.581313ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:26:177)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:29:1
+✖ deadline returned by first DDL allows rollback only (2.826031ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:29:151)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:30:1
+✖ borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened (3.087735ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:30:190)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:31:1
+✖ remaining original budget narrows statement timeout (1.737484ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:31:185)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:32:60
+✖ failed COMMIT cannot produce success or retry (1.325524ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:34:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:32:60
+✖ failed release cannot produce success or retry (1.478435ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:34:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:32:60
+✖ failed ROLLBACK cannot produce success or retry (1.809052ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NOT_INSTALLED'
+  - 'UNKNOWN'
+  
+      at Object.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:5:144)
+      at expectedException (node:assert:578:17)
+      at expectsError (node:assert:703:21)
+      at strict.rejects (node:assert:769:3)
+      at async rejected (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:8:52)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:34:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NOT_INSTALLED',
+    expected: 'UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:39:1
+✖ late DDL ACK after cancellation cannot resume migrations or claim physical stop (8.584887ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:45:1
+✖ emitted namespace SQL preserves underscore literally in the reserved pg_ prefix (4.862525ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-independent/schema-independent.test.mjs:46:21)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:56:1
+✖ contending installer refuses lock while first owner completes exactly one DDL sequence (2.985582ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-independent/schema-independent.test.mjs:63:1
+✖ late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry (3.480717ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:20:72
+✖ complete 3128280-byte ASCII inventory installs and reconstructs exactly (25.44722ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:21:71)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:20:72
+✖ complete 4194304-byte ASCII inventory installs and reconstructs exactly (26.601826ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:21:71)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:20:72
+✖ complete 4194304-byte multibyte inventory installs and reconstructs exactly (10.723143ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:21:71)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:25:33
+✖ preservation byte+1 ASCII refuses before any DDL (13.192429ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:26:43)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:26:43)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:25:33
+✖ preservation byte+1 multibyte refuses before any DDL (8.718086ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:26:43)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:26:43)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:28:1
+✖ complete measured-size tail change during migration is UNKNOWN, never successful preservation (11.970871ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:30:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:30:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:32:1
+✖ complete measured-size tail change on reconstruction refuses without rewriting (7.915509ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:33:44)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:36:1
+✖ overflow after submitted migrations remains UNKNOWN and cannot COMMIT (10.991186ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:38:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:38:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:56:1
+✖ ordinary catalog does not acquire preservation4MiB allowance (7.735999ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:57:89)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:57:89)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:9:1
+✖ installs exactly the six unchanged files, then verifies13 relations and empty accounting (10.226586ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:10:23)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:12:1
+✖ reconstruction permits retained accounting but binds original complete catalog hash (4.002772ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:13:29)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:20:1
+✖ install refuses partial namespaces, preexisting relation and same fixture reapply (2.098558ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:21:127)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:21:127)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:24:1
+✖ concurrent installers cannot both acquire fixed transaction lock (2.090625ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install missing corruption is UNKNOWN, never retry/success (2.711159ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install nullable corruption is UNKNOWN, never retry/success (3.3834ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install type corruption is UNKNOWN, never retry/success (1.731084ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install constraint corruption is UNKNOWN, never retry/success (6.56684ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install unvalidated corruption is UNKNOWN, never retry/success (1.739668ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install index corruption is UNKNOWN, never retry/success (1.480027ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install trigger corruption is UNKNOWN, never retry/success (2.99813ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install owner corruption is UNKNOWN, never retry/success (1.606326ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install view corruption is UNKNOWN, never retry/success (1.695571ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:28:382
+✖ post-install rowSecurity corruption is UNKNOWN, never retry/success (2.174306ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:28:506)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:29:1
+✖ reconstruction catches changed check definition even when type/counts remain (1.700217ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:29:116)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:30:1
+✖ fresh install requires exact empty application rows and zero unquarantined accounting (5.27475ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:30:314)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:30:314)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:31:1
+✖ migration, commit and release errors preserve UNKNOWN and no retry (2.265048ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:32:98)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:32:98)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:34:1
+✖ unknown errors are not reflected or evaluated (2.893353ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:34:221)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:34:221)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:35:1
+✖ owner query timeout6000 is admitted and shorter bound is preserved for every query (1.92111ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:35:152)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:39:1
+✖ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (6.11496ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:45:1
+✖ receipt binds original cutoff and reports port observation without native qualification (1.898136ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:45:141)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:46:1
+✖ namespace query excludes only literal pg_ prefix and refuses user pgx_private (2.448303ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:47:56)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:47:56)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema.test.mjs:52:1
+✖ reusable scripted fixture binds configured target identity without allocating a database (3.417462ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.test.mjs:54:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'identity',
+    unsettledOperations: 0
+  }

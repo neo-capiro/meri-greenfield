@@ -1,6 +1,8 @@
 """Fixed qualification lifecycle using canonical Grants; never a parallel state machine."""
 from datetime import datetime, timezone
 import hashlib
+import ipaddress
+import re
 import json
 from pathlib import Path
 import time
@@ -51,13 +53,52 @@ def admission(value):
             raise StateDenied('LIFECYCLE_EXPIRY')
     if len({g['grantId'] for g in grants}) != 2 or len({g['capabilitySha256'] for g in grants}) != 2:
         raise StateDenied('LIFECYCLE_GRANTS')
-    fixture = exact(a['fixture'], ['mode', 'fixtureId', 'host', 'port', 'database', 'user', 'systemIdentifier', 'serverStartTime', 'serverVersion', 'schemaSha256'])
-    if fixture['mode'] != 'owned-disposable-qualification' or fixture['host'] != '127.0.0.1' or fixture['database'] != 'meri_qualification_test' or fixture['user'] != 'qualification_owner' or not 1 <= integer(fixture['port']) <= 65535:
-        raise StateDenied('LIFECYCLE_FIXTURE')
-    if any(type(fixture[k]) is not str or not 1 <= len(fixture[k]) <= 128 for k in ('fixtureId', 'systemIdentifier', 'serverStartTime', 'serverVersion')):
-        raise StateDenied('LIFECYCLE_FIXTURE')
-    identifier(fixture['fixtureId']); digest(fixture['schemaSha256'])
+    fixture_admission(a['fixture'])
     return a, b
+
+
+def fixture_admission(value):
+    required = {'mode', 'fixtureId', 'host', 'port', 'database', 'user', 'systemIdentifier', 'serverStartTime', 'serverVersion', 'schemaSha256'}
+    optional = {'serverAddress', 'serverPort', 'schemaScope'}
+    if type(value) is not dict or not required <= value.keys() or value.keys() - required - optional:
+        raise StateDenied('LIFECYCLE_FIXTURE')
+    f = value
+    if f['mode'] != 'owned-disposable-qualification' or f['host'] != '127.0.0.1' or f['database'] != 'meri_qualification_test' or f['user'] != 'qualification_owner' or not 1 <= integer(f['port']) <= 65535:
+        raise StateDenied('LIFECYCLE_FIXTURE')
+    for key, pattern in [('fixtureId', r'[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}'), ('systemIdentifier', r'[0-9]{1,20}'), ('serverVersion', r'[1-9][0-9]{5}'), ('serverStartTime', r'[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z')]:
+        if type(f[key]) is not str or re.fullmatch(pattern, f[key]) is None:
+            raise StateDenied('LIFECYCLE_FIXTURE')
+    try:
+        stamp = datetime.fromisoformat(f['serverStartTime'].replace('Z', '+00:00'))
+        if stamp.isoformat(timespec='milliseconds').replace('+00:00', 'Z') != f['serverStartTime']:
+            raise ValueError()
+    except ValueError:
+        raise StateDenied('LIFECYCLE_FIXTURE') from None
+    digest(f['schemaSha256'])
+    if ('serverAddress' in f) != ('serverPort' in f):
+        raise StateDenied('LIFECYCLE_FIXTURE')
+    if 'serverAddress' in f:
+        try:
+            if type(f['serverAddress']) is not str or '%' in f['serverAddress']:
+                raise ValueError()
+            ipaddress.ip_address(f['serverAddress'])
+        except ValueError:
+            raise StateDenied('LIFECYCLE_FIXTURE') from None
+        if integer(f['serverPort']) > 65535:
+            raise StateDenied('LIFECYCLE_FIXTURE')
+    if 'schemaScope' in f:
+        scope = exact(f['schemaScope'], ['mode', 'namespaces'])
+        if scope['mode'] != 'preserve-declared-evidence' or type(scope['namespaces']) is not list or not 1 <= len(scope['namespaces']) <= 128:
+            raise StateDenied('LIFECYCLE_FIXTURE')
+        names = []
+        for item in scope['namespaces']:
+            exact(item, ['name', 'owner'])
+            if any(type(item[k]) is not str or re.fullmatch(r'[a-z_][a-z0-9_]{0,62}', item[k]) is None for k in ('name', 'owner')) or item['name'].startswith('pg_') or item['name'] in ('public', 'information_schema', 'meri_qualification', 'meri_task_lookup'):
+                raise StateDenied('LIFECYCLE_FIXTURE')
+            names.append(item['name'])
+        if len(set(names)) != len(names):
+            raise StateDenied('LIFECYCLE_FIXTURE')
+    return f
 
 
 class LifecycleUnknown(StateDenied):
@@ -102,9 +143,9 @@ class QualificationLifecycle:
     def verify_fixture(self):
         expected = self.value['fixture']
         def read(cursor):
-            cursor.execute("SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS started_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier")
+            cursor.execute("SELECT current_database() AS database,current_user AS username,pg_catalog.host(pg_catalog.inet_server_addr()) AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS started_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier")
             row = cursor.fetchone()
-            if not row or any(row[key] != expected[field] for key, field in [('database', 'database'), ('username', 'user'), ('address', 'host'), ('port', 'port'), ('version', 'serverVersion'), ('system_identifier', 'systemIdentifier')]) or row['fsync'] != 'on' or row['synchronous_commit'] != 'on':
+            if not row or any(row[key] != expected[field] for key, field in [('database', 'database'), ('username', 'user'), ('version', 'serverVersion'), ('system_identifier', 'systemIdentifier')]) or row['address'] != expected.get('serverAddress', expected['host']) or row['port'] != expected.get('serverPort', expected['port']) or row['fsync'] != 'on' or row['synchronous_commit'] != 'on':
                 raise StateDenied('LIFECYCLE_FIXTURE_MISMATCH')
             stamp = datetime.fromisoformat(expected['serverStartTime'].replace('Z', '+00:00'))
             if stamp.tzinfo is None or row['started_ms'] != str(int(stamp.timestamp() * 1000)):

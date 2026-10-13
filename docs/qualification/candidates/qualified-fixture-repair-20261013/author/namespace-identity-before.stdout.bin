@@ -1,0 +1,28 @@
+✖ empty evidence schema identity includes namespace OID to detect replacement (23.251058ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.735242
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:65:1
+✖ empty evidence schema identity includes namespace OID to detect replacement (23.251058ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\boid::text AS oid\b/. Input:
+  
+  "SELECT nspname AS name,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname"
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:68:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "SELECT nspname AS name,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname",
+    expected: /\boid::text AS oid\b/,
+    operator: 'match',
+    diff: 'simple'
+  }

@@ -1,0 +1,58 @@
+{
+  "base": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "candidate": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "candidateTree": "bc288d53ce03e926833a26366e53216837f4fa2b",
+  "baseEntries": 12257,
+  "unchangedEntries": 12249,
+  "changedBaseEntries": [
+    {
+      "path": "apps/artifacts/python/entry.py",
+      "baseBlob": "6d3b288c2ab39459355542e872b1c0deca5ed165",
+      "candidateBlob": "5aaa397d14874fc5a7a5caee700dbeb6525cf534"
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "baseBlob": "2267340cdc47aab6fef03b6b69e718553c0408c4",
+      "candidateBlob": "1cc895587801085ad3e794b0d18f8a2d238a13a0"
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "baseBlob": "6c11327b70676ba563368e3c02962e79c31127ca",
+      "candidateBlob": "68f71beae0dfdf413a4ad86eb251020d54cd7106"
+    },
+    {
+      "path": "apps/control/document-application/local/mount.mjs",
+      "baseBlob": "caf6e71a191cbb6a5c01dc76799d51f6ce811100",
+      "candidateBlob": "b8b4f6a7d9a91a3f4971eb0ba70859c7ad67a5e3"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "baseBlob": "0a30dd166c055b314cceaf3ad109361894ed5821",
+      "candidateBlob": "df698f88da622488dbbf816a6542a522cbab61b0"
+    },
+    {
+      "path": "apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "baseBlob": "ee926206a372a73dc7cd626c63862c79bea89161",
+      "candidateBlob": "781381655eb3d007f827ad0c3043ea05d71d15c8"
+    },
+    {
+      "path": "apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "baseBlob": "54d68d23563d625032578f0bb47dd44882692d40",
+      "candidateBlob": "d1deac394600b399b27fbd0f76f093bcd8d4d7d9"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "baseBlob": "5742c6590e42d034782e62ea746837d2d3f72b7f",
+      "candidateBlob": "0bb688174224affa47b7a0d3c4fc11b602781a80"
+    }
+  ],
+  "packagesContractsExact": true,
+  "publicHttpOwnersExact": true,
+  "nativePR57": {
+    "commit": "a72d130b26d39c99d9d87a524795cee15aca8efc",
+    "tree": "db5b487efb8dcea775208a4dc455f32f4fcd4bf5",
+    "allChangedBlobsExact": true,
+    "runtime": "pending separate native owner"
+  },
+  "wholePlanPromotion": false
+}

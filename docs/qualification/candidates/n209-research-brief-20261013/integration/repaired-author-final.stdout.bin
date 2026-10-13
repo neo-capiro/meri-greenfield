@@ -1,0 +1,24 @@
+✔ decisive reads bind exact excerpts, preserve bases, disclose missing/conflicting evidence and keep cited prose unverified (33.346836ms)
+✔ free-form text equal to cited quote stays unverified (6.775546ms)
+✔ quote differs (6.17381ms)
+✔ wrong source version (5.455772ms)
+✔ out-of-range passage (5.344909ms)
+✔ refuse altered source hash (3.535396ms)
+✔ refuse foreign tenant (3.151629ms)
+✔ refuse wrong selector hash (4.284198ms)
+✔ refuse wrong source scope (3.471051ms)
+✔ refuse source version substitution (3.460375ms)
+✔ refuse candidate snippet (3.181784ms)
+✔ refuse Congress/session filter substitution (3.135036ms)
+✔ stale source remains a stale bound excerpt (8.362171ms)
+✔ wrong immutable recipe/version and changed budget/legislative basis are refused (12.975974ms)
+✔ parked source read is bounded; cancelled preparation returns no prepared request (4.809481ms)
+✔ actual canonical routes guard approved full request, retain original and revise exact selected DOCX base (380.598575ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2106.195821

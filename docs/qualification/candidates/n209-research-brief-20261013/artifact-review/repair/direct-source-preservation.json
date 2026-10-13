@@ -1,0 +1,62 @@
+{
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "checks": [
+    {
+      "name": "original skill/manifest/catalog/compiler/Word owner unchanged from prior freeze",
+      "base": "7d1024d11e439393de3171a95892b7b0d402c78c",
+      "paths": [
+        "apps/control/document-application/research-brief/SKILL.md",
+        "apps/control/document-application/research-brief/manifest.json",
+        "packages/contracts/retrieval-0.2/catalog.json",
+        "apps/control/document-application/research-brief/compose.mjs",
+        "apps/artifacts/python/office.py",
+        "apps/artifacts/python/entry.py"
+      ],
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "7d1024d11e439393de3171a95892b7b0d402c78c",
+        "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+        "--",
+        "apps/control/document-application/research-brief/SKILL.md",
+        "apps/control/document-application/research-brief/manifest.json",
+        "packages/contracts/retrieval-0.2/catalog.json",
+        "apps/control/document-application/research-brief/compose.mjs",
+        "apps/artifacts/python/office.py",
+        "apps/artifacts/python/entry.py"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "public owner and contract bytes unchanged from composition",
+      "base": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+      "paths": [
+        "apps/control/document-application/current.mjs",
+        "apps/control/document-application/index.mjs",
+        "packages/contracts"
+      ],
+      "argv": [
+        "git",
+        "diff",
+        "--exit-code",
+        "45c2de24f41402ae3a938a7df09eff78db90d94c",
+        "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+        "--",
+        "apps/control/document-application/current.mjs",
+        "apps/control/document-application/index.mjs",
+        "packages/contracts"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "nativeQualified": false
+}

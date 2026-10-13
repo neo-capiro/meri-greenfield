@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "reviewedTree": "bc288d53ce03e926833a26366e53216837f4fa2b",
+  "checks": [
+    "Exact borrowed authority receiver/call/signal preserved; canonical current authority allowed exact intent",
+    "Mutating aliased prepared/returned context after binding rejected before borrowed owner",
+    "Mutating returned prepared request cannot replace immutable original request pin",
+    "Wrong exact parent rejected before borrowed owner",
+    "Original validated authority method captured even if borrowed object method later replaced",
+    "Accessor/proxy authority configuration refused without invoking accessor",
+    "Outer configuration getters/proxies refused without getter or proxy-trap execution",
+    "Real unchanged HTTP graph substitution/wrong-parent deny with zero reservation/generation",
+    "Existing inspect/download remain routed; revoked graph and original current-authority policy still deny",
+    "No DOCX generated, no generator process, no reservation/settlement/unknown accounting allocated"
+  ],
+  "trace": [
+    {
+      "path": "/api/action-followthrough/session",
+      "status": 200,
+      "deliveryId": null,
+      "errorCode": null,
+      "errorOutcome": null,
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/create",
+      "status": 403,
+      "deliveryId": "final-substitution",
+      "errorCode": "ACCESS_DENIED",
+      "errorOutcome": "UNKNOWN",
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/revise",
+      "status": 403,
+      "deliveryId": "final-wrong-parent",
+      "errorCode": "ACCESS_DENIED",
+      "errorOutcome": "UNKNOWN",
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/inspect",
+      "status": 502,
+      "deliveryId": null,
+      "errorCode": "DOCUMENT_REFUSED",
+      "errorOutcome": "READ_UNAVAILABLE",
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/download",
+      "status": 502,
+      "deliveryId": null,
+      "errorCode": "DOCUMENT_REFUSED",
+      "errorOutcome": "READ_UNAVAILABLE",
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/inspect",
+      "status": 403,
+      "deliveryId": null,
+      "errorCode": "SESSION_REFUSED",
+      "errorOutcome": "NOT_DISPATCHED",
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/download",
+      "status": 403,
+      "deliveryId": null,
+      "errorCode": "SESSION_REFUSED",
+      "errorOutcome": "NOT_DISPATCHED",
+      "generations": 0,
+      "reservations": 0
+    },
+    {
+      "path": "/api/documents/revise",
+      "status": 403,
+      "deliveryId": "final-revoked",
+      "errorCode": "SESSION_REFUSED",
+      "errorOutcome": "NOT_DISPATCHED",
+      "generations": 0,
+      "reservations": 0
+    }
+  ],
+  "cleanup": {
+    "http": {
+      "closed": true,
+      "listening": false,
+      "activeSockets": 0
+    },
+    "port": 41687,
+    "listeners": [],
+    "directory": "/tmp/meri-document-fixture-qNfdcr",
+    "storeAbsent": true,
+    "stats": {
+      "mode": "synthetic-local",
+      "sourceConnected": false,
+      "nativeDatabase": false,
+      "nativeQualified": false,
+      "generations": 0,
+      "artifactChecks": 2,
+      "versionCharges": 0,
+      "settled": 0,
+      "unknown": 0,
+      "consumedMicroUsd": "0",
+      "allocations": 1,
+      "grants": 1,
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "1.0.0",
+      "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+      "processReceipts": [],
+      "closed": true,
+      "revoked": true,
+      "cleanup": {
+        "executorDirectoriesAbsent": true,
+        "storeRemoved": true
+      }
+    }
+  },
+  "failure": null,
+  "scope": "Final binder/canonical current authority and HTTP graph only; prior exact rendered DOCX evidence transferred by byte audit",
+  "nativeQualified": false,
+  "nativeDatabase": false,
+  "productionActivated": false
+}

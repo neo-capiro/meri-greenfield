@@ -1,0 +1,37 @@
+✔ decisive reads bind exact excerpts, preserve bases, disclose missing/conflicting evidence and keep cited prose unverified (26.174857ms)
+✔ free-form text equal to cited quote stays unverified (7.729352ms)
+✔ quote differs (11.963673ms)
+✔ wrong source version (5.691456ms)
+✔ out-of-range passage (5.398797ms)
+✔ refuse altered source hash (3.387801ms)
+✔ refuse foreign tenant (3.229003ms)
+✔ refuse wrong selector hash (3.234722ms)
+✔ refuse wrong source scope (3.30102ms)
+✔ refuse source version substitution (3.461772ms)
+✔ refuse candidate snippet (3.177797ms)
+✔ refuse Congress/session filter substitution (3.045607ms)
+✔ stale source remains a stale bound excerpt (5.534941ms)
+✔ wrong immutable recipe/version and changed budget/legislative basis are refused (14.818184ms)
+✔ parked source read is bounded; cancelled preparation returns no prepared request (4.547991ms)
+✖ actual canonical routes guard approved full request, retain original and revise exact selected DOCX base (22.670721ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2076.201014
+
+✖ failing tests:
+
+test at apps/control/document-application/test/research-brief.test.mjs:46:1
+✖ actual canonical routes guard approved full request, retain original and revise exact selected DOCX base (22.670721ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-n209/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-n209/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at bindPreparedBriefArtifactOptions (file:///workspace/meri-n209/apps/control/document-application/research-brief/binding.mjs:7:19)
+      at mountLocalDocumentApplication (file:///workspace/meri-n209/apps/control/document-application/local/mount.mjs:10:80)
+      at TestContext.<anonymous> (file:///workspace/meri-n209/apps/control/document-application/test/research-brief.test.mjs:50:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

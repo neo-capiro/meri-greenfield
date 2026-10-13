@@ -1,0 +1,154 @@
+{
+  "schema": "meri.qualified-fixture-source-delta/1",
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "head": "7d0822c77c20b3cf84d991cca9f9b25577bf5880",
+  "tree": "ffdd5f3d0b71b28eeef1642762ababf22d9762d4",
+  "independentReview": "025af58ccf4cf15d21a899c3c3829f8c4798965e",
+  "sourceOnly": true,
+  "runtimeQualified": false,
+  "requiredNewModule": "apps/control/qualified-application/schema-preservation.mjs",
+  "productionFiles": [
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+      "gitBlob": "861e0ef62d994a0102e92b65b83e4e4881f64755",
+      "bytes": 8890,
+      "sha256": "e9edf0d1ecac209bfb1da3a5affd365186c5461e5a46abd8a6df302d1d5ebb15",
+      "baseGitBlob": "cb89c7f699c8c4bd8f594c6b93d11639e8c09288"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "gitBlob": "f28576d09086f1979f1c09abe3a950d8f2e70b7e",
+      "bytes": 12124,
+      "sha256": "a488bd72f703ac4a421248dd1c6f8275203a45a6a60bfa50b1047eeca262f240",
+      "baseGitBlob": "047b93fa3db6eb9496b06a28099e3c5ba80a43b1"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "gitBlob": "6d3cbdae4f14e7438ad7f250a1f76a4ce0acac9b",
+      "bytes": 7947,
+      "sha256": "f487219178395847dee406b8db60fcc4e945fca8707265a5e475beca9e07f4e0",
+      "baseGitBlob": null
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "gitBlob": "19096932b303142cbca984067c5b573e003fd367",
+      "bytes": 8955,
+      "sha256": "40d8c4fb31d24b4e1f50d130a164d61f76b5d20ba7378da51f2407b231108f3f",
+      "baseGitBlob": "adf563c45ab19462b4a30e7a0dcf11438cac0eba"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "gitBlob": "5742c6590e42d034782e62ea746837d2d3f72b7f",
+      "bytes": 10007,
+      "sha256": "ee0ea8ff55ad858186cc7144bb972ed501160a2d34007bf1a0f45eb5089447bb",
+      "baseGitBlob": "ebf7aac2d90d5be3af0701aed63bf59846759f7b"
+    }
+  ],
+  "allChangedSourceAndTestFiles": [
+    {
+      "path": "apps/control/qualified-application/application.fixture.mjs",
+      "gitBlob": "4e72bd52741d7db7b7d4ce3b5803b6ae103670ff",
+      "bytes": 8070,
+      "sha256": "17b6235fd297e0e4c0753cbee8acbbdc522a1820ffe272f3d757ed59c76cd8f4",
+      "baseGitBlob": "43cb5d4d9cb31bbdd29133d9561a3e2f75cec9ff"
+    },
+    {
+      "path": "apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs",
+      "gitBlob": "620ff6ded765afc78787432d070156fdbd070e7e",
+      "bytes": 12753,
+      "sha256": "560e58ca2c5b1bd74dd5904bcd4b1f2028d3e20523aaa6b69e9a8c1392271c57",
+      "baseGitBlob": null
+    },
+    {
+      "path": "apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py",
+      "gitBlob": "1d8602283ce1331f99c49755873718c303b19f69",
+      "bytes": 7311,
+      "sha256": "0124b4f97196d9b2d786a00b3207dfa2be7bf32295e6804d1fcd5e7e4447d5d0",
+      "baseGitBlob": null
+    },
+    {
+      "path": "apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "gitBlob": "915b427ecdce9988d36bf964ba2475f0b2c08ae3",
+      "bytes": 5985,
+      "sha256": "15a95561504e0bcc76d2b989213573ef6e629ccc42885d1951ea1e54ace12680",
+      "baseGitBlob": "89216a7b0b9d8c7dd9f65da83742ef560076035d"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+      "gitBlob": "861e0ef62d994a0102e92b65b83e4e4881f64755",
+      "bytes": 8890,
+      "sha256": "e9edf0d1ecac209bfb1da3a5affd365186c5461e5a46abd8a6df302d1d5ebb15",
+      "baseGitBlob": "cb89c7f699c8c4bd8f594c6b93d11639e8c09288"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "gitBlob": "66ac2e00662f16a613bc3dbfeca0e827e1307cfb",
+      "bytes": 9233,
+      "sha256": "1988c7c76485662a3ccb7396c587ce7bd2a34576e07efd9711e85505ec2ffe00",
+      "baseGitBlob": "2975e561a2c486e9fe3bb7abcda7a5f0682c834e"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-compatibility.test.mjs",
+      "gitBlob": "59ef05618ecc27ea5e060aca290928b6853b0515",
+      "bytes": 10378,
+      "sha256": "66b7e4c32f0b2f4d8ea577f11931f49909dd18b3f74e87048fe6a13ef522c695",
+      "baseGitBlob": null
+    },
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "gitBlob": "f28576d09086f1979f1c09abe3a950d8f2e70b7e",
+      "bytes": 12124,
+      "sha256": "a488bd72f703ac4a421248dd1c6f8275203a45a6a60bfa50b1047eeca262f240",
+      "baseGitBlob": "047b93fa3db6eb9496b06a28099e3c5ba80a43b1"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-independent/fixture.mjs",
+      "gitBlob": "ad2918556e3929b2b00e56569f13dbf2df09dd69",
+      "bytes": 7181,
+      "sha256": "8ecdb9a8f7fa887afed79e8289c2e33b8278cad883e0c83243c7d3c0f1dc46b9",
+      "baseGitBlob": "4a609e8706495c03c4c662c13aa6e81dcc262812"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "gitBlob": "6d3cbdae4f14e7438ad7f250a1f76a4ce0acac9b",
+      "bytes": 7947,
+      "sha256": "f487219178395847dee406b8db60fcc4e945fca8707265a5e475beca9e07f4e0",
+      "baseGitBlob": null
+    },
+    {
+      "path": "apps/control/qualified-application/schema.fixture.mjs",
+      "gitBlob": "5522e6c611d6702693144c06980f2312dcbe5df7",
+      "bytes": 7671,
+      "sha256": "eada282f332f11578233bb1668b97f3455c96b638b6b2edf3d994c389e1f0f34",
+      "baseGitBlob": "fdb6b32017f37b3f9ee234e9f8fd9de6936ccdbd"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "gitBlob": "19096932b303142cbca984067c5b573e003fd367",
+      "bytes": 8955,
+      "sha256": "40d8c4fb31d24b4e1f50d130a164d61f76b5d20ba7378da51f2407b231108f3f",
+      "baseGitBlob": "adf563c45ab19462b4a30e7a0dcf11438cac0eba"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "gitBlob": "5742c6590e42d034782e62ea746837d2d3f72b7f",
+      "bytes": 10007,
+      "sha256": "ee0ea8ff55ad858186cc7144bb972ed501160a2d34007bf1a0f45eb5089447bb",
+      "baseGitBlob": "ebf7aac2d90d5be3af0701aed63bf59846759f7b"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/test_fixture_compatibility.py",
+      "gitBlob": "bd706fd5a695da2f455658ee80a1bb4ec5d684b3",
+      "bytes": 3622,
+      "sha256": "7d3f26067ede752d193d36a49eba3c1d6fbfc87ed6f3d89c2a24d798a868ed05",
+      "baseGitBlob": null
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/test_lifecycle.py",
+      "gitBlob": "5ddcf533a44d6c906a4994d3ba9a8e54a317640a",
+      "bytes": 10725,
+      "sha256": "8435c203af26c68a6f0d57dff01b74417bbc2be837d620e0608e4ae3be1db073",
+      "baseGitBlob": "b9180bf32e6e90f136dc2ffc3652b0b5370b8a14"
+    }
+  ]
+}

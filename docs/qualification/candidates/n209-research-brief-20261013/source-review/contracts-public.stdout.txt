@@ -1,0 +1,107 @@
+
+> @capiro/meri-contracts@0.1.2 test:public
+> node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs
+
+✔ actual PR42 wire 0 query 200 (45.558603ms)
+✔ actual PR42 wire 1 draft 200 (6.643551ms)
+✔ actual PR42 wire 2 prepare 200 (27.428077ms)
+✔ actual PR42 wire 3 execute 409 (0.895182ms)
+✔ actual PR42 wire 4 execute 200 (5.163653ms)
+✔ actual PR42 wire 5 execute 200 (0.542644ms)
+✔ preserve uncertainty UNKNOWN (0.425368ms)
+✔ preserve uncertainty STORED_NOT_RELEASED (0.142343ms)
+✔ reject success/error status interchange query (12.527574ms)
+✔ reject success/error status interchange draft (0.86699ms)
+✔ reject success/error status interchange prepare (0.656835ms)
+✔ reject success/error status interchange execute (7.021588ms)
+✔ closed/correlated negative 0 (2.458607ms)
+✔ closed/correlated negative 1 (0.263686ms)
+✔ closed/correlated negative 2 (5.311334ms)
+✔ closed/correlated negative 3 (13.276518ms)
+✔ closed/correlated negative 4 (6.343713ms)
+✔ closed/correlated negative 5 (5.766937ms)
+✔ closed/correlated negative 6 (0.915703ms)
+✔ closed/correlated negative 7 (0.471858ms)
+✔ closed/correlated negative 8 (2.515893ms)
+✔ closed/correlated negative 9 (0.853539ms)
+✔ closed/correlated negative 10 (29.081036ms)
+✔ Proxy, accessor, revoked proxy rejected without traps (0.478036ms)
+✔ bounded primitive JSON (0.586359ms)
+✔ route coercion never occurs (0.130435ms)
+✔ deep immutable parsed output (3.447178ms)
+✔ execute pending outcome retained without claimed result (0.245789ms)
+✔ interleaved events retain increasing sequence (8.695088ms)
+✔ public txt request/receipt/verified binary (83.107975ms)
+✔ public docx request/receipt/verified binary (3.967739ms)
+✔ public xlsx request/receipt/verified binary (4.182451ms)
+✔ revision parent and inspect current-byte receipt (3.493287ms)
+✔ refuse receipt extra (3.252546ms)
+✔ refuse receipt hash (0.731447ms)
+✔ refuse receipt bytes (1.595682ms)
+✔ refuse receipt mime (0.542734ms)
+✔ refuse receipt filename (0.788071ms)
+✔ refuse receipt parent (1.952707ms)
+✔ refuse receipt native (30.506093ms)
+✔ refuse receipt recalc (0.427952ms)
+✔ refuse receipt preview (5.723972ms)
+✔ refuse receipt scope (0.20674ms)
+✔ refuse receipt tenant (0.310966ms)
+✔ refuse receipt size (0.180991ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.664577ms)
+✔ typed-array overrides are not observed (0.172548ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.348993ms)
+✔ local request and version provenance cannot be reconstructed by shape (1.064586ms)
+✔ download header content-type refuses (0.325788ms)
+✔ download header content-length refuses (0.308032ms)
+✔ download header content-disposition refuses (0.223926ms)
+✔ download header cache-control refuses (0.348954ms)
+✔ download header x-content-type-options refuses (0.467441ms)
+✔ download header content-encoding refuses (0.266339ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (25.857621ms)
+✔ preabort/native Response brands and own getters (1.330986ms)
+✔ error status and uncertainty preserved without version or bytes (1.057666ms)
+✔ download JSON path accepts errors only (0.345268ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (208.534404ms)
+✔ isolated package consumer exposes document export without private files/dependencies (308.258303ms)
+✔ canonical 125-character docx filename remains usable (2.215652ms)
+✔ canonical 125-character xlsx filename remains usable (1.477646ms)
+✔ native followed redirect with exact final bytes remains refused (88.259089ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (60.838743ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (25.35116ms)
+✔ structural validation deliberately grants no tenant authorization (0.47351ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (2.352147ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (133.514645ms)
+✔ generator help and invalid arguments exit before generation (131.19655ms)
+✖ generated distribution check is independent of caller working directory (664.153764ms)
+ℹ tests 71
+ℹ suites 0
+ℹ pass 70
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2019.356268
+
+✖ failing tests:
+
+test at test/public-package.test.mjs:77:1
+✖ generated distribution check is independent of caller working directory (664.153764ms)
+  AssertionError [ERR_ASSERTION]: Generated drift: browser.mjs
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-n209-source-review/packages/contracts/test/public-package.test.mjs:81:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

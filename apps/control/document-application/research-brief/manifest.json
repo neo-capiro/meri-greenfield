@@ -1,0 +1,95 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.bill_watch",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:congressional-sourced-brief:1.0.0",
+    "sha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "bill_text",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "program_elements",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "artifact_versions",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "read_bill_text",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "version": "0.2.0"
+    },
+    {
+      "id": "create_word",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client"
+  ],
+  "windowBases": [
+    "explicit",
+    "fiscal-year"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "decisive-reads",
+        "requirement": "Read exact material passages and retain authorized source IDs, versions, hashes, scopes and times.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Disclose missing, conflicting, stale, partial and unavailable evidence; free-form claims remain unverified.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "editable-brief",
+        "requirement": "Retain editable facts, proposed language, citations and coverage/verification appendix; inspect exact immutable versions.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

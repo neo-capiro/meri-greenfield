@@ -1,0 +1,23 @@
+[
+  {
+    "path": "apps/control/qualified-application/schema-size.test.mjs",
+    "preimage": "docs/qualification/candidates/native-structure-20261013/author/schema-size.test.mjs.before.txt",
+    "beforeSha256": "d5baf55f465c2f992d6cd98c1e08c3096db497237902108500dd6d530e033003",
+    "afterSha256": "2e06f9cb839537e4052d51b5b60c6664b03555f7e57932eede05e2daeb9051e2",
+    "intent": "Preservation-only100001 refusal superseded by fixed250001 overflow; ordinary100001 unchanged in new controls."
+  },
+  {
+    "path": "apps/control/qualified-application/schema-size-independent.test.mjs",
+    "preimage": "docs/qualification/candidates/native-structure-20261013/author/schema-size-independent.test.mjs.before.txt",
+    "beforeSha256": "8ccd0b61434667f412542f518970e28d89152f74d2ae3d21153bad2283b85b72",
+    "afterSha256": "2f42018ad980db9d832e86a002014e53acfc4c72f83341dbadb9a607ca828e54",
+    "intent": "Preservation-only100001 refusal superseded by fixed250001 overflow; ordinary100001 unchanged in new controls."
+  },
+  {
+    "path": "apps/control/qualified-application/schema-size-inventory.test.mjs",
+    "preimage": "docs/qualification/candidates/native-structure-20261013/author/schema-size-inventory.test.mjs.before.txt",
+    "beforeSha256": "72f17ebdf209246cf40c860024a3845ad22cd0a151bd61082787f01d40928e2e",
+    "afterSha256": "a76cd102b4b8b62c875d0d9344f9a0dd9d72dcf29e7525a3a1c8b4e7dab8942a",
+    "intent": "Preservation-only100001 refusal superseded by fixed250001 overflow; ordinary100001 unchanged in new controls."
+  }
+]

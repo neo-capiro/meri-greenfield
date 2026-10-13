@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "python3",
+    "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/repair/verify_artifacts.py"
+  ],
+  "cwd": "/workspace/meri-n209-artifact-review",
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "implementationDiffBytes": 0,
+  "startedAt": "2026-10-13T09:12:24.916934+00:00",
+  "durationSeconds": 0.367,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 32444,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/repair/repaired-supplied.stdout.txt",
+      "bytes": 7254,
+      "sha256": "c04f453adbcc039569d67025fdcd4cf063c8ae56b83ad91a424a15846740c554"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/repair/repaired-supplied.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}

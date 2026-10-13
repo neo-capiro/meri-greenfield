@@ -1,0 +1,21 @@
+✔ namespace query must not hide pgx_private through SQL underscore wildcard (10.869078ms)
+✔ independent engine identity address refuses before DDL (5.167523ms)
+✔ independent engine identity username refuses before DDL (2.890334ms)
+✔ independent engine identity system_identifier refuses before DDL (2.025745ms)
+✔ independent engine identity start_ms refuses before DDL (2.961352ms)
+✔ independent engine identity fsync refuses before DDL (1.629981ms)
+✔ independent engine identity synchronous_commit refuses before DDL (3.194876ms)
+✔ own and inherited hostile port accessors and proxy cannot run during admission (0.662716ms)
+✔ verify without retained digest and install with a retained digest allocate nothing (0.653041ms)
+✔ cancel during borrowed acquisition releases late client and sends no SQL (14.931315ms)
+✔ cancellation while advisory lock waits prevents first migration after it returns (13.354094ms)
+✔ first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal (3.792681ms)
+✔ host clock crossing original cutoff after identity cannot proceed to ownership or DDL (1.746025ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 127.497792

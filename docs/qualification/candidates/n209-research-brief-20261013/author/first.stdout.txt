@@ -1,0 +1,67 @@
+✔ decisive reads bind exact excerpts, preserve bases, disclose missing/conflicting evidence and keep cited prose unverified (33.307123ms)
+✔ free-form text equal to cited quote stays unverified (8.860539ms)
+✔ quote differs (6.327009ms)
+✔ wrong source version (5.798937ms)
+✔ out-of-range passage (5.739017ms)
+✔ refuse altered source hash (3.731116ms)
+✔ refuse foreign tenant (3.203084ms)
+✔ refuse wrong selector hash (3.222874ms)
+✔ refuse wrong source scope (3.801421ms)
+✔ refuse source version substitution (3.517386ms)
+✔ refuse candidate snippet (3.24692ms)
+✔ refuse Congress/session filter substitution (3.205769ms)
+✔ stale source remains a stale bound excerpt (5.488231ms)
+✔ wrong immutable recipe/version and changed budget/legislative basis are refused (17.219085ms)
+✖ parked source read is bounded; cancelled preparation returns no prepared request (7.040179ms)
+✖ actual canonical routes guard approved full request, retain original and revise exact selected DOCX base (183.100661ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 14
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2048.779512
+
+✖ failing tests:
+
+test at apps/control/document-application/test/research-brief.test.mjs:41:1
+✖ parked source read is bounded; cancelled preparation returns no prepared request (7.040179ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /CANCELLED/. Input:
+  
+  'Error: BRIEF_DEADLINE'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-n209/apps/control/document-application/test/research-brief.test.mjs:44:55)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: BRIEF_DEADLINE
+        at errorFactory (file:///workspace/meri-n209/apps/control/document-application/research-brief/compose.mjs:53:115)
+        at deny (file:///workspace/meri-n209/packages/runtime/operation-lifetime.mjs:4:32)
+        at createOperationLifetime (file:///workspace/meri-n209/packages/runtime/operation-lifetime.mjs:6:79)
+        at Object.prepare (file:///workspace/meri-n209/apps/control/document-application/research-brief/compose.mjs:53:16)
+        at TestContext.<anonymous> (file:///workspace/meri-n209/apps/control/document-application/test/research-brief.test.mjs:44:87)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /CANCELLED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/test/research-brief.test.mjs:46:1
+✖ actual canonical routes guard approved full request, retain original and revise exact selected DOCX base (183.100661ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  502 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/meri-n209/apps/control/document-application/test/research-brief.test.mjs:54:89)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

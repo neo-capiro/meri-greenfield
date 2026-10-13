@@ -3,10 +3,11 @@ import {readFile} from 'node:fs/promises';
 import {PostgresBudgetStore,BudgetStateDenied} from '../../gateway/budget/postgres-budget-store.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {migrations,relations,sha256,requireSchema,schemaConfiguration,portMethod,rows,assertCatalog} from './schema-contract.mjs';
+import {migrations,relations,sha256,requireSchema,schemaConfiguration,portMethod,rows,preservationRows,assertCatalog} from './schema-contract.mjs';
+import {namespaceSQL,preservationSQL,assertNamespaces,preservationSnapshot,compatibilityBinding} from './schema-preservation.mjs';
 const root=new URL('../../../',import.meta.url);
-const identitySQL=`SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS start_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier,current_setting('search_path') AS search_path`;
-const namespaceSQL="SELECT nspname AS name FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
+const identitySQL=`SELECT current_database() AS database,current_user AS username,pg_catalog.host(pg_catalog.inet_server_addr()) AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS start_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier,current_setting('search_path') AS search_path`;
+
 const catalogSQL=`SELECT n.nspname||'.'||c.relname AS name,c.relkind::text AS kind,pg_catalog.pg_get_userbyid(c.relowner) AS owner,c.relrowsecurity AS "rowSecurity",c.relforcerowsecurity AS "forceRowSecurity",
  (SELECT count(*)::int FROM pg_catalog.pg_trigger t WHERE t.tgrelid=c.oid AND NOT t.tgisinternal) AS triggers,
  (SELECT count(*)::int FROM pg_catalog.pg_rewrite w WHERE w.ev_class=c.oid) AS rules,
@@ -42,27 +43,33 @@ async function execute(value,install){
   }};
   const store=new PostgresBudgetStore(pool);
   const receipt=await life.run(()=>store.transact(async client=>{
-   const query=async(text,values)=>{life.check();const result=await client.query(text,values);life.check();return rows(result);};
+   const query=async(text,values)=>{life.check();const result=await client.query(text,values);life.check();return (text===preservationSQL?preservationRows:rows)(result);};
    stage='identity';await query('SET LOCAL search_path TO public');
    const identity=await query(identitySQL);requireSchema(identity.length===1);const r=identity[0],f=c.fixture;
-   requireSchema(r.database===f.database&&r.username===f.user&&r.address===f.host&&r.port===f.port&&r.version===f.serverVersion&&r.start_ms===String(Date.parse(f.serverStartTime))&&r.system_identifier===f.systemIdentifier&&r.fsync==='on'&&r.synchronous_commit==='on'&&r.search_path==='public');
+   requireSchema(r.database===f.database&&r.username===f.user&&r.address===(f.serverAddress??f.host)&&r.port===(f.serverPort??f.port)&&r.version===f.serverVersion&&r.start_ms===String(Date.parse(f.serverStartTime))&&r.system_identifier===f.systemIdentifier&&r.fsync==='on'&&r.synchronous_commit==='on'&&r.search_path==='public');
    stage='ownership';
    // This lock serializes only this fixed schema owner; it creates no registry.
    if(install){const lock=await query('SELECT pg_catalog.pg_try_advisory_xact_lock(1296388681,1) AS acquired');requireSchema(lock.length===1&&lock[0].acquired===true);}
-   const namespaces=await query(namespaceSQL);
+   const namespaces=assertNamespaces(await query(namespaceSQL),f,!install);
+   stage='preservation';const before=await preservationSnapshot(query,f,namespaces);
+   stage='ownership';
    if(install){
-    requireSchema(namespaces.length===0);requireSchema((await query(catalogSQL)).length===0);
+    requireSchema((await query(catalogSQL)).length===0);
+    requireSchema((await query("SELECT t.typname FROM pg_catalog.pg_type t JOIN pg_catalog.pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public' AND t.typname IN ('meri_approval_metadata','meri_command_journal')")).length===0);
     stage='migration';
     for(const file of files){life.check();submitted=true;await client.query(file.bytes.toString('utf8'));life.check();}
-   }else requireSchema(namespaces.length===2&&namespaces.some(r=>r.name==='meri_qualification')&&namespaces.some(r=>r.name==='meri_task_lookup'));
+   }
+   if(install)assertNamespaces(await query(namespaceSQL),f,true);
    stage='catalog';const catalog=assertCatalog(await query(catalogSQL));
    const migrationSha256=Object.fromEntries(migrations.map(([name,,hash])=>[name,hash]));
-   const schemaSha256=sha256(JSON.stringify({migrationSha256,catalog}));
+   const after=await preservationSnapshot(query,f,assertNamespaces(await query(namespaceSQL),f,true));
+   requireSchema(JSON.stringify(before)===JSON.stringify(after));
+   const schemaSha256=sha256(JSON.stringify({migrationSha256,catalog,...compatibilityBinding(f,after)}));
    if(!install)requireSchema(schemaSha256===f.schemaSha256);
    stage='accounting';const budget=await query('SELECT id,cap_micro_usd::text,consumed_micro_usd::text,quarantined FROM meri_qualification.budget');
    requireSchema(budget.length===1&&budget[0].id===1&&budget[0].cap_micro_usd==='10000000'&&/^(0|[1-9][0-9]*)$/.test(budget[0].consumed_micro_usd)&&typeof budget[0].quarantined==='boolean');
    if(install){const counts=await query(countSQL);requireSchema(counts.length===relations.length-1&&new Set(counts.map(r=>r.name)).size===counts.length);for(const [name]of relations.filter(([name])=>!name.endsWith('.budget_liabilities')))requireSchema(counts.some(r=>r.name===name&&r.count===(name==='meri_qualification.budget'?'1':'0')));requireSchema(budget[0].consumed_micro_usd==='0'&&budget[0].quarantined===false);}
-   stage='commit';return {schema:'meri.owned-qualification-schema/1',status:'PASS',operation:install?'installed':'verified',evidenceKind:'borrowed-pool-catalog-observation',originalDeadlineMs:c.deadlineMs,fixtureId:f.fixtureId,engine:{host:f.host,port:f.port,database:f.database,user:f.user,systemIdentifier:f.systemIdentifier,serverStartTime:f.serverStartTime,serverVersion:f.serverVersion},migrationSha256,schemaSha256,relationCount:catalog.length,catalog,initialStateVerified:install,budget:budget[0],runtimeQualified:false,poolClosed:false};
+   stage='commit';return {schema:'meri.owned-qualification-schema/1',status:'PASS',operation:install?'installed':'verified',evidenceKind:'borrowed-pool-catalog-observation',originalDeadlineMs:c.deadlineMs,fixtureId:f.fixtureId,engine:{host:f.host,port:f.port,...(Object.hasOwn(f,'serverAddress')?{serverAddress:f.serverAddress,serverPort:f.serverPort}:{}),database:f.database,user:f.user,systemIdentifier:f.systemIdentifier,serverStartTime:f.serverStartTime,serverVersion:f.serverVersion},migrationSha256,schemaSha256,...(after?{preservation:after}:{}),relationCount:catalog.length,catalog,initialStateVerified:install,budget:budget[0],runtimeQualified:false,poolClosed:false};
   },life.check));
   life.check();return data(receipt);
  }catch{throw denied(install,submitted,stage,life);}

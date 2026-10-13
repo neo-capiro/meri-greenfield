@@ -1,0 +1,1183 @@
+TAP version 13
+# Subtest: independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources
+ok 1 - independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources
+  ---
+  duration_ms: 577.875377
+  type: 'test'
+  ...
+# Subtest: independent current actor substitution refuses before generation
+ok 2 - independent current actor substitution refuses before generation
+  ---
+  duration_ms: 7.689952
+  type: 'test'
+  ...
+# Subtest: independent current tenant substitution refuses before generation
+ok 3 - independent current tenant substitution refuses before generation
+  ---
+  duration_ms: 6.399877
+  type: 'test'
+  ...
+# Subtest: independent current attempt substitution refuses before generation
+ok 4 - independent current attempt substitution refuses before generation
+  ---
+  duration_ms: 7.529772
+  type: 'test'
+  ...
+# Subtest: independent current fence substitution refuses before generation
+ok 5 - independent current fence substitution refuses before generation
+  ---
+  duration_ms: 8.191435
+  type: 'test'
+  ...
+# Subtest: independent current client substitution refuses before generation
+ok 6 - independent current client substitution refuses before generation
+  ---
+  duration_ms: 6.355101
+  type: 'test'
+  ...
+# Subtest: independent current scope revision substitution refuses before generation
+ok 7 - independent current scope revision substitution refuses before generation
+  ---
+  duration_ms: 6.397354
+  type: 'test'
+  ...
+# Subtest: independent full canonical descriptor cannot omit grants or source requirements
+ok 8 - independent full canonical descriptor cannot omit grants or source requirements
+  ---
+  duration_ms: 5.292707
+  type: 'test'
+  ...
+# Subtest: independent constructor snapshots caller context, scopes, limits and descriptor
+ok 9 - independent constructor snapshots caller context, scopes, limits and descriptor
+  ---
+  duration_ms: 83.228568
+  type: 'test'
+  ...
+# Subtest: independent create replay and changed intent cannot generate or charge again
+ok 10 - independent create replay and changed intent cannot generate or charge again
+  ---
+  duration_ms: 89.685426
+  type: 'test'
+  ...
+# Subtest: independent stale revision leaves both committed versions unchanged and preserves uncertain effect
+ok 11 - independent stale revision leaves both committed versions unchanged and preserves uncertain effect
+  ---
+  duration_ms: 214.378373
+  type: 'test'
+  ...
+# Subtest: independent completed download withheld on final session denial remains RESULT_NOT_RELEASED
+ok 12 - independent completed download withheld on final session denial remains RESULT_NOT_RELEASED
+  ---
+  duration_ms: 84.326725
+  type: 'test'
+  ...
+# Subtest: independent object acknowledgement then revocation retains UNKNOWN and no second write on replay
+ok 13 - independent object acknowledgement then revocation retains UNKNOWN and no second write on replay
+  ---
+  duration_ms: 76.964072
+  type: 'test'
+  ...
+# Subtest: independent original cutoff aborts parked current-state receipt before effects
+ok 14 - independent original cutoff aborts parked current-state receipt before effects
+  ---
+  duration_ms: 43.100438
+  type: 'test'
+  ...
+# Subtest: independent newly shortened artifact expiry bounds the next parked executor
+ok 15 - independent newly shortened artifact expiry bounds the next parked executor
+  ---
+  duration_ms: 109.882144
+  type: 'test'
+  ...
+# Subtest: independent cancellation during response acquisition denies exact old version
+ok 16 - independent cancellation during response acquisition denies exact old version
+  ---
+  duration_ms: 91.185136
+  type: 'test'
+  ...
+# Subtest: independent raw binding injection has no authority/effect
+ok 17 - independent raw binding injection has no authority/effect
+  ---
+  duration_ms: 6.044495
+  type: 'test'
+  ...
+# Subtest: independent raw scopes injection has no authority/effect
+ok 18 - independent raw scopes injection has no authority/effect
+  ---
+  duration_ms: 4.895462
+  type: 'test'
+  ...
+# Subtest: independent raw credential injection has no authority/effect
+ok 19 - independent raw credential injection has no authority/effect
+  ---
+  duration_ms: 4.818666
+  type: 'test'
+  ...
+# Subtest: independent raw path injection has no authority/effect
+ok 20 - independent raw path injection has no authority/effect
+  ---
+  duration_ms: 12.257568
+  type: 'test'
+  ...
+# Subtest: independent raw baseVersionId injection has no authority/effect
+ok 21 - independent raw baseVersionId injection has no authority/effect
+  ---
+  duration_ms: 7.370063
+  type: 'test'
+  ...
+# Subtest: independent hostile errors and request objects execute no getters or proxy traps
+ok 22 - independent hostile errors and request objects execute no getters or proxy traps
+  ---
+  duration_ms: 14.066355
+  type: 'test'
+  ...
+# Subtest: independent oversized and malformed UTF8 bodies refuse before source work
+ok 23 - independent oversized and malformed UTF8 bodies refuse before source work
+  ---
+  duration_ms: 8.449132
+  type: 'test'
+  ...
+# Subtest: independent parked incoming body aborts under original deadline
+ok 24 - independent parked incoming body aborts under original deadline
+  ---
+  duration_ms: 38.885125
+  type: 'test'
+  ...
+# Subtest: independent no activation by default and separate tool/native credentials refused
+ok 25 - independent no activation by default and separate tool/native credentials refused
+  ---
+  duration_ms: 8.767388
+  type: 'test'
+  ...
+# Subtest: independent CLI help and invalid arguments remain inert and preserve environment
+ok 26 - independent CLI help and invalid arguments remain inert and preserve environment
+  ---
+  duration_ms: 0.601843
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected authority port cannot trigger reflection or erase uncertainty
+ok 27 - independent hostile rejected authority port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 18.021357
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected session-late port cannot trigger reflection or erase uncertainty
+ok 28 - independent hostile rejected session-late port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 8.424355
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected executor port cannot trigger reflection or erase uncertainty
+ok 29 - independent hostile rejected executor port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 10.275761
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected version-read port cannot trigger reflection or erase uncertainty
+ok 30 - independent hostile rejected version-read port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 65.194181
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected object-get port cannot trigger reflection or erase uncertainty
+ok 31 - independent hostile rejected object-get port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 67.079067
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected object-put port cannot trigger reflection or erase uncertainty
+ok 32 - independent hostile rejected object-put port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 70.709383
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty
+ok 33 - independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 57.192472
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected ids port cannot trigger reflection or erase uncertainty
+ok 34 - independent hostile rejected ids port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 7.864013
+  type: 'test'
+  ...
+# Subtest: independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty
+ok 35 - independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty
+  ---
+  duration_ms: 9.708179
+  type: 'test'
+  ...
+# Subtest: independent hostile own error getters remain untouched
+ok 36 - independent hostile own error getters remain untouched
+  ---
+  duration_ms: 9.742621
+  type: 'test'
+  ...
+# Subtest: independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch
+ok 37 - independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch
+  ---
+  duration_ms: 76.125335
+  type: 'test'
+  ...
+# Subtest: actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes
+ok 38 - actual workbook immutable create revise reopen replay and reconstruction preserve exact cells and original bytes
+  ---
+  duration_ms: 744.583351
+  type: 'test'
+  ...
+# Subtest: Word txt remains in its original grant family
+ok 39 - Word txt remains in its original grant family
+  ---
+  duration_ms: 69.405146
+  type: 'test'
+  ...
+# Subtest: Word docx remains in its original grant family
+ok 40 - Word docx remains in its original grant family
+  ---
+  duration_ms: 123.927213
+  type: 'test'
+  ...
+# Subtest: create_word cannot dispatch create_excel/xlsx through create
+ok 41 - create_word cannot dispatch create_excel/xlsx through create
+  ---
+  duration_ms: 4.822231
+  type: 'test'
+  ...
+# Subtest: create_word cannot dispatch create_excel/xlsx through revise
+ok 42 - create_word cannot dispatch create_excel/xlsx through revise
+  ---
+  duration_ms: 5.030654
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/txt through create
+ok 43 - create_excel cannot dispatch create_word/txt through create
+  ---
+  duration_ms: 5.34762
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/txt through revise
+ok 44 - create_excel cannot dispatch create_word/txt through revise
+  ---
+  duration_ms: 4.784135
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/docx through create
+ok 45 - create_excel cannot dispatch create_word/docx through create
+  ---
+  duration_ms: 5.274009
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_word/docx through revise
+ok 46 - create_excel cannot dispatch create_word/docx through revise
+  ---
+  duration_ms: 6.932467
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_excel/pdf through create
+ok 47 - create_excel cannot dispatch create_excel/pdf through create
+  ---
+  duration_ms: 10.873457
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_excel/pdf through revise
+ok 48 - create_excel cannot dispatch create_excel/pdf through revise
+  ---
+  duration_ms: 5.376653
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_powerpoint/xlsx through create
+ok 49 - create_excel cannot dispatch create_powerpoint/xlsx through create
+  ---
+  duration_ms: 4.346167
+  type: 'test'
+  ...
+# Subtest: create_excel cannot dispatch create_powerpoint/xlsx through revise
+ok 50 - create_excel cannot dispatch create_powerpoint/xlsx through revise
+  ---
+  duration_ms: 4.028892
+  type: 'test'
+  ...
+# Subtest: Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format
+ok 51 - Excel descriptor is exact canonical data and cannot redefine grants source requirements version or format
+  ---
+  duration_ms: 6.446528
+  type: 'test'
+  ...
+# Subtest: raw context cannot choose workbook authority
+ok 52 - raw context cannot choose workbook authority
+  ---
+  duration_ms: 15.079765
+  type: 'test'
+  ...
+# Subtest: raw credential cannot choose workbook authority
+ok 53 - raw credential cannot choose workbook authority
+  ---
+  duration_ms: 13.948559
+  type: 'test'
+  ...
+# Subtest: raw scopes cannot choose workbook authority
+ok 54 - raw scopes cannot choose workbook authority
+  ---
+  duration_ms: 5.33428
+  type: 'test'
+  ...
+# Subtest: raw descriptor cannot choose workbook authority
+ok 55 - raw descriptor cannot choose workbook authority
+  ---
+  duration_ms: 4.913969
+  type: 'test'
+  ...
+# Subtest: raw operation cannot choose workbook authority
+ok 56 - raw operation cannot choose workbook authority
+  ---
+  duration_ms: 4.897435
+  type: 'test'
+  ...
+# Subtest: Word application cannot release an Excel version through inspect or download
+ok 57 - Word application cannot release an Excel version through inspect or download
+  ---
+  duration_ms: 165.857777
+  type: 'test'
+  ...
+# Subtest: Excel application cannot release a Word version through inspect or download
+ok 58 - Excel application cannot release a Word version through inspect or download
+  ---
+  duration_ms: 80.414251
+  type: 'test'
+  ...
+# Subtest: separate workbook stores and session tokens cannot release another instance version
+ok 59 - separate workbook stores and session tokens cannot release another instance version
+  ---
+  duration_ms: 155.059473
+  type: 'test'
+  ...
+# Subtest: Excel current tenant substitution refuses before accounting
+ok 60 - Excel current tenant substitution refuses before accounting
+  ---
+  duration_ms: 6.133548
+  type: 'test'
+  ...
+# Subtest: Excel current actor substitution refuses before accounting
+ok 61 - Excel current actor substitution refuses before accounting
+  ---
+  duration_ms: 5.475782
+  type: 'test'
+  ...
+# Subtest: Excel current fence substitution refuses before accounting
+ok 62 - Excel current fence substitution refuses before accounting
+  ---
+  duration_ms: 5.460299
+  type: 'test'
+  ...
+# Subtest: Excel current client substitution refuses before accounting
+ok 63 - Excel current client substitution refuses before accounting
+  ---
+  duration_ms: 12.422891
+  type: 'test'
+  ...
+# Subtest: Excel remains unavailable by default without closing borrowed session
+ok 64 - Excel remains unavailable by default without closing borrowed session
+  ---
+  duration_ms: 4.850083
+  type: 'test'
+  ...
+# Subtest: Excel original deadline aborts parked current authority before dispatch
+ok 65 - Excel original deadline aborts parked current authority before dispatch
+  ---
+  duration_ms: 41.137373
+  type: 'test'
+  ...
+# Subtest: Excel completed bytes remain withheld after object-read session revocation
+ok 66 - Excel completed bytes remain withheld after object-read session revocation
+  ---
+  duration_ms: 158.663698
+  type: 'test'
+  ...
+# Subtest: a canonical Word descriptor cannot turn an Excel-only allocation into Word generation
+ok 67 - a canonical Word descriptor cannot turn an Excel-only allocation into Word generation
+  ---
+  duration_ms: 6.684225
+  type: 'test'
+  ...
+# INDEPENDENT_WORKBOOK_PROCESSES [{"pid":5031,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5033,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5019,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5032,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5034,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5035,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5047,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5048,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5049,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5050,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false},{"pid":5051,"exitCode":0,"groupAbsent":true,"leaderClosed":true,"sandboxQualified":false}]
+# Subtest: canonical 120-character Excel title releases its 125-character filename
+ok 68 - canonical 120-character Excel title releases its 125-character filename
+  ---
+  duration_ms: 175.894579
+  type: 'test'
+  ...
+# Subtest: create/revise/inspect/download use immutable storage and one shared canonical ledger
+ok 69 - create/revise/inspect/download use immutable storage and one shared canonical ledger
+  ---
+  duration_ms: 236.751008
+  type: 'test'
+  ...
+# Subtest: actual DOCX produces truthful draft/preview metadata and exact ZIP bytes
+ok 70 - actual DOCX produces truthful draft/preview metadata and exact ZIP bytes
+  ---
+  duration_ms: 137.509709
+  type: 'test'
+  ...
+# Subtest: default disabled allocates no document effect; borrowed session remains open
+ok 71 - default disabled allocates no document effect; borrowed session remains open
+  ---
+  duration_ms: 4.342872
+  type: 'test'
+  ...
+# Subtest: reject body authority before generation
+ok 72 - reject body authority before generation
+  ---
+  duration_ms: 5.250072
+  type: 'test'
+  ...
+# Subtest: reject wrong operation before generation
+ok 73 - reject wrong operation before generation
+  ---
+  duration_ms: 3.859096
+  type: 'test'
+  ...
+# Subtest: reject PDF before generation
+ok 74 - reject PDF before generation
+  ---
+  duration_ms: 4.013137
+  type: 'test'
+  ...
+# Subtest: native identity/tool tokens cannot authenticate application routes
+ok 75 - native identity/tool tokens cannot authenticate application routes
+  ---
+  duration_ms: 4.183693
+  type: 'test'
+  ...
+# Subtest: revoked session denies older-version read without another reservation
+ok 76 - revoked session denies older-version read without another reservation
+  ---
+  duration_ms: 61.069285
+  type: 'test'
+  ...
+# Subtest: post-object revocation preserves uncertainty without regeneration
+ok 77 - post-object revocation preserves uncertainty without regeneration
+  ---
+  duration_ms: 53.631664
+  type: 'test'
+  ...
+# Subtest: strict native Request admission ignores hostile own url and rejects Proxy without traps
+ok 78 - strict native Request admission ignores hostile own url and rejects Proxy without traps
+  ---
+  duration_ms: 13.259571
+  type: 'test'
+  ...
+# Subtest: bounded body and fixed path/media handling preserve safe no-store errors
+ok 79 - bounded body and fixed path/media handling preserve safe no-store errors
+  ---
+  duration_ms: 4.783612
+  type: 'test'
+  ...
+# Subtest: constructor snapshots data and rejects authority getters without invocation
+ok 80 - constructor snapshots data and rejects authority getters without invocation
+  ---
+  duration_ms: 60.59165
+  type: 'test'
+  ...
+# Subtest: canonical descriptor rejects accidental grant or source redefinition
+ok 81 - canonical descriptor rejects accidental grant or source redefinition
+  ---
+  duration_ms: 4.872105
+  type: 'test'
+  ...
+# Subtest: shorter artifact receipt clips outer lifetime before the next parked session call
+ok 82 - shorter artifact receipt clips outer lifetime before the next parked session call
+  ---
+  duration_ms: 49.329244
+  type: 'test'
+  ...
+# Subtest: fresh session with changed full binding refuses before accounting
+ok 83 - fresh session with changed full binding refuses before accounting
+  ---
+  duration_ms: 5.131825
+  type: 'test'
+  ...
+# Subtest: hostile authorize rejection is inert before canonical owner catches
+ok 84 - hostile authorize rejection is inert before canonical owner catches
+  ---
+  duration_ms: 8.011642
+  type: 'test'
+  ...
+# Subtest: hostile authority rejection is inert before canonical owner catches
+ok 85 - hostile authority rejection is inert before canonical owner catches
+  ---
+  duration_ms: 6.206706
+  type: 'test'
+  ...
+# Subtest: hostile executor rejection is inert before canonical owner catches
+ok 86 - hostile executor rejection is inert before canonical owner catches
+  ---
+  duration_ms: 16.002674
+  type: 'test'
+  ...
+# Subtest: hostile objects rejection is inert before canonical owner catches
+ok 87 - hostile objects rejection is inert before canonical owner catches
+  ---
+  duration_ms: 49.713479
+  type: 'test'
+  ...
+# Subtest: Excel create/revise/read preserves both immutable XLSX versions and canonical accounting
+ok 88 - Excel create/revise/read preserves both immutable XLSX versions and canonical accounting
+  ---
+  duration_ms: 389.602067
+  type: 'test'
+  ...
+# Subtest: create_word refuses opposite-family create and revise before authority/accounting
+ok 89 - create_word refuses opposite-family create and revise before authority/accounting
+  ---
+  duration_ms: 5.066611
+  type: 'test'
+  ...
+# Subtest: create_excel refuses opposite-family create and revise before authority/accounting
+ok 90 - create_excel refuses opposite-family create and revise before authority/accounting
+  ---
+  duration_ms: 4.043295
+  type: 'test'
+  ...
+# Subtest: canonical workbook errors and caller authority fields refuse before allocation
+ok 91 - canonical workbook errors and caller authority fields refuse before allocation
+  ---
+  duration_ms: 4.582815
+  type: 'test'
+  ...
+# Subtest: only the exact canonical Excel descriptor is admitted, without arbitrary registry expansion
+ok 92 - only the exact canonical Excel descriptor is admitted, without arbitrary registry expansion
+  ---
+  duration_ms: 4.23353
+  type: 'test'
+  ...
+# Subtest: create_word read cannot release an otherwise valid opposite-family stored version
+ok 93 - create_word read cannot release an otherwise valid opposite-family stored version
+  ---
+  duration_ms: 62.713625
+  type: 'test'
+  ...
+# Subtest: create_excel read cannot release an otherwise valid opposite-family stored version
+ok 94 - create_excel read cannot release an otherwise valid opposite-family stored version
+  ---
+  duration_ms: 155.281121
+  type: 'test'
+  ...
+# Subtest: fresh revocation blocks XLSX read without another generation or debit
+ok 95 - fresh revocation blocks XLSX read without another generation or debit
+  ---
+  duration_ms: 144.695072
+  type: 'test'
+  ...
+# Subtest: Excel descriptor is detached from later caller mutation
+ok 96 - Excel descriptor is detached from later caller mutation
+  ---
+  duration_ms: 139.775802
+  type: 'test'
+  ...
+# Subtest: Excel application remains disabled by default with no allocation
+ok 97 - Excel application remains disabled by default with no allocation
+  ---
+  duration_ms: 4.402344
+  type: 'test'
+  ...
+# Subtest: canonical xlsx title length120 releases exact125-character filename
+ok 98 - canonical xlsx title length120 releases exact125-character filename
+  ---
+  duration_ms: 159.634783
+  type: 'test'
+  ...
+# Subtest: canonical xlsx title length200 releases exact125-character filename
+ok 99 - canonical xlsx title length200 releases exact125-character filename
+  ---
+  duration_ms: 148.80747
+  type: 'test'
+  ...
+# Subtest: canonical docx title length120 releases exact125-character filename
+ok 100 - canonical docx title length120 releases exact125-character filename
+  ---
+  duration_ms: 119.820848
+  type: 'test'
+  ...
+# Subtest: canonical docx title length200 releases exact125-character filename
+ok 101 - canonical docx title length200 releases exact125-character filename
+  ---
+  duration_ms: 112.439667
+  type: 'test'
+  ...
+# Subtest: forged126-character stored filename cannot be inspected or downloaded
+ok 102 - forged126-character stored filename cannot be inspected or downloaded
+  ---
+  duration_ms: 154.310135
+  type: 'test'
+  ...
+# Subtest: actual txt create/inspect/download accepted without authority claims
+ok 103 - actual txt create/inspect/download accepted without authority claims
+  ---
+  duration_ms: 535.761635
+  type: 'test'
+  ...
+# Subtest: actual docx create/inspect/download accepted without authority claims
+ok 104 - actual docx create/inspect/download accepted without authority claims
+  ---
+  duration_ms: 1.085678
+  type: 'test'
+  ...
+# Subtest: actual xlsx create/inspect/download accepted without authority claims
+ok 105 - actual xlsx create/inspect/download accepted without authority claims
+  ---
+  duration_ms: 0.899399
+  type: 'test'
+  ...
+# Subtest: actual XLSX admits canonical 125-character filename
+ok 106 - actual XLSX admits canonical 125-character filename
+  ---
+  duration_ms: 0.162303
+  type: 'test'
+  ...
+# Subtest: actual TXT preserves exact multibyte whitespace and newline bytes
+ok 107 - actual TXT preserves exact multibyte whitespace and newline bytes
+  ---
+  duration_ms: 0.159058
+  type: 'test'
+  ...
+# Subtest: actual revision correlates immutable parent and retains original
+ok 108 - actual revision correlates immutable parent and retains original
+  ---
+  duration_ms: 0.100271
+  type: 'test'
+  ...
+# Subtest: closed request refuses browser authority injection
+ok 109 - closed request refuses browser authority injection
+  ---
+  duration_ms: 0.367191
+  type: 'test'
+  ...
+# Subtest: wrong operation and format pair refuses
+ok 110 - wrong operation and format pair refuses
+  ---
+  duration_ms: 0.177527
+  type: 'test'
+  ...
+# Subtest: PDF remains outside document application
+ok 111 - PDF remains outside document application
+  ---
+  duration_ms: 0.252709
+  type: 'test'
+  ...
+# Subtest: request rejects invalid UTF8
+ok 112 - request rejects invalid UTF8
+  ---
+  duration_ms: 0.124326
+  type: 'test'
+  ...
+# Subtest: request rejects parsed objects without getters or proxy traps
+ok 113 - request rejects parsed objects without getters or proxy traps
+  ---
+  duration_ms: 0.123555
+  type: 'test'
+  ...
+# Subtest: request rejects proxy over byte view without traps
+ok 114 - request rejects proxy over byte view without traps
+  ---
+  duration_ms: 0.074011
+  type: 'test'
+  ...
+# Subtest: JSON byte access ignores hostile own iterator/getter
+ok 115 - JSON byte access ignores hostile own iterator/getter
+  ---
+  duration_ms: 0.07986
+  type: 'test'
+  ...
+# Subtest: request bound counts UTF8 bytes not characters
+ok 116 - request bound counts UTF8 bytes not characters
+  ---
+  duration_ms: 6.661859
+  type: 'test'
+  ...
+# Subtest: request deeply nested JSON refuses boundedly
+ok 117 - request deeply nested JSON refuses boundedly
+  ---
+  duration_ms: 0.154772
+  type: 'test'
+  ...
+# Subtest: unknown dangerous JSON key refuses
+ok 118 - unknown dangerous JSON key refuses
+  ---
+  duration_ms: 0.156214
+  type: 'test'
+  ...
+# Subtest: request snapshots bytes and returns frozen values
+ok 119 - request snapshots bytes and returns frozen values
+  ---
+  duration_ms: 0.240651
+  type: 'test'
+  ...
+# Subtest: shape-like unbranded request cannot admit response
+ok 120 - shape-like unbranded request cannot admit response
+  ---
+  duration_ms: 0.44673
+  type: 'test'
+  ...
+# Subtest: wrong route request brand refuses
+ok 121 - wrong route request brand refuses
+  ---
+  duration_ms: 0.1464
+  type: 'test'
+  ...
+# Subtest: response refuses unknown response field
+ok 122 - response refuses unknown response field
+  ---
+  duration_ms: 0.308122
+  type: 'test'
+  ...
+# Subtest: response refuses format/MIME mismatch
+ok 123 - response refuses format/MIME mismatch
+  ---
+  duration_ms: 0.283104
+  type: 'test'
+  ...
+# Subtest: response refuses bad filename
+ok 124 - response refuses bad filename
+  ---
+  duration_ms: 0.243495
+  type: 'test'
+  ...
+# Subtest: response refuses oversize filename
+ok 125 - response refuses oversize filename
+  ---
+  duration_ms: 0.134402
+  type: 'test'
+  ...
+# Subtest: response refuses hash mismatch
+ok 126 - response refuses hash mismatch
+  ---
+  duration_ms: 0.159039
+  type: 'test'
+  ...
+# Subtest: response refuses byte length mismatch
+ok 127 - response refuses byte length mismatch
+  ---
+  duration_ms: 0.128373
+  type: 'test'
+  ...
+# Subtest: response refuses inspection format
+ok 128 - response refuses inspection format
+  ---
+  duration_ms: 0.150316
+  type: 'test'
+  ...
+# Subtest: response refuses rendered claim
+ok 129 - response refuses rendered claim
+  ---
+  duration_ms: 0.135783
+  type: 'test'
+  ...
+# Subtest: response refuses native qualification claim
+ok 130 - response refuses native qualification claim
+  ---
+  duration_ms: 0.110105
+  type: 'test'
+  ...
+# Subtest: response refuses preview claim
+ok 131 - response refuses preview claim
+  ---
+  duration_ms: 0.083946
+  type: 'test'
+  ...
+# Subtest: response refuses generation claim
+ok 132 - response refuses generation claim
+  ---
+  duration_ms: 0.076134
+  type: 'test'
+  ...
+# Subtest: response refuses foreign object scope
+ok 133 - response refuses foreign object scope
+  ---
+  duration_ms: 0.102203
+  type: 'test'
+  ...
+# Subtest: response refuses unexpected parent
+ok 134 - response refuses unexpected parent
+  ---
+  duration_ms: 0.189344
+  type: 'test'
+  ...
+# Subtest: inspect expected version correlation refuses substitute
+ok 135 - inspect expected version correlation refuses substitute
+  ---
+  duration_ms: 0.330897
+  type: 'test'
+  ...
+# Subtest: revision parent correlation refuses substituted prior version
+ok 136 - revision parent correlation refuses substituted prior version
+  ---
+  duration_ms: 0.235002
+  type: 'test'
+  ...
+# Subtest: valid content-free error returned, status mismatch rejected
+ok 137 - valid content-free error returned, status mismatch rejected
+  ---
+  duration_ms: 0.574311
+  type: 'test'
+  ...
+# Subtest: error with source/private body rejected
+ok 138 - error with source/private body rejected
+  ---
+  duration_ms: 0.123726
+  type: 'test'
+  ...
+# Subtest: download refuses wrong mime
+ok 139 - download refuses wrong mime
+  ---
+  duration_ms: 0.306139
+  type: 'test'
+  ...
+# Subtest: download refuses wrong filename
+ok 140 - download refuses wrong filename
+  ---
+  duration_ms: 0.22673
+  type: 'test'
+  ...
+# Subtest: download refuses missing length
+ok 141 - download refuses missing length
+  ---
+  duration_ms: 0.177536
+  type: 'test'
+  ...
+# Subtest: download refuses wrong length
+ok 142 - download refuses wrong length
+  ---
+  duration_ms: 0.16723
+  type: 'test'
+  ...
+# Subtest: download refuses no-store missing
+ok 143 - download refuses no-store missing
+  ---
+  duration_ms: 0.118678
+  type: 'test'
+  ...
+# Subtest: download refuses nosniff missing
+ok 144 - download refuses nosniff missing
+  ---
+  duration_ms: 0.09976
+  type: 'test'
+  ...
+# Subtest: download refuses encoded content
+ok 145 - download refuses encoded content
+  ---
+  duration_ms: 0.086199
+  type: 'test'
+  ...
+# Subtest: download rejects altered bytes despite matching headers
+ok 146 - download rejects altered bytes despite matching headers
+  ---
+  duration_ms: 9.284691
+  type: 'test'
+  ...
+# Subtest: download rejects shortened EOF
+ok 147 - download rejects shortened EOF
+  ---
+  duration_ms: 0.640681
+  type: 'test'
+  ...
+# Subtest: download refuses redirect and error status
+ok 148 - download refuses redirect and error status
+  ---
+  duration_ms: 0.370155
+  type: 'test'
+  ...
+# Subtest: download refuses unbranded version without proxy traps
+ok 149 - download refuses unbranded version without proxy traps
+  ---
+  duration_ms: 0.437816
+  type: 'test'
+  ...
+# Subtest: download rejects Response proxy without traps
+ok 150 - download rejects Response proxy without traps
+  ---
+  duration_ms: 0.388793
+  type: 'test'
+  ...
+# Subtest: download configured byte limit refuses
+ok 151 - download configured byte limit refuses
+  ---
+  duration_ms: 0.189454
+  type: 'test'
+  ...
+# Subtest: download consumes bounded stream EOF and cancels stalled body
+ok 152 - download consumes bounded stream EOF and cancels stalled body
+  ---
+  duration_ms: 20.928611
+  type: 'test'
+  ...
+# Subtest: download respects already cancelled caller
+ok 153 - download respects already cancelled caller
+  ---
+  duration_ms: 0.684556
+  type: 'test'
+  ...
+# Subtest: received binary is detached from source buffer
+ok 154 - received binary is detached from source buffer
+  ---
+  duration_ms: 0.911056
+  type: 'test'
+  ...
+# (node:5117) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: standalone browser module works with no Node or private graph
+ok 155 - standalone browser module works with no Node or private graph
+  ---
+  duration_ms: 8.204341
+  type: 'test'
+  ...
+# Subtest: native fetch followed redirect200 is refused despite exact bytes and headers
+ok 156 - native fetch followed redirect200 is refused despite exact bytes and headers
+  ---
+  duration_ms: 18.178276
+  type: 'test'
+  ...
+# Subtest: stream read error never yields verified bytes
+ok 157 - stream read error never yields verified bytes
+  ---
+  duration_ms: 0.563985
+  type: 'test'
+  ...
+# Subtest: extra byte after exact version bytes refuses
+ok 158 - extra byte after exact version bytes refuses
+  ---
+  duration_ms: 0.425959
+  type: 'test'
+  ...
+# Subtest: hostile route and status do not coerce unknown objects
+ok 159 - hostile route and status do not coerce unknown objects
+  ---
+  duration_ms: 0.145348
+  type: 'test'
+  ...
+# Subtest: request refuses escaped lone surrogate and concatenated JSON
+ok 160 - request refuses escaped lone surrogate and concatenated JSON
+  ---
+  duration_ms: 0.198728
+  type: 'test'
+  ...
+# Subtest: public txt request/receipt/verified binary
+ok 161 - public txt request/receipt/verified binary
+  ---
+  duration_ms: 20.926927
+  type: 'test'
+  ...
+# Subtest: public docx request/receipt/verified binary
+ok 162 - public docx request/receipt/verified binary
+  ---
+  duration_ms: 2.140319
+  type: 'test'
+  ...
+# Subtest: public xlsx request/receipt/verified binary
+ok 163 - public xlsx request/receipt/verified binary
+  ---
+  duration_ms: 1.572868
+  type: 'test'
+  ...
+# Subtest: revision parent and inspect current-byte receipt
+ok 164 - revision parent and inspect current-byte receipt
+  ---
+  duration_ms: 1.590485
+  type: 'test'
+  ...
+# Subtest: refuse receipt extra
+ok 165 - refuse receipt extra
+  ---
+  duration_ms: 0.647
+  type: 'test'
+  ...
+# Subtest: refuse receipt hash
+ok 166 - refuse receipt hash
+  ---
+  duration_ms: 0.292829
+  type: 'test'
+  ...
+# Subtest: refuse receipt bytes
+ok 167 - refuse receipt bytes
+  ---
+  duration_ms: 0.272048
+  type: 'test'
+  ...
+# Subtest: refuse receipt mime
+ok 168 - refuse receipt mime
+  ---
+  duration_ms: 0.207682
+  type: 'test'
+  ...
+# Subtest: refuse receipt filename
+ok 169 - refuse receipt filename
+  ---
+  duration_ms: 0.269394
+  type: 'test'
+  ...
+# Subtest: refuse receipt parent
+ok 170 - refuse receipt parent
+  ---
+  duration_ms: 1.008452
+  type: 'test'
+  ...
+# Subtest: refuse receipt native
+ok 171 - refuse receipt native
+  ---
+  duration_ms: 0.250035
+  type: 'test'
+  ...
+# Subtest: refuse receipt recalc
+ok 172 - refuse receipt recalc
+  ---
+  duration_ms: 0.177937
+  type: 'test'
+  ...
+# Subtest: refuse receipt preview
+ok 173 - refuse receipt preview
+  ---
+  duration_ms: 0.201412
+  type: 'test'
+  ...
+# Subtest: refuse receipt scope
+ok 174 - refuse receipt scope
+  ---
+  duration_ms: 0.174902
+  type: 'test'
+  ...
+# Subtest: refuse receipt tenant
+ok 175 - refuse receipt tenant
+  ---
+  duration_ms: 0.202013
+  type: 'test'
+  ...
+# Subtest: refuse receipt size
+ok 176 - refuse receipt size
+  ---
+  duration_ms: 0.149514
+  type: 'test'
+  ...
+# Subtest: strict UTF8, JSON bounds and inert bytes
+ok 177 - strict UTF8, JSON bounds and inert bytes
+  ---
+  duration_ms: 0.519079
+  type: 'test'
+  ...
+# Subtest: typed-array overrides are not observed
+ok 178 - typed-array overrides are not observed
+  ---
+  duration_ms: 0.131177
+  type: 'test'
+  ...
+# Subtest: PDF/deck/general and caller authority are outside public admission
+ok 179 - PDF/deck/general and caller authority are outside public admission
+  ---
+  duration_ms: 0.118758
+  type: 'test'
+  ...
+# Subtest: local request and version provenance cannot be reconstructed by shape
+ok 180 - local request and version provenance cannot be reconstructed by shape
+  ---
+  duration_ms: 0.516745
+  type: 'test'
+  ...
+# Subtest: download header content-type refuses
+ok 181 - download header content-type refuses
+  ---
+  duration_ms: 0.316755
+  type: 'test'
+  ...
+# Subtest: download header content-length refuses
+ok 182 - download header content-length refuses
+  ---
+  duration_ms: 0.230896
+  type: 'test'
+  ...
+# Subtest: download header content-disposition refuses
+ok 183 - download header content-disposition refuses
+  ---
+  duration_ms: 0.257636
+  type: 'test'
+  ...
+# Subtest: download header cache-control refuses
+ok 184 - download header cache-control refuses
+  ---
+  duration_ms: 0.283465
+  type: 'test'
+  ...
+# Subtest: download header x-content-type-options refuses
+ok 185 - download header x-content-type-options refuses
+  ---
+  duration_ms: 0.281362
+  type: 'test'
+  ...
+# Subtest: download header content-encoding refuses
+ok 186 - download header content-encoding refuses
+  ---
+  duration_ms: 0.248422
+  type: 'test'
+  ...
+# Subtest: overflow, short, hash mismatch and no EOF cannot release bytes
+ok 187 - overflow, short, hash mismatch and no EOF cannot release bytes
+  ---
+  duration_ms: 14.423346
+  type: 'test'
+  ...
+# Subtest: preabort/native Response brands and own getters
+ok 188 - preabort/native Response brands and own getters
+  ---
+  duration_ms: 1.137626
+  type: 'test'
+  ...
+# Subtest: error status and uncertainty preserved without version or bytes
+ok 189 - error status and uncertainty preserved without version or bytes
+  ---
+  duration_ms: 0.536635
+  type: 'test'
+  ...
+# Subtest: download JSON path accepts errors only
+ok 190 - download JSON path accepts errors only
+  ---
+  duration_ms: 0.276675
+  type: 'test'
+  ...
+# Subtest: browser ESM has no Node globals/external imports and verifies real bytes
+ok 191 - browser ESM has no Node globals/external imports and verifies real bytes
+  ---
+  duration_ms: 50.88713
+  type: 'test'
+  ...
+# Subtest: isolated package consumer exposes document export without private files/dependencies
+ok 192 - isolated package consumer exposes document export without private files/dependencies
+  ---
+  duration_ms: 37.877844
+  type: 'test'
+  ...
+# Subtest: canonical 125-character docx filename remains usable
+ok 193 - canonical 125-character docx filename remains usable
+  ---
+  duration_ms: 1.270866
+  type: 'test'
+  ...
+# Subtest: canonical 125-character xlsx filename remains usable
+ok 194 - canonical 125-character xlsx filename remains usable
+  ---
+  duration_ms: 0.738687
+  type: 'test'
+  ...
+# Subtest: native followed redirect with exact final bytes remains refused
+ok 195 - native followed redirect with exact final bytes remains refused
+  ---
+  duration_ms: 16.962394
+  type: 'test'
+  ...
+1..195
+# tests 195
+# suites 0
+# pass 195
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17380.314984

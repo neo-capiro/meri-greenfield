@@ -1,0 +1,92 @@
+{
+  "reviewedCommit": "086cb8960a8cd314d97b484198660c171d63272f",
+  "sourceDecision": "HOLD",
+  "nativeRuntimeAccepted": false,
+  "files": [
+    {
+      "path": "n209-final-independent-before-outer-counterexample.mjs",
+      "bytes": 24440,
+      "sha256": "59fa43bdeb95d4b92e6d4001b9d6b60a53b37e1851e841536145490e2019daf7"
+    },
+    {
+      "path": "n209-final-independent.json",
+      "bytes": 989,
+      "sha256": "bb90a98e3006012a597cae4e54ac3f3fd85101387ea45e64bda29828f3881e58"
+    },
+    {
+      "path": "n209-final-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-final-independent.stdout.txt",
+      "bytes": 10497,
+      "sha256": "4923a50bb128678fbc70a22f5f1b3e57ccb7005e61328002f22f42e0a3c371f9"
+    },
+    {
+      "path": "n209-final-outer-configuration-counterexample.json",
+      "bytes": 952,
+      "sha256": "76e5c0ea8f6865e6b94c3ffbc77592ea179f2de79cbd3039505286dfa78989e6"
+    },
+    {
+      "path": "n209-final-outer-configuration-counterexample.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-final-outer-configuration-counterexample.stdout.txt",
+      "bytes": 1042,
+      "sha256": "07b88c8304328cd6b407f04db5e7cc07b22a9f0a932c3f9b95ab15496334cef1"
+    },
+    {
+      "path": "n209-final-outer-report.md",
+      "bytes": 1954,
+      "sha256": "117bf74adaa13df951e6d8d48fbadc4dc04aa6d1ef30fdfdc2c4ebed7231b5df"
+    },
+    {
+      "path": "n209-final-outline.md",
+      "bytes": 1672,
+      "sha256": "b6dafa57d45e6d1b3b188414322725d88a8f11da81fe38aef7c67587213af704"
+    },
+    {
+      "path": "n209-final-public-distribution.json",
+      "bytes": 802,
+      "sha256": "3b2b679cb12a24872d6e480fc4c5c69cfa9b863a5ce89322fe3d972bf8fca62b"
+    },
+    {
+      "path": "n209-final-public-distribution.stderr.txt",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "n209-final-public-distribution.stdout.txt",
+      "bytes": 6753,
+      "sha256": "eeb187f1e0ecb324da868a45a4c5f285cd85a6e9a9187ca0723ae9bde3c0db06"
+    },
+    {
+      "path": "n209-final-repair-outline.md",
+      "bytes": 992,
+      "sha256": "37e93dc73bad03d55e73b18ee21fe7a76c19cf60252b33fee2095793be635ded"
+    },
+    {
+      "path": "n209-final-source-whitespace.json",
+      "bytes": 890,
+      "sha256": "128b6cc77efa216de78bb9c84ea3506ee4713e30a380fc5815db4e6f4258f526"
+    },
+    {
+      "path": "n209-final-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "n209-final-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/control/document-application/independent/research-brief-independent.test.mjs",
+      "bytes": 25271,
+      "sha256": "a126e2bfeb52e5d81bc2c20cd445173b1b7408fefc73e9f2ae23bbd7ce6b1e98"
+    }
+  ]
+}

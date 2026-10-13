@@ -1,0 +1,2189 @@
+{
+  "versions": [
+    {
+      "contractVersion": "0.1.0",
+      "artifactId": "009beba8-4a29-43b1-a128-cb80b4c000f9",
+      "versionId": "4c6c6d03-1655-45d2-84a3-d025eef17857",
+      "parentVersionId": null,
+      "binding": {
+        "tenantId": "synthetic-tenant",
+        "actorId": "synthetic-actor",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "ca74f598-ee3f-400a-88f1-b71804be995a",
+        "versionId": "2ec1ac8b6f49ec45c859e5836003b5b08e40a495fbe6ca3704b7700360e93631",
+        "sha256": "2ec1ac8b6f49ec45c859e5836003b5b08e40a495fbe6ca3704b7700360e93631",
+        "bytes": 38609,
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic congressional research brief.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "bill_text",
+          "recordId": "119-hr-4242",
+          "sourceVersionId": "synthetic-ih-v1",
+          "observedAt": "2026-10-13T08:49:00.122Z",
+          "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+          "citationId": "b5e05969-58e7-4ae1-a63a-0eca0b517995",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+          "authorizationDecisionId": "f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc"
+        },
+        {
+          "sourceId": "federal_legislation",
+          "recordId": "synthetic-status-4242",
+          "sourceVersionId": "synthetic-status-v1",
+          "observedAt": "2026-10-13T08:49:00.122Z",
+          "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+          "citationId": "73708bb1-c9a6-4b97-ba80-c106889f0876",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+          "authorizationDecisionId": "e3b7545a-0fa3-4244-91bc-7a5b188d9f8f"
+        }
+      ],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T08:49:00.308Z"
+    },
+    {
+      "contractVersion": "0.1.0",
+      "artifactId": "009beba8-4a29-43b1-a128-cb80b4c000f9",
+      "versionId": "536c4dc5-3834-408c-85a7-0079f0001562",
+      "parentVersionId": "4c6c6d03-1655-45d2-84a3-d025eef17857",
+      "binding": {
+        "tenantId": "synthetic-tenant",
+        "actorId": "synthetic-actor",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "5fdf9482-e300-44ab-a278-0e18f5ce5ef1",
+        "versionId": "1b1575a15d586751e29180df81afd72913b0642aa6cfe0c7afe95b28b37412bc",
+        "sha256": "1b1575a15d586751e29180df81afd72913b0642aa6cfe0c7afe95b28b37412bc",
+        "bytes": 38789,
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic congressional research brief.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "bill_text",
+          "recordId": "119-hr-4242",
+          "sourceVersionId": "synthetic-ih-v1",
+          "observedAt": "2026-10-13T08:49:00.335Z",
+          "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+          "citationId": "d21722e7-2505-415a-8d8a-13aa5fe2a0e5",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+          "authorizationDecisionId": "635c2173-74fd-4722-b92d-49ec3e0455a3"
+        },
+        {
+          "sourceId": "federal_legislation",
+          "recordId": "synthetic-status-4242",
+          "sourceVersionId": "synthetic-status-v1",
+          "observedAt": "2026-10-13T08:49:00.335Z",
+          "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+          "citationId": "49b7e79a-ab46-42a8-bc7b-dae113b91097",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+          "authorizationDecisionId": "63002dce-20cc-403e-b375-0bc284dfa3c2"
+        }
+      ],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T08:49:00.513Z"
+    }
+  ],
+  "preparations": [
+    {
+      "request": {
+        "operation": "create_word",
+        "format": "docx",
+        "title": "Synthetic congressional research brief",
+        "content": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "style": "Title",
+              "runs": [
+                {
+                  "text": "Synthetic congressional research brief"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Congressional research brief | Draft for review"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Congress 119 | Session 2 | 119-hr-4242 | Bill version ih | FY 2027 | Budget stage authorized"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "As of 2026-10-13T08:49:00.122Z"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 1",
+              "runs": [
+                {
+                  "text": "Facts and evidence"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F1 [bound-excerpt]: SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: bill_text / 119-hr-4242 / synthetic-ih-v1; characters 0-146; read-and-bound; locator URL (not verification): https://example.invalid/synthetic/bill/ih"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F2 [unverified-claim; conflicting cited passages]: The demonstration is fully funded. This claim needs verification."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: bill_text / 119-hr-4242 / synthetic-ih-v1; characters 0-146; read-and-bound"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: federal_legislation / synthetic-status-4242 / synthetic-status-v1; characters 0-137; read-and-bound"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F3 [missing-evidence]: No fiscal-year budget amount has been read."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: program_elements / synthetic-pe-1 / synthetic-budget-v1; characters 0-42; missing-or-version-mismatch"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 1",
+              "runs": [
+                {
+                  "text": "Proposed language"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Draft proposals for human review; not enacted language or verified facts."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Proposed: Request confirmation of the demonstration authority and the separate appropriations basis before describing the program as funded."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 1",
+              "runs": [
+                {
+                  "text": "Coverage and verification appendix"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Verification means an exact excerpt was read and byte-bound. Free-form claims remain unverified. Missing or partial evidence does not establish absence."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "bill_text: complete (OK); method source-read; freshness fresh; snapshot synthetic-snapshot-1; adapter 1.0.0"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Requested bill_text; checked bill_text; unavailable none; returned 1; total 1; enumeration complete; truncated false; history supported"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source as-of 2026-10-13T08:49:00.122Z; synchronized 2026-10-13T08:49:00.122Z; retrieved 2026-10-13T08:49:00.122Z. Continuation none; required reads none; remaining sources none."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Limitation: Synthetic exact record only; no claim of corpus completeness."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "federal_legislation: complete (OK); method source-read; freshness fresh; snapshot synthetic-snapshot-1; adapter 1.0.0"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Requested federal_legislation; checked federal_legislation; unavailable none; returned 1; total 1; enumeration complete; truncated false; history supported"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source as-of 2026-10-13T08:49:00.122Z; synchronized 2026-10-13T08:49:00.122Z; retrieved 2026-10-13T08:49:00.122Z. Continuation none; required reads none; remaining sources none."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Limitation: Synthetic exact record only; no claim of corpus completeness."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "program_elements: unavailable (SOURCE_UNAVAILABLE); method source-read; freshness unknown; snapshot unknown; adapter 1.0.0"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Requested program_elements; checked none; unavailable program_elements; returned 0; total unknown; enumeration unknown; truncated false; history unsupported"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source as-of unknown; synchronized unknown; retrieved 2026-10-13T08:49:00.122Z. Continuation none; required reads none; remaining sources program_elements."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Limitation: Synthetic budget evidence is unavailable; no appropriation or amount verified."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F1: bound-excerpt"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source bill_text; record 119-hr-4242; version synthetic-ih-v1; citation b5e05969-58e7-4ae1-a63a-0eca0b517995; authorization decision f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Full text SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nPassage SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nScope: [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T08:49:00.122Z; updated 2026-10-13T08:49:00.122Z."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F2: unverified-claim; unresolved conflicting cited passages"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source bill_text; record 119-hr-4242; version synthetic-ih-v1; citation b5e05969-58e7-4ae1-a63a-0eca0b517995; authorization decision f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Full text SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nPassage SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nScope: [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T08:49:00.122Z; updated 2026-10-13T08:49:00.122Z."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source federal_legislation; record synthetic-status-4242; version synthetic-status-v1; citation 73708bb1-c9a6-4b97-ba80-c106889f0876; authorization decision e3b7545a-0fa3-4244-91bc-7a5b188d9f8f."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Full text SHA256: 6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7\nPassage SHA256: 6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7\nScope: [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T08:49:00.122Z; updated 2026-10-13T08:49:00.122Z."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F3: missing-evidence"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 2",
+              "runs": [
+                {
+                  "text": "Original skill and immutable revision provenance"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Meri brief provenance: {\"recipe\":\"congressional-sourced-brief\",\"skill\":{\"skillId\":\"quick_skill.bill_watch\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065\",\"proseSha256\":\"ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"subject\":{\"congress\":119,\"session\":2,\"billId\":\"119-hr-4242\",\"billVersion\":\"ih\",\"fiscalYear\":2027,\"budgetStage\":\"authorized\"},\"asOf\":\"2026-10-13T08:49:00.122Z\",\"inputSha256\":\"b0d5503732f54466e8a1983766a98e8b847d70a37ebadf0006b927b60c61b752\",\"readsSha256\":\"f2eb8d0bb2c38208937e36c35200fc0e75b964adefe5ca728a41bdd73b12fcce\",\"parent\":null}"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "recipe": "congressional-sourced-brief",
+        "skill": {
+          "skillId": "quick_skill.bill_watch",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+          "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "subject": {
+          "congress": 119,
+          "session": 2,
+          "billId": "119-hr-4242",
+          "billVersion": "ih",
+          "fiscalYear": 2027,
+          "budgetStage": "authorized"
+        },
+        "asOf": "2026-10-13T08:49:00.122Z",
+        "inputSha256": "b0d5503732f54466e8a1983766a98e8b847d70a37ebadf0006b927b60c61b752",
+        "readsSha256": "f2eb8d0bb2c38208937e36c35200fc0e75b964adefe5ca728a41bdd73b12fcce",
+        "parent": null
+      },
+      "facts": [
+        {
+          "id": "F1",
+          "kind": "excerpt",
+          "text": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding.",
+          "citations": [
+            {
+              "sourceId": "bill_text",
+              "recordId": "119-hr-4242",
+              "sourceVersionId": "synthetic-ih-v1",
+              "start": 0,
+              "end": 146,
+              "url": "https://example.invalid/synthetic/bill/ih"
+            }
+          ],
+          "status": "bound-excerpt",
+          "conflict": false,
+          "links": [
+            {
+              "citation": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "start": 0,
+                "end": 146,
+                "url": "https://example.invalid/synthetic/bill/ih"
+              },
+              "status": "read-and-bound",
+              "evidence": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "observedAt": "2026-10-13T08:49:00.122Z",
+                "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+                "citationId": "b5e05969-58e7-4ae1-a63a-0eca0b517995",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-tenant",
+                    "kind": "client",
+                    "resourceId": "99999999-9999-4999-8999-999999999999",
+                    "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ],
+                "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+                "authorizationDecisionId": "f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc"
+              },
+              "passage": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding.",
+              "passageSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+              "freshness": "fresh"
+            }
+          ]
+        },
+        {
+          "id": "F2",
+          "kind": "claim",
+          "text": "The demonstration is fully funded. This claim needs verification.",
+          "citations": [
+            {
+              "sourceId": "bill_text",
+              "recordId": "119-hr-4242",
+              "sourceVersionId": "synthetic-ih-v1",
+              "start": 0,
+              "end": 146
+            },
+            {
+              "sourceId": "federal_legislation",
+              "recordId": "synthetic-status-4242",
+              "sourceVersionId": "synthetic-status-v1",
+              "start": 0,
+              "end": 137
+            }
+          ],
+          "status": "unverified-claim",
+          "conflict": true,
+          "links": [
+            {
+              "citation": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "start": 0,
+                "end": 146
+              },
+              "status": "read-and-bound",
+              "evidence": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "observedAt": "2026-10-13T08:49:00.122Z",
+                "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+                "citationId": "b5e05969-58e7-4ae1-a63a-0eca0b517995",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-tenant",
+                    "kind": "client",
+                    "resourceId": "99999999-9999-4999-8999-999999999999",
+                    "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ],
+                "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+                "authorizationDecisionId": "f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc"
+              },
+              "passage": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding.",
+              "passageSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+              "freshness": "fresh"
+            },
+            {
+              "citation": {
+                "sourceId": "federal_legislation",
+                "recordId": "synthetic-status-4242",
+                "sourceVersionId": "synthetic-status-v1",
+                "start": 0,
+                "end": 137
+              },
+              "status": "read-and-bound",
+              "evidence": {
+                "sourceId": "federal_legislation",
+                "recordId": "synthetic-status-4242",
+                "sourceVersionId": "synthetic-status-v1",
+                "observedAt": "2026-10-13T08:49:00.122Z",
+                "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+                "citationId": "73708bb1-c9a6-4b97-ba80-c106889f0876",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-tenant",
+                    "kind": "client",
+                    "resourceId": "99999999-9999-4999-8999-999999999999",
+                    "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ],
+                "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+                "authorizationDecisionId": "e3b7545a-0fa3-4244-91bc-7a5b188d9f8f"
+              },
+              "passage": "SYNTHETIC STATUS NOTE. A separate summary describes the demonstration as funded. This conflicts with the authorization-only bill passage.",
+              "passageSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+              "freshness": "fresh"
+            }
+          ]
+        },
+        {
+          "id": "F3",
+          "kind": "excerpt",
+          "text": "No fiscal-year budget amount has been read.",
+          "citations": [
+            {
+              "sourceId": "program_elements",
+              "recordId": "synthetic-pe-1",
+              "sourceVersionId": "synthetic-budget-v1",
+              "start": 0,
+              "end": 42
+            }
+          ],
+          "status": "missing-evidence",
+          "conflict": false,
+          "links": [
+            {
+              "citation": {
+                "sourceId": "program_elements",
+                "recordId": "synthetic-pe-1",
+                "sourceVersionId": "synthetic-budget-v1",
+                "start": 0,
+                "end": 42
+              },
+              "status": "missing-or-version-mismatch",
+              "evidence": null,
+              "passage": null
+            }
+          ]
+        }
+      ],
+      "reads": [
+        {
+          "envelope": {
+            "contractVersion": "0.2.0",
+            "requestId": "0427d248-4594-4921-a11f-594957b0021a",
+            "traceId": "14b2a397-7b82-4295-b5e3-f3d144f78b76",
+            "operation": {
+              "id": "read_bill_text",
+              "version": "0.2.0"
+            },
+            "binding": {
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "conversationId": "11111111-1111-4111-8111-111111111111",
+              "runId": "22222222-2222-4222-8222-222222222222",
+              "attemptId": "33333333-3333-4333-8333-333333333333",
+              "workerId": "44444444-4444-4444-8444-444444444444",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "99999999-9999-4999-8999-999999999999"
+              ],
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "authorizationDecisionId": "f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "2d3fc95760bc604b652a726587ca7687483aaaae0bced84467e99132e22fa470",
+            "appliedFilters": [
+              {
+                "name": "congress",
+                "valueSha256": "3038bfb575bee6a0e61945eff8784835bb2c720634e42734678c083994b7f018"
+              },
+              {
+                "name": "session",
+                "valueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+              },
+              {
+                "name": "bill_id",
+                "valueSha256": "40527efb60de80df450ffbe1b600a2a2f59f0f9d2e1d46038e81fdb728771f13"
+              },
+              {
+                "name": "bill_version",
+                "valueSha256": "2ba7f9d2bbb1fcdf3c75a1cfc9f6641cf4d1425247cd91fc5ad1ce46c517f0a3"
+              },
+              {
+                "name": "fiscal_year",
+                "valueSha256": "5313e5bf17148de844ff74be3663d47c6e361ca469b30a36337701233c89a15e"
+              },
+              {
+                "name": "budget_stage",
+                "valueSha256": "64b4c08130f0b75ba481711bd86a02c7d0f5df103a8f09b032e08a0489f94698"
+              }
+            ],
+            "method": "source-read",
+            "status": "complete",
+            "reasonCode": "OK",
+            "retryable": false,
+            "sources": [
+              {
+                "sourceId": "bill_text",
+                "authority": "derived",
+                "snapshotVersionId": "synthetic-snapshot-1",
+                "adapterVersion": "1.0.0",
+                "status": "checked",
+                "synchronizedAt": "2026-10-13T08:49:00.122Z",
+                "asOf": "2026-10-13T08:49:00.122Z",
+                "retrievedAt": "2026-10-13T08:49:00.122Z",
+                "freshness": "fresh"
+              }
+            ],
+            "data": {
+              "kind": "source-read",
+              "records": [
+                {
+                  "sourceId": "bill_text",
+                  "recordId": "119-hr-4242",
+                  "recordVersionId": "synthetic-ih-v1",
+                  "citationId": "b5e05969-58e7-4ae1-a63a-0eca0b517995",
+                  "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+                  "scopes": [
+                    {
+                      "tenantId": "synthetic-tenant",
+                      "kind": "client",
+                      "resourceId": "99999999-9999-4999-8999-999999999999",
+                      "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    }
+                  ],
+                  "content": {
+                    "kind": "full-read",
+                    "text": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding."
+                  }
+                }
+              ]
+            },
+            "coverage": {
+              "sourcesRequested": [
+                "bill_text"
+              ],
+              "sourcesChecked": [
+                "bill_text"
+              ],
+              "sourcesUnavailable": [],
+              "enumeration": "complete",
+              "enumerableTotal": 1,
+              "returnedCount": 1,
+              "truncated": false,
+              "historySupport": "supported",
+              "limitations": [
+                "Synthetic exact record only; no claim of corpus completeness."
+              ]
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          },
+          "evidence": [
+            {
+              "sourceId": "bill_text",
+              "recordId": "119-hr-4242",
+              "sourceVersionId": "synthetic-ih-v1",
+              "observedAt": "2026-10-13T08:49:00.122Z",
+              "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+              "citationId": "b5e05969-58e7-4ae1-a63a-0eca0b517995",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+              "authorizationDecisionId": "f7d8f3cd-d0f1-4233-a9f0-5d1f45fde2cc"
+            }
+          ]
+        },
+        {
+          "envelope": {
+            "contractVersion": "0.2.0",
+            "requestId": "fd930936-0522-41f2-9e82-d058356b1b92",
+            "traceId": "f793e060-62e5-45e3-a457-b1a898d45799",
+            "operation": {
+              "id": "get_bill_status",
+              "version": "0.2.0"
+            },
+            "binding": {
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "conversationId": "11111111-1111-4111-8111-111111111111",
+              "runId": "22222222-2222-4222-8222-222222222222",
+              "attemptId": "33333333-3333-4333-8333-333333333333",
+              "workerId": "44444444-4444-4444-8444-444444444444",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "99999999-9999-4999-8999-999999999999"
+              ],
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "authorizationDecisionId": "e3b7545a-0fa3-4244-91bc-7a5b188d9f8f",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "2d3fc95760bc604b652a726587ca7687483aaaae0bced84467e99132e22fa470",
+            "appliedFilters": [
+              {
+                "name": "congress",
+                "valueSha256": "3038bfb575bee6a0e61945eff8784835bb2c720634e42734678c083994b7f018"
+              },
+              {
+                "name": "session",
+                "valueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+              },
+              {
+                "name": "bill_id",
+                "valueSha256": "40527efb60de80df450ffbe1b600a2a2f59f0f9d2e1d46038e81fdb728771f13"
+              },
+              {
+                "name": "bill_version",
+                "valueSha256": "2ba7f9d2bbb1fcdf3c75a1cfc9f6641cf4d1425247cd91fc5ad1ce46c517f0a3"
+              },
+              {
+                "name": "fiscal_year",
+                "valueSha256": "5313e5bf17148de844ff74be3663d47c6e361ca469b30a36337701233c89a15e"
+              },
+              {
+                "name": "budget_stage",
+                "valueSha256": "64b4c08130f0b75ba481711bd86a02c7d0f5df103a8f09b032e08a0489f94698"
+              }
+            ],
+            "method": "source-read",
+            "status": "complete",
+            "reasonCode": "OK",
+            "retryable": false,
+            "sources": [
+              {
+                "sourceId": "federal_legislation",
+                "authority": "derived",
+                "snapshotVersionId": "synthetic-snapshot-1",
+                "adapterVersion": "1.0.0",
+                "status": "checked",
+                "synchronizedAt": "2026-10-13T08:49:00.122Z",
+                "asOf": "2026-10-13T08:49:00.122Z",
+                "retrievedAt": "2026-10-13T08:49:00.122Z",
+                "freshness": "fresh"
+              }
+            ],
+            "data": {
+              "kind": "source-read",
+              "records": [
+                {
+                  "sourceId": "federal_legislation",
+                  "recordId": "synthetic-status-4242",
+                  "recordVersionId": "synthetic-status-v1",
+                  "citationId": "73708bb1-c9a6-4b97-ba80-c106889f0876",
+                  "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+                  "scopes": [
+                    {
+                      "tenantId": "synthetic-tenant",
+                      "kind": "client",
+                      "resourceId": "99999999-9999-4999-8999-999999999999",
+                      "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    }
+                  ],
+                  "content": {
+                    "kind": "full-read",
+                    "text": "SYNTHETIC STATUS NOTE. A separate summary describes the demonstration as funded. This conflicts with the authorization-only bill passage."
+                  }
+                }
+              ]
+            },
+            "coverage": {
+              "sourcesRequested": [
+                "federal_legislation"
+              ],
+              "sourcesChecked": [
+                "federal_legislation"
+              ],
+              "sourcesUnavailable": [],
+              "enumeration": "complete",
+              "enumerableTotal": 1,
+              "returnedCount": 1,
+              "truncated": false,
+              "historySupport": "supported",
+              "limitations": [
+                "Synthetic exact record only; no claim of corpus completeness."
+              ]
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          },
+          "evidence": [
+            {
+              "sourceId": "federal_legislation",
+              "recordId": "synthetic-status-4242",
+              "sourceVersionId": "synthetic-status-v1",
+              "observedAt": "2026-10-13T08:49:00.122Z",
+              "sourceUpdatedAt": "2026-10-13T08:49:00.122Z",
+              "citationId": "73708bb1-c9a6-4b97-ba80-c106889f0876",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+              "authorizationDecisionId": "e3b7545a-0fa3-4244-91bc-7a5b188d9f8f"
+            }
+          ]
+        },
+        {
+          "envelope": {
+            "contractVersion": "0.2.0",
+            "requestId": "eded031c-5956-477c-8c27-f8696ffe39ed",
+            "traceId": "ebf3017a-7b4a-4220-9dd0-5882f39849e8",
+            "operation": {
+              "id": "get_pe_budget_timeline",
+              "version": "0.2.0"
+            },
+            "binding": {
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "conversationId": "11111111-1111-4111-8111-111111111111",
+              "runId": "22222222-2222-4222-8222-222222222222",
+              "attemptId": "33333333-3333-4333-8333-333333333333",
+              "workerId": "44444444-4444-4444-8444-444444444444",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "99999999-9999-4999-8999-999999999999"
+              ],
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "authorizationDecisionId": "008f88b0-66bb-4fb3-a5c4-c4abd6947a78",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "2d3fc95760bc604b652a726587ca7687483aaaae0bced84467e99132e22fa470",
+            "appliedFilters": [
+              {
+                "name": "congress",
+                "valueSha256": "3038bfb575bee6a0e61945eff8784835bb2c720634e42734678c083994b7f018"
+              },
+              {
+                "name": "session",
+                "valueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+              },
+              {
+                "name": "bill_id",
+                "valueSha256": "40527efb60de80df450ffbe1b600a2a2f59f0f9d2e1d46038e81fdb728771f13"
+              },
+              {
+                "name": "bill_version",
+                "valueSha256": "2ba7f9d2bbb1fcdf3c75a1cfc9f6641cf4d1425247cd91fc5ad1ce46c517f0a3"
+              },
+              {
+                "name": "fiscal_year",
+                "valueSha256": "5313e5bf17148de844ff74be3663d47c6e361ca469b30a36337701233c89a15e"
+              },
+              {
+                "name": "budget_stage",
+                "valueSha256": "64b4c08130f0b75ba481711bd86a02c7d0f5df103a8f09b032e08a0489f94698"
+              }
+            ],
+            "method": "source-read",
+            "status": "unavailable",
+            "reasonCode": "SOURCE_UNAVAILABLE",
+            "retryable": false,
+            "sources": [
+              {
+                "sourceId": "program_elements",
+                "authority": "derived",
+                "snapshotVersionId": null,
+                "adapterVersion": "1.0.0",
+                "status": "unavailable",
+                "synchronizedAt": null,
+                "asOf": null,
+                "retrievedAt": "2026-10-13T08:49:00.122Z",
+                "freshness": "unknown"
+              }
+            ],
+            "data": null,
+            "coverage": {
+              "sourcesRequested": [
+                "program_elements"
+              ],
+              "sourcesChecked": [],
+              "sourcesUnavailable": [
+                "program_elements"
+              ],
+              "enumeration": "unknown",
+              "enumerableTotal": null,
+              "returnedCount": 0,
+              "truncated": false,
+              "historySupport": "unsupported",
+              "limitations": [
+                "Synthetic budget evidence is unavailable; no appropriation or amount verified."
+              ]
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": [
+                "program_elements"
+              ]
+            },
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          },
+          "evidence": []
+        }
+      ]
+    },
+    {
+      "request": {
+        "operation": "create_word",
+        "format": "docx",
+        "title": "Synthetic congressional research brief",
+        "content": {
+          "blocks": [
+            {
+              "kind": "paragraph",
+              "style": "Title",
+              "runs": [
+                {
+                  "text": "Synthetic congressional research brief"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Congressional research brief | Draft for review"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Congress 119 | Session 2 | 119-hr-4242 | Bill version ih | FY 2027 | Budget stage authorized"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "As of 2026-10-13T08:49:00.335Z"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 1",
+              "runs": [
+                {
+                  "text": "Facts and evidence"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F1 [bound-excerpt]: SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: bill_text / 119-hr-4242 / synthetic-ih-v1; characters 0-146; read-and-bound; locator URL (not verification): https://example.invalid/synthetic/bill/ih"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F2 [unverified-claim; conflicting cited passages]: The demonstration is fully funded. This claim needs verification."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: bill_text / 119-hr-4242 / synthetic-ih-v1; characters 0-146; read-and-bound"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: federal_legislation / synthetic-status-4242 / synthetic-status-v1; characters 0-137; read-and-bound"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F3 [missing-evidence]: No fiscal-year budget amount has been read."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Citation: program_elements / synthetic-pe-1 / synthetic-budget-v1; characters 0-42; missing-or-version-mismatch"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 1",
+              "runs": [
+                {
+                  "text": "Proposed language"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Draft proposals for human review; not enacted language or verified facts."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Revised proposal: Require independent confirmation of the authorization and appropriations basis before seeking a congressional research demonstration."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 1",
+              "runs": [
+                {
+                  "text": "Coverage and verification appendix"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Verification means an exact excerpt was read and byte-bound. Free-form claims remain unverified. Missing or partial evidence does not establish absence."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "bill_text: complete (OK); method source-read; freshness fresh; snapshot synthetic-snapshot-1; adapter 1.0.0"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Requested bill_text; checked bill_text; unavailable none; returned 1; total 1; enumeration complete; truncated false; history supported"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source as-of 2026-10-13T08:49:00.335Z; synchronized 2026-10-13T08:49:00.335Z; retrieved 2026-10-13T08:49:00.335Z. Continuation none; required reads none; remaining sources none."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Limitation: Synthetic exact record only; no claim of corpus completeness."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "federal_legislation: complete (OK); method source-read; freshness fresh; snapshot synthetic-snapshot-1; adapter 1.0.0"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Requested federal_legislation; checked federal_legislation; unavailable none; returned 1; total 1; enumeration complete; truncated false; history supported"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source as-of 2026-10-13T08:49:00.335Z; synchronized 2026-10-13T08:49:00.335Z; retrieved 2026-10-13T08:49:00.335Z. Continuation none; required reads none; remaining sources none."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Limitation: Synthetic exact record only; no claim of corpus completeness."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "program_elements: unavailable (SOURCE_UNAVAILABLE); method source-read; freshness unknown; snapshot unknown; adapter 1.0.0"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Requested program_elements; checked none; unavailable program_elements; returned 0; total unknown; enumeration unknown; truncated false; history unsupported"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source as-of unknown; synchronized unknown; retrieved 2026-10-13T08:49:00.335Z. Continuation none; required reads none; remaining sources program_elements."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Limitation: Synthetic budget evidence is unavailable; no appropriation or amount verified."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F1: bound-excerpt"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source bill_text; record 119-hr-4242; version synthetic-ih-v1; citation d21722e7-2505-415a-8d8a-13aa5fe2a0e5; authorization decision 635c2173-74fd-4722-b92d-49ec3e0455a3."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Full text SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nPassage SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nScope: [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T08:49:00.335Z; updated 2026-10-13T08:49:00.335Z."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F2: unverified-claim; unresolved conflicting cited passages"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source bill_text; record 119-hr-4242; version synthetic-ih-v1; citation d21722e7-2505-415a-8d8a-13aa5fe2a0e5; authorization decision 635c2173-74fd-4722-b92d-49ec3e0455a3."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Full text SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nPassage SHA256: 008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c\nScope: [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T08:49:00.335Z; updated 2026-10-13T08:49:00.335Z."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Source federal_legislation; record synthetic-status-4242; version synthetic-status-v1; citation 49b7e79a-ab46-42a8-bc7b-dae113b91097; authorization decision 63002dce-20cc-403e-b375-0bc284dfa3c2."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Full text SHA256: 6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7\nPassage SHA256: 6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7\nScope: [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T08:49:00.335Z; updated 2026-10-13T08:49:00.335Z."
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "F3: missing-evidence"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Heading 2",
+              "runs": [
+                {
+                  "text": "Original skill and immutable revision provenance"
+                }
+              ]
+            },
+            {
+              "kind": "paragraph",
+              "style": "Normal",
+              "runs": [
+                {
+                  "text": "Meri brief provenance: {\"recipe\":\"congressional-sourced-brief\",\"skill\":{\"skillId\":\"quick_skill.bill_watch\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065\",\"proseSha256\":\"ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"subject\":{\"congress\":119,\"session\":2,\"billId\":\"119-hr-4242\",\"billVersion\":\"ih\",\"fiscalYear\":2027,\"budgetStage\":\"authorized\"},\"asOf\":\"2026-10-13T08:49:00.335Z\",\"inputSha256\":\"a646b840a40b3c9220b8e17a279d16b6e79d11e9ae4a3aa076c0a59f9319ebc5\",\"readsSha256\":\"2204614d227db3fe6a5649c8abaeeebdeab56c2f9c084a79c5f3ee422f81fcb0\",\"parent\":{\"versionId\":\"4c6c6d03-1655-45d2-84a3-d025eef17857\",\"objectSha256\":\"2ec1ac8b6f49ec45c859e5836003b5b08e40a495fbe6ca3704b7700360e93631\",\"specSha256\":\"cf38a41458981a24cb2c41e8bcfbec67c8d08448c4bf711406afabdd6f14317f\",\"provenanceSha256\":\"ec0d52ef455dccf9f433402b853f591b06c995e6978043ec00cde40768a96baf\"}}"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "recipe": "congressional-sourced-brief",
+        "skill": {
+          "skillId": "quick_skill.bill_watch",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+          "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "subject": {
+          "congress": 119,
+          "session": 2,
+          "billId": "119-hr-4242",
+          "billVersion": "ih",
+          "fiscalYear": 2027,
+          "budgetStage": "authorized"
+        },
+        "asOf": "2026-10-13T08:49:00.335Z",
+        "inputSha256": "a646b840a40b3c9220b8e17a279d16b6e79d11e9ae4a3aa076c0a59f9319ebc5",
+        "readsSha256": "2204614d227db3fe6a5649c8abaeeebdeab56c2f9c084a79c5f3ee422f81fcb0",
+        "parent": {
+          "versionId": "4c6c6d03-1655-45d2-84a3-d025eef17857",
+          "objectSha256": "2ec1ac8b6f49ec45c859e5836003b5b08e40a495fbe6ca3704b7700360e93631",
+          "specSha256": "cf38a41458981a24cb2c41e8bcfbec67c8d08448c4bf711406afabdd6f14317f",
+          "provenanceSha256": "ec0d52ef455dccf9f433402b853f591b06c995e6978043ec00cde40768a96baf"
+        }
+      },
+      "facts": [
+        {
+          "id": "F1",
+          "kind": "excerpt",
+          "text": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding.",
+          "citations": [
+            {
+              "sourceId": "bill_text",
+              "recordId": "119-hr-4242",
+              "sourceVersionId": "synthetic-ih-v1",
+              "start": 0,
+              "end": 146,
+              "url": "https://example.invalid/synthetic/bill/ih"
+            }
+          ],
+          "status": "bound-excerpt",
+          "conflict": false,
+          "links": [
+            {
+              "citation": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "start": 0,
+                "end": 146,
+                "url": "https://example.invalid/synthetic/bill/ih"
+              },
+              "status": "read-and-bound",
+              "evidence": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "observedAt": "2026-10-13T08:49:00.335Z",
+                "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+                "citationId": "d21722e7-2505-415a-8d8a-13aa5fe2a0e5",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-tenant",
+                    "kind": "client",
+                    "resourceId": "99999999-9999-4999-8999-999999999999",
+                    "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ],
+                "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+                "authorizationDecisionId": "635c2173-74fd-4722-b92d-49ec3e0455a3"
+              },
+              "passage": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding.",
+              "passageSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+              "freshness": "fresh"
+            }
+          ]
+        },
+        {
+          "id": "F2",
+          "kind": "claim",
+          "text": "The demonstration is fully funded. This claim needs verification.",
+          "citations": [
+            {
+              "sourceId": "bill_text",
+              "recordId": "119-hr-4242",
+              "sourceVersionId": "synthetic-ih-v1",
+              "start": 0,
+              "end": 146
+            },
+            {
+              "sourceId": "federal_legislation",
+              "recordId": "synthetic-status-4242",
+              "sourceVersionId": "synthetic-status-v1",
+              "start": 0,
+              "end": 137
+            }
+          ],
+          "status": "unverified-claim",
+          "conflict": true,
+          "links": [
+            {
+              "citation": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "start": 0,
+                "end": 146
+              },
+              "status": "read-and-bound",
+              "evidence": {
+                "sourceId": "bill_text",
+                "recordId": "119-hr-4242",
+                "sourceVersionId": "synthetic-ih-v1",
+                "observedAt": "2026-10-13T08:49:00.335Z",
+                "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+                "citationId": "d21722e7-2505-415a-8d8a-13aa5fe2a0e5",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-tenant",
+                    "kind": "client",
+                    "resourceId": "99999999-9999-4999-8999-999999999999",
+                    "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ],
+                "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+                "authorizationDecisionId": "635c2173-74fd-4722-b92d-49ec3e0455a3"
+              },
+              "passage": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding.",
+              "passageSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+              "freshness": "fresh"
+            },
+            {
+              "citation": {
+                "sourceId": "federal_legislation",
+                "recordId": "synthetic-status-4242",
+                "sourceVersionId": "synthetic-status-v1",
+                "start": 0,
+                "end": 137
+              },
+              "status": "read-and-bound",
+              "evidence": {
+                "sourceId": "federal_legislation",
+                "recordId": "synthetic-status-4242",
+                "sourceVersionId": "synthetic-status-v1",
+                "observedAt": "2026-10-13T08:49:00.335Z",
+                "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+                "citationId": "49b7e79a-ab46-42a8-bc7b-dae113b91097",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-tenant",
+                    "kind": "client",
+                    "resourceId": "99999999-9999-4999-8999-999999999999",
+                    "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ],
+                "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+                "authorizationDecisionId": "63002dce-20cc-403e-b375-0bc284dfa3c2"
+              },
+              "passage": "SYNTHETIC STATUS NOTE. A separate summary describes the demonstration as funded. This conflicts with the authorization-only bill passage.",
+              "passageSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+              "freshness": "fresh"
+            }
+          ]
+        },
+        {
+          "id": "F3",
+          "kind": "excerpt",
+          "text": "No fiscal-year budget amount has been read.",
+          "citations": [
+            {
+              "sourceId": "program_elements",
+              "recordId": "synthetic-pe-1",
+              "sourceVersionId": "synthetic-budget-v1",
+              "start": 0,
+              "end": 42
+            }
+          ],
+          "status": "missing-evidence",
+          "conflict": false,
+          "links": [
+            {
+              "citation": {
+                "sourceId": "program_elements",
+                "recordId": "synthetic-pe-1",
+                "sourceVersionId": "synthetic-budget-v1",
+                "start": 0,
+                "end": 42
+              },
+              "status": "missing-or-version-mismatch",
+              "evidence": null,
+              "passage": null
+            }
+          ]
+        }
+      ],
+      "reads": [
+        {
+          "envelope": {
+            "contractVersion": "0.2.0",
+            "requestId": "13d752ad-4d3d-4b46-94fb-faea6c7a85e6",
+            "traceId": "926b3d63-a49f-4ca8-af2d-eb7cc85d2a96",
+            "operation": {
+              "id": "read_bill_text",
+              "version": "0.2.0"
+            },
+            "binding": {
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "conversationId": "11111111-1111-4111-8111-111111111111",
+              "runId": "22222222-2222-4222-8222-222222222222",
+              "attemptId": "33333333-3333-4333-8333-333333333333",
+              "workerId": "44444444-4444-4444-8444-444444444444",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "99999999-9999-4999-8999-999999999999"
+              ],
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "authorizationDecisionId": "635c2173-74fd-4722-b92d-49ec3e0455a3",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "ceb8aab1e78dcea953b0b7e50c27de957028c8b71f718db8c18431cf59a27f7c",
+            "appliedFilters": [
+              {
+                "name": "congress",
+                "valueSha256": "3038bfb575bee6a0e61945eff8784835bb2c720634e42734678c083994b7f018"
+              },
+              {
+                "name": "session",
+                "valueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+              },
+              {
+                "name": "bill_id",
+                "valueSha256": "40527efb60de80df450ffbe1b600a2a2f59f0f9d2e1d46038e81fdb728771f13"
+              },
+              {
+                "name": "bill_version",
+                "valueSha256": "2ba7f9d2bbb1fcdf3c75a1cfc9f6641cf4d1425247cd91fc5ad1ce46c517f0a3"
+              },
+              {
+                "name": "fiscal_year",
+                "valueSha256": "5313e5bf17148de844ff74be3663d47c6e361ca469b30a36337701233c89a15e"
+              },
+              {
+                "name": "budget_stage",
+                "valueSha256": "64b4c08130f0b75ba481711bd86a02c7d0f5df103a8f09b032e08a0489f94698"
+              }
+            ],
+            "method": "source-read",
+            "status": "complete",
+            "reasonCode": "OK",
+            "retryable": false,
+            "sources": [
+              {
+                "sourceId": "bill_text",
+                "authority": "derived",
+                "snapshotVersionId": "synthetic-snapshot-1",
+                "adapterVersion": "1.0.0",
+                "status": "checked",
+                "synchronizedAt": "2026-10-13T08:49:00.335Z",
+                "asOf": "2026-10-13T08:49:00.335Z",
+                "retrievedAt": "2026-10-13T08:49:00.335Z",
+                "freshness": "fresh"
+              }
+            ],
+            "data": {
+              "kind": "source-read",
+              "records": [
+                {
+                  "sourceId": "bill_text",
+                  "recordId": "119-hr-4242",
+                  "recordVersionId": "synthetic-ih-v1",
+                  "citationId": "d21722e7-2505-415a-8d8a-13aa5fe2a0e5",
+                  "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+                  "scopes": [
+                    {
+                      "tenantId": "synthetic-tenant",
+                      "kind": "client",
+                      "resourceId": "99999999-9999-4999-8999-999999999999",
+                      "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    }
+                  ],
+                  "content": {
+                    "kind": "full-read",
+                    "text": "SYNTHETIC BILL TEXT. Section 101 authorizes a research demonstration for fiscal year 2027. This authorization does not itself appropriate funding."
+                  }
+                }
+              ]
+            },
+            "coverage": {
+              "sourcesRequested": [
+                "bill_text"
+              ],
+              "sourcesChecked": [
+                "bill_text"
+              ],
+              "sourcesUnavailable": [],
+              "enumeration": "complete",
+              "enumerableTotal": 1,
+              "returnedCount": 1,
+              "truncated": false,
+              "historySupport": "supported",
+              "limitations": [
+                "Synthetic exact record only; no claim of corpus completeness."
+              ]
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          },
+          "evidence": [
+            {
+              "sourceId": "bill_text",
+              "recordId": "119-hr-4242",
+              "sourceVersionId": "synthetic-ih-v1",
+              "observedAt": "2026-10-13T08:49:00.335Z",
+              "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+              "citationId": "d21722e7-2505-415a-8d8a-13aa5fe2a0e5",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "contentSha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+              "authorizationDecisionId": "635c2173-74fd-4722-b92d-49ec3e0455a3"
+            }
+          ]
+        },
+        {
+          "envelope": {
+            "contractVersion": "0.2.0",
+            "requestId": "d7ba4e5d-be29-49a3-87d4-d35dd4f0e5a5",
+            "traceId": "46b8e7b5-9363-4917-a558-2fe6358720ec",
+            "operation": {
+              "id": "get_bill_status",
+              "version": "0.2.0"
+            },
+            "binding": {
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "conversationId": "11111111-1111-4111-8111-111111111111",
+              "runId": "22222222-2222-4222-8222-222222222222",
+              "attemptId": "33333333-3333-4333-8333-333333333333",
+              "workerId": "44444444-4444-4444-8444-444444444444",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "99999999-9999-4999-8999-999999999999"
+              ],
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "authorizationDecisionId": "63002dce-20cc-403e-b375-0bc284dfa3c2",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "ceb8aab1e78dcea953b0b7e50c27de957028c8b71f718db8c18431cf59a27f7c",
+            "appliedFilters": [
+              {
+                "name": "congress",
+                "valueSha256": "3038bfb575bee6a0e61945eff8784835bb2c720634e42734678c083994b7f018"
+              },
+              {
+                "name": "session",
+                "valueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+              },
+              {
+                "name": "bill_id",
+                "valueSha256": "40527efb60de80df450ffbe1b600a2a2f59f0f9d2e1d46038e81fdb728771f13"
+              },
+              {
+                "name": "bill_version",
+                "valueSha256": "2ba7f9d2bbb1fcdf3c75a1cfc9f6641cf4d1425247cd91fc5ad1ce46c517f0a3"
+              },
+              {
+                "name": "fiscal_year",
+                "valueSha256": "5313e5bf17148de844ff74be3663d47c6e361ca469b30a36337701233c89a15e"
+              },
+              {
+                "name": "budget_stage",
+                "valueSha256": "64b4c08130f0b75ba481711bd86a02c7d0f5df103a8f09b032e08a0489f94698"
+              }
+            ],
+            "method": "source-read",
+            "status": "complete",
+            "reasonCode": "OK",
+            "retryable": false,
+            "sources": [
+              {
+                "sourceId": "federal_legislation",
+                "authority": "derived",
+                "snapshotVersionId": "synthetic-snapshot-1",
+                "adapterVersion": "1.0.0",
+                "status": "checked",
+                "synchronizedAt": "2026-10-13T08:49:00.335Z",
+                "asOf": "2026-10-13T08:49:00.335Z",
+                "retrievedAt": "2026-10-13T08:49:00.335Z",
+                "freshness": "fresh"
+              }
+            ],
+            "data": {
+              "kind": "source-read",
+              "records": [
+                {
+                  "sourceId": "federal_legislation",
+                  "recordId": "synthetic-status-4242",
+                  "recordVersionId": "synthetic-status-v1",
+                  "citationId": "49b7e79a-ab46-42a8-bc7b-dae113b91097",
+                  "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+                  "scopes": [
+                    {
+                      "tenantId": "synthetic-tenant",
+                      "kind": "client",
+                      "resourceId": "99999999-9999-4999-8999-999999999999",
+                      "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    }
+                  ],
+                  "content": {
+                    "kind": "full-read",
+                    "text": "SYNTHETIC STATUS NOTE. A separate summary describes the demonstration as funded. This conflicts with the authorization-only bill passage."
+                  }
+                }
+              ]
+            },
+            "coverage": {
+              "sourcesRequested": [
+                "federal_legislation"
+              ],
+              "sourcesChecked": [
+                "federal_legislation"
+              ],
+              "sourcesUnavailable": [],
+              "enumeration": "complete",
+              "enumerableTotal": 1,
+              "returnedCount": 1,
+              "truncated": false,
+              "historySupport": "supported",
+              "limitations": [
+                "Synthetic exact record only; no claim of corpus completeness."
+              ]
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          },
+          "evidence": [
+            {
+              "sourceId": "federal_legislation",
+              "recordId": "synthetic-status-4242",
+              "sourceVersionId": "synthetic-status-v1",
+              "observedAt": "2026-10-13T08:49:00.335Z",
+              "sourceUpdatedAt": "2026-10-13T08:49:00.335Z",
+              "citationId": "49b7e79a-ab46-42a8-bc7b-dae113b91097",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "contentSha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+              "authorizationDecisionId": "63002dce-20cc-403e-b375-0bc284dfa3c2"
+            }
+          ]
+        },
+        {
+          "envelope": {
+            "contractVersion": "0.2.0",
+            "requestId": "c62a5206-e21e-48e1-b35c-ea2542011459",
+            "traceId": "2c539f38-00bd-4029-b7ca-0bb14182d0ad",
+            "operation": {
+              "id": "get_pe_budget_timeline",
+              "version": "0.2.0"
+            },
+            "binding": {
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "conversationId": "11111111-1111-4111-8111-111111111111",
+              "runId": "22222222-2222-4222-8222-222222222222",
+              "attemptId": "33333333-3333-4333-8333-333333333333",
+              "workerId": "44444444-4444-4444-8444-444444444444",
+              "writerFence": 1
+            },
+            "subject": {
+              "kind": "client",
+              "entityType": "client",
+              "entityIds": [
+                "99999999-9999-4999-8999-999999999999"
+              ],
+              "tenantId": "synthetic-tenant",
+              "actorId": "synthetic-actor",
+              "authorizationDecisionId": "1d37c48c-05d0-4445-a27f-a34cdc967279",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "rosterVersionId": null
+            },
+            "window": {
+              "basis": "unbounded"
+            },
+            "argumentsSha256": "ceb8aab1e78dcea953b0b7e50c27de957028c8b71f718db8c18431cf59a27f7c",
+            "appliedFilters": [
+              {
+                "name": "congress",
+                "valueSha256": "3038bfb575bee6a0e61945eff8784835bb2c720634e42734678c083994b7f018"
+              },
+              {
+                "name": "session",
+                "valueSha256": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35"
+              },
+              {
+                "name": "bill_id",
+                "valueSha256": "40527efb60de80df450ffbe1b600a2a2f59f0f9d2e1d46038e81fdb728771f13"
+              },
+              {
+                "name": "bill_version",
+                "valueSha256": "2ba7f9d2bbb1fcdf3c75a1cfc9f6641cf4d1425247cd91fc5ad1ce46c517f0a3"
+              },
+              {
+                "name": "fiscal_year",
+                "valueSha256": "5313e5bf17148de844ff74be3663d47c6e361ca469b30a36337701233c89a15e"
+              },
+              {
+                "name": "budget_stage",
+                "valueSha256": "64b4c08130f0b75ba481711bd86a02c7d0f5df103a8f09b032e08a0489f94698"
+              }
+            ],
+            "method": "source-read",
+            "status": "unavailable",
+            "reasonCode": "SOURCE_UNAVAILABLE",
+            "retryable": false,
+            "sources": [
+              {
+                "sourceId": "program_elements",
+                "authority": "derived",
+                "snapshotVersionId": null,
+                "adapterVersion": "1.0.0",
+                "status": "unavailable",
+                "synchronizedAt": null,
+                "asOf": null,
+                "retrievedAt": "2026-10-13T08:49:00.335Z",
+                "freshness": "unknown"
+              }
+            ],
+            "data": null,
+            "coverage": {
+              "sourcesRequested": [
+                "program_elements"
+              ],
+              "sourcesChecked": [],
+              "sourcesUnavailable": [
+                "program_elements"
+              ],
+              "enumeration": "unknown",
+              "enumerableTotal": null,
+              "returnedCount": 0,
+              "truncated": false,
+              "historySupport": "unsupported",
+              "limitations": [
+                "Synthetic budget evidence is unavailable; no appropriation or amount verified."
+              ]
+            },
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": [
+                "program_elements"
+              ]
+            },
+            "negativeAssertion": {
+              "kind": "none"
+            }
+          },
+          "evidence": []
+        }
+      ]
+    }
+  ],
+  "sourceReads": [
+    {
+      "sourceId": "bill_text",
+      "selectorSha256": "2d3fc95760bc604b652a726587ca7687483aaaae0bced84467e99132e22fa470",
+      "resultSha256": "b36f91605fe3c60d4c1de88de5d4c515b3928d5cc818f5451ae70d78fa102ca8"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "selectorSha256": "2d3fc95760bc604b652a726587ca7687483aaaae0bced84467e99132e22fa470",
+      "resultSha256": "9498e2863167d1b54aac80066db93671b6dd86238d9d21a3be3f242de8836330"
+    },
+    {
+      "sourceId": "program_elements",
+      "selectorSha256": "2d3fc95760bc604b652a726587ca7687483aaaae0bced84467e99132e22fa470",
+      "resultSha256": "7cab54892365e03f24ea2e33a3e6e6c33995dc17b2016d613b563ca95b5115af"
+    },
+    {
+      "sourceId": "bill_text",
+      "selectorSha256": "ceb8aab1e78dcea953b0b7e50c27de957028c8b71f718db8c18431cf59a27f7c",
+      "resultSha256": "599372e7ebebd8bbd107a445a3f0c56b0912d5bfe7a7cd76fb73b75269f4f167"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "selectorSha256": "ceb8aab1e78dcea953b0b7e50c27de957028c8b71f718db8c18431cf59a27f7c",
+      "resultSha256": "b7a445cb2000b55f29e1daa661e2ec312bfd1d64a361add96c1e6a45bc9717bb"
+    },
+    {
+      "sourceId": "program_elements",
+      "selectorSha256": "ceb8aab1e78dcea953b0b7e50c27de957028c8b71f718db8c18431cf59a27f7c",
+      "resultSha256": "3d4ef81ecad9374c696e8188f854c514919f23b4fdfff88f474c69e2732edcb3"
+    }
+  ]
+}

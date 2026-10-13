@@ -1,0 +1,10 @@
+{
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "reason": "Approved private guard moved from HTTP preflight to canonical pre-reservation authority boundary while restoring exact frozen public implementation.",
+  "mapping": [
+    {"case": "changed full typed Word request", "beforeStatus": 400, "afterStatus": 403, "afterCode": "ACCESS_DENIED", "afterOutcome": "UNKNOWN", "retainedAssertions": ["zero generation", "zero version/reservation charge", "zero settlement", "zero reservation unknown"]},
+    {"case": "wrong exact baseVersionId on revision", "beforeStatus": 400, "afterStatus": 403, "retainedAssertions": ["same generation count", "same version/reservation charge count", "exact original/version lineage controls unchanged"]}
+  ],
+  "preimage": "n209-repair-expectation-preimage.mjs",
+  "newIndependentBinderControls": ["original borrowed authority receiver and exact call delegation", "immutable context digest after prepared context mutation"]
+}

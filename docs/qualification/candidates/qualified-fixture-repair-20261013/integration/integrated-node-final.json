@@ -1,0 +1,47 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-qualified-fixture-repair-20261013",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/qualified-application/application.test.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+    "apps/control/qualified-application/mount.test.mjs",
+    "apps/control/qualified-application/schema-compatibility.test.mjs",
+    "apps/control/qualified-application/schema.test.mjs",
+    "apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+    "apps/control/qualified-application/independent/application-independent.test.mjs",
+    "apps/control/qualified-application/independent/graph-independent.test.mjs",
+    "apps/control/qualified-application/independent/lifecycle-independent.test.mjs",
+    "apps/control/qualified-application/independent/schema-independent.test.mjs",
+    "infra/native-enforcement/worker-observer.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-repair-20261013",
+  "sourceHead": "f7ce110d9c5e33e1ebf75641a85d51bd1bf0ac45",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T06:16:41.767843+00:00",
+  "durationSeconds": 26.058,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 511928,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.stdout.bin",
+      "bytes": 18125,
+      "sha256": "56d27fbd2457def26930017d7648e8ee4b9d84fe7f261b5a13589c5331928010"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Namespace OID repair plus required explicit source-root harness setting; initial failed outputs retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,8 @@
+{
+  "sourcePreimage": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/guard-and-graph.mjs",
+  "sourceSha256": "8b3a9230d6b4e7751e25d896bc428024a33ca17e7e694940e018118421b2cb10",
+  "failedReceipt": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard.receipt.json",
+  "failure": "Final delegated post-revocation canonical GatewayDenied has no public error.code; first verifier incorrectly used private binder error.code predicate",
+  "repair": "Assert imported canonical GatewayDenied class and exact ACCESS_DENIED message for that delegated policy refusal only; preserve all other guard code/status/reservation/generation/receiver/context assertions unchanged",
+  "nativeQualified": false
+}

@@ -1,0 +1,114 @@
+{
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "reviewedTree": "bc288d53ce03e926833a26366e53216837f4fa2b",
+  "renderedEvidenceCommit": "bfc01957d45a5625f255030d38435bf1d3703e3a",
+  "decision": "ACCEPT_ARTIFACT_LOCAL_SYNTHETIC_ONLY",
+  "nativeQualified": false,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/byte-audit.json",
+      "bytes": 2341,
+      "sha256": "f962b18953add36ba038c5a7bbab770380990dd6c32983fdc328c5d8553c4a03"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/capture.py",
+      "bytes": 3829,
+      "sha256": "29e6fec080378066e0ddd83c096f045ed190e6762362cd9ac92aad06223b604a"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-byte-audit.json",
+      "bytes": 2591,
+      "sha256": "43314080a9491ed663d1712437409c70e821cf0594de827c52dc69dad25ed482"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-final-guard.receipt.json",
+      "bytes": 1395,
+      "sha256": "0444aa172facdc5e59dc47b5f0c1e998ef8964174c289ce31c3538beebf6afb7"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-final-guard.stderr.txt",
+      "bytes": 444,
+      "sha256": "8277e65cab3ad064cb38386451c60287faeab449ab61f3a7ad6432f48a2a83b8"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-final-guard.stdout.txt",
+      "bytes": 3215,
+      "sha256": "ba935e69d5bab9b10a93f053596e9ac016d71e3b306575d92b5b7a03dcb749fa"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-guard-and-graph.json",
+      "bytes": 4096,
+      "sha256": "24c61700e4fe94399c5116a0b321e7139b4ae08c1e1840e4d30469c8fb301344"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-guard-and-graph.mjs",
+      "bytes": 10121,
+      "sha256": "a3e097d7cf1384aefda35fd091d57a27f1a94fb791a5d7a6d4e445a378ddda3a"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard-rerun.receipt.json",
+      "bytes": 1386,
+      "sha256": "30c531a377e3f0b70a0e51dbd20f35cad1e8ccc99470d608bc1038d92df11b3f"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard-rerun.stderr.txt",
+      "bytes": 444,
+      "sha256": "f9d1a6b8adfe816a4c05f4290e2acb57888042ec13b70e1dd94cad5ef66f551f"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard-rerun.stdout.txt",
+      "bytes": 3130,
+      "sha256": "08beaffbb2280bd711279397e673c7e3f5491dba5bed451a6c187adc50db335f"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard.receipt.json",
+      "bytes": 1368,
+      "sha256": "4c9f0af0f9f1ccc2f9aa878acdea73bb75c5f09b6596a68d014a493609170b28"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard.stderr.txt",
+      "bytes": 444,
+      "sha256": "9b3d7ce3868ca670529ddf407e02027e86cf95a1c37ed32265a56a4f0e1d3a92"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/final-guard.stdout.txt",
+      "bytes": 3113,
+      "sha256": "3b03d9e5c3ba220b580f6e636af3fe634f7a11145781a4ca049621f3ac73326e"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/guard-and-graph-rerun.json",
+      "bytes": 4006,
+      "sha256": "20a59a196a2fd3bc2f676cd6cf9d2fc2c68a7e26b2062d53d6888441ecbbefff"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/guard-and-graph-rerun.mjs",
+      "bytes": 9270,
+      "sha256": "5b13015164d39b7fb32547647dd9ff832794d7e28a0dabc4b22f9b99497fc803"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/guard-and-graph.json",
+      "bytes": 4000,
+      "sha256": "26ef8811e4960d47a8217ca004b743c166bb6301e498072f4a7e118a86ce3880"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/guard-and-graph.mjs",
+      "bytes": 9108,
+      "sha256": "8b3a9230d6b4e7751e25d896bc428024a33ca17e7e694940e018118421b2cb10"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/installed-dependencies.mjs",
+      "bytes": 595,
+      "sha256": "9f3953516a9de77434ceff54c2b44c4d7a13d7f0b2b41236f8869280673f4a7e"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/report.md",
+      "bytes": 6571,
+      "sha256": "c9d17b24c554a35766272cda1a0830755a324263e94d12a3ae2f0469d818fce8"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/verifier-taxonomy-repair.json",
+      "bytes": 766,
+      "sha256": "5569678ffc42c0a7ab50c9745a566d8e8e07baa9f88abf243f5b71d8d10da2c8"
+    }
+  ]
+}

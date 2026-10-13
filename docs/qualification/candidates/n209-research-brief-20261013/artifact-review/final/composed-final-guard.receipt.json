@@ -1,0 +1,36 @@
+{
+  "argv": [
+    "node",
+    "--experimental-loader",
+    "./docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/installed-dependencies.mjs",
+    "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-guard-and-graph.mjs",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3"
+  ],
+  "cwd": "/workspace/meri-n209-artifact-review",
+  "reviewedCommit": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "implementationDiffBytes": 0,
+  "startedAt": "2026-10-13T09:25:24.020925+00:00",
+  "durationSeconds": 2.227,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 38630,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-final-guard.stdout.txt",
+      "bytes": 3215,
+      "sha256": "ba935e69d5bab9b10a93f053596e9ac016d71e3b306575d92b5b7a03dcb749fa"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/final/composed-final-guard.stderr.txt",
+      "bytes": 444,
+      "sha256": "8277e65cab3ad064cb38386451c60287faeab449ab61f3a7ad6432f48a2a83b8"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}

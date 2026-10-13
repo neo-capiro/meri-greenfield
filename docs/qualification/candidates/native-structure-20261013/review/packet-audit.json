@@ -1,0 +1,212 @@
+{
+  "authorPacket": "9b67f63e1820a4fb9ad8a66d1f927655cdfe63ba",
+  "authorTree": "92e64d861647314618e752dcf18906fa5e8e0a4b",
+  "source": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b",
+  "mappedTests": "ac9d7cdb1fb870619148a81adb69ab6b7409636d",
+  "manifestSha256": "38ea1c596ea266943a37a76fc9d32ca903843a2d11cc3cf581fd1bccd0a676f1",
+  "checks": [
+    {
+      "name": "manifest exact supplied identity",
+      "passed": true
+    },
+    {
+      "name": "manifest exact member and source counts",
+      "passed": true
+    },
+    {
+      "name": "member docs/coordination/reports/CODEX-NATIVE-STRUCTURE-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/schema-size-independent.test.mjs.before.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/schema-size-inventory.test.mjs.before.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/schema-size.test.mjs.before.txt",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-before.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-final.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/structure-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/test-expectation-map.json",
+      "passed": true
+    },
+    {
+      "name": "member docs/qualification/candidates/native-structure-20261013/author/test-expectation-map.patch",
+      "passed": true
+    },
+    {
+      "name": "member apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze apps/control/qualified-application/schema-contract.mjs",
+      "passed": true
+    },
+    {
+      "name": "member apps/control/qualified-application/schema-preservation.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze apps/control/qualified-application/schema-preservation.mjs",
+      "passed": true
+    },
+    {
+      "name": "member apps/control/qualified-application/schema-size-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze apps/control/qualified-application/schema-size-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member apps/control/qualified-application/schema-size-inventory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze apps/control/qualified-application/schema-size-inventory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member apps/control/qualified-application/schema-size.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze apps/control/qualified-application/schema-size.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member apps/control/qualified-application/schema-structure.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze apps/control/qualified-application/schema-structure.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "member packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "source exact mapped freeze packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "before counts retained",
+      "passed": true
+    },
+    {
+      "name": "before raw identities and cleanup",
+      "passed": true
+    },
+    {
+      "name": "before source capture exact",
+      "passed": true
+    },
+    {
+      "name": "repaired counts retained",
+      "passed": true
+    },
+    {
+      "name": "repaired raw identities and cleanup",
+      "passed": true
+    },
+    {
+      "name": "repaired source capture exact",
+      "passed": true
+    },
+    {
+      "name": "final counts retained",
+      "passed": true
+    },
+    {
+      "name": "final raw identities and cleanup",
+      "passed": true
+    },
+    {
+      "name": "final source capture exact",
+      "passed": true
+    },
+    {
+      "name": "original expectation preimage schema-size.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original expectation preimage schema-size-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "original expectation preimage schema-size-inventory.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "exact three-file test patch retained",
+      "passed": true
+    },
+    {
+      "name": "author audit retained52 all true",
+      "passed": true
+    },
+    {
+      "name": "manifest has no duplicate member paths",
+      "passed": true
+    }
+  ],
+  "passed": 50,
+  "failed": 0,
+  "nativeExecution": false
+}

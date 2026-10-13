@@ -1,0 +1,10 @@
+
+> @capiro/meri-contracts@0.1.2 check
+> npm run check:generated && npm run typecheck && npm run test:public
+
+
+> @capiro/meri-contracts@0.1.2 check:generated
+> node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check
+
+{"schema":"meri-contract-distribution/1","check":true,"records":[{"path":"browser.mjs","bytes":466002,"sha256":"3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"},{"path":"contracts.d.ts","bytes":4090,"sha256":"e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"},{"path":"index.d.ts","bytes":85,"sha256":"b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"},{"path":"browser.d.ts","bytes":166,"sha256":"638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"},{"path":"metadata.mjs","bytes":533,"sha256":"63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"},{"path":"metadata.d.ts","bytes":485,"sha256":"63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"}]}
+[{"path":"action-application.mjs","bytes":1480808,"sha256":"9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"},{"path":"action-application.d.ts","bytes":17721,"sha256":"007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"},{"path":"action-application.schema.json","bytes":67726,"sha256":"a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"},{"path":"action-application.metadata.json","bytes":1980,"sha256":"9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"}]

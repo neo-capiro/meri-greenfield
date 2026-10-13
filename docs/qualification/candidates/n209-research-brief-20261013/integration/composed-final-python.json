@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "apps.proxy.qualification.assembly.test_host_address",
+    "apps.artifacts.test.test_word_revision"
+  ],
+  "cwd": "/workspace/meri-n209",
+  "sourceHead": "2165d0a9870bde32cc7c05bf744ffad9222300a6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T09:24:49.414345+00:00",
+  "durationSeconds": 0.221,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 38268,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/composed-final-python.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/integration/composed-final-python.stderr.bin",
+      "bytes": 104,
+      "sha256": "f528e5fa8f196dfd11fda43508ac785e9dc1e922c1e3185774fb7e7ee0b247bf"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

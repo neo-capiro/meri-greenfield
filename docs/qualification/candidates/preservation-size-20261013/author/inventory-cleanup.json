@@ -1,0 +1,10 @@
+{
+  "sourceFreeze": "2444edc0d6bcfb5771bf26eda9e1c8eb06525783",
+  "supplementalTestFreeze": "9e323dc1cfd061ff9da9ae2d234b70a6f4d3df7e",
+  "checkedAt": "2026-10-13T07:21:12.941601+00:00",
+  "pgid": 531533,
+  "physicallyAbsent": true,
+  "sourceBytesUnchanged": true,
+  "dependenciesAllocated": false,
+  "nativeMetadataRead": false
+}

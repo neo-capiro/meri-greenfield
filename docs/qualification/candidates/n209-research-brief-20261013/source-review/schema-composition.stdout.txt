@@ -1,0 +1,563 @@
+✔ explicit mapped dial/server identity and25 declared schemas succeed without altering preserved data (34.239909ms)
+✔ legacy strict descriptor preserves original signature algorithm (19.177118ms)
+✔ reconstruction binds mapping scope and retained fingerprint without DDL (34.77709ms)
+✔ mapped identity retains address refusal (3.354407ms)
+✔ mapped identity retains port refusal (2.956231ms)
+✔ mapped identity retains version refusal (3.697111ms)
+✔ mapped identity retains start_ms refusal (1.96786ms)
+✔ mapped identity retains system_identifier refusal (2.413267ms)
+✔ mapped identity retains database refusal (2.717944ms)
+✔ mapped identity retains username refusal (1.8683ms)
+✔ mapped identity retains fsync refusal (2.66913ms)
+✔ mapped identity retains synchronous_commit refusal (2.168871ms)
+✔ dial pool host substitution refuses before connection (0.5201ms)
+✔ dial pool port substitution refuses before connection (0.246429ms)
+✔ dial pool database substitution refuses before connection (0.198698ms)
+✔ dial pool user substitution refuses before connection (0.222694ms)
+✔ closed compatibility admission: unpairedAddress (0.271907ms)
+✔ closed compatibility admission: unpairedPort (0.215894ms)
+✔ closed compatibility admission: hostName (2.792345ms)
+✔ closed compatibility admission: scopedIPv6 (1.295802ms)
+✔ closed compatibility admission: booleanPort (0.4872ms)
+✔ closed compatibility admission: zeroPort (0.939077ms)
+✔ closed compatibility admission: nullScope (0.249514ms)
+✔ closed compatibility admission: wrongMode (0.19968ms)
+✔ closed compatibility admission: emptyScope (0.137646ms)
+✔ closed compatibility admission: overLimit (0.382583ms)
+✔ closed compatibility admission: duplicate (0.288432ms)
+✔ closed compatibility admission: public (0.224357ms)
+✔ closed compatibility admission: target (0.461742ms)
+✔ closed compatibility admission: system (0.249584ms)
+✔ closed compatibility admission: unknownLeaf (0.578588ms)
+✔ closed compatibility admission: unknownFixture (0.130376ms)
+✔ namespace missing refuses before DDL (5.894665ms)
+✔ namespace undeclared refuses before DDL (2.801699ms)
+✔ namespace wrongOwner refuses before DDL (5.242698ms)
+✔ namespace targetCollision refuses before DDL (2.387458ms)
+✔ namespace duplicate refuses before DDL (3.335299ms)
+✔ legacy mode still refuses25 undeclared schemas (8.469154ms)
+✔ public target row type collision refuses before any migration (13.395157ms)
+✔ unsupported evidence catalog classes fail closed before DDL (10.76235ms)
+✔ changed preserved relations prevents success after DDL (8.420981ms)
+✔ changed preserved columns prevents success after DDL (21.892133ms)
+✔ changed preserved defaults prevents success after DDL (18.369582ms)
+✔ changed preserved constraints prevents success after DDL (15.262366ms)
+✔ changed preserved indexes prevents success after DDL (12.22298ms)
+✔ changed preserved views prevents success after DDL (7.787573ms)
+✔ changed preserved types prevents success after DDL (10.256653ms)
+✔ changed preserved sequences prevents success after DDL (5.821656ms)
+✔ changed preserved triggers prevents success after DDL (11.439025ms)
+✔ changed preserved dependencies prevents success after DDL (21.70387ms)
+✔ changed preserved comments prevents success after DDL (6.26422ms)
+✔ changed preserved labels prevents success after DDL (15.79222ms)
+✔ namespace ACL mutation is detected after DDL (9.36704ms)
+✔ empty namespace recreation changes exact preserved identity (10.873627ms)
+✔ actual namespace query projects namespace OID losslessly (0.296465ms)
+✔ actual sequence catalog query preserves all bigint settings as text (0.276765ms)
+✔ actual catalog query covers supported metadata and refuses unsupported owners (0.152759ms)
+✔ scope snapshot deadline expiry prevents subsequent DDL and retains borrowed ownership (2.640058ms)
+✔ unknown COMMIT remains unknown with compatibility enabled and no retry (11.625916ms)
+✔ new server/scope facts survive detached fixture normalization (0.513219ms)
+✔ preserved namespace OID refuses invalid undefined (1.50786ms)
+✔ preserved namespace OID refuses invalid null (1.18719ms)
+✔ preserved namespace OID refuses invalid 0 (1.073388ms)
+✔ preserved namespace OID refuses invalid 0 (2.099006ms)
+✔ preserved namespace OID refuses invalid -1 (1.085747ms)
+✔ preserved namespace OID refuses invalid 1.0 (1.148031ms)
+✔ preserved namespace OID refuses invalid 4294967296 (1.488351ms)
+✔ distinct int64 sequence settings retain distinct fingerprints (15.235295ms)
+✔ reconstruction refuses changed preserved OID against trusted original signature (16.697707ms)
+✔ reconstruction cannot substitute a newly matching server mapping under old hash (17.397356ms)
+✔ catalog relation identities remain fixed despite implicit pg_temp search precedence (0.420891ms)
+✔ catalog metadata builtin cast types are independent of pg_temp (0.235784ms)
+✔ namespace query must not hide pgx_private through SQL underscore wildcard (7.402034ms)
+✔ independent engine identity address refuses before DDL (2.834348ms)
+✔ independent engine identity username refuses before DDL (1.666438ms)
+✔ independent engine identity system_identifier refuses before DDL (1.342382ms)
+✔ independent engine identity start_ms refuses before DDL (2.398936ms)
+✔ independent engine identity fsync refuses before DDL (1.404375ms)
+✔ independent engine identity synchronous_commit refuses before DDL (1.555231ms)
+✔ own and inherited hostile port accessors and proxy cannot run during admission (0.421641ms)
+✔ verify without retained digest and install with a retained digest allocate nothing (0.380169ms)
+✔ cancel during borrowed acquisition releases late client and sends no SQL (11.96956ms)
+✔ cancellation while advisory lock waits prevents first migration after it returns (11.998134ms)
+✔ first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal (2.639976ms)
+✔ host clock crossing original cutoff after identity cannot proceed to ownership or DDL (1.444215ms)
+✖ fixed Python bridge invokes real canonical Grants over scripted SQL; recovery reads without reseed (14.643858ms)
+✖ worker refusal leaves PENDING and never auto-activates/reseeds/compensates (4.788221ms)
+✖ preflight permits only missing schema digest, never returns authority or starts child (9.41031ms)
+✖ same fixture connection and full grant context required before process (9.561898ms)
+✖ parked owned process is killed and close observed at original short deadline (3.48133ms)
+✖ stderr/error content is discarded and no automatic retry follows unknown receipt (3.289042ms)
+✖ post-mutation wrong receipt cannot admit or allow reattempt (3.081421ms)
+✖ bounded stdout flood closes owned child without releasing content (3.207539ms)
+✖ bounded stderr flood closes owned child without releasing content (2.999608ms)
+✖ aborted and extended caller cutoffs cannot refresh constructor original deadline (3.790484ms)
+✖ mapped endpoint and25 declared namespaces cross actual fixed Python bridge unchanged (3.72148ms)
+✖ bridge mapped descriptor refuses partial fields and invalid scope before child (3.121962ms)
+✔ mapped server identity is independent from loopback dial identity (21.378417ms)
+✔ explicit25 unrelated schemas are retained through install and reconstruction (26.811023ms)
+✔ dial host mismatch refuses before allocation (1.223835ms)
+✔ dial port mismatch refuses before allocation (0.23338ms)
+✔ mapped server address mismatch preserves engine gates (2.269953ms)
+✔ mapped server port mismatch preserves engine gates (1.94059ms)
+✔ mapped server system_identifier mismatch preserves engine gates (2.905998ms)
+✔ mapped server fsync mismatch preserves engine gates (2.037455ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2"} (0.394852ms)
+✔ invalid paired server shape {"serverPort":5432} (0.294772ms)
+✔ invalid paired server shape {"serverAddress":"db.local","serverPort":5432} (2.201612ms)
+✔ invalid paired server shape {"serverAddress":"::1%lo","serverPort":5432} (0.705839ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2","serverPort":0} (0.184106ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (3.931516ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.430915ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (1.778427ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.424456ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.468983ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.218998ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.182073ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.218238ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.138418ms)
+✔ legacy strict mode still refuses unrelated declared-looking namespaces (2.898746ms)
+✔ scoped mode does not permit unrelated public relations or target collisions (2.00108ms)
+✔ unsupported evidence class refuses before migration (4.786186ms)
+✔ populated25 schema metadata is exact across install/reconstruction without row reads (23.383594ms)
+✔ changed preserved relations metadata refuses reconstruction (23.211706ms)
+✔ changed preserved columns metadata refuses reconstruction (23.650403ms)
+✔ changed preserved defaults metadata refuses reconstruction (19.499459ms)
+✔ changed preserved constraints metadata refuses reconstruction (19.336245ms)
+✔ changed preserved indexes metadata refuses reconstruction (27.134969ms)
+✔ changed preserved views metadata refuses reconstruction (23.686608ms)
+✔ changed preserved types metadata refuses reconstruction (19.007732ms)
+✔ changed preserved sequences metadata refuses reconstruction (18.57353ms)
+✔ changed preserved dependencies metadata refuses reconstruction (17.002796ms)
+✔ changed preserved comments metadata refuses reconstruction (21.922964ms)
+✔ changed preserved labels metadata refuses reconstruction (19.261382ms)
+✔ metadata changing during migration yields UNKNOWN before COMMIT (13.67115ms)
+✔ mapped schema digest cannot be reused for changed mapped identity even when engine echoes it (12.115647ms)
+✔ public target type collision refuses before any DDL (2.998346ms)
+✔ target namespace ownership is checked after install (2.697746ms)
+✔ dial database must match trusted fixture (0.465859ms)
+✔ dial user must match trusted fixture (0.203835ms)
+✔ sequence bigint settings are transported losslessly as text, never JS numbers (21.086689ms)
+✔ empty evidence schema identity includes namespace OID to detect replacement (12.934285ms)
+✔ catalog identity literals cannot resolve through implicit temporary schemas (7.726707ms)
+✔ catalog snapshot builtin cast types cannot resolve through temporary schemas (7.973495ms)
+✔ actual entry applies only exact six migration bytes in order once and returns detached pinned receipt (20.405558ms)
+✔ reconstruction requires retained full digest; populated accounting remains an observation (24.787098ms)
+✔ retained digest detects constraint replacement without DDL (12.353455ms)
+✔ retained digest detects default replacement without DDL (10.845662ms)
+✔ retained digest detects index replacement without DDL (33.968996ms)
+✔ retained digest detects view replacement without DDL (42.429713ms)
+✔ retained digest detects collation replacement without DDL (31.311341ms)
+✔ pre-admission host cannot reach borrowed pool (0.688763ms)
+✔ pre-admission database cannot reach borrowed pool (0.308964ms)
+✔ pre-admission user cannot reach borrowed pool (0.254661ms)
+✔ pre-admission mode cannot reach borrowed pool (0.238808ms)
+✔ pre-admission fixtureCase cannot reach borrowed pool (0.194201ms)
+✔ pre-admission port cannot reach borrowed pool (0.14015ms)
+✔ pre-admission system cannot reach borrowed pool (0.115323ms)
+✔ pre-admission timestamp cannot reach borrowed pool (0.155503ms)
+✔ pre-admission version cannot reach borrowed pool (0.208122ms)
+✔ pre-admission hash cannot reach borrowed pool (0.278978ms)
+✔ pre-admission extra cannot reach borrowed pool (0.176074ms)
+✔ actual server database mismatch stops before DDL (2.878266ms)
+✔ actual server username mismatch stops before DDL (2.526689ms)
+✔ actual server address mismatch stops before DDL (1.403104ms)
+✔ actual server port mismatch stops before DDL (2.04094ms)
+✔ actual server version mismatch stops before DDL (1.381842ms)
+✔ actual server start_ms mismatch stops before DDL (1.15402ms)
+✔ actual server system_identifier mismatch stops before DDL (1.536634ms)
+✔ actual server fsync mismatch stops before DDL (1.299058ms)
+✔ actual server synchronous_commit mismatch stops before DDL (3.676373ms)
+✔ actual server search_path mismatch stops before DDL (2.365758ms)
+✔ no reset or retry for lock (1.318968ms)
+✔ no reset or retry for namespace (8.587627ms)
+✔ no reset or retry for existingRelation (2.238146ms)
+✔ post-DDL missing refusal preserves uncertainty (2.964545ms)
+✔ post-DDL duplicate refusal preserves uncertainty (3.79432ms)
+✔ post-DDL type refusal preserves uncertainty (3.025427ms)
+✔ post-DDL nullable refusal preserves uncertainty (3.580469ms)
+✔ post-DDL owner refusal preserves uncertainty (5.538144ms)
+✔ post-DDL rowSecurity refusal preserves uncertainty (3.777985ms)
+✔ post-DDL trigger refusal preserves uncertainty (3.352908ms)
+✔ post-DDL rule refusal preserves uncertainty (5.031004ms)
+✔ post-DDL invalidConstraint refusal preserves uncertainty (3.763112ms)
+✔ post-DDL missingConstraint refusal preserves uncertainty (3.876764ms)
+✔ post-DDL duplicateConstraint refusal preserves uncertainty (3.578135ms)
+✔ post-DDL invalidIndex refusal preserves uncertainty (5.821509ms)
+✔ post-DDL deferrable refusal preserves uncertainty (3.685676ms)
+✔ post-DDL generated refusal preserves uncertainty (2.958977ms)
+✔ fresh schema refuses consumed budget (6.759396ms)
+✔ fresh schema refuses quarantine budget (4.685637ms)
+✔ fresh schema refuses cap budget (4.619447ms)
+✔ fresh schema refuses any preexisting task row (4.383322ms)
+✔ pre-abort has no connection (0.287942ms)
+✔ pre-deadline has no connection (0.127351ms)
+✔ deadline returned by identity prevents any migration (1.44053ms)
+✔ deadline returned by first DDL allows rollback only (1.210355ms)
+✔ borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened (10.55677ms)
+✔ remaining original budget narrows statement timeout (5.699427ms)
+✔ failed BEGIN cannot produce success or retry (3.33415ms)
+✔ failed COMMIT cannot produce success or retry (4.457354ms)
+✔ failed release cannot produce success or retry (4.593467ms)
+✔ failed ROLLBACK cannot produce success or retry (5.905055ms)
+✔ late connection after cancellation is released exactly once without SQL (1.193279ms)
+✔ late DDL ACK after cancellation cannot resume migrations or claim physical stop (1.481081ms)
+✔ malformed acquired client with release is disposed without SQL (0.944637ms)
+✔ hostile options getter and pool Proxy execute no traps (0.454ms)
+✔ hostile result rows getter never executes and is sanitized (1.770445ms)
+✔ emitted namespace SQL preserves underscore literally in the reserved pg_ prefix (6.276341ms)
+✔ reported user namespace pgx_private prevents every DDL statement (1.863284ms)
+✔ fixed original clock rejects an operation ceiling beyond sixty seconds (0.234592ms)
+✔ contending installer refuses lock while first owner completes exactly one DDL sequence (7.154228ms)
+✔ late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry (5.580559ms)
+✔ ordinary rows accepts exact UTF8 1048575 bytes (10.268808ms)
+✔ ordinary rows accepts exact UTF8 1048576 bytes (8.532294ms)
+✔ ordinary default refuses one byte over1MiB even if caller supplies larger second argument (4.751045ms)
+✔ preservation accepts exact UTF8 4194303 bytes (48.081017ms)
+✔ preservation accepts exact UTF8 4194304 bytes (44.020629ms)
+✔ preservation refuses UTF8 byte overflow even with fewer than4MiB JS characters (34.337279ms)
+✔ preservation refuses plain ASCII byte overflow (18.775233ms)
+✔ preservation exact one row; ordinary1024 rows ceiling unchanged (1.635773ms)
+✔ both admissions reject Proxy and accessors without invocation (0.411878ms)
+✔ preservation keeps node and depth guards despite larger byte limit (24.353788ms)
+✔ all3,128,280 bytes survive preparation and reconstruction unchanged (145.967318ms)
+✔ mutating the final byte of every metadata array changes retained signature (357.569135ms)
+✔ changed measured-inventory tail refuses later reconstruction with no additional DDL (137.050397ms)
+✔ oversized preservation refuses before first DDL and releases borrowed connection (20.763595ms)
+✔ post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed (53.112733ms)
+✔ same-size post-DDL last-character mutation remains UNKNOWN (60.041122ms)
+✔ measured inventory with unsupported object still refuses before DDL (16.145069ms)
+✔ large admission does not weaken closed metadata array shape (7.56924ms)
+✔ large admission does not weaken closed metadata array shape (19.123185ms)
+✔ large admission does not weaken closed metadata array shape (16.31184ms)
+✔ nonpreservation query still rejects oversized rows before shape interpretation (8.863981ms)
+✔ preservation SQL alone gets larger limit and retains exact namespace parameters (60.061983ms)
+✔ commit acknowledgement loss stays UNKNOWN with measured inventory (62.760289ms)
+✔ complete8362-record measured inventory retains exact bytes/tail at100000 nodes;100001 now passes and250001 refuses (1000.577233ms)
+✔ complete 3128280-byte ASCII inventory installs and reconstructs exactly (156.116177ms)
+✔ complete 4194304-byte ASCII inventory installs and reconstructs exactly (158.488503ms)
+✔ complete 4194304-byte multibyte inventory installs and reconstructs exactly (96.810822ms)
+✔ preservation byte+1 ASCII refuses before any DDL (19.186148ms)
+✔ preservation byte+1 multibyte refuses before any DDL (10.435552ms)
+✔ complete measured-size tail change during migration is UNKNOWN, never successful preservation (58.042982ms)
+✔ complete measured-size tail change on reconstruction refuses without rewriting (114.033468ms)
+✔ overflow after submitted migrations remains UNKNOWN and cannot COMMIT (56.024096ms)
+✔ ordinary rows retain exact1MiB/+1 UTF8 boundary and1024 row ceiling (4.866925ms)
+✔ preservation count guard survives scoped byte ceiling (29.655641ms)
+✔ preservation depth guard survives scoped byte ceiling (5.686674ms)
+✔ preservation nodes guard survives scoped byte ceiling (20.292587ms)
+✔ preservation accessor guard survives scoped byte ceiling (5.601957ms)
+✔ preservation proxy guard survives scoped byte ceiling (9.703355ms)
+✔ preservation metadata-shape guard survives scoped byte ceiling (18.932329ms)
+✔ preservation unsupported guard survives scoped byte ceiling (18.700772ms)
+✔ ordinary catalog does not acquire preservation4MiB allowance (37.483876ms)
+✔ complete measured dimensions pass both decoding stages without truncation (220.249919ms)
+✔ complete measured dimensions install and reconstruct with all six exact migrations and original hash (599.429432ms)
+✔ entire relations tail participates in pre/post migration preservation (335.027973ms)
+✔ entire columns tail participates in pre/post migration preservation (329.499901ms)
+✔ entire defaults tail participates in pre/post migration preservation (314.990949ms)
+✔ entire constraints tail participates in pre/post migration preservation (306.2526ms)
+✔ entire indexes tail participates in pre/post migration preservation (310.603543ms)
+✔ entire views tail participates in pre/post migration preservation (326.523375ms)
+✔ entire types tail participates in pre/post migration preservation (314.345953ms)
+✔ entire sequences tail participates in pre/post migration preservation (310.444649ms)
+✔ entire triggers tail participates in pre/post migration preservation (310.060964ms)
+✔ entire dependencies tail participates in pre/post migration preservation (304.493549ms)
+✔ entire comments tail participates in pre/post migration preservation (303.017566ms)
+✔ entire labels tail participates in pre/post migration preservation (309.385181ms)
+✔ entire relations tail participates in reconstruction digest (576.994953ms)
+✔ entire columns tail participates in reconstruction digest (583.926594ms)
+✔ entire defaults tail participates in reconstruction digest (591.827456ms)
+✔ entire constraints tail participates in reconstruction digest (582.066856ms)
+✔ entire indexes tail participates in reconstruction digest (578.303839ms)
+✔ entire views tail participates in reconstruction digest (585.699871ms)
+✔ entire types tail participates in reconstruction digest (591.834913ms)
+✔ entire sequences tail participates in reconstruction digest (585.567433ms)
+✔ entire triggers tail participates in reconstruction digest (587.279499ms)
+✔ entire dependencies tail participates in reconstruction digest (595.136296ms)
+✔ entire comments tail participates in reconstruction digest (586.08747ms)
+✔ entire labels tail participates in reconstruction digest (582.807365ms)
+✔ preservation fixed total node boundary 249999 (98.032161ms)
+✔ preservation fixed total node boundary 250000 (92.295583ms)
+✔ preservation fixed total node boundary 250001 (59.850281ms)
+✔ preservation exact serialized bytes 4194304 multibyte=false (20.555551ms)
+✔ preservation exact serialized bytes 4194304 multibyte=true (12.547798ms)
+✔ preservation exact serialized bytes 4194305 multibyte=false (15.682206ms)
+✔ preservation exact serialized bytes 4194305 multibyte=true (7.820122ms)
+✔ preservation exact depth 64 (0.517215ms)
+✔ preservation exact depth 65 (0.158247ms)
+✔ preservation inert proxy refuses without hook execution (0.128954ms)
+✔ preservation inert accessor refuses without hook execution (0.047611ms)
+✔ preservation inert cycle refuses without hook execution (0.03346ms)
+✔ preservation inert sparse refuses without hook execution (0.030656ms)
+✔ preservation inert hidden refuses without hook execution (0.03277ms)
+✔ preservation inert symbol refuses without hook execution (0.07348ms)
+✔ preservation inert nan refuses without hook execution (0.062173ms)
+✔ preservation inert infinity refuses without hook execution (0.048643ms)
+✔ ordinary node/depth/byte/row limits remain separate and unchanged (131.996571ms)
+✔ exact row count, closed metadata and unsupported-object refusal remain (0.469003ms)
+✔ post-DDL node overflow cannot commit or claim rollback success (195.105896ms)
+✔ lost COMMIT acknowledgement preserves UNKNOWN and does not retry (314.347599ms)
+✔ complete measured metadata independently passes the downstream snapshot choke point (104.663481ms)
+✔ ordinary callers cannot widen resource limits with a second argument (22.386105ms)
+✔ 157661-node decoder and157658-node metadata retain all8362 records through install and reconstruction (1090.756696ms)
+✔ full downstream metadata cannot bypass its own structural or byte bounds (28.208642ms)
+✔ ordinary100000 nodes remain strict while preservation250000 exact and+1 use a fixed profile (236.666492ms)
+✔ every retained array tail contributes to the full metadata digest beyond100000 nodes (1832.546208ms)
+✔ tail substitution after DDL at157661 nodes remains UNKNOWN without commit or retry (295.976322ms)
+✔ preservation increased profile retains inert proxy refusal (0.496304ms)
+✔ preservation increased profile retains inert accessor refusal (0.107421ms)
+✔ preservation increased profile retains inert cycle refusal (0.048112ms)
+✔ preservation increased profile retains inert sparse refusal (0.047311ms)
+✔ preservation increased profile retains inert depth refusal (0.184997ms)
+✔ installs exactly the six unchanged files, then verifies13 relations and empty accounting (15.313524ms)
+✔ reconstruction permits retained accounting but binds original complete catalog hash (14.648076ms)
+✔ identity database mismatch refuses before DDL (2.024395ms)
+✔ identity username mismatch refuses before DDL (1.417385ms)
+✔ identity address mismatch refuses before DDL (1.865386ms)
+✔ identity port mismatch refuses before DDL (1.672027ms)
+✔ identity version mismatch refuses before DDL (1.373168ms)
+✔ identity start_ms mismatch refuses before DDL (1.482783ms)
+✔ identity system_identifier mismatch refuses before DDL (1.529483ms)
+✔ identity fsync mismatch refuses before DDL (2.311094ms)
+✔ identity synchronous_commit mismatch refuses before DDL (1.406218ms)
+✔ identity search_path mismatch refuses before DDL (1.30746ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (0.943084ms)
+✔ install refuses partial namespaces, preexisting relation and same fixture reapply (12.159356ms)
+✔ concurrent installers cannot both acquire fixed transaction lock (10.063734ms)
+✔ post-install missing corruption is UNKNOWN, never retry/success (7.425506ms)
+✔ post-install nullable corruption is UNKNOWN, never retry/success (6.510639ms)
+✔ post-install type corruption is UNKNOWN, never retry/success (4.773866ms)
+✔ post-install constraint corruption is UNKNOWN, never retry/success (4.486585ms)
+✔ post-install unvalidated corruption is UNKNOWN, never retry/success (3.547187ms)
+✔ post-install index corruption is UNKNOWN, never retry/success (3.921598ms)
+✔ post-install trigger corruption is UNKNOWN, never retry/success (5.269318ms)
+✔ post-install owner corruption is UNKNOWN, never retry/success (10.064826ms)
+✔ post-install view corruption is UNKNOWN, never retry/success (4.832684ms)
+✔ post-install rowSecurity corruption is UNKNOWN, never retry/success (3.578854ms)
+✔ reconstruction catches changed check definition even when type/counts remain (12.938634ms)
+✔ fresh install requires exact empty application rows and zero unquarantined accounting (14.189119ms)
+✔ migration, commit and release errors preserve UNKNOWN and no retry (10.727319ms)
+✔ unknown errors are not reflected or evaluated (1.926307ms)
+✔ owner query timeout6000 is admitted and shorter bound is preserved for every query (5.99761ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (60.909728ms)
+✔ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (14.981405ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (1.681731ms)
+✔ receipt binds original cutoff and reports port observation without native qualification (5.723519ms)
+✔ namespace query excludes only literal pg_ prefix and refuses user pgx_private (1.679037ms)
+✔ reusable scripted fixture binds configured target identity without allocating a database (5.437149ms)
+ℹ tests 349
+ℹ suites 0
+ℹ pass 337
+ℹ fail 12
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23061.850449
+
+✖ failing tests:
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:21:1
+✖ fixed Python bridge invokes real canonical Grants over scripted SQL; recovery reads without reseed (14.643858ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:22:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:29:1
+✖ worker refusal leaves PENDING and never auto-activates/reseeds/compensates (4.788221ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:30:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:32:1
+✖ preflight permits only missing schema digest, never returns authority or starts child (9.41031ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:33:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:35:1
+✖ same fixture connection and full grant context required before process (9.561898ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:36:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:39:1
+✖ parked owned process is killed and close observed at original short deadline (3.48133ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:40:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:42:1
+✖ stderr/error content is discarded and no automatic retry follows unknown receipt (3.289042ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:43:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:45:1
+✖ post-mutation wrong receipt cannot admit or allow reattempt (3.081421ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:46:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:49:41
+✖ bounded stdout flood closes owned child without releasing content (3.207539ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:50:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:49:41
+✖ bounded stderr flood closes owned child without releasing content (2.999608ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:50:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:53:1
+✖ aborted and extended caller cutoffs cannot refresh constructor original deadline (3.790484ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:54:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:57:1
+✖ mapped endpoint and25 declared namespaces cross actual fixed Python bridge unchanged (3.72148ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:58:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }
+
+test at apps/control/qualified-application/lifecycle-bridge.test.mjs:64:1
+✖ bridge mapped descriptor refuses partial fields and invalid scope before child (3.121962ms)
+  Error: ENOENT: no such file or directory, open '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at createQualificationWorkerObserver (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.mjs:39:14)
+      at Object.make (file:///workspace/meri-n209-source-review/infra/native-enforcement/worker-observer.fixture.mjs:20:25)
+      at lifecycleFixture (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:17:313)
+      at async TestContext.<anonymous> (file:///workspace/meri-n209-source-review/apps/control/qualified-application/lifecycle-bridge.test.mjs:65:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/meri-qualified-lifecycle-deps/jsonata.cjs'
+  }

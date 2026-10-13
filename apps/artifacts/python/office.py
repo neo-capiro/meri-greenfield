@@ -21,10 +21,16 @@ def _excel_column_widths(rows):
             widths[index]=max(widths.get(index,12),min(48,max(12,ceil(pixels/7)+2)))
     return widths
 
-def word(spec,assets,path):
+def word(spec,assets,path,base=None):
     from docx import Document
     from docx.shared import Inches
-    document=Document()
+    document=Document(io.BytesIO(base['bytes'])) if base else Document()
+    if base:
+        # Full typed body replacement against exact retained DOCX bytes. Keep
+        # the selected document's native styles and section/template properties.
+        for node in list(document.element.body):
+            if node.tag != '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sectPr':
+                document.element.body.remove(node)
     for block in spec['blocks']:
         if block['kind']=='paragraph':
             p=document.add_paragraph(style=block.get('style','Normal'))

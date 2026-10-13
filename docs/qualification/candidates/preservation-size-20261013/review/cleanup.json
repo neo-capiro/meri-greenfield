@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-13T07:16:39.179665+00:00",
+  "groups": [
+    {
+      "pgid": 528800,
+      "physicallyAbsent": true
+    },
+    {
+      "pgid": 529623,
+      "physicallyAbsent": true
+    }
+  ],
+  "killRequired": false,
+  "dependencyLinksCreated": false,
+  "externalResourcesCreated": false
+}

@@ -1,0 +1,40 @@
+{
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "historicalRepairedFlowSha256": "e7e8eb53251abb1cd35b2877a0a3df3e21b013e17528d106435f939e17f4bdbc",
+  "observedAt": "2026-10-13T09:16:32.278410+00:00",
+  "historicalProcessPaths": [
+    {
+      "pid": 30816,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30817,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30839,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30840,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30864,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30865,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30866,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 30890,
+      "procPathExistsNow": false
+    }
+  ],
+  "scope": "Current absence only; fresh independent replay verifies its own exact process/store/listener coordinates."
+}

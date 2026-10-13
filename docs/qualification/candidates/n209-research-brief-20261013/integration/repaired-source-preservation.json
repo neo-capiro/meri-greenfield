@@ -1,0 +1,32 @@
+{
+  "base": "45c2de24f41402ae3a938a7df09eff78db90d94c",
+  "candidate": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "baseEntries": 12257,
+  "unchangedEntries": 12253,
+  "changedBaseEntries": [
+    {
+      "path": "apps/artifacts/python/entry.py",
+      "baseBlob": "6d3b288c2ab39459355542e872b1c0deca5ed165",
+      "candidateBlob": "5aaa397d14874fc5a7a5caee700dbeb6525cf534"
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "baseBlob": "2267340cdc47aab6fef03b6b69e718553c0408c4",
+      "candidateBlob": "1cc895587801085ad3e794b0d18f8a2d238a13a0"
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "baseBlob": "6c11327b70676ba563368e3c02962e79c31127ca",
+      "candidateBlob": "68f71beae0dfdf413a4ad86eb251020d54cd7106"
+    },
+    {
+      "path": "apps/control/document-application/local/mount.mjs",
+      "baseBlob": "caf6e71a191cbb6a5c01dc76799d51f6ce811100",
+      "candidateBlob": "b8b4f6a7d9a91a3f4971eb0ba70859c7ad67a5e3"
+    }
+  ],
+  "packagesContractsExact": true,
+  "publicHttpOwnersExact": true,
+  "nativePinsUnchanged": true,
+  "wholePlanPromotion": false
+}

@@ -1,0 +1,183 @@
+{
+  "reviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "reviewedTree": "b74485b502192284644497d5a8b5849b258fe8f1",
+  "decision": "ACCEPT_ARTIFACT_LOCAL_SYNTHETIC_ONLY",
+  "nativeQualified": false,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/capture.py",
+      "bytes": 3829,
+      "sha256": "4072a1a0869764296ca25a6094b72a8919edc778c9054dfd737d2e6c730b771e"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/historical-process-observation.json",
+      "bytes": 954,
+      "sha256": "0370143e109e00c08a179e77dc0aea757034eeed9888dd1dce3c0449a5e74b88"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/installed-dependencies.mjs",
+      "bytes": 595,
+      "sha256": "9f3953516a9de77434ceff54c2b44c4d7a13d7f0b2b41236f8869280673f4a7e"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/lifecycle.receipt.json",
+      "bytes": 1425,
+      "sha256": "fbf6404bc2729df1048aa8eade177215cebe7d5f3151ae882bf121324b007f56"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/lifecycle.stderr.txt",
+      "bytes": 438,
+      "sha256": "4aee58a9eb8cda1ae47d4d1df7171923e8feec1fcaf06fa38b931b8d56fae320"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/lifecycle.stdout.txt",
+      "bytes": 2777,
+      "sha256": "c4867f618a1c6a5ac90f35faac73c9a42f2546d14fdeb30d5d28e44bc2ae2865"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observe-lifecycle.mjs",
+      "bytes": 8191,
+      "sha256": "dfc17c9358a8fb9dc1958b3c20f21dca219668c4e096652a0ef3c55cfd16177b"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-content.json",
+      "bytes": 6884,
+      "sha256": "0b7c27a03968b94e2cdd91e59c2751c18b207247d3135712e94c2bd34d6e8c77"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-inspection.json",
+      "bytes": 17781,
+      "sha256": "e22f0dfe3e16a623ca2ebb64f0ecc24ddd1c855efbba858d483b58f25564861b"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-preview-1.png",
+      "bytes": 113743,
+      "sha256": "524d1b1a40dda38502856238f053dae14af6b67619f34cb9ddc0843a4d57199c"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-preview-2.png",
+      "bytes": 129850,
+      "sha256": "7a45ad24f851ef912fe99b1e4b0a194b1b18b229d42b36f757caada5046b1daa"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-preview-3.png",
+      "bytes": 141274,
+      "sha256": "1452a7bf1c7f7e82ad74484a54c35c046fe30a9066001b9a839dce0619ffcace"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-preview-4.png",
+      "bytes": 25847,
+      "sha256": "27e0f7a17a344fccaf7d1e3218f76af16ceddeae886d170d189889fb9b06c876"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original-preview.pdf",
+      "bytes": 49339,
+      "sha256": "d4f62c61967409ac2c2bec35e1eed30a121492770fcdbbde438ff44ac162e846"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/original.docx",
+      "bytes": 38702,
+      "sha256": "233b6afa26487b68b8d7b4d71b822068d1909cea13322ddebe87e6b1a49fdf43"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/provenance.json",
+      "bytes": 89450,
+      "sha256": "d59cec640b0c40ea6f3a7b8edf74d6ab91862243d70e2ba59f0486e51b5aa2b6"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-content.json",
+      "bytes": 7207,
+      "sha256": "6052541f939efe817e48aa04f292bc70d21f6a9a714f9cdf409678c53a1a5432"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-inspection.json",
+      "bytes": 18439,
+      "sha256": "00ad73159c1f10b482970fc9aef654b267bc3d76aee8a8fb4dff002690070a3e"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-preview-1.png",
+      "bytes": 114021,
+      "sha256": "da314477e86e534516ad671a09ae501908962078fdbf4334bf1ec9926b1ad0d4"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-preview-2.png",
+      "bytes": 131907,
+      "sha256": "958bcd081a838c97bacf668be7d02ca64ce435e3a168cf642678d6371ee080a9"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-preview-3.png",
+      "bytes": 139541,
+      "sha256": "0f66c94aa511729e866b0aa5721e1cf7426b7ff74229acdf350755b033d92941"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-preview-4.png",
+      "bytes": 49828,
+      "sha256": "9ec436bed63a27ad245056fcb76f46b97b80bd45dcf68bef7f4c8061252f734c"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision-preview.pdf",
+      "bytes": 49930,
+      "sha256": "cabad8359255688edac962e11b9862264e1f18ed8a7afe7bb5314d26f2951b84"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts/revision.docx",
+      "bytes": 38892,
+      "sha256": "404b5a2616949d93e122a1154a49a156a5cc20ae62328af4799a05e95a125d48"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts.receipt.json",
+      "bytes": 1276,
+      "sha256": "40c7f6085e4f1be3db89e3dd80a8bcab50980140e144a7a8afb43f05d460ffb0"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-artifacts.stdout.txt",
+      "bytes": 7252,
+      "sha256": "bf8a37235399f70fc9f5345b16f414e109092692600f5a91075c9b1530932f7d"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observed-lifecycle.json",
+      "bytes": 69761,
+      "sha256": "2a492668d24005d811270a6888fcef0b0fb940ec14e9f0380051e5803a9a9c98"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/outline.md",
+      "bytes": 1313,
+      "sha256": "38dbde8e30853ef135f69c81029d327a7c9490ff90721bbd0591ce9a363d6833"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/report.md",
+      "bytes": 11104,
+      "sha256": "a5eec9c2332f313c35cb6e04d3d940659353df29c16c4cd010ce5f1b27e3b079"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/supplied.receipt.json",
+      "bytes": 1118,
+      "sha256": "b0e49f46a3fb71a9d757de7c8b09699021873bfe8251c3eb0ccee01bd1a3dfb0"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/supplied.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/supplied.stdout.txt",
+      "bytes": 7245,
+      "sha256": "0623758bf7c92b566c7a5b301b35e760df63bd3d8e060ee94b74afc224d7e505"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/verify_artifacts.py",
+      "bytes": 15213,
+      "sha256": "8b1bc5418301fb72d91e41ab2b9245a0ccb9f874787f17a6a68e4893ad3c3603"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/visual-review.json",
+      "bytes": 9266,
+      "sha256": "14668b5197d6e14fd3204a94edcf7da8361364507a65da7b96789027c1f7c516"
+    }
+  ]
+}
