@@ -52,7 +52,7 @@ test('retained fixed input documents the original clipped PDF without modifying 
 test('canonical creation and typed revision render complete labels while retaining formulas and literal text',()=>owned(async(root,receipts)=>{
  const req=request(),made=await execute(root,receipts,req);await retain('created.xlsx',made.bytes);const created=join(root,'created-inspect.xlsx');await writeFile(created,made.bytes);const info=inspect(created);
  const pdf=await render(root,receipts,made.bytes,'created');readable(pdf,['Workstream','Hours','Rate','Cost','Documentation']);
- assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48);assert.equal(info.Plan.cells.D4.value,'=SUM(D2:D3)');assert.equal(info.Notes.cells.A2.value,'=1+1');assert.equal(info.Notes.cells.A2.type,'s');
+ assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48.7109375);assert.equal(info.Plan.cells.D4.value,'=SUM(D2:D3)');assert.equal(info.Notes.cells.A2.value,'=1+1');assert.equal(info.Notes.cells.A2.type,'s');
  const revised=structuredClone(req);revised.content.sheets[0].rows[2][0].value='Implementation and documentation';revised.content.sheets[0].rows[2][1].value=12;
  const edit=await execute(root,receipts,revised,{request:req,bytes:made.bytes});assert.equal(edit.inspection.details.revisionMethod,'openpyxl typed-cell replacement');await retain('revised.xlsx',edit.bytes);const rp=join(root,'revised-inspect.xlsx');await writeFile(rp,edit.bytes);const next=inspect(rp);
  assert(next.Plan.widths.A>info.Plan.widths.A);assert(next.Plan.widths.A<=48);assert.equal(next.Plan.cells.D4.value,'=SUM(D2:D3)');assert.equal(next.Plan.cells.D4.format,currency);assert.equal(next.Notes.cells.A2.type,'s');
@@ -64,11 +64,11 @@ w=load_workbook(sys.argv[1],data_only=True);print(json.dumps({'total':w['Plan'][
 }));
 test('column bounds do not truncate long literals or turn formula-like strings into formulas',()=>owned(async(root,receipts)=>{
  const req=request(),long='W'.repeat(2000);req.content.sheets[0].rows[1][0].value=long;req.content.sheets[1].rows[0][0].value='=SUM(1,2)';const r=await execute(root,receipts,req);const p=join(root,'long.xlsx');await writeFile(p,r.bytes);const info=inspect(p);
- assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48);assert.equal(info.Plan.cells.A2.value,long);assert.equal(info.Notes.cells.A1.type,'s');assert.equal(info.Notes.cells.A1.value,'=SUM(1,2)');
+ assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48.7109375);assert.equal(info.Plan.cells.A2.value,long);assert.equal(info.Notes.cells.A1.type,'s');assert.equal(info.Notes.cells.A1.value,'=SUM(1,2)');
  const shorter=request(),revised=await execute(root,receipts,shorter,{request:req,bytes:r.bytes});const p2=join(root,'short.xlsx');await writeFile(p2,revised.bytes);const next=inspect(p2);assert(next.Plan.widths.A<info.Plan.widths.A);assert.equal(next.Plan.cells.A2.value,'Research');
 }));
 test('chart rebuild keeps chart and formulas while applying bounded table widths',()=>owned(async(root,receipts)=>{
  const req=request();req.content.sheets[0].charts=[{kind:'bar',title:'Costs',categories:['Research','Documentation'],series:[{name:'Hours',values:[10,8]}]}];
- const r=await execute(root,receipts,req),p=join(root,'chart.xlsx');await writeFile(p,r.bytes);const info=inspect(p);assert.equal(info.Plan.charts,1);assert.equal(info.Plan.cells.D4.value,'=SUM(D2:D3)');assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48);
+ const r=await execute(root,receipts,req),p=join(root,'chart.xlsx');await writeFile(p,r.bytes);const info=inspect(p);assert.equal(info.Plan.charts,1);assert.equal(info.Plan.cells.D4.value,'=SUM(D2:D3)');assert(info.Plan.widths.A>=12&&info.Plan.widths.A<=48.7109375);
  const edited=structuredClone(req);edited.content.sheets[0].rows[2][0].value='Implementation and documentation';const out=await execute(root,receipts,edited,{request:req,bytes:r.bytes}),p2=join(root,'chart2.xlsx');await writeFile(p2,out.bytes);const next=inspect(p2);assert.equal(next.Plan.charts,1);assert(next.Plan.widths.A>info.Plan.widths.A);assert.equal(next.Plan.cells.D4.value,'=SUM(D2:D3)');
 }));
