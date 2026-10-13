@@ -1,0 +1,11 @@
+✔ create: actual canonical XLSX and PDF retain full labels, currency, formulas and literals (21920.663704ms)
+✔ revise: actual canonical XLSX and PDF retain full labels, currency, formulas and literals (23876.494559ms)
+✔ bounded widths survive changed long literals and formula source is not treated as its display value (920.918558ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46784.936117
