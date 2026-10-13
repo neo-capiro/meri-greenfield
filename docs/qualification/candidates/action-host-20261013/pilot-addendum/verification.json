@@ -1,10 +1,10 @@
 {
   "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
-  "head": "58ed238ca0a4e451bfa25fa910958889266c496f",
+  "head": "3f0831aa767ef350170665911988799bd68b6e26",
   "sealedPilot": "9e08fc64471a28e2249dc5d7c5f48fbc8589e2b1",
   "originalEntriesPreserved": 10667,
-  "passed": 40,
-  "total": 40,
+  "passed": 41,
+  "total": 41,
   "checks": [
     {
       "name": "sealed hash docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
@@ -156,6 +156,10 @@
     },
     {
       "name": "rendered versus raw provenance",
+      "passed": true
+    },
+    {
+      "name": "retained observation artifact exact",
       "passed": true
     },
     {
