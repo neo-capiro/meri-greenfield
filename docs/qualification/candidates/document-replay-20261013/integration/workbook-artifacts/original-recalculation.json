@@ -1,0 +1,208 @@
+{
+  "sourceSha256": "8d8f9f113a29f563f90e3d1812ef38347a6f168f85a53d2a1689c5ce5508deac",
+  "receipt": {
+    "inputSha256": "8d8f9f113a29f563f90e3d1812ef38347a6f168f85a53d2a1689c5ce5508deac",
+    "outputSha256": "d38b4ae36f4c9cb487353e66fb06f526d7611b5c4bf9b3709fc41251fa377318",
+    "format": "xlsx",
+    "target": "xlsx",
+    "process": {
+      "pid": 57025,
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "stdoutBytes": 198,
+      "stderrBytes": 0,
+      "stdoutRetainedBytes": 198,
+      "stderrRetainedBytes": 0,
+      "hashScope": "retained bytes",
+      "stdoutSha256": "078cfd50bd28f34d208c15abf16630a09c610b71b36cab8d94cfcb9ca5700195",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutEnded": true,
+      "stderrEnded": true,
+      "streamErrors": [],
+      "leaderClosed": true,
+      "groupKillAttempted": true,
+      "groupAbsent": true,
+      "sandboxQualified": false
+    },
+    "nativeQualification": false,
+    "renderInspection": "pending",
+    "formulaEquivalence": "unqualified"
+  },
+  "inspection": {
+    "sha256": "d38b4ae36f4c9cb487353e66fb06f526d7611b5c4bf9b3709fc41251fa377318",
+    "bytes": 7531,
+    "sheets": [
+      {
+        "name": "Plan",
+        "rows": 4,
+        "columns": 4,
+        "cells": [
+          {
+            "address": "A1",
+            "value": "Workstream",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Workstream"
+          },
+          {
+            "address": "B1",
+            "value": "Hours",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Hours"
+          },
+          {
+            "address": "C1",
+            "value": "Rate",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Rate"
+          },
+          {
+            "address": "D1",
+            "value": "Cost",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Cost"
+          },
+          {
+            "address": "A2",
+            "value": "Research",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Research"
+          },
+          {
+            "address": "B2",
+            "value": 10,
+            "kind": "n",
+            "numberFormat": "General",
+            "cached": 10
+          },
+          {
+            "address": "C2",
+            "value": 125,
+            "kind": "n",
+            "numberFormat": "\\$#,##0.00",
+            "cached": 125
+          },
+          {
+            "address": "D2",
+            "value": "=B2*C2",
+            "kind": "f",
+            "numberFormat": "\\$#,##0.00",
+            "cached": 1250
+          },
+          {
+            "address": "A3",
+            "value": "Documentation",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Documentation"
+          },
+          {
+            "address": "B3",
+            "value": 8,
+            "kind": "n",
+            "numberFormat": "General",
+            "cached": 8
+          },
+          {
+            "address": "C3",
+            "value": 100,
+            "kind": "n",
+            "numberFormat": "\\$#,##0.00",
+            "cached": 100
+          },
+          {
+            "address": "D3",
+            "value": "=B3*C3",
+            "kind": "f",
+            "numberFormat": "\\$#,##0.00",
+            "cached": 800
+          },
+          {
+            "address": "A4",
+            "value": "Total",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Total"
+          },
+          {
+            "address": "D4",
+            "value": "=SUM(D2:D3)",
+            "kind": "f",
+            "numberFormat": "\\$#,##0.00",
+            "cached": 2050
+          }
+        ],
+        "charts": 0
+      },
+      {
+        "name": "Notes",
+        "rows": 3,
+        "columns": 1,
+        "cells": [
+          {
+            "address": "A1",
+            "value": "Synthetic local planning only",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Synthetic local planning only"
+          },
+          {
+            "address": "A2",
+            "value": "=1+1",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "=1+1"
+          },
+          {
+            "address": "A3",
+            "value": "Revise assumptions before approval",
+            "kind": "s",
+            "numberFormat": "General",
+            "cached": "Revise assumptions before approval"
+          }
+        ],
+        "charts": 0
+      }
+    ],
+    "members": [
+      "xl/_rels/workbook.xml.rels",
+      "xl/workbook.xml",
+      "xl/theme/theme1.xml",
+      "xl/styles.xml",
+      "xl/worksheets/sheet1.xml",
+      "xl/worksheets/sheet2.xml",
+      "xl/sharedStrings.xml",
+      "_rels/.rels",
+      "docProps/core.xml",
+      "docProps/app.xml",
+      "docProps/custom.xml",
+      "[Content_Types].xml"
+    ],
+    "nativeQualified": false
+  },
+  "process": {
+    "pid": 57102,
+    "exitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "stdoutBytes": 2295,
+    "stderrBytes": 0,
+    "stdoutRetainedBytes": 2295,
+    "stderrRetainedBytes": 0,
+    "hashScope": "retained bytes",
+    "stdoutSha256": "b3fe85a029e05965bf2cc7ad23e3b9aaf27fb2d81389f633d69270d823cf50cc",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdoutEnded": true,
+    "stderrEnded": true,
+    "streamErrors": [],
+    "leaderClosed": true,
+    "groupKillAttempted": true,
+    "groupAbsent": true,
+    "sandboxQualified": false
+  }
+}

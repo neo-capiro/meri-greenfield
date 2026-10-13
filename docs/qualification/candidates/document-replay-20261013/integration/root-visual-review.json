@@ -1,0 +1,103 @@
+{
+  "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "scope": "LOCAL_SYNTHETIC_DOCX_ONLY",
+  "allOpenedAndReopened": true,
+  "pagesVisuallyOpened": [
+    "original-preview-1.png",
+    "original-preview-2.png",
+    "original-preview-3.png",
+    "original-preview-4.png",
+    "revision-preview-1.png",
+    "revision-preview-2.png",
+    "revision-preview-3.png",
+    "revision-preview-4.png"
+  ],
+  "assessment": "All8pages legible and fully rendered; no clipped/missing text. Page4has sparse provenance continuation, the previously recorded minor pagination issue. Facts/proposals/citations/verification appendix and exact parent provenance retained.",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-content.json",
+      "bytes": 6884,
+      "sha256": "06105e613fbd427b0a03ce5b631dc4234b36c0ff8124afbd33d9ea609af67e1b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-inspection.json",
+      "bytes": 17785,
+      "sha256": "ad7e54c9ad8c84254e86659804e6628aa6198d14b723384f216fd53e33c93d25"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-preview-1.png",
+      "bytes": 113641,
+      "sha256": "2be566c16d641ad5abf6e8c6b177a299afd5030e6376b9c984a7b503033573d0"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-preview-2.png",
+      "bytes": 131050,
+      "sha256": "16a3e044d94b351b35c2f15f60be73623c85df68dde357bdfc1a61c4a6b90fc6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-preview-3.png",
+      "bytes": 139759,
+      "sha256": "ffa05bc4e0ee4831f642224acc68a978081871cc4dac655c1a2344f812e71700"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-preview-4.png",
+      "bytes": 27363,
+      "sha256": "884e9af8e2d228287e50a5f499552706d03ffd2034a9b17bb251de66372930e6"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original-preview.pdf",
+      "bytes": 49388,
+      "sha256": "702bc25b95940a3d4a75be518cc442d72ae0ce41735131d701319d886271d542"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/original.docx",
+      "bytes": 38702,
+      "sha256": "402928a64a53911d9d66a24deee2e0cd75af1b154813ea07ccf1f49c22553b64"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/provenance.json",
+      "bytes": 89450,
+      "sha256": "aaff7a4d8e5bdb9e88484ec171ec3c510372237a038453839696104f9c98ae94"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-content.json",
+      "bytes": 7207,
+      "sha256": "5315f748134ea42ce92eee8b9a7b102610e13e475ef7e8377822b59f2aecb452"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-inspection.json",
+      "bytes": 18439,
+      "sha256": "00ffbe78ed6b7a80b2fa18e00a444bd58c70b7ba43038461cf2e34d037144f97"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-preview-1.png",
+      "bytes": 113594,
+      "sha256": "276aa7fc31f5de16accaf1dfe54cc91106da84d5fc396b721e7742ec37a94a6a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-preview-2.png",
+      "bytes": 129525,
+      "sha256": "4f7bfa39bf61aec6d055b17f9eabd766e8cf325b43d01f59c81df71865bb2283"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-preview-3.png",
+      "bytes": 138837,
+      "sha256": "3cf9771820e3d0ffbc514d83302df03fc4ea4ae36fe62db772389c6606cbc3de"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-preview-4.png",
+      "bytes": 50079,
+      "sha256": "8c119c6ec75171babd703bd858185b005789e66a458bdbbf5542c3782bea1026"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision-preview.pdf",
+      "bytes": 49889,
+      "sha256": "7b6e0cfae6c3c4a6c09e211dc98091013995398ec7ffda5ee2e66fa2b66d6837"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/brief-artifacts/revision.docx",
+      "bytes": 38886,
+      "sha256": "e07a4df8b4ddf5cbfaa2c5ddfae4417dcc67af7524f005b6c5d4094ce3c7326f"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+
+> @capiro/meri-contracts@0.1.2 check:generated
+> node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check
+

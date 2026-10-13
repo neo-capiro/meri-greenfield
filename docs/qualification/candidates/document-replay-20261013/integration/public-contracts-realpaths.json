@@ -1,0 +1,57 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-document-replay",
+  "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T10:13:20.563964+00:00",
+  "durationSeconds": 3.083,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 55783,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 55823,
+      "status": 0
+    },
+    {
+      "pid": 55861,
+      "status": 0
+    },
+    {
+      "pid": 55881,
+      "status": 0
+    },
+    {
+      "pid": 56049,
+      "status": 0
+    },
+    {
+      "pid": 56068,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/public-contracts-realpaths.stdout.bin",
+      "bytes": 6757,
+      "sha256": "b6e1f58185248075a881c68db749ba27575b4c370e3b3568adb966eb42931ad3"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/integration/public-contracts-realpaths.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,56 @@
+{
+  "verdict": "ACCEPT_LOCAL_SOURCE_CHECKS_ONLY",
+  "checks": [
+    {
+      "check": "final-owner",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "final-applications",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "artifact-regressions",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "public-contracts-realpaths",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "word-python",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "brief-flow",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "document-flow",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "check": "workbook-flow",
+      "exitCode": 0,
+      "sourceHead": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "nodeCases": 456,
+  "pythonCases": 2,
+  "liveRuntimeAccepted": false
+}
