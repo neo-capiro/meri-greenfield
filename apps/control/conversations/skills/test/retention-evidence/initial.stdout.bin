@@ -1,0 +1,37 @@
+✔ quick_skill.commitments_audit: real original compiler guard retains exact JSON/SDK reads; restart recovers only after completed source with fresh output (188.90743ms)
+✔ quick_skill.relationship_brief: real original compiler guard retains exact JSON/SDK reads; restart recovers only after completed source with fresh output (191.39061ms)
+✔ copied/fabricated compiler preparation is refused before SQL allocation (29.127007ms)
+✔ closed pending request/read/input/selection/preparation/source/scopes pins refuse retention (264.963893ms)
+✔ paused source cannot retain pending or load after a prior retention (64.429239ms)
+✔ waiting-for-approval source cannot retain pending or load after a prior retention (77.579173ms)
+✔ failed source cannot retain pending or load after a prior retention (79.871865ms)
+✔ cancelled source cannot retain pending or load after a prior retention (84.372421ms)
+✔ one immutable pending per source run rejects changed SDK ledger even with valid prepared identity (106.107056ms)
+✔ stored preparation/request/scopes/content digest tampering and changed source writer refuse restart (365.227178ms)
+✔ fresh resource revocation and distinct output grant/session/scope are required before/after recovery (1035.144866ms)
+✔ loaded brand prevents changed request/context/base and expires with current output access (89.367906ms)
+✔ lost commit ACK retains uncertainty and exact replay recovers one immutable record (61.657874ms)
+✔ cancelled/parked access never brands or releases retained JSON (66.080164ms)
+✔ old context deadline does not authorize recovery; changed current session alone blocks it (77.847294ms)
+✔ request is immutable and replay survives owner reconstruction (11.263863ms)
+✔ events atomically advance state and stable IDs replay without duplicates (3.101638ms)
+✔ concurrent starting attempts serialize and allow one model admission (1.506037ms)
+✔ stored reads/writes deny foreign tenant (0.713194ms)
+✔ stored reads/writes deny foreign actor (0.930218ms)
+✔ stored reads/writes deny foreign conversation (0.605032ms)
+✔ stored reads/writes deny foreign run (0.664983ms)
+✔ stored reads/writes deny foreign attempt (0.727766ms)
+✔ stored reads/writes deny foreign worker (0.819833ms)
+✔ stored reads/writes deny foreign fence (0.859452ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (2.199061ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (0.69706ms)
+✔ retained event corruption and a sequence hole refuse reconnect (1.309975ms)
+✔ cursor after durable end and oversized publication refuse (1.292538ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4470.266793

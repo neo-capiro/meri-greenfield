@@ -1,0 +1,94 @@
+✔ quick_skill.commitments_audit: real original compiler guard retains exact JSON/SDK reads; restart recovers only after completed source with fresh output (190.46114ms)
+✔ quick_skill.relationship_brief: real original compiler guard retains exact JSON/SDK reads; restart recovers only after completed source with fresh output (200.090335ms)
+✔ copied/fabricated compiler preparation is refused before SQL allocation (30.002214ms)
+✔ closed pending request/read/input/selection/preparation/source/scopes pins refuse retention (272.327563ms)
+✔ paused source cannot retain pending or load after a prior retention (67.71082ms)
+✔ waiting-for-approval source cannot retain pending or load after a prior retention (65.266403ms)
+✔ failed source cannot retain pending or load after a prior retention (65.374515ms)
+✔ cancelled source cannot retain pending or load after a prior retention (68.646612ms)
+✔ one immutable pending per source run rejects changed SDK ledger even with valid prepared identity (81.51754ms)
+✔ stored preparation/request/scopes/content digest tampering and changed source writer refuse restart (248.118608ms)
+✔ fresh resource revocation and distinct output grant/session/scope are required before/after recovery (906.801341ms)
+✔ loaded brand prevents changed request/context/base and expires with current output access (76.781654ms)
+✔ lost commit ACK retains uncertainty and exact replay recovers one immutable record (59.439944ms)
+✔ cancelled/parked access never brands or releases retained JSON (55.757755ms)
+✔ old context deadline does not authorize recovery; changed current session alone blocks it (69.489572ms)
+✔ direct journal cannot bypass the original compiler admission owner (19.444136ms)
+✔ source stored request/window/scopes corruption is refused even when row hashes are recomputed (123.015647ms)
+✔ credential/provider/opaque properties and duplicate SDK read identities are never persisted (109.908154ms)
+✔ model booleans and opaque callback properties cannot act as current output access (102.20032ms)
+✔ original pointer with hostile context getters is rejected without getter execution or SQL allocation (21.23125ms)
+✔ concurrent exact retention uses canonical transaction serialization and creates one immutable pending (61.86966ms)
+✔ foreign journal and private native owner diagnostics are rejected without exposing details (51.930147ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-selected-output-retention/apps/control/conversations/temporal-dispatch.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/control/conversations/test/application.test.mjs (130.403988ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-selected-output-retention/apps/control/conversations/temporal-dispatch.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/control/conversations/test/lifecycle.test.mjs (143.771251ms)
+✔ request is immutable and replay survives owner reconstruction (11.096014ms)
+✔ events atomically advance state and stable IDs replay without duplicates (2.792498ms)
+✔ concurrent starting attempts serialize and allow one model admission (1.143271ms)
+✔ stored reads/writes deny foreign tenant (0.689913ms)
+✔ stored reads/writes deny foreign actor (0.712276ms)
+✔ stored reads/writes deny foreign conversation (0.5809ms)
+✔ stored reads/writes deny foreign run (0.618195ms)
+✔ stored reads/writes deny foreign attempt (0.702281ms)
+✔ stored reads/writes deny foreign worker (0.713548ms)
+✔ stored reads/writes deny foreign fence (0.761029ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (1.678642ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (0.640057ms)
+✔ retained event corruption and a sequence hole refuse reconnect (1.297321ms)
+✔ cursor after durable end and oversized publication refuse (1.187447ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 36
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4842.191699
+
+✖ failing tests:
+
+test at apps/control/conversations/test/application.test.mjs:1:1
+✖ apps/control/conversations/test/application.test.mjs (130.403988ms)
+  'test failed'
+
+test at apps/control/conversations/test/lifecycle.test.mjs:1:1
+✖ apps/control/conversations/test/lifecycle.test.mjs (143.771251ms)
+  'test failed'

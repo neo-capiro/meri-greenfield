@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/test/retention.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/application.test.mjs"
+  ],
+  "cwd": "/workspace/meri-selected-output-retention",
+  "sourceHead": "88b5c4453adfa53631417474829ee38137f0bee3",
+  "sourceDiffSha256": "34624a2229cb9d899d536c311839628385ae8583b8bc09a4734e609bf8f5d4e2",
+  "sourceDiffBytes": 50691,
+  "captureSha256": "a4ab811255c72619c14b10bf2c98a83e20794831d7cf17d272e0c62cd25ccbbc",
+  "startedAt": "2026-10-13T18:19:18.938368+00:00",
+  "durationSeconds": 4.801,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 303266,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/repaired.stdout.bin",
+      "bytes": 6108,
+      "sha256": "7167bc6036fd15ef8b1b79933507481136edefe21cc9bfcbce70dfa257858261"
+    },
+    {
+      "path": "apps/control/conversations/skills/test/retention-evidence/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Extended35selected/store controls passed but two existing suites blocked before loading by missing pinned temporal polyfill. Borrow existing dependency0.5.1 via owned package link, retain failure. Add canonical journal brand and bounded private-access diagnostic handling.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

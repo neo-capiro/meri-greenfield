@@ -1,6 +1,7 @@
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
 import {assertRun,bounded,hash,same,fail,nextState,validateShape,uuid} from './boundary.mjs';
 import {createLifecycleJournal} from './lifecycle/journal.mjs';
+import {createSelectedOutputJournal} from './skills/retention.mjs';
 export function createPostgresConversationStore({pool}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body){let c,begun=false,committing=false,reusable=false,failure,result;
@@ -43,5 +44,5 @@ export function createPostgresConversationStore({pool}){
    if(rows.length===0&&after<Number(r.last_sequence))fail('STORE_CORRUPT');if(rows.length<limit+1&&sequence!==Number(r.last_sequence))fail('STORE_CORRUPT');const events=rows.slice(0,limit).map(e=>e.event);return {run:r.projection,request:r.request,events,nextSequence:events.at(-1)?.sequence??after,hasMore:rows.length>limit,lastSequence:Number(r.last_sequence)};});
  }
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
- return Object.freeze({accept,append,read,findRequest,lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
+ return Object.freeze({accept,append,read,findRequest,selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
 }
