@@ -1,0 +1,70 @@
+✖ allowed operation from another source cannot bind a mail passage (9.680226ms)
+✖ Monday source authority cannot be promoted above its canonical operation requirement (2.523847ms)
+✖ actual canonical source authority is retained in coverage and bound passages (2.430407ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 0
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1824.602333
+
+✖ failing tests:
+
+test at packages/skills/commitments/review-regression.test.mjs:8:1
+✖ allowed operation from another source cannot bind a mail passage (9.680226ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills/packages/skills/commitments/review-regression.test.mjs:10:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /COMMITMENTS_READ_/u,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/skills/commitments/review-regression.test.mjs:12:1
+✖ Monday source authority cannot be promoted above its canonical operation requirement (2.523847ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills/packages/skills/commitments/review-regression.test.mjs:14:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /COMMITMENTS_READ_/u,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/skills/commitments/review-regression.test.mjs:16:1
+✖ actual canonical source authority is retained in coverage and bound passages (2.430407ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'authoritative'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills/packages/skills/commitments/review-regression.test.mjs:19:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'authoritative',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

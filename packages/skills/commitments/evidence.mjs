@@ -1,6 +1,6 @@
 /** Read correlation only. Qualified gateway reads and current control authority remain required. */
 import {createHash} from 'node:crypto';
-import {assertEvidence,assertSubject,assertWindow} from '../../contracts/retrieval-0.2/validate.mjs';
+import {assertEvidence,assertSubject,assertWindow,resolveOperationContract} from '../../contracts/retrieval-0.2/validate.mjs';
 import {validateShape as publicShape,canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {data,own} from '../../contracts/commands-0.2/execution-boundary.mjs';
 import {selectSkill} from '../index.mjs';
@@ -10,7 +10,7 @@ export const fail=code=>{throw new Error(code);};
 export function text(value,max=2000){if(typeof value!=='string'||!value.length||value.length>max||!value.isWellFormed())fail('COMMITMENTS_INPUT');return value;}
 const digest=value=>createHash('sha256').update(Buffer.from(value)).digest('hex');
 const sourceIds=[...new Set(selectSkill('quick_skill.commitments_audit','1.0.0').manifest.requiredSources.map(row=>row.sourceId))];
-const allowed=selectSkill('quick_skill.commitments_audit','1.0.0').manifest.allowedOperations;
+const operations=selectSkill('quick_skill.commitments_audit','1.0.0').manifest.allowedOperations.map(ref=>resolveOperationContract(ref).descriptor);
 
 export function bindReads(rawContext,rawReads){
   const context=data(own(rawContext,['binding','subject','window','asOf','mondayBoardIds']));
@@ -24,15 +24,17 @@ export function bindReads(rawContext,rawReads){
   const records=new Map(),coverage=new Map();
   for(const envelope of reads){
     assertEvidence(envelope);
+    const operation=operations.find(row=>same(row.operation,envelope.operation));
     if(!same(envelope.binding,context.binding)||!same(envelope.subject,context.subject)||!same(envelope.window,context.window)||
-      !allowed.some(ref=>same(ref,envelope.operation))||envelope.sources.length!==1||
+      !operation||envelope.sources.length!==1||
       !sourceIds.includes(envelope.sources[0].sourceId)||Date.parse(envelope.sources[0].retrievedAt)>Date.parse(context.asOf)||
       envelope.data!==null&&envelope.method!=='source-read')fail('COMMITMENTS_READ_BINDING');
     const source=envelope.sources[0],sourceId=source.sourceId;
+    if(!operation.sourceRequirements.some(required=>required.sourceId===sourceId&&required.authority===source.authority))fail('COMMITMENTS_READ_SOURCE');
     if(sourceId==='client_knowledge_monday'&&(!context.mondayBoardIds.length||
       !envelope.appliedFilters.some(filter=>filter.name==='board_ids'&&filter.valueSha256===hash([...context.mondayBoardIds].sort()))))fail('COMMITMENTS_MONDAY_SCOPE');
     if(coverage.has(sourceId))fail('COMMITMENTS_DUPLICATE_SOURCE'); // Pass the retained full read; incomplete continuation stays visible.
-    coverage.set(sourceId,{sourceId,status:source.status,freshness:source.freshness,asOf:source.asOf,retrievedAt:source.retrievedAt,
+    coverage.set(sourceId,{sourceId,authority:source.authority,status:source.status,freshness:source.freshness,asOf:source.asOf,retrievedAt:source.retrievedAt,
       snapshotVersionId:source.snapshotVersionId,enumeration:envelope.coverage.enumeration,
       returnedCount:envelope.coverage.returnedCount,limitations:envelope.coverage.limitations,
       continuation:envelope.continuation,complete:envelope.status==='complete'});
@@ -43,7 +45,7 @@ export function bindReads(rawContext,rawReads){
       records.set(key,{record,source,authorizationDecisionId:envelope.subject.authorizationDecisionId});
     }
   }
-  const cells=sourceIds.map(sourceId=>coverage.get(sourceId)??{sourceId,status:sourceId==='client_knowledge_monday'&&!context.mondayBoardIds.length?'not-mapped':'not-read',
+  const cells=sourceIds.map(sourceId=>coverage.get(sourceId)??{sourceId,authority:null,status:sourceId==='client_knowledge_monday'&&!context.mondayBoardIds.length?'not-mapped':'not-read',
     freshness:'unknown',asOf:null,retrievedAt:null,snapshotVersionId:null,enumeration:'unknown',returnedCount:0,
     limitations:[sourceId==='client_knowledge_monday'&&!context.mondayBoardIds.length?'No authorized client board mapping was supplied.':'Required source has no decisive read.'],
     continuation:{cursor:null,requiredReads:[],remainingSources:[sourceId]},complete:false});
@@ -58,5 +60,5 @@ export function passage(raw,bound){
     found.record.content.text.slice(p.start,p.end)!==p.quote)fail('COMMITMENTS_PASSAGE');
   return {...p,citationId:found.record.citationId,contentSha256:found.record.contentSha256,passageSha256:digest(p.quote),
     scopes:found.record.scopes,authorizationDecisionId:found.authorizationDecisionId,observedAt:found.source.retrievedAt,
-    freshness:found.source.freshness,verification:'bound-source-excerpt'};
+    authority:found.source.authority,freshness:found.source.freshness,verification:'bound-source-excerpt'};
 }
