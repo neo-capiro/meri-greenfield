@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {createCommandToolInterface} from '../commands/tool-interface.mjs';
 import {createTaskLookupDelivery,createPostgresTaskLookupStore} from '../task-lookup/index.mjs';
@@ -11,13 +12,14 @@ import {setup as commandSetup,id,nextTurn} from '../../../docs/qualification/can
 import {createActionFollowthrough} from './index.mjs';
 
 const client=sourceId(9),clone=structuredClone;
-async function setup(){
+async function setup(changeCard){
  const t=commandSetup(),l=lookupFixture(),pool=createTaskLookupPoolFixture(),state={denied:false,readCalls:0},calls=[];
  t.f.context.clientResolution={reference:client,clientId:client};
  l.context={...l.context,binding:clone(t.f.binding),selectedClientId:client,deadlineMs:t.f.state.now+1000,
   scopes:[{tenantId:t.f.binding.tenantId,kind:'client',resourceId:client,policyRevision:'p1'}],deliveryJson:JSON.stringify({context:{binding:t.f.binding},producer:{namespace:'independent-followthrough',executionId:'one'},deliveryId:'retained'})};
  const original=envelope(prepare(l.request,l.context,t.f.state.now));
  const row=nativeScopedPage({clientId:client}).actions[0];
+ if(changeCard){changeCard(row);const sourceFields=Object.fromEntries(Object.entries(row).filter(([key])=>!['recordKind','recommendation','acceptedAsTask','nativeCompletion','sourceProof'].includes(key)));row.sourceProof.contentSha256=createHash('sha256').update(JSON.stringify(sourceFields)).digest('hex');}
  original.result.actions=[row];original.result.total=1;original.result.returned=1;original.result.coverage.returnedCount=1;original.result.pageCoverage.absenceSupported=false;
  const actual=createTaskLookupDelivery({gateway:{async executeOwned(){calls.push('upstream');return JSON.stringify(original);}},store:createPostgresTaskLookupStore({pool:pool.pool}),clock:()=>t.f.state.now,
   authorize:async q=>{calls.push(q.phase);if(state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return {authorized:true,bindingSha256:q.binding.bindingSha256,expiresAtMs:l.context.deadlineMs};}});
@@ -91,4 +93,18 @@ test('followthrough independent: preaborted or effectful inputs never invoke rea
  const f=await setup(),ac=new AbortController();ac.abort();await assert.rejects(f.workflow.draft(f.selection,{}, {signal:ac.signal}));let hits=0;
  await assert.rejects(f.workflow.draft({get resultReference(){hits++;return f.selection.resultReference;},resultSha256:f.selection.resultSha256,actionId:f.selection.actionId}));
  await assert.rejects(f.workflow.draft(f.selection,{get title(){hits++;return 'x';}}));assert.equal(hits,0);assert.equal(f.state.readCalls,0);assert.equal(f.t.calls.length,0);
+});
+
+for(const [name,mutate,edits]of [
+ ['long-title',r=>r.title='x'.repeat(241),{title:'Explicit shorter task title'}],
+ ['time-of-day',r=>r.deadline='2026-11-05T12:00:00.000Z',{dueDate:'2026-11-05'}],
+])test(`followthrough independent: ${name} source default requires explicit edit rather than silent loss`,async()=>{
+ const f=await setup(mutate);await assert.rejects(f.workflow.draft(f.selection));const draft=await f.workflow.draft(f.selection,edits);assert.equal(draft.status,'draft');assert.equal(f.t.f.state.effects,0);
+});
+test('followthrough independent: original task A evidence can prepare a task under coherent current B',async()=>{
+ const f=await setup(),a=clone(f.t.f.binding),b={...a,attemptId:id(90),workerId:id(91),writerFence:2};
+ Object.assign(f.t.f.binding,b);f.t.base.commandContext={...f.t.f.context,binding:b};
+ const workflow=createActionFollowthrough({...f.options,readContext:{...f.options.readContext,currentBinding:b},commandOptions:f.t.base});
+ const draft=await workflow.draft(f.selection),prepared=await workflow.prepare(draft);assert.deepEqual(prepared.proposal.command.binding,b);assert.equal(f.t.f.state.effects,0);
+ assert.ok(JSON.stringify(draft.source).includes(a.attemptId));
 });
