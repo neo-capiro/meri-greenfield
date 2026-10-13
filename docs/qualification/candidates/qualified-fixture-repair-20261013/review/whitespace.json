@@ -1,0 +1,19 @@
+{
+  "checks": [
+    {
+      "scope": "full",
+      "exitCode": 2,
+      "bytes": 2002,
+      "sha256": "8a1bdf795086f46e35a799bf2b7c4c90a3a810376b8e3a5688a52907c7a6864a",
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin"
+    },
+    {
+      "scope": "authored",
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-authored.bin"
+    }
+  ],
+  "rawFailureBytesNotNormalized": true
+}
