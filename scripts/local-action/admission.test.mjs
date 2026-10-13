@@ -29,6 +29,12 @@ test('private exact source-bound fixture input yields a nonsecret descriptor wit
   assert.equal(JSON.stringify(admitted.descriptor).includes('SYNTHETIC_PRIVATE_TEST_ONLY'),false);
   assert.ok(Object.isFrozen(admitted.descriptor));
 });
+test('native parseable server time retains its instant in the canonical runner descriptor',async t=>{
+  const f=await fixture(t);f.input.native.serverStartTime='2026-10-12T20:00:00-04:00';
+  const admitted=await readLocalActionAdmission(await f.save());
+  assert.equal(admitted.descriptor.serverStartTime,'2026-10-13T00:00:00.000Z');
+  assert.equal(Date.parse(admitted.native.serverStartTime),Date.parse(admitted.descriptor.serverStartTime));
+});
 for(const [name,change]of [
   ['remote host',f=>{f.input.native.host='example.invalid';}],
   ['another database',f=>{f.input.native.database='production';}],

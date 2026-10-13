@@ -41,7 +41,7 @@ export async function readLocalActionAdmission({path,sha256,now=Date.now}){
        digest(await readFile(new URL('apps/control/qualification-sdk-fixture/state/package-lock.json',root))))refuse();
     const descriptor=Object.freeze({mode:'synthetic-local-action',host:native.host,port:native.port,
       database:native.database,user:native.user,systemIdentifier:native.systemIdentifier,
-      serverStartTime:native.serverStartTime,serverVersion:native.serverVersion,
+      serverStartTime:new Date(native.serverStartTime).toISOString(),serverVersion:native.serverVersion,
       deadlineMs:native.workDeadlineMs,migrationSha256:Object.freeze({...input.migrationSha256})});
     return Object.freeze({native,descriptor});
   }catch{refuse();}finally{await handle?.close();}
