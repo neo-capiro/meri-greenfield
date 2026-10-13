@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-meeting-source.test.mjs",
+    "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs"
+  ],
+  "cwd": "/workspace/meri-version-independent",
+  "reviewedCommit": "951a7021852b5205357c6780ed2c27527bab9d4d",
+  "worktreeHead": "951a7021852b5205357c6780ed2c27527bab9d4d",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 3.595,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 20310,
+  "stderrBytes": 0,
+  "stdoutSha256": "2939316c6cc163fdbd670870546ff4a011d5cc7b3676b1f64d99d2e040b36bdd",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

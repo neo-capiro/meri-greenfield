@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-version-independent/docs/qualification/candidates/next-adapters-20261013/version-independent/audit.py", line 33, in <module>
+    check('wire schema remains0.1.0',schema['$id']=='urn:meri:contracts:0.1.0' and schema['$defs']['UIEvent']['properties']['contractVersion']['const']=='0.1.0')
+                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+KeyError: 'properties'
