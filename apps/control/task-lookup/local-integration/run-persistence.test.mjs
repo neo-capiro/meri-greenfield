@@ -42,25 +42,25 @@ test('offline mismatched migration bytes HOLD before any SQL or case producer',a
  assert.equal(result.status,'HOLD');assert.equal(result.failure.case,'fixture');assert.equal(result.runtimeQualified,false);assert.equal(calls,0);assert.deepEqual(result.ownedRows,[]);assert.equal(result.cleanup.borrowedPoolClosed,false);
 });
 test('offline fresh pool is closed exactly once and initial borrowed pool untouched',async()=>{
- let closed=0,borrowedClose=0;const initial={end(){borrowedClose++;}},pool={query(){}};
+ let closed=0,borrowedClose=0;const initial={end(){borrowedClose++;}},pool={};
  const owner=createFreshPoolOwner({openFreshPool:async()=>({pool,close:async()=>{closed++;}}),originalPool:initial,deadlineMs:Date.now()+1000});
  assert.equal(await owner.acquire(),pool);await owner.close();await owner.close();assert.equal(closed,1);assert.equal(borrowedClose,0);assert.equal(owner.state().ownedFreshPoolsClosed,1);
 });
 test('offline late acquisition after owner close is cleaned once without returning a pool',async()=>{
  let resolve,closed=0;const owner=createFreshPoolOwner({openFreshPool:()=>new Promise(r=>{resolve=r;}),originalPool:{},deadlineMs:Date.now()+1000});
- const pending=owner.acquire();await owner.close();assert.equal(owner.state().acquisitionPending,true);resolve({pool:{query(){}},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});await owner.close();assert.equal(closed,1);
+ const pending=owner.acquire();await owner.close();assert.equal(owner.state().acquisitionPending,true);resolve({pool:{},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});await owner.close();assert.equal(closed,1);
 });
 test('offline cancelled acquisition cleans its eventual wrapper without borrowed queries',async()=>{
  const controller=new AbortController();let resolve,closed=0;
  const owner=createFreshPoolOwner({openFreshPool:()=>new Promise(r=>{resolve=r;}),originalPool:{},deadlineMs:Date.now()+1000,signal:controller.signal});
- const pending=owner.acquire();controller.abort();resolve({pool:{query(){}},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});assert.equal(closed,1);
+ const pending=owner.acquire();controller.abort();resolve({pool:{},close:async()=>{closed++;}});await assert.rejects(pending,{code:'DEADLINE'});assert.equal(closed,1);
 });
 test('offline returning borrowed pool refuses and does not close it',async()=>{
  const pool={};let closed=0;const owner=createFreshPoolOwner({openFreshPool:async()=>({pool,close(){closed++;}}),originalPool:pool,deadlineMs:Date.now()+1000});
  await assert.rejects(owner.acquire(),{code:'LOCAL_BORROWED_POOL'});await owner.close();assert.equal(closed,0);
 });
 test('offline close failure is retained as cleanup UNKNOWN',async()=>{
- const owner=createFreshPoolOwner({openFreshPool:async()=>({pool:{query(){}},close:async()=>{throw new Error('private');}}),originalPool:{},deadlineMs:Date.now()+1000});
+ const owner=createFreshPoolOwner({openFreshPool:async()=>({pool:{},close:async()=>{throw new Error('private');}}),originalPool:{},deadlineMs:Date.now()+1000});
  await owner.acquire();await owner.close();assert.equal(owner.state().freshPoolCleanupUnknown,true);assert.equal(owner.state().ownedFreshPoolsClosed,0);
 });
 

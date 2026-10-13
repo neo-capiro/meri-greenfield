@@ -25,7 +25,7 @@ export function createFreshPoolOwner({openFreshPool,originalPool,deadlineMs,sign
     const port=Object.getOwnPropertyDescriptor(value,'pool');
     if(port&&Object.hasOwn(port,'value')&&port.value===originalPool)throw failure('LOCAL_BORROWED_POOL');
     acquired={pool:port&&Object.hasOwn(port,'value')?port.value:undefined,close};
-    try{const checked=options(value,['pool','close']);method(checked.pool,'query');}
+    try{const checked=options(value,['pool','close']);assert(checked.pool!==null&&typeof checked.pool==='object','fresh pool port required');}
     catch(error){await closeOne();throw error;}
     if(closed||signal?.aborted||Date.now()>=deadlineMs){await closeOne();throw failure('DEADLINE');}
     return acquired.pool;
