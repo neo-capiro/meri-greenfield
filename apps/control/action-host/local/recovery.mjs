@@ -1,22 +1,23 @@
 /** Explicit synthetic recovery exercise over real HTTP; never a native durability claim. */
 import assert from 'node:assert/strict';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {listenActionApplication} from '../../action-application/node-http.mjs';
 
 export async function runLocalHostRecovery(configuration){
  const {mode,openHost,approve,revoke,stats}=own(configuration,['mode','openHost','approve','revoke','stats']);
  if(mode!=='synthetic-local'||[openHost,approve,revoke,stats].some(value=>typeof value!=='function'))throw Error('LOCAL_HOST_CONFIGURATION');
- const cutoff=Date.now()+30000,controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
+ const cutoff=Date.now()+30000,lifetime=createOperationLifetime({deadlineMs:cutoff,now:Date.now,errorFactory:code=>new Error(code)});
  const closed=[],applications=new Set();let selected,pending,observed,refusal,replay,revoked;
  async function withHost(work){
-  const remaining=cutoff-Date.now();if(remaining<=0||controller.signal.aborted)throw Error('LOCAL_HOST_DEADLINE');
+  lifetime.check();const remaining=cutoff-Date.now();if(remaining<=0)throw Error('LOCAL_HOST_DEADLINE');
   const {app,credential}=own(openHost(),['app','credential']);
   if(applications.has(app)||typeof credential!=='string'||!credential)throw Error('LOCAL_HOST_RECONSTRUCTION');
   applications.add(app);
   const server=await listenActionApplication({app,host:'127.0.0.1',port:0,lifetimeMs:Math.min(10000,remaining)});
   try{
    const call=async(route,body)=>{
-    const response=await fetch(`${server.origin}/api/action-followthrough/${route}`,{method:'POST',redirect:'error',signal:controller.signal,
+    const response=await fetch(`${server.origin}/api/action-followthrough/${route}`,{method:'POST',redirect:'error',signal:lifetime.signal,
      headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)});
     return {status:response.status,body:await response.json()};
    };
@@ -37,15 +38,15 @@ export async function runLocalHostRecovery(configuration){
    // Read through newly constructed store/delivery/host owners using the retained reference.
    const draft=ok(await call('draft',{selection:selected,edits:{title:pending.draft.task.title,dueDate:null}}));
    assert.deepEqual(draft.source,pending.draft.source);assert.equal(stats().taskEffects,0);
-   await approve(pending.proposal);
+   await lifetime.run(()=>approve(pending.proposal));
    observed=ok(await call('execute',{proposal:pending.proposal}));assert.equal(observed.status,'observed');assert.equal(stats().taskEffects,1);
   });
   await withHost(async call=>{
    replay=ok(await call('execute',{proposal:pending.proposal}));assert.deepEqual(replay,observed);assert.equal(stats().taskEffects,1);
-   await revoke();revoked=await call('draft',{selection:selected});assert.notEqual(revoked.status,200);assert.equal(stats().taskEffects,1);
+   await lifetime.run(()=>revoke());revoked=await call('draft',{selection:selected});assert.notEqual(revoked.status,200);assert.equal(stats().taskEffects,1);
   });
   assert.equal(applications.size,3);assert.equal(closed.length,3);
   return data({status:'PASS',mode,transport:'loopback-http',nativeDatabase:false,productionActivated:false,reconstructedHosts:applications.size,
    outcomes:{pending:pending.status,unapprovedStatus:refusal.status,observed:observed.status,replayIdentical:true,revokedStatus:revoked.status},stats:stats(),cleanup:{listeners:closed}});
- }finally{clearTimeout(timer);controller.abort();}
+ }finally{lifetime.close();}
 }
