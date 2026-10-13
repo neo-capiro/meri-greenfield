@@ -1,0 +1,70 @@
+{
+  "onlyOwnedCopiesRemoved": [
+    {
+      "package": "ajv",
+      "files": 466,
+      "bytes": 1033496,
+      "ownedCopyRemoved": true
+    },
+    {
+      "package": "ajv-formats",
+      "files": 15,
+      "bytes": 56763,
+      "ownedCopyRemoved": true
+    },
+    {
+      "package": "canonicalize",
+      "files": 6,
+      "bytes": 24474,
+      "ownedCopyRemoved": true
+    },
+    {
+      "package": "fast-uri",
+      "files": 44,
+      "bytes": 220886,
+      "ownedCopyRemoved": true
+    },
+    {
+      "package": "fast-deep-equal",
+      "files": 11,
+      "bytes": 12966,
+      "ownedCopyRemoved": true
+    },
+    {
+      "package": "json-schema-traverse",
+      "files": 12,
+      "bytes": 22220,
+      "ownedCopyRemoved": true
+    },
+    {
+      "package": "require-from-string",
+      "files": 4,
+      "bytes": 3422,
+      "ownedCopyRemoved": true
+    }
+  ],
+  "donorUntouched": "/workspace/meri-read-continuation-20261012/node_modules",
+  "captures": [
+    {
+      "receipt": "boundary-before.json",
+      "pgid": 438443,
+      "absentAtCapture": true
+    },
+    {
+      "receipt": "boundary-repaired.json",
+      "pgid": 438665,
+      "absentAtCapture": true
+    },
+    {
+      "receipt": "fixture-corrected.json",
+      "pgid": 437870,
+      "absentAtCapture": true
+    },
+    {
+      "receipt": "initial.json",
+      "pgid": 437526,
+      "absentAtCapture": true
+    }
+  ],
+  "servicesOrNativeProcessesStarted": false
+}

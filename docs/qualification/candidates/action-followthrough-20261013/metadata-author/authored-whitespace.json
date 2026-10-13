@@ -1,0 +1,15 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "158fa00828cd46864c20f481a998c9d3e9cc236a",
+    "--",
+    "apps/control/commands/approval-metadata",
+    "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+    "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md"
+  ],
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

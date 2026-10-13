@@ -1,0 +1,13 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "158fa00828cd46864c20f481a998c9d3e9cc236a",
+    "HEAD"
+  ],
+  "sourceHead": "e008275d78ed37977b1b4a33018693509b4910f3",
+  "exitCode": 2,
+  "stdoutBytes": 528,
+  "stderrBytes": 0
+}
