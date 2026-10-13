@@ -1,0 +1,61 @@
+✔ independent: wrong runner hash refuses before borrowed effects (16.081964ms)
+✔ independent: missing one split refuses before effects (4.07475ms)
+✔ independent: repeated split refuses before effects (4.505439ms)
+✔ independent: mismatched corpus/config/source pins refuse (6.781914ms)
+✔ independent: explicit gold injected into runner case refuses even with matching supplied runner hash (3.500376ms)
+✔ independent: approval injected into runner refuses (3.585494ms)
+✔ independent: missing, duplicate and foreign host run bindings refuse (10.870785ms)
+✔ independent: frozen tenant actor and conversation cannot be rebound (9.767255ms)
+✔ independent: extra authority on execution input refuses before ports (2.846252ms)
+✔ independent: expired, nonfinite and excessive deadlines refuse (14.329749ms)
+✔ independent: accessor is not invoked at execution admission (2.908797ms)
+✔ independent: unsupported modes preserve host binding/all-case denominator with no borrowed effects (8.186417ms)
+✔ independent: empty corpus produces no measurements or qualification (1.563282ms)
+✔ independent: actual composed control returns nonempty source result to unchanged scorer (40.79863ms)
+✔ independent: golden record/expected fields never reach prepare or borrowed execution (13.505369ms)
+✔ independent: different actual source coverage cannot echo expected semantic hash (22.751549ms)
+✔ independent: exact actual prepared original and full hash retained in read authorization (12.079963ms)
+✔ independent: credential and raw borrowed exception body never enter returned capture (17.879799ms)
+✔ independent: actual denied read receipt scores denial with captured failure (9.42549ms)
+✔ independent: actual denied callback throw scores denial rather than synthetic decision (8.510704ms)
+✔ independent: preparation ACCESS_DENIED without actual read receipt cannot pass denial (5.123408ms)
+✔ independent: lookup denial is retained without inventing a denied read callback (5.393735ms)
+✔ independent: unsupported and supported cases retain all split denominators (18.306331ms)
+✔ independent: preparation failure does not drop later cases or fabricate producer binding (16.461316ms)
+✔ independent: prepared producer binding and selected client mismatches cannot dispatch (9.990681ms)
+✔ independent: prepared read stable principal/scope mismatches cannot touch source (19.86739ms)
+✔ independent: malformed wrong-hash and expired actual authorization never return success (12.923543ms)
+✔ independent: emitted capture is detached and immutable after borrowed preparation mutation (13.876387ms)
+✔ independent: actual malformed gateway result cannot become expected returned data (8.074268ms)
+✔ independent: capture ceiling stops subsequent effects and preserves failed/ineligible case counts (13.517637ms)
+✔ independent: caller execution inputs are not mutated (10.651185ms)
+✔ independent: caller abort while preparation parks preserves every case and explicit pending work (5.592744ms)
+✔ independent: caller abort while gateway parks propagates signal without retry or borrowed disposal (6.484847ms)
+✔ independent: prepared shorter cutoff prevents source after clock passes it (3.483131ms)
+✔ independent: fresh shortened authority cuts off subsequent dispatch despite longer execution deadline (4.482845ms)
+✔ independent: an already aborted invocation performs no effects (2.696396ms)
+✔ independent: actual read parked after lookup leaves no release success and exposes unsettled work (7.266422ms)
+✔ independent: actual authority parked is cancelled without starting gateway (4.326089ms)
+✔ independent: changed source snapshot in one independently pinned projection refuses (2.989628ms)
+✔ independent: nondefault typed selectors reach actual gateway unchanged and are never taken from prompt (11.276535ms)
+✖ independent: hostile rejected error proxy cannot execute traps or discard all-case capture (4.657457ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 40
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2892.380756
+
+✖ failing tests:
+
+test at evals/task-lookup/execution/execution-independent.test.mjs:115:1
+✖ independent: hostile rejected error proxy cannot execute traps or discard all-case capture (4.657457ms)
+  Error: hostile descriptor must remain inert
+      at Object.getOwnPropertyDescriptor (file:///tmp/meri-action-followthrough-eval-review-20261013/evals/task-lookup/execution/execution-independent.test.mjs:115:191)
+      at Object.getOwnPropertyDescriptor (<anonymous>)
+      at Object.execute (file:///tmp/meri-action-followthrough-eval-review-20261013/evals/task-lookup/execution/execute.mjs:63:67)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-followthrough-eval-review-20261013/evals/task-lookup/execution/execution-independent.test.mjs:115:385)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

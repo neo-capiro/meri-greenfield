@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-13T01:15:52.765630+00:00",
+  "sourceHead": "d8e86c2b49f91e22a6a6868fce4ba0ca6e707328",
+  "removedOwnedDependencyLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "removed": true,
+      "borrowedTargetRetained": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "removed": true,
+      "borrowedTargetRetained": true
+    }
+  ],
+  "ownedProcessGroups": [
+    {
+      "pgid": 432272,
+      "absent": true,
+      "killIssued": false
+    },
+    {
+      "pgid": 440501,
+      "absent": true,
+      "killIssued": false
+    },
+    {
+      "pgid": 440544,
+      "absent": true,
+      "killIssued": false
+    },
+    {
+      "pgid": 440598,
+      "absent": true,
+      "killIssued": false
+    },
+    {
+      "pgid": 441160,
+      "absent": true,
+      "killIssued": false
+    }
+  ],
+  "materializedDriverRetained": "/tmp/meri-pg-8.23.1-action-followthrough-20261013",
+  "otherOwnerResourcesChanged": false,
+  "sourceBranchesAndEvidenceRetained": true
+}

@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/commands/approval-metadata/owner-independent.test.mjs",
+    "apps/control/commands/approval-metadata/postgres-independent.test.mjs",
+    "apps/control/commands/approval-metadata/test/metadata.test.mjs"
+  ],
+  "cwd": "/tmp/meri-approval-metadata-review-20261013",
+  "sourceHead": "b1ad54a3b17550d349b44aebc4b61b73d374abc9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:05:08.990176+00:00",
+  "durationSeconds": 3.505,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 439303,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stdout.bin",
+      "bytes": 6780,
+      "sha256": "ae699ed076e5c771e39293f513d85b4418539584201ab721ce0503cc61534a32"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

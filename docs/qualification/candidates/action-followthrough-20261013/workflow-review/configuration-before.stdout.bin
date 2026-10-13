@@ -1,0 +1,51 @@
+✖ followthrough independent: later caller configuration mutation cannot replace admitted metadata operation (62.092325ms)
+✖ followthrough independent: operation metadata accessors remain inert during construction (10.96032ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2705.95581
+
+✖ failing tests:
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:113:1
+✖ followthrough independent: later caller configuration mutation cannot replace admitted metadata operation (62.092325ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   id: 'save_memory',
+  -   id: 'create_task',
+      version: '0.2.0'
+    }
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:115:41)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { id: 'save_memory', version: '0.2.0' },
+    expected: { id: 'create_task', version: '0.2.0' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-followthrough/workflow-independent.test.mjs:117:1
+✖ followthrough independent: operation metadata accessors remain inert during construction (10.96032ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-followthrough-workflow-review-20261013/apps/control/action-followthrough/workflow-independent.test.mjs:119:109)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

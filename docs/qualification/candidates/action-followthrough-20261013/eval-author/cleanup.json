@@ -1,0 +1,59 @@
+{
+  "ownedLinksRemoved": [
+    {
+      "path": "node_modules/ajv",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "targetExists": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "targetExists": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "targetExists": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "targetExists": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "targetExists": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "targetExists": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "targetExists": true
+    }
+  ],
+  "ownedCapturedGroups": [
+    {
+      "capture": "focused",
+      "group": 435070,
+      "absent": true
+    },
+    {
+      "capture": "final",
+      "group": 435951,
+      "absent": true
+    },
+    {
+      "capture": "proxy-repaired",
+      "group": 436873,
+      "absent": true
+    }
+  ],
+  "initialToolSession": "Foreground tool session reported exit0; group ID was not retained. No detached job launched.",
+  "borrowedTargetsModified": false,
+  "databaseNativeCloudProviderProcessesStarted": false
+}

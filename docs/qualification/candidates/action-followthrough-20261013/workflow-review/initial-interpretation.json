@@ -1,0 +1,9 @@
+{
+  "source": "4dc46a9fda7a6b62ca98b34f79ae38f43e3c8b03",
+  "testSource": "640eabf5",
+  "pass": 0,
+  "fail": 28,
+  "cause": "Reviewer fixture supplied an equivalent separately constructed command validator factory and a distinct equivalent clock closure. Candidate requires the actual canonical exported factory and same configured clock identity; all controls stopped at constructor before behavior.",
+  "repair": "Use actual canonical commandToolValidators export and the existing commandOptions.now. No behavioral assertion changed.",
+  "capture": "initial.json"
+}

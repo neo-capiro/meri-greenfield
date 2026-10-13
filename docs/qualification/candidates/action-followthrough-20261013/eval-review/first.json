@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "evals/task-lookup/execution/execution-independent.test.mjs",
+    "evals/task-lookup/execution/test/execution.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-followthrough-eval-review-20261013",
+  "sourceHead": "9bc71cf14e09196afc635808f0242da9d7d60c86",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-13T00:58:35.451231+00:00",
+  "durationSeconds": 3.178,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 436304,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/first.stdout.bin",
+      "bytes": 6069,
+      "sha256": "34dd55d9e41d62a8279bf992ca32a4bbde71c9807fb65d91f636a39fd457923a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/eval-review/first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,11 @@
+{
+  "rootDecision": "Preserve actual existing admitted native pool query_timeout6000; fixed statement timeout min(borrowed query_timeout,5000). Connection upper bound remains5000.",
+  "sourceBefore": "e56c4bca",
+  "beforeSha256": "96e565de5d410c26e4102658f1740f8c02cdb6bfcfbaf8102f2f051fc19f3415",
+  "afterSha256": "cf23d6cc6d3df8a158d50433ae4e2820a8df027e34bae2fe5a5bd5a99dbc918a",
+  "intentionalAssertionChanges": [
+    "query timeout invalid threshold5001\u21926001 (connection unchanged)",
+    "statement override expected5000\u21921000 for configured1000"
+  ],
+  "rawPriorAssertionsPreserved": true
+}

@@ -1,0 +1,12 @@
+{
+  "initialSource": "e56c4bca",
+  "initialCounts": {
+    "pass": 33,
+    "fail": 13
+  },
+  "cause": "Independent direct-call fixtures omitted required signal property; actual existing command tool includes signal:undefined. Composed command-interface positive already passed.",
+  "change": "Add explicit signal:undefined to direct prepare/read fixture call objects; behavioral assertions unchanged.",
+  "beforeSha256": "6914eaef007a945aa423990f241b650a1662661d9521e663abc257d89bcfc541",
+  "afterSha256": "28b5c45862c885bf5c8707428f599b19e9d7779bd82cb9f36abda3e299fbf8a2",
+  "classification": "reviewer fixture failure, not source defect"
+}

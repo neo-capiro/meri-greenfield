@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "/tmp/meri-pg-8.23.1-action-followthrough-20261013",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--registry=https://registry.npmjs.org",
+    "--userconfig=/tmp/meri-pg-8.23.1-action-followthrough-20261013/empty-npmrc",
+    "--cache=/tmp/meri-pg-8.23.1-action-followthrough-20261013/npm-cache",
+    "--fetch-retries=0",
+    "--fetch-timeout=20000"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:47:58.757431+00:00",
+  "durationSeconds": 0.666,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 432272,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization.stdout.bin",
+      "bytes": 28,
+      "sha256": "f3b58e05f17beb7321cc62febecdf638d046ec21328ff2291b8ce5f128801214"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/pg-materialization.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

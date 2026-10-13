@@ -1,0 +1,162 @@
+{
+  "manifestSha256": "80d886d3315eabfa7b227f1f2c2f9d3ed37ad94dd13f28dc748040a9006629f0",
+  "members": 31,
+  "sources": 7,
+  "pass": 38,
+  "fail": 0,
+  "checks": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/audit.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/audit.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/canonical-owners.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/owner-before-signal-fixture.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/postgres-before-timeout-correction.mjs.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/setup.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/source-preservation.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.stderr.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.stdout.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-expectation-correction.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/verify-packet.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/whitespace-all-review.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/whitespace-authored.bin",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-store.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "pass": true
+    }
+  ],
+  "runtimeAccepted": false
+}

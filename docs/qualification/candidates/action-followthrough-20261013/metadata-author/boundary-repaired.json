@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/commands/approval-metadata/test/metadata.test.mjs"
+  ],
+  "cwd": "/tmp/meri-approval-metadata-20261013",
+  "sourceHead": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:03:55.487895+00:00",
+  "durationSeconds": 2.672,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 438665,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stdout.bin",
+      "bytes": 2169,
+      "sha256": "5bd258e3c06e88cc986a58e354470b45f3fb448c935c15a1a1081facda1198ba"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

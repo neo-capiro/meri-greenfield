@@ -1,0 +1,121 @@
+✔ independent actual command tool prepares exact immutable task proposal without execution or approval (12.524781ms)
+✔ independent metadata read reaffirms exact original proposal with fresh observation (5.731928ms)
+✔ independent explicit prepare allocates distinct immutable identities without resubmission inference (4.680988ms)
+✔ independent model scopes cannot become preparation authority (0.906062ms)
+✔ independent model requiredApprover cannot become preparation authority (0.394774ms)
+✔ independent model proposalId cannot become preparation authority (0.384969ms)
+✔ independent model commandId cannot become preparation authority (0.382766ms)
+✔ independent model approved cannot become preparation authority (0.516787ms)
+✔ independent model expiresAt cannot become preparation authority (0.596306ms)
+✔ independent forged direct input refuses before policy and persistence (0.842176ms)
+✔ independent forged direct digest refuses before policy and persistence (0.583597ms)
+✔ independent forged direct binding refuses before policy and persistence (0.416496ms)
+✔ independent forged direct operation refuses before policy and persistence (0.390277ms)
+✔ independent forged direct action refuses before policy and persistence (0.559001ms)
+✔ independent policy selectionSha256 mismatch refuses before insert (0.838331ms)
+✔ independent policy binding mismatch refuses before insert (0.621094ms)
+✔ independent policy scopes mismatch refuses before insert (2.080168ms)
+✔ independent policy requiredApprover mismatch refuses before insert (0.742477ms)
+✔ independent policy future mismatch refuses before insert (0.667204ms)
+✔ independent policy expired mismatch refuses before insert (0.647323ms)
+✔ independent policy authorized mismatch refuses before insert (0.584269ms)
+✔ independent after-insert scopes change retains stored-not-released (2.429993ms)
+✔ independent after-insert approver change retains stored-not-released (1.591894ms)
+✔ independent after-insert expiry change retains stored-not-released (2.283564ms)
+✔ independent after-insert denied change retains stored-not-released (1.826536ms)
+✔ independent write acknowledgment loss retains UNKNOWN without automatic new identity or retry (1.43638ms)
+✔ independent current read denial occurs before store access and leaks no record (1.942421ms)
+✔ independent read-release revocation cannot return previously stored proposal (2.775373ms)
+✔ independent no retained record is a read refusal rather than an absent approval (0.581364ms)
+✔ independent hostile raw request is inert and detached from policy calls (0.524028ms)
+✔ independent policy lease can shorten a parked callback before receipt (17.253791ms)
+✔ independent cancellation of a parked insertion returns UNKNOWN and suppresses late metadata (3.217047ms)
+✔ independent substituted retained command hash cannot be read (3.686623ms)
+✔ independent substituted retained proposal identity cannot be read (2.962784ms)
+✔ independent substituted retained raw request cannot be read (2.58056ms)
+✔ independent substituted retained original binding cannot be read (1.910262ms)
+✔ independent actual command interface rechecks retained metadata before calling existing executor (3.448325ms)
+✖ independent hostile trusted-port rejection message accessor stays inert (1.587187ms)
+✔ independent store rejects corrupt immutable payload before connecting (4.117651ms)
+✔ independent store refuses unbounded borrowed connection configuration before resources (0.404217ms)
+✔ independent pre-query refusal owns no write or borrowed pool (3.348605ms)
+✔ independent failed connection cannot be reported as stored (0.894825ms)
+✔ independent late borrowed-client acquisition is released without issuing SQL (0.819392ms)
+✖ independent autocommit query error is UNKNOWN with one submitted write and no retry (2.030523ms)
+✔ independent corrupt insert acknowledgment is UNKNOWN without compensating SQL (0.948326ms)
+✔ independent source store never turns query failure into read absence (0.789697ms)
+✔ independent actual empty read is nullable storage data with parameterized tenant and actor (1.05088ms)
+✖ independent canonical admitted native pool query timeout6000 is compatible with bounded store (0.414583ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 45
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2692.206971
+
+✖ failing tests:
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:91:1
+✖ independent hostile trusted-port rejection message accessor stays inert (1.587187ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:93:140)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/postgres-independent.test.mjs:36:1
+✖ independent autocommit query error is UNKNOWN with one submitted write and no retry (2.030523ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  5000 !== 1000
+  
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/postgres-independent.test.mjs:38:135)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 5000,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/postgres-independent.test.mjs:49:1
+✖ independent canonical admitted native pool query timeout6000 is compatible with bounded store (0.414583ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "COMMAND_CONFIGURATION"
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/postgres-independent.test.mjs:50:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: COMMAND_CONFIGURATION
+        at deny (file:///tmp/meri-approval-metadata-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+        at createPostgresApprovalMetadataStore (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/postgres-store.mjs:13:133)
+        at file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/postgres-independent.test.mjs:50:38
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/postgres-independent.test.mjs:50:21)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-followthrough/test/workflow.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-followthrough-workflow-20261013",
+  "sourceHead": "979bdf3d8c3f2939d5809cdb6165e79dec754f72",
+  "sourceDiffSha256": "84f73516418fc58ad72bbd25934912c22117909ef9ac53b23b1f830560548001",
+  "sourceDiffBytes": 2386,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:57:21.020628+00:00",
+  "durationSeconds": 3.631,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 435431,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.stdout.bin",
+      "bytes": 3724,
+      "sha256": "445441ddd8f1867016d3c51b290213f794712245b57f78b02ea9287c545deca9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-author/configuration-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

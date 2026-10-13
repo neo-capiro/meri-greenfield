@@ -1,0 +1,33 @@
+✔ actual command interface prepares canonical immutable task proposal using concrete metadata owner/store (20.668034ms)
+✔ each explicit prepare has new IDs; no implicit deduplication or mutation (7.998482ms)
+✔ immutable prepared result and stored request survive caller edits (3.165979ms)
+✔ direct substituted input is refused before policy/SQL (0.885621ms)
+✔ direct substituted inputSha256 is refused before policy/SQL (0.576266ms)
+✔ direct substituted binding is refused before policy/SQL (0.444397ms)
+✔ direct substituted operation is refused before policy/SQL (0.446962ms)
+✔ direct substituted action is refused before policy/SQL (0.421814ms)
+✔ fresh release cannot rewrite policy scopes (3.206039ms)
+✔ fresh release cannot rewrite policy requiredApprover (2.82123ms)
+✔ fresh release cannot rewrite policy proposalExpiresAt (2.59509ms)
+✔ fresh release cannot rewrite policy binding (2.391895ms)
+✔ fresh release cannot rewrite policy selectionSha256 (2.447729ms)
+✔ denied initial policy does not allocate or insert (0.787334ms)
+✔ missing authorized read is unavailable, not an absent success (1.014374ms)
+✔ read binds full original actor/run/binding and command hash (4.556238ms)
+✔ lost insert acknowledgment retains possible row and UNKNOWN without retry (2.121018ms)
+✔ current read release denial retains immutable metadata and prevents executor call (4.859123ms)
+✔ metadata pool configuration requires finite bounds before any connect (0.201262ms)
+✔ query ACK corruption is UNKNOWN and borrowed client is evicted without pool close (2.24206ms)
+✔ known policy deadline published before parked receipt bounds call with no insert (25.418304ms)
+✔ late acquired SQL client issues no query after cancellation and is released (3.31353ms)
+✔ canonical native pool query bound 6000 is admitted without connecting (0.249395ms)
+✔ statement timeout preserves a caller pool bound shorter than local 5000 cap (2.620148ms)
+✔ sanitizing a trusted-error class never invokes a hostile message accessor (1.129357ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2617.98282

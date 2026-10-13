@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/action-followthrough-20261013/integration/composed.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "188cef772fd9f7f276a8dfbd7e17c54136f02d68",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T01:07:47.171977+00:00",
+  "durationSeconds": 2.776,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 440501,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/composition.stdout.bin",
+      "bytes": 484,
+      "sha256": "cd42ce94f3ce0e08496e516c1762e31c97693a54a64888177585093a14ba4318"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/integration/composition.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

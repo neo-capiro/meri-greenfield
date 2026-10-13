@@ -1,0 +1,306 @@
+✔ independent actual command tool prepares exact immutable task proposal without execution or approval (11.322629ms)
+✖ independent metadata read reaffirms exact original proposal with fresh observation (0.620143ms)
+✖ independent explicit prepare allocates distinct immutable identities without resubmission inference (0.521514ms)
+✔ independent model scopes cannot become preparation authority (2.951669ms)
+✔ independent model requiredApprover cannot become preparation authority (0.552982ms)
+✔ independent model proposalId cannot become preparation authority (0.434543ms)
+✔ independent model commandId cannot become preparation authority (0.439742ms)
+✔ independent model approved cannot become preparation authority (0.467573ms)
+✔ independent model expiresAt cannot become preparation authority (0.541103ms)
+✔ independent forged direct input refuses before policy and persistence (0.510127ms)
+✔ independent forged direct digest refuses before policy and persistence (0.396115ms)
+✔ independent forged direct binding refuses before policy and persistence (0.33898ms)
+✔ independent forged direct operation refuses before policy and persistence (0.2988ms)
+✔ independent forged direct action refuses before policy and persistence (0.32582ms)
+✔ independent policy selectionSha256 mismatch refuses before insert (0.382195ms)
+✔ independent policy binding mismatch refuses before insert (0.435045ms)
+✔ independent policy scopes mismatch refuses before insert (0.341814ms)
+✔ independent policy requiredApprover mismatch refuses before insert (0.322445ms)
+✔ independent policy future mismatch refuses before insert (0.310887ms)
+✔ independent policy expired mismatch refuses before insert (0.391059ms)
+✔ independent policy authorized mismatch refuses before insert (0.261023ms)
+✖ independent after-insert scopes change retains stored-not-released (0.960404ms)
+✖ independent after-insert approver change retains stored-not-released (0.380582ms)
+✖ independent after-insert expiry change retains stored-not-released (0.317067ms)
+✖ independent after-insert denied change retains stored-not-released (0.314043ms)
+✖ independent write acknowledgment loss retains UNKNOWN without automatic new identity or retry (0.529787ms)
+✖ independent current read denial occurs before store access and leaks no record (0.418289ms)
+✖ independent read-release revocation cannot return previously stored proposal (0.398399ms)
+✔ independent no retained record is a read refusal rather than an absent approval (0.420022ms)
+✔ independent hostile raw request is inert and detached from policy calls (0.463537ms)
+✔ independent policy lease can shorten a parked callback before receipt (0.363747ms)
+✔ independent cancellation of a parked insertion returns UNKNOWN and suppresses late metadata (12.187139ms)
+✖ independent substituted retained command hash cannot be read (0.632091ms)
+✖ independent substituted retained proposal identity cannot be read (0.303216ms)
+✖ independent substituted retained raw request cannot be read (0.297637ms)
+✖ independent substituted retained original binding cannot be read (0.245279ms)
+✔ independent actual command interface rechecks retained metadata before calling existing executor (4.235029ms)
+✔ independent store rejects corrupt immutable payload before connecting (3.48398ms)
+✔ independent store refuses unbounded borrowed connection configuration before resources (0.615405ms)
+✔ independent pre-query refusal owns no write or borrowed pool (3.795959ms)
+✔ independent failed connection cannot be reported as stored (0.902287ms)
+✔ independent late borrowed-client acquisition is released without issuing SQL (0.821926ms)
+✔ independent autocommit query error is UNKNOWN with one submitted write and no retry (1.15762ms)
+✔ independent corrupt insert acknowledgment is UNKNOWN without compensating SQL (1.061727ms)
+✔ independent source store never turns query failure into read absence (0.508705ms)
+✔ independent actual empty read is nullable storage data with parameterized tenant and actor (0.953183ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 33
+ℹ fail 13
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2655.049618
+
+✖ failing tests:
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:29:1
+✖ independent metadata read reaffirms exact original proposal with fresh observation (0.620143ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:30:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:33:1
+✖ independent explicit prepare allocates distinct immutable identities without resubmission inference (0.521514ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:34:34)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:47:59
+✖ independent after-insert scopes change retains stored-not-released (0.960404ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  CommandError: INVALID_COMMAND
+      at async TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: INVALID_COMMAND
+        at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+        at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:31)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:47:59
+✖ independent after-insert approver change retains stored-not-released (0.380582ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  CommandError: INVALID_COMMAND
+      at async TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: INVALID_COMMAND
+        at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+        at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:31)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:47:59
+✖ independent after-insert expiry change retains stored-not-released (0.317067ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  CommandError: INVALID_COMMAND
+      at async TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: INVALID_COMMAND
+        at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+        at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:31)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:47:59
+✖ independent after-insert denied change retains stored-not-released (0.314043ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  CommandError: INVALID_COMMAND
+      at async TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: INVALID_COMMAND
+        at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+        at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:49:31)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:51:1
+✖ independent write acknowledgment loss retains UNKNOWN without automatic new identity or retry (0.529787ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  CommandError: INVALID_COMMAND
+      at async TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:53:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: INVALID_COMMAND
+        at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+        at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:53:31)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:55:1
+✖ independent current read denial occurs before store access and leaks no record (0.418289ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:56:150)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:59:1
+✖ independent read-release revocation cannot return previously stored proposal (0.398399ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:60:154)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:77:89
+✖ independent substituted retained command hash cannot be read (0.632091ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:78:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:77:89
+✖ independent substituted retained proposal identity cannot be read (0.303216ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:78:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:77:89
+✖ independent substituted retained raw request cannot be read (0.297637ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:78:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
+
+test at apps/control/commands/approval-metadata/owner-independent.test.mjs:77:89
+✖ independent substituted retained original binding cannot be read (0.245279ms)
+  Error [CommandError]: INVALID_COMMAND
+      at safe (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:8:23)
+      at Object.prepare (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner.mjs:39:23)
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-review-20261013/apps/control/commands/approval-metadata/owner-independent.test.mjs:78:39)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    outcome: 'NOT_STORED'
+  }
