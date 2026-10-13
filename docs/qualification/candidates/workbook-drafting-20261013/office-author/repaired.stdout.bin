@@ -1,0 +1,11 @@
+✔ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (14550.427106ms)
+✔ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (12807.572796ms)
+✔ Word argument contract remains exact and unsupported transform is rejected (0.615115ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27486.933806
