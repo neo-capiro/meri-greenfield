@@ -1,0 +1,57 @@
+✔ independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources (733.519451ms)
+✔ independent current actor substitution refuses before generation (8.067496ms)
+✔ independent current tenant substitution refuses before generation (6.647641ms)
+✔ independent current attempt substitution refuses before generation (6.642263ms)
+✔ independent current fence substitution refuses before generation (7.004938ms)
+✔ independent current client substitution refuses before generation (7.140051ms)
+✔ independent current scope revision substitution refuses before generation (7.051548ms)
+✔ independent full canonical descriptor cannot omit grants or source requirements (5.664153ms)
+✔ independent constructor snapshots caller context, scopes, limits and descriptor (79.494657ms)
+✔ independent create replay and changed intent cannot generate or charge again (102.189527ms)
+✔ independent stale revision leaves both committed versions unchanged and preserves uncertain effect (279.449952ms)
+✔ independent completed download withheld on final session denial remains RESULT_NOT_RELEASED (95.174879ms)
+✔ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (74.251032ms)
+✔ independent original cutoff aborts parked current-state receipt before effects (41.967075ms)
+✔ independent newly shortened artifact expiry bounds the next parked executor (114.647253ms)
+✔ independent cancellation during response acquisition denies exact old version (153.472516ms)
+✔ independent raw binding injection has no authority/effect (6.898357ms)
+✔ independent raw scopes injection has no authority/effect (6.2715ms)
+✔ independent raw credential injection has no authority/effect (6.419378ms)
+✔ independent raw path injection has no authority/effect (6.596004ms)
+✔ independent raw baseVersionId injection has no authority/effect (8.504012ms)
+INDEPENDENT_TRAP code Error: trap location
+    at Object.get (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:67:113)
+    at file:///tmp/meri-document-drafting-review-20261013/apps/artifacts/postgres-service.mjs:107:18
+    at async file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/index.mjs:49:55
+✖ independent hostile errors and request objects execute no getters or proxy traps (18.662178ms)
+✔ independent oversized and malformed UTF8 bodies refuse before source work (8.114115ms)
+✔ independent parked incoming body aborts under original deadline (37.933021ms)
+✔ independent no activation by default and separate tool/native credentials refused (9.762112ms)
+✔ independent CLI help and invalid arguments remain inert and preserve environment (0.548495ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4598.747505
+
+✖ failing tests:
+
+test at apps/control/document-application/independent/application-independent.test.mjs:66:1
+✖ independent hostile errors and request objects execute no getters or proxy traps (18.662178ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-review-20261013/apps/control/document-application/independent/application-independent.test.mjs:68:285)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

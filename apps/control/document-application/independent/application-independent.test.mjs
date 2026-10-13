@@ -73,3 +73,25 @@ test('independent oversized and malformed UTF8 bodies refuse before source work'
 test('independent parked incoming body aborts under original deadline',async t=>{let cancelled=false;const a=await setup(t,c=>({...c,limits:{...c.limits,maxRequestMs:30}}));const req=a.request('create',{});const body=new ReadableStream({cancel(){cancelled=true;}});await reject(await a.app.handle(new Request(req.url,{method:'POST',headers:req.headers,body,duplex:'half'})),'NOT_DISPATCHED');assert.equal(cancelled,true);assert.equal(a.f.stats().generations,0);});
 test('independent no activation by default and separate tool/native credentials refused',async t=>{const a=await setup(t,c=>{delete c.enabled;return c;});assert.equal((await a.post('create',{deliveryId:'disabled',request:text()})).status,503);assert.equal(a.f.stats().versionCharges,0);assert.equal(a.f.sessions.status().closed,false);const app=createDocumentApplication({...a.options,enabled:true});for(const credential of[a.f.credential,a.f.nativeCredential])await reject(await app.handle(a.request('create',{deliveryId:'badcredential',request:text()},{headers:{'content-type':'application/json',authorization:'Bearer '+credential}})),'NOT_DISPATCHED');});
 test('independent CLI help and invalid arguments remain inert and preserve environment',async()=>{const original=process.env.MERI_REVIEW_SOURCE_ROOT;for(const [args,code]of[[['--help'],0],[['--run','--python','relative'],2]]){let output='';assert.equal(await main(args,v=>output+=v),code);assert.match(output,/Usage:/);assert.equal(process.env.MERI_REVIEW_SOURCE_ROOT,original);}});
+for(const lane of ['authority','session-late','executor','version-read','object-get','object-put','version-commit','ids','reservation-id'])test(`independent hostile rejected ${lane} port cannot trigger reflection or erase uncertainty`,async t=>{
+ let traps=0,enabled=false,sessionCalls=0;const hostile=new Proxy({}, {get(){traps++;throw Error('PORT_SECRET');},set(){traps++;throw Error('PORT_SECRET');},getPrototypeOf(){traps++;throw Error('PORT_SECRET');},ownKeys(){traps++;throw Error('PORT_SECRET');}});
+ const a=await setup(t,c=>{
+  const wrap=(object,key)=>{const fn=object[key];return {...object,[key]:async(...args)=>{if(enabled)throw hostile;return fn(...args);}};};
+  if(lane==='authority')c.artifactOptions.authority=wrap(c.artifactOptions.authority,'check');
+  if(lane==='session-late'){const fn=c.sessions.authenticateSession;c.sessions.authenticateSession=async(...args)=>{if(enabled&&++sessionCalls>1)throw hostile;return fn(...args);};}
+  if(lane==='executor')c.artifactOptions.executor=wrap(c.artifactOptions.executor,'execute');
+  if(lane==='version-read')c.artifactOptions.versions=wrap(c.artifactOptions.versions,'read');
+  if(lane==='version-commit')c.artifactOptions.versions=wrap(c.artifactOptions.versions,'commit');
+  if(lane==='object-get')c.artifactOptions.objects=wrap(c.artifactOptions.objects,'get');
+  if(lane==='object-put')c.artifactOptions.objects=wrap(c.artifactOptions.objects,'put');
+  if(lane==='ids'||lane==='reservation-id'){const key=lane==='ids'?'ids':'newReservationId',fn=c.artifactOptions[key];c.artifactOptions[key]=()=>{if(enabled)throw hostile;return fn();};}return c;
+ });
+ let request={deliveryId:'hostile-'+lane,request:text()},route='create';
+ if(lane==='version-read'||lane==='object-get'){const first=await json(await a.post('create',{deliveryId:'prerequisite',request:text()}));route='revise';request={...request,baseVersionId:first.version.versionId};}
+ enabled=true;const response=await a.post(route,request),out=await reject(response,'UNKNOWN');assert.equal(JSON.stringify(out).includes('PORT_SECRET'),false);assert.equal(traps,0);
+ if(lane==='object-put'||lane==='version-commit')assert.equal(a.f.stats().unknown,1);
+});
+test('independent hostile own error getters remain untouched',async t=>{
+ let touched=0;const error=Object.defineProperties(new Error('safe fixture'),{code:{get(){touched++;throw Error('SECRET');}},message:{get(){touched++;throw Error('SECRET');}}});
+ const a=await setup(t,c=>{c.artifactOptions.authorize=async()=>{throw error;};return c;});await reject(await a.post('create',{deliveryId:'getter',request:text()}),'UNKNOWN');assert.equal(touched,0);
+});
