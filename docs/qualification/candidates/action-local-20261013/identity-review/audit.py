@@ -25,7 +25,9 @@ for ref, paths in [(author, ['apps/gateway/local-action/' + n + '.mjs' for n in 
         assert (root/path).read_bytes() == expected
         sources.append({'path': path, 'reference': ref, 'bytes': len(expected), 'sha256': hashlib.sha256(expected).hexdigest()})
 catalog = json.loads(git('show', 'HEAD:packages/contracts/retrieval-0.2/catalog.json'))
-# All original catalog bytes are already included in the preservation comparison.
+assert len(catalog['originals']) == 139 and len(catalog['operations']) == 97
+assert all(row['handler'] is None for row in catalog['operations'])
+# All original catalog bytes, public contracts and runtime paths are preserved above.
 receipts = []
 for path in sorted(evidence.glob('*.json')):
     value = json.loads(path.read_bytes())
