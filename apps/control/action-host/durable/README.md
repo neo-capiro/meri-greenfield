@@ -1,6 +1,6 @@
 # Durable action services
 
-`createDurableActionServices` composes the existing PostgreSQL lookup store and delivery, approval-metadata store and current-policy owner, command journal, and PostgreSQL command executor. The executor uses the canonical durable invocation/budget owner. Construction is inert. There is no SQL, migration, grant binding, approval creation, source call, pool shutdown, or registry mutation during construction.
+`createDurableActionServices` composes the existing PostgreSQL lookup store and delivery, approval-metadata store and current-policy owner, command journal, and PostgreSQL command executor. The executor uses the canonical durable invocation/budget owner. Construction makes no service/SQL/source calls. Existing canonical schema imports read local schema files. There is no SQL, migration, grant binding, approval creation, source call, pool shutdown, or registry mutation during construction.
 
 ```js
 createDurableActionServices({

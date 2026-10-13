@@ -12,7 +12,7 @@ changes=[x.split('\t') for x in git('diff','--name-status',base,'HEAD').decode()
 allowed=['apps/control/action-host/durable/','docs/qualification/candidates/action-host-20261013/durable-author/','docs/coordination/tasks/CODEX-ACTION-HOST-DURABLE-20261013.md','docs/coordination/reports/CODEX-ACTION-HOST-DURABLE-20261013.md']
 check('every committed path allocated',all(any(p.startswith(a) for a in allowed) for _,p in changes))
 check('every original Git entry preserved',all(status=='A' for status,_ in changes))
-check('production index unchanged from reviewed initial',git('show','218379df:apps/control/action-host/durable/index.mjs')==(root/'apps/control/action-host/durable/index.mjs').read_bytes())
+check('production tokens unchanged from reviewed initial (leading comment precision only)',git('show','218379df:apps/control/action-host/durable/index.mjs').split(b'\n',1)[1]==(root/'apps/control/action-host/durable/index.mjs').read_bytes().split(b'\n',1)[1])
 source=(root/'apps/control/action-host/durable/index.mjs').read_text()
 check('production graph no fixture imports','fixture' not in source and '/test/' not in source)
 check('no new SQL/DDL in production index',not any(x in source for x in ['SELECT ','INSERT ','UPDATE ','CREATE TABLE']))

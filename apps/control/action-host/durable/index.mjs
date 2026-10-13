@@ -1,4 +1,4 @@
-/** Concrete borrowed PostgreSQL owners. Import/construction performs no I/O. */
+/** Concrete borrowed PostgreSQL owners. No service, SQL or source calls during import/construction. */
 import {canonicalSha256,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {commandToolValidators,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {data,own,deny} from '../../commands/protocol.mjs';
