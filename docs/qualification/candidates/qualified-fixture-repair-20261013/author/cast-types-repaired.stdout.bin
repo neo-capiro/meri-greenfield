@@ -1,0 +1,110 @@
+✔ mapped server identity is independent from loopback dial identity (27.821887ms)
+✔ explicit25 unrelated schemas are retained through install and reconstruction (32.832617ms)
+✔ dial host mismatch refuses before allocation (1.270279ms)
+✔ dial port mismatch refuses before allocation (0.370346ms)
+✔ mapped server address mismatch preserves engine gates (2.318865ms)
+✔ mapped server port mismatch preserves engine gates (5.604834ms)
+✔ mapped server system_identifier mismatch preserves engine gates (2.334579ms)
+✔ mapped server fsync mismatch preserves engine gates (2.984165ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2"} (0.444098ms)
+✔ invalid paired server shape {"serverPort":5432} (0.600913ms)
+✔ invalid paired server shape {"serverAddress":"db.local","serverPort":5432} (2.957015ms)
+✔ invalid paired server shape {"serverAddress":"::1%lo","serverPort":5432} (1.073163ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2","serverPort":0} (0.217246ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (4.121024ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.12932ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.452816ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.370062ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.555715ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.417968ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.389836ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.359219ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.351639ms)
+✔ legacy strict mode still refuses unrelated declared-looking namespaces (2.917405ms)
+✔ scoped mode does not permit unrelated public relations or target collisions (3.428052ms)
+✔ unsupported evidence class refuses before migration (1.830131ms)
+✔ populated25 schema metadata is exact across install/reconstruction without row reads (32.66139ms)
+✔ changed preserved relations metadata refuses reconstruction (30.839603ms)
+✔ changed preserved columns metadata refuses reconstruction (34.634721ms)
+✔ changed preserved defaults metadata refuses reconstruction (27.879513ms)
+✔ changed preserved constraints metadata refuses reconstruction (28.839906ms)
+✔ changed preserved indexes metadata refuses reconstruction (30.646822ms)
+✔ changed preserved views metadata refuses reconstruction (30.407112ms)
+✔ changed preserved types metadata refuses reconstruction (25.391333ms)
+✔ changed preserved sequences metadata refuses reconstruction (27.574374ms)
+✔ changed preserved dependencies metadata refuses reconstruction (25.280968ms)
+✔ changed preserved comments metadata refuses reconstruction (25.783122ms)
+✔ changed preserved labels metadata refuses reconstruction (23.8857ms)
+✔ metadata changing during migration yields UNKNOWN before COMMIT (11.981679ms)
+✔ mapped schema digest cannot be reused for changed mapped identity even when engine echoes it (14.315797ms)
+✔ public target type collision refuses before any DDL (2.298685ms)
+✔ target namespace ownership is checked after install (2.24188ms)
+✔ dial database must match trusted fixture (0.337117ms)
+✔ dial user must match trusted fixture (0.211728ms)
+✔ sequence bigint settings are transported losslessly as text, never JS numbers (24.765443ms)
+✔ empty evidence schema identity includes namespace OID to detect replacement (15.427047ms)
+✔ catalog identity literals cannot resolve through implicit temporary schemas (9.300719ms)
+✖ catalog snapshot builtin cast types cannot resolve through temporary schemas (9.043412ms)
+✔ installs exactly the six unchanged files, then verifies13 relations and empty accounting (32.984682ms)
+✔ reconstruction permits retained accounting but binds original complete catalog hash (28.397091ms)
+✔ identity database mismatch refuses before DDL (4.941317ms)
+✔ identity username mismatch refuses before DDL (2.704886ms)
+✔ identity address mismatch refuses before DDL (3.003354ms)
+✔ identity port mismatch refuses before DDL (2.554519ms)
+✔ identity version mismatch refuses before DDL (2.205825ms)
+✔ identity start_ms mismatch refuses before DDL (2.56785ms)
+✔ identity system_identifier mismatch refuses before DDL (2.225485ms)
+✔ identity fsync mismatch refuses before DDL (6.203063ms)
+✔ identity synchronous_commit mismatch refuses before DDL (2.244093ms)
+✔ identity search_path mismatch refuses before DDL (2.250482ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (1.032852ms)
+✔ install refuses partial namespaces, preexisting relation and same fixture reapply (18.003399ms)
+✔ concurrent installers cannot both acquire fixed transaction lock (12.567098ms)
+✔ post-install missing corruption is UNKNOWN, never retry/success (6.450134ms)
+✔ post-install nullable corruption is UNKNOWN, never retry/success (5.274027ms)
+✔ post-install type corruption is UNKNOWN, never retry/success (4.781887ms)
+✔ post-install constraint corruption is UNKNOWN, never retry/success (6.181381ms)
+✔ post-install unvalidated corruption is UNKNOWN, never retry/success (4.841077ms)
+✔ post-install index corruption is UNKNOWN, never retry/success (4.379883ms)
+✔ post-install trigger corruption is UNKNOWN, never retry/success (4.6376ms)
+✔ post-install owner corruption is UNKNOWN, never retry/success (14.671181ms)
+✔ post-install view corruption is UNKNOWN, never retry/success (6.850025ms)
+✔ post-install rowSecurity corruption is UNKNOWN, never retry/success (6.344796ms)
+✔ reconstruction catches changed check definition even when type/counts remain (14.65739ms)
+✔ fresh install requires exact empty application rows and zero unquarantined accounting (22.349071ms)
+✔ migration, commit and release errors preserve UNKNOWN and no retry (17.808727ms)
+✔ unknown errors are not reflected or evaluated (3.824779ms)
+✔ owner query timeout6000 is admitted and shorter bound is preserved for every query (8.439975ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (61.443761ms)
+✔ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (15.539476ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (2.197322ms)
+✔ receipt binds original cutoff and reports port observation without native qualification (8.613055ms)
+✔ namespace query excludes only literal pg_ prefix and refuses user pgx_private (1.729299ms)
+✔ reusable scripted fixture binds configured target identity without allocating a database (7.875658ms)
+ℹ tests 83
+ℹ suites 0
+ℹ pass 82
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 608.708291
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-compatibility.test.mjs:78:1
+✖ catalog snapshot builtin cast types cannot resolve through temporary schemas (9.043412ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^pg_catalog\.(?:regclass|oid|text(?:\[\])?|int4|jsonb)$/. Input:
+  
+  'pg_catalog.int'
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-fixture-author-20261013/apps/control/qualified-application/schema-compatibility.test.mjs:82:57)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'pg_catalog.int',
+    expected: /^pg_catalog\.(?:regclass|oid|text(?:\[\])?|int4|jsonb)$/,
+    operator: 'match',
+    diff: 'simple'
+  }
