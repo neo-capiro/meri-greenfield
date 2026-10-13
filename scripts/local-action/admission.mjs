@@ -35,7 +35,9 @@ export async function readLocalActionAdmission({path,sha256,now=Date.now}){
       if(input.migrationSha256[key]!==digest(await readFile(new URL(relative,root))))refuse();
     }
     const nativeRaw=JSON.stringify(input.native);
-    const native=parseNativeAdmission({MERI_BUDGET_PG_TEST_RUN:'explicit-isolated-engine',
+    // Preserve the existing native admission's ambient PG/provider/Node refusal.
+    // Explicit connection fields do not neutralize every pg environment option.
+    const native=parseNativeAdmission({...process.env,MERI_BUDGET_PG_TEST_RUN:'explicit-isolated-engine',
       MERI_BUDGET_PG_TEST_CONFIG:nativeRaw,MERI_BUDGET_PG_TEST_CONFIG_SHA256:digest(nativeRaw)},now());
     if(native.migrationSha256!==input.migrationSha256.budget||native.stateLockSha256!==
        digest(await readFile(new URL('apps/control/qualification-sdk-fixture/state/package-lock.json',root))))refuse();
