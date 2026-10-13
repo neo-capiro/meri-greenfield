@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {createDocumentApplication} from '../index.mjs';
 import {createLocalDocumentFixture} from '../local/fixture.mjs';
-const python='/usr/local/bin/python3';
+const python=process.env.MERI_DOCUMENT_PYTHON??'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3';
 const spec={operation:'create_word',format:'txt',title:'Author document',content:{text:'First version\n'}};
 async function setup(t,change=x=>x){
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python});t.after(()=>f.close());
@@ -28,7 +28,7 @@ test('create/revise/inspect/download use immutable storage and one shared canoni
  const changed=await a.post('create',{deliveryId:'one',request:{...spec,title:'Changed'}});assert.notEqual(changed.status,200);assert.equal(a.f.stats().generations,2);
 });
 test('actual DOCX produces truthful draft/preview metadata and exact ZIP bytes',async t=>{
- const a=await setup(t),request={operation:'create_word',format:'docx',title:'Word draft',content:{blocks:[{kind:'paragraph',text:'Explicit typed paragraph.'}]}};
+ const a=await setup(t),request={operation:'create_word',format:'docx',title:'Word draft',content:{blocks:[{kind:'paragraph',runs:[{text:'Explicit typed paragraph.'}]}]}};
  const res=await a.post('create',{deliveryId:'word',request});assert.equal(res.status,200);const out=await res.json();assert.equal(out.execution.nativeQualified,false);assert.equal(out.inspection.nativeOpened,false);assert.equal(out.version.previewStatus,'pending');
  const download=await a.post('download',{versionId:out.version.versionId});assert.equal(download.status,200);assert.equal(Buffer.from(await download.arrayBuffer()).subarray(0,2).toString(),'PK');assert.equal(a.f.stats().consumedMicroUsd,'10');
 });
@@ -59,4 +59,18 @@ test('bounded body and fixed path/media handling preserve safe no-store errors',
 test('constructor snapshots data and rejects authority getters without invocation',async t=>{
  const a=await setup(t);let calls=0;const sessions={readCurrentState:a.f.sessions.readCurrentState};Object.defineProperty(sessions,'authenticateSession',{get(){calls++;return ()=>{};}});assert.throws(()=>createDocumentApplication({...a.options,sessions}));assert.equal(calls,0);
  a.options.artifactOptions.context.maxBytes=1;const res=await a.post('create',{deliveryId:'one',request:spec});assert.equal(res.status,200);
+});
+test('canonical descriptor rejects accidental grant or source redefinition',async t=>{
+ const a=await setup(t);for(const mutation of[d=>{d.requiredGrants=[];},d=>{d.sourceRequirements=[];},d=>{d.operation.version='0.1.0';}]){
+  const descriptor=structuredClone(a.options.artifactOptions.descriptor);mutation(descriptor);assert.throws(()=>createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,descriptor}}));
+ }
+});
+test('shorter artifact receipt clips outer lifetime before the next parked session call',async t=>{
+ let parked=false,aborted=false;
+ const a=await setup(t,c=>{const original=c.artifactOptions.authorize,auth=c.sessions.authenticateSession;c={...c,sessions:{authenticateSession:call=>{if(!parked)return auth(call);aborted=call.signal.aborted;call.signal.addEventListener('abort',()=>{aborted=true;},{once:true});return new Promise(()=>{});},readCurrentState:c.sessions.readCurrentState},artifactOptions:{...c.artifactOptions,async authorize(call){const receipt=await original(call);parked=true;return {...receipt,expiresAtMs:c.now()+40};}}};return c;});
+ const started=Date.now(),res=await a.post('create',{deliveryId:'short',request:spec});assert.equal(res.status,408);assert.ok(Date.now()-started<1000);assert.equal(aborted,true);assert.equal(a.f.stats().generations,0);assert.equal(a.f.stats().versionCharges,0);
+});
+test('fresh session with changed full binding refuses before accounting',async t=>{
+ const a=await setup(t,c=>({...c,sessions:{authenticateSession:c.sessions.authenticateSession,async readCurrentState(call){const fact=await c.sessions.readCurrentState(call);return {...fact,binding:{...fact.binding,writerFence:fact.binding.writerFence+1}};}}}));
+ const res=await a.post('create',{deliveryId:'foreign',request:spec});assert.equal(res.status,403);assert.equal(a.f.stats().versionCharges,0);
 });
