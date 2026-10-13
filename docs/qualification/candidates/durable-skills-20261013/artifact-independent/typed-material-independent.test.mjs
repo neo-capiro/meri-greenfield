@@ -12,6 +12,7 @@ const {createOperationLifetime}=await load(root,'packages/runtime/operation-life
 const {canonicalSha256:hash}=await load(root,'packages/contracts/validate.mjs');
 const {resolveOperationContract}=await load(root,'packages/contracts/retrieval-0.2/validate.mjs');
 const {createClientKnowledgeFixture,memoryText}=await load(root,'apps/gateway/sources/client-knowledge/test/fixtures.mjs');
+const {createHash}=await import('node:crypto');
 const identity={skillId:'quick_skill.commitments_audit',skillVersion:'1.0.0'};
 async function captured(){
  const context=f.unitContext(),selection=f.selection(context),life=createOperationLifetime({deadlineMs:f.NOW+60000,now:()=>f.NOW,errorFactory:code=>Object.assign(Error(code),{code})});
@@ -50,4 +51,27 @@ test('approved-memory material support is explicit; original memory prose is not
  const bound=bindWorkflowReads(context,receipts,{skillId:'quick_skill.relationship_brief',skillVersion:'1.0.0'}),entry=[...bound.records.values()].find(e=>e.record.sourceId==='client_knowledge_memory');
  // An original required source must either supply decisive material or disclose the implementation limitation.
  assert(entry?.record.content.text===memoryText||bound.coverage.find(c=>c.sourceId==='client_knowledge_memory').limitations.some(x=>/material.*unsupported|material.*unavailable|projection-only/i.test(x)));
+});
+async function memoryReads(){
+ const op={id:'search_memory',version:'0.2.0'},fixture=createClientKnowledgeFixture('search_memory',{client:true}),contract=resolveOperationContract(op);
+ const context={binding:fixture.binding,subject:fixture.subject,window:{basis:'unbounded'},asOf:new Date(f.NOW).toISOString(),mondayBoardIds:[]},nc={tenantId:context.binding.tenantId,userId:context.binding.actorId};
+ const firstRequest={clientId:fixture.clientId,query:'approved allocation',k:3},first=fixture.page(contract.normalizeInput(firstRequest,nc).input),receipts=[];
+ for(const request of [firstRequest,first.records[0].payload.content.nextRead]){const n=contract.normalizeInput(request,nc),result={binding:context.binding,subject:context.subject,operation:op,argumentsSha256:n.argumentsSha256,result:fixture.page(n.input)};
+  receipts.push({operation:op,request,normalizationContext:nc,result,resultSha256:hash(result),observedAt:context.asOf});}
+ return {context,receipts};
+}
+test('complete approved memory retains native salted hash and derived-memory provenance independently of plain text correlation',async()=>{
+ const f0=await memoryReads(),b=bindWorkflowReads(f0.context,f0.receipts,{skillId:'quick_skill.relationship_brief',skillVersion:'1.0.0'}),entry=[...b.records.values()][0];
+ assert(entry);assert.equal(entry.record.content.text,memoryText);assert.equal(entry.verification,'bound-derived-memory');assert.equal(entry.record.metadata.upstreamExcerptVerified,false);
+ const version=entry.record.recordVersionId,digest=s=>createHash('sha256').update(s,'utf8').digest('hex');
+ assert.equal(entry.record.metadata.nativeContentHash,digest(memoryText+'\0'+version));assert.equal(entry.record.contentSha256,digest(memoryText));assert.notEqual(entry.record.contentSha256,entry.record.metadata.nativeContentHash);
+ assert.equal(entry.record.metadata.governance.status,'active');assert.equal(entry.record.metadata.governance.authority,'firm_approved');assert.equal(entry.record.metadata.sourceExcerpt,null);
+});
+test('approved memory missing continuation stays unbound and visible',async()=>{
+ const f0=await memoryReads(),b=bindWorkflowReads(f0.context,f0.receipts.slice(0,1),{skillId:'quick_skill.relationship_brief',skillVersion:'1.0.0'});
+ assert.equal(b.records.size,0);assert(b.incomplete.some(x=>x.sourceId==='client_knowledge_memory'));assert(b.coverage.find(c=>c.sourceId==='client_knowledge_memory').complete===false);
+});
+test('approved memory altered material cannot bypass its native composite hash',async()=>{
+ const f0=await memoryReads(),receipt=f0.receipts.at(-1);change(receipt,p=>p.result.records[0].payload.value=p.result.records[0].payload.value.replace('approved','refused!'));
+ assert.throws(()=>bindWorkflowReads(f0.context,f0.receipts,{skillId:'quick_skill.relationship_brief',skillVersion:'1.0.0'}));
 });

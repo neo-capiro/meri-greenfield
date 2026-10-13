@@ -1,0 +1,50 @@
+[
+  {
+    "file": "commitments-fresh-opening.stdout",
+    "stored": "commitments-fresh-opening.stdout.gz",
+    "rawSha256": "a01c163888b38ddc971aa918a4abea8c350e1c73baf51a1561de58898f311e54",
+    "rawBytes": 184
+  },
+  {
+    "file": "commitments-root-6fdd-document.tap",
+    "stored": "commitments-root-6fdd-document.tap.gz",
+    "rawSha256": "243afa3fb18de869e0c3b5de256838232568b1995ac90cacdd5fe00ca40befe4",
+    "rawBytes": 250
+  },
+  {
+    "file": "commitments-root-6fdd.tap",
+    "stored": "commitments-root-6fdd.tap.gz",
+    "rawSha256": "fb7753fdbc153fb8d570b05690e7bb5ddf4f1743e5cccf76686a18b51b07acba",
+    "rawBytes": 2502
+  },
+  {
+    "file": "final-artifact-opening-sorted.stdout",
+    "stored": "final-artifact-opening-sorted.stdout.gz",
+    "rawSha256": "9a52c1cd949b9875127dab9c980d11769d804f7a64c432d6b6437dbaf4a83420",
+    "rawBytes": 164
+  },
+  {
+    "file": "final-artifact-opening.stdout",
+    "stored": "final-artifact-opening.stdout.gz",
+    "rawSha256": "11949b58a3c2ceb6184cc3b194215985e47c7685dab84e54da06fdfbe5e856cf",
+    "rawBytes": 386
+  },
+  {
+    "file": "typed-material-memory-repair.tap",
+    "stored": "typed-material-memory-repair.tap.gz",
+    "rawSha256": "1981dc4d737a2d604828a2f42d2a913faaff97d24633456cc9c7d3fadd3a53a4",
+    "rawBytes": 1144
+  },
+  {
+    "file": "workflow-draft.tap",
+    "stored": "workflow-draft.tap.gz",
+    "rawSha256": "eba9ae72fb3a131b6449e23f6c4d8a0c35eb4adb9ff718abc3f9cd22c67a5160",
+    "rawBytes": 1581
+  },
+  {
+    "file": "workflow-root-6fdd-draft.tap",
+    "stored": "workflow-root-6fdd-draft.tap.gz",
+    "rawSha256": "237879e660b33d84c4200714df8821022451349dafb1f49d8d67e9fb5906280c",
+    "rawBytes": 3469
+  }
+]

@@ -23,7 +23,8 @@ for domain, directory in [('commitments_audit',sys.argv[3]),('relationship_brief
   for source in manifest['requiredSources']: assert source['sourceId'] in all_text
   pdf=fitz.open(directory/(label+'-preview.pdf')); inspection=json.loads((directory/(label+'-inspection.json')).read_text())
   assert len(pdf)==len(inspection['visual']['pages']); assert len(pdf)>0
-  rendered='\n'.join(page.get_text() for page in pdf)
+  # PyMuPDF's supported geometric reading order retains inline color-emoji placement.
+  rendered='\n'.join(page.get_text(sort=True) for page in pdf)
   assert clean(all_text)==clean(rendered), 'PDF loses or changes literal DOCX text'
   images=[]
   for page_num,page in enumerate(pdf,1):
@@ -48,15 +49,25 @@ for domain, directory in [('commitments_audit',sys.argv[3]),('relationship_brief
     if body is not None and 'sectionCharacters' in cover:
      assert 'content-addressed-extraction' in all_text
      sections.append(('client_documents',p['sourceRecordId']+':section:'+str(p['section']),'extraction:'+p['contentHash']+':'+p['sectionHash']+':'+str(p['section']),p['sectionHash'],raw['subject']['scopes'],p['characterStart'],p['characterEnd'],cover['sectionCharacters'],body))
+   if value.get('tool')=='search_memory':
+    for record in value.get('records',[]):
+     p=record['provenance']; payload=record['payload']; c=payload['content']
+     assert payload['governance']['status']=='active'; assert payload['contentStatus']=='available'
+     sections.append(('client_knowledge_memory',record['recordId'],p['sourceVersion'],c['hash'],raw['subject']['scopes'],c['offset'],c['endOffset'],c['totalCharacters'],payload['value']))
   material_hashes=[]
   for evidence in prep['context']['evidence']:
    matching=sorted([s for s in sections if s[:3]==(evidence['sourceId'],evidence['recordId'],evidence['sourceVersionId'])],key=lambda s:(s[5],s[6]))
    assert matching, 'Artifact evidence has no actual typed material receipt'; full=b''; end=0
    for s in matching:
-    assert s[3]==evidence['contentSha256']; assert s[4]==evidence['scopes']; assert s[6]-s[5]==len(utf16(s[8]))//2
+    if evidence['sourceId']!='client_knowledge_memory': assert s[3]==evidence['contentSha256']
+    else: assert s[3]==matching[0][3]
+    assert s[4]==evidence['scopes']; assert s[6]-s[5]==len(utf16(s[8]))//2
     if s[6]<=end: assert full[s[5]*2:s[6]*2]==utf16(s[8]); continue
     assert s[5]==end, 'Missing or overlapping body section'; full+=utf16(s[8]); end=s[6]
    assert end==matching[-1][7]; text=full.decode('utf-16-le'); assert sha(text.encode())==evidence['contentSha256']
+   if evidence['sourceId']=='client_knowledge_memory':
+    assert sha((text+'\0'+evidence['sourceVersionId']).encode())==matching[0][3]
+    assert matching[0][3] in all_text; assert 'bound-derived-memory' in all_text; assert 'upstreamExcerptVerified' in all_text
    material_hashes.append({'sourceId':evidence['sourceId'],'recordId':evidence['recordId'],'sourceVersionId':evidence['sourceVersionId'],'fullSha256':evidence['contentSha256'],'utf16CodeUnits':end,'scopes':evidence['scopes']})
   if number==0: assert version['parentVersionId'] is None; assert prep['baseVersionId'] is None; originals.append(version)
   else:

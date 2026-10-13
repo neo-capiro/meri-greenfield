@@ -1,0 +1,581 @@
+{
+  "reviewer": "Independent artifact reviewer",
+  "totalPagesActuallyOpened": 71,
+  "allListedPagesOpenedUsing": "view_image local file paths",
+  "noClippedFactsCitationsCoverageOrProvenanceObserved": true,
+  "appendixDenseButReadable": true,
+  "historicalLostRevisionRemainsUnreviewed": true,
+  "nativeQualified": false,
+  "artifacts": [
+    {
+      "phase": "interim",
+      "domain": "commitments_audit",
+      "label": "original",
+      "docxSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-1.png",
+          "sha256": "8a1f4cb5c9294581a527d5eac3663d19391e0098c09c6678f502cb13d8c25881",
+          "bytes": 115449,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-3.png",
+          "sha256": "f98ed29439cf3b9149bc51e94e13389b81576c23a955558fbd7c687565d5b333",
+          "bytes": 150415,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-4.png",
+          "sha256": "ca77619021a64ce238823f121359add34a0bff3b58ce4a6e7dc5a4addf12fd43",
+          "bytes": 148291,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-5.png",
+          "sha256": "a6fa52e2f1c1c039c052fc932655611bb68c800002c72e44975a5bed3add4d89",
+          "bytes": 138780,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-6.png",
+          "sha256": "95d84a5d5ba82d4f61165a9f211db28441541d471a160fcc9f5a8f5f018daa34",
+          "bytes": 168911,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-7.png",
+          "sha256": "f0f740f2519e7664bff77e740ec3d82fc3724ac84c929169703b9315d721f847",
+          "bytes": 161063,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/original-preview-8.png",
+          "sha256": "a5312b87cc9706ed284017a214ec0f39331f62afd101f44559ea002aec9b5221",
+          "bytes": 90474,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "interim",
+      "domain": "commitments_audit",
+      "label": "revision",
+      "docxSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-1.png",
+          "sha256": "65b74a5e2d4dd825b673534c2de30750cf8c56241110d06ce3905c51f3bc857a",
+          "bytes": 116321,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-3.png",
+          "sha256": "f98ed29439cf3b9149bc51e94e13389b81576c23a955558fbd7c687565d5b333",
+          "bytes": 150415,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-4.png",
+          "sha256": "ca77619021a64ce238823f121359add34a0bff3b58ce4a6e7dc5a4addf12fd43",
+          "bytes": 148291,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-5.png",
+          "sha256": "a6fa52e2f1c1c039c052fc932655611bb68c800002c72e44975a5bed3add4d89",
+          "bytes": 138780,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-6.png",
+          "sha256": "00f0c42590415ffdbf43faf713af6754681c6ce2e7d54c5da2d49c4a9a255fb6",
+          "bytes": 169144,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-7.png",
+          "sha256": "f0f740f2519e7664bff77e740ec3d82fc3724ac84c929169703b9315d721f847",
+          "bytes": 161063,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/local/receipts/revision-preview-8.png",
+          "sha256": "c17f072ae851343f9d0f4a66ab19fdfa31c4fc32b3da6fe2758ea1b2ad7be20d",
+          "bytes": 110531,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "interim",
+      "domain": "relationship_brief",
+      "label": "original",
+      "docxSha256": "0e49bee09871713e74faf59bc20ac0ba4db581298341e9780774384e2efa7b34",
+      "pages": 6,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-1.png",
+          "sha256": "eb497acc9cde1ff74b40c676ff65fa8e04b4456241c72c5a30a84588e0a4de06",
+          "bytes": 116459,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-2.png",
+          "sha256": "4ac12976093aec2546768cc8566ba37f42029a51664ef2835458e81f18f2b631",
+          "bytes": 142008,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-3.png",
+          "sha256": "d08b8b1a0ed49ba06ed652a8f879ea9f961dad5c640c8354b2abd02a1dec242f",
+          "bytes": 128256,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-4.png",
+          "sha256": "0f8639cea25fbf3fa51082194f57438ce875fa72bb093e821da3a3d42f2f629a",
+          "bytes": 123563,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-5.png",
+          "sha256": "3f35035c100c10756b2581fb1d756d9414071413710419d1d68d5b471fabf2dd",
+          "bytes": 121295,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/original-preview-6.png",
+          "sha256": "f622ebc32522a054def10c0a24c8cf8b001dce2be7503c62b07d93681df8a75d",
+          "bytes": 100022,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "interim",
+      "domain": "relationship_brief",
+      "label": "revision",
+      "docxSha256": "60aad8f93d76ac93c415be52a5934c341cd3ef2990d2813f0f085a70b0119465",
+      "pages": 6,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-1.png",
+          "sha256": "208f20780a73cf9b951a50d8a59d80ade6ea992a9b8766220b0cbda3c9d10c4c",
+          "bytes": 116245,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-2.png",
+          "sha256": "4ac12976093aec2546768cc8566ba37f42029a51664ef2835458e81f18f2b631",
+          "bytes": 142008,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-3.png",
+          "sha256": "6904e9f7c85da261bcf7f8ba6b99c463248fed492a1bf917d1ffc4d5fd7cada3",
+          "bytes": 128059,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-4.png",
+          "sha256": "2c0f880aeb20e760c2a98b4448b3c3ce6b224d70acb183cba21eb70993ff1e35",
+          "bytes": 123531,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-5.png",
+          "sha256": "3f35035c100c10756b2581fb1d756d9414071413710419d1d68d5b471fabf2dd",
+          "bytes": 121295,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-final/revision-preview-6.png",
+          "sha256": "a60fbec435b533bf5fb29fb2f5faefea7aaeea2e9546951b48e14c7b7dbc07e2",
+          "bytes": 120826,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "final_candidate",
+      "domain": "commitments_audit",
+      "label": "original",
+      "docxSha256": "d1e7876ff957a3f624a7dabdbf06989a1c625ee3b7e5ba800511e3f71215925a",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-1.png",
+          "sha256": "1f56ac336bc16393be678c283755dc33cbc94613dc57faace2106e4d20bff131",
+          "bytes": 115207,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-3.png",
+          "sha256": "10a1bec8c68bbeec5923b7c2629ea43183adff38e69ba2772b43f6c362d8d768",
+          "bytes": 168811,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-4.png",
+          "sha256": "f87fabb0ebeb6ac36cb029745ae54da68602015a479c0176f94148b3ee15e549",
+          "bytes": 151666,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-5.png",
+          "sha256": "45bb36a5fcf7c80e5efcba89cd4a8fa69404686b9cd6fd5aa7f62c9345451f4f",
+          "bytes": 139559,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-6.png",
+          "sha256": "ffe6764188548bfa47c4e7a913ad646277acd74aa5fc195733c91ac0634a6818",
+          "bytes": 162663,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-7.png",
+          "sha256": "6513a25bcdb2a942f3777f3d2f522b8ec49bab4a887b4ec038faec2fb0efcaf8",
+          "bytes": 167571,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-8.png",
+          "sha256": "d30a6fd4e665ba5c53703a6564951e4a981eb06f2bbdf882b67c88712661b351",
+          "bytes": 98853,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "final_candidate",
+      "domain": "commitments_audit",
+      "label": "revision",
+      "docxSha256": "b27031e4198aa25c9eb01973df2adf56749552e6b894452b01d5e350d9009ade",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-1.png",
+          "sha256": "1b6401d8d682aebaad2e99499a16e1139b4291e2da71a495a7ecd0aa2de896f2",
+          "bytes": 116116,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-3.png",
+          "sha256": "10a1bec8c68bbeec5923b7c2629ea43183adff38e69ba2772b43f6c362d8d768",
+          "bytes": 168811,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-4.png",
+          "sha256": "f87fabb0ebeb6ac36cb029745ae54da68602015a479c0176f94148b3ee15e549",
+          "bytes": 151666,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-5.png",
+          "sha256": "45bb36a5fcf7c80e5efcba89cd4a8fa69404686b9cd6fd5aa7f62c9345451f4f",
+          "bytes": 139559,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-6.png",
+          "sha256": "d04bab29fb5c1fffdfcd14ef1fbc8d835c17c79245c9ec91575990915f7007c5",
+          "bytes": 162318,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-7.png",
+          "sha256": "6513a25bcdb2a942f3777f3d2f522b8ec49bab4a887b4ec038faec2fb0efcaf8",
+          "bytes": 167571,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-8.png",
+          "sha256": "1aaeab426055d6142678a06ae9fd2cf2483c278c357db400bbb26a9b9a36f50e",
+          "bytes": 119689,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "final_candidate",
+      "domain": "relationship_brief",
+      "label": "original",
+      "docxSha256": "6deb1f7c926321514b4b056571ad3107747083f1cd359e893a557a130af939d0",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-1.png",
+          "sha256": "e6cecbe09f4b456148b54c123bd5f74912f0ba77ce00b958b2bb0807e3760334",
+          "bytes": 116711,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-3.png",
+          "sha256": "5b2a51f85a3eeb7531130b1e30f193b563ad5f9f8ea912d44b6a961f541c491e",
+          "bytes": 141569,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-4.png",
+          "sha256": "ad5b177e81ca344feb8d83d41ad8edb83bd9115618b735c5bc5c960c2d287019",
+          "bytes": 120388,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-5.png",
+          "sha256": "f90f06bd20bf6e1b5cd04337cc3e72fe1ae3249a85370ceac942420d6f61a2d7",
+          "bytes": 135023,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-6.png",
+          "sha256": "02714f2a23d34cc3856773102bc8ff03fb986161d37e09e741dde02050534335",
+          "bytes": 126211,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-7.png",
+          "sha256": "1f9167545eb49b4ba8f11f475b3bc148be132f017f2045058738db8dd2a97012",
+          "bytes": 124830,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-8.png",
+          "sha256": "cf685f4f201acaee63bd5225da492e5e371fe94b9d251b2fe6d974fd7dff0307",
+          "bytes": 138100,
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/original-preview-9.png",
+          "sha256": "937a09b3cc06a7ab29acaa894d0aac64697769c2e9028e1749a28d9f3ae32fb1",
+          "bytes": 51011,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "final_candidate",
+      "domain": "relationship_brief",
+      "label": "revision",
+      "docxSha256": "f4c251af62bdde9acb248276eb641f6842862df6333e898e6f56e5922d109a19",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-1.png",
+          "sha256": "6481cc074c2f4592ef9b0430d71441b6c4f67f8004434f8a9674d6a5cd1df4ea",
+          "bytes": 116768,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-3.png",
+          "sha256": "08c30d337aea39da789b9a9d08d7bcfdee7d4b2ba57353c87beb604c2b5d2a6a",
+          "bytes": 141657,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-4.png",
+          "sha256": "e2137d64b2c6bacaf20a17a46a873bdc0e9f2a908136b57021ba160b4c6f5fd2",
+          "bytes": 120386,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-5.png",
+          "sha256": "887cd8a29b84836b79423c34c99d6bc8b4562ef7fdbef0da4e022d5102bcc1a2",
+          "bytes": 134822,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-6.png",
+          "sha256": "1131146ac0883f6bf946b6799b02897be12a427e33f25cc1ac32300e70c3e257",
+          "bytes": 126294,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-7.png",
+          "sha256": "d625325b1f942c58de999d1d1dd284e8f2bd6181bb77bbcd2486d947fbe78c4c",
+          "bytes": 124581,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-8.png",
+          "sha256": "baf6a1adfade995689cc9b28f18dcfaf141eb53cbeb31eeb496a7a2ee710aa83",
+          "bytes": 138139,
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-release/revision-preview-9.png",
+          "sha256": "f70a80e6802c91051174afd058fda9376f4a5982e082f2aaedbf955daafadabf",
+          "bytes": 72975,
+          "visuallyOpened": true
+        }
+      ]
+    },
+    {
+      "phase": "historical_failed_attempt",
+      "domain": "relationship_brief",
+      "label": "original-only",
+      "docxSha256": "078a970618ee13e947dd83e273ed226e189c6401a946b59a893f2e078e8b6c43",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-1.png",
+          "sha256": "05301b780a57ddc62aec47227d341012e7762bd4b1a89ef418dd0d7f2144b4b9",
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-3.png",
+          "sha256": "1810b5e8b529de637701e0ef438c3a53c07f87a64c898deae9fa80eb66f772af",
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-4.png",
+          "sha256": "1ef43dde7bfccaabf3c599a1af7f2cad4a83aee38de6989a1f187350c1fc65ed",
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-5.png",
+          "sha256": "7eea6ed7f8b1dc557191e78268766202093c95990e39b63e8ec9511a7248aa8d",
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-6.png",
+          "sha256": "457b098233ab15233303b50fa183c1455631187f0d04f792f3c49fd889d60975",
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-7.png",
+          "sha256": "130be4834690ca89e013d7079515e1d00a531da25644af9f46bffad39f2f0f86",
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-8.png",
+          "sha256": "f4650efef972082a91dfaf572027c2fac805290d23a92ccf1578b6a7cbfb39bc",
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-9.png",
+          "sha256": "716187c2fb9b0266bc0d44b04a888de281ea363a221bbc5c65651a435ccafb65",
+          "visuallyOpened": true
+        }
+      ],
+      "revisionLostBeforeRender": true
+    }
+  ]
+}
