@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "base": "334890d930fbdb209044c30ff552409bcb86240e",
+  "source": "fc76ac68f8e2b2b0de6f214326a7f67b9a7ef661",
+  "originalEntries": 10854,
+  "unchangedOriginalEntries": 10852,
+  "changedOriginals": [
+    "apps/control/action-host/local/recovery.mjs",
+    "apps/gateway/local-action/gateway.mjs"
+  ],
+  "captures": [
+    {
+      "label": "initial-shared",
+      "exitCode": 1,
+      "pgid": 470156,
+      "freshAbsent": true
+    },
+    {
+      "label": "public-entry-repaired",
+      "exitCode": 1,
+      "pgid": 470457,
+      "freshAbsent": true
+    },
+    {
+      "label": "coherent-shared",
+      "exitCode": 0,
+      "pgid": 470757,
+      "freshAbsent": true
+    },
+    {
+      "label": "seed-uncertain",
+      "exitCode": 0,
+      "pgid": 471989,
+      "freshAbsent": true
+    }
+  ],
+  "finalPrecommitDiffExact": true,
+  "poolEvidence": "scripted-shared-state",
+  "nativeExecution": false
+}
