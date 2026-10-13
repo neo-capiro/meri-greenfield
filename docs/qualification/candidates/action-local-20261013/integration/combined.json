@@ -1,0 +1,45 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/task-lookup/local-integration/admission-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/commit-ack-fault-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/fresh-pool-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/result-rows-independent.test.mjs",
+    "apps/control/task-lookup/local-integration/run-persistence.test.mjs",
+    "apps/gateway/local-action/test/case-independent.test.mjs",
+    "apps/gateway/local-action/test/gateway-independent.test.mjs",
+    "apps/gateway/local-action/test/identity-independent.test.mjs",
+    "apps/gateway/local-action/test/identity.test.mjs",
+    "scripts/local-action/admission-independent.test.mjs",
+    "scripts/local-action/admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "f8ee0a61577dcb332559f9c0a152f521846b5331",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:37:34.318253+00:00",
+  "durationSeconds": 24.159,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 431058,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/combined.stdout.bin",
+      "bytes": 12213,
+      "sha256": "c6985c3994755e39458955cfd48c90049619003c1203d4961658312a2aba402d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "One complete combined check of independently accepted new local-action identity, real-pool harness, admission and original independent counterexamples. Native PostgreSQL execution is not attempted.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

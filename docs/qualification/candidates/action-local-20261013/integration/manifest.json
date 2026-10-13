@@ -1,0 +1,87 @@
+{
+  "schema": "meri.local-action-integration-packet/1",
+  "sourceHead": "f8ee0a61577dcb332559f9c0a152f521846b5331",
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "scope": "ACCEPT_SOURCE_ONLY_RUNTIME_HOLD",
+  "excluded": [
+    "manifest.json",
+    "publication.json"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-20261013.md",
+      "bytes": 6856,
+      "sha256": "fd79aa622186628688bbb6ef70f6cff32b0871123049dbc589ccd8de6ff0b79e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/admission-first.json",
+      "bytes": 1300,
+      "sha256": "9712827b9f71277f250c4cacefbf90dc7792f45d3bccb112610838dfa5c8bd52"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/admission-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/admission-first.stdout.bin",
+      "bytes": 878,
+      "sha256": "736da7f46f9a66c9e15b24e099368061b4907a73c340ed795d2f82cc9e7a0292"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/cleanup.json",
+      "bytes": 967,
+      "sha256": "0898893f018f50f0496fb370c90a0f224d655775474d8dd923977bf70ebb9c33"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/combined-environment.json",
+      "bytes": 947,
+      "sha256": "5e37ca237128b50cbc7551becd53cf96a8cd9427a5e069511cd2538a7c1bc9ca"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/combined.json",
+      "bytes": 2124,
+      "sha256": "03ea0117286d7c94ae5b8966ac324d895e770c016edb6f300fac9a481b727202"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/combined.stdout.bin",
+      "bytes": 12213,
+      "sha256": "c6985c3994755e39458955cfd48c90049619003c1203d4961658312a2aba402d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/environment.json",
+      "bytes": 1371,
+      "sha256": "f7d776a88f053aa3de79703f064c72c8e2292679db4be4f4845b80f72003c3be"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/executable-imports.json",
+      "bytes": 2110,
+      "sha256": "6b5eff108ad1f086395964c5bab1f7f648ea1cf4c62333e03cd7d7dca2d4a28f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/executable-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/executable-imports.stdout.bin",
+      "bytes": 141,
+      "sha256": "915d5e0280d62373715e6b275766595c37f5573a39d357a6853d43ad8b935cec"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/integration/source-verification.json",
+      "bytes": 3566,
+      "sha256": "964189b4960b8830dcbcea3ad193b983227341dd10788e6b03bff8d97f4b52b0"
+    }
+  ]
+}
