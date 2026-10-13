@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "manifests": [
+    {
+      "manifest": "docs/qualification/candidates/document-drafting-20261013/author/manifest.json",
+      "members": 25,
+      "sha256": "01d7c6ee4e47c8aab6f3aa2be6a97c5b795b8ebf7b58ccfd67cddc973c5ccf92",
+      "verified": true
+    },
+    {
+      "manifest": "docs/qualification/candidates/document-drafting-20261013/review/manifest.json",
+      "members": 21,
+      "sha256": "5839b1777f3a2481686779129743e35dfa44ce835a0082c2fe6b44d510ac7edc",
+      "verified": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Word drafting application continuation
 
-Status: implementation and independent review in progress. Base is PR49 `b5243ae164f68c7591b039e8365d9897390543d2`; source acceptance is distinct from native qualification.
+Status: **ACCEPT_SOURCE** after independent review; native/runtime qualification remains HOLD. Base is PR49 `b5243ae164f68c7591b039e8365d9897390543d2`; source acceptance is distinct from native qualification.
 
 ## Requirement and expected outcome
 
@@ -24,4 +24,22 @@ The executable path is documented in [the local fixture README](../../../apps/co
 
 Native PostgreSQL, actual Clerk/current-policy integration, approved worker/sandbox, Office rendering and visual quality, SDK natural-language execution, event publication/frontend consumption, production persistence and source filing are unrun here. `generationStatus:'draft'`, `previewStatus:'pending'` and `nativeQualified:false` are retained. G1 stays OPEN; this increment does not enter or accept G2–G7.
 
-Final source pins, independent verdict, checks, preserved failures and publication receipt will be added after review.
+## Accepted source and checks
+
+- Application source: `8e21145f7f4745d20e84c3c2e51efcd93d33483f`; author packet `f36c072509db02f709682db3ff812ef36cff73b6`.
+- Independent ACCEPT_SOURCE: `2339dacda10ee9b0d63939c5dee6d6dc39a9e52d`, 37/37 checks passed. The unchanged reviewer tests and raw failures are integrated.
+- Root final application/HTTP suite: 21/21 passed at `b4d5380d936d1a7d5e34356c3cdf93eb90578989`, with zero source diff. Exact new production bytes match the independent source freeze.
+- Existing canonical artifact, accounting, session, transport and contract regressions: 512/512 passed at `e36f1ae2c2ec3fce512518a8128de4c62bd0e32f`. The later repair changes only the new document adapter; all these existing owners/tests remain byte-identical.
+- Actual loopback CLI: PASS with two generated/reopened DOCX versions, exact original/new content, one allocation and two settled synthetic 10 microUSD charges, no unknown liability, replay refusal and revoked historical-download denial. No paid model call or spend occurred.
+- Preservation audit: all 11,411 PR49 entries unchanged, including every original test, migration, public/private contract and prior failure. Scope remains 139 originals / 96 selected / 43 deferred; 96 mapped selections, 97 operations, all production handlers null/unavailable with zero retries.
+- All 46 author/reviewer manifest members verified. Every captured root process group was freshly absent. Only root-owned borrowed dependency links were removed; donor directories remain. Executable fixture cleanup confirmed child groups, files and HTTP sockets closed.
+
+## Preserved failures and fixes
+
+The first author run had a nonexistent Python path and a malformed paragraph fixture; corrected fixture inputs retain the same required assertions. A new negative control found that the application initially accepted an altered trusted descriptor; the factory now requires the exact canonical create_word descriptor projection.
+
+Independent review found hostile rejected port values could trigger property access inside existing owners before HTTP sanitization. The new adapter now sanitizes borrowed authorization/session/storage/executor/ID rejections before those owners see them. Seven independent pre-repair counterexamples remain in Git and pass unchanged on the accepted repair. Post-write ambiguity remains UNKNOWN or RESULT_NOT_RELEASED; no retry/refund was introduced.
+
+One root combined test command omitted required MERI_REVIEW_SOURCE_ROOT. Its raw failure is retained; the explicit source-bound rerun passed without changing source. Reviewer fixture-only corrections and all raw negative outcomes are also preserved. No failed check was reclassified as a pass.
+
+See `docs/qualification/candidates/document-drafting-20261013/integration/` for exact command receipts, hashes, process cleanup, scope audit and publication receipt. The PR49 endpoint/schema compatibility repair requested later is owned in a separate branch and is not bundled into this document increment.
