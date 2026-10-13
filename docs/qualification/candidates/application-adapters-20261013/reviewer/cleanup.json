@@ -1,0 +1,21 @@
+{
+  "ownedDependencyCopies": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "nodeModulesAbsent": true,
+  "donorUntouched": true,
+  "installed": false,
+  "ownedCaptureGroups": [
+    484645,
+    484848,
+    485249,
+    485396
+  ],
+  "freshAbsenceVerifiedIn": "audit.json"
+}

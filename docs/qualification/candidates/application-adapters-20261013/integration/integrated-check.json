@@ -1,0 +1,50 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-application-adapters-20261013",
+    "node",
+    "--test",
+    "--test-concurrency=4",
+    "apps/control/action-host/application-adapters/adapters.test.mjs",
+    "apps/control/action-host/application-adapters/authority-independent.test.mjs",
+    "apps/control/action-host/application-adapters/context-independent.test.mjs",
+    "apps/control/action-host/session/http-independent.test.mjs",
+    "apps/control/action-host/session/owner-independent.test.mjs",
+    "apps/control/action-host/session/session.test.mjs",
+    "apps/control/action-host/binding.test.mjs",
+    "apps/control/action-host/binding-independent.test.mjs",
+    "apps/control/action-host/local-integration/allocation-independent.test.mjs",
+    "apps/control/action-host/local-integration/application-independent.test.mjs",
+    "apps/control/action-host/local-integration/local.test.mjs",
+    "apps/control/action-host/local-integration/recovery-independent.test.mjs",
+    "packages/contracts/test/action-application-public.test.mjs",
+    "packages/contracts/test/action-application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-application-adapters-20261013",
+  "sourceHead": "6dfc050e489d5790bd6ae009707195aac1c3890f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:09:36.595570+00:00",
+  "durationSeconds": 12.642,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 486108,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.stdout.bin",
+      "bytes": 19914,
+      "sha256": "838ca6b7f1490549cc1c50f56973c875cbe6de71445d3cf6301f1ed73a3b9b71"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/integration/integrated-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

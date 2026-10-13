@@ -1,0 +1,33 @@
+{
+  "groups": [
+    {
+      "label": "first-adapters",
+      "pgid": 483526,
+      "absent": true,
+      "exitCode": 1,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "current-run-repaired",
+      "pgid": 483968,
+      "absent": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "transport-repaired",
+      "pgid": 484969,
+      "absent": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "ownedDependencyLinksRemoved": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "donorAndBorrowedResourcesUntouched": true
+}

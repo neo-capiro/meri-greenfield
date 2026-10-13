@@ -1,0 +1,67 @@
+{
+  "historicalCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/auth/clerk.service.ts",
+      "historicalBlob": "ce5c4d9bf49e6df098e796b366c3a9f3f59e8d96",
+      "observedBlob": "ce5c4d9bf49e6df098e796b366c3a9f3f59e8d96",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "historicalBlob": "fece0915d869778984cd9987840e1bd41c203e01",
+      "observedBlob": "fece0915d869778984cd9987840e1bd41c203e01",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.store.ts",
+      "historicalBlob": "5442923946ee98648b76b50700ca049ddff107e6",
+      "observedBlob": "5442923946ee98648b76b50700ca049ddff107e6",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/context/context-security-scope.service.ts",
+      "historicalBlob": "48a86578828d8e991e057ce364b1924e261e0cef",
+      "observedBlob": "48a86578828d8e991e057ce364b1924e261e0cef",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/context/context.types.ts",
+      "historicalBlob": "7c92a4a80fbc73ffba87644b37854ebe83a18d8e",
+      "observedBlob": "7c92a4a80fbc73ffba87644b37854ebe83a18d8e",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "historicalBlob": "598e9146e5568349f213cbd548de0213113dc924",
+      "observedBlob": "598e9146e5568349f213cbd548de0213113dc924",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.service.ts",
+      "historicalBlob": "397c46f49a540a32d231a114945119d51be04c4a",
+      "observedBlob": "397c46f49a540a32d231a114945119d51be04c4a",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/users/users.controller.ts",
+      "historicalBlob": "1bd5eb81436f3857761f4aec4af05ee7742f5ed6",
+      "observedBlob": "1bd5eb81436f3857761f4aec4af05ee7742f5ed6",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "historicalBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "historicalBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "observedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "unchanged": true
+    }
+  ],
+  "privateBodiesRetained": false
+}

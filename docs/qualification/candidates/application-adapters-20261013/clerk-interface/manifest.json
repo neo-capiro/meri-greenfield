@@ -1,0 +1,16 @@
+{
+  "kind": "metadata-only-supported-sdk-interface-supplement",
+  "wireSource": "7ad86d7acc1234e446cacb61c8e7f00b4bf989ab",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/clerk-interface/references.json",
+      "bytes": 1677,
+      "sha256": "230ed53f0078c205b27685c3232b6f6c1202c7158424e208c8f7de9312b43d92"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPIRO-CLERK-SESSION-READ-20261013.md",
+      "bytes": 5173,
+      "sha256": "7f4df2711617779b84ce7868f4bf626c52df5066f95347b676283367da28c83c"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/meri-application-adapters-20261013/docs/qualification/candidates/application-adapters-20261013/integration/audit.py", line 26, in <module>
+    members=json.loads(manifest.read_text())['members']; counts[manifest.parent.name]=len(members)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'members'

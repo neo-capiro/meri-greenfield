@@ -1,0 +1,120 @@
+{
+  "source": "1afbb5a53ebbf0eca9252b3b09ceb3e404918151",
+  "members": [
+    {
+      "path": "apps/control/action-host/application-adapters/README.md",
+      "bytes": 7313,
+      "sha256": "bd6a9efd068af110a878508e36c96501036253b5c1b40aaf8037b5ad70adf559"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/adapters.test.mjs",
+      "bytes": 7717,
+      "sha256": "23e0c54b64b2baf93d81efc6a82ce75ed54dbcf6fd91c3c78b7ceb134037b2ac"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+      "bytes": 4673,
+      "sha256": "744a3a648ca293242f4cb1ba43501bb3ffb76733911d14f97e2462457ccbeff4"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/context-adapter.mjs",
+      "bytes": 6198,
+      "sha256": "766dfedd4277ec855d8e92c4e8e33c1fc48c2ca8a5be41249499833b43f88afb"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/mount.mjs",
+      "bytes": 2564,
+      "sha256": "6b18f000f21f97e53a94b78400c14d58c83aa6d4cdd3b38ef71f147f85292590"
+    },
+    {
+      "path": "apps/control/action-host/session/README.md",
+      "bytes": 7491,
+      "sha256": "f116facf1246ec17c631c2b13d00eef58e80fe6fc33011d9db10598b67caa4ea"
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "bytes": 9632,
+      "sha256": "7239a73d05784f492d1d7c68a371ab1ca5c94fada71fc74a20b8c3f372769084"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-APPLICATION-ADAPTERS-AUTHOR-20261013.md",
+      "bytes": 5795,
+      "sha256": "ab9a032a945ad3e1db7d06855d09c7053e9d43aa51bfc7f366f1e1e1da3c8d31"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-APPLICATION-ADAPTERS-AUTHOR-20261013.md",
+      "bytes": 3127,
+      "sha256": "40e4a497665a344bff10400cd37ac138a3e71fe25f1a279db51a7e23073e833f"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/audit.json",
+      "bytes": 2645,
+      "sha256": "b1928c2007deda587620bad9d07b84ac9b4ef7869e756a10ce693284a016fd11"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/cleanup.json",
+      "bytes": 667,
+      "sha256": "31eba1fd73caba9f8343da0df520dddd4d32d0db969a36e48e4da5bb17f1e6bb"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.json",
+      "bytes": 1445,
+      "sha256": "069c1aad331c7dfc5df35958ae56c658ec168320575e2e636629a02c4b652922"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.stdout.bin",
+      "bytes": 923,
+      "sha256": "a71dda6dcf3c9ab95ae5e47c517777dd4bb4f1d424d8f8629af5bbb8a6165e6f"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/first-adapters.json",
+      "bytes": 1292,
+      "sha256": "28cb092b2eebf95cb230f39e3994b3d50af0d81c228a416669012f2d35b0931f"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/first-adapters.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/first-adapters.stdout.bin",
+      "bytes": 2612,
+      "sha256": "687c4c59b3692913fcbdcee890ea44f87f05fb0188b1cd5d9e3417cec66b87d4"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/reference-identities.json",
+      "bytes": 2459,
+      "sha256": "e26b1b857ce75b5917e56c1957206c6b8e40704677d04ae6d073861f28a41c55"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/transport-repaired.json",
+      "bytes": 1428,
+      "sha256": "d5556166f726c03e42324ebdbcdd31c5b3f3502fae9921b867c401a50c047f11"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/transport-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/transport-repaired.stdout.bin",
+      "bytes": 1023,
+      "sha256": "5b06192a8dbe6cb879575fd16423c713c3638d7dc39712e23a620b5846c83052"
+    },
+    {
+      "path": "packages/contracts/action-authority-0.2/validate.mjs",
+      "bytes": 1880,
+      "sha256": "40fa36caeedb7ec17bef27119c846feb372bf5e1c6678032d5bcd0ab540ebd79"
+    }
+  ]
+}

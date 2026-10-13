@@ -1,0 +1,18 @@
+✔ fixed bridge transport and canonical current-run join produce one exact client scope (56.579396ms)
+✔ refuses native identity principal substitution (20.514225ms)
+✔ refuses native identity revision substitution (18.170703ms)
+✔ refuses native client substitution (21.841881ms)
+✔ refuses native expired substitution (18.532857ms)
+✔ refuses native extra field substitution (16.092269ms)
+✔ refuses stale current run and mismatched hints before native context call (15.68763ms)
+✔ disabled mount is inert and owned close does not dispose borrowed services (16.836098ms)
+✔ parked native body is cancelled at original cutoff with no later context port (45.507443ms)
+✔ actual mounted HTTP obtains action session then query/draft/proposal/refusal/approved once/replay/revocation (365.702536ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3208.428048

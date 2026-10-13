@@ -1,0 +1,69 @@
+✔ authority independent default disabled is inert through invocation (2.609739ms)
+✔ authority independent explicit client uses only fixed origin/path and bearer (7.889536ms)
+✔ authority independent context request preserves only exact selectors/hash (1.834301ms)
+✔ authority independent refuses unsafe origin http://authority.invalid (0.350798ms)
+✔ authority independent refuses unsafe origin https://u:p@authority.invalid (0.211599ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/path (0.145018ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/?x=1 (0.196335ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/#x (0.210297ms)
+✔ authority independent extra identity receipt refuses (2.017947ms)
+✔ authority independent principal identity receipt refuses (0.986815ms)
+✔ authority independent redirect refusal never retries (0.56484ms)
+✔ authority independent content type refusal never retries (0.783899ms)
+✔ authority independent invalid JSON refusal never retries (0.594765ms)
+✔ authority independent invalid UTF8 refusal never retries (0.688346ms)
+✔ authority independent body cap refusal never retries (0.775407ms)
+✔ authority independent cancellation while fetch is parked does not release late receipt (10.570041ms)
+✔ authority independent caller cutoff is enforced after response acquisition (0.842028ms)
+✔ authority independent hostile input/configuration is inert (0.316085ms)
+✔ context independent joins actual HTTP receipts with canonical currentRun only (60.732315ms)
+✔ context independent conversationId hint cannot select another configured owner (20.237772ms)
+✔ context independent runId hint cannot select another configured owner (20.034977ms)
+✔ context independent clientId hint cannot select another configured owner (15.331317ms)
+✔ context independent native hash substitution refuses (16.262608ms)
+✔ context independent native identity revision substitution refuses (14.821009ms)
+✔ context independent native conversation substitution refuses (15.920073ms)
+✔ context independent native client substitution refuses (14.473786ms)
+✔ context independent native extra scope substitution refuses (20.81472ms)
+✔ context independent currentRun tenant refuses (14.543371ms)
+✔ context independent currentRun fence refuses (13.214891ms)
+✔ context independent currentRun expired refuses (13.162452ms)
+✔ context independent currentRun stale refuses (12.840287ms)
+✔ context independent currentRun extra refuses (16.184822ms)
+✔ context independent cancellation while canonical run owner is parked cannot release context (20.999869ms)
+✔ mount independent disabled refuses without native or current calls (15.250836ms)
+✖ mount independent session issuance reaches actual query/proposal/separate approved execution (49.1223ms)
+✔ mount independent fresh identityRevision change revokes retained session (18.129469ms)
+✔ mount independent fresh contextRevision change revokes retained session (17.627293ms)
+✔ mount independent fresh writerFence change revokes retained session (16.065392ms)
+✔ context independent stale identity refuses before run authority (15.591419ms)
+✔ context independent future identity refuses before run authority (14.016798ms)
+✔ context independent expired identity refuses before run authority (13.431316ms)
+✔ context independent other actor identity refuses before run authority (11.786822ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 41
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3024.301176
+
+✖ failing tests:
+
+test at apps/control/action-host/application-adapters/context-independent.test.mjs:29:1
+✖ mount independent session issuance reaches actual query/proposal/separate approved execution (49.1223ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"LOOKUP_UNAVAILABLE","outcome":"UNKNOWN"}}
+  
+  502 !== 200
+  
+      at TestContext.<anonymous> (file:///tmp/meri-application-adapters-review-20261013/apps/control/action-host/application-adapters/context-independent.test.mjs:29:469)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

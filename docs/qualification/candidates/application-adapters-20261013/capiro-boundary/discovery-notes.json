@@ -1,0 +1,49 @@
+{
+  "scope": "Read-only source metadata; documentation additions only in isolated Meri worktree",
+  "excluded": [
+    "tokens",
+    ".env",
+    "customer records",
+    "native receipts",
+    "network",
+    "provider/model/DB calls",
+    "cross-repository edits",
+    "private body publication"
+  ],
+  "pathMisses": [
+    {
+      "operation": "initial batched source search",
+      "issue": "Capiro paths were searched from the Meri cwd; no such file. Corrected cwd without changing source."
+    },
+    {
+      "operation": "read AGENTS.md from sparse parent",
+      "issue": "Not materialized; read the exact Git object instead."
+    },
+    {
+      "operation": "candidate run-owner path",
+      "issue": "apps/proxy/state/store.mjs does not exist at PR46. Actual discovered registry is explicitly qualification-only."
+    },
+    {
+      "operation": "candidate session helper",
+      "issue": "apps/control/action-host/session/receipts.mjs does not exist; actual owner and README inspected."
+    },
+    {
+      "operation": "targeted rg globs",
+      "issue": "Some guessed bootstrap/auth/research-portfolio paths absent; actual paths discovered via tracked file list. No executable or data path was invoked."
+    }
+  ],
+  "sourceBodiesStored": false,
+  "dependenciesInstalled": false,
+  "backgroundProcessesCreated": false,
+  "runtimeExecuted": false,
+  "policyChanged": false,
+  "verificationCorrection": {
+    "initial": "65/67; two metadata locator ends exceeded EOF by one line",
+    "corrected": "CurrentTenant ends line20; frontend auth route ends line24",
+    "sourceIdentitiesChanged": false,
+    "retained": [
+      "verification-initial-failure.json",
+      "reference-identities-initial.json"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/application-adapters/adapters.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-native-binding-author-20261013",
+  "sourceHead": "f7949a0c4239f4799a6cff7d5cfea6642853f48b",
+  "sourceDiffSha256": "532b6e534cc0008ab6469d14d9a168899f83c6d40d95e3f216f93bae95654aeb",
+  "sourceDiffBytes": 6395,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:01:29.754754+00:00",
+  "durationSeconds": 3.283,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 483968,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.stdout.bin",
+      "bytes": 923,
+      "sha256": "a71dda6dcf3c9ab95ae5e47c517777dd4bb4f1d424d8f8629af5bbb8a6165e6f"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/author/current-run-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Actual canonical currentRun rejects added deadlineMs option; repair preserves its exact signal-only API while owned lifetime bounds awaits. Also forward original adapter cutoff to native identity client.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

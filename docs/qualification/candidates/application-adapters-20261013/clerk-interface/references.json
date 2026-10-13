@@ -1,0 +1,42 @@
+{
+  "kind": "public-sdk-interface-source-check",
+  "library": "@clerk/backend",
+  "lockedVersion": "1.34.0",
+  "capiroCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "privateLockfile": {
+    "path": "pnpm-lock.yaml",
+    "blob": "d25714c0b3529b0fac455b507a2f5ee2ab3d8edb",
+    "sha256": "c90a15fc2ca3c9405062444adfdb346293d27f51a45488476db891f4c3204586",
+    "bodyRetained": false
+  },
+  "references": [
+    {
+      "name": "SessionAPI",
+      "url": "https://raw.githubusercontent.com/clerk/javascript/%40clerk/backend%401.34.0/packages/backend/src/api/endpoints/SessionApi.ts",
+      "resolvedUrl": "https://raw.githubusercontent.com/clerk/javascript/%40clerk/backend%401.34.0/packages/backend/src/api/endpoints/SessionApi.ts",
+      "bytes": 2896,
+      "sha256": "45188f61e03d9e232cc8e193f7cda77185141a77fdb72deb6ca7dcbce3d701d8",
+      "bodyRetained": false
+    },
+    {
+      "name": "Session",
+      "url": "https://raw.githubusercontent.com/clerk/javascript/%40clerk/backend%401.34.0/packages/backend/src/api/resources/Session.ts",
+      "resolvedUrl": "https://raw.githubusercontent.com/clerk/javascript/%40clerk/backend%401.34.0/packages/backend/src/api/resources/Session.ts",
+      "bytes": 1550,
+      "sha256": "87a96e32dec943dd06c501d740559eb3a065b228091baf20cd223427f3b65909",
+      "bodyRetained": false
+    }
+  ],
+  "supportedMethod": "clerkService.backend.sessions.getSession(verifiedClaims.sid)",
+  "httpOperation": "GET /sessions/{sessionId}",
+  "resultFields": [
+    "id",
+    "userId",
+    "status",
+    "expireAt"
+  ],
+  "realClerkRequests": 0,
+  "credentialsReadOrCreated": false,
+  "permissionsChanged": false,
+  "runtimeQualification": false
+}

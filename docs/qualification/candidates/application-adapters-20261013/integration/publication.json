@@ -1,0 +1,33 @@
+{
+  "pr": "https://github.com/neo-capiro/meri-greenfield/pull/47",
+  "draft": true,
+  "merged": false,
+  "base": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+  "sourceEvidenceFreeze": "7ad86d7acc1234e446cacb61c8e7f00b4bf989ab",
+  "sourceEvidenceTree": "17fe7210721ba265baa3f691f7b5f8f69bb758b7",
+  "sdkSupplementHead": "a83a48c54b8f4bb6101493ca1343e8c376ce910c",
+  "sdkSupplementTree": "f6f38b6fef4e7276febb2f1a3f08ff5c1e76519d",
+  "remoteHeadReadbackBeforePublicationReceipt": "a83a48c54b8f4bb6101493ca1343e8c376ce910c",
+  "acceptedSource": "1afbb5a53ebbf0eca9252b3b09ceb3e404918151",
+  "review": "3760a7fe8ba54639ef978f705ca05127838368d6",
+  "backendRelay": "https://github.com/neo-capiro/meri-greenfield/pull/47#issuecomment-6138126976",
+  "frontendHandoff": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6138127711",
+  "mainReadback": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "rootManifestSha256": "b83afa1c6746fea7e2d7f199791c613f531ac592e1727856009d8a8d804371ba",
+  "supplementManifestSha256": "cd332579e0ca10b67988d048bff9f84ff29c52252ddbef517f856667a0f9e224",
+  "verifiedManifestMembers": {
+    "integration": 16,
+    "clerk-interface": 2
+  },
+  "runtimeSourceUnchangedBySupplement": true,
+  "ownedGroupsAbsent": [
+    485990,
+    486108,
+    486353
+  ],
+  "ownedDependenciesRemoved": true,
+  "g1": "OPEN",
+  "liveClerkCalls": 0,
+  "providerCalls": 0,
+  "newCredentialsOrPermissionChanges": false
+}
