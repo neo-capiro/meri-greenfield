@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/durable/durable-independent.test.mjs",
+    "apps/control/action-host/durable/test/durable.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-host-durable-review-20261013",
+  "sourceHead": "cafe90bc61b1b90ce1398b91ccfe7e3e7d0e4a38",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T02:26:37.734146+00:00",
+  "durationSeconds": 3.63,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 458775,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/combined.stdout.bin",
+      "bytes": 3113,
+      "sha256": "fe8a299d63a7f26505d4d435ae2b0e5cefdf1d74b4cff0495c807c9b00445b60"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

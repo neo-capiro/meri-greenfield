@@ -1,0 +1,10 @@
+{
+  "reason": "Fixture commandContext aliases current trusted policy binding. Clone configuration before construction so the mutation tests snapshot ownership without revoking policy facts. All assertions unchanged.",
+  "beforeSha256": "eb54f77d9bbbfce4538e0613e868c138ea88cdee1703ae2217021c78121877bb",
+  "afterSha256": "24137e93e4a917bd4114f46133c8ca60c804c974121601afaa15a00270afe2f8",
+  "prior": {
+    "pass": 33,
+    "fail": 1
+  },
+  "productionChanged": false
+}

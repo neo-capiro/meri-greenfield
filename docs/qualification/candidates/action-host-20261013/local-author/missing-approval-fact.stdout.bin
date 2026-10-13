@@ -1,0 +1,10 @@
+✔ actual three host recovery keeps same proposal and accounting across reconstruction (417.344638ms)
+✔ help and invalid arguments are inert and closed (0.847595ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2930.897833

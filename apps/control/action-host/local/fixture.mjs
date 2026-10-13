@@ -26,14 +26,18 @@ export async function createLocalActionHostFixture(configuration){
   async issueLookupCredential(call){active(call.signal);await fixture.t.identity.authorityPorts.verifyCapability(fixture.lookupCredential,{signal:call.signal});active(call.signal);return {...receipt(call),credential:fixture.lookupCredential};},
   async issueExecution(call){active(call.signal);return {...receipt(call),execution:fixture.call(call.proposal).execution,credential:'synthetic'};},
  };
+ // A missing synthetic decision is a missing fact, not a transport failure.
+ // The unchanged canonical guard classifies null as COMMAND_APPROVAL_REFUSED.
+ const approvalStore={async getCurrent(call){active(call.signal);if(!fixture.state.approved||call.proposalId!==fixture.f.decision.proposalId||call.commandSha256!==fixture.f.decision.commandSha256)return null;return fixture.config.command.approvalStore.getCurrent(call);}};
+ const reconstruct=()=>fixture.reconstruct({now,command:{...fixture.config.command,approvalStore}});
  const close=()=>{if(!closed){closed=true;fixture.close();}};
- try{await fixture.ready(fixture.reconstruct({now}));}catch(error){close();throw error;}
+ try{await fixture.ready(reconstruct());}catch(error){close();throw error;}
  const stats=()=>data({sourceReads:fixture.state.sourceReads,taskEffects:fixture.f.state.fetches,metadataRows:fixture.metadataSql.rows.size,
   lookupRows:fixture.lookupSql.lookups.size,commandRows:fixture.f.pg.rows.size,commandInvocations:fixture.h.state().produced.size,
   commandReservations:fixture.h.state().reservations.size,commandChargeMicroUsd:fixture.h.state().budget.consumed_micro_usd,
   lookupChargeMicroUsd:fixture.readH.state().budget.consumed_micro_usd,hostsOpened:hosts,closed,revoked});
  return Object.freeze({mode,
-  openHost(){active();const services=fixture.reconstruct({now});const app=createActionHostApplication({services,...ports,now,limits:{maxRequestMs:1000,maxRequestBytes:65536,maxResponseBytes:131072}});hosts++;return {app,credential};},
+  openHost(){active();const services=reconstruct();const app=createActionHostApplication({services,...ports,now,limits:{maxRequestMs:1000,maxRequestBytes:65536,maxResponseBytes:131072}});hosts++;return {app,credential};},
   approve(proposal){active();fixture.approve(proposal);},
   revoke(){if(closed)throw Error('LOCAL_HOST_CLOSED');revoked=true;fixture.revoke();},stats,close,
  });
