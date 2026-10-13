@@ -1,0 +1,32 @@
+✔ actual control lookup/read produces scorer-ready captured output without gold or qualification (43.951383ms)
+✔ unsupported original stays ineligible with no preparation or control calls (5.016599ms)
+✔ unsupported correct-evidence stays ineligible with no preparation or control calls (4.75848ms)
+✔ actual read receipt denial captures authority and safe error (13.436538ms)
+✔ actual read throw denial captures authority and safe error (9.757101ms)
+✔ lookup denial is not misrepresented as supported read denial (5.93466ms)
+✔ durable ACK uncertainty retains UNKNOWN and does not retry (9.837612ms)
+✔ invalid independent input pins or host binding refuses before ports (3.15651ms)
+✔ invalid independent input pins or host binding refuses before ports (2.830298ms)
+✔ invalid independent input pins or host binding refuses before ports (3.544884ms)
+✔ invalid independent input pins or host binding refuses before ports (3.0572ms)
+✔ invalid independent input pins or host binding refuses before ports (2.86443ms)
+✔ gold inserted into runner is rejected even with recomputed projection pin (2.892052ms)
+✔ prepared context cannot substitute host producer or selected client (3.400697ms)
+✔ abort parked prepare returns bounded failure and pending-call truth (13.246602ms)
+✔ abort parked gateway returns bounded failure and pending-call truth (5.970383ms)
+✔ abort parked read returns bounded failure and pending-call truth (9.418593ms)
+✔ abort parked authorize returns bounded failure and pending-call truth (8.675615ms)
+✔ shorter lookup authorization expiry cannot be expanded for later read (7.950483ms)
+✔ preaborted run retains failed case and invokes no host ports (3.002498ms)
+✔ all three splits retain exact pins and denominators across supported and unsupported modes (18.765617ms)
+✔ capture exhaustion retains digest and blocks remaining supported cases (23.277185ms)
+✔ an empty typed corpus yields no port calls and zero denominator, never task success (3.564253ms)
+✔ unsettled predecessor never starts a sibling lookup (10.956567ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2828.254695
