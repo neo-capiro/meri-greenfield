@@ -1,0 +1,11 @@
+# Independent qualification assembly criteria
+
+Frozen before inspecting new implementation. Base PR48 `3d34bf42983824327c63f96419abcfea8a587407`. Review-only paths: `apps/control/qualified-application/independent/**` and this packet. No production edits or live database, worker, cloud, provider, private evidence, installation or publication actions.
+
+- Explicit disposable target and exact existing six-schema identities. Constructor/import inert. Partial/ambiguous setup never silently repeats or destroys retained evidence; reconstruction verifies and never seeds/migrates/rebinds.
+- Canonical Python Grants/PostgresStore own PENDING→ACTIVE; independent exact current worker observation must precede activation. Actual compiled predicate evaluation, narrow trusted raw read ports and pinned runtime; no boolean verification callback or claim that a synthetic ARN proves a live task.
+- Exact full binding, immutable allocation, two distinct scoped grant facts, original cutoff and same admitted pool across schema/lifecycle/application. No credential/body authority, substituted worker/grant/policy/current scope, deadline reset or empty/duplicate grant sets.
+- Concrete qualification execution composes original gateway/command/approval/budget owners and typed synthetic source only. Same persisted currentRun gates session, read and command. Production defaults/catalog remain source-off; SDK remains the sole orchestration owner.
+- Before/after await checks and signal propagation; original cutoff includes worker acquisition/setup/binding/mount. Late acquisition cleanup bounded, borrowed pools not disposed, own children/listeners physically closed. Unknown COMMIT/process outcomes are terminal and content-free, without effect retry or liability refund.
+- Actual flow may issue session/query/draft/pending proposal; no mutation before explicit existing approval, one effect/charge then replay without another, fresh revocation blocks use. Public receiver and original proposal/hash/client bindings remain intact.
+- Source tests use existing inert SQL boundaries only and distinguish executable fixture source from native qualification. Preserve raw failures/preimages and original tests; final acceptance only at immutable code pins and exact relevant checks.
