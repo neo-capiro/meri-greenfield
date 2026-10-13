@@ -1,0 +1,41 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-native-structure-author-20261013",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/qualified-application/schema-structure.test.mjs",
+    "apps/control/qualified-application/schema-size.test.mjs",
+    "apps/control/qualified-application/schema-size-inventory.test.mjs",
+    "apps/control/qualified-application/schema-size-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs"
+  ],
+  "cwd": "/tmp/meri-native-structure-author-20261013",
+  "sourceHead": "ac9d7cdb1fb870619148a81adb69ab6b7409636d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T07:54:48.955956+00:00",
+  "durationSeconds": 18.709,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 570273,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.stdout.bin",
+      "bytes": 5907,
+      "sha256": "1023ac285fb33e6a7431a8fb8fcffcb45d3a6cd9e4b56d8a85c05142a467551c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/author/structure-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

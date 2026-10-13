@@ -1,0 +1,48 @@
+diff --git a/apps/control/qualified-application/schema-size-independent.test.mjs b/apps/control/qualified-application/schema-size-independent.test.mjs
+index 8b4d25f4..8a331dda 100644
+--- a/apps/control/qualified-application/schema-size-independent.test.mjs
++++ b/apps/control/qualified-application/schema-size-independent.test.mjs
+@@ -47,7 +47,7 @@ test('both admissions reject Proxy and accessors without invocation',()=>{
+  assert.equal(effects,0);
+ });
+ test('preservation keeps node and depth guards despite larger byte limit',()=>{
+- assert.throws(()=>preservation([{values:Array.from({length:100001},()=>0)}]));
++ assert.throws(()=>preservation([{values:Array.from({length:250001},()=>0)}]));
+  let deep={};for(let i=0;i<66;i++)deep={next:deep};assert.throws(()=>preservation([deep]));
+  const cycle={};cycle.self=cycle;assert.throws(()=>preservation([cycle]));
+ });
+diff --git a/apps/control/qualified-application/schema-size-inventory.test.mjs b/apps/control/qualified-application/schema-size-inventory.test.mjs
+index 1ba0f023..1df968fa 100644
+--- a/apps/control/qualified-application/schema-size-inventory.test.mjs
++++ b/apps/control/qualified-application/schema-size-inventory.test.mjs
+@@ -25,7 +25,7 @@ function inventory(){
+  distribute(other,3128280-bytes([{unsupported:0,metadata}]));
+  return {metadata,all};
+ }
+-test('complete8362-record measured inventory retains exact bytes/tail at100000 nodes; next node refuses',async()=>{
++test('complete8362-record measured inventory retains exact bytes/tail at100000 nodes;100001 now passes and250001 refuses',async()=>{
+  const {metadata,all}=inventory(),rows=[{unsupported:0,metadata}];
+  assert.equal(rows.length,1);assert.equal(Object.keys(metadata).length,12);assert.equal(all.length,8362);
+  assert(fields.every(k=>metadata[k].length>0&&metadata[k].every(r=>r.text.length>0)));
+@@ -41,6 +41,8 @@ test('complete8362-record measured inventory retains exact bytes/tail at100000 n
+  assert.equal(bytes(rows),3128280);assert.equal(nodes(rows),100000);
+  await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture}),e=>e.outcome==='READ_UNAVAILABLE');
+  tail.text=original;tail.overflow=true;assert.equal(nodes(rows),100001);assert(bytes(rows)<4194304);
++ const accepted=scripted(options);assert.equal((await prepareOwnedApplicationSchema(accepted.args())).status,'PASS');assert.equal(accepted.log.filter(q=>ddl.includes(q.text)).length,6);assert.equal(accepted.state.commits,1);
++ tail.structuralOverflow=Array(149999).fill(null);assert.equal(nodes(rows),250001);assert(bytes(rows)<4194304);
+  const denied=scripted(options);
+  await assert.rejects(prepareOwnedApplicationSchema(denied.args()),e=>e.outcome==='NOT_INSTALLED'&&e.stage==='preservation');
+  assert.equal(denied.log.filter(q=>ddl.includes(q.text)).length,0);assert.equal(denied.state.commits,0);
+diff --git a/apps/control/qualified-application/schema-size.test.mjs b/apps/control/qualified-application/schema-size.test.mjs
+index 47639fb2..cc2c4f52 100644
+--- a/apps/control/qualified-application/schema-size.test.mjs
++++ b/apps/control/qualified-application/schema-size.test.mjs
+@@ -45,7 +45,7 @@ for(const kind of ['count','depth','nodes','accessor','proxy','metadata-shape','
+  s.pool.connect=async()=>{const c=await connect(),query=c.query.bind(c);c.query=async q=>{const r=await query(q);if(!q.text.startsWith('WITH ns AS'))return r;
+   if(kind==='count')r.rows.push(structuredClone(r.rows[0]));
+   if(kind==='depth'){let nested={};for(let i=0;i<65;i++)nested={nested};r.rows[0].metadata.labels=[nested];}
+-  if(kind==='nodes')r.rows[0].metadata.labels=Array(100001).fill(null);
++  if(kind==='nodes')r.rows[0].metadata.labels=Array(250001).fill(null);
+   if(kind==='accessor')Object.defineProperty(r.rows[0].metadata,'labels',{enumerable:true,get(){touched++;return [];}});
+   if(kind==='proxy')r.rows[0].metadata.labels=new Proxy([],{ownKeys(){touched++;return [];}});
+   if(kind==='metadata-shape')r.rows[0].metadata.extra=[];
