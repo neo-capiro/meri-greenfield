@@ -18,6 +18,8 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const rawResolved=await life.run(signal=>resolve({credential:info.credential,intent:info.intent,body,requestSha256,deadlineMs,signal}));if(rawResolved===null||rawResolved===undefined)fail('UNAVAILABLE');
   const resolved=own(rawResolved,['documentOptions','recheck']),recheck=method(rawResolved,'recheck');
   const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
+  const innerLimits=data(own(options.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']));
+  const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const o=own(options.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
   o.context=v.context(o.context);
   const pinned=hash({intent:info.intent,body});life.limitDeadline(o.context.deadlineMs);
@@ -28,7 +30,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const wrap=(port,name,resource=()=>null)=>{const invoke=method(port,name);return async(...args)=>{await fresh('effect',resource(args));const value=await life.run(()=>invoke(...args));await fresh('effect',resource(args));return value;};};
   const authority={check:wrap(o.authority,'check',args=>args[0]?.input??null)},authorize=o.authorize;
   if(typeof authorize!=='function'||types.isProxy(authorize))fail('ACCESS_DENIED');
-  const app=createDocumentApplication({...options,artifactOptions:{...o,authority,async authorize(call){await fresh('effect',call.resource);const result=await life.run(()=>authorize(call));await fresh('effect',call.resource);return result;},
+  const app=createDocumentApplication({...options,limits:effectiveLimits,artifactOptions:{...o,authority,async authorize(call){await fresh('effect',call.resource);const result=await life.run(()=>authorize(call));await fresh('effect',call.resource);return result;},
    versions:{read:wrap(o.versions,'read',args=>typeof args[0]==='string'?{versionId:args[0]}:args[0]),commit:wrap(o.versions,'commit',args=>({versionId:args[0].version.versionId,object:args[0].version.object}))},
    objects:{get:wrap(o.objects,'get',args=>args[0]),put:wrap(o.objects,'put')},executor:{execute:wrap(o.executor,'execute')}}});
   await fresh('admission');const serialized=JSON.stringify(body),headers=new Headers(info.headers);headers.set('content-length',String(Buffer.byteLength(serialized)));
