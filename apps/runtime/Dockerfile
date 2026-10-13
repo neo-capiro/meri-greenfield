@@ -14,8 +14,11 @@ COPY packages/window-resolution/package.json packages/window-resolution/package-
 RUN npm ci --prefix packages/window-resolution --ignore-scripts --no-audit --no-fund
 COPY apps/control/conversations/package.json apps/control/conversations/package-lock.json ./apps/control/conversations/
 RUN npm ci --prefix apps/control/conversations --ignore-scripts --no-audit --no-fund
+COPY apps/artifacts/storage/package.json apps/artifacts/storage/package-lock.json ./apps/artifacts/storage/
+RUN npm ci --prefix apps/artifacts/storage --omit=dev --ignore-scripts --no-audit --no-fund
 COPY apps ./apps
 COPY packages ./packages
+RUN mkdir -p node_modules/@capiro && ln -s ../../packages/contracts node_modules/@capiro/meri-contracts
 USER node
 ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
 CMD ["--help"]
