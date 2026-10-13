@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "packages/contracts/generate-documents.mjs"
+  ],
+  "cwd": "/tmp/meri-document-contract-author-20261013",
+  "sourceHead": "1332b31d962ebe7bee1479e82c7d2695dd41d683",
+  "sourceDiffSha256": "41d2cd23b55503a3b19224f6a02986d363d0a93f50464b455d77e426e05ca7a4",
+  "sourceDiffBytes": 2592,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-13T07:26:01.238044+00:00",
+  "durationSeconds": 0.466,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 533897,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 533908,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/author/generate-first.stdout.bin",
+      "bytes": 525,
+      "sha256": "0f48d9d0f2c0ae604253086d23dcf176c9dcf5c9def5d59e6cc79271a4a6ca2b"
+    },
+    {
+      "path": "docs/qualification/candidates/document-contract-20261013/author/generate-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
