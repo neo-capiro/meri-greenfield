@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/independent/lifecycle-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-assembly-review-20261013",
+  "sourceHead": "38d63589bae6e6cb072bf863349ad438b17f4f6b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T05:18:45.766772+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 499282,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.stdout.bin",
+      "bytes": 1616,
+      "sha256": "ab5beafe0ddf57f0ef39ae6ef8f6953926fb3dd10c4d2066d5026a9d32e93d05"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/review/lifecycle-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
