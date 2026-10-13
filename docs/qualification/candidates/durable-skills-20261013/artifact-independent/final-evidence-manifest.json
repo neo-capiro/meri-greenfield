@@ -12,8 +12,8 @@
     },
     {
       "file": "FINAL.json",
-      "bytes": 7577,
-      "sha256": "4a89e06d99f4b1cda905b5b82b687ae0cac3b96bce0a2c934551d8f78756287c"
+      "bytes": 8442,
+      "sha256": "c2c28204d914fb24c4fea1863a719e97a754c5f27330ce6065acd362c937563e"
     },
     {
       "file": "OUTLINE.md",
@@ -27,8 +27,8 @@
     },
     {
       "file": "REVIEW.md",
-      "bytes": 7649,
-      "sha256": "758728534b28ca9b898c9112655dd9d307468a9e57e17565f502e6d8738f1726"
+      "bytes": 8671,
+      "sha256": "b4e25c4b31f5b6d5f3bd03e28a79407f2bc7628476730ac154318f19602f9b06"
     },
     {
       "file": "artifact-opening-draft-corrected.stdout.gz",
@@ -42,8 +42,23 @@
     },
     {
       "file": "audit_source.py",
-      "bytes": 4193,
-      "sha256": "58ed6d7dcd1b0578e3487629d8d2fa9ad5e3ca1c10f11a3ea98df7b927cd3266"
+      "bytes": 4564,
+      "sha256": "dcc08e9a3c3ecb2aedce015f0a0f7d60e5e0001c3c9ced6c1813093cd51473a0"
+    },
+    {
+      "file": "binding-final-1237.tap.gz",
+      "bytes": 331,
+      "sha256": "5de179721cd51a02f6948508d392e09dcecb63c8f95f86f5715fef7ce337f485"
+    },
+    {
+      "file": "binding-independent.test.mjs",
+      "bytes": 2314,
+      "sha256": "1d372ee11eb5eb0277edbb404ae5214e9d17d1c20637eb0d53c8b4c09f236d1a"
+    },
+    {
+      "file": "binding-raw-evidence.json",
+      "bytes": 417,
+      "sha256": "adf00ed574e65c6aac93c05901ee059e41b391f3a90378bed6a26b70ed51436f"
     },
     {
       "file": "checkpoint-cleanup.json",
@@ -227,8 +242,8 @@
     },
     {
       "file": "final-fresh-artifact-opening.json",
-      "bytes": 32584,
-      "sha256": "9aca3239d5bc2f8af98114ce214a720efe8de14d235bff6f1056fee8db5f334e"
+      "bytes": 32620,
+      "sha256": "4fe082e124733f3e03072967509f7d7f19a1cee6be96431bf1e1c404ff127c43"
     },
     {
       "file": "final-fresh-artifact-opening.stdout.gz",
@@ -399,6 +414,16 @@
       "file": "skills-final-14f2.tap.gz",
       "bytes": 2536,
       "sha256": "cfc07773349cd80bdd767e8d9ab0ee9744f4eeb9d3cea4f9796a3bd6b083a465"
+    },
+    {
+      "file": "source-binding-final-binder.json",
+      "bytes": 17587,
+      "sha256": "8a5b549f83f1b641355b120eba81fbc3ae87160856dcc89b7deb90c59513f18c"
+    },
+    {
+      "file": "source-binding-final-binder.stdout.gz",
+      "bytes": 168,
+      "sha256": "51e5018231cd5788a8742a6f0a6d36df4f120a14ff09bbb22281cc3f60da904d"
     },
     {
       "file": "source-binding-final-corrected.stdout.gz",

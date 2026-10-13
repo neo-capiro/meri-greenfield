@@ -716,5 +716,6 @@
     }
   ],
   "sourceCommit": "14f2e2eaff45e520727ba2b0eb7398daf0cf3a38",
-  "finalCompositionCommit": "e0cc78711e741c80bfb2d6459a622a9ed7560586"
+  "finalCompositionCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "bindingOnlyDeltaReviewed": true
 }

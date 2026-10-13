@@ -1,7 +1,7 @@
 """Bind reviewed components and prior fresh renders to the exact frozen source."""
 from pathlib import Path
 import subprocess,json,hashlib,sys
-root=Path(sys.argv[1]);out=Path(sys.argv[2]);pin='14f2e2eaff45e520727ba2b0eb7398daf0cf3a38';base='a337ef93e386f5eb646e85f89f26b425546b1222'
+root=Path(sys.argv[1]);out=Path(sys.argv[2]);pin='14f2e2eaff45e520727ba2b0eb7398daf0cf3a38';base='a337ef93e386f5eb646e85f89f26b425546b1222';composition='123767d120e7286d0550fb8ba63166ea4ffcbd34'
 def git(*args):return subprocess.check_output(['git',*args],cwd=root,text=True).strip()
 def blobs(ref,paths):
  if not paths:return {}
@@ -11,7 +11,7 @@ original=blobs(base,protected);current=blobs(pin,protected);assert original==cur
 native_sql=[p for p in git('ls-tree','-r','--name-only',base,'docs/qualification').splitlines() if p.endswith('.sql')]
 assert blobs(base,native_sql)==blobs(pin,native_sql)
 owned=['apps/control/document-application/commitments-audit','apps/control/document-application/relationship-brief','packages/skills/evidence','packages/skills/commitments/evidence.mjs']
-scope=blobs(pin,owned); bindings=[]
+scope=blobs(composition,owned); bindings=[]
 for path,blob in scope.items():
  if path.endswith('.mjs') and '/test/' not in path:
   data=(root/path).read_bytes();assert git('hash-object',path)==blob
@@ -26,7 +26,9 @@ changes=git('diff','--name-only',retained,pin,'--','apps/control/document-applic
 assert changes==['apps/control/document-application/commitments-audit/source.mjs','apps/control/document-application/commitments-audit/test/compiler.test.mjs']
 relationship='9b068f81a7945a883f05fc85a9314578f733cab1'
 assert blobs(relationship,['apps/control/document-application/relationship-brief'])==blobs(pin,['apps/control/document-application/relationship-brief'])
-composition='e0cc78711e741c80bfb2d6459a622a9ed7560586'
-assert blobs(pin,owned+protected)==blobs(composition,owned+protected)
-report={'status':'PASS','sourceCommit':pin,'sourceTree':git('rev-parse',pin+'^{tree}'),'finalCompositionCommit':composition,'finalCompositionTree':git('rev-parse',composition+'^{tree}'),'compositionComponentAndProtectedBlobsByteIdentical':True,'base':base,'protectedBlobCount':len(current),'protectedBlobs':current,'nativeQualificationSqlPins':blobs(pin,native_sql),'nativeQualificationSqlFilesPresent':len(native_sql),'componentBindings':bindings,'retainedCommitmentsFlowSource':retained,'retainedCommitmentsEmitterAndEvidenceBytesUnchanged':True,'onlyCommitmentsChangesAfterFreshRender':changes,'relationshipComponent':relationship,'relationshipBlobsByteIdentical':True,'publicVersion':json.loads((root/'packages/contracts/package.json').read_text())['version'],'nativeQualified':False}
+assert blobs(pin,protected)==blobs(composition,protected)
+earlier=blobs(pin,owned);later=blobs(composition,owned)
+delta=sorted(p for p in set(earlier)|set(later) if earlier.get(p)!=later.get(p))
+assert delta==['apps/control/document-application/relationship-brief/binding.mjs','apps/control/document-application/relationship-brief/test/binding.test.mjs']
+report={'status':'PASS','sourceCommit':pin,'sourceTree':git('rev-parse',pin+'^{tree}'),'finalCompositionCommit':composition,'finalCompositionTree':git('rev-parse',composition+'^{tree}'),'compositionComponentBlobsByteIdenticalExceptReviewedBindingDelta':delta,'compositionProtectedBlobsByteIdentical':True,'base':base,'protectedBlobCount':len(current),'protectedBlobs':current,'nativeQualificationSqlPins':blobs(pin,native_sql),'nativeQualificationSqlFilesPresent':len(native_sql),'componentBindings':bindings,'retainedCommitmentsFlowSource':retained,'retainedCommitmentsEmitterAndEvidenceBytesUnchanged':True,'onlyCommitmentsChangesAfterFreshRender':changes,'relationshipComponent':relationship,'relationshipEmissionAndSourceBlobsByteIdentical':True,'publicVersion':json.loads((root/'packages/contracts/package.json').read_text())['version'],'nativeQualified':False}
 out.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:report[k] for k in ['status','sourceCommit','sourceTree','protectedBlobCount','publicVersion']}))
