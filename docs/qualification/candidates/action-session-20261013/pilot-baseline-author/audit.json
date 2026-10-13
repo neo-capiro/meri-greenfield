@@ -1,0 +1,201 @@
+{
+  "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+  "head": "07d9de9bdbf76bb11edb59ff7da0022d7648d3a5",
+  "originalEntriesPreserved": 10967,
+  "passed": 37,
+  "total": 37,
+  "checks": [
+    {
+      "name": "unchanged dependency docs/qualification/candidates/local-application-20261013/pilot/cases.json",
+      "passed": true
+    },
+    {
+      "name": "unchanged dependency apps/control/action-application/local/demo.mjs",
+      "passed": true
+    },
+    {
+      "name": "unchanged dependency packages/contracts/dist/action-application.mjs",
+      "passed": true
+    },
+    {
+      "name": "unchanged dependency docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs",
+      "passed": true
+    },
+    {
+      "name": "unchanged dependency docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs",
+      "passed": true
+    },
+    {
+      "name": "unchanged dependency packages/runtime/operation-lifetime.mjs",
+      "passed": true
+    },
+    {
+      "name": "initial exit",
+      "passed": true
+    },
+    {
+      "name": "initial cleanup",
+      "passed": true
+    },
+    {
+      "name": "initial source freeze",
+      "passed": true
+    },
+    {
+      "name": "initial stdout",
+      "passed": true
+    },
+    {
+      "name": "initial stderr",
+      "passed": true
+    },
+    {
+      "name": "focused exit",
+      "passed": true
+    },
+    {
+      "name": "focused cleanup",
+      "passed": true
+    },
+    {
+      "name": "focused source freeze",
+      "passed": true
+    },
+    {
+      "name": "focused stdout",
+      "passed": true
+    },
+    {
+      "name": "focused stderr",
+      "passed": true
+    },
+    {
+      "name": "cleanup-repair exit",
+      "passed": true
+    },
+    {
+      "name": "cleanup-repair cleanup",
+      "passed": true
+    },
+    {
+      "name": "cleanup-repair source freeze",
+      "passed": true
+    },
+    {
+      "name": "cleanup-repair stdout",
+      "passed": true
+    },
+    {
+      "name": "cleanup-repair stderr",
+      "passed": true
+    },
+    {
+      "name": "final-baseline exit",
+      "passed": true
+    },
+    {
+      "name": "final-baseline cleanup",
+      "passed": true
+    },
+    {
+      "name": "final-baseline source freeze",
+      "passed": true
+    },
+    {
+      "name": "final-baseline stdout",
+      "passed": true
+    },
+    {
+      "name": "final-baseline stderr",
+      "passed": true
+    },
+    {
+      "name": "six complete successes",
+      "passed": true
+    },
+    {
+      "name": "no approvals or effects",
+      "passed": true
+    },
+    {
+      "name": "all sessions closed/refused",
+      "passed": true
+    },
+    {
+      "name": "gold bytes correlated",
+      "passed": true
+    },
+    {
+      "name": "bounded receipt",
+      "passed": true
+    },
+    {
+      "name": "no model quality/native claim",
+      "passed": true
+    },
+    {
+      "name": "exclusive additions only",
+      "passed": true
+    },
+    {
+      "name": "no production or schema edit",
+      "passed": true
+    },
+    {
+      "name": "no approve invocation",
+      "passed": true
+    },
+    {
+      "name": "public receiver used",
+      "passed": true
+    },
+    {
+      "name": "canonical lifetime used",
+      "passed": true
+    }
+  ],
+  "sourcePins": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/pilot/cases.json",
+      "commit": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+      "blob": "9e3133379e11f6def4bc200ff1e7eed2b88c1c3b",
+      "bytes": 16222,
+      "sha256": "c87bd3feb6814439d6f1ce763188c1dfabb6931504f1e5abeb164bd9078cea48"
+    },
+    {
+      "path": "apps/control/action-application/local/demo.mjs",
+      "commit": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+      "blob": "940d52e8027f8e2769541c3ebac05b76008930c6",
+      "bytes": 10707,
+      "sha256": "91f4e85b7c3c43f0d6860ecd50fe93e2cae5c3841a34652558cdd117a6f0f0e9"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.mjs",
+      "commit": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+      "blob": "769f743ae9913f5b4f6ba6135234fbaada58d4e9",
+      "bytes": 1480808,
+      "sha256": "9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs",
+      "commit": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+      "blob": "ecbacb3e4dc776fb371ca5a051598643d79a73ce",
+      "bytes": 4554,
+      "sha256": "6b1159e2a6be46ee37ce54abef4270f47d20a7d3cabeb7ed01e67a9f63f21095"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs",
+      "commit": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+      "blob": "d4dfea557242cb9fa7a1a7c86d267aa4d77e09d0",
+      "bytes": 12240,
+      "sha256": "de2589e662788859c97fd54afd37730309e90db3ed8ad067711348baf68a741a"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "commit": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+      "blob": "a90524cdfe899260310d87bafed5a7a31a664317",
+      "bytes": 2595,
+      "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+    }
+  ]
+}

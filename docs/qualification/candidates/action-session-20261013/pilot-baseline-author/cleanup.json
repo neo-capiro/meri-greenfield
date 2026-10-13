@@ -1,0 +1,36 @@
+{
+  "removedOnlyOwnedDependencyLink": "node_modules",
+  "target": "/workspace/meri-read-continuation-20261012/node_modules",
+  "donorUnmodified": true,
+  "noOwnedDependencyLinkRemains": true,
+  "processes": [
+    {
+      "capture": "initial",
+      "ownedPidAndPgid": 477900,
+      "ownedProcessGroupAbsent": true,
+      "ownedGroupKillRequired": false,
+      "timedOut": false
+    },
+    {
+      "capture": "focused",
+      "ownedPidAndPgid": 478579,
+      "ownedProcessGroupAbsent": true,
+      "ownedGroupKillRequired": false,
+      "timedOut": false
+    },
+    {
+      "capture": "cleanup-repair",
+      "ownedPidAndPgid": 479039,
+      "ownedProcessGroupAbsent": true,
+      "ownedGroupKillRequired": false,
+      "timedOut": false
+    },
+    {
+      "capture": "final-baseline",
+      "ownedPidAndPgid": 479556,
+      "ownedProcessGroupAbsent": true,
+      "ownedGroupKillRequired": false,
+      "timedOut": false
+    }
+  ]
+}
