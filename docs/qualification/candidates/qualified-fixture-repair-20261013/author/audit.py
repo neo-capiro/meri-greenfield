@@ -4,7 +4,7 @@ import hashlib,json,subprocess
 root=Path(__file__).resolve().parents[5]
 evidence=Path(__file__).resolve().parent
 base='b5243ae164f68c7591b039e8365d9897390543d2'
-source='f41ec1a78191bff882f1dbc7310e3d69a99bc111'
+source='e14f3fc704adde3819088b0587f91c81be5e1ad0'
 def git(*args):return subprocess.check_output(['git',*args],cwd=root)
 def blob(ref,path):return git('show',f'{ref}:{path}')
 def sha(value):return hashlib.sha256(value).hexdigest()
@@ -42,6 +42,7 @@ check('initial compatibility failures retained',any(r['label']=='initial-regress
 check('namespace identity failure retained',any(r['label']=='namespace-identity-before' and r['exitCode']==1 for r in receipts))
 check('sequence precision failure retained',any(r['label']=='sequence-before' and r['exitCode']==1 for r in receipts))
 check('fixture failure retained',any(r['label']=='source-focused' and r['exitCode']==1 for r in receipts))
+check('regclass namespace shadowing failure retained',any(r['label']=='regclass-before' and r['exitCode']==1 for r in receipts))
 check('environment setup failure retained',any(r['label']=='original-lifecycle' and r['exitCode']==1 for r in receipts))
 result={'base':base,'source':source,'originalEntries':len(entries),'unchangedOriginalEntries':sum(p not in allowed for p in entries),'checks':checks,'passed':len(checks),'failed':0,'sourceFiles':[{'path':p,'blob':git('rev-parse',f'{source}:{p}').decode().strip(),'sha256':sha(blob(source,p))} for p in changed],'receipts':receipts,'nativeExecution':False}
 (evidence/'audit.json').write_text(json.dumps(result,indent=2)+'\n')
