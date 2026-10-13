@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-13T07:15:28.603490+00:00",
+  "groups": [
+    {
+      "capture": "before",
+      "exitCode": 1,
+      "pgid": 528723,
+      "physicallyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "repaired",
+      "exitCode": 1,
+      "pgid": 528922,
+      "physicallyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "import-repaired",
+      "exitCode": 0,
+      "pgid": 529264,
+      "physicallyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "dependenciesInstalledOrLinked": false,
+  "nativeActions": false,
+  "borrowedResourcesDisposed": false
+}
