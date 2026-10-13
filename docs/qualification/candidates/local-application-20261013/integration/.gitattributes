@@ -1,0 +1,2 @@
+*.stdout.bin binary
+*.stderr.bin binary
