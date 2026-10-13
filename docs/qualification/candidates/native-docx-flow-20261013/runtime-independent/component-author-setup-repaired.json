@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "681731f1c647339f748dc60eb6ac165c1d4257cb",
+  "sourceTree": "2174b478d9b429044d13d8ec53fb9fb82e144437",
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/selected/test/selected.test.mjs",
+    "apps/runtime/selected/test/process.test.mjs",
+    "apps/runtime/native-authority/test/session-owner.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-runtime-independent",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 4.104,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2248,
+  "stdoutSha256": "1a9eb165177c8d1e2e9068aab9d4c5e1bc62f7429eb65cc48ea382bd1fcece28",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

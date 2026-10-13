@@ -1,0 +1,41 @@
+{
+  "reviewedCommit": "9679e081abec365ec34177e2dce6c0ff821c3315",
+  "reviewedTree": "6766c8e0d56cf8ba965f5a8f933835c5ab7a940b",
+  "base": "f3e031e5301907945fa0106852034e4a1e3d0fb2",
+  "baseTree": "abe5c2572a1741d1be9557d68c3441f151aac248",
+  "baseEntries": 15528,
+  "exactBaseEntries": 15526,
+  "changedExistingPaths": [
+    "apps/gateway/selected-skills/mount.mjs",
+    "apps/worker/conversation/skills/selected-runtime.mjs"
+  ],
+  "allOtherBaseEntriesByteAndModeExact": true,
+  "components": [
+    {
+      "upstreamCommit": "dcd83e974e934c8f40b3fe56037d00d9c62e1f0c",
+      "upstreamTree": "8a12e993ede80709b7fb37ef4b5a8de8302b7a69",
+      "paths": [
+        "apps/runtime/selected/",
+        "packages/contracts/runtime-0.2/selected.mjs",
+        "apps/gateway/selected-skills/mount.mjs",
+        "apps/worker/conversation/skills/selected-runtime.mjs"
+      ],
+      "reviewedEntries": 49,
+      "differentEntries": []
+    },
+    {
+      "upstreamCommit": "4b8f30846a20e9ef16bc5d0e253ea8e716e58300",
+      "upstreamTree": "bec442c47926887b44b2b925506c060aa0954667",
+      "paths": [
+        "apps/runtime/native-authority/",
+        "packages/contracts/runtime-0.2/session.mjs",
+        "apps/control/conversations/migrations/0004_sdk_sessions.sql"
+      ],
+      "reviewedEntries": 45,
+      "differentEntries": []
+    }
+  ],
+  "tupleCompleteFixtureSha256": "6570ff5dc87f08d33651cfa0d2804af715b6e26abbb35de4105ff5b8fea35257",
+  "immutableOldFixtureSha256": "e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269",
+  "scope": "Selected/session component source only. Budget prerequisite authored by reviewer is not independently accepted here. Public0.1.4/catalog/schema/original assets/helper/native qualification bytes preserved against base. No migration applied or native call."
+}

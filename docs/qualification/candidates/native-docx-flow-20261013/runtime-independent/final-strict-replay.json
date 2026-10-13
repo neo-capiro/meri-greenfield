@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "0cc28d7468b44880fcb31d2720497bc9feb51aa2",
+  "sourceTree": "5ade346c76cc088167d60c0c92a4e0e7c7394f26",
+  "sourceDiffBytes": 0,
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs",
+    "apps/worker/conversation/skills/test/mcp.test.mjs",
+    "apps/runtime/selected/test/selected.test.mjs",
+    "apps/runtime/selected/test/process.test.mjs",
+    "apps/runtime/native-authority/test/session-owner.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "apps/runtime/native-authority/test/identity-context.test.mjs",
+    "apps/runtime/native-authority/test/session-integrity.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-boundary-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-runtime-independent",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 8.862,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 10813,
+  "stdoutSha256": "08047989134e6f6e11a989a70e101e762e9bbc80d275fed922232216fd786eb3",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

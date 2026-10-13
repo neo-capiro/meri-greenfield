@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "stdoutSha256": "bb02ad0546c56067a84174d718fac5f3f94e77ad02799a0e3f45dd051608ad5e",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "Docs/source text check; immutable raw stdout retained unchanged."
+}

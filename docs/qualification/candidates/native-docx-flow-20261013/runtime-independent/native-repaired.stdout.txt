@@ -1,0 +1,57 @@
+✔ thin canonical native join uses actual currentRun product owner without DTO expansion (15.474516ms)
+✔ default bridge disabled makes no native reads or current-run queries (3.472255ms)
+✔ current native selected-client substitution is refused by canonical join (4.183697ms)
+✔ actual product grant revoked during native context read cannot release joined authority (4.176987ms)
+✔ thin bridge rejects active nested configuration without executing getter (0.190024ms)
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (24.540214ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (1.679858ms)
+✔ missing actual native task authority yields503 before registration/admission (0.688918ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (1.179431ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (21.603829ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (4.856642ms)
+✔ consistently rehashed retained receipt refuses foreign binding (12.095421ms)
+✔ consistently rehashed retained receipt refuses foreign observed key (2.559552ms)
+✔ consistently rehashed retained receipt refuses foreign append identity (2.26372ms)
+✔ consistently rehashed retained receipt refuses foreign entry digest (2.167297ms)
+✔ consistently rehashed retained receipt refuses uncommitted receipt (1.947899ms)
+✔ consistently rehashed retained receipt refuses impossible offset (1.876092ms)
+✔ consistently rehashed retained receipt refuses inconsistent added count (1.778055ms)
+✔ consistently rehashed retained receipt refuses undeclared receipt field (2.562446ms)
+✔ original append receipt remains exact after later stream advancement (2.493183ms)
+✔ bound native mirror configuration accessor is refused without execution (0.343503ms)
+✔ bound native mirror configuration Proxy is refused before traps (0.147921ms)
+✔ bound native mirror method accessor is refused without execution (0.105498ms)
+✔ bound native mirror captures original two-argument methods and class receiver (0.520668ms)
+✔ native authority absent fails before any admitted transaction or SQL (1.34653ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (9.232215ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (1.807279ms)
+✔ foreign project key and stale offset cannot append or overwrite original (2.30337ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (2.956535ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (1.976301ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (2.886501ms)
+✔ parked canonical admission is bounded by the original caller lifetime (20.353261ms)
+✔ immutable registration replay retains original expiry despite a shorter current authorization (1.617986ms)
+✔ redundant entry/stream/session owner tuples cannot substitute foreign retained rows (4.198159ms)
+✔ bound native mirror admits outer configuration without executing getter (0.725874ms)
+✔ bound native mirror rejects Proxy configuration before traps (2.938768ms)
+✔ bound native mirror rejects borrowed method accessor without executing it (0.218717ms)
+✔ bound native mirror preserves admitted client methods and original receiver (1.24587ms)
+✔ consistent retained batch corruption refuses foreign observed SDK key (8.844837ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✔ consistent retained batch corruption refuses foreign append identity (3.785051ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✔ consistent retained batch corruption refuses inconsistent entry digest (3.197395ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✔ consistent retained batch corruption refuses uncommitted receipt (3.287318ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✔ consistent retained batch corruption refuses impossible offset (2.910036ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✔ current native authority refuses exact retained batch replay before SQL (1.440761ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4151.234185
