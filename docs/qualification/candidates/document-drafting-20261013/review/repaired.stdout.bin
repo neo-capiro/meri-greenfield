@@ -1,0 +1,45 @@
+✔ independent real loopback DOCX flow creates revisions, retains originals, reconstructs graph and closes all resources (735.006634ms)
+✔ independent current actor substitution refuses before generation (8.432433ms)
+✔ independent current tenant substitution refuses before generation (6.47453ms)
+✔ independent current attempt substitution refuses before generation (7.443337ms)
+✔ independent current fence substitution refuses before generation (8.404908ms)
+✔ independent current client substitution refuses before generation (9.137043ms)
+✔ independent current scope revision substitution refuses before generation (9.362261ms)
+✔ independent full canonical descriptor cannot omit grants or source requirements (8.471612ms)
+✔ independent constructor snapshots caller context, scopes, limits and descriptor (101.737219ms)
+✔ independent create replay and changed intent cannot generate or charge again (98.821967ms)
+✔ independent stale revision leaves both committed versions unchanged and preserves uncertain effect (348.156838ms)
+✔ independent completed download withheld on final session denial remains RESULT_NOT_RELEASED (110.654511ms)
+✔ independent object acknowledgement then revocation retains UNKNOWN and no second write on replay (77.098354ms)
+✔ independent original cutoff aborts parked current-state receipt before effects (42.580721ms)
+✔ independent newly shortened artifact expiry bounds the next parked executor (117.451968ms)
+✔ independent cancellation during response acquisition denies exact old version (124.895011ms)
+✔ independent raw binding injection has no authority/effect (6.552439ms)
+✔ independent raw scopes injection has no authority/effect (5.58201ms)
+✔ independent raw credential injection has no authority/effect (6.62967ms)
+✔ independent raw path injection has no authority/effect (9.891949ms)
+✔ independent raw baseVersionId injection has no authority/effect (5.506787ms)
+✔ independent hostile errors and request objects execute no getters or proxy traps (11.673817ms)
+✔ independent oversized and malformed UTF8 bodies refuse before source work (6.311978ms)
+✔ independent parked incoming body aborts under original deadline (40.181305ms)
+✔ independent no activation by default and separate tool/native credentials refused (8.037882ms)
+✔ independent CLI help and invalid arguments remain inert and preserve environment (0.487643ms)
+✔ independent hostile rejected authority port cannot trigger reflection or erase uncertainty (19.091707ms)
+✔ independent hostile rejected session-late port cannot trigger reflection or erase uncertainty (15.582512ms)
+✔ independent hostile rejected executor port cannot trigger reflection or erase uncertainty (19.52698ms)
+✔ independent hostile rejected version-read port cannot trigger reflection or erase uncertainty (146.223844ms)
+✔ independent hostile rejected object-get port cannot trigger reflection or erase uncertainty (138.904758ms)
+✔ independent hostile rejected object-put port cannot trigger reflection or erase uncertainty (124.915191ms)
+✔ independent hostile rejected version-commit port cannot trigger reflection or erase uncertainty (168.49891ms)
+✔ independent hostile rejected ids port cannot trigger reflection or erase uncertainty (11.049904ms)
+✔ independent hostile rejected reservation-id port cannot trigger reflection or erase uncertainty (21.398884ms)
+✔ independent hostile own error getters remain untouched (13.756592ms)
+✔ independent lost immutable-version acknowledgement remains UNKNOWN with retained exact version and no redispatch (139.522366ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5446.353625
