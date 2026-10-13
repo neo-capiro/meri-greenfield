@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/test/product-mount.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "840907768289ee2ccb8f76268f362e17c22a08ea",
+  "sourceDiffSha256": "2422c32536f6f8c58cb42298586c325cb4102f236e1e038f0384658db6388723",
+  "sourceDiffBytes": 20416,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:16:55.711842+00:00",
+  "durationSeconds": 6.438,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 385603,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/root-mount-first.stdout.bin",
+      "bytes": 3370,
+      "sha256": "565549d7d594018e36145c514373b2d544c7d4a8bc2de8149c6dee73fb0fdd2b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/root-mount-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

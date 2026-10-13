@@ -1,0 +1,36 @@
+{
+  "links": [
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/node_modules",
+      "target": "/workspace/meri-native-flow-integration/node_modules",
+      "borrowed": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/apps/runtime/node_modules",
+      "target": "/workspace/meri-native-flow-integration/apps/runtime/node_modules",
+      "borrowed": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/apps/worker/conversation/node_modules",
+      "target": "/workspace/meri-native-flow-integration/apps/worker/conversation/node_modules",
+      "borrowed": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/apps/control/conversations/node_modules",
+      "target": "/workspace/meri-native-flow-integration/apps/control/conversations/node_modules",
+      "borrowed": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/packages/window-resolution/node_modules",
+      "target": "/workspace/meri-native-flow-integration/packages/window-resolution/node_modules",
+      "borrowed": true
+    },
+    {
+      "path": "/workspace/meri-native-docx-mount-recovery-independent/packages/ui-stream/node_modules",
+      "target": "/workspace/meri-native-flow-integration/packages/ui-stream/node_modules",
+      "borrowed": true
+    }
+  ],
+  "originalTestSha256": "076e082d40c3c9242320cccb126b580bbf2558a18584da85cac6eaf29412752a",
+  "originalCaptureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+}

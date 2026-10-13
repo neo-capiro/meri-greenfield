@@ -9,8 +9,8 @@
     },
     {
       "path": "../../apps/control/document-application/current.mjs",
-      "sha256": "37e3c4ae7fddaeec3c232d141d91e8a3969c61515289c04afe22e6ae65888194",
-      "bytes": 5397
+      "sha256": "a9d5da860e0d562693aef51a78eade4197ea3e9d90b64955528384d38b840dce",
+      "bytes": 5619
     },
     {
       "path": "../../apps/control/document-application/format-admission.mjs",

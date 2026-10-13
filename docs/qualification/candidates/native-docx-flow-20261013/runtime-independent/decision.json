@@ -1,0 +1,44 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "reviewedCommit": "0cc28d7468b44880fcb31d2720497bc9feb51aa2",
+  "reviewedTree": "5ade346c76cc088167d60c0c92a4e0e7c7394f26",
+  "componentPins": {
+    "selected": "dcd83e974e934c8f40b3fe56037d00d9c62e1f0c",
+    "nativeSession": "bc6757e21d03b849dc79343a504e0b015c4f476d"
+  },
+  "tests": {
+    "selectedAuthor": 57,
+    "nativeAuthor": 35,
+    "independent": 15,
+    "distinctFinalTotal": 107,
+    "passed": 107,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "sdkApiTypes": "PASS after retained own dependency-alias setup failure",
+  "evidence": "final-strict-replay.json",
+  "stdoutSha256": "08047989134e6f6e11a989a70e101e762e9bbc80d275fed922232216fd786eb3",
+  "preservation": {
+    "baseEntries": 15528,
+    "exactBaseEntries": 15526,
+    "changedExistingPaths": [
+      "apps/gateway/selected-skills/mount.mjs",
+      "apps/worker/conversation/skills/selected-runtime.mjs"
+    ]
+  },
+  "budgetAcceptedByThisReviewer": false,
+  "nativeRuntimeAccepted": false,
+  "wholePlanRequirementClosure": false,
+  "remainingGates": [
+    "actual native opaque task verifier",
+    "actual observed SDK registration/key",
+    "root runner/current-task/session mount integration",
+    "native migration/current-lease qualification",
+    "source/provider/model/isolation activation",
+    "separate approved DOCX output acceptance",
+    "selected continuation/body/completion cross-process recovery"
+  ],
+  "ownedCleanup": "cleanup.json",
+  "failuresRetained": true
+}

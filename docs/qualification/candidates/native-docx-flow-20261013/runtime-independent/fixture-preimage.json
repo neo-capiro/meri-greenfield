@@ -1,0 +1,8 @@
+{
+  "sourceCommit": "681731f1c647339f748dc60eb6ac165c1d4257cb",
+  "sourceFile": "apps/runtime/native-authority/test/session-owner.test.mjs",
+  "sourceFileSha256": "68d8f6d4483ce6c73694ef98affd94c572774908ec6bc24251c0607fda3cd1ba",
+  "fixtureSha256": "e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269",
+  "sourceSlice": "function fixture( through immediately before newline const append=",
+  "purpose": "Preserve immutable author SQL transport preimage across owner test refactors; independent assertions and actual production owner stay unchanged."
+}

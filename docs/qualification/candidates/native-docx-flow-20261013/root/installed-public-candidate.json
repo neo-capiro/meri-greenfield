@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/native-docx-flow-20261013/root/installed-candidate-check.py"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "faa0bfc8805eb4cf2583337bfae82e3068a695be",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:16:18.165376+00:00",
+  "durationSeconds": 0.114,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 405696,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/installed-public-candidate.stdout.bin",
+      "bytes": 566,
+      "sha256": "7138e36c07b2541a24a7f7427e873d6f99fb58a03100c943d6ee312647a4ac8e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/installed-public-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Retain preliminary offline consumer result; bind final consumer verification to owned subreaper capture and physical temporary-directory removal.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

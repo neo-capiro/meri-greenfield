@@ -77,6 +77,10 @@ A created receipt correlates filename/format, parent version, object bytes/hash,
 
 The public events body is `{command:{conversationId,intent:'view.subscribe'}}`. Default AI SDK reconnect uses GET `/api/conversations/events/{conversationId}/stream` with `x-meri-resume-sequence`. The authenticated server session controls the full run binding/scopes and checks the conversation selector before stream release. Create a cursor from an admitted response/current view, validate each `data-meri-event` through `receiveConversationEvent`, and retain its returned cursor. Submit cursors start0; history cursors cannot skip beyond that page's observed events. After10,000 retained identities, fetch/admit fresh history before continuing. Transport finish/abort concerns the subscription; POST cancel is the separate durable action. Package build/check now includes the deterministic `generate-conversations.mjs` projection; no npm publication or deployment is implied.
 
+### Metadata patch candidate, package 0.1.5
+
+This unpublished candidate updates the document server-source metadata after the private product-budget and limit-validation joins. Public receiving code, schemas, declarations, exports and routes retain their existing bytes and behavior. The earlier 0.1.4 tarball remains immutable; this candidate has its own version and hash. Subcontract metadata keeps the version at which each receiving contract was introduced. No npm publication or client upgrade is performed by this source change.
+
 ### Additive lifecycle receiving contract, package 0.1.4
 
 Import `@capiro/meri-contracts/conversation-lifecycle` and its `/schema` subpath. Existing wire0.1.0, action/document APIs, and conversation-application0.1.3 bytes remain unchanged. Lifecycle accepts the reviewed closed `steer`, `pause`, `approval.wait`, `resume`, and `fork` commands at POST `/api/conversations/control`. `approval.wait` references an existing immutable proposal; existing action approval routes keep their owner. An inherited approval is context only: a target mutation needs a fresh immutable proposal/current approval.

@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "bea75ebd9e7d0af75c34e1a671ceed8af3a82935",
+  "sourceTree": "1c7e1412f70759f0564543a41baecbd504de8bdf",
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/control/admitted-runs/test/owner.test.mjs",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-product-budget-runtime",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 4.474,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 15244,
+  "stdoutSha256": "bc6aafa6fb4c98f825f84aed80a3b17a0b5d0d340150846e0db93e46b7e3d0a5",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

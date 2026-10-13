@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-13T20:50:43.005401+00:00",
+  "authorizedRetry": "One bounded retry explicitly requested by Neo through parent",
+  "readPR64": "SUCCESS; head0c2b07d1a512324a3f5412ad5483243bc4649dcb,OPEN_DRAFT",
+  "normalGitPush": "SUCCESS; separatecodex/assembled-runtime-integrated-20261013",
+  "normalGitLsRemote": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "githubRESTCommit": {
+    "sha": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+    "tree": "f73a270b9f526c8ff41d67199548a1b919ec7f17"
+  },
+  "createDraftPR": "SUCCESShttps://github.com/neo-capiro/meri-greenfield/pull/65",
+  "subsequentStatusRead": {
+    "command": "gh pr view codex/assembled-runtime-integrated-20261013 --json number,state,isDraft,headRefOid,baseRefName,url",
+    "error": "HTTP401:Badcredentials(https://api.github.com/graphql)"
+  },
+  "subsequentRemoteRetries": 0,
+  "credentialsOrAlternateEgressChanged": false,
+  "normalRecoveryBundlePreserved": true
+}

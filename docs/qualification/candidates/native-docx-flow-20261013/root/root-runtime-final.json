@@ -1,0 +1,46 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/test/lifecycle.test.mjs",
+    "apps/runtime/test/process.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/native-authority/test/identity-context.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "apps/runtime/native-authority/test/session-integrity.test.mjs",
+    "apps/runtime/native-authority/test/session-owner.test.mjs",
+    "apps/runtime/selected/test/selected.test.mjs",
+    "apps/runtime/selected/test/process.test.mjs",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs",
+    "apps/worker/conversation/skills/test/mcp.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "9ebec008641d74f28b03d016cd4d66a53f0746b1",
+  "sourceDiffSha256": "d82930a6659466487e398915fa74c3b0be9467577e73351ddaf6086e4daa0c87",
+  "sourceDiffBytes": 5894,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:22:25.886043+00:00",
+  "durationSeconds": 38.28,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 389198,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/root-runtime-final.stdout.bin",
+      "bytes": 11212,
+      "sha256": "b4d4e004c6f4858fc5dfab62510f33c8a83d41ca0c239e640c471db654ff1eef"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/root-runtime-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New native replay repair and root fixture corrections; bundler checked separately under its necessary local native-binding permissions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

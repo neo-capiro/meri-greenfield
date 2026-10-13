@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/session-owner.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "apps/runtime/native-authority/test/identity-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-authority-session",
+  "sourceHead": "2bd3f0758bfa53b62eb81d0e7b70d468e2cefc03",
+  "sourceDiffSha256": "6f4dc58ef2061f08e90abbab86032cbd479d657747ea4a16927b1c4c8a107b6a",
+  "sourceDiffBytes": 38432,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T21:02:21.344406+00:00",
+  "durationSeconds": 2.131,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 376362,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/native-authority/evidence/rpc-bridge-first.stdout.bin",
+      "bytes": 3816,
+      "sha256": "8889170e5042520304611227e9847d77b7d379eb8372577a84ed752a7e539daa"
+    },
+    {
+      "path": "apps/runtime/native-authority/evidence/rpc-bridge-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

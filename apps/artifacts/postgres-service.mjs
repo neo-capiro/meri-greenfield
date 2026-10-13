@@ -9,9 +9,9 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const own=(value,required,optional=[])=>{if(!value||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail('ARTIFACT_BUDGET_CONFIGURATION');return value;};
 
 export function createPostgresArtifactService(options){
-  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,authorize,versions,objects,executor,now,ids,newReservationId,limits,sourceEnabled=false}=own(options,
-    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled']);
-  if(![v?.snapshot,v?.request,v?.context,authority?.check,authorize,versions?.commit,versions?.read,objects?.put,objects?.get,executor?.execute,now,ids,newReservationId].every(x=>typeof x==='function')||typeof sourceEnabled!=='boolean')fail('ARTIFACT_BUDGET_CONFIGURATION');
+  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,authorize,versions,objects,executor,now,ids,newReservationId,limits,sourceEnabled=false,namespace='qualification'}=own(options,
+    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
+  if(![v?.snapshot,v?.request,v?.context,authority?.check,authorize,versions?.commit,versions?.read,objects?.put,objects?.get,executor?.execute,now,ids,newReservationId].every(x=>typeof x==='function')||typeof sourceEnabled!=='boolean'||!['qualification','product'].includes(namespace))fail('ARTIFACT_BUDGET_CONFIGURATION');
   const trusted=v.snapshot({producerContext,descriptor,context,limits});trusted.context=v.context(trusted.context);
   own(trusted.producerContext,['context','producer']);validateShape('RunBinding',trusted.context.binding);
   own(trusted.descriptor,['operation','requiredGrants','sourceRequirements']);
@@ -39,7 +39,7 @@ export function createPostgresArtifactService(options){
   };
   // Each execute gets its own observation closure. The outer canonical lifetime can
   // reject before the inner service catches cancellation; do not lose effect identity.
-  const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,
+  const compose=observation=>createPostgresBudgetExecution({pool,allocationJson,authority,limits:trusted.limits,now,requestIdentity,namespace,
     createExecutor:ports=>({async execute(raw,credential,signal){
       const call=input(raw),requestSha256=v.hash(intent(call)),document=['create_word','create_excel'].includes(call.request.operation);
       // Bookkeeping only; all artifact access below still requires current authority.

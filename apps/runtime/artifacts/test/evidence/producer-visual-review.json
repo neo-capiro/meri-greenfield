@@ -1,0 +1,95 @@
+{
+  "all16PagesOpened": true,
+  "bundles": 2,
+  "eachOriginalRevisionPages": 4,
+  "pages": [
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/original-page-1.png",
+      "sha256": "500aae4d4b3fcf6092c558cfc9310e63baa74874f6cb7f7cec5ae5ab03ae78f7",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/original-page-2.png",
+      "sha256": "d47f5489e74dfb50be75aa747e03b66923cdb87f998987927bd6ee4041816618",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/original-page-3.png",
+      "sha256": "fe9dc196eb970e277445f09adeba3026647023b71dac588c5b70448991e190ef",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/original-page-4.png",
+      "sha256": "c65702f25b6953369c86d59ed12018ac78e5641d22a103a5ac98e32ead76130b",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/revision-page-1.png",
+      "sha256": "9b9a03c51542dcac1773f3d30b6f727f5b353947947fe79be8e50963484396a3",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/revision-page-2.png",
+      "sha256": "c745912b22f18eb8d0681252b13f8825fb215f7de7e4745dea0e82ac7760c211",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/revision-page-3.png",
+      "sha256": "8d3809ec2173ae0be437f70f999351af9d8422b4802eb7c6c440d24dda1bb0ac",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx/revision-page-4.png",
+      "sha256": "cbb23179d86ee7961ba927fd5edaa55e748b3ad795f1ad7ace1f7891b52c98e4",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/original-page-1.png",
+      "sha256": "fbafc1a543a66372cd60fc5981fb196bf33510d8c780916dbd16224fcc811e1c",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/original-page-2.png",
+      "sha256": "4a7280dd23e38829734ec6d0866ecbdd2ee0c9a04b76461718ef317f8e9375b6",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/original-page-3.png",
+      "sha256": "afe13a495772eaa8398372d6d38e8e8466724794d34635a9abd88527c1d77e39",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/original-page-4.png",
+      "sha256": "174a16ccebf6d0cd7c1e275a8cfa5b48bd45393474cd601e858178325fcefde3",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/revision-page-1.png",
+      "sha256": "5d4ef8ae4c026fb0caa3353ebe8e321ef09432282573e607f033c56a3030fb52",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/revision-page-2.png",
+      "sha256": "fad18a5698e4413d1882658c3f48150379f90b62fd4332c7c0bd2c5c16c85d3c",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/revision-page-3.png",
+      "sha256": "8f4b7b6f7ee4a301c7735629c08d62c4f19d65327cf12eda0caf07086cb673d9",
+      "opened": true
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/retained-docx-final/revision-page-4.png",
+      "sha256": "fe37bf2284719c205c2813ff79203d7b7681052d66091c21c762e803a5853fff",
+      "opened": true
+    }
+  ],
+  "observations": [
+    "All pages readable with no clipping or overlap.",
+    "Conflicting unverified claim and missing budget evidence remain explicit.",
+    "Revised proposal visible only in revision; original source passages preserved.",
+    "Dense immutable provenance spans final sparse fourth page; no recipe/style change introduced."
+  ],
+  "nativeQualified": false,
+  "independentReview": "Pending root-owned artifact reviewer"
+}

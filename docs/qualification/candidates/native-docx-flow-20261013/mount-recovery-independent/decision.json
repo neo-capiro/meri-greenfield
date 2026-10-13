@@ -1,0 +1,19 @@
+{
+  "decision": "ACCEPT_SOURCE_REPAIR",
+  "runtimeDecision": "HOLD",
+  "sourceHead": "e383e84173a1311cef1b9099c673253b58c395f3",
+  "sourceTree": "6b4fe71185002e479f4ce3c507531f8fa76da5fb",
+  "focusedFinal": {
+    "pass": 26,
+    "fail": 0
+  },
+  "preservedOriginalFinal": {
+    "pass": 7,
+    "fail": 1,
+    "failure": "hardcoded70ms versus explicit default1000ms cleanup contract"
+  },
+  "originalAssertionsUnchanged": true,
+  "ownedCaptureGroups": 11,
+  "nativeActions": false,
+  "wholePlanRequirementsClosed": 0
+}

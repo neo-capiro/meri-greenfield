@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-mount-independent",
+  "sourceHead": "733452676d898572f2c718b392e70bd627a0bddd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:23:39.130072+00:00",
+  "durationSeconds": 2.382,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 390339,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount-first.stdout.bin",
+      "bytes": 3708,
+      "sha256": "0bdc85c2b60b315f89f9bc1e23afdaec9d5a14085c13693ea9c930e100e501fc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-independent/mount-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

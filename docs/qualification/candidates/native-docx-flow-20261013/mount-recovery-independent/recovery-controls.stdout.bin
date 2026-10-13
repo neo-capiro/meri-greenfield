@@ -1,0 +1,69 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-native-docx-mount-recovery-independent/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/native-authority/test/identity-context.test.mjs (1862.310015ms)
+✔ already cancelled preparation and closed-before-microtask preparation allocate no factory resource (1.464745ms)
+✔ closing while initialization is pending retires the eventual mirror once without installing it (20.027083ms)
+✔ configured close bound returns UNKNOWN, aborts its work and does not claim physical stop (25.523528ms)
+✔ default close bound is1000ms, preserving the original70ms failure as a separately documented contract mismatch (1002.580478ms)
+✔ settlement cancellation stops result release and teardown still retires exactly once (1.076796ms)
+✖ captured resource close and settle preserve the factory result receiver even after method replacement (1.817261ms)
+✔ factory result getters are refused without executing accessor code (0.282431ms)
+✔ late parked retirement records UNKNOWN and cannot reopen or return the late store (35.652003ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2970.541795
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/identity-context.test.mjs:1:1
+✖ apps/runtime/native-authority/test/identity-context.test.mjs (1862.310015ms)
+  'test failed'
+
+test at docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery.test.mjs:47:1
+✖ captured resource close and settle preserve the factory result receiver even after method replacement (1.817261ms)
+  AssertionError [ERR_ASSERTION]: settle receiver must remain the owned factory resource
+  + actual - expected
+  
+    {
+  +   close: [AsyncFunction: close],
+  +   settle: [AsyncFunction: settle],
+  -   close: [Function (anonymous)],
+  -   settle: [Function (anonymous)],
+      store: {
+        append: [AsyncFunction: append],
+        load: [AsyncFunction: load]
+      }
+    }
+  
+      at Object.settle (file:///workspace/meri-native-docx-mount-recovery-independent/docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/recovery.test.mjs:48:69)
+      at file:///workspace/meri-native-docx-mount-recovery-independent/apps/artifacts/storage/boundary.mjs:26:60
+      at file:///workspace/meri-native-docx-mount-recovery-independent/apps/runtime/sdk-session-runtime.mjs:27:210
+      at file:///workspace/meri-native-docx-mount-recovery-independent/packages/runtime/operation-lifetime.mjs:38:65 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-mount-recovery-independent",
+  "sourceHead": "e383e84173a1311cef1b9099c673253b58c395f3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:13:45.232109+00:00",
+  "durationSeconds": 2.474,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 404868,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/final-original.stdout.bin",
+      "bytes": 1795,
+      "sha256": "e95ce9839e8fc069d6588d460d70c03200c99d1f3870dca6e40a2c79d6f0cb32"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/final-original.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserved original independent mount repro byte-for-byte rerun on final e383 source;70ms diagnostic is retained rather than rewritten to fit the documented1000ms default.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "bea75ebd9e7d0af75c34e1a671ceed8af3a82935",
+  "removedOwnedLinks": [
+    "/workspace/meri-product-budget-runtime/node_modules",
+    "/workspace/meri-product-budget-runtime/packages/ui-stream/node_modules",
+    "/workspace/meri-product-budget-runtime/packages/window-resolution/node_modules",
+    "/workspace/meri-product-budget-runtime/apps/control/conversations/node_modules",
+    "/workspace/meri-product-budget-baseline/node_modules"
+  ],
+  "donorsPreserved": true,
+  "allCapturedOwnedProcessGroupsAbsent": true,
+  "baselineWorktreeClean": true,
+  "wholeHostCleanupClaim": false,
+  "migrationsApplied": false
+}

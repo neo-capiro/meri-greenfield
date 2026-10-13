@@ -1,0 +1,86 @@
+✖ consistent retained batch corruption refuses foreign observed SDK key (7.538943ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✖ consistent retained batch corruption refuses foreign append identity (2.794401ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✖ consistent retained batch corruption refuses inconsistent entry digest (2.87531ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✖ consistent retained batch corruption refuses uncommitted receipt (2.31963ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✖ consistent retained batch corruption refuses impossible offset (2.456214ms)
+ℹ Borrowed immutable author SQL fixture SHA256 e2cddcc333a62ace91b0b975afe0c422838a670000c98ea6cb8fd0dcef8b5269
+✔ current native authority refuses exact retained batch replay before SQL (1.843007ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2196.568862
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:34:3
+✖ consistent retained batch corruption refuses foreign observed SDK key (7.538943ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:43:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:34:3
+✖ consistent retained batch corruption refuses foreign append identity (2.794401ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:43:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:34:3
+✖ consistent retained batch corruption refuses inconsistent entry digest (2.87531ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:43:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:34:3
+✖ consistent retained batch corruption refuses uncommitted receipt (2.31963ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:43:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:34:3
+✖ consistent retained batch corruption refuses impossible offset (2.456214ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs:43:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

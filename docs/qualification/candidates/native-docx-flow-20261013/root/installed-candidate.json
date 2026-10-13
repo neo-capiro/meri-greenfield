@@ -1,0 +1,11 @@
+{
+  "sourceScope": "LOCAL_PUBLIC_PACKAGE_ONLY_NO_NETWORK_AUTHORIZATION",
+  "archiveSha256": "bb387dcae8c86f9268a5eff3204902b37ecdff5cf156c1a85957e4b615926e60",
+  "archiveBytes": 375812,
+  "files": 27,
+  "exitCode": 0,
+  "stdout": "{\"installedVersion\":\"0.1.5\",\"documentRoutes\":4,\"canonicalExcel\":true,\"exactBasePreserved\":true,\"subscriptionCompatible\":true,\"privateRuntimeDenied\":true}\n",
+  "stderr": "",
+  "consumerSha256": "7aaf9fee7f962d171da3b0ca389523c4d52fbd90c1b1a7a74b7f4a0bd40ce3aa",
+  "temporaryConsumerRemoved": true
+}

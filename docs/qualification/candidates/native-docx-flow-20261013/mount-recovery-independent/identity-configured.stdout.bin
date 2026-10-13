@@ -1,0 +1,13 @@
+✔ thin canonical native join uses actual currentRun product owner without DTO expansion (15.932618ms)
+✔ default bridge disabled makes no native reads or current-run queries (3.557637ms)
+✔ current native selected-client substitution is refused by canonical join (4.16913ms)
+✔ actual product grant revoked during native context read cannot release joined authority (3.879227ms)
+✔ thin bridge rejects active nested configuration without executing getter (0.212126ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1741.719385

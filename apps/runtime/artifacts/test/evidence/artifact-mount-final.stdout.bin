@@ -1,0 +1,14 @@
+✔ missing native owner returns503 without creating artifact authority (3.597168ms)
+✔ real original compiler and generator traverse actual HTTP mount and reviewed S3/PG ports for create/revise/inspect/download (655.368267ms)
+✔ typed XLSX full replacement preserves original, exact parent and immutable bytes (410.082077ms)
+✔ boolean admission, session-owner substitution and caller context never grant publication (16.592973ms)
+✔ current runtime/source revoke after actual generation prevents storage publication and retains uncertain accounting (58.668254ms)
+✔ parked owner resolution is bounded by caller deadline and never dispatches document effects (20.356078ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3074.531071

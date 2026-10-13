@@ -1,0 +1,35 @@
+{
+  "time": "2026-10-13T21:19:47.008258+00:00",
+  "removedOwnedLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/node_modules/@capiro/meri-contracts",
+      "target": "/workspace/meri-native-authority-session/packages/contracts"
+    }
+  ],
+  "ownedLinksAbsent": true,
+  "pureHelperBlobsUnchanged": {
+    "apps/worker/qualification/checkpoint/session-store-data.mjs": "5466ef8e25f6b6a1e24e615139e5540ffb6114f7",
+    "apps/worker/qualification/checkpoint/bound-session-store.mjs": "d5b936d5d31aa5a0242276db7bb6db764de8c91f"
+  },
+  "capturedProcessGroupsAbsent": [
+    380832,
+    379294,
+    371372,
+    385522,
+    370754,
+    387421,
+    376362,
+    377927,
+    369921,
+    387107,
+    385099
+  ],
+  "protectedNativeOrProviderCalls": "NONE",
+  "migrationApplied": false,
+  "networkOrRemoteWrite": "NONE",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

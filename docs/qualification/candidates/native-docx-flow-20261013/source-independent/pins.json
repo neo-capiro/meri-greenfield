@@ -1,0 +1,59 @@
+{
+  "base": {
+    "commit": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+    "tree": "f73a270b9f526c8ff41d67199548a1b919ec7f17"
+  },
+  "publishedBudget": {
+    "commit": "bea75ebd9e7d0af75c34e1a671ceed8af3a82935",
+    "tree": "1c7e1412f70759f0564543a41baecbd504de8bdf"
+  },
+  "publishedArtifact": {
+    "commit": "b7b47c2b73dab98c2ec7074b2153a14d6a1e618e",
+    "tree": "a7aa6a1ba10b99cd51c3263b8350b835c19b3cc3"
+  },
+  "rootCompatibility": {
+    "commit": "56b5d2db66f4236960126be20edb7b303a6aade8",
+    "tree": "bf76e1385f2905bf8dc4f5a3245dcde593ee48ff"
+  },
+  "rootCommitCancellationRepair": {
+    "commit": "7ef5b1fa685d3bce825e38242d88a42c6bf0c616",
+    "tree": "d0038b704aacbb6e19fd1d19f0c7193c5fe14945"
+  },
+  "rootSuccessfulBytesRepair": {
+    "commit": "08aef7eff5aa9a5a65c6a3afbc2f665de861735e",
+    "tree": "244c6036ee146df9a7de35c8e18c1d67d38b6e5c"
+  },
+  "rootCanonicalLimitRepair": {
+    "commit": "4d989588f942c951251f2292622641e9149dd34b",
+    "tree": "0bf7133df46582f28c85dcbb70ece930e63f3702"
+  },
+  "rootAdmissionDeadlineRepair": {
+    "commit": "9cd3673bdf656e1832e30471a68788ab9f10515b",
+    "tree": "90ae1b8324afec8e7f315ab4e35b3656b7ca5ff0"
+  },
+  "retainedBudgetAuthorEvidence": {
+    "commit": "e128fd092acc4f1df31d5ecb3aebca86e0894c34",
+    "tree": "0743c0ee916ce53f3666a1a7c0df3decd4c281cc"
+  },
+  "reviewedComposition": {
+    "commit": "0a750e4126fe7a888a1abe78e4188e319cc2d23f",
+    "tree": "700a994effb69ec5b385c04fab3a2b104989bfbd"
+  },
+  "canonicalFileHashes": {
+    "apps/gateway/budget/namespace.mjs": "51f1bee3fde033e582f40f1997a778c48e0d67942ec2324f869e1104a8dd6b57",
+    "apps/gateway/budget/admitted-run-owner.mjs": "8ac35a7b976877639ccfa73836f91016236f95f7a9076861e5b72629006c7c8b",
+    "apps/gateway/budget/admitted-run-current.mjs": "9e59fe893db5b63e671869d56700b97e9598677a114103e39b949dcd127f0ac2",
+    "apps/gateway/budget/admitted-run-binding.mjs": "f28bd9a8b3523993511ac76a9ad1850ebb82e762e79d3218273fff20a11e0531",
+    "apps/gateway/budget/postgres-budget-store.mjs": "7c80e7f6a98f04ae4d9d1c9f7eef06d0c94d3ed86adb290d21aafa6b4278c833",
+    "apps/gateway/budget/postgres-tool-budget.mjs": "16e3e716049ea4e8ffbae44d3c930b4e20cf758323b576a55ec89fe7a5b9186b",
+    "apps/gateway/budget/tool-invocation-owner.mjs": "3df40885d3370498bbc686fdc10c4c29badf14e6442aa6ad73e0d30f300f4b40",
+    "apps/gateway/budget/tool-budget-execution.mjs": "aa812ff3deff3a16f04807b33c4f360f968cd261a5c891890c5ba3bc2f716f32",
+    "apps/gateway/budget/migrations/0001_product_budget.sql": "0beb498dbac8d6e092c207b46f8167fb161361e7ad869aea6e33f0d1d8c4a511",
+    "apps/control/document-application/current.mjs": "a9d5da860e0d562693aef51a78eade4197ea3e9d90b64955528384d38b840dce",
+    "apps/artifacts/postgres-service.mjs": "51f947cc028d133b71f58b3aee0275f5e292ac9ecbc1a44e37fe82a99e36933c",
+    "apps/runtime/artifacts/application.mjs": "29a2baea474d2dbfb7beed0c25dae73c62c0810fedbb40b957ae77c160beb8e6",
+    "apps/runtime/artifacts/composition.mjs": "0115a326c41d22050220780c1ab38c8b5f2705c30452a0b7c76681b2e365cb72",
+    "apps/control/conversations/skills/admission.mjs": "a9ee71e53de5f6a557912d693543bd5b67b1e133d488a4df11d8318e642768e5"
+  },
+  "protectedChanges": []
+}

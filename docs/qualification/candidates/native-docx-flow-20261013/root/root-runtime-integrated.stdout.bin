@@ -1,0 +1,207 @@
+✔ thin canonical native join uses actual currentRun product owner without DTO expansion (15.557367ms)
+✔ default bridge disabled makes no native reads or current-run queries (3.767134ms)
+✔ current native selected-client substitution is refused by canonical join (5.300484ms)
+✔ actual product grant revoked during native context read cannot release joined authority (4.672467ms)
+✔ thin bridge rejects active nested configuration without executing getter (0.250334ms)
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (27.95421ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (1.680465ms)
+✔ missing actual native task authority yields503 before registration/admission (0.732171ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (1.175312ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (20.528904ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (5.214982ms)
+✔ consistently rehashed retained receipt refuses foreign binding (6.980342ms)
+✔ consistently rehashed retained receipt refuses foreign observed key (2.284635ms)
+✔ consistently rehashed retained receipt refuses foreign append identity (2.231205ms)
+✔ consistently rehashed retained receipt refuses foreign entry digest (2.060691ms)
+✔ consistently rehashed retained receipt refuses uncommitted receipt (1.978839ms)
+✔ consistently rehashed retained receipt refuses impossible offset (1.839902ms)
+✔ consistently rehashed retained receipt refuses inconsistent added count (1.807434ms)
+✔ consistently rehashed retained receipt refuses undeclared receipt field (1.64428ms)
+✔ original append receipt remains exact after later stream advancement (2.397422ms)
+✔ bound native mirror configuration accessor is refused without execution (0.306937ms)
+✔ bound native mirror configuration Proxy is refused before traps (0.146519ms)
+✔ bound native mirror method accessor is refused without execution (0.144115ms)
+✔ bound native mirror captures original two-argument methods and class receiver (0.512704ms)
+✔ native authority absent fails before any admitted transaction or SQL (1.307579ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (9.605336ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (2.017887ms)
+✔ foreign project key and stale offset cannot append or overwrite original (2.379577ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (2.985359ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (4.729463ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (3.009965ms)
+✔ parked canonical admission is bounded by the original caller lifetime (20.529456ms)
+✔ immutable registration replay retains original expiry despite a shorter current authorization (1.65705ms)
+✔ redundant entry/stream/session owner tuples cannot substitute foreign retained rows (4.110426ms)
+✔ separate OS SDK task -> actual fixed HTTP/native client -> trusted compiler -> canonical pending retention (2015.873347ms)
+✔ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (349.045756ms)
+✔ revoked current task refuses compiler and publication; serialized prepared injection is rejected (9.954596ms)
+✔ source inactive task performs no RPC and inactive control performs no current authority read (1.159939ms)
+✔ native SETTLED marker binds exact returned body and allocation; retained delivery never redispatches (2.246027ms)
+✔ native marker hash refuses body release (1.631512ms)
+✔ native marker bytes refuses body release (1.229693ms)
+✔ native marker allocation refuses body release (1.73818ms)
+✔ native marker operation refuses body release (1.357483ms)
+✔ native marker rawRequest refuses body release (1.888765ms)
+✔ native marker expired refuses body release (1.915605ms)
+✔ native marker revoked refuses body release (2.141121ms)
+✔ unknown result persists without body and a repeated SDK delivery cannot claim again (2.778471ms)
+✔ normalized native arguments digest is accepted only with exact immutable raw request (1.652383ms)
+✔ same UNKNOWN delivery with changed argument cannot redispatch under a different journal key (1.888846ms)
+✔ task configuration getter is rejected before destructuring or native initialization (0.279747ms)
+✔ task native method retains its admitted prototype function and original receiver after replacement (9.289575ms)
+✔ private HTTP owner retains its admitted prototype method and original receiver after replacement (11.859285ms)
+2026-10-13T21:19:03.618Z [ERROR] asset workflow-bundle-51b5d286915a725e98a1.js 1.47 MiB [emitted] [immutable] (name: main)
+modules by path ../meri-next-batch/apps/control/conversations/node_modules/@temporalio/ 361 KiB
+  modules by path ../meri-next-batch/apps/control/conversations/node_modules/@temporal...(truncated) 165 KiB 36 modules
+  modules by path ../meri-next-batch/apps/control/conversations/node_modules/@temporalio/workflow/ 196 KiB 23 modules
+modules by path ../meri-next-batch/apps/control/conversations/node_modules/nexus-rpc/lib/ 22.3 KiB 13 modules
+modules by path ./apps/control/conversations/ 560 bytes
+  ./apps/control/conversations/workflow-autogenerated-entrypoint.cjs 521 bytes [built] [code generated]
+  ./apps/control/conversations/workflow.ts 39 bytes [not cacheable: ./apps/runtime/node_modules/swc-loader/src/index.js] [built] [code generated] [1 error]
+optional modules 30 bytes [optional]
+  __temporal_custom_payload_converter (ignored) 15 bytes [optional] [built] [code generated]
+  __temporal_custom_failure_converter (ignored) 15 bytes [optional] [built] [code generated]
+../meri-next-batch/apps/control/conversations/node_modules/long/umd/index.js 49.8 KiB [built] [code generated]
+../meri-next-batch/apps/control/conversations/node_modules/ms/dist/index.cjs 3.41 KiB [built] [code generated]
+
+ERROR in ./apps/control/conversations/workflow.ts
+Module build failed (from ./apps/runtime/node_modules/swc-loader/src/index.js):
+Error: Failed to load native binding
+    at Object.<anonymous> (/workspace/meri-native-flow-integration/apps/runtime/node_modules/@swc/core/binding.js:345:11)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1617:12)
+    at require (node:internal/modules/helpers:153:16)
+    at Object.<anonymous> (/workspace/meri-native-flow-integration/apps/runtime/node_modules/@swc/core/index.js:66:17)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+ @ ./apps/control/conversations/workflow-autogenerated-entrypoint.cjs 13:9-125
+
+webpack 5.111.1 compiled with 1 error in 723 ms
+✖ upstream Temporal bundler registers exact canonical deterministic workflow exports (938.444331ms)
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (72.645088ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (23.683431ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (13.220956ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (25.037068ms)
+✔ runner native restore substitution refuses the single SDK query (1.740905ms)
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (4430.980568ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2111.797929ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (313.917746ms)
+✔ actual process exits on SIGTERM after listener shutdown (2036.609312ms)
+✔ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (2830.978864ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2777.923662ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (7.688797ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.002415ms)
+✖ runner refuses missing observed registration before the single SDK query (19.312294ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (18.11601ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (10.207114ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (1.760236ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.373608ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.700254ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (0.460357ms)
+✔ broker refuses a response from another writer fence (0.276052ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (25.356585ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (3.855758ms)
+✔ quick_skill.relationship_brief: actual adopted SDK server lists only immutable original read tools (34.899888ms)
+✔ quick_skill.commitments_audit: actual adopted SDK server lists only immutable original read tools (15.132948ms)
+✔ actual MCP call preserves exact canonical operation and literal JSON arguments (5.014358ms)
+✔ unlisted MCP operation and extra outer selector cannot change gateway operation (2.920061ms)
+✔ gateway denial is sanitized and never becomes successful source evidence (2.237802ms)
+✔ server rejects altered original asset/unsupported selection before resource allocation (8.337191ms)
+✔ hook-issued delivery ID remains stable across processes; forged or altered tokens never invoke gateway (6.449942ms)
+✔ quick_skill.commitments_audit: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (170.232889ms)
+✔ quick_skill.relationship_brief: actual SDK server -> HTTP handler -> canonical gateway -> existing collector retains output awaiting separate approval (78.222231ms)
+✔ install binding substitution refuses before SDK exposure (1.323775ms)
+✔ install skill substitution refuses before SDK exposure (0.942246ms)
+✔ install requestSha256 substitution refuses before SDK exposure (0.835396ms)
+✔ install selectionSha256 substitution refuses before SDK exposure (0.700215ms)
+✔ install baseCatalogSha256 substitution refuses before SDK exposure (0.651652ms)
+✔ install executionCatalogSha256 substitution refuses before SDK exposure (0.619184ms)
+✔ install operations substitution refuses before SDK exposure (0.975054ms)
+✔ install checkedAtMs substitution refuses before SDK exposure (0.83124ms)
+✔ install expiresAtMs substitution refuses before SDK exposure (0.640756ms)
+✔ admission binding substitution refuses before SDK exposure (0.927684ms)
+✔ admission skill substitution refuses before SDK exposure (0.923147ms)
+✔ admission requestSha256 substitution refuses before SDK exposure (0.875857ms)
+✔ admission selectionSha256 substitution refuses before SDK exposure (0.731271ms)
+✔ admission manifestSha256 substitution refuses before SDK exposure (0.702107ms)
+✔ admission catalogSha256 substitution refuses before SDK exposure (31.272548ms)
+✔ admission budgets substitution refuses before SDK exposure (1.011409ms)
+✔ admission allocationSha256 substitution refuses before SDK exposure (0.814725ms)
+✔ admission policyRevision substitution refuses before SDK exposure (0.728506ms)
+✔ admission checkedAtMs substitution refuses before SDK exposure (0.761997ms)
+✔ admission expiresAtMs substitution refuses before SDK exposure (0.708527ms)
+✔ revocation and changed installation after mounting cannot release source result (8.173021ms)
+✔ model source arguments cannot inject authority or substitute a canonical operation (3.747461ms)
+✔ tool-call cap covers denied reads and collector work, without creating another budget owner (19.350284ms)
+✔ task result must be literal successful exact-pin data; altered replay never recompiles (43.936609ms)
+✔ actual single activity query mounts original reads and completes research with explicit pending output without artifact publication (46.213154ms)
+✔ changed current installation and foreign selection refuse before source effect (4.528585ms)
+✔ separately configured output owner cannot return an arbitrary artifact success object (43.453387ms)
+✔ resume cannot substitute source request or immutable original skill pins before mounting (0.867033ms)
+✔ empty/partial installation never permits an unlisted native gateway operation (7.151487ms)
+✔ closing a parked owned gateway read aborts its bounded lifetime and prevents late result publication (9.36569ms)
+ℹ tests 115
+ℹ suites 0
+ℹ pass 112
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 43536.106489
+
+✖ failing tests:
+
+test at apps/runtime/test/bundle.test.mjs:2:1
+✖ upstream Temporal bundler registers exact canonical deterministic workflow exports (938.444331ms)
+  Error: Webpack finished with errors, if you're unsure what went wrong, visit our troubleshooting page at https://docs.temporal.io/develop/typescript/debugging#webpack-errors
+      at /workspace/meri-native-flow-integration/apps/runtime/node_modules/@temporalio/worker/lib/workflow/bundler.js:301:36
+      at finalCallback (/workspace/meri-native-flow-integration/apps/runtime/node_modules/webpack/lib/Compiler.js:601:32)
+      at /workspace/meri-native-flow-integration/apps/runtime/node_modules/webpack/lib/Compiler.js:681:17
+      at /workspace/meri-native-flow-integration/apps/runtime/node_modules/webpack/lib/errors/HookWebpackError.js:98:2
+      at Hook.eval [as callAsync] (eval at create (/workspace/meri-native-flow-integration/apps/runtime/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:6:1)
+      at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/workspace/meri-native-flow-integration/apps/runtime/node_modules/tapable/lib/Hook.js:21:14)
+      at Cache.storeBuildDependencies (/workspace/meri-native-flow-integration/apps/runtime/node_modules/webpack/lib/Cache.js:150:37)
+      at /workspace/meri-native-flow-integration/apps/runtime/node_modules/webpack/lib/Compiler.js:676:19
+      at Hook.eval [as callAsync] (eval at create (/workspace/meri-native-flow-integration/apps/runtime/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)
+      at Hook.CALL_ASYNC_DELEGATE [as _callAsync] (/workspace/meri-native-flow-integration/apps/runtime/node_modules/tapable/lib/Hook.js:21:14)
+
+test at apps/runtime/test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (4430.980568ms)
+  AssertionError [ERR_ASSERTION]: {"type":"execution-error","code":"EXECUTION_FAILED"}
+  + actual - expected
+  
+  + 'execution-error'
+  - 'execution'
+              ^
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-flow-integration/apps/runtime/test/process.test.mjs:12:80)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'execution-error',
+    expected: 'execution',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/product-mount.test.mjs:28:1
+✖ runner refuses missing observed registration before the single SDK query (19.312294ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'queued' !== 'failed'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-flow-integration/apps/runtime/test/product-mount.test.mjs:28:253)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'queued',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

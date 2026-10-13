@@ -1,0 +1,35 @@
+✔ all borrowed direct/inherited accessors and proxy prototypes are inertly refused (1.356189ms)
+✔ missing owners never use raw native context; route families remain unavailable with sourcesfalse (13.922886ms)
+✔ default actual CLI installs exact registered-session factory, missing key stops before any SDK query (20.1697ms)
+✔ genuine session factory preserves key and refuses another SDK project/session before transport (2.928681ms)
+✔ observed uncertain mirror settles BEFORE durable completed append and suppresses success (14.859006ms)
+✔ late factory result after cancellation is closed exactly once and never queries (28.185192ms)
+✖ parked owned close cannot extend caller cancellation indefinitely (83.256256ms)
+✔ Docker preserves ONLY two pure session helpers and includes native S3 dependency/public alias (3.608137ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2410.788566
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs:19:1
+✖ parked owned close cannot extend caller cancellation indefinitely (83.256256ms)
+  AssertionError [ERR_ASSERTION]: owned close must have a bounded cleanup lifetime
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-mount-recovery-independent/docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/original-mount.test.mjs:19:538)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

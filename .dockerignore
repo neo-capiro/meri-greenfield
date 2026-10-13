@@ -10,6 +10,12 @@
 **/test-evidence
 **/independent
 **/qualification*
+!apps/worker/qualification/
+apps/worker/qualification/*
+!apps/worker/qualification/checkpoint/
+apps/worker/qualification/checkpoint/*
+!apps/worker/qualification/checkpoint/bound-session-store.mjs
+!apps/worker/qualification/checkpoint/session-store-data.mjs
 docs
 evals
 infra

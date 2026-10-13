@@ -1,0 +1,109 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/admitted-runs/independent/owner-independent.test.mjs (1878.990733ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/gateway/budget/product-runtime.test.mjs (1975.609406ms)
+✔ independent request opaque credential and canonical body hash reach trusted owner with ordinary method receiver intact (161.642429ms)
+✔ independent model/caller binding is not accepted as artifact authority (20.266295ms)
+✔ independent model/caller context is not accepted as artifact authority (11.862484ms)
+✔ independent model/caller scopes is not accepted as artifact authority (19.855778ms)
+✔ independent model/caller credential is not accepted as artifact authority (9.951379ms)
+✔ independent model/caller artifactOptions is not accepted as artifact authority (9.264169ms)
+✔ independent model/caller namespace is not accepted as artifact authority (8.890309ms)
+✔ independent native current refusal at admission prevents any accounting/generation/storage (11.536606ms)
+✔ independent literal outer credential is never replaced by task credential or accepted after source revoke (8.660354ms)
+✔ independent trusted sessions substitution refuses before artifact effects (16.267489ms)
+✔ independent trusted now substitution refuses before artifact effects (13.462072ms)
+✔ independent trusted selectedClientId substitution refuses before artifact effects (7.39734ms)
+✔ independent absent/boolean/non-own recheck never creates qualification authority (9.2319ms)
+✔ independent configuration getters and proxies are inert before owner reads (0.425368ms)
+✔ independent explicit product namespace threads root canonical chain and refuses missing product admission without qualification fallback (11.51934ms)
+✔ independent disabled original source flag remains closed and composer never enables it (10.352942ms)
+✖ independent request-specific outer response byte ceiling must be enforced before response release (86.517459ms)
+✔ independent current lease preserves native receiver and immutable allocation across same transaction (11.344759ms)
+✔ independent callback deadline publisher only narrows and refuses before next SQL at exact cutoff (7.880165ms)
+✔ independent explicit caller deadline refuses before connect without changing canonical authority receipt (4.430683ms)
+✔ independent pending native SQL prevents callback result/COMMIT; late query is cleanup-only (6.48345ms)
+✔ independent foreign full actorId refuses before lease SQL (4.704563ms)
+✔ independent foreign full tenantId refuses before lease SQL (4.741859ms)
+✔ independent foreign full conversationId refuses before lease SQL (5.801578ms)
+✔ independent foreign full runId refuses before lease SQL (2.543904ms)
+✔ independent foreign full attemptId refuses before lease SQL (2.134541ms)
+✔ independent foreign full sessionId refuses before lease SQL (2.54187ms)
+✔ independent foreign full workerId refuses before lease SQL (1.955412ms)
+✔ independent foreign full writerFence refuses before lease SQL (2.011526ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (12.562574ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (5.903551ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (5.610551ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (5.603911ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (5.644773ms)
+✔ independent completion current expiry publishes no marker and never refunds held/settled liabilities (5.039555ms)
+✔ independent readCompletion refuses substituted actor and producer namespace and literal request hashes (8.023178ms)
+✔ independent lost read COMMIT is typed uncertainty and returns no completion or accounting writes (6.08958ms)
+✔ independent cancellation during COMMIT must retain typed commit uncertainty (9.941174ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 37
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3697.561301
+
+✖ failing tests:
+
+test at apps/control/admitted-runs/independent/owner-independent.test.mjs:1:1
+✖ apps/control/admitted-runs/independent/owner-independent.test.mjs (1878.990733ms)
+  'test failed'
+
+test at apps/gateway/budget/product-runtime.test.mjs:1:1
+✖ apps/gateway/budget/product-runtime.test.mjs (1975.609406ms)
+  'test failed'
+
+test at docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:44:1
+✖ independent request-specific outer response byte ceiling must be enforced before response release (86.517459ms)
+  AssertionError [ERR_ASSERTION]: outer maxResponseBytes64 released200 response 1763 bytes
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:45:179)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

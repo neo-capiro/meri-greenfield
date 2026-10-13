@@ -1,0 +1,299 @@
+{
+  "status": "PASS",
+  "sourceCommit": "b7b47c2b73dab98c2ec7074b2153a14d6a1e618e",
+  "tree": "a7aa6a1ba10b99cd51c3263b8350b835c19b3cc3",
+  "docx": 4,
+  "pagesPhysicallyOpened": 16,
+  "artifacts": [
+    {
+      "cohort": "retained-docx",
+      "label": "original",
+      "docxSha256": "a85ff3cdcb8d6b63c0e51445a89da7788500d5c80ade7332179d241ca5450f0d",
+      "docxBytes": 38702,
+      "editableParagraphs": 43,
+      "pdfSha256": "dcdbeb8bf18edfe0c9bc3cb895ca816309992008b495fca92d7035779421f385",
+      "pages": 4,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/original-page-1.png",
+          "sha256": "500aae4d4b3fcf6092c558cfc9310e63baa74874f6cb7f7cec5ae5ab03ae78f7",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/original-page-2.png",
+          "sha256": "d47f5489e74dfb50be75aa747e03b66923cdb87f998987927bd6ee4041816618",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/original-page-3.png",
+          "sha256": "fe9dc196eb970e277445f09adeba3026647023b71dac588c5b70448991e190ef",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/original-page-4.png",
+          "sha256": "c65702f25b6953369c86d59ed12018ac78e5641d22a103a5ac98e32ead76130b",
+          "physicallyOpened": true,
+          "clipped": false
+        }
+      ],
+      "skillPin": {
+        "skillId": "quick_skill.bill_watch",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+        "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "versionId": "39f353ff-d186-4308-9639-ee4e694f906e",
+      "artifactId": "51342806-3635-4559-9247-245dcfad9253",
+      "baseVersionId": null,
+      "provenanceSha256": "1fad046abf60494daebf024b1dc44d6bd2be3ed3fa9b9148d29e1e5553295d78",
+      "revisionFullReadEvidence": null,
+      "originalReadReceiptLimitation": "Original saved bundle contains spec/version/evidence/provenance, but not original full preparation/read envelopes; its reads digest cannot be independently recomputed.",
+      "nativeQualified": false
+    },
+    {
+      "cohort": "retained-docx",
+      "label": "revision",
+      "docxSha256": "f62bdae3f35dfe1e84c63aeab1f053555ab0c3cea52f6519aa12c9d7a772b94f",
+      "docxBytes": 38881,
+      "editableParagraphs": 43,
+      "pdfSha256": "7edacfa9fb0475f87a407e55f31a88929d48af4a7243fad605bf335924c330fb",
+      "pages": 4,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/revision-page-1.png",
+          "sha256": "9b9a03c51542dcac1773f3d30b6f727f5b353947947fe79be8e50963484396a3",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/revision-page-2.png",
+          "sha256": "c745912b22f18eb8d0681252b13f8825fb215f7de7e4745dea0e82ac7760c211",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/revision-page-3.png",
+          "sha256": "8d3809ec2173ae0be437f70f999351af9d8422b4802eb7c6c440d24dda1bb0ac",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx/revision-page-4.png",
+          "sha256": "cbb23179d86ee7961ba927fd5edaa55e748b3ad795f1ad7ace1f7891b52c98e4",
+          "physicallyOpened": true,
+          "clipped": false
+        }
+      ],
+      "skillPin": {
+        "skillId": "quick_skill.bill_watch",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+        "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "versionId": "cbc381cb-308d-4640-9321-5156fc8306e5",
+      "artifactId": "51342806-3635-4559-9247-245dcfad9253",
+      "baseVersionId": "39f353ff-d186-4308-9639-ee4e694f906e",
+      "provenanceSha256": "170a6f6e0e1ee414d3c43ea62c6d532a676c09250b49e38b5c5f3172bf7a87fe",
+      "revisionFullReadEvidence": [
+        {
+          "sourceId": "bill_text",
+          "recordId": "119-hr-4242",
+          "version": "synthetic-ih-v1",
+          "sha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "decision": "32632fa7-2412-4854-850e-b4c167f41960"
+        },
+        {
+          "sourceId": "federal_legislation",
+          "recordId": "synthetic-status-4242",
+          "version": "synthetic-status-v1",
+          "sha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "decision": "2350759c-cf32-4fed-b8bc-3f8ab3d4ee8d"
+        }
+      ],
+      "originalReadReceiptLimitation": null,
+      "nativeQualified": false
+    },
+    {
+      "cohort": "retained-docx-final",
+      "label": "original",
+      "docxSha256": "281ac01f88a9da903341b413faa181cd7ca9d8d0876f6f5d00c93e0f61c1d03b",
+      "docxBytes": 38703,
+      "editableParagraphs": 43,
+      "pdfSha256": "f25e2ba6bbd9d095316a6e496a264c1bba90c374907f04243cad4c7eb023f2ad",
+      "pages": 4,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/original-page-1.png",
+          "sha256": "fbafc1a543a66372cd60fc5981fb196bf33510d8c780916dbd16224fcc811e1c",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/original-page-2.png",
+          "sha256": "4a7280dd23e38829734ec6d0866ecbdd2ee0c9a04b76461718ef317f8e9375b6",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/original-page-3.png",
+          "sha256": "afe13a495772eaa8398372d6d38e8e8466724794d34635a9abd88527c1d77e39",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/original-page-4.png",
+          "sha256": "174a16ccebf6d0cd7c1e275a8cfa5b48bd45393474cd601e858178325fcefde3",
+          "physicallyOpened": true,
+          "clipped": false
+        }
+      ],
+      "skillPin": {
+        "skillId": "quick_skill.bill_watch",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+        "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "versionId": "134835e7-a0f7-4fc6-94a5-7a93eb4e038d",
+      "artifactId": "7bb78af9-662e-40f4-9a5f-4bdb05f2b28e",
+      "baseVersionId": null,
+      "provenanceSha256": "142d5776be985769f6be787065864cf8485496d4337dab71aa3630f26ba7d3b4",
+      "revisionFullReadEvidence": null,
+      "originalReadReceiptLimitation": "Original saved bundle contains spec/version/evidence/provenance, but not original full preparation/read envelopes; its reads digest cannot be independently recomputed.",
+      "nativeQualified": false
+    },
+    {
+      "cohort": "retained-docx-final",
+      "label": "revision",
+      "docxSha256": "c612130f09121a2d45e36d2b4817e7ea0f06a4973fd9c54f61ce5511ef83a5df",
+      "docxBytes": 38882,
+      "editableParagraphs": 43,
+      "pdfSha256": "d7b8f17cfb691cdfbdd04478ac65b2b307e70bcc96d05cda4d324b64b43225e5",
+      "pages": 4,
+      "images": [
+        {
+          "page": 1,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/revision-page-1.png",
+          "sha256": "5d4ef8ae4c026fb0caa3353ebe8e321ef09432282573e607f033c56a3030fb52",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 2,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/revision-page-2.png",
+          "sha256": "fad18a5698e4413d1882658c3f48150379f90b62fd4332c7c0bd2c5c16c85d3c",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 3,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/revision-page-3.png",
+          "sha256": "8f4b7b6f7ee4a301c7735629c08d62c4f19d65327cf12eda0caf07086cb673d9",
+          "physicallyOpened": true,
+          "clipped": false
+        },
+        {
+          "page": 4,
+          "path": "/workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/retained-docx-final/revision-page-4.png",
+          "sha256": "fe37bf2284719c205c2813ff79203d7b7681052d66091c21c762e803a5853fff",
+          "physicallyOpened": true,
+          "clipped": false
+        }
+      ],
+      "skillPin": {
+        "skillId": "quick_skill.bill_watch",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+        "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "versionId": "f8b16c44-f15e-407c-a566-07b860f56706",
+      "artifactId": "7bb78af9-662e-40f4-9a5f-4bdb05f2b28e",
+      "baseVersionId": "134835e7-a0f7-4fc6-94a5-7a93eb4e038d",
+      "provenanceSha256": "fcffb46b96ef38215282f717b9c2677eb9f4653c105b546146de41ece5437d87",
+      "revisionFullReadEvidence": [
+        {
+          "sourceId": "bill_text",
+          "recordId": "119-hr-4242",
+          "version": "synthetic-ih-v1",
+          "sha256": "008c265c16ad3a1b7d1836b2cf4cc26707873ecdfa09b8f28a082e8d9887444c",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "decision": "69dc330a-f077-4999-8aff-620027e21f53"
+        },
+        {
+          "sourceId": "federal_legislation",
+          "recordId": "synthetic-status-4242",
+          "version": "synthetic-status-v1",
+          "sha256": "6d4b078813e17f86d97c19ad50f1e0e848d7f883bbe6a385527cbe017e49f9e7",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "decision": "275953a8-731b-4fd6-bb88-a35b7d8e5f58"
+        }
+      ],
+      "originalReadReceiptLimitation": null,
+      "nativeQualified": false
+    }
+  ],
+  "nativeQualified": false,
+  "acceptance": "ACCEPT_ARTIFACT_RETAINED_SOURCE_ONLY",
+  "independentLifecycle": {
+    "pass": 2,
+    "fail": 0,
+    "source": "b7b47c2b73dab98c2ec7074b2153a14d6a1e618e",
+    "mode": "Retained-file import, actualHTTP/code, scripted currentSQL/S3 ports, zero new DOCX generation"
+  },
+  "authorSixCasesSeparatelyAttributed": true,
+  "limits": [
+    "Original complete preparations/read envelopes not retained: original readsSha256 not independently recomputable",
+    "Technical provenance ends on sparse fourth pages",
+    "Native current policy/source/renderer authenticity and runtime remain unqualified",
+    "Independent imported request hashes are fresh import metadata, not recovered author create receipts"
+  ],
+  "reviewSha256": "d537565e996d1d8bb61958be9aba4f829891648614b969320a80da3c37b2e634"
+}

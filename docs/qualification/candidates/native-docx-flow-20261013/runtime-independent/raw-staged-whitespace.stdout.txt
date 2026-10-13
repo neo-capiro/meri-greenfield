@@ -1,0 +1,4 @@
+docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-initial.stdout.txt:36: trailing whitespace.
++  
+docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-initial.stdout.txt:38: trailing whitespace.
++  

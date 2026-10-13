@@ -1,0 +1,31 @@
+✔ native authority absent fails before any admitted transaction or SQL (1.413128ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (9.283989ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (1.772087ms)
+✔ foreign project key and stale offset cannot append or overwrite original (2.2878ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (8.361926ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (1.731336ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (2.710925ms)
+✔ parked canonical admission is bounded by the original caller lifetime (20.544181ms)
+✔ separate OS SDK task -> actual fixed HTTP/native client -> trusted compiler -> canonical pending retention (2077.708853ms)
+✔ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (160.321219ms)
+✔ revoked current task refuses compiler and publication; serialized prepared injection is rejected (5.620607ms)
+✔ source inactive task performs no RPC and inactive control performs no current authority read (0.826469ms)
+✔ native SETTLED marker binds exact returned body and allocation; retained delivery never redispatches (1.525967ms)
+✔ native marker hash refuses body release (0.832729ms)
+✔ native marker bytes refuses body release (0.638647ms)
+✔ native marker allocation refuses body release (0.641071ms)
+✔ native marker operation refuses body release (0.714251ms)
+✔ native marker rawRequest refuses body release (0.625979ms)
+✔ native marker expired refuses body release (0.718157ms)
+✔ native marker revoked refuses body release (0.641993ms)
+✔ unknown result persists without body and a repeated SDK delivery cannot claim again (1.085617ms)
+✔ normalized native arguments digest is accepted only with exact immutable raw request (0.77362ms)
+✔ same UNKNOWN delivery with changed argument cannot redispatch under a different journal key (0.967821ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4074.179167

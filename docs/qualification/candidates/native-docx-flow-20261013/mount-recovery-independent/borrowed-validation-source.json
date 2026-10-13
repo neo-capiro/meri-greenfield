@@ -1,0 +1,66 @@
+{
+  "alias": "/workspace/meri-native-docx-mount-recovery-independent/node_modules/@capiro/meri-contracts",
+  "resolved": "/workspace/meri-native-flow-integration/packages/contracts",
+  "reviewPackageVersion": "0.1.4",
+  "borrowedPackageVersion": "0.1.5",
+  "nodeExport": "./validate.mjs",
+  "actualImportedValidationSourcesExact": [
+    {
+      "path": "validate.mjs",
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "bytes": 3311,
+      "byteExact": true
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043,
+      "byteExact": true
+    }
+  ],
+  "note": "Donor package metadata may be under root owner work; the only public alias import here is /node. Its export selector and validation/schema source bytes are exact to the reviewed tree. Donor not modified.",
+  "borrowedDependencyMetadata": [
+    {
+      "name": "ajv",
+      "version": "8.20.0",
+      "realpath": "/workspace/meri-greenfield/node_modules/ajv/package.json",
+      "packageJsonSha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989"
+    },
+    {
+      "name": "ajv-formats",
+      "version": "3.0.1",
+      "realpath": "/workspace/meri-greenfield/node_modules/ajv-formats/package.json",
+      "packageJsonSha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69"
+    },
+    {
+      "name": "canonicalize",
+      "version": "5.1.0",
+      "realpath": "/workspace/meri-greenfield/node_modules/canonicalize/package.json",
+      "packageJsonSha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670"
+    },
+    {
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.295",
+      "realpath": "/workspace/meri-next-batch/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "packageJsonSha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211"
+    },
+    {
+      "name": "@temporalio/client",
+      "version": "1.24.0",
+      "realpath": "/workspace/meri-native-flow-integration/apps/runtime/node_modules/@temporalio/client/package.json",
+      "packageJsonSha256": "946629172fe386280e72e1856aacf0c8f760264991c3268b00790bf4929c2651"
+    },
+    {
+      "name": "pg",
+      "version": "8.23.1",
+      "realpath": "/workspace/meri-native-flow-integration/apps/runtime/node_modules/pg/package.json",
+      "packageJsonSha256": "b1e53333a3d0c2c47c49a5cb919d221135dc03145df740925b899bc2baacc435"
+    },
+    {
+      "name": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "realpath": "/workspace/meri-next-batch/packages/window-resolution/node_modules/@js-temporal/polyfill/package.json",
+      "packageJsonSha256": "8406de0f5b7642ee1518c01c40ee6b797da7bc97575fea406e1f17876493e9cc"
+    }
+  ]
+}

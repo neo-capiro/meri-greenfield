@@ -1,0 +1,38 @@
+✖ retained actual DOCX inspect/download through current HTTP mount, reconstructed owner, exact immutable parent and byte tamper refusal (61.156111ms)
+✖ foreign opaque session and current source/resource revocation refuse retained read with zero generation or charge (26.732208ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1768.706825
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/lifecycle-independent.test.mjs:19:1
+✖ retained actual DOCX inspect/download through current HTTP mount, reconstructed owner, exact immutable parent and byte tamper refusal (61.156111ms)
+  Error: Invalid private execution contract artifacts:ArtifactInspection
+      at executionShape (file:///workspace/meri-native-docx-artifact-review/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+      at validateShape (file:///workspace/meri-native-docx-artifact-review/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+      at Object.inspection (file:///workspace/meri-native-docx-artifact-review/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+      at recordValue (file:///workspace/meri-native-docx-artifact-review/apps/artifacts/storage/postgres-versions.mjs:6:73)
+      at Object.commit (file:///workspace/meri-native-docx-artifact-review/apps/artifacts/storage/postgres-versions.mjs:39:196)
+      at seed (file:///workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/lifecycle-independent.test.mjs:15:141)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/lifecycle-independent.test.mjs:20:16)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/lifecycle-independent.test.mjs:31:1
+✖ foreign opaque session and current source/resource revocation refuse retained read with zero generation or charge (26.732208ms)
+  Error: Invalid private execution contract artifacts:ArtifactInspection
+      at executionShape (file:///workspace/meri-native-docx-artifact-review/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+      at validateShape (file:///workspace/meri-native-docx-artifact-review/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+      at Object.inspection (file:///workspace/meri-native-docx-artifact-review/packages/contracts/artifacts-0.2/artifact-validation.mjs:49:57)
+      at recordValue (file:///workspace/meri-native-docx-artifact-review/apps/artifacts/storage/postgres-versions.mjs:6:73)
+      at Object.commit (file:///workspace/meri-native-docx-artifact-review/apps/artifacts/storage/postgres-versions.mjs:39:196)
+      at seed (file:///workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/lifecycle-independent.test.mjs:15:141)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-docx-artifact-review/docs/qualification/candidates/native-docx-flow-20261013/artifact-independent/lifecycle-independent.test.mjs:31:214)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

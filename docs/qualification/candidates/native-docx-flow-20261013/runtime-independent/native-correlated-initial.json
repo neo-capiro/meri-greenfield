@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "684e3a4b645f3aa62caaaf4b7eec9284e95229f9",
+  "sourceTree": "68c88e97dfab99763973dd53baf4f4d7659f09f7",
+  "sourceDiffBytes": 0,
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-corruption-independent.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/session-boundary-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-runtime-independent",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 1.957,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 8951,
+  "stdoutSha256": "e294140e3af1803cbd8ba4f484af22500cf480fed56df273f2ae3b2d4b2d68a1",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,1 @@
+Initial import failed ERR_MODULE_NOT_FOUND: @capiro/meri-contracts from existing bound-session-store.mjs. Node v24.19.0. Product source was not changed to hide this; an owned local package link supplies the existing canonical package alias for source checks. No native services were allocated.

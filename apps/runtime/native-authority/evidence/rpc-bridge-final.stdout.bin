@@ -1,0 +1,28 @@
+✔ thin canonical native join uses actual currentRun product owner without DTO expansion (18.924823ms)
+✔ default bridge disabled makes no native reads or current-run queries (3.606437ms)
+✔ current native selected-client substitution is refused by canonical join (3.803473ms)
+✔ actual product grant revoked during native context read cannot release joined authority (3.879727ms)
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (30.352897ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (1.969313ms)
+✔ missing actual native task authority yields503 before registration/admission (0.797116ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (1.343474ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (22.081796ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (20.467041ms)
+✔ native authority absent fails before any admitted transaction or SQL (1.404005ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (9.997529ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (1.906178ms)
+✔ foreign project key and stale offset cannot append or overwrite original (2.472346ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (2.816223ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (4.665325ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (2.764154ms)
+✔ parked canonical admission is bounded by the original caller lifetime (20.89074ms)
+✔ immutable registration replay retains original expiry despite a shorter current authorization (1.859087ms)
+✔ redundant entry/stream/session owner tuples cannot substitute foreign retained rows (4.257353ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2067.003776

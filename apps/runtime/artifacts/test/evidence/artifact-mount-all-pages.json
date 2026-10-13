@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "apps/runtime/artifacts/test/render.mjs"
+  ],
+  "cwd": "/workspace/meri-native-artifact-mount",
+  "sourceHead": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "sourceDiffSha256": "34b5acc67bc0361f9bf93952ec04a05f90f34ea0d1546e5c6b307b191d31d92a",
+  "sourceDiffBytes": 31321,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T20:48:42.683598+00:00",
+  "durationSeconds": 2.726,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 369278,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/artifacts/test/evidence/artifact-mount-all-pages.stdout.bin",
+      "bytes": 64,
+      "sha256": "050f3d842558638b4d566f46788bfab54880c17b320c5c4e644fb2716a63fc7f"
+    },
+    {
+      "path": "apps/runtime/artifacts/test/evidence/artifact-mount-all-pages.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

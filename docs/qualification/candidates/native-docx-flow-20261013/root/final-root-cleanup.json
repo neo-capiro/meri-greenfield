@@ -1,0 +1,237 @@
+{
+  "scope": "OWNED_ROOT_SOURCE_CHECK_RESOURCES_ONLY",
+  "removed": [
+    {
+      "path": "node_modules/ajv",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "node_modules/@capiro/meri-contracts",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "kind": "OWNED_GENERATOR_DEPENDENCY_COPY"
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "apps/artifacts/storage/node_modules/@aws-sdk/client-s3",
+      "kind": "OWNED_SYMLINK"
+    },
+    {
+      "path": "apps/runtime/node_modules",
+      "kind": "OWNED_PINNED_NPM_INSTALL"
+    },
+    {
+      "path": "apps/artifacts/storage/node_modules/@aws-sdk",
+      "kind": "OWNED_EMPTY_DIRECTORY"
+    },
+    {
+      "path": "apps/artifacts/storage/node_modules",
+      "kind": "OWNED_EMPTY_DIRECTORY"
+    },
+    {
+      "path": "node_modules/@capiro",
+      "kind": "OWNED_EMPTY_DIRECTORY"
+    },
+    {
+      "path": "node_modules",
+      "kind": "OWNED_EMPTY_DIRECTORY"
+    },
+    {
+      "path": "/tmp/meri-native-flow-npm-cache",
+      "kind": "OWNED_TASK_NPM_CACHE"
+    }
+  ],
+  "donorMetadata": [
+    {
+      "target": "/workspace/meri-greenfield/node_modules/ajv",
+      "beforeMetadataSha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+      "afterMetadataSha256": "1f9033ee5a6515e7d76938b7072941862d1ed228a6879cc7fe10cdeb75107989",
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-greenfield/node_modules/ajv-formats",
+      "beforeMetadataSha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69",
+      "afterMetadataSha256": "402fb4bcfa457f0226813f3976ac42839dd619907c075c108efba8600d7edb69",
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-greenfield/node_modules/canonicalize",
+      "beforeMetadataSha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670",
+      "afterMetadataSha256": "ca7454aac0f76429b5d56bbc3bd61fa706fb1088a19f45d64cf38e055fbf4670",
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-native-flow-integration/packages/contracts",
+      "scope": "OWN_SOURCE_PACKAGE_INTENTIONALLY_UPDATED_NOT_DONOR"
+    },
+    {
+      "target": "/workspace/meri-greenfield/packages/contracts/node_modules",
+      "beforeMetadataSha256": null,
+      "afterMetadataSha256": null,
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "beforeMetadataSha256": null,
+      "afterMetadataSha256": null,
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "beforeMetadataSha256": null,
+      "afterMetadataSha256": null,
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "beforeMetadataSha256": null,
+      "afterMetadataSha256": null,
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "beforeMetadataSha256": null,
+      "afterMetadataSha256": null,
+      "unchanged": true
+    },
+    {
+      "target": "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3",
+      "beforeMetadataSha256": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881",
+      "afterMetadataSha256": "9e92578cc2fea52ce9ffe69805cb55969ba78e3386f4646aed2f517453106881",
+      "unchanged": true
+    }
+  ],
+  "groups": [
+    {
+      "receipt": "client-wall-mapping.json",
+      "ownedPgid": 368602,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "public-generated.json",
+      "ownedPgid": 387557,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "public-candidate-pack-owned-cache.json",
+      "ownedPgid": 404576,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "installed-public-candidate.json",
+      "ownedPgid": 405696,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "integrated-budget-configured.json",
+      "ownedPgid": 380094,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "candidate-version-check.json",
+      "ownedPgid": 402630,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "recovered-root-runtime.json",
+      "ownedPgid": 402631,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "runtime-dependency-install.json",
+      "ownedPgid": 383354,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "workflow-bundle-local.json",
+      "ownedPgid": 389655,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "root-runtime-final.json",
+      "ownedPgid": 389198,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "public-generated-owned.json",
+      "ownedPgid": 388571,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "integrated-mount-final.json",
+      "ownedPgid": 407298,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "root-runtime-integrated.json",
+      "ownedPgid": 386697,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "root-mount-first.json",
+      "ownedPgid": 385603,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "public-candidate-pack.json",
+      "ownedPgid": 404414,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "public-check.json",
+      "ownedPgid": 389197,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    },
+    {
+      "receipt": "integrated-budget.json",
+      "ownedPgid": 379805,
+      "absentNow": true,
+      "captureRecordedAbsent": true
+    }
+  ],
+  "allOwnedRecordedGroupsAbsent": true,
+  "sameHostHistoricalContinuity": "Environment recovery occurred; prior immutable capture results retained. Current lookup checks only listed IDs and makes no whole-host claim.",
+  "otherWorktreesOrDonorsDeleted": false,
+  "nativeCredentialsOrPermissionsCreated": false
+}

@@ -1,0 +1,21 @@
+{
+  "source": "b7b47c2b73dab98c2ec7074b2153a14d6a1e618e",
+  "mode": "INDEPENDENT_RETAINED_IMPORT_SYNTHETIC_SQL_S3",
+  "versions": [
+    {
+      "versionId": "134835e7-a0f7-4fc6-94a5-7a93eb4e038d",
+      "parent": null,
+      "sha256": "281ac01f88a9da903341b413faa181cd7ca9d8d0876f6f5d00c93e0f61c1d03b"
+    },
+    {
+      "versionId": "f8b16c44-f15e-407c-a566-07b860f56706",
+      "parent": "134835e7-a0f7-4fc6-94a5-7a93eb4e038d",
+      "sha256": "c612130f09121a2d45e36d2b4817e7ea0f06a4973fd9c54f61ce5511ef83a5df"
+    }
+  ],
+  "generations": 0,
+  "charges": 0,
+  "immutableSpecTamperRefused": true,
+  "byteTamperRefused": true,
+  "nativeQualified": false
+}

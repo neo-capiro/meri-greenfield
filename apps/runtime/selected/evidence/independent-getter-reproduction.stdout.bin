@@ -1,0 +1,70 @@
+✖ selected ledger captures only inert native allocation method before initialization effects (1.01295ms)
+✖ selected execution option getters cannot execute during trusted control construction (0.562363ms)
+✖ selected HTTP method getter cannot execute during constructor validation (0.18635ms)
+✔ private selected wire rejects getters, prepared injections and worker compiler delivery IDs without effects (2.04681ms)
+✔ inactive selected HTTP route refuses before native authority/controller effects (2.350645ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 2
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1968.375485
+
+✖ failing tests:
+
+test at ../meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs:13:1
+✖ selected ledger captures only inert native allocation method before initialization effects (1.01295ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs:15:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at ../meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs:17:1
+✖ selected execution option getters cannot execute during trusted control construction (0.562363ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs:19:141)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs:21:1
+✖ selected HTTP method getter cannot execute during constructor validation (0.18635ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs:23:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

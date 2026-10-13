@@ -1,0 +1,15 @@
+✔ runtime missing current owners refuses fixed product routes without remote effects (9.882301ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.235234ms)
+✔ runner refuses missing observed registration before the single SDK query (20.063338ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (10.040647ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (9.656212ms)
+✔ assembled runner cancellation uses configured100ms bound for a parked owned close (136.271315ms)
+✔ actual bounded native mirror append acknowledgement precedes durable completed status (30.898662ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2405.588536

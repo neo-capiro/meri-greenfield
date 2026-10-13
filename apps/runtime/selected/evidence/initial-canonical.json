@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-selected-runtime",
+  "sourceHead": "b273ee4bafe57c01f6c3319c67eb1ced95f224d0",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T20:47:50.031604+00:00",
+  "durationSeconds": 2.376,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 368870,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/selected/evidence/initial-canonical.stdout.bin",
+      "bytes": 3134,
+      "sha256": "0c85143568e153ef55128e376b0d3e6ddfd2b32cbd9b0cb0e9bc6b9ae7a18680"
+    },
+    {
+      "path": "apps/runtime/selected/evidence/initial-canonical.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

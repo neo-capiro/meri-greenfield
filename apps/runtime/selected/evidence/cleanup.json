@@ -1,0 +1,81 @@
+{
+  "sourceHead": "8c487d135f461cb249e0af06cf09e626fd5c86b2",
+  "base": "efacbfd9b599e458250f9bb624a72626f4e769d2",
+  "dependencyLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/runtime/selected/node_modules",
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    }
+  ],
+  "ownedProcessGroups": [
+    {
+      "receipt": "corrected-boundary-fixture.json",
+      "pgid": 370381,
+      "absent": true
+    },
+    {
+      "receipt": "final-frozen-source.json",
+      "pgid": 375443,
+      "absent": true
+    },
+    {
+      "receipt": "first-process-check.json",
+      "pgid": 372972,
+      "absent": true
+    },
+    {
+      "receipt": "frozen-sdk-types.json",
+      "pgid": 377114,
+      "absent": true
+    },
+    {
+      "receipt": "initial-canonical.json",
+      "pgid": 368870,
+      "absent": true
+    },
+    {
+      "receipt": "initial-selected.json",
+      "pgid": 370086,
+      "absent": true
+    },
+    {
+      "receipt": "normalized-marker-and-replay.json",
+      "pgid": 372071,
+      "absent": true
+    }
+  ],
+  "preservation": {
+    "baseEntries": 15426,
+    "preservedBaseEntries": 15424,
+    "changedBasePaths": [
+      "apps/gateway/selected-skills/mount.mjs",
+      "apps/worker/conversation/skills/selected-runtime.mjs"
+    ],
+    "allOtherBaseEntriesExact": true,
+    "publicContractsAndOriginal14AssetsExact": true
+  },
+  "nativeCalls": false,
+  "privateSources": false,
+  "publicationRetry": false,
+  "scope": "LOCAL_SOURCE_ONLY_NOT_NATIVE_ACCEPTANCE"
+}

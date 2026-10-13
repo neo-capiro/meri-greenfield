@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "681731f1c647339f748dc60eb6ac165c1d4257cb",
+  "sourceTree": "2174b478d9b429044d13d8ec53fb9fb82e144437",
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-runtime-independent",
+  "timeoutSeconds": 180,
+  "exitCode": 1,
+  "timedOut": false,
+  "durationSeconds": 2.032,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 3685,
+  "stdoutSha256": "19ac9507ac10949f4d833163e4452ad2dae3aa25d883dc3b4f975fe7567888fd",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

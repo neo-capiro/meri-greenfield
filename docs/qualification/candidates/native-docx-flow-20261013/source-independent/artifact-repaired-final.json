@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-source-review",
+  "sourceHead": "67f8ad0ab5515cf55833628cc7529dc35af3969e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3ab7e80e74122ae9c3ba6ef24592767d8ae003cd56357fcfef49b090ecc6cc5b",
+  "startedAt": "2026-10-13T21:07:31.058600+00:00",
+  "durationSeconds": 2.227,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 379407,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-repaired-final.stdout.bin",
+      "bytes": 2072,
+      "sha256": "4a8370bf01cd21670466370d044e33705dc6b53a1dd59cc7a139f2b06ff471ea"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-repaired-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root08aef repairs independently reproduced outer successful response cap, preserve initial artifact and partial-repair failures; added actual inspect/download/request bounds",
+  "commandSourceFiles": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs",
+      "sha256": "e05f371c79d26b9c6e30419b2ef28e8cb81a7395ce181905e35e9bd01402e90c"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

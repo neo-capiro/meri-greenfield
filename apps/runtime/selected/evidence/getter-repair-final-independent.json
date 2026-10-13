@@ -1,0 +1,36 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/workspace/meri-native-selected-runtime",
+    "node",
+    "--test",
+    "/workspace/meri-native-docx-runtime-independent/docs/qualification/candidates/native-docx-flow-20261013/runtime-independent/selected-boundary-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-selected-runtime",
+  "sourceHead": "dcd83e974e934c8f40b3fe56037d00d9c62e1f0c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T21:12:39.090559+00:00",
+  "durationSeconds": 3.451,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 382610,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/selected/evidence/getter-repair-final-independent.stdout.bin",
+      "bytes": 637,
+      "sha256": "366bbcb84818f8f7610c73bd5ecb089d3f65e1d68140cef8a6201cb87966aaab"
+    },
+    {
+      "path": "apps/runtime/selected/evidence/getter-repair-final-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,41 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "apps/runtime",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-native-flow-npm-cache",
+    "--registry=https://registry.npmjs.org"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "9cd3673bdf656e1832e30471a68788ab9f10515b",
+  "sourceDiffSha256": "f4541879c4a3e2c8254ff2b82a8d78ffdda4f0332f6a404012a50cd97ce9a261",
+  "sourceDiffBytes": 13288,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:13:46.149273+00:00",
+  "durationSeconds": 3.637,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 383354,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/runtime-dependency-install.stdout.bin",
+      "bytes": 26,
+      "sha256": "c8295065d74ee6ceb0558c9e8f7e11f6b5006970851c4d6a17bd3e1fd2932968"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/runtime-dependency-install.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

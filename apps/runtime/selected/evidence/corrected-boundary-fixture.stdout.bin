@@ -1,0 +1,19 @@
+✔ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (143.421623ms)
+✔ revoked current task refuses compiler and publication; serialized prepared injection is rejected (5.528777ms)
+✔ source inactive task performs no RPC and inactive control performs no current authority read (0.743727ms)
+✔ native SETTLED marker binds exact returned body and allocation; retained delivery never redispatches (1.38406ms)
+✔ native marker hash refuses body release (0.847281ms)
+✔ native marker bytes refuses body release (0.693492ms)
+✔ native marker allocation refuses body release (0.621595ms)
+✔ native marker operation refuses body release (0.526724ms)
+✔ native marker expired refuses body release (0.622777ms)
+✔ native marker revoked refuses body release (0.746221ms)
+✔ unknown result persists without body and a repeated SDK delivery cannot claim again (1.06822ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2134.604374

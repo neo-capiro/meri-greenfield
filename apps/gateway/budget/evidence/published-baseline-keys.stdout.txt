@@ -1,0 +1,32 @@
+✖ admitted independent construction is inert, read joins both grants and returns only canonical receipt (9.86054ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1633.044307
+
+✖ failing tests:
+
+test at apps/control/admitted-runs/independent/owner-independent.test.mjs:15:1
+✖ admitted independent construction is inert, read joins both grants and returns only canonical receipt (9.86054ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'currentRun',
+  +   'currentAllocation'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-product-budget-baseline/apps/control/admitted-runs/independent/owner-independent.test.mjs:15:164)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'currentRun', 'currentAllocation' ],
+    expected: [ 'currentRun' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,4 @@
+apps/runtime/selected/test/sdk-types.ts(1,34): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+apps/runtime/selected/test/sdk-types.ts(2,45): error TS2307: Cannot find module '@anthropic-ai/claude-agent-sdk' or its corresponding type declarations.
+apps/runtime/selected/test/sdk-types.ts(7,19): error TS7006: Parameter '_name' implicitly has an 'any' type.
+apps/runtime/selected/test/sdk-types.ts(7,25): error TS7006: Parameter 'input' implicitly has an 'any' type.

@@ -1,0 +1,39 @@
+{
+  "command": [
+    "npm",
+    "pack",
+    "./packages/contracts",
+    "--ignore-scripts",
+    "--cache",
+    "/tmp/meri-native-flow-npm-cache",
+    "--pack-destination",
+    "docs/qualification/candidates/native-docx-flow-20261013/root"
+  ],
+  "cwd": "/workspace/meri-native-flow-integration",
+  "sourceHead": "faa0bfc8805eb4cf2583337bfae82e3068a695be",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T22:13:05.543427+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 404576,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/public-candidate-pack-owned-cache.stdout.bin",
+      "bytes": 32,
+      "sha256": "bbba1fd53b95bc5376f5873e3f29da45380ab9262a2e6c190b84c3d7615ab95f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/public-candidate-pack-owned-cache.stderr.bin",
+      "bytes": 1683,
+      "sha256": "a74c36d8b8a403c360d8b03724eca636aa3f527d810b009c817a375a7194f811"
+    }
+  ],
+  "rerunReason": "The recovered environment has no writable default npm cache; preserve failure and use the previously owned task cache under /tmp.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

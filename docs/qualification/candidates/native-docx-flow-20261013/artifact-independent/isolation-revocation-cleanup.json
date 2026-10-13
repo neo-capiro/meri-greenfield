@@ -1,0 +1,65 @@
+{
+  "a": {
+    "http": {
+      "closed": true,
+      "listening": false,
+      "activeSockets": 0
+    },
+    "fixture": {
+      "mode": "synthetic-local",
+      "sourceConnected": false,
+      "nativeDatabase": false,
+      "nativeQualified": false,
+      "generations": 0,
+      "artifactChecks": 0,
+      "versionCharges": 0,
+      "settled": 0,
+      "unknown": 0,
+      "consumedMicroUsd": "0",
+      "allocations": 1,
+      "grants": 1,
+      "skillId": "quick_skill.relationship_brief",
+      "skillVersion": "1.0.0",
+      "manifestSha256": "c465302acce3a7fc4f3f12513ebd9d55306adb9d068bc33feefebf469514e31c",
+      "processReceipts": [],
+      "closed": true,
+      "revoked": false,
+      "cleanup": {
+        "executorDirectoriesAbsent": true,
+        "storeRemoved": true
+      }
+    }
+  },
+  "b": {
+    "http": {
+      "closed": true,
+      "listening": false,
+      "activeSockets": 0
+    },
+    "fixture": {
+      "mode": "synthetic-local",
+      "sourceConnected": false,
+      "nativeDatabase": false,
+      "nativeQualified": false,
+      "generations": 0,
+      "artifactChecks": 0,
+      "versionCharges": 0,
+      "settled": 0,
+      "unknown": 0,
+      "consumedMicroUsd": "0",
+      "allocations": 1,
+      "grants": 1,
+      "skillId": "quick_skill.relationship_brief",
+      "skillVersion": "1.0.0",
+      "manifestSha256": "c465302acce3a7fc4f3f12513ebd9d55306adb9d068bc33feefebf469514e31c",
+      "processReceipts": [],
+      "closed": true,
+      "revoked": false,
+      "cleanup": {
+        "executorDirectoriesAbsent": true,
+        "storeRemoved": true
+      }
+    }
+  },
+  "nativeQualified": false
+}

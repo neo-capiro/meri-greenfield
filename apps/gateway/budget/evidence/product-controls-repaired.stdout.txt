@@ -1,0 +1,24 @@
+✔ explicit product namespace runs canonical bind/reserve/settle/completion with one ledger (22.838903ms)
+✔ atomic leased callback sees immutable exact allocation and closed SQL port after commit (3.797719ms)
+✔ changed grant during compiled effect refuses result and rolls back under same lease (5.822395ms)
+✔ changed fence during compiled effect refuses result and rolls back under same lease (2.642468ms)
+✔ immutable allocation deadline cannot be refreshed by a later current call (3.422209ms)
+✔ lost leased COMMIT acknowledgement releases no result and does not retry effect (2.659903ms)
+✔ serialized effects share budget lock and second callback cannot overtake first (5.686694ms)
+✔ hostile binding/input and noncompiled callback refuse before SQL effects (2.177335ms)
+✔ only two fixed server namespace choices are accepted before connection (0.183253ms)
+✔ readCompletion refuses revoked without preparation, reconciliation or redispatch (6.236964ms)
+✔ readCompletion refuses fence without preparation, reconciliation or redispatch (5.528819ms)
+✔ readCompletion refuses quarantine without preparation, reconciliation or redispatch (5.330283ms)
+✔ readCompletion refuses unprepared without preparation, reconciliation or redispatch (2.594666ms)
+✔ readCompletion refuses unknown without preparation, reconciliation or redispatch (3.219267ms)
+✔ readCompletion wrong delivery/raw request and lost read COMMIT never yield marker (7.478574ms)
+✔ product migration is empty canonical structure, no seed/role/grant or fixed allowance (2.340959ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1740.84674

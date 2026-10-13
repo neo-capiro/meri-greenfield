@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/session-owner.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "apps/runtime/native-authority/test/identity-context.test.mjs",
+    "apps/runtime/native-authority/test/session-integrity.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-authority-session",
+  "sourceHead": "37c5dddcfab7ad9ad1408750100f28a52b74c7e4",
+  "sourceDiffSha256": "5a2b284f29b213ec498206cc9f95649f52c0810b80cb15822e35c63f5b018db9",
+  "sourceDiffBytes": 12384,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T21:16:52.314853+00:00",
+  "durationSeconds": 3.795,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 385522,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/native-authority/evidence/integrity-repaired.stdout.bin",
+      "bytes": 3324,
+      "sha256": "49a91a549f5ff390027166ae2e2a61a93655c279e20110070390258175a55a78"
+    },
+    {
+      "path": "apps/runtime/native-authority/evidence/integrity-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Narrow retained-receipt correlation and inert bound-client fixes require focused gate rerun.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -52,7 +52,7 @@ export function composeBudgetExecution({owner,producer,allocationJson,authority:
   }finally{lifetime.close();}
  }
  return Object.freeze({
-  bindTrustedGrant:owner.bindTrustedGrant,readInvocationOutcome:owner.readInvocationOutcome,
+  bindTrustedGrant:owner.bindTrustedGrant,readInvocationOutcome:owner.readInvocationOutcome,readCompletion:owner.readCompletion,
   execute:(requestJson,credential,invocationJson,signal)=>execute(requestJson,credential,invocationJson,signal),
   prepareInvocation:(deliveryJson,requestJson,signal)=>owned(requestJson,null,deliveryJson,signal,false),
   executeOwned:(requestJson,credential,deliveryJson,signal)=>owned(requestJson,credential,deliveryJson,signal,true),

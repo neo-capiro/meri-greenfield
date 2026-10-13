@@ -1,0 +1,49 @@
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@capiro/meri-contracts' imported from /workspace/meri-native-docx-runtime-independent/apps/worker/qualification/checkpoint/bound-session-store.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/native-authority/test/session-owner.test.mjs (44.872439ms)
+✔ separate OS SDK task -> actual fixed HTTP/native client -> trusted compiler -> canonical pending retention (2019.686812ms)
+✔ actual original MCP read -> trusted compiler -> canonical immutable pending retention; worker receives no prepared object (135.612912ms)
+✔ revoked current task refuses compiler and publication; serialized prepared injection is rejected (11.558308ms)
+✔ source inactive task performs no RPC and inactive control performs no current authority read (0.862663ms)
+✔ native SETTLED marker binds exact returned body and allocation; retained delivery never redispatches (1.466298ms)
+✔ native marker hash refuses body release (0.816033ms)
+✔ native marker bytes refuses body release (0.672498ms)
+✔ native marker allocation refuses body release (0.620851ms)
+✔ native marker operation refuses body release (0.546019ms)
+✔ native marker rawRequest refuses body release (0.585919ms)
+✔ native marker expired refuses body release (0.683004ms)
+✔ native marker revoked refuses body release (0.682723ms)
+✔ unknown result persists without body and a repeated SDK delivery cannot claim again (1.165677ms)
+✔ normalized native arguments digest is accepted only with exact immutable raw request (0.764697ms)
+✔ same UNKNOWN delivery with changed argument cannot redispatch under a different journal key (0.698577ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3986.080899
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/session-owner.test.mjs:1:1
+✖ apps/runtime/native-authority/test/session-owner.test.mjs (44.872439ms)
+  'test failed'

@@ -1,0 +1,7 @@
+{
+  "removedOwnedLink": "node_modules",
+  "donorPreserved": true,
+  "ownedGroupAbsent": true,
+  "receipt": "client-wall-mapping.json",
+  "sourceNoBackendCall": true
+}

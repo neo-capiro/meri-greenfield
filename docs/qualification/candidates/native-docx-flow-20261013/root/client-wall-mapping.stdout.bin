@@ -1,0 +1,10 @@
+✔ valid Capiro context wire cannot be supplied directly as Meri opaque-session current state (2.30205ms)
+✔ same native context passes through canonical current-run join with no extra backend wall field (2.936534ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 200.307903

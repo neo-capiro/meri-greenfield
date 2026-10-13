@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs",
+    "apps/gateway/budget/product-runtime.test.mjs",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-source-review",
+  "sourceHead": "8505d9ef47dd57069bfb812da9a0447142e214c2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:05:41.908094+00:00",
+  "durationSeconds": 3.746,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 378135,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/root-commit-repaired.stdout.bin",
+      "bytes": 6574,
+      "sha256": "be3c427c0f3e56cb3ac8ac44290df68b030e417207ad3fff5fd6a0d4c8f182c1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/root-commit-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root7ef5 fixes reproduced COMMIT cancellation classification; corrected only independent artifact harness closed field and composer input shape, preserved first raw failures",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

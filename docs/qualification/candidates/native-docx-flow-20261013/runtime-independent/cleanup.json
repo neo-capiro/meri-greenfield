@@ -1,0 +1,112 @@
+{
+  "reviewedCommit": "0cc28d7468b44880fcb31d2720497bc9feb51aa2",
+  "dependencyLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "target": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/runtime/selected/node_modules",
+      "target": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "removed": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/qualification/node_modules/@capiro/meri-contracts",
+      "target": "/workspace/meri-native-docx-runtime-independent/packages/contracts",
+      "removed": true,
+      "donorPreserved": true
+    }
+  ],
+  "captures": [
+    {
+      "receipt": "component-author-initial.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "component-author-setup-repaired.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "final-composed.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "final-strict-replay.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "native-correlated-initial.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "native-repaired.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "selected-boundary-initial.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "selected-repaired.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "selected-sdk-types-setup-repaired.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "selected-sdk-types.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "session-boundary-draft.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    },
+    {
+      "receipt": "session-corruption-initial.json",
+      "ownedProcessGroupAbsent": true,
+      "timedOut": false
+    }
+  ],
+  "allOwnLinksRemoved": true,
+  "allCapturedOwnedGroupsAbsent": true,
+  "scope": "Own review resources only. No claim about other host processes or PID1 zombies. No donors changed, package installation, native/DB/model/cloud/private calls or publication retries."
+}

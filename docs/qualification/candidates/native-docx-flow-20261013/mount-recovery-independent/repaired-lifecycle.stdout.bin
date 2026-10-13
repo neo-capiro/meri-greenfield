@@ -1,0 +1,19 @@
+✔ already cancelled preparation and closed-before-microtask preparation allocate no factory resource (2.274165ms)
+✔ closing while initialization is pending retires the eventual mirror once without installing it (21.531981ms)
+✔ configured close bound returns UNKNOWN, aborts its work and does not claim physical stop (27.073255ms)
+✔ default close bound is1000ms, preserving the original70ms failure as a separately documented contract mismatch (1002.289877ms)
+✔ settlement cancellation stops result release and teardown still retires exactly once (0.915236ms)
+✔ captured resource close and settle preserve the factory result receiver even after method replacement (0.369371ms)
+✔ factory result getters are refused without executing accessor code (0.316182ms)
+✔ late parked retirement records UNKNOWN and cannot reopen or return the late store (35.425307ms)
+✔ owned factory configuration accessors and proxies are refused without execution (0.453027ms)
+✔ prepare input accessor and non-native signal refuse before any factory allocation (0.236282ms)
+✔ overlapping initialization cannot overwrite the first owned mirror (0.2616ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2927.744167

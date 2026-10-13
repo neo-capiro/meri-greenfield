@@ -1,0 +1,10 @@
+✔ current runtime/source revoke after actual generation prevents storage publication and retains uncertain accounting (131.806663ms)
+✔ parked owner resolution is bounded by caller deadline and never dispatches document effects (21.590447ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1898.324073
