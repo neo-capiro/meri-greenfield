@@ -1,0 +1,77 @@
+{
+  "access": "Read-only local Git objects; no private bodies retained or executed",
+  "references": [
+    {
+      "path": "apps/api/src/auth/clerk.service.ts",
+      "pins": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "ce5c4d9bf49e6df098e796b366c3a9f3f59e8d96",
+          "bytes": 5848,
+          "sha256": "89b76502f62155fcf05544a78e19f554a1c89635b62c2b8757ce862ab9ed0daf"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "ce5c4d9bf49e6df098e796b366c3a9f3f59e8d96",
+          "bytes": 5848,
+          "sha256": "89b76502f62155fcf05544a78e19f554a1c89635b62c2b8757ce862ab9ed0daf"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "pins": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+          "bytes": 22931,
+          "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+          "bytes": 22931,
+          "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/context/context-security-scope.service.ts",
+      "pins": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "48a86578828d8e991e057ce364b1924e261e0cef",
+          "bytes": 5398,
+          "sha256": "7b49f49c10fe05c781c096d2202c6be3b6a08a10f9027d9ad5ba6bf301109904"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "48a86578828d8e991e057ce364b1924e261e0cef",
+          "bytes": 5398,
+          "sha256": "7b49f49c10fe05c781c096d2202c6be3b6a08a10f9027d9ad5ba6bf301109904"
+        }
+      ],
+      "unchanged": true
+    }
+  ],
+  "findings": [
+    {
+      "path": "apps/api/src/auth/clerk.service.ts",
+      "locator": "verifySessionToken / assertIssuer / normalizeClaims",
+      "boundary": "Actual verification uses canonical Clerk SDK; decoded or caller-supplied claims cannot substitute. This read does not establish online revocation or Meri run state."
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "locator": "use: verified claims, active membership lookup, org/tenant correlation",
+      "boundary": "Tenant resolution is server policy; headers are hints and membership checks remain required. Provisioning/healing/telemetry mean invocation is not globally side-effect-free."
+    },
+    {
+      "path": "apps/api/src/context/context-security-scope.service.ts",
+      "locator": "resolve / resolveClients",
+      "boundary": "Client scope is a caller upper bound followed by tenant DB ethical-wall checks. Existing result carries no Meri attempt/fence or explicit current revision/expiry receipt."
+    }
+  ],
+  "adapterRequirement": "Explicit canonical native identity/current-context facts joined with authoritative Meri run binding; no guessed endpoint or manufactured freshness."
+}
