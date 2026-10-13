@@ -1,0 +1,40 @@
+{
+  "mode": "borrowed-existing-no-install",
+  "links": [
+    {
+      "ownedLink": "node_modules/ajv",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "version": "8.20.0"
+    },
+    {
+      "ownedLink": "node_modules/ajv-formats",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "version": "3.0.1"
+    },
+    {
+      "ownedLink": "node_modules/canonicalize",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "version": "5.1.0"
+    },
+    {
+      "ownedLink": "node_modules/fast-deep-equal",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "version": "3.1.3"
+    },
+    {
+      "ownedLink": "node_modules/fast-uri",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "version": "3.1.8"
+    },
+    {
+      "ownedLink": "node_modules/json-schema-traverse",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "version": "1.0.0"
+    },
+    {
+      "ownedLink": "node_modules/require-from-string",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "version": "2.0.2"
+    }
+  ]
+}
