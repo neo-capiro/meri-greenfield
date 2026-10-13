@@ -1,0 +1,67 @@
+✔ opaque issuer computes canonical claims from closed owned state (9.79429ms)
+✔ forged token changed token foreign issuer restart and close all fail closed (1.594649ms)
+✔ capability expiry and current run deadline deny (1.563341ms)
+✔ revoke denies actual canonical authority without mutating claim history (0.854636ms)
+✔ current policy denies clientAllowed (1.452926ms)
+✔ current policy denies sourceEnabled (2.027349ms)
+✔ current policy denies grants (1.133224ms)
+✔ revision change invalidates existing token; new current token may validate (1.201707ms)
+✔ coherent replacement preserves stable owner and invalidates prior task token (2.062262ms)
+✔ policy ports refuse forged claims wrong operation client grants and source requirements (3.070958ms)
+✔ hostile configuration, calls and signals are inert (0.774975ms)
+✔ abort inside clock callback cannot release an authority fact (0.858001ms)
+✔ actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch (63.091657ms)
+✖ wrong operation before preparation allocates no durable invocation (5.464779ms)
+✔ unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity (22.332868ms)
+✔ actual gateway source is denied after local revocation and production descriptors remain null (9.402571ms)
+✔ gateway only accepts branded identity explicit local transport and exact allocation (4.15554ms)
+✖ real local case composes control current authorizer store owned gateway and source response (56.993956ms)
+✔ control authorizer recomputes binding digest scopes and current capability (2.319258ms)
+✔ failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection (4.751756ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 18
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2664.552829
+
+✖ failing tests:
+
+test at apps/gateway/local-action/test/identity.test.mjs:35:1
+✖ wrong operation before preparation allocates no durable invocation (5.464779ms)
+  GatewayDenied: UNAVAILABLE
+      at deny (file:///tmp/meri-action-local-identity-20261013/apps/gateway/dispatch/operation-result.mjs:12:37)
+      at request (file:///tmp/meri-action-local-identity-20261013/apps/gateway/local-action/gateway.mjs:30:151)
+      at Object.prepareInvocation (file:///tmp/meri-action-local-identity-20261013/apps/gateway/local-action/gateway.mjs:33:95)
+      at TestContext.<anonymous> (file:///tmp/meri-action-local-identity-20261013/apps/gateway/local-action/test/identity.test.mjs:35:144)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/gateway/local-action/test/identity.test.mjs:40:1
+✖ real local case composes control current authorizer store owned gateway and source response (56.993956ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ACCESS_DENIED/. Input:
+  
+  'Error: LOOKUP_UNAVAILABLE'
+  
+      at async TestContext.<anonymous> (file:///tmp/meri-action-local-identity-20261013/apps/gateway/local-action/test/identity.test.mjs:40:889)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LOOKUP_UNAVAILABLE
+        at Object.read (file:///tmp/meri-action-local-identity-20261013/apps/control/task-lookup/delivery.mjs:42:144)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-action-local-identity-20261013/apps/gateway/local-action/test/identity.test.mjs:40:889)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /ACCESS_DENIED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
