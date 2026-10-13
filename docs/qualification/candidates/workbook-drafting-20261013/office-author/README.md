@@ -1,0 +1,7 @@
+# XLSX cached-result repair outline
+
+Base305648bc. Canonical owner `apps/artifacts/office-transform.mjs` currently creates a fresh profile and converts XLSX→XLSX. Parent's exact original workbook retains a zero cached D4 instead of2050 after the real local converter. First reproduce with unchanged source and retain original/output hashes and process receipts; do not infer recalculation from successful exit alone.
+
+Official source: https://raw.githubusercontent.com/LibreOffice/core/master/officecfg/registry/schema/org/openoffice/Office/Calc.xcs lines1599–1625 declares Formula/Load/OOXMLRecalcMode,0=always,1=never/default. Proposed narrow repair writes fixed trusted XML in only the owned XLSX profile's user/registrymodifications.xcu before the unchanged bounded process invocation. No caller configuration, alternate formula evaluator, renderer, package, UNO/network option or existing Word behavior change.
+
+Actual source tests must reopen input/output and distinguish literal formula-looking strings, formula expressions and cached numeric results; preserve originalbytes and compare complete untouched worksheet values/formulas/styles where meaningful. Test fixed profile placement/permissions plus child failure/cancellation/temp cleanup. Process receipts remain nativeQualification:false and formulaEquivalence:unqualified: local conversion is notG1/native renderer qualification or universal formula support. No native infrastructure/customer/provider calls. All failures and bounded owned cleanup retained.
