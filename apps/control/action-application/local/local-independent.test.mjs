@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {createLocalActionDemo} from './index.mjs';
+import {createLocalActionDemo} from './demo.mjs';
 
 const root=fileURLToPath(new URL('../../../../..',import.meta.url));
 const clone=v=>JSON.parse(JSON.stringify(v));
@@ -44,3 +44,10 @@ test('independent pre-aborted Request does not run source',async t=>{const d=awa
 test('independent session expiry refuses subsequent requests',async t=>{const d=await setup(t,{ttlMs:150});await new Promise(r=>setTimeout(r,175));refusal(await wire(d,'query',{request:{}}));assert.equal(d.stats().sourceReads,0);assert.equal(d.stats().taskEffects,0);});
 test('independent close is idempotent and leaves session unavailable',async t=>{const d=await setup(t);d.close();d.close();assert.equal(d.stats().closed,true);refusal(await wire(d,'query',{request:{}}));assert.equal(d.stats().sourceReads,0);});
 test('independent success response prevents caching and adds no permissive CORS',async t=>{const d=await setup(t),r=await wire(d,'query',{request:{}});assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert.equal(r.headers.get('access-control-allow-origin'),null);});
+
+for(const args of [['--help'],['--unknown'],[],['--run','--help']])test(`independent CLI admission ${args.join(' ')||'empty'}`,()=>{
+ const r=spawnSync(process.execPath,['scripts/local-followthrough/run.mjs',...args],{cwd:root,env:{...process.env,MERI_REVIEW_SOURCE_ROOT:'/definitely-unavailable-review-root'},encoding:'utf8',timeout:10000,maxBuffer:65536});assert.equal(r.error,undefined);assert.equal(r.signal,null);assert.equal(r.status,args.length===1&&args[0]==='--help'?0:2);assert.ok(!r.stderr.includes('/definitely-unavailable-review-root'));assert.ok(!r.stdout.includes('credential'));
+});
+test('independent explicit CLI synthetic run succeeds without exposing bearer secrets',()=>{
+ const r=spawnSync(process.execPath,['scripts/local-followthrough/run.mjs','--run'],{cwd:root,env:{...process.env,MERI_REVIEW_SOURCE_ROOT:root},encoding:'utf8',timeout:20000,maxBuffer:262144});assert.equal(r.error,undefined);assert.equal(r.signal,null);assert.equal(r.status,0,r.stderr);assert.equal(r.stderr,'');assert.ok(!/Bearer |"credential"|"token"/.test(r.stdout));const receipt=JSON.parse(r.stdout);assert.equal(receipt.mode,'synthetic-local');
+});
