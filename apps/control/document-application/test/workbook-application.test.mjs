@@ -72,3 +72,19 @@ test('Excel descriptor is detached from later caller mutation',async t=>{
 test('Excel application remains disabled by default with no allocation',async t=>{
  const a=await setup(t,'create_excel',c=>{delete c.enabled;return c;});const r=await a.post('create',{deliveryId:'disabled',request:workbook});assert.equal(r.status,503);assert.equal((await r.json()).error.outcome,'NOT_DISPATCHED');assert.equal(a.f.stats().generations,0);assert.equal(a.f.stats().versionCharges,0);
 });
+for(const [operation,format]of[['create_excel','xlsx'],['create_word','docx']])for(const titleLength of[120,200])test(`canonical ${format} title length${titleLength} releases exact125-character filename`,async t=>{
+ const a=await setup(t,operation),request=operation==='create_excel'?structuredClone(workbook):{operation,format,title:'',content:{blocks:[{kind:'paragraph',runs:[{text:'Boundary title'}]}]}};
+ request.title='A'.repeat(titleLength);
+ const response=await a.post('create',{deliveryId:'canonical-filename',request});assert.equal(response.status,200);const out=await response.json();
+ assert.equal(out.version.filename,'A'.repeat(120)+'.'+format);assert.equal(out.version.filename.length,125);
+ const inspection=await a.post('inspect',{versionId:out.version.versionId});assert.equal(inspection.status,200);assert.equal((await inspection.json()).version.filename,out.version.filename);
+ const download=await a.post('download',{versionId:out.version.versionId});assert.equal(download.status,200);assert.equal(download.headers.get('content-disposition'),`attachment; filename="${out.version.filename}"`);
+ const bytes=Buffer.from(await download.arrayBuffer());assert.equal(createHash('sha256').update(bytes).digest('hex'),out.version.object.sha256);assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().consumedMicroUsd,'10');
+});
+test('forged126-character stored filename cannot be inspected or downloaded',async t=>{
+ const a=await setup(t),first=await a.post('create',{deliveryId:'filename-negative',request:workbook});assert.equal(first.status,200);const out=await first.json();
+ const read=a.options.artifactOptions.versions.read;
+ const app=createDocumentApplication({...a.options,artifactOptions:{...a.options.artifactOptions,versions:{...a.options.artifactOptions.versions,async read(...args){const row=await read(...args);return {...row,version:{...row.version,filename:'A'.repeat(121)+'.xlsx'}};}}}});
+ for(const route of['inspect','download']){const response=await app.handle(a.req(route,{versionId:out.version.versionId}));assert.equal(response.status,502);const body=await response.json();assert.equal(body.error.outcome,'READ_UNAVAILABLE');}
+ assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);
+});
