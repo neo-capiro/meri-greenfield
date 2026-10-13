@@ -1,0 +1,48 @@
+{
+  "ownedLinksRemoved": [
+    {
+      "link": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "link": "apps/artifacts/storage/node_modules/@aws-sdk/client-s3",
+      "target": "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3",
+      "removed": true
+    }
+  ],
+  "ownedCaptures": [
+    {
+      "receipt": "lifecycle.json",
+      "pgid": 378224,
+      "absent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "lifecycle-metadata.json",
+      "pgid": 379225,
+      "absent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "audit.json",
+      "pgid": 379957,
+      "absent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "render.json",
+      "pgid": 375111,
+      "absent": true,
+      "exitCode": 0
+    }
+  ],
+  "actualHttpCleanupReceipts": [
+    "http-read-cleanup-final.json",
+    "isolation-revocation-cleanup-final.json"
+  ],
+  "productDiffBytes": 0,
+  "donorFilesModified": false,
+  "foreignProcessesTouched": false,
+  "cloudDbModelPrivateOperations": false
+}

@@ -1,0 +1,10 @@
+✔ retained actual DOCX inspect/download through current HTTP mount, reconstructed owner, exact immutable parent and byte tamper refusal (235.076429ms)
+✔ foreign opaque session and current source/resource revocation refuse retained read with zero generation or charge (27.570895ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2009.027887
