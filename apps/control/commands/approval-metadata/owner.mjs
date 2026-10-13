@@ -4,7 +4,9 @@ import {createOperationLifetime} from '../../../../packages/runtime/operation-li
 import {nativeSignal} from '../protocol.mjs';
 import {CommandError,data,deny,own,instant,canonicalSha256,context,selected,input,same,makePayload,immutablePayload,assertReadIds,policySelection,policyReceipt} from './binding.mjs';
 function safe(error,outcome,payload){
- const admitted=!types.isProxy(error)&&error instanceof CommandError&&['DEADLINE','CANCELLED','INVALID_COMMAND','COMMAND_PREPARATION_REFUSED','APPROVAL_METADATA_UNKNOWN'].includes(error.message)?error.message:'COMMAND_PREPARATION_REFUSED';
+ const descriptor=error&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'message'):undefined;
+ const code=descriptor&&Object.hasOwn(descriptor,'value')?descriptor.value:undefined;
+ const admitted=['DEADLINE','CANCELLED','INVALID_COMMAND','COMMAND_PREPARATION_REFUSED','APPROVAL_METADATA_UNKNOWN'].includes(code)?code:'COMMAND_PREPARATION_REFUSED';
  return Object.assign(new CommandError(admitted),{outcome,...(payload?{metadataReference:data({proposalId:payload.record.proposalId,commandSha256:payload.commandSha256})}:{})});
 }
 export function createTaskCreateApprovalMetadataOwner(configuration){

@@ -10,12 +10,13 @@ function rows(raw){const value=data(field(raw,'rows'));if(!Array.isArray(value)|
 function decoded(row){const r=data(row);own(r,['payload','payload_sha256']);const p=immutablePayload(r.payload);if(canonicalSha256(p)!==r.payload_sha256)deny('COMMAND_PREPARATION_REFUSED');return p;}
 export function createPostgresApprovalMetadataStore(configuration){
  const {pool}=own(configuration,['pool']),connect=method(pool,'connect'),settings=field(pool,'options');
- for(const key of ['connectionTimeoutMillis','query_timeout']){const n=field(settings,key);if(!Number.isSafeInteger(n)||n<1||n>5000)deny('COMMAND_CONFIGURATION');}
+ for(const key of ['connectionTimeoutMillis','query_timeout']){const n=field(settings,key);if(!Number.isSafeInteger(n)||n<1||n>(key==='query_timeout'?6000:5000))deny('COMMAND_CONFIGURATION');}
+ const queryTimeout=Math.min(field(settings,'query_timeout'),5000);
  async function statement(text,values,check,mutation,decode){
   if(typeof check!=='function')deny('COMMAND_CONFIGURATION');let client,submitted=false,failed,value;
   try{
    check();client=await connect();check();const query=method(client,'query');check();submitted=true;
-   const raw=await query({text,values,query_timeout:5000});check();value=decode(rows(raw));check();
+   const raw=await query({text,values,query_timeout:queryTimeout});check();value=decode(rows(raw));check();
   }catch{failed=Object.assign(new CommandError(mutation&&submitted?'APPROVAL_METADATA_UNKNOWN':'COMMAND_PREPARATION_REFUSED'),{outcome:mutation?(submitted?'UNKNOWN':'NOT_STORED'):'READ_UNAVAILABLE'});}
   finally{if(client)try{method(client,'release')(submitted&&failed?failed:undefined);}catch{failed??=Object.assign(new CommandError(mutation&&submitted?'APPROVAL_METADATA_UNKNOWN':'COMMAND_PREPARATION_REFUSED'),{outcome:mutation?(submitted?'UNKNOWN':'NOT_STORED'):'READ_UNAVAILABLE'});}}
   if(failed)throw failed;return value;

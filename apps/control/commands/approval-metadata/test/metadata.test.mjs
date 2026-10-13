@@ -53,3 +53,16 @@ test('late acquired SQL client issues no query after cancellation and is release
  const store=createPostgresApprovalMetadataStore({pool}),pending=store.insert(payload,()=>{if(cancel)throw new Error('cancel');});cancel=true;resolve({query:async()=>{queries++;},release(){released++;}});
  await assert.rejects(pending,e=>e.outcome==='NOT_STORED');assert.equal(queries,0);assert.equal(released,1);assert(p.proposalId);
 });
+test('canonical native pool query bound 6000 is admitted without connecting',()=>{
+ const f=createMetadataPoolFixture();f.pool.options.query_timeout=6000;assert.doesNotThrow(()=>createPostgresApprovalMetadataStore({pool:f.pool}));assert.deepEqual(f.calls,[]);
+ f.pool.options.query_timeout=6001;assert.throws(()=>createPostgresApprovalMetadataStore({pool:f.pool}));
+});
+test('statement timeout preserves a caller pool bound shorter than local 5000 cap',async()=>{
+ const f=setup();await f.owner.prepare(f.call);const query=f.sql.calls.find(x=>typeof x==='object');assert.equal(query.query_timeout,1000);
+});
+test('sanitizing a trusted-error class never invokes a hostile message accessor',async()=>{
+ const {CommandError}=await import('../../protocol.mjs'),f=setup();let reads=0;
+ const error=new CommandError('DEADLINE');Object.defineProperty(error,'message',{get(){reads++;return 'SECRET';}});
+ const owner=createTaskCreateApprovalMetadataOwner({store:f.store,commandContext:f.commandContext,preparePolicy:async()=>{throw error;},now:()=>NOW});
+ await assert.rejects(owner.prepare(f.call),e=>e.outcome==='NOT_STORED'&&!e.message.includes('SECRET'));assert.equal(reads,0);assert.equal(f.sql.calls.length,0);
+});

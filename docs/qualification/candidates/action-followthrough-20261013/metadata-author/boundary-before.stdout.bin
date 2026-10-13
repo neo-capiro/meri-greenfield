@@ -1,0 +1,98 @@
+✔ actual command interface prepares canonical immutable task proposal using concrete metadata owner/store (22.23649ms)
+✔ each explicit prepare has new IDs; no implicit deduplication or mutation (8.617069ms)
+✔ immutable prepared result and stored request survive caller edits (5.772711ms)
+✔ direct substituted input is refused before policy/SQL (0.963609ms)
+✔ direct substituted inputSha256 is refused before policy/SQL (0.520693ms)
+✔ direct substituted binding is refused before policy/SQL (0.495946ms)
+✔ direct substituted operation is refused before policy/SQL (0.389206ms)
+✔ direct substituted action is refused before policy/SQL (0.450748ms)
+✔ fresh release cannot rewrite policy scopes (3.97015ms)
+✔ fresh release cannot rewrite policy requiredApprover (2.949806ms)
+✔ fresh release cannot rewrite policy proposalExpiresAt (2.876927ms)
+✔ fresh release cannot rewrite policy binding (2.931509ms)
+✔ fresh release cannot rewrite policy selectionSha256 (3.121935ms)
+✔ denied initial policy does not allocate or insert (1.012412ms)
+✔ missing authorized read is unavailable, not an absent success (0.794054ms)
+✔ read binds full original actor/run/binding and command hash (4.708441ms)
+✔ lost insert acknowledgment retains possible row and UNKNOWN without retry (1.94835ms)
+✔ current read release denial retains immutable metadata and prevents executor call (5.733863ms)
+✔ metadata pool configuration requires finite bounds before any connect (0.27303ms)
+✔ query ACK corruption is UNKNOWN and borrowed client is evicted without pool close (2.548212ms)
+✔ known policy deadline published before parked receipt bounds call with no insert (25.58172ms)
+✔ late acquired SQL client issues no query after cancellation and is released (3.943189ms)
+✖ canonical native pool query bound 6000 is admitted without connecting (0.840795ms)
+✖ statement timeout preserves a caller pool bound shorter than local 5000 cap (2.831808ms)
+✖ sanitizing a trusted-error class never invokes a hostile message accessor (1.382198ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 22
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2797.884623
+
+✖ failing tests:
+
+test at apps/control/commands/approval-metadata/test/metadata.test.mjs:56:1
+✖ canonical native pool query bound 6000 is admitted without connecting (0.840795ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "COMMAND_CONFIGURATION"
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-20261013/apps/control/commands/approval-metadata/test/metadata.test.mjs:57:79)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: COMMAND_CONFIGURATION
+        at deny (file:///tmp/meri-approval-metadata-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+        at createPostgresApprovalMetadataStore (file:///tmp/meri-approval-metadata-20261013/apps/control/commands/approval-metadata/postgres-store.mjs:13:133)
+        at file:///tmp/meri-approval-metadata-20261013/apps/control/commands/approval-metadata/test/metadata.test.mjs:57:96
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-20261013/apps/control/commands/approval-metadata/test/metadata.test.mjs:57:79)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/test/metadata.test.mjs:60:1
+✖ statement timeout preserves a caller pool bound shorter than local 5000 cap (2.831808ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  5000 !== 1000
+  
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-20261013/apps/control/commands/approval-metadata/test/metadata.test.mjs:61:108)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 5000,
+    expected: 1000,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/commands/approval-metadata/test/metadata.test.mjs:63:1
+✖ sanitizing a trusted-error class never invokes a hostile message accessor (1.382198ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-approval-metadata-20261013/apps/control/commands/approval-metadata/test/metadata.test.mjs:67:112)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
