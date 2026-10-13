@@ -1,0 +1,27 @@
+{
+  "sourceCommit": "e0cc78711e741c80bfb2d6459a622a9ed7560586",
+  "actualExecutedSelectors": [
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/lifecycle-workflow.test.mjs",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/conversation-public-integration.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/stream.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs",
+    "apps/worker/conversation/test/lifecycle-activity.test.mjs",
+    "apps/worker/conversation/test/control-application.test.mjs",
+    "apps/worker/conversation/continuation/test/continuation.test.mjs",
+    "apps/control/staging-e2e/test/ownership.test.mjs",
+    "apps/control/staging-e2e/test/application.test.mjs",
+    "packages/skills/test/assets.test.mjs",
+    "packages/skills/test/typed-reads.test.mjs",
+    "apps/control/document-application/commitments-audit/test/compiler.test.mjs",
+    "apps/control/document-application/commitments-audit/test/collection.test.mjs",
+    "apps/control/document-application/relationship-brief/test/compiler.test.mjs"
+  ],
+  "unexecutedNonexistentSelector": [
+    "apps/control/document-application/relationship-brief/test/collector.test.mjs"
+  ],
+  "notClaimedAsCoverage": true,
+  "allActualExecutedSelectorsExist": true
+}

@@ -1,0 +1,46 @@
+TAP version 13
+# {"case":"resume cancelled while native admit parked","releasedReceipt":{"controlId":"00000602-0000-4000-8000-000000000000","intent":"resume","sourceBinding":{"tenantId":"tenant-a","actorId":"actor-a","conversationId":"00000001-0000-4000-8000-000000000000","runId":"00000002-0000-4000-8000-000000000000","attemptId":"00000003-0000-4000-8000-000000000000","workerId":"00000004-0000-4000-8000-000000000000","writerFence":1},"inputSha256":"08a21736c896e64ba46bfd66c5e76dfbccd3434463b91c3fa3a83d28b36451d0","state":"APPLIED","checkpointId":"00000220-0000-4000-8000-000000000000","targetBinding":{"tenantId":"tenant-a","actorId":"actor-a","conversationId":"00000001-0000-4000-8000-000000000000","runId":"00000212-0000-4000-8000-000000000000","attemptId":"00000213-0000-4000-8000-000000000000","workerId":"00000214-0000-4000-8000-000000000000","writerFence":2},"admissionReceiptId":"00000215-0000-4000-8000-000000000000","retirementReceiptId":"00000210-0000-4000-8000-000000000000","replayed":false},"runs":2,"starts":2,"continued":1,"cancels":1}
+# Subtest: Current resume releases a fresh target, keeps exact original request and prevents old credential use
+ok 1 - Current resume releases a fresh target, keeps exact original request and prevents old credential use
+  ---
+  duration_ms: 106.343274
+  type: 'test'
+  ...
+# Subtest: Authenticated source cancellation during native admission cannot create or start a resume target
+not ok 2 - Authenticated source cancellation during native admission cannot create or start a resume target
+  ---
+  duration_ms: 77.386836
+  type: 'test'
+  location: '/workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/lifecycle-integration-independent.test.mjs:13:1'
+  failureType: 'testCodeFailure'
+  error: 'Resume must refuse the cancelled source'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/lifecycle-integration-independent.test.mjs:20:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Durable concurrent worker claims permit one attempt and never return UNKNOWN for redispatch
+ok 3 - Durable concurrent worker claims permit one attempt and never return UNKNOWN for redispatch
+  ---
+  duration_ms: 45.753492
+  type: 'test'
+  ...
+# Subtest: Held worker cannot fabricate cancellation, authenticated cancellation still reaches Temporal owner
+ok 4 - Held worker cannot fabricate cancellation, authenticated cancellation still reaches Temporal owner
+  ---
+  duration_ms: 24.505273
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2023.293454

@@ -1,0 +1,41 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "sourceCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "sourceTree": "a8a558d8b84b04e4f3bd2091223324f28393a907",
+  "finalIndependentTests": 45,
+  "finalOwnerBinderTests": 2,
+  "earlierE0OwnerFocusedExecutedTests": 261,
+  "distinctExecutedControlsAcrossPins": 308,
+  "overlapping43NotSummed": true,
+  "nonexistentSelectorDisclosedNotClaimed": true,
+  "counts": {
+    "accepted-independent45": {
+      "tests": 45,
+      "pass": 45,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "accepted-binding2": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "preservationAssertionsPassed": 43,
+  "sourceOnly": true,
+  "nativeRuntimeAndWholePlanAcceptance": false,
+  "ownBorrowedLinksRemoved": [
+    "node_modules",
+    "apps/control/conversations/node_modules",
+    "apps/worker/conversation/node_modules",
+    "packages/window-resolution/node_modules",
+    "packages/ui-stream/node_modules"
+  ],
+  "hostWideCleanupNotClaimed": true,
+  "priorFailuresPreserved": true
+}

@@ -1,0 +1,22 @@
+{
+  "ownedVerifierProcessesAbsent": true,
+  "activeOwnedPids": [],
+  "ownedDependencyLinkAbsent": true,
+  "ownedArtifactExecutorsAndStores": [
+    {
+      "domain": "commitments",
+      "cleanup": {
+        "executorDirectoriesAbsent": true,
+        "storeRemoved": true
+      }
+    },
+    {
+      "domain": "relationship",
+      "cleanup": {
+        "executorDirectoriesAbsent": true,
+        "storeRemoved": true
+      }
+    }
+  ],
+  "nativeQualified": false
+}

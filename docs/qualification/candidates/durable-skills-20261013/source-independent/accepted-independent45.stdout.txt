@@ -1,0 +1,283 @@
+TAP version 13
+# Subtest: Actual journal creates and decodes a healthy immutable source control
+ok 1 - Actual journal creates and decodes a healthy immutable source control
+  ---
+  duration_ms: 10.07002
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted SQL conversation ID
+ok 2 - Actual journal refuses coherently corrupted SQL conversation ID
+  ---
+  duration_ms: 1.137627
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted SQL run ID
+ok 3 - Actual journal refuses coherently corrupted SQL run ID
+  ---
+  duration_ms: 1.480488
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted zero SQL sequence
+ok 4 - Actual journal refuses coherently corrupted zero SQL sequence
+  ---
+  duration_ms: 0.634566
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted non-numeric SQL sequence
+ok 5 - Actual journal refuses coherently corrupted non-numeric SQL sequence
+  ---
+  duration_ms: 0.812132
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted unsafe SQL sequence
+ok 6 - Actual journal refuses coherently corrupted unsafe SQL sequence
+  ---
+  duration_ms: 0.697931
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source-request hash
+ok 7 - Actual journal refuses coherently corrupted source-request hash
+  ---
+  duration_ms: 0.47559
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted command hash
+ok 8 - Actual journal refuses coherently corrupted command hash
+  ---
+  duration_ms: 0.648407
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source scope
+ok 9 - Actual journal refuses coherently corrupted source scope
+  ---
+  duration_ms: 0.609399
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted worker context digest
+ok 10 - Actual journal refuses coherently corrupted worker context digest
+  ---
+  duration_ms: 0.67049
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source writer binding
+ok 11 - Actual journal refuses coherently corrupted source writer binding
+  ---
+  duration_ms: 0.532314
+  type: 'test'
+  ...
+# {"case":"resume cancelled while native admit parked","error":"LIFECYCLE_EFFECT_UNKNOWN","runs":1,"starts":1,"continued":0,"cancels":1}
+# Subtest: Current resume releases a fresh target, keeps exact original request and prevents old credential use
+ok 12 - Current resume releases a fresh target, keeps exact original request and prevents old credential use
+  ---
+  duration_ms: 118.695626
+  type: 'test'
+  ...
+# Subtest: Authenticated source cancellation during native admission cannot create or start a resume target
+ok 13 - Authenticated source cancellation during native admission cannot create or start a resume target
+  ---
+  duration_ms: 60.391264
+  type: 'test'
+  ...
+# Subtest: Durable concurrent worker claims permit one attempt and never return UNKNOWN for redispatch
+ok 14 - Durable concurrent worker claims permit one attempt and never return UNKNOWN for redispatch
+  ---
+  duration_ms: 49.922919
+  type: 'test'
+  ...
+# Subtest: Held worker cannot fabricate cancellation, authenticated cancellation still reaches Temporal owner
+ok 15 - Held worker cannot fabricate cancellation, authenticated cancellation still reaches Temporal owner
+  ---
+  duration_ms: 29.926581
+  type: 'test'
+  ...
+# Subtest: Closed command admits bounded intents and grants no caller binding/skill/window fields
+ok 16 - Closed command admits bounded intents and grants no caller binding/skill/window fields
+  ---
+  duration_ms: 7.245748
+  type: 'test'
+  ...
+# Subtest: Caller object getters, Proxy and nested hostile command data are inert
+ok 17 - Caller object getters, Proxy and nested hostile command data are inert
+  ---
+  duration_ms: 0.197985
+  type: 'test'
+  ...
+# Subtest: Invalid Unicode, controls and oversized steering text refuse
+ok 18 - Invalid Unicode, controls and oversized steering text refuse
+  ---
+  duration_ms: 1.577443
+  type: 'test'
+  ...
+# Subtest: Applied resume receipt requires fresh complete binding and admission plus retirement correlation
+ok 19 - Applied resume receipt requires fresh complete binding and admission plus retirement correlation
+  ---
+  duration_ms: 1.292078
+  type: 'test'
+  ...
+# Subtest: Fork receipt preserves source and has distinct target conversation without claiming retirement
+ok 20 - Fork receipt preserves source and has distinct target conversation without claiming retirement
+  ---
+  duration_ms: 0.281009
+  type: 'test'
+  ...
+# Subtest: UNKNOWN receipt does not fabricate a target or physical-stop proof
+ok 21 - UNKNOWN receipt does not fabricate a target or physical-stop proof
+  ---
+  duration_ms: 0.198115
+  type: 'test'
+  ...
+# Subtest: Worker command snapshots full server context and admits no caller-selected source or runtime
+ok 22 - Worker command snapshots full server context and admits no caller-selected source or runtime
+  ---
+  duration_ms: 0.48288
+  type: 'test'
+  ...
+# Subtest: Approval wait requires exact proposal identity/hash while pause and steer prohibit approval fields
+ok 23 - Approval wait requires exact proposal identity/hash while pause and steer prohibit approval fields
+  ---
+  duration_ms: 0.232537
+  type: 'test'
+  ...
+# {"case":"Relationship outer context getter","effects":0}
+# {"case":"Relationship outer Proxy","effects":0}
+# Subtest: Relationship binder refuses outer configuration accessors without executing them
+ok 24 - Relationship binder refuses outer configuration accessors without executing them
+  ---
+  duration_ms: 1.308001
+  type: 'test'
+  ...
+# Subtest: Relationship binder refuses configuration Proxy without invoking traps
+ok 25 - Relationship binder refuses configuration Proxy without invoking traps
+  ---
+  duration_ms: 0.232146
+  type: 'test'
+  ...
+# Subtest: resume: complete supported options retain original intent and exact source preimage
+ok 26 - resume: complete supported options retain original intent and exact source preimage
+  ---
+  duration_ms: 15.1108
+  type: 'test'
+  ...
+# Subtest: fork: complete supported options retain original intent and exact source preimage
+ok 27 - fork: complete supported options retain original intent and exact source preimage
+  ---
+  duration_ms: 0.847304
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses changed original prompt even when checkpoint digest is recomputed
+ok 28 - Exact continuation refuses changed original prompt even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.788366
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses new hidden target source request field even when checkpoint digest is recomputed
+ok 29 - Exact continuation refuses new hidden target source request field even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.604051
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses correlated foreign source actor even when checkpoint digest is recomputed
+ok 30 - Exact continuation refuses correlated foreign source actor even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.739453
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses foreign opaque-session scope even when checkpoint digest is recomputed
+ok 31 - Exact continuation refuses foreign opaque-session scope even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.528208
+  type: 'test'
+  ...
+# Subtest: SDK input is literal, detached and single-consumer; close discards unread steering
+ok 32 - SDK input is literal, detached and single-consumer; close discards unread steering
+  ---
+  duration_ms: 2.270227
+  type: 'test'
+  ...
+# Subtest: Concurrent exact controls enqueue one steering UUID, altered replay refuses
+ok 33 - Concurrent exact controls enqueue one steering UUID, altered replay refuses
+  ---
+  duration_ms: 1.270134
+  type: 'test'
+  ...
+# Subtest: Hostile command data refuses without property effects or Query calls
+ok 34 - Hostile command data refuses without property effects or Query calls
+  ---
+  duration_ms: 0.454418
+  type: 'test'
+  ...
+# Subtest: Attempted steering with synchronous input failure remains locally UNKNOWN and never retries
+ok 35 - Attempted steering with synchronous input failure remains locally UNKNOWN and never retries
+  ---
+  duration_ms: 0.58374
+  type: 'test'
+  ...
+# Subtest: Current manual conversation refuses before staging effect
+ok 36 - Current manual conversation refuses before staging effect
+  ---
+  duration_ms: 9.357879
+  type: 'test'
+  ...
+# Subtest: Current foreign actor refuses before staging effect
+ok 37 - Current foreign actor refuses before staging effect
+  ---
+  duration_ms: 1.127742
+  type: 'test'
+  ...
+# Subtest: Current additional manual scope refuses before staging effect
+ok 38 - Current additional manual scope refuses before staging effect
+  ---
+  duration_ms: 0.652964
+  type: 'test'
+  ...
+# Subtest: Current manual selection refuses before staging effect
+ok 39 - Current manual selection refuses before staging effect
+  ---
+  duration_ms: 0.409851
+  type: 'test'
+  ...
+# Subtest: Current expired current receipt refuses before staging effect
+ok 40 - Current expired current receipt refuses before staging effect
+  ---
+  duration_ms: 0.377203
+  type: 'test'
+  ...
+# Subtest: Inspect, revise and download never select versions not admitted by this client
+ok 41 - Inspect, revise and download never select versions not admitted by this client
+  ---
+  duration_ms: 1.398537
+  type: 'test'
+  ...
+# Subtest: Oversize actual Response cancels once and unlocks despite parked transport cancellation
+ok 42 - Oversize actual Response cancels once and unlocks despite parked transport cancellation
+  ---
+  duration_ms: 15.543245
+  type: 'test'
+  ...
+# Subtest: Client close aborts parked fresh-context read; late completion performs no Fetch and does not dispose borrowed port
+ok 43 - Client close aborts parked fresh-context read; late completion performs no Fetch and does not dispose borrowed port
+  ---
+  duration_ms: 3.042068
+  type: 'test'
+  ...
+# Subtest: Post-response writer-fence drift refuses release without retaining artifact versions
+ok 44 - Post-response writer-fence drift refuses release without retaining artifact versions
+  ---
+  duration_ms: 1.973885
+  type: 'test'
+  ...
+# Subtest: Target getters and Proxy refuse inertly; data selectors cannot add credentials or ownership
+ok 45 - Target getters and Proxy refuse inertly; data selectors cannot add credentials or ownership
+  ---
+  duration_ms: 0.246187
+  type: 'test'
+  ...
+1..45
+# tests 45
+# suites 0
+# pass 45
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3490.028901

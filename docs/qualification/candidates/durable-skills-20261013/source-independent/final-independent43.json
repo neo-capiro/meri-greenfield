@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/journal-independent.test.mjs",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/lifecycle-integration-independent.test.mjs",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/staging-independent.test.mjs",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-independent.test.mjs",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/private-boundary-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "e0cc78711e741c80bfb2d6459a622a9ed7560586",
+  "worktreeHead": "b769b42d395298ad5b7d5ed36b0d62c6284ea116",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 3.738,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 10042,
+  "stderrBytes": 0,
+  "stdoutSha256": "a063d5024073470ca69811c2f4aa9f822516d9ae2f8310a1f9ff0ce8fccd00a4",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

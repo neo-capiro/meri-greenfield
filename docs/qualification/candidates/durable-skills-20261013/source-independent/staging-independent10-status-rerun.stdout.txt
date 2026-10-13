@@ -1,0 +1,96 @@
+TAP version 13
+# Subtest: Current manual conversation refuses before staging effect
+ok 1 - Current manual conversation refuses before staging effect
+  ---
+  duration_ms: 4.695835
+  type: 'test'
+  ...
+# Subtest: Current foreign actor refuses before staging effect
+ok 2 - Current foreign actor refuses before staging effect
+  ---
+  duration_ms: 0.991183
+  type: 'test'
+  ...
+# Subtest: Current additional manual scope refuses before staging effect
+ok 3 - Current additional manual scope refuses before staging effect
+  ---
+  duration_ms: 0.586447
+  type: 'test'
+  ...
+# Subtest: Current manual selection refuses before staging effect
+ok 4 - Current manual selection refuses before staging effect
+  ---
+  duration_ms: 0.404184
+  type: 'test'
+  ...
+# Subtest: Current expired current receipt refuses before staging effect
+ok 5 - Current expired current receipt refuses before staging effect
+  ---
+  duration_ms: 0.384516
+  type: 'test'
+  ...
+# Subtest: Inspect, revise and download never select versions not admitted by this client
+ok 6 - Inspect, revise and download never select versions not admitted by this client
+  ---
+  duration_ms: 1.209149
+  type: 'test'
+  ...
+# Subtest: Oversize actual Response cancels once and unlocks despite parked transport cancellation
+ok 7 - Oversize actual Response cancels once and unlocks despite parked transport cancellation
+  ---
+  duration_ms: 15.638467
+  type: 'test'
+  ...
+# Subtest: Client close aborts parked fresh-context read; late completion performs no Fetch and does not dispose borrowed port
+ok 8 - Client close aborts parked fresh-context read; late completion performs no Fetch and does not dispose borrowed port
+  ---
+  duration_ms: 3.137134
+  type: 'test'
+  ...
+# Subtest: Post-response writer-fence drift refuses release without retaining artifact versions
+not ok 9 - Post-response writer-fence drift refuses release without retaining artifact versions
+  ---
+  duration_ms: 2.598959
+  type: 'test'
+  location: '/workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/staging-independent.test.mjs:32:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /STAGING_CONTEXT_CHANGED/. Input:
+    
+    'ConversationResponseError: INVALID_ERROR_RESPONSE'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+  error: 'INVALID_ERROR_RESPONSE'
+  stack: |-
+    fail2 (file:///workspace/meri-durable-source-review/packages/contracts/dist/conversation-application.mjs:22538:9)
+    receiveConversationResponse (file:///workspace/meri-durable-source-review/packages/contracts/dist/conversation-application.mjs:22594:103)
+    Object.request (file:///workspace/meri-durable-source-review/apps/control/staging-e2e/client.mjs:43:12)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/staging-independent.test.mjs:34:6)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/staging-independent.test.mjs:34:6)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Target getters and Proxy refuse inertly; data selectors cannot add credentials or ownership
+ok 10 - Target getters and Proxy refuse inertly; data selectors cannot add credentials or ownership
+  ---
+  duration_ms: 0.24068
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 239.95311

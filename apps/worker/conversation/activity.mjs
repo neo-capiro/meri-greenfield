@@ -8,36 +8,47 @@ import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' wit
 import {selectSkill} from '../../../packages/skills/index.mjs';
 import {createTextProjector} from './text-projector.mjs';
 import {buildConversationOptions} from './options.mjs';
+import {createConversationInput} from './continuation/input.mjs';
+import {createActivityLifecycle,assertLifecycleConfiguration} from './continuation/activity-lifecycle.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=code=>Object.assign(new Error(code),{code});
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle}){
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function')throw fault('ACTIVITY_CONFIGURATION');
+ if(lifecycle!==undefined)assertLifecycleConfiguration(lifecycle,runOwner);
  return async function executeConversation({binding,signal}){
-  validateShape('RunBinding',binding);let preparation,life,stream,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;const closeQuery=()=>{if(stream&&!closed){closed=true;stream.close?.();}};
+  validateShape('RunBinding',binding);let preparation,life,stream,controls,input,claimed=false,closed=false,resultSeen=false,bytes=0,heartbeatTimer;const controller=new AbortController();let failure;const closeQuery=()=>{if(stream&&!closed){closed=true;stream.close?.();}};
   try{preparation=createOperationLifetime({deadlineMs:now()+3000,now,signal,errorFactory:fault});const saved=await preparation.run(signal=>runOwner.load({binding,signal}));validateShape('Run',saved.run);if(!same(saved.run.binding,binding)||saved.run.state!=='queued')throw fault('RUN_NOT_QUEUED');
-   const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,signal}));
+   const prepareStarted=now();if(saved.continuation&&lifecycle===undefined)throw fault('CONTINUATION_UNAVAILABLE');
+   const runtime=await preparation.run(signal=>prepareRuntime({binding,versions:saved.run.versions,
+    ...(saved.continuation?{continuation:saved.continuation,sourceRequest:saved.sourceRequest,request:saved.request,scopes:saved.run.scopes}:{}),signal}));
    life=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal,errorFactory:fault});preparation.close();const abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});
    const publish=async(type,data,eventId=newId())=>{life.check();await life.run(signal=>runOwner.append({binding,event:{eventId,createdAt:new Date(now()).toISOString(),type,data},signal}));life.check();};
    await publish('run.status',{state:'starting',reasonCode:null});claimed=true;if(!same(runtime.binding,binding)||!same(runtime.versions,saved.run.versions))throw fault('RUNTIME_PIN_REFUSED');
-   const options=buildConversationOptions(runtime,controller);let selected;
+   const options=buildConversationOptions(runtime,controller,saved.continuation?{continuation:saved.continuation,request:saved.request,
+    sourceRequest:saved.sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined);if(saved.continuation)life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
    if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt=selected.prose;}
    options.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
    await publish('run.status',{state:'running',reasonCode:null});
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
-   stream=query({prompt:saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId);
-   while(true){const next=await life.run(()=>iterator.next());if(next.done)break;const m=next.value;
+   if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
+   stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');const iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId);
+   if(lifecycle!==undefined)controls=createActivityLifecycle({config:lifecycle,runOwner,binding,saved,runtime,input,
+    query:{interrupt:()=>stream.interrupt(),close:closeQuery},life,now});
+   while(true){let next;try{next=await (controls?Promise.race([life.run(()=>iterator.next()),controls.failure.then(error=>{throw error;})]):life.run(()=>iterator.next()));}
+    catch(error){if(controls?.isHeld())return await controls.heldResult();throw error;}if(next.done)break;const m=next.value;
     if(m?.type==='system'&&m.subtype==='mirror_error')throw fault('SESSION_PERSISTENCE_FAILED');
+    await controls?.observe(m);if(controls?.isHeld())continue;
     if(m?.parent_tool_use_id)continue; // Subagent/internal content is never a display event.
     for(const part of textParts(m)){bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');await publish('message.delta',part);}
-    if(m?.type==='result'){if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');}
+    if(m?.type==='result'){if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');if(controls){input.close();await controls.finish();break;}}
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
-   if(!resultSeen)throw fault('SDK_RESULT_MISSING');await publish('run.status',{state:'completed',reasonCode:null});return {state:'completed'};
+   if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');await publish('run.status',{state:'completed',reasonCode:null});return {state:'completed'};
   }catch(error){failure=error;controller.abort();clearInterval(heartbeatTimer);try{closeQuery();}catch{}const cancelled=signal?.aborted||life?.signal.aborted;life?.close();preparation?.close();
    // A denied/unknown starting claimant cannot terminalize another admitted activity.
-   if(claimed){const cleanup=createOperationLifetime({deadlineMs:now()+30,now,errorFactory:fault});try{await cleanup.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'}},signal}));}catch{}finally{cleanup.close();}}
+   if(claimed&&!controls?.isHeld()){const cleanup=createOperationLifetime({deadlineMs:now()+30,now,errorFactory:fault});try{await cleanup.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'}},signal}));}catch{}finally{cleanup.close();}}
    throw fault(cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED');
-  }finally{clearInterval(heartbeatTimer);controller.abort(failure);try{closeQuery();}catch{throw fault('SDK_CLEANUP_UNKNOWN');}finally{life?.close();preparation?.close();}}
+  }finally{clearInterval(heartbeatTimer);controller.abort(failure);try{await controls?.finish();controls?.close();input?.close();closeQuery();}catch{throw fault('SDK_CLEANUP_UNKNOWN');}finally{life?.close();preparation?.close();}}
  };
 }

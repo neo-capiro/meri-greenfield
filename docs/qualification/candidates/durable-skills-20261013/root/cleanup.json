@@ -1,0 +1,107 @@
+{
+  "scope": "Owned links/copy and identified root generator groups only; no host-wide process deletion.",
+  "checks": [
+    {
+      "path": "node_modules",
+      "ownedLinkAbsent": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "ownedLinkAbsent": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "ownedLinkAbsent": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "ownedLinkAbsent": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "ownedLinkAbsent": true,
+      "donorPreserved": true
+    }
+  ],
+  "ownedContractCopyAbsent": true,
+  "rootGeneratorGroups": [
+    {
+      "pid": 251581,
+      "ppid": 1,
+      "pgid": 251472,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251605,
+      "ppid": 1,
+      "pgid": 251472,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251687,
+      "ppid": 1,
+      "pgid": 251472,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251715,
+      "ppid": 1,
+      "pgid": 251472,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254005,
+      "ppid": 1,
+      "pgid": 253964,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254025,
+      "ppid": 1,
+      "pgid": 253964,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254046,
+      "ppid": 1,
+      "pgid": 253964,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254066,
+      "ppid": 1,
+      "pgid": 253964,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254268,
+      "ppid": 1,
+      "pgid": 253964,
+      "state": "Z",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254288,
+      "ppid": 1,
+      "pgid": 253964,
+      "state": "Z",
+      "command": "esbuild"
+    }
+  ],
+  "ownedLiveGeneratorProcessesAbsent": true,
+  "testSessionsCompleted": true,
+  "physicalHostCleanupComplete": false,
+  "limitation": "Exited esbuild children are retained by PID1; this process cannot reap them. No host/PID1 restart or donor deletion."
+}

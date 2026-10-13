@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/worker/conversation/continuation/test/continuation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "ae2ccd7385f6f8ba367e3a8678087a5dbc5c8744",
+  "worktreeHead": "dc2b26ea6c6a880ac20f236291ef96afb164cf5b",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 1.781,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 8614,
+  "stderrBytes": 0,
+  "stdoutSha256": "9bb87d2ea0676d773f1a132d8b20a4ad900a17a058471207145211912c71ebaf",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

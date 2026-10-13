@@ -1,0 +1,237 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "sourceCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "sourceTree": "a8a558d8b84b04e4f3bd2091223324f28393a907",
+  "assertionsPassed": 43,
+  "checks": [
+    {
+      "name": "Exact final pin/tree",
+      "pass": true
+    },
+    {
+      "name": "Exactly eleven authorized existing path changes",
+      "pass": true,
+      "changed": [
+        "apps/control/conversations/postgres-store.mjs",
+        "apps/control/conversations/temporal-dispatch.mjs",
+        "apps/control/conversations/test/application-fixture.mjs",
+        "apps/control/conversations/test/store-fixture.mjs",
+        "apps/control/conversations/tsconfig.json",
+        "apps/control/conversations/workflow.ts",
+        "apps/control/document-application/local/fixture.mjs",
+        "apps/worker/conversation/activity.mjs",
+        "apps/worker/conversation/options.mjs",
+        "docs/coordination/tasks/CODEX-DURABLE-SKILLS-20261013.md",
+        "packages/skills/commitments/evidence.mjs"
+      ]
+    },
+    {
+      "name": "Every other original base entry preserved",
+      "pass": true,
+      "exactEntries": 13801,
+      "baseEntries": 13812
+    },
+    {
+      "name": "Protected prefix exact packages/contracts/dist/",
+      "pass": true,
+      "entries": 18
+    },
+    {
+      "name": "Protected prefix exact packages/skills/originals/",
+      "pass": true,
+      "entries": 26
+    },
+    {
+      "name": "Protected prefix exact infra/",
+      "pass": true,
+      "entries": 71
+    },
+    {
+      "name": "Protected prefix exact apps/artifacts/",
+      "pass": true,
+      "entries": 30
+    },
+    {
+      "name": "Protected prefix exact apps/worker/qualification/",
+      "pass": true,
+      "entries": 59
+    },
+    {
+      "name": "Protected prefix exact apps/control/qualification-sdk-fixture/",
+      "pass": true,
+      "entries": 49
+    },
+    {
+      "name": "Protected prefix exact apps/control/document-application/research-brief/",
+      "pass": true,
+      "entries": 11
+    },
+    {
+      "name": "Protected prefix exact apps/control/document-application/mail-history/",
+      "pass": true,
+      "entries": 104
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/generate.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/generate-documents.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/generate-conversations.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact packages/contracts/generate-actions.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact apps/control/conversations/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact apps/control/conversations/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact apps/control/conversations/events.mjs",
+      "pass": true
+    },
+    {
+      "name": "Protected preimage exact apps/control/conversations/migrations/0001_conversations.sql",
+      "pass": true
+    },
+    {
+      "name": "All original schemas exact",
+      "pass": true
+    },
+    {
+      "name": "Public package remains0.1.3",
+      "pass": true
+    },
+    {
+      "name": "Only authorized new product migration0002",
+      "pass": true
+    },
+    {
+      "name": "Only binder existing delta from typed freeze",
+      "pass": true,
+      "changed": [
+        "apps/control/document-application/relationship-brief/binding.mjs"
+      ]
+    },
+    {
+      "name": "All already rendered synthetic artifact receipts/bytes retained apps/control/document-application/relationship-brief/local/",
+      "pass": true,
+      "entries": 65
+    },
+    {
+      "name": "All already rendered synthetic artifact receipts/bytes retained apps/control/document-application/commitments-audit/local/",
+      "pass": true,
+      "entries": 29
+    },
+    {
+      "name": "Staging source exact independently revieweda078",
+      "pass": true
+    },
+    {
+      "name": "No reviewer executable modification",
+      "pass": true
+    },
+    {
+      "name": "Actual owner selectors all exist; omitted typo is disclosed",
+      "pass": true
+    },
+    {
+      "name": "Captured pass/reaping/absence accepted-independent45",
+      "pass": true,
+      "counts": {
+        "tests": 45,
+        "pass": 45,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34"
+    },
+    {
+      "name": "Raw capture hash accepted-independent45 stdout",
+      "pass": true
+    },
+    {
+      "name": "Raw capture hash accepted-independent45 stderr",
+      "pass": true
+    },
+    {
+      "name": "Captured pass/reaping/absence accepted-binding2",
+      "pass": true,
+      "counts": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34"
+    },
+    {
+      "name": "Raw capture hash accepted-binding2 stdout",
+      "pass": true
+    },
+    {
+      "name": "Raw capture hash accepted-binding2 stderr",
+      "pass": true
+    },
+    {
+      "name": "Captured pass/reaping/absence final-owner-focused",
+      "pass": true,
+      "counts": {
+        "tests": 261,
+        "pass": 261,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceCommit": "e0cc78711e741c80bfb2d6459a622a9ed7560586"
+    },
+    {
+      "name": "Raw capture hash final-owner-focused stdout",
+      "pass": true
+    },
+    {
+      "name": "Raw capture hash final-owner-focused stderr",
+      "pass": true
+    },
+    {
+      "name": "Both post-e0 runtime option semantic ASTs exact",
+      "pass": true
+    }
+  ],
+  "sourceOnly": true,
+  "nativeRuntimeAndWholePlanAcceptance": false
+}

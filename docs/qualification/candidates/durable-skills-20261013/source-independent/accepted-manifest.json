@@ -1,0 +1,155 @@
+{
+  "sourceCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/FINAL-SOURCE-REVIEW.md",
+      "bytes": 5629,
+      "sha256": "797043966ac199488bb93cfba850890ae016a61095b904f18f1a57d219904a95"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-ast-audit-rerun.json",
+      "bytes": 786,
+      "sha256": "5fab6f9f1817055246345f68a862794219b3ddf64dc26f640059b6f795433771"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-ast-audit-rerun.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-ast-audit-rerun.stdout.txt",
+      "bytes": 495,
+      "sha256": "8d558f19a5e43a9834a7ef43b69a822a8a90841b42b55a4f6bcda0edd3428f00"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-ast-audit.json",
+      "bytes": 788,
+      "sha256": "df7a869862c850825b4148b14a9557422de1c9ba7bef4836ca1bacd3a7ff3f37"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-ast-audit.stderr.txt",
+      "bytes": 11749,
+      "sha256": "0ee36f634823b726d5b80f4e3d998d13f610c51fe04e65c09c39422817c7aae2"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-ast-audit.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-binding2.json",
+      "bytes": 807,
+      "sha256": "f72bff388b7c0db8ab1c168bac6471dad48d416fb2caf7d44af840375f694438"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-binding2.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-binding2.stdout.txt",
+      "bytes": 576,
+      "sha256": "c3f492fb9dff7dade195a0c5a212317645f38155b5f93ef0ed51aedd09d534b4"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-independent45.json",
+      "bytes": 1413,
+      "sha256": "31906cc853ae4d12a1687c91d3286180c9562221c06b4a85eed5ed919fe3e99f"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-independent45.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-independent45.stdout.txt",
+      "bytes": 10591,
+      "sha256": "9155966391c910f822ecd77ad4f8664a45c44f1321e77e858447bf948acb8d0d"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-packet-verification.json",
+      "bytes": 1116,
+      "sha256": "d0f48c0ce49e7cc9b55afa7a2d0439e4d8505e3cd2c76abeab8f4e9b7306c805"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-audit-rerun.json",
+      "bytes": 783,
+      "sha256": "29926fc328ebb5a76b7e3a7fbc962df0907223f54f5556c755db8f616f0812e6"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-audit-rerun.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-audit-rerun.stdout.txt",
+      "bytes": 84,
+      "sha256": "404e2614c869f9f148becded49c9bd6e08a9c7a2b35ec095cb9856b9cb2be364"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-audit.json",
+      "bytes": 785,
+      "sha256": "de78c260ffa8136767109c2bbe1115c863813fddc2445281a703fa712b70c725"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-audit.stderr.txt",
+      "bytes": 1139,
+      "sha256": "f6201bc0230aa97f73146e5c2fad440c1d4000ee208caa7560079facff0ad614"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-audit.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-preservation-details.json",
+      "bytes": 6452,
+      "sha256": "41f50dbd82388bfcffdad1d505d70144bcc1ce438a389c72199c7be5339b8891"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-source-whitespace.json",
+      "bytes": 878,
+      "sha256": "f7a2ccf5fb2f686c9f05cc9b18254543ec6c7bdc897b4dacc25f549172f2f5a4"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/accepted-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/audit-accepted.py",
+      "bytes": 5801,
+      "sha256": "8a74beab80607b16b6970b0475a7f17586138e426bf523c20680bab12ff849b9"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/capture-accepted.py",
+      "bytes": 1717,
+      "sha256": "f31cb979d55e0f065ae30a2dcc98af9da436bf815a90edabc444b09f222245cd"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/owner-selection-audit.json",
+      "bytes": 1388,
+      "sha256": "d20756efb301586c9be56cc2f2a7537d71cba1dfbfe1ecb74747f3aea33feb7c"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/post-e0-ast-audit.mjs",
+      "bytes": 1524,
+      "sha256": "6e286d5b27d5d289c335b36249bbad35cfd337d48344f221fb7b9649ac092cba"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/post-e0-ast-details.json",
+      "bytes": 587,
+      "sha256": "d90b154f4d383e880fd5f1806a21887e686fb5625ef1ed5fa08f34ba71dfad7f"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/post-e0-ast-setup-preimage.mjs",
+      "bytes": 1495,
+      "sha256": "35e90f1fcf45838f8fe30038b41ff3f1f6b16a5d0fbe2dcb76eaf58b5c999295"
+    }
+  ]
+}

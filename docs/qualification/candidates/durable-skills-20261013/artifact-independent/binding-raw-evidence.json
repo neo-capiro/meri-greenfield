@@ -1,0 +1,14 @@
+[
+  {
+    "file": "binding-final-1237.tap",
+    "stored": "binding-final-1237.tap.gz",
+    "rawSha256": "80c7bdc35d52230d03a68429f46631f6886a0a339ac13d94dc3e279dd58aab48",
+    "rawBytes": 553
+  },
+  {
+    "file": "source-binding-final-binder.stdout",
+    "stored": "source-binding-final-binder.stdout.gz",
+    "rawSha256": "1da29790eaa5a549d667cf2db135b05d42c11f7fb660164eae3855cf6efac9f8",
+    "rawBytes": 190
+  }
+]

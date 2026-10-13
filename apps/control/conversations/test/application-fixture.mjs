@@ -5,7 +5,7 @@ import {createConversationApplication} from '../http.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {storeFixture,binding,scopes,versions,id} from './store-fixture.mjs';
 export {binding,scopes,versions,id};
-export async function applicationFixture(){const f=storeFixture(),state=Object.assign(f.state,{revoked:false,context:structuredClone({binding,scopes,selectedClientId:id(5)}),starts:0,cancels:0});let n=100;
+export async function applicationFixture({scopes:configuredScopes=scopes}={}){const f=storeFixture(),state=Object.assign(f.state,{revoked:false,context:structuredClone({binding,scopes:configuredScopes,selectedClientId:id(5)}),starts:0,cancels:0});let n=100;
  const sessions=createActionSessionOwner({mode:'process-local',limits:{maxSessions:20,maxRequestMs:3000,maxTtlMs:30000,maxFactBytes:65536},verifyIdentity:async()=>{if(state.revoked)throw Error('denied');return {principal:{tenantId:state.context.binding.tenantId,actorId:state.context.binding.actorId},identityRevision:'identity1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},resolveContext:async({identity})=>({identitySha256:canonicalSha256(identity),...state.context,contextRevision:'context1',checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000})});
  const issued=await sessions.issue({identityCredential:'synthetic-native'}),credential=issued.credential,store=createPostgresConversationStore({pool:f.pool}),dispatcher={async start(){state.starts++;if(state.startUnknown)throw Error('ack lost');},async cancel(){state.cancels++;}},service=createConversationService({sessions,store,dispatcher,versions,newId:()=>id(n++)}),app=createConversationApplication({service});
  const input={requestId:id(6),prompt:'Hello'};

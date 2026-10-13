@@ -1,0 +1,12 @@
+✔ actual upstream condition durably holds paused, ignores foreign selector, resumes exact source once (3.30626ms)
+✔ actual upstream condition durably holds waiting-for-approval, ignores foreign selector, resumes exact source once (0.740528ms)
+✔ actual upstream cancellation rejects durable wait without restarting activity (0.697804ms)
+✔ actual upstream completed activity closes lifecycle workflow directly (0.263605ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 105.718344

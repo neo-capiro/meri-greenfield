@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: Actual journal creates and decodes a healthy immutable source control
+ok 1 - Actual journal creates and decodes a healthy immutable source control
+  ---
+  duration_ms: 5.920395
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted SQL conversation ID
+ok 2 - Actual journal refuses coherently corrupted SQL conversation ID
+  ---
+  duration_ms: 1.062163
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted SQL run ID
+ok 3 - Actual journal refuses coherently corrupted SQL run ID
+  ---
+  duration_ms: 0.607436
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted zero SQL sequence
+ok 4 - Actual journal refuses coherently corrupted zero SQL sequence
+  ---
+  duration_ms: 0.557121
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted non-numeric SQL sequence
+ok 5 - Actual journal refuses coherently corrupted non-numeric SQL sequence
+  ---
+  duration_ms: 0.649628
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted unsafe SQL sequence
+ok 6 - Actual journal refuses coherently corrupted unsafe SQL sequence
+  ---
+  duration_ms: 0.512434
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source-request hash
+ok 7 - Actual journal refuses coherently corrupted source-request hash
+  ---
+  duration_ms: 0.525474
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted command hash
+ok 8 - Actual journal refuses coherently corrupted command hash
+  ---
+  duration_ms: 0.586154
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source scope
+ok 9 - Actual journal refuses coherently corrupted source scope
+  ---
+  duration_ms: 0.470571
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted worker context digest
+ok 10 - Actual journal refuses coherently corrupted worker context digest
+  ---
+  duration_ms: 0.63041
+  type: 'test'
+  ...
+# Subtest: Actual journal refuses coherently corrupted source writer binding
+ok 11 - Actual journal refuses coherently corrupted source writer binding
+  ---
+  duration_ms: 0.430351
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 215.528269

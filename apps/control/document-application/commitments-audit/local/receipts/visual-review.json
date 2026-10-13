@@ -1,0 +1,125 @@
+{
+  "status": "PASS",
+  "reviewer": "Commitments implementation owner",
+  "scope": "local synthetic editable DOCX only",
+  "pages": [
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 1,
+      "pngSha256": "8a1f4cb5c9294581a527d5eac3663d19391e0098c09c6678f502cb13d8c25881",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 2,
+      "pngSha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 3,
+      "pngSha256": "f98ed29439cf3b9149bc51e94e13389b81576c23a955558fbd7c687565d5b333",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 4,
+      "pngSha256": "ca77619021a64ce238823f121359add34a0bff3b58ce4a6e7dc5a4addf12fd43",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 5,
+      "pngSha256": "a6fa52e2f1c1c039c052fc932655611bb68c800002c72e44975a5bed3add4d89",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 6,
+      "pngSha256": "95d84a5d5ba82d4f61165a9f211db28441541d471a160fcc9f5a8f5f018daa34",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 7,
+      "pngSha256": "f0f740f2519e7664bff77e740ec3d82fc3724ac84c929169703b9315d721f847",
+      "visuallyInspected": true
+    },
+    {
+      "label": "original",
+      "sourceSha256": "b3ffff8eb547117986982c127783492ab02b0a6d39ae4a2bacc3a2e9c2af373f",
+      "page": 8,
+      "pngSha256": "a5312b87cc9706ed284017a214ec0f39331f62afd101f44559ea002aec9b5221",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 1,
+      "pngSha256": "65b74a5e2d4dd825b673534c2de30750cf8c56241110d06ce3905c51f3bc857a",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 2,
+      "pngSha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 3,
+      "pngSha256": "f98ed29439cf3b9149bc51e94e13389b81576c23a955558fbd7c687565d5b333",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 4,
+      "pngSha256": "ca77619021a64ce238823f121359add34a0bff3b58ce4a6e7dc5a4addf12fd43",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 5,
+      "pngSha256": "a6fa52e2f1c1c039c052fc932655611bb68c800002c72e44975a5bed3add4d89",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 6,
+      "pngSha256": "00f0c42590415ffdbf43faf713af6754681c6ce2e7d54c5da2d49c4a9a255fb6",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 7,
+      "pngSha256": "f0f740f2519e7664bff77e740ec3d82fc3724ac84c929169703b9315d721f847",
+      "visuallyInspected": true
+    },
+    {
+      "label": "revision",
+      "sourceSha256": "922f844102aa0db6da5c3874a53f51c66aba9cf4ca93ddc52a505059ba9048d8",
+      "page": 8,
+      "pngSha256": "c17f072ae851343f9d0f4a66ab19fdfa31c4fc32b3da6fe2758ea1b2ad7be20d",
+      "visuallyInspected": true
+    }
+  ],
+  "findings": [
+    "All sixteen original/revision pages opened and visually inspected; no clipped text or overlapping paragraphs.",
+    "Editable ledger separates conflicting owner/date observations and unverified delivery claims; completed remains false.",
+    "All six required sources, unavailable task/action reads, unknown completeness/freshness, exact source versions/hashes/scopes and original revision provenance remain visible.",
+    "The appendix is intentionally detailed for source/provenance review; native runtime and semantic qualification remain pending."
+  ]
+}

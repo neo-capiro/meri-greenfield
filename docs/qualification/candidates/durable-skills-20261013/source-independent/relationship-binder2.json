@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/relationship-binding-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "347c0278bd206246afe75b6dbaca1782c9e39da2",
+  "worktreeHead": "2ccef425670fe5dc3a63d6ef671e383468393f18",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 1.933,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 2459,
+  "stderrBytes": 0,
+  "stdoutSha256": "9baf4638eed6ce8065853ef85765f8887d24bd8a8573422a23584172289c496f",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

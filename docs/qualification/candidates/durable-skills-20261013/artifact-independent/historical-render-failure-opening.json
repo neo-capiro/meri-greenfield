@@ -1,0 +1,66 @@
+{
+  "status": "HISTORICAL_PARTIAL",
+  "originalDocxSha256": "078a970618ee13e947dd83e273ed226e189c6401a946b59a893f2e078e8b6c43",
+  "originalPages": 9,
+  "images": [
+    {
+      "page": 1,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-1.png",
+      "sha256": "05301b780a57ddc62aec47227d341012e7762bd4b1a89ef418dd0d7f2144b4b9",
+      "visuallyOpened": true
+    },
+    {
+      "page": 2,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-2.png",
+      "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+      "visuallyOpened": true
+    },
+    {
+      "page": 3,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-3.png",
+      "sha256": "1810b5e8b529de637701e0ef438c3a53c07f87a64c898deae9fa80eb66f772af",
+      "visuallyOpened": true
+    },
+    {
+      "page": 4,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-4.png",
+      "sha256": "1ef43dde7bfccaabf3c599a1af7f2cad4a83aee38de6989a1f187350c1fc65ed",
+      "visuallyOpened": true
+    },
+    {
+      "page": 5,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-5.png",
+      "sha256": "7eea6ed7f8b1dc557191e78268766202093c95990e39b63e8ec9511a7248aa8d",
+      "visuallyOpened": true
+    },
+    {
+      "page": 6,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-6.png",
+      "sha256": "457b098233ab15233303b50fa183c1455631187f0d04f792f3c49fd889d60975",
+      "visuallyOpened": true
+    },
+    {
+      "page": 7,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-7.png",
+      "sha256": "130be4834690ca89e013d7079515e1d00a531da25644af9f46bffad39f2f0f86",
+      "visuallyOpened": true
+    },
+    {
+      "page": 8,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-8.png",
+      "sha256": "f4650efef972082a91dfaf572027c2fac805290d23a92ccf1578b6a7cbfb39bc",
+      "visuallyOpened": true
+    },
+    {
+      "page": 9,
+      "path": "/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/local/receipts-approved/rendered-after-failure/page-9.png",
+      "sha256": "716187c2fb9b0266bc0d44b04a888de281ea363a221bbc5c65651a435ccafb65",
+      "visuallyOpened": true
+    }
+  ],
+  "originalReopenedAndLiteralParagraphsCompared": true,
+  "revisionRetained": false,
+  "revisionVisuallyInspected": false,
+  "gap": "Original failed8-page-bounded PDF inspection after both versionsgenerated; historical revised bytes lost before render. Final release independentlyreviewed separately; no claim historical failurecomplete.",
+  "nativeQualified": false
+}

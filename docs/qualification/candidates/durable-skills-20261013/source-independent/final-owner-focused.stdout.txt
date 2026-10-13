@@ -1,0 +1,1578 @@
+TAP version 13
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 1 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 39.459546
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 2 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 7.655784
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 3 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 24.108519
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 4 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 3.724608
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 5 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 3.273393
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 6 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 3.028497
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 7 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 2.977831
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 8 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 3.45122
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 9 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 3.942704
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 10 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 78.937539
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 11 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 16.291163
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 12 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 6.846785
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 13 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 4.371654
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 14 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.2546
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 15 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 21.790473
+  type: 'test'
+  ...
+# Subtest: actual Fetch JSON responses round-trip through public receivers without credential output
+ok 16 - actual Fetch JSON responses round-trip through public receivers without credential output
+  ---
+  duration_ms: 63.522466
+  type: 'test'
+  ...
+# Subtest: public POST view.subscribe uses exact authenticated conversation selector and existing AI stream
+ok 17 - public POST view.subscribe uses exact authenticated conversation selector and existing AI stream
+  ---
+  duration_ms: 19.217137
+  type: 'test'
+  ...
+# Subtest: DefaultChatTransport7.0.137 real reconnect GET emits only unacknowledged events
+ok 18 - DefaultChatTransport7.0.137 real reconnect GET emits only unacknowledged events
+  ---
+  duration_ms: 28.022549
+  type: 'test'
+  ...
+# Subtest: GET reconnect at terminal tip returns an ended subscription with no fabricated run event
+ok 19 - GET reconnect at terminal tip returns an ended subscription with no fabricated run event
+  ---
+  duration_ms: 14.254487
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses query selector
+ok 20 - Fetch reconnect refuses query selector
+  ---
+  duration_ms: 3.509195
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses Last-Event-ID
+ok 21 - Fetch reconnect refuses Last-Event-ID
+  ---
+  duration_ms: 3.261506
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses negative cursor
+ok 22 - Fetch reconnect refuses negative cursor
+  ---
+  duration_ms: 16.600374
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses fractional cursor
+ok 23 - Fetch reconnect refuses fractional cursor
+  ---
+  duration_ms: 2.95707
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses leading zero cursor
+ok 24 - Fetch reconnect refuses leading zero cursor
+  ---
+  duration_ms: 3.336488
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses unsafe cursor
+ok 25 - Fetch reconnect refuses unsafe cursor
+  ---
+  duration_ms: 3.483487
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses conflicting joined cursor
+ok 26 - Fetch reconnect refuses conflicting joined cursor
+  ---
+  duration_ms: 2.730622
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses future cursor
+ok 27 - Fetch reconnect refuses future cursor
+  ---
+  duration_ms: 4.189853
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses body content type
+ok 28 - Fetch reconnect refuses body content type
+  ---
+  duration_ms: 3.087545
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses claimed body length
+ok 29 - Fetch reconnect refuses claimed body length
+  ---
+  duration_ms: 2.450353
+  type: 'test'
+  ...
+# Subtest: Fetch reconnect refuses foreign conversation
+ok 30 - Fetch reconnect refuses foreign conversation
+  ---
+  duration_ms: 3.825409
+  type: 'test'
+  ...
+# Subtest: POST public selectors cannot smuggle cursor/auth commands; legacy after/limit remains explicit
+ok 31 - POST public selectors cannot smuggle cursor/auth commands; legacy after/limit remains explicit
+  ---
+  duration_ms: 10.197253
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current tenant authority refusal
+ok 32 - new GET reconnect preserves current tenant authority refusal
+  ---
+  duration_ms: 2.89036
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current actor authority refusal
+ok 33 - new GET reconnect preserves current actor authority refusal
+  ---
+  duration_ms: 4.089854
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current run authority refusal
+ok 34 - new GET reconnect preserves current run authority refusal
+  ---
+  duration_ms: 20.939932
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current attempt authority refusal
+ok 35 - new GET reconnect preserves current attempt authority refusal
+  ---
+  duration_ms: 2.746495
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current worker authority refusal
+ok 36 - new GET reconnect preserves current worker authority refusal
+  ---
+  duration_ms: 2.743031
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current fence authority refusal
+ok 37 - new GET reconnect preserves current fence authority refusal
+  ---
+  duration_ms: 2.901247
+  type: 'test'
+  ...
+# Subtest: new GET reconnect preserves current conversation authority refusal
+ok 38 - new GET reconnect preserves current conversation authority refusal
+  ---
+  duration_ms: 3.239181
+  type: 'test'
+  ...
+# Subtest: current protected scope revision and session revocation block new GET before bytes
+ok 39 - current protected scope revision and session revocation block new GET before bytes
+  ---
+  duration_ms: 22.878359
+  type: 'test'
+  ...
+# Subtest: missing session is401 and private runtime failures become content-free502
+ok 40 - missing session is401 and private runtime failures become content-free502
+  ---
+  duration_ms: 0.74905
+  type: 'test'
+  ...
+# Subtest: abort/reader cancellation cleans only subscription and does not call durable cancel
+ok 41 - abort/reader cancellation cleans only subscription and does not call durable cancel
+  ---
+  duration_ms: 5.849995
+  type: 'test'
+  ...
+# Subtest: DefaultChatTransport re-authenticates after disconnect and refuses revoked reconnect
+ok 42 - DefaultChatTransport re-authenticates after disconnect and refuses revoked reconnect
+  ---
+  duration_ms: 3.050019
+  type: 'test'
+  ...
+# Subtest: malformed JSON, UTF8, actual length and native Request brands are closed400 admissions
+ok 43 - malformed JSON, UTF8, actual length and native Request brands are closed400 admissions
+  ---
+  duration_ms: 1.431881
+  type: 'test'
+  ...
+# Subtest: actual upstream condition durably holds paused, ignores foreign selector, resumes exact source once
+ok 44 - actual upstream condition durably holds paused, ignores foreign selector, resumes exact source once
+  ---
+  duration_ms: 12.428255
+  type: 'test'
+  ...
+# Subtest: actual upstream condition durably holds waiting-for-approval, ignores foreign selector, resumes exact source once
+ok 45 - actual upstream condition durably holds waiting-for-approval, ignores foreign selector, resumes exact source once
+  ---
+  duration_ms: 3.716023
+  type: 'test'
+  ...
+# Subtest: actual upstream cancellation rejects durable wait without restarting activity
+ok 46 - actual upstream cancellation rejects durable wait without restarting activity
+  ---
+  duration_ms: 1.892553
+  type: 'test'
+  ...
+# Subtest: actual upstream completed activity closes lifecycle workflow directly
+ok 47 - actual upstream completed activity closes lifecycle workflow directly
+  ---
+  duration_ms: 0.308291
+  type: 'test'
+  ...
+# Subtest: actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack
+ok 48 - actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack
+  ---
+  duration_ms: 67.609386
+  type: 'test'
+  ...
+# Subtest: pause fences worker messages before checkpoint; exact readback publishes paused and immutable history
+ok 49 - pause fences worker messages before checkpoint; exact readback publishes paused and immutable history
+  ---
+  duration_ms: 46.023799
+  type: 'test'
+  ...
+# Subtest: approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume
+ok 50 - approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume
+  ---
+  duration_ms: 52.903382
+  type: 'test'
+  ...
+# Subtest: resume uses immutable checkpoint and fresh target, with retirement only resume
+ok 51 - resume uses immutable checkpoint and fresh target, with retirement only resume
+  ---
+  duration_ms: 78.047308
+  type: 'test'
+  ...
+# Subtest: fork uses immutable checkpoint and fresh target, with retirement only resume
+ok 52 - fork uses immutable checkpoint and fresh target, with retirement only resume
+  ---
+  duration_ms: 58.534149
+  type: 'test'
+  ...
+# Subtest: native retirement UNKNOWN is a durable barrier and identical replay performs no second effect
+ok 53 - native retirement UNKNOWN is a durable barrier and identical replay performs no second effect
+  ---
+  duration_ms: 41.166037
+  type: 'test'
+  ...
+# Subtest: current revoke blocks control/claim/ack/checkpoint with no second effect
+ok 54 - current revoke blocks control/claim/ack/checkpoint with no second effect
+  ---
+  duration_ms: 11.179962
+  type: 'test'
+  ...
+# Subtest: legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED
+ok 55 - legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED
+  ---
+  duration_ms: 38.146743
+  type: 'test'
+  ...
+# Subtest: control redundant conversation_id cannot be relabelled even with untouched projection hash
+ok 56 - control redundant conversation_id cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 12.842037
+  type: 'test'
+  ...
+# Subtest: control redundant run_id cannot be relabelled even with untouched projection hash
+ok 57 - control redundant run_id cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 13.297478
+  type: 'test'
+  ...
+# Subtest: control redundant control_sequence cannot be relabelled even with untouched projection hash
+ok 58 - control redundant control_sequence cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 12.498333
+  type: 'test'
+  ...
+# Subtest: private Fetch route strictness and uncertainty contain no raw credentials
+ok 59 - private Fetch route strictness and uncertainty contain no raw credentials
+  ---
+  duration_ms: 11.935973
+  type: 'test'
+  ...
+# Subtest: upstream Temporal signal is wake-only and never directly sends SDK text
+ok 60 - upstream Temporal signal is wake-only and never directly sends SDK text
+  ---
+  duration_ms: 0.389312
+  type: 'test'
+  ...
+# Subtest: fork reads trusted immutable checkpoint while original remains running and independently writable
+ok 61 - fork reads trusted immutable checkpoint while original remains running and independently writable
+  ---
+  duration_ms: 39.071816
+  type: 'test'
+  ...
+# Subtest: resume target requires a fresh existing session; old credential cannot execute target
+ok 62 - resume target requires a fresh existing session; old credential cannot execute target
+  ---
+  duration_ms: 65.930295
+  type: 'test'
+  ...
+# Subtest: restart cannot redeliver a durable DISPATCHING/UNKNOWN steer and APPLIED cannot regress
+ok 63 - restart cannot redeliver a durable DISPATCHING/UNKNOWN steer and APPLIED cannot regress
+  ---
+  duration_ms: 45.850449
+  type: 'test'
+  ...
+# Subtest: checkpoint redundant conversation_id cannot select another originating owner
+ok 64 - checkpoint redundant conversation_id cannot select another originating owner
+  ---
+  duration_ms: 31.144406
+  type: 'test'
+  ...
+# Subtest: checkpoint redundant run_id cannot select another originating owner
+ok 65 - checkpoint redundant run_id cannot select another originating owner
+  ---
+  duration_ms: 39.280318
+  type: 'test'
+  ...
+# Subtest: checkpoint redundant checkpoint_id cannot select another originating owner
+ok 66 - checkpoint redundant checkpoint_id cannot select another originating owner
+  ---
+  duration_ms: 30.339703
+  type: 'test'
+  ...
+# Subtest: checkpoint redundant control_id cannot select another originating owner
+ok 67 - checkpoint redundant control_id cannot select another originating owner
+  ---
+  duration_ms: 41.568357
+  type: 'test'
+  ...
+# Subtest: control persisted sourceRequestSha256 must match immutable source even if projection hash is recomputed
+ok 68 - control persisted sourceRequestSha256 must match immutable source even if projection hash is recomputed
+  ---
+  duration_ms: 13.266703
+  type: 'test'
+  ...
+# Subtest: control persisted contextSha256 must match immutable source even if projection hash is recomputed
+ok 69 - control persisted contextSha256 must match immutable source even if projection hash is recomputed
+  ---
+  duration_ms: 12.039498
+  type: 'test'
+  ...
+# Subtest: control persisted commandSha256 must match immutable source even if projection hash is recomputed
+ok 70 - control persisted commandSha256 must match immutable source even if projection hash is recomputed
+  ---
+  duration_ms: 11.718287
+  type: 'test'
+  ...
+# Subtest: resume refuses native target worker substitution before target publication
+ok 71 - resume refuses native target worker substitution before target publication
+  ---
+  duration_ms: 41.392334
+  type: 'test'
+  ...
+# Subtest: resume refuses native target fence substitution before target publication
+ok 72 - resume refuses native target fence substitution before target publication
+  ---
+  duration_ms: 50.986026
+  type: 'test'
+  ...
+# Subtest: resume refuses native target scope substitution before target publication
+ok 73 - resume refuses native target scope substitution before target publication
+  ---
+  duration_ms: 45.303682
+  type: 'test'
+  ...
+# Subtest: malformed UTF8/JSON and over-budget Fetch bytes are refused before durable control
+ok 74 - malformed UTF8/JSON and over-budget Fetch bytes are refused before durable control
+  ---
+  duration_ms: 5.486321
+  type: 'test'
+  ...
+# Subtest: dispatcher lifecycle is opt-in and preserves legacy start definition
+ok 75 - dispatcher lifecycle is opt-in and preserves legacy start definition
+  ---
+  duration_ms: 0.186869
+  type: 'test'
+  ...
+# Subtest: multiple authorized clients do not permit changing the exact source selected subject on admission
+ok 76 - multiple authorized clients do not permit changing the exact source selected subject on admission
+  ---
+  duration_ms: 43.578473
+  type: 'test'
+  ...
+# Subtest: fresh target session with another in-scope selected client cannot load a persisted continuation
+ok 77 - fresh target session with another in-scope selected client cannot load a persisted continuation
+  ---
+  duration_ms: 76.770269
+  type: 'test'
+  ...
+# Subtest: parked native admission then authenticated cancel prevents pause resume target/start/continued
+ok 78 - parked native admission then authenticated cancel prevents pause resume target/start/continued
+  ---
+  duration_ms: 61.603537
+  type: 'test'
+  ...
+# {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+# Subtest: parked native admission then authenticated cancel prevents approval.wait resume target/start/continued
+ok 79 - parked native admission then authenticated cancel prevents approval.wait resume target/start/continued
+  ---
+  duration_ms: 60.249684
+  type: 'test'
+  ...
+# {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+# Subtest: parked native admission rechecks retained hold inside target insertion transaction
+ok 80 - parked native admission rechecks retained hold inside target insertion transaction
+  ---
+  duration_ms: 74.886674
+  type: 'test'
+  ...
+# Subtest: parked native admission rechecks retained proof inside target insertion transaction
+ok 81 - parked native admission rechecks retained proof inside target insertion transaction
+  ---
+  duration_ms: 34.067225
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 82 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 14.200728
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 83 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 12.266456
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 84 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 26.348166
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 85 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 1.20418
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 86 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 0.674107
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 87 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.545706
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 88 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.679576
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 89 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.718635
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 90 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.659997
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 91 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 1.115598
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 92 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.590438
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 93 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 2.177194
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 94 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 2.344936
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 95 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.228346
+  type: 'test'
+  ...
+# Subtest: live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+ok 96 - live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+  ---
+  duration_ms: 34.974572
+  type: 'test'
+  ...
+# Subtest: upstream reader cancellation reaches the owned live event source
+ok 97 - upstream reader cancellation reaches the owned live event source
+  ---
+  duration_ms: 0.830782
+  type: 'test'
+  ...
+# Subtest: live producer suppresses internal source error details
+ok 98 - live producer suppresses internal source error details
+  ---
+  duration_ms: 0.546957
+  type: 'test'
+  ...
+# Subtest: collection executes all8 original reads with actual canonical pages, exact body continuation and explicit unavailable native records
+ok 99 - collection executes all8 original reads with actual canonical pages, exact body continuation and explicit unavailable native records
+  ---
+  duration_ms: 41.332335
+  type: 'test'
+  ...
+# Subtest: call/read cap never executes later source effects and preserves exact remaining source intent
+ok 100 - call/read cap never executes later source effects and preserves exact remaining source intent
+  ---
+  duration_ms: 5.006484
+  type: 'test'
+  ...
+# Subtest: source authority failure is terminal and cannot be treated as missing evidence
+ok 101 - source authority failure is terminal and cannot be treated as missing evidence
+  ---
+  duration_ms: 0.746115
+  type: 'test'
+  ...
+# Subtest: source byte budget refuses before compiling or reading later families
+ok 102 - source byte budget refuses before compiling or reading later families
+  ---
+  duration_ms: 0.668309
+  type: 'test'
+  ...
+# Subtest: parked source deadline closes continuation and late return starts no later effects
+ok 103 - parked source deadline closes continuation and late return starts no later effects
+  ---
+  duration_ms: 20.691961
+  type: 'test'
+  ...
+# Subtest: all8 original operations collect actual canonical pages across6 sources and exact late promise
+ok 104 - all8 original operations collect actual canonical pages across6 sources and exact late promise
+  ---
+  duration_ms: 72.558072
+  type: 'test'
+  ...
+# Subtest: all required source failures stay visible without inventing absence or a bound promise
+ok 105 - all required source failures stay visible without inventing absence or a bound promise
+  ---
+  duration_ms: 3.361135
+  type: 'test'
+  ...
+# Subtest: call/body caps disclose unbound observations and retain original budgets
+ok 106 - call/body caps disclose unbound observations and retain original budgets
+  ---
+  duration_ms: 14.111584
+  type: 'test'
+  ...
+# Subtest: foreign binding/subject/window refuses rather than returning a partial authority failure
+ok 107 - foreign binding/subject/window refuses rather than returning a partial authority failure
+  ---
+  duration_ms: 15.211078
+  type: 'test'
+  ...
+# Subtest: immutable skill, source body hash, quote and output request provenance cannot be substituted
+ok 108 - immutable skill, source body hash, quote and output request provenance cannot be substituted
+  ---
+  duration_ms: 36.198831
+  type: 'test'
+  ...
+# Subtest: no mapped Monday board means not-mapped coverage and no unrelated board source call
+ok 109 - no mapped Monday board means not-mapped coverage and no unrelated board source call
+  ---
+  duration_ms: 20.145223
+  type: 'test'
+  ...
+# Subtest: fresh authorization decision IDs retain exact stable subject and every actual source decision
+ok 110 - fresh authorization decision IDs retain exact stable subject and every actual source decision
+  ---
+  duration_ms: 21.184107
+  type: 'test'
+  ...
+# Subtest: cancelled collection never reaches later source work
+ok 111 - cancelled collection never reaches later source work
+  ---
+  duration_ms: 0.460458
+  type: 'test'
+  ...
+# Subtest: closed original read wrapper preserves a bounded selection and incomplete wider native evidence
+ok 112 - closed original read wrapper preserves a bounded selection and incomplete wider native evidence
+  ---
+  duration_ms: 37.047982
+  type: 'test'
+  ...
+# Subtest: original wrapper refuses altered lineage, input hash, extra fields and actual successor source/operation
+ok 113 - original wrapper refuses altered lineage, input hash, extra fields and actual successor source/operation
+  ---
+  duration_ms: 22.184342
+  type: 'test'
+  ...
+# Subtest: original eleven operations collect material and show nine required source families without semantic verification
+ok 114 - original eleven operations collect material and show nine required source families without semantic verification
+  ---
+  duration_ms: 83.764985
+  type: 'test'
+  ...
+# Subtest: URL and mismatched text cannot mark a free-form relationship claim verified
+ok 115 - URL and mismatched text cannot mark a free-form relationship claim verified
+  ---
+  duration_ms: 26.085714
+  type: 'test'
+  ...
+# Subtest: missing source and body/call limits stay visible
+ok 116 - missing source and body/call limits stay visible
+  ---
+  duration_ms: 17.935962
+  type: 'test'
+  ...
+# Subtest: refuses actor substitution
+ok 117 - refuses actor substitution
+  ---
+  duration_ms: 8.088932
+  type: 'test'
+  ...
+# Subtest: refuses fence substitution
+ok 118 - refuses fence substitution
+  ---
+  duration_ms: 11.908882
+  type: 'test'
+  ...
+# Subtest: refuses scope substitution
+ok 119 - refuses scope substitution
+  ---
+  duration_ms: 7.377598
+  type: 'test'
+  ...
+# Subtest: refuses operation substitution
+ok 120 - refuses operation substitution
+  ---
+  duration_ms: 7.29133
+  type: 'test'
+  ...
+# Subtest: exact immutable original pin and private preparation cannot be replaced
+ok 121 - exact immutable original pin and private preparation cannot be replaced
+  ---
+  duration_ms: 24.135849
+  type: 'test'
+  ...
+# Subtest: parked cancellation is typed and propagates source abort
+ok 122 - parked cancellation is typed and propagates source abort
+  ---
+  duration_ms: 1.273544
+  type: 'test'
+  ...
+# Subtest: unmapped Monday is not read and derived memory limitations stay visible
+ok 123 - unmapped Monday is not read and derived memory limitations stay visible
+  ---
+  duration_ms: 22.306244
+  type: 'test'
+  ...
+# Subtest: broader native pages retain selected window and mark dates outside it
+ok 124 - broader native pages retain selected window and mark dates outside it
+  ---
+  duration_ms: 46.331508
+  type: 'test'
+  ...
+# Subtest: exact approved-memory passage beyond discovery prefix uses native salted-version evidence
+ok 125 - exact approved-memory passage beyond discovery prefix uses native salted-version evidence
+  ---
+  duration_ms: 25.497014
+  type: 'test'
+  ...
+# Subtest: existing conversation Fetch routes reuse opaque session and stop before fetch after revocation
+ok 126 - existing conversation Fetch routes reuse opaque session and stop before fetch after revocation
+  ---
+  duration_ms: 42.432079
+  type: 'test'
+  ...
+# Subtest: existing artifact owners create/revise/inspect/hash-check both downloads and exclude unowned versions
+ok 127 - existing artifact owners create/revise/inspect/hash-check both downloads and exclude unowned versions
+  ---
+  duration_ms: 283.253688
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target http://staging.example.invalid/
+ok 128 - refuses non-staging target http://staging.example.invalid/
+  ---
+  duration_ms: 1.161416
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://127.0.0.1/
+ok 129 - refuses non-staging target https://127.0.0.1/
+  ---
+  duration_ms: 0.347389
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://localhost/
+ok 130 - refuses non-staging target https://localhost/
+  ---
+  duration_ms: 1.832519
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://user:password@staging.example.invalid/
+ok 131 - refuses non-staging target https://user:password@staging.example.invalid/
+  ---
+  duration_ms: 0.1608
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://staging.example.invalid/?grant=1
+ok 132 - refuses non-staging target https://staging.example.invalid/?grant=1
+  ---
+  duration_ms: 0.101051
+  type: 'test'
+  ...
+# Subtest: requires disjoint automation/manual clients and conversations
+ok 133 - requires disjoint automation/manual clients and conversations
+  ---
+  duration_ms: 0.785514
+  type: 'test'
+  ...
+# Subtest: imports/configures without network and refuses unknown resource mutation routes
+ok 134 - imports/configures without network and refuses unknown resource mutation routes
+  ---
+  duration_ms: 0.74248
+  type: 'test'
+  ...
+# Subtest: manual client current context refuses before any authenticated fetch
+ok 135 - manual client current context refuses before any authenticated fetch
+  ---
+  duration_ms: 1.615715
+  type: 'test'
+  ...
+# Subtest: different immutable candidate refuses before any request
+ok 136 - different immutable candidate refuses before any request
+  ---
+  duration_ms: 0.405416
+  type: 'test'
+  ...
+# Subtest: oversize response cleanup returns despite an unresponsive transport cancel
+ok 137 - oversize response cleanup returns despite an unresponsive transport cancel
+  ---
+  duration_ms: 15.885306
+  type: 'test'
+  ...
+# Subtest: closing client cancels parked requests and preserves borrowed transport
+ok 138 - closing client cancels parked requests and preserves borrowed transport
+  ---
+  duration_ms: 0.756752
+  type: 'test'
+  ...
+# Subtest: SDK resume: exact supported option delta, immutable request/skill/scopes, independent target
+ok 139 - SDK resume: exact supported option delta, immutable request/skill/scopes, independent target
+  ---
+  duration_ms: 18.640324
+  type: 'test'
+  ...
+# Subtest: SDK fork: exact supported option delta, immutable request/skill/scopes, independent target
+ok 140 - SDK fork: exact supported option delta, immutable request/skill/scopes, independent target
+  ---
+  duration_ms: 1.153344
+  type: 'test'
+  ...
+# Subtest: exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback
+ok 141 - exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback
+  ---
+  duration_ms: 0.86296
+  type: 'test'
+  ...
+# Subtest: continuation checkpointHash substitution refuses
+ok 142 - continuation checkpointHash substitution refuses
+  ---
+  duration_ms: 0.566497
+  type: 'test'
+  ...
+# Subtest: continuation requestHash substitution refuses
+ok 143 - continuation requestHash substitution refuses
+  ---
+  duration_ms: 0.674759
+  type: 'test'
+  ...
+# Subtest: continuation prompt substitution refuses
+ok 144 - continuation prompt substitution refuses
+  ---
+  duration_ms: 0.646527
+  type: 'test'
+  ...
+# Subtest: continuation requestId substitution refuses
+ok 145 - continuation requestId substitution refuses
+  ---
+  duration_ms: 0.503973
+  type: 'test'
+  ...
+# Subtest: continuation window substitution refuses
+ok 146 - continuation window substitution refuses
+  ---
+  duration_ms: 0.519246
+  type: 'test'
+  ...
+# Subtest: continuation skill substitution refuses
+ok 147 - continuation skill substitution refuses
+  ---
+  duration_ms: 0.887657
+  type: 'test'
+  ...
+# Subtest: continuation scope substitution refuses
+ok 148 - continuation scope substitution refuses
+  ---
+  duration_ms: 0.621069
+  type: 'test'
+  ...
+# Subtest: continuation sdk substitution refuses
+ok 149 - continuation sdk substitution refuses
+  ---
+  duration_ms: 0.556993
+  type: 'test'
+  ...
+# Subtest: continuation cli substitution refuses
+ok 150 - continuation cli substitution refuses
+  ---
+  duration_ms: 19.014683
+  type: 'test'
+  ...
+# Subtest: continuation image substitution refuses
+ok 151 - continuation image substitution refuses
+  ---
+  duration_ms: 0.663021
+  type: 'test'
+  ...
+# Subtest: continuation tenant substitution refuses
+ok 152 - continuation tenant substitution refuses
+  ---
+  duration_ms: 0.488741
+  type: 'test'
+  ...
+# Subtest: continuation actor substitution refuses
+ok 153 - continuation actor substitution refuses
+  ---
+  duration_ms: 0.452816
+  type: 'test'
+  ...
+# Subtest: continuation run substitution refuses
+ok 154 - continuation run substitution refuses
+  ---
+  duration_ms: 0.475971
+  type: 'test'
+  ...
+# Subtest: continuation attempt substitution refuses
+ok 155 - continuation attempt substitution refuses
+  ---
+  duration_ms: 0.504334
+  type: 'test'
+  ...
+# Subtest: continuation worker substitution refuses
+ok 156 - continuation worker substitution refuses
+  ---
+  duration_ms: 0.481991
+  type: 'test'
+  ...
+# Subtest: continuation fence substitution refuses
+ok 157 - continuation fence substitution refuses
+  ---
+  duration_ms: 0.436813
+  type: 'test'
+  ...
+# Subtest: continuation conversation substitution refuses
+ok 158 - continuation conversation substitution refuses
+  ---
+  duration_ms: 0.46781
+  type: 'test'
+  ...
+# Subtest: continuation sourceSessionAlias substitution refuses
+ok 159 - continuation sourceSessionAlias substitution refuses
+  ---
+  duration_ms: 0.406187
+  type: 'test'
+  ...
+# Subtest: continuation workspaceBinding substitution refuses
+ok 160 - continuation workspaceBinding substitution refuses
+  ---
+  duration_ms: 0.401019
+  type: 'test'
+  ...
+# Subtest: continuation opaqueScope substitution refuses
+ok 161 - continuation opaqueScope substitution refuses
+  ---
+  duration_ms: 1.169728
+  type: 'test'
+  ...
+# Subtest: fork cannot reuse original conversation/session and does not retire original task
+ok 162 - fork cannot reuse original conversation/session and does not retire original task
+  ---
+  duration_ms: 0.92992
+  type: 'test'
+  ...
+# Subtest: workspace paths and exact object scopes use canonical validation
+ok 163 - workspace paths and exact object scopes use canonical validation
+  ---
+  duration_ms: 1.388876
+  type: 'test'
+  ...
+# Subtest: request/context accessor and proxy refusal is inert
+ok 164 - request/context accessor and proxy refusal is inert
+  ---
+  duration_ms: 0.230514
+  type: 'test'
+  ...
+# Subtest: single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded
+ok 165 - single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded
+  ---
+  duration_ms: 5.688854
+  type: 'test'
+  ...
+# Subtest: input invalid/mutating messages cannot inject SDK authority or configuration
+ok 166 - input invalid/mutating messages cannot inject SDK authority or configuration
+  ---
+  duration_ms: 0.340499
+  type: 'test'
+  ...
+# Subtest: closing input discards queued work and completes a parked iterator without an abrupt stream error
+ok 167 - closing input discards queued work and completes a parked iterator without an abrupt stream error
+  ---
+  duration_ms: 1.394204
+  type: 'test'
+  ...
+# Subtest: steer preserves exact UUID; local duplicate never redispatches nor claims durable success
+ok 168 - steer preserves exact UUID; local duplicate never redispatches nor claims durable success
+  ---
+  duration_ms: 1.537569
+  type: 'test'
+  ...
+# Subtest: pause: owned interrupt receiver, honest still-queued receipt and one close
+ok 169 - pause: owned interrupt receiver, honest still-queued receipt and one close
+  ---
+  duration_ms: 4.077815
+  type: 'test'
+  ...
+# Subtest: waitForApproval: owned interrupt receiver, honest still-queued receipt and one close
+ok 170 - waitForApproval: owned interrupt receiver, honest still-queued receipt and one close
+  ---
+  duration_ms: 1.394845
+  type: 'test'
+  ...
+# Subtest: older interrupt API undefined receipt never becomes proof of empty queue or physical retirement
+ok 171 - older interrupt API undefined receipt never becomes proof of empty queue or physical retirement
+  ---
+  duration_ms: 0.43459
+  type: 'test'
+  ...
+# Subtest: SDK interrupt failure stays UNKNOWN and discloses no private diagnostics
+ok 172 - SDK interrupt failure stays UNKNOWN and discloses no private diagnostics
+  ---
+  duration_ms: 0.519106
+  type: 'test'
+  ...
+# Subtest: approval wait proposal metadata is immutable context; it never changes SDK permission mode
+ok 173 - approval wait proposal metadata is immutable context; it never changes SDK permission mode
+  ---
+  duration_ms: 0.534519
+  type: 'test'
+  ...
+# Subtest: cleanup attempts owned Query close even when input close fails; private diagnostics stay hidden
+ok 174 - cleanup attempts owned Query close even when input close fails; private diagnostics stay hidden
+  ---
+  duration_ms: 0.311445
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 175 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.444805
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 176 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.372738
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 177 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.784563
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 178 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.328541
+  type: 'test'
+  ...
+# Subtest: control immutable binding/context/proposal boundary rejects before SDK effect
+ok 179 - control immutable binding/context/proposal boundary rejects before SDK effect
+  ---
+  duration_ms: 0.492726
+  type: 'test'
+  ...
+# Subtest: parked interrupt deadline is bounded and late receipt cannot rerun SDK
+ok 180 - parked interrupt deadline is bounded and late receipt cannot rerun SDK
+  ---
+  duration_ms: 26.046832
+  type: 'test'
+  ...
+# Subtest: parked interrupt cancellation is bounded and late receipt cannot rerun SDK
+ok 181 - parked interrupt cancellation is bounded and late receipt cannot rerun SDK
+  ---
+  duration_ms: 1.067396
+  type: 'test'
+  ...
+# Subtest: one SDK query persists streamed text once, hides reasoning and completes durable run
+ok 182 - one SDK query persists streamed text once, hides reasoning and completes durable run
+  ---
+  duration_ms: 71.438
+  type: 'test'
+  ...
+# Subtest: nonstreamed final assistant text is displayed with a valid generated UUID
+ok 183 - nonstreamed final assistant text is displayed with a valid generated UUID
+  ---
+  duration_ms: 11.737263
+  type: 'test'
+  ...
+# Subtest: SDK mirror never leaks diagnostics or makes a duplicate model query
+ok 184 - SDK mirror never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 9.892401
+  type: 'test'
+  ...
+# Subtest: SDK missing never leaks diagnostics or makes a duplicate model query
+ok 185 - SDK missing never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 11.829942
+  type: 'test'
+  ...
+# Subtest: SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+ok 186 - SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 12.892193
+  type: 'test'
+  ...
+# Subtest: SDK duplicate never leaks diagnostics or makes a duplicate model query
+ok 187 - SDK duplicate never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 15.719015
+  type: 'test'
+  ...
+# Subtest: SDK subagent never leaks diagnostics or makes a duplicate model query
+ok 188 - SDK subagent never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 29.762071
+  type: 'test'
+  ...
+# Subtest: revocation during query stops publication and closes SDK before another result
+ok 189 - revocation during query stops publication and closes SDK before another result
+  ---
+  duration_ms: 6.996375
+  type: 'test'
+  ...
+# Subtest: output limit fails instead of truncating a completed response
+ok 190 - output limit fails instead of truncating a completed response
+  ---
+  duration_ms: 8.972514
+  type: 'test'
+  ...
+# Subtest: late SDK iterator is bounded by deadline and closed without a second query
+ok 191 - late SDK iterator is bounded by deadline and closed without a second query
+  ---
+  duration_ms: 48.261088
+  type: 'test'
+  ...
+# Subtest: SDK options reject ambient config, wrong workspace and upstream keys
+ok 192 - SDK options reject ambient config, wrong workspace and upstream keys
+  ---
+  duration_ms: 0.606518
+  type: 'test'
+  ...
+# Subtest: final assistant frame repairs a missing streamed suffix without duplicate prefix
+ok 193 - final assistant frame repairs a missing streamed suffix without duplicate prefix
+  ---
+  duration_ms: 35.139131
+  type: 'test'
+  ...
+# Subtest: a conflicting final text refuses completion instead of silently dropping the mismatch
+ok 194 - a conflicting final text refuses completion instead of silently dropping the mismatch
+  ---
+  duration_ms: 32.255413
+  type: 'test'
+  ...
+# Subtest: runtime preparation mismatch records a failed run without invoking SDK
+ok 195 - runtime preparation mismatch records a failed run without invoking SDK
+  ---
+  duration_ms: 10.094684
+  type: 'test'
+  ...
+# Subtest: actual authenticated journal/activity pause retains exact checkpoint then resumes in a fresh session
+ok 196 - actual authenticated journal/activity pause retains exact checkpoint then resumes in a fresh session
+  ---
+  duration_ms: 380.363356
+  type: 'test'
+  ...
+# Subtest: actual authenticated journal/activity approval.wait retains exact checkpoint then resumes in a fresh session
+ok 197 - actual authenticated journal/activity approval.wait retains exact checkpoint then resumes in a fresh session
+  ---
+  duration_ms: 214.911919
+  type: 'test'
+  ...
+# Subtest: actual activity streams literal composed UUID inputs, claims once, observes exact echo and closes terminal input
+ok 198 - actual activity streams literal composed UUID inputs, claims once, observes exact echo and closes terminal input
+  ---
+  duration_ms: 36.517465
+  type: 'test'
+  ...
+# Subtest: terminal result never acknowledges an unobserved steering UUID and never repeats UNKNOWN delivery
+ok 199 - terminal result never acknowledges an unobserved steering UUID and never repeats UNKNOWN delivery
+  ---
+  duration_ms: 1.764222
+  type: 'test'
+  ...
+# Subtest: durable claimed-false barrier prevents SDK control input
+ok 200 - durable claimed-false barrier prevents SDK control input
+  ---
+  duration_ms: 1.486506
+  type: 'test'
+  ...
+# Subtest: pause: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event
+ok 201 - pause: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event
+  ---
+  duration_ms: 9.505232
+  type: 'test'
+  ...
+# Subtest: waitForApproval: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event
+ok 202 - waitForApproval: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event
+  ---
+  duration_ms: 1.533566
+  type: 'test'
+  ...
+# Subtest: resume: actual activity passes pinned native restore before one supported SDK query
+ok 203 - resume: actual activity passes pinned native restore before one supported SDK query
+  ---
+  duration_ms: 3.624877
+  type: 'test'
+  ...
+# Subtest: fork: actual activity passes pinned native restore before one supported SDK query
+ok 204 - fork: actual activity passes pinned native restore before one supported SDK query
+  ---
+  duration_ms: 2.352262
+  type: 'test'
+  ...
+# Subtest: native restore checkpointSha256 substitution refuses before SDK
+ok 205 - native restore checkpointSha256 substitution refuses before SDK
+  ---
+  duration_ms: 19.866594
+  type: 'test'
+  ...
+# Subtest: native restore workspaceSha256 substitution refuses before SDK
+ok 206 - native restore workspaceSha256 substitution refuses before SDK
+  ---
+  duration_ms: 1.000728
+  type: 'test'
+  ...
+# Subtest: native restore opaqueSessionSha256 substitution refuses before SDK
+ok 207 - native restore opaqueSessionSha256 substitution refuses before SDK
+  ---
+  duration_ms: 0.976833
+  type: 'test'
+  ...
+# Subtest: native restore contextSha256 substitution refuses before SDK
+ok 208 - native restore contextSha256 substitution refuses before SDK
+  ---
+  duration_ms: 0.97514
+  type: 'test'
+  ...
+# Subtest: native restore sourceRequestSha256 substitution refuses before SDK
+ok 209 - native restore sourceRequestSha256 substitution refuses before SDK
+  ---
+  duration_ms: 0.869041
+  type: 'test'
+  ...
+# Subtest: native restore binding substitution refuses before SDK
+ok 210 - native restore binding substitution refuses before SDK
+  ---
+  duration_ms: 0.759257
+  type: 'test'
+  ...
+# Subtest: native restore scopes substitution refuses before SDK
+ok 211 - native restore scopes substitution refuses before SDK
+  ---
+  duration_ms: 0.902492
+  type: 'test'
+  ...
+# Subtest: native restore checkedAtMs substitution refuses before SDK
+ok 212 - native restore checkedAtMs substitution refuses before SDK
+  ---
+  duration_ms: 0.746428
+  type: 'test'
+  ...
+# Subtest: native restore expiresAtMs substitution refuses before SDK
+ok 213 - native restore expiresAtMs substitution refuses before SDK
+  ---
+  duration_ms: 0.687379
+  type: 'test'
+  ...
+# Subtest: native capture checkpointSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+ok 214 - native capture checkpointSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 2.279532
+  type: 'test'
+  ...
+# Subtest: native capture workspaceReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+ok 215 - native capture workspaceReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 2.709807
+  type: 'test'
+  ...
+# Subtest: native capture opaqueSessionReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+ok 216 - native capture opaqueSessionReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 1.160868
+  type: 'test'
+  ...
+# Subtest: native capture sourceRequestSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+ok 217 - native capture sourceRequestSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 1.729109
+  type: 'test'
+  ...
+# Subtest: native capture contextSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+ok 218 - native capture contextSha256 substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 1.561769
+  type: 'test'
+  ...
+# Subtest: native capture sessionId substitution refuses checkpoint ACK and retains UNKNOWN
+ok 219 - native capture sessionId substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 2.670178
+  type: 'test'
+  ...
+# Subtest: native capture checkedAtMs substitution refuses checkpoint ACK and retains UNKNOWN
+ok 220 - native capture checkedAtMs substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 4.070715
+  type: 'test'
+  ...
+# Subtest: native capture expiresAtMs substitution refuses checkpoint ACK and retains UNKNOWN
+ok 221 - native capture expiresAtMs substitution refuses checkpoint ACK and retains UNKNOWN
+  ---
+  duration_ms: 1.089982
+  type: 'test'
+  ...
+# Subtest: invalid lifecycle ports fail before invoking SDK
+ok 222 - invalid lifecycle ports fail before invoking SDK
+  ---
+  duration_ms: 0.345297
+  type: 'test'
+  ...
+# Subtest: SDK uuid echo cannot acknowledge this dispatched control
+ok 223 - SDK uuid echo cannot acknowledge this dispatched control
+  ---
+  duration_ms: 1.197944
+  type: 'test'
+  ...
+# Subtest: SDK replay echo cannot acknowledge this dispatched control
+ok 224 - SDK replay echo cannot acknowledge this dispatched control
+  ---
+  duration_ms: 0.977774
+  type: 'test'
+  ...
+# Subtest: SDK subagent echo cannot acknowledge this dispatched control
+ok 225 - SDK subagent echo cannot acknowledge this dispatched control
+  ---
+  duration_ms: 4.287839
+  type: 'test'
+  ...
+# Subtest: SDK text echo substitution refuses APPLIED
+ok 226 - SDK text echo substitution refuses APPLIED
+  ---
+  duration_ms: 1.163412
+  type: 'test'
+  ...
+# Subtest: SDK session echo substitution refuses APPLIED
+ok 227 - SDK session echo substitution refuses APPLIED
+  ---
+  duration_ms: 6.633572
+  type: 'test'
+  ...
+# Subtest: journal hash substitution refuses before claim/delivery
+ok 228 - journal hash substitution refuses before claim/delivery
+  ---
+  duration_ms: 0.852416
+  type: 'test'
+  ...
+# Subtest: journal binding substitution refuses before claim/delivery
+ok 229 - journal binding substitution refuses before claim/delivery
+  ---
+  duration_ms: 0.694079
+  type: 'test'
+  ...
+# Subtest: journal context substitution refuses before claim/delivery
+ok 230 - journal context substitution refuses before claim/delivery
+  ---
+  duration_ms: 0.693869
+  type: 'test'
+  ...
+# Subtest: journal sequence substitution refuses before claim/delivery
+ok 231 - journal sequence substitution refuses before claim/delivery
+  ---
+  duration_ms: 1.869419
+  type: 'test'
+  ...
+# Subtest: parked current-authority control read is bounded and closes the single owned query on cancellation
+ok 232 - parked current-authority control read is bounded and closes the single owned query on cancellation
+  ---
+  duration_ms: 24.428636
+  type: 'test'
+  ...
+# Subtest: checkpoint persistence refusal never claims a paused run
+ok 233 - checkpoint persistence refusal never claims a paused run
+  ---
+  duration_ms: 8.916029
+  type: 'test'
+  ...
+# Subtest: SDK failure before init closes promptly without waiting for an unused control reader
+ok 234 - SDK failure before init closes promptly without waiting for an unused control reader
+  ---
+  duration_ms: 22.65368
+  type: 'test'
+  ...
+# Subtest: all 14 original identities have an explicit immutable asset; 13 absent recipes are implemented
+ok 235 - all 14 original identities have an explicit immutable asset; 13 absent recipes are implemented
+  ---
+  duration_ms: 164.825212
+  type: 'test'
+  ...
+# Subtest: research_company: workflow-specific evidence and original explicit-selection prose
+ok 236 - research_company: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.456694
+  type: 'test'
+  ...
+# Subtest: relationship_brief: workflow-specific evidence and original explicit-selection prose
+ok 237 - relationship_brief: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.092669
+  type: 'test'
+  ...
+# Subtest: client_changes: workflow-specific evidence and original explicit-selection prose
+ok 238 - client_changes: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.094321
+  type: 'test'
+  ...
+# Subtest: portfolio_changes: workflow-specific evidence and original explicit-selection prose
+ok 239 - portfolio_changes: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.071657
+  type: 'test'
+  ...
+# Subtest: portfolio_overlap: workflow-specific evidence and original explicit-selection prose
+ok 240 - portfolio_overlap: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.056375
+  type: 'test'
+  ...
+# Subtest: mail_history: workflow-specific evidence and original explicit-selection prose
+ok 241 - mail_history: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.087601
+  type: 'test'
+  ...
+# Subtest: meeting_prep: workflow-specific evidence and original explicit-selection prose
+ok 242 - meeting_prep: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.049545
+  type: 'test'
+  ...
+# Subtest: commitments_audit: workflow-specific evidence and original explicit-selection prose
+ok 243 - commitments_audit: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.105138
+  type: 'test'
+  ...
+# Subtest: funding_opportunity_match: workflow-specific evidence and original explicit-selection prose
+ok 244 - funding_opportunity_match: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.10695
+  type: 'test'
+  ...
+# Subtest: pe_deep_dive: workflow-specific evidence and original explicit-selection prose
+ok 245 - pe_deep_dive: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.056334
+  type: 'test'
+  ...
+# Subtest: hearing_watch: workflow-specific evidence and original explicit-selection prose
+ok 246 - hearing_watch: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.087041
+  type: 'test'
+  ...
+# Subtest: representation_lookup: workflow-specific evidence and original explicit-selection prose
+ok 247 - representation_lookup: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.044787
+  type: 'test'
+  ...
+# Subtest: regulatory_docket_brief: workflow-specific evidence and original explicit-selection prose
+ok 248 - regulatory_docket_brief: workflow-specific evidence and original explicit-selection prose
+  ---
+  duration_ms: 0.03301
+  type: 'test'
+  ...
+# Subtest: existing bounded Bill Watch bytes, manifest and accepted pins stay exact
+ok 249 - existing bounded Bill Watch bytes, manifest and accepted pins stay exact
+  ---
+  duration_ms: 20.094726
+  type: 'test'
+  ...
+# Subtest: asset selection has no implicit latest, fuzzy identity, mutable pin or shared returned state
+ok 250 - asset selection has no implicit latest, fuzzy identity, mutable pin or shared returned state
+  ---
+  duration_ms: 5.717861
+  type: 'test'
+  ...
+# Subtest: a fresh loader refuses jointly changed prose and self-declared hash against immutable index
+ok 251 - a fresh loader refuses jointly changed prose and self-declared hash against immutable index
+  ---
+  duration_ms: 1890.299971
+  type: 'test'
+  ...
+# Subtest: actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes
+ok 252 - actual native scalar-safe body pages feed existing Commitments compiler without invented envelopes
+  ---
+  duration_ms: 18.452587
+  type: 'test'
+  ...
+# Subtest: missing first source body remains incomplete and has no eligible passage
+ok 253 - missing first source body remains incomplete and has no eligible passage
+  ---
+  duration_ms: 1.670291
+  type: 'test'
+  ...
+# Subtest: refuses result digest substitution
+ok 254 - refuses result digest substitution
+  ---
+  duration_ms: 1.27583
+  type: 'test'
+  ...
+# Subtest: refuses current binding substitution
+ok 255 - refuses current binding substitution
+  ---
+  duration_ms: 1.872003
+  type: 'test'
+  ...
+# Subtest: refuses scope substitution
+ok 256 - refuses scope substitution
+  ---
+  duration_ms: 2.236438
+  type: 'test'
+  ...
+# Subtest: refuses immutable body hash substitution
+ok 257 - refuses immutable body hash substitution
+  ---
+  duration_ms: 2.15726
+  type: 'test'
+  ...
+# Subtest: refuses future source clock substitution
+ok 258 - refuses future source clock substitution
+  ---
+  duration_ms: 1.512815
+  type: 'test'
+  ...
+# Subtest: refuses unknown receipt field substitution
+ok 259 - refuses unknown receipt field substitution
+  ---
+  duration_ms: 0.862681
+  type: 'test'
+  ...
+# Subtest: native meeting locator gets a stable disclosed Meri UUID without upgrading semantics
+ok 260 - native meeting locator gets a stable disclosed Meri UUID without upgrading semantics
+  ---
+  duration_ms: 10.222855
+  type: 'test'
+  ...
+# Subtest: approved native memory keeps salted source hash separate from material plaintext SHA
+ok 261 - approved native memory keeps salted source hash separate from material plaintext SHA
+  ---
+  duration_ms: 21.930585
+  type: 'test'
+  ...
+1..261
+# tests 261
+# suites 0
+# pass 261
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15522.201108

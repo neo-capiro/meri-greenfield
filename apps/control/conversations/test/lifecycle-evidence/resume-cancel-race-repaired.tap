@@ -1,0 +1,12 @@
+✔ parked native admission then authenticated cancel prevents pause resume target/start/continued (107.654132ms)
+ℹ {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+✔ parked native admission then authenticated cancel prevents approval.wait resume target/start/continued (88.760258ms)
+ℹ {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2172.808541

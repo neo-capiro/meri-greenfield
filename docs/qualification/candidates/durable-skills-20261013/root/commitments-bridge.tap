@@ -1,0 +1,33 @@
+✔ all8 original operations collect actual canonical pages across6 sources and exact late promise (69.997825ms)
+✔ all required source failures stay visible without inventing absence or a bound promise (3.264898ms)
+✔ call/body caps disclose unbound observations and retain original budgets (14.181723ms)
+✔ foreign binding/subject/window refuses rather than returning a partial authority failure (12.195515ms)
+✔ immutable skill, source body hash, quote and output request provenance cannot be substituted (39.303653ms)
+✔ no mapped Monday board means not-mapped coverage and no unrelated board source call (19.976883ms)
+✔ fresh authorization decision IDs retain exact stable subject and every actual source decision (21.290535ms)
+✔ cancelled collection never reaches later source work (0.652585ms)
+✖ closed original read wrapper preserves a bounded selection and incomplete wider native evidence (13.907146ms)
+✔ original wrapper refuses altered lineage, input hash, extra fields and actual successor source/operation (25.778793ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1935.587847
+
+✖ failing tests:
+
+test at apps/control/document-application/commitments-audit/test/compiler.test.mjs:52:1
+✖ closed original read wrapper preserves a bounded selection and incomplete wider native evidence (13.907146ms)
+  Error: COMMITMENTS_SOURCE_AUTHORITY
+      at fail (file:///workspace/meri-durable-skills-batch/apps/control/document-application/commitments-audit/source.mjs:9:46)
+      at read (file:///workspace/meri-durable-skills-batch/apps/control/document-application/commitments-audit/source.mjs:38:46)
+      at async Object.collect (file:///workspace/meri-durable-skills-batch/apps/control/document-application/commitments-audit/source.mjs:65:74)
+      at async Object.prepare (file:///workspace/meri-durable-skills-batch/apps/control/document-application/commitments-audit/compose.mjs:30:136)
+      at async TestContext.<anonymous> (file:///workspace/meri-durable-skills-batch/apps/control/document-application/commitments-audit/test/compiler.test.mjs:54:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'COMMITMENTS_SOURCE_AUTHORITY'
+  }

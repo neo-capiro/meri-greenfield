@@ -1,0 +1,21 @@
+✔ existing conversation Fetch routes reuse opaque session and stop before fetch after revocation (43.621455ms)
+✔ existing artifact owners create/revise/inspect/hash-check both downloads and exclude unowned versions (253.046831ms)
+✔ refuses non-staging target http://staging.example.invalid/ (1.484995ms)
+✔ refuses non-staging target https://127.0.0.1/ (0.45598ms)
+✔ refuses non-staging target https://localhost/ (2.260402ms)
+✔ refuses non-staging target https://user:password@staging.example.invalid/ (0.225246ms)
+✔ refuses non-staging target https://staging.example.invalid/?grant=1 (0.148471ms)
+✔ requires disjoint automation/manual clients and conversations (0.926212ms)
+✔ imports/configures without network and refuses unknown resource mutation routes (0.924089ms)
+✔ manual client current context refuses before any authenticated fetch (1.856189ms)
+✔ different immutable candidate refuses before any request (0.513036ms)
+✔ oversize response cleanup returns despite an unresponsive transport cancel (19.685413ms)
+✔ closing client cancels parked requests and preserves borrowed transport (0.935736ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2107.426995

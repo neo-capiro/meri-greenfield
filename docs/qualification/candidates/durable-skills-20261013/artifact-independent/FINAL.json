@@ -1,0 +1,169 @@
+{
+  "verdict": "ACCEPT_ARTIFACT_SOURCE",
+  "reviewedExecutableSource": "14f2e2eaff45e520727ba2b0eb7398daf0cf3a38",
+  "reviewedTree": "b0d330bbe0e87d3e54e7c89a4c47b2b59e0c0b77",
+  "acceptedFinalComposition": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "finalCompositionTree": "a8a558d8b84b04e4f3bd2091223324f28393a907",
+  "scope": "Bounded original-skill read/compile and editable artifact components at 14f2, transferred to final 123767d after independent review of the sole Relationship configuration binder delta. Durable SDK/control code is reviewed separately.",
+  "phase3Start": "2026-10-13T16:43:00Z",
+  "sealed": "2026-10-13T17:06:00Z",
+  "checks": {
+    "independentMaterial": 12,
+    "independentWorkflow": 8,
+    "focusedFinalSuiteIncludingMaterial": 83,
+    "workflowFinal": 8,
+    "finalRelationshipLifecycleAndFailureRetention": 2,
+    "earlierCommitmentsLifecycleTransferByUnchangedEmitterEvidenceBytes": 1,
+    "totalRetainedAcceptedChecks": 98,
+    "note": "Do not double-count 12 material controls already included in 83; 20 independent controls = 12 material + 8 workflow.",
+    "independentBinding": 2,
+    "bindingFinalIncludingOwner": 4,
+    "totalIndependentControls": 22
+  },
+  "freshArtifacts": [
+    {
+      "domain": "commitments_audit",
+      "label": "original",
+      "docxSha256": "d1e7876ff957a3f624a7dabdbf06989a1c625ee3b7e5ba800511e3f71215925a",
+      "docxBytes": 40277,
+      "editableParagraphs": 51,
+      "pages": 8,
+      "pdfSha256": "a796a46242e13ffcd3ffd97b79de2cf40ca0d73579c7d5b94a993f5510584757",
+      "pin": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      }
+    },
+    {
+      "domain": "commitments_audit",
+      "label": "revision",
+      "docxSha256": "b27031e4198aa25c9eb01973df2adf56749552e6b894452b01d5e350d9009ade",
+      "docxBytes": 40452,
+      "editableParagraphs": 51,
+      "pages": 8,
+      "pdfSha256": "7a1c07d353d731b5a0febb1215984a7ae07c5e34b3b37c9b13dde69d42cd6099",
+      "pin": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      }
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "original",
+      "docxSha256": "630f77fddb3ef6489c2628475431339d8e719c1d445a19881abb209e0a94d824",
+      "docxBytes": 40812,
+      "editableParagraphs": 98,
+      "pages": 9,
+      "pdfSha256": "34a4659e864927238a6b66f60335c3cf08a9c43193d19bbed27c97b9714f7500",
+      "pin": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      }
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "revision",
+      "docxSha256": "b4f890cdbb0bcdd325cccfb632a19f122e6c38cd81d6e6c95c04929b740f4546",
+      "docxBytes": 40999,
+      "editableParagraphs": 98,
+      "pages": 9,
+      "pdfSha256": "3620f1f0bfb007944db236d06525861e802b63f6c99d8a7a92df50e403f2ef2c",
+      "pin": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      }
+    }
+  ],
+  "freshDocxCopies": 4,
+  "freshPagesOpened": 34,
+  "totalAllRetainedFreshAndHistoricalPagesOpened": 89,
+  "sourceBinding": {
+    "protectedBlobs": 120,
+    "publicVersion": "0.1.3",
+    "componentAndProtectedBytesExactToComposition": false,
+    "commitmentsTransfer": "6fdd5041e90dc9c8913db90a4ae7f15e0630bed5",
+    "onlyCommitmentsChangesAfterRender": [
+      "apps/control/document-application/commitments-audit/source.mjs",
+      "apps/control/document-application/commitments-audit/test/compiler.test.mjs"
+    ],
+    "relationshipAuthorSource": "9b068f81a7945a883f05fc85a9314578f733cab1",
+    "protectedBytesExactToComposition": true,
+    "onlyAdditionalReviewedComponentDelta": [
+      "apps/control/document-application/relationship-brief/binding.mjs",
+      "apps/control/document-application/relationship-brief/test/binding.test.mjs"
+    ]
+  },
+  "repairedHolds": [
+    {
+      "original": "Approved-memory typed material was omitted and lacked a specific support limitation.",
+      "repair": "b871845b verifies canonical native composite hash/full body and derived provenance; 12/12 independent controls pass."
+    },
+    {
+      "original": "Closed synthetic original Action Items bridge was refused.",
+      "repair": "14f2e2eaff45e520727ba2b0eb7398daf0cf3a38",
+      "assertions": "Bounded window, incomplete coverage and completed=false assertions are unchanged. Actual actions.query and derived-source substitutions remain refused.",
+      "sourceProducerLimit": "Synthetic original DTO grammar does not prove an existing/deployed legacy producer. The missing legacy adapter remains a gate."
+    },
+    {
+      "original": "Relationship outer configuration could read accessors/Proxy traps before inert admission.",
+      "repair": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+      "controls": "2 independent + 2 owner controls pass; zero getter/Proxy effects, borrowed WeakMap receiver/options preserved, changed scope refused before authority effect.",
+      "outputDelta": "No compiler/source/emitter/rendered artifact changes; no new DOCX generated for this repair."
+    }
+  ],
+  "verifierSetupCorrections": [
+    "Mandatory operation lifetime error factory.",
+    "Canonical UUID memory fixture context.",
+    "Native note sourceId differs from debrief provenance.sourceRecordId.",
+    "PDF inline color-emoji geometric reading order uses upstream sort=True; whole-text equality is preserved.",
+    "read_thread fixture clock nowMs=rf.NOW, with no production normalization change; initial 7/8 failure retained.",
+    "Empty SQL pin list returns an empty map instead of asking git ls-tree for the entire repository; initial audit false failure retained."
+  ],
+  "remainingGates": [
+    "Actual original legacy query_action_items producer and qualified task/action/Monday immutable tracking material.",
+    "Original selected-skill/native worker admission; fixture generator grant is a separate historical synthetic Relationship Brief allocation.",
+    "Authentic sources/current identity/grants and source semantics; institutional memory is derived and upstream excerpts remain unverified.",
+    "Native DB, Temporal, SDK/model/file/task-retirement and renderer sandbox qualification.",
+    "DNS-enabled HTTPS staging and manual/automation walkthroughs; none performed here.",
+    "Semantic identity/relationship/delivery/acceptance and held-out original-skill qualification; tests do not promote whole criteria.",
+    "Historical failed Relationship revision bytes were lost before first render. Its 9-page original is inspected; final release is separate. Deliberate missing-renderer diagnostics verify retention/cleanup without claiming visually qualified fault copies."
+  ],
+  "nativeQualified": false,
+  "wholeRequirementsQualified": false,
+  "ownedProductEdits": false,
+  "noPrivateOrCloudModelOperations": true,
+  "cleanup": {
+    "ownedVerifierProcessesAbsent": true,
+    "activeOwnedPids": [],
+    "ownedDependencyLinkAbsent": true,
+    "ownedArtifactExecutorsAndStores": [
+      {
+        "domain": "commitments",
+        "cleanup": {
+          "executorDirectoriesAbsent": true,
+          "storeRemoved": true
+        }
+      },
+      {
+        "domain": "relationship",
+        "cleanup": {
+          "executorDirectoriesAbsent": true,
+          "storeRemoved": true
+        }
+      }
+    ],
+    "nativeQualified": false
+  }
+}

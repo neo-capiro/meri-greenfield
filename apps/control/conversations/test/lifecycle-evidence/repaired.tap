@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack
+ok 1 - actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack
+  ---
+  duration_ms: 60.008888
+  type: 'test'
+  ...
+# Subtest: pause fences worker messages before checkpoint; exact readback publishes paused and immutable history
+ok 2 - pause fences worker messages before checkpoint; exact readback publishes paused and immutable history
+  ---
+  duration_ms: 39.937877
+  type: 'test'
+  ...
+# Subtest: approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume
+ok 3 - approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume
+  ---
+  duration_ms: 44.493307
+  type: 'test'
+  ...
+# Subtest: resume uses immutable checkpoint and fresh target, with retirement only resume
+ok 4 - resume uses immutable checkpoint and fresh target, with retirement only resume
+  ---
+  duration_ms: 60.530264
+  type: 'test'
+  ...
+# Subtest: fork uses immutable checkpoint and fresh target, with retirement only resume
+ok 5 - fork uses immutable checkpoint and fresh target, with retirement only resume
+  ---
+  duration_ms: 44.460668
+  type: 'test'
+  ...
+# Subtest: native retirement UNKNOWN is a durable barrier and identical replay performs no second effect
+ok 6 - native retirement UNKNOWN is a durable barrier and identical replay performs no second effect
+  ---
+  duration_ms: 42.426402
+  type: 'test'
+  ...
+# Subtest: current revoke blocks control/claim/ack/checkpoint with no second effect
+ok 7 - current revoke blocks control/claim/ack/checkpoint with no second effect
+  ---
+  duration_ms: 10.812001
+  type: 'test'
+  ...
+# Subtest: legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED
+ok 8 - legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED
+  ---
+  duration_ms: 22.016346
+  type: 'test'
+  ...
+# Subtest: control redundant conversation_id cannot be relabelled even with untouched projection hash
+ok 9 - control redundant conversation_id cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 12.019539
+  type: 'test'
+  ...
+# Subtest: control redundant run_id cannot be relabelled even with untouched projection hash
+ok 10 - control redundant run_id cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 12.183612
+  type: 'test'
+  ...
+# Subtest: control redundant control_sequence cannot be relabelled even with untouched projection hash
+ok 11 - control redundant control_sequence cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 11.455098
+  type: 'test'
+  ...
+# Subtest: private Fetch route strictness and uncertainty contain no raw credentials
+ok 12 - private Fetch route strictness and uncertainty contain no raw credentials
+  ---
+  duration_ms: 19.480362
+  type: 'test'
+  ...
+# Subtest: upstream Temporal signal is wake-only and never directly sends SDK text
+ok 13 - upstream Temporal signal is wake-only and never directly sends SDK text
+  ---
+  duration_ms: 0.346716
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2277.034192

@@ -1,0 +1,48 @@
+✖ parked native admission then authenticated cancel prevents pause resume target/start/continued (120.794704ms)
+ℹ {"sourceState":"cancelled","targetRuns":1,"newStarts":1,"continued":1,"outcome":"APPLIED"}
+✖ parked native admission then authenticated cancel prevents approval.wait resume target/start/continued (99.498275ms)
+ℹ {"sourceState":"cancelled","targetRuns":1,"newStarts":1,"continued":1,"outcome":"APPLIED"}
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2262.422936
+
+✖ failing tests:
+
+test at apps/control/conversations/test/lifecycle.test.mjs:46:51
+✖ parked native admission then authenticated cancel prevents pause resume target/start/continued (120.794704ms)
+  AssertionError [ERR_ASSERTION]: cancelled source must not insert a target run
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:54:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/conversations/test/lifecycle.test.mjs:46:51
+✖ parked native admission then authenticated cancel prevents approval.wait resume target/start/continued (99.498275ms)
+  AssertionError [ERR_ASSERTION]: cancelled source must not insert a target run
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:54:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

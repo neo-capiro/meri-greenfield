@@ -1,0 +1,128 @@
+TAP version 13
+# Subtest: actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack
+ok 1 - actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack
+  ---
+  duration_ms: 73.251127
+  type: 'test'
+  ...
+# Subtest: pause fences worker messages before checkpoint; exact readback publishes paused and immutable history
+ok 2 - pause fences worker messages before checkpoint; exact readback publishes paused and immutable history
+  ---
+  duration_ms: 33.475274
+  type: 'test'
+  ...
+# Subtest: approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume
+ok 3 - approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume
+  ---
+  duration_ms: 60.34657
+  type: 'test'
+  ...
+# Subtest: resume uses immutable checkpoint and fresh target, with retirement only resume
+ok 4 - resume uses immutable checkpoint and fresh target, with retirement only resume
+  ---
+  duration_ms: 49.316525
+  type: 'test'
+  ...
+# Subtest: fork uses immutable checkpoint and fresh target, with retirement only resume
+ok 5 - fork uses immutable checkpoint and fresh target, with retirement only resume
+  ---
+  duration_ms: 59.487969
+  type: 'test'
+  ...
+# Subtest: native retirement UNKNOWN is a durable barrier and identical replay performs no second effect
+ok 6 - native retirement UNKNOWN is a durable barrier and identical replay performs no second effect
+  ---
+  duration_ms: 37.092835
+  type: 'test'
+  ...
+# Subtest: current revoke blocks control/claim/ack/checkpoint with no second effect
+ok 7 - current revoke blocks control/claim/ack/checkpoint with no second effect
+  ---
+  duration_ms: 10.828556
+  type: 'test'
+  ...
+# Subtest: legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED
+not ok 8 - legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED
+  ---
+  duration_ms: 24.234005
+  type: 'test'
+  location: '/workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:18:765)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: control redundant conversation_id cannot be relabelled even with untouched projection hash
+not ok 9 - control redundant conversation_id cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 20.329308
+  type: 'test'
+  location: '/workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:20:67'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:20:389)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: control redundant run_id cannot be relabelled even with untouched projection hash
+not ok 10 - control redundant run_id cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 13.357517
+  type: 'test'
+  location: '/workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:20:67'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:20:389)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: control redundant control_sequence cannot be relabelled even with untouched projection hash
+not ok 11 - control redundant control_sequence cannot be relabelled even with untouched projection hash
+  ---
+  duration_ms: 12.584814
+  type: 'test'
+  location: '/workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:20:67'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-durable-controls/apps/control/conversations/test/lifecycle.test.mjs:20:389)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: private Fetch route strictness and uncertainty contain no raw credentials
+ok 12 - private Fetch route strictness and uncertainty contain no raw credentials
+  ---
+  duration_ms: 10.579007
+  type: 'test'
+  ...
+# Subtest: upstream Temporal signal is wake-only and never directly sends SDK text
+ok 13 - upstream Temporal signal is wake-only and never directly sends SDK text
+  ---
+  duration_ms: 0.353222
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 9
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2258.984292

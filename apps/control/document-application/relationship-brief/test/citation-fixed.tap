@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: original eleven operations collect material and show nine required source families without semantic verification
+ok 1 - original eleven operations collect material and show nine required source families without semantic verification
+  ---
+  duration_ms: 86.588559
+  type: 'test'
+  ...
+# Subtest: URL and mismatched text cannot mark a free-form relationship claim verified
+ok 2 - URL and mismatched text cannot mark a free-form relationship claim verified
+  ---
+  duration_ms: 26.819496
+  type: 'test'
+  ...
+# Subtest: missing source and body/call limits stay visible
+ok 3 - missing source and body/call limits stay visible
+  ---
+  duration_ms: 18.676369
+  type: 'test'
+  ...
+# Subtest: refuses actor substitution
+ok 4 - refuses actor substitution
+  ---
+  duration_ms: 8.487497
+  type: 'test'
+  ...
+# Subtest: refuses fence substitution
+ok 5 - refuses fence substitution
+  ---
+  duration_ms: 10.706018
+  type: 'test'
+  ...
+# Subtest: refuses scope substitution
+ok 6 - refuses scope substitution
+  ---
+  duration_ms: 7.974587
+  type: 'test'
+  ...
+# Subtest: refuses operation substitution
+ok 7 - refuses operation substitution
+  ---
+  duration_ms: 7.85463
+  type: 'test'
+  ...
+# Subtest: exact immutable original pin and private preparation cannot be replaced
+not ok 8 - exact immutable original pin and private preparation cannot be replaced
+  ---
+  duration_ms: 0.303821
+  type: 'test'
+  location: '/workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:11:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot assign to read only property 'skillVersion' of object '#<Object>'"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-relationship-workflow/apps/control/document-application/relationship-brief/test/compiler.test.mjs:11:130)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: parked cancellation is typed and propagates source abort
+ok 9 - parked cancellation is typed and propagates source abort
+  ---
+  duration_ms: 1.121423
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1913.342477

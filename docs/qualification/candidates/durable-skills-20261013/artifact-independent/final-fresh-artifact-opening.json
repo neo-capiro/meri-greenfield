@@ -1,0 +1,721 @@
+{
+  "status": "PASS",
+  "scope": "ACCEPT_ARTIFACT_SOURCE at14f2e2e with component bytes bound to finalcompositione0cc7871; native/runtime/semantic qualification remainsHOLD",
+  "artifacts": [
+    {
+      "domain": "commitments_audit",
+      "label": "original",
+      "directory": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts",
+      "docxSha256": "d1e7876ff957a3f624a7dabdbf06989a1c625ee3b7e5ba800511e3f71215925a",
+      "docxBytes": 40277,
+      "editableParagraphs": 51,
+      "pdfSha256": "a796a46242e13ffcd3ffd97b79de2cf40ca0d73579c7d5b94a993f5510584757",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-1.png",
+          "sha256": "1f56ac336bc16393be678c283755dc33cbc94613dc57faace2106e4d20bff131",
+          "bytes": 115207,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-3.png",
+          "sha256": "10a1bec8c68bbeec5923b7c2629ea43183adff38e69ba2772b43f6c362d8d768",
+          "bytes": 168811,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-4.png",
+          "sha256": "f87fabb0ebeb6ac36cb029745ae54da68602015a479c0176f94148b3ee15e549",
+          "bytes": 151666,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-5.png",
+          "sha256": "45bb36a5fcf7c80e5efcba89cd4a8fa69404686b9cd6fd5aa7f62c9345451f4f",
+          "bytes": 139559,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-6.png",
+          "sha256": "ffe6764188548bfa47c4e7a913ad646277acd74aa5fc195733c91ac0634a6818",
+          "bytes": 162663,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-7.png",
+          "sha256": "6513a25bcdb2a942f3777f3d2f522b8ec49bab4a887b4ec038faec2fb0efcaf8",
+          "bytes": 167571,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/original-preview-8.png",
+          "sha256": "d30a6fd4e665ba5c53703a6564951e4a981eb06f2bbdf882b67c88712661b351",
+          "bytes": 98853,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000088",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    },
+    {
+      "domain": "commitments_audit",
+      "label": "revision",
+      "directory": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts",
+      "docxSha256": "b27031e4198aa25c9eb01973df2adf56749552e6b894452b01d5e350d9009ade",
+      "docxBytes": 40452,
+      "editableParagraphs": 51,
+      "pdfSha256": "7a1c07d353d731b5a0febb1215984a7ae07c5e34b3b37c9b13dde69d42cd6099",
+      "pages": 8,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-1.png",
+          "sha256": "1b6401d8d682aebaad2e99499a16e1139b4291e2da71a495a7ecd0aa2de896f2",
+          "bytes": 116116,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-2.png",
+          "sha256": "8ed004ee47b57b52fb68d277987ff854b129a5efbec46e19c6809697bea505ea",
+          "bytes": 129570,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-3.png",
+          "sha256": "10a1bec8c68bbeec5923b7c2629ea43183adff38e69ba2772b43f6c362d8d768",
+          "bytes": 168811,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-4.png",
+          "sha256": "f87fabb0ebeb6ac36cb029745ae54da68602015a479c0176f94148b3ee15e549",
+          "bytes": 151666,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-5.png",
+          "sha256": "45bb36a5fcf7c80e5efcba89cd4a8fa69404686b9cd6fd5aa7f62c9345451f4f",
+          "bytes": 139559,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-6.png",
+          "sha256": "d04bab29fb5c1fffdfcd14ef1fbc8d835c17c79245c9ec91575990915f7007c5",
+          "bytes": 162318,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-7.png",
+          "sha256": "6513a25bcdb2a942f3777f3d2f522b8ec49bab4a887b4ec038faec2fb0efcaf8",
+          "bytes": 167571,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/commitments-final-artifacts/revision-preview-8.png",
+          "sha256": "1aaeab426055d6142678a06ae9fd2cf2483c278c357db400bbb26a9b9a36f50e",
+          "bytes": 119689,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000088",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.commitments_audit",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+        "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "original",
+      "directory": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts",
+      "docxSha256": "630f77fddb3ef6489c2628475431339d8e719c1d445a19881abb209e0a94d824",
+      "docxBytes": 40812,
+      "editableParagraphs": 98,
+      "pdfSha256": "34a4659e864927238a6b66f60335c3cf08a9c43193d19bbed27c97b9714f7500",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-1.png",
+          "sha256": "ff804e37fd9c975441b2b72c930c2e915826962f62f4a922af222bc6b653a81c",
+          "bytes": 116761,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-3.png",
+          "sha256": "53d341f4994aa0f9593a0d65ab6f7243840f7e278b06ba81213a6a519835af30",
+          "bytes": 141731,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-4.png",
+          "sha256": "be895d7ac7fc9f0fa69e80b35513d680bcac411150d0a2e74de937307394947b",
+          "bytes": 120497,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-5.png",
+          "sha256": "81e5763fc86986b19eaf1da5e2513dad0ea3bd0bbb64c843d5fcfe2b89d32c4c",
+          "bytes": 135141,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-6.png",
+          "sha256": "d040fb975dadf990e49db3880d7e8d1264d5d24ab357269f082420de5c99ac44",
+          "bytes": 126487,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-7.png",
+          "sha256": "00a2b1a5c3345673a966a1414594e3e1ad02d69c17eb016430fa04ddbf9332a1",
+          "bytes": 124882,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-8.png",
+          "sha256": "0ecc67b1a0a052d042e35b605d957a8ea45e68189254175ad5f350d32806a455",
+          "bytes": 138230,
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/original-preview-9.png",
+          "sha256": "553898fb257a2322c9e5f9c773dfe5700f0b646d5c3c4e2396950adb527439e9",
+          "bytes": 51380,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000081",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_knowledge_memory",
+          "recordId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "sourceVersionId": "synthetic-memory-v1",
+          "fullSha256": "38c5a01f2a7af8aa8ca3fd11ddfa2d788e29040502b67aa32fb13909af68396f",
+          "utf16CodeUnits": 977,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    },
+    {
+      "domain": "relationship_brief",
+      "label": "revision",
+      "directory": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts",
+      "docxSha256": "b4f890cdbb0bcdd325cccfb632a19f122e6c38cd81d6e6c95c04929b740f4546",
+      "docxBytes": 40999,
+      "editableParagraphs": 98,
+      "pdfSha256": "3620f1f0bfb007944db236d06525861e802b63f6c99d8a7a92df50e403f2ef2c",
+      "pages": 9,
+      "images": [
+        {
+          "page": 1,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-1.png",
+          "sha256": "44022d570a4da63e7644f6154c2c2b82a1c21c763155044a42c310b66d9c54ed",
+          "bytes": 116699,
+          "visuallyOpened": true
+        },
+        {
+          "page": 2,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "bytes": 149216,
+          "visuallyOpened": true
+        },
+        {
+          "page": 3,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-3.png",
+          "sha256": "18f09462e6443eba2cfa52bb0be2919336c5ad1e1629a04908047fabead29cf2",
+          "bytes": 141887,
+          "visuallyOpened": true
+        },
+        {
+          "page": 4,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-4.png",
+          "sha256": "8994e816d3fb1a3776218453015b100e21b959eeb0be066a1cf3447aef975eca",
+          "bytes": 120553,
+          "visuallyOpened": true
+        },
+        {
+          "page": 5,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-5.png",
+          "sha256": "9b63c42d46325b48b166c1c76ddd957a1178a76eae831c767ba0311544107906",
+          "bytes": 135144,
+          "visuallyOpened": true
+        },
+        {
+          "page": 6,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-6.png",
+          "sha256": "d601cd4af21b31eb501dddfed2094b7148e2fb681abf7bbb855ed418e91b00b7",
+          "bytes": 126413,
+          "visuallyOpened": true
+        },
+        {
+          "page": 7,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-7.png",
+          "sha256": "04f1efcd8665f70bca6c03fc0d27e00138df0f818da6a42fd08a9522238e1e9e",
+          "bytes": 125008,
+          "visuallyOpened": true
+        },
+        {
+          "page": 8,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-8.png",
+          "sha256": "14c250f622f9e2419a8343c21f9ff35359fa7c08d73a26943816dd0369e9d70c",
+          "bytes": 138278,
+          "visuallyOpened": true
+        },
+        {
+          "page": 9,
+          "path": "docs/qualification/candidates/durable-skills-20261013/artifact-independent/relationship-final-artifacts/revision-preview-9.png",
+          "sha256": "e3ffd2b1de67fc592be4059c423f96bbe3733bb46ee1a459a1c94804cf53b65f",
+          "bytes": 73182,
+          "visuallyOpened": true
+        }
+      ],
+      "materialEvidence": [
+        {
+          "sourceId": "meetings",
+          "recordId": "71000000-0000-4000-8000-000000000081",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_knowledge_memory",
+          "recordId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "sourceVersionId": "synthetic-memory-v1",
+          "fullSha256": "38c5a01f2a7af8aa8ca3fd11ddfa2d788e29040502b67aa32fb13909af68396f",
+          "utf16CodeUnits": 977,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "fullSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "utf16CodeUnits": 2135,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "meetings",
+          "recordId": "77777777-7777-4777-8777-777777777777",
+          "sourceVersionId": "2026-10-13T10:59:55.000Z",
+          "fullSha256": "18df03ef429051bfedb7c324e38c6b20a9b3f7f11dbb2fae1720033efc133f03",
+          "utf16CodeUnits": 69,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        },
+        {
+          "sourceId": "client_documents",
+          "recordId": "synthetic-doc:section:1",
+          "sourceVersionId": "extraction:17947a22925e507dca2aa08bd0752d9a2d0075fdab8de1d42a93fd422c58e726:6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54:1",
+          "fullSha256": "6e4af5809d2ebf106787872a085c635c7f529be1aa18cf1b7587be36bc449d54",
+          "utf16CodeUnits": 86,
+          "scopes": [
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "71000000-0000-4000-8000-000000000020",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ]
+        }
+      ],
+      "pin": {
+        "skillId": "quick_skill.relationship_brief",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+        "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "literalTextPreserved": true,
+      "exactParentAndOriginalPreserved": true,
+      "nativeQualified": false
+    }
+  ],
+  "sourceCommit": "14f2e2eaff45e520727ba2b0eb7398daf0cf3a38",
+  "finalCompositionCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "bindingOnlyDeltaReviewed": true
+}

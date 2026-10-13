@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "a337ef93e386f5eb646e85f89f26b425546b1222",
+    "ae2ccd7385f6f8ba367e3a8678087a5dbc5c8744",
+    "--",
+    "*.mjs",
+    "*.md",
+    "*.json",
+    "*.ts"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "ae2ccd7385f6f8ba367e3a8678087a5dbc5c8744",
+  "worktreeHead": "dc2b26ea6c6a880ac20f236291ef96afb164cf5b",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.004,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

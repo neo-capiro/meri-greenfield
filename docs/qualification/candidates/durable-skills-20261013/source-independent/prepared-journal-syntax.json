@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "node",
+    "--check",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/journal-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "e87c40e2db87fa0f2cda77ed2c2d8ab2f2ea2aea",
+  "worktreeHead": "2e467d05bc9d7ee8edec812dec628daf297daaf0",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.019,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

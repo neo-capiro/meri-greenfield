@@ -1,0 +1,149 @@
+{
+  "status": "PASS",
+  "reviewer": "skills_implementation",
+  "allPagesOpened": true,
+  "superseded": false,
+  "nativeQualified": false,
+  "documents": [
+    {
+      "label": "original",
+      "docxSha256": "6deb1f7c926321514b4b056571ad3107747083f1cd359e893a557a130af939d0",
+      "pageCount": 9,
+      "pages": [
+        {
+          "page": 1,
+          "path": "original-preview-1.png",
+          "sha256": "e6cecbe09f4b456148b54c123bd5f74912f0ba77ce00b958b2bb0807e3760334",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 2,
+          "path": "original-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 3,
+          "path": "original-preview-3.png",
+          "sha256": "5b2a51f85a3eeb7531130b1e30f193b563ad5f9f8ea912d44b6a961f541c491e",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 4,
+          "path": "original-preview-4.png",
+          "sha256": "ad5b177e81ca344feb8d83d41ad8edb83bd9115618b735c5bc5c960c2d287019",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 5,
+          "path": "original-preview-5.png",
+          "sha256": "f90f06bd20bf6e1b5cd04337cc3e72fe1ae3249a85370ceac942420d6f61a2d7",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 6,
+          "path": "original-preview-6.png",
+          "sha256": "02714f2a23d34cc3856773102bc8ff03fb986161d37e09e741dde02050534335",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 7,
+          "path": "original-preview-7.png",
+          "sha256": "1f9167545eb49b4ba8f11f475b3bc148be132f017f2045058738db8dd2a97012",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 8,
+          "path": "original-preview-8.png",
+          "sha256": "cf685f4f201acaee63bd5225da492e5e371fe94b9d251b2fe6d974fd7dff0307",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 9,
+          "path": "original-preview-9.png",
+          "sha256": "937a09b3cc06a7ab29acaa894d0aac64697769c2e9028e1749a28d9f3ae32fb1",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        }
+      ]
+    },
+    {
+      "label": "revision",
+      "docxSha256": "f4c251af62bdde9acb248276eb641f6842862df6333e898e6f56e5922d109a19",
+      "pageCount": 9,
+      "pages": [
+        {
+          "page": 1,
+          "path": "revision-preview-1.png",
+          "sha256": "6481cc074c2f4592ef9b0430d71441b6c4f67f8004434f8a9674d6a5cd1df4ea",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 2,
+          "path": "revision-preview-2.png",
+          "sha256": "14b5099db39f149db23117c2c5c62cc7e78274b4d65edcaa1dd8dcc5b72bc2c5",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 3,
+          "path": "revision-preview-3.png",
+          "sha256": "08c30d337aea39da789b9a9d08d7bcfdee7d4b2ba57353c87beb604c2b5d2a6a",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 4,
+          "path": "revision-preview-4.png",
+          "sha256": "e2137d64b2c6bacaf20a17a46a873bdc0e9f2a908136b57021ba160b4c6f5fd2",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 5,
+          "path": "revision-preview-5.png",
+          "sha256": "887cd8a29b84836b79423c34c99d6bc8b4562ef7fdbef0da4e022d5102bcc1a2",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 6,
+          "path": "revision-preview-6.png",
+          "sha256": "1131146ac0883f6bf946b6799b02897be12a427e33f25cc1ac32300e70c3e257",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 7,
+          "path": "revision-preview-7.png",
+          "sha256": "d625325b1f942c58de999d1d1dd284e8f2bd6181bb77bbcd2486d947fbe78c4c",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 8,
+          "path": "revision-preview-8.png",
+          "sha256": "baf6a1adfade995689cc9b28f18dcfaf141eb53cbeb31eeb496a7a2ee710aa83",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        },
+        {
+          "page": 9,
+          "path": "revision-preview-9.png",
+          "sha256": "f70a80e6802c91051174afd058fda9376f4a5982e082f2aaedbf955daafadabf",
+          "opened": true,
+          "finding": "Readable source passages, scoped citations, uncertainty and coverage; no clipping."
+        }
+      ]
+    }
+  ]
+}

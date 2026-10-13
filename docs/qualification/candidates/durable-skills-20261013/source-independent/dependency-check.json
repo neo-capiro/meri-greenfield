@@ -1,0 +1,10 @@
+{
+  "decision": "ACCEPT_SOURCE_BOUNDARY_ONLY",
+  "sourceCommit": "e87c40e2db87fa0f2cda77ed2c2d8ab2f2ea2aea",
+  "reviewerHead": "484b3c84dc3c4f2a16464e5495d868b479c7248d",
+  "reviewedModuleSha256": "035890749b559050ddf6c2514ab78416bfceac9eb577abb503829ee0362b6239",
+  "testsPassed": 8,
+  "publicPreimagesUnchanged": true,
+  "implementationFreezePending": true,
+  "nativeRuntimeAcceptance": false
+}

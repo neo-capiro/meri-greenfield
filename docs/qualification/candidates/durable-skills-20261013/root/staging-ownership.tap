@@ -1,0 +1,17 @@
+✔ refuses non-staging target http://staging.example.invalid/ (1.043462ms)
+✔ refuses non-staging target https://127.0.0.1/ (0.304656ms)
+✔ refuses non-staging target https://localhost/ (1.832193ms)
+✔ refuses non-staging target https://user:password@staging.example.invalid/ (0.145077ms)
+✔ refuses non-staging target https://staging.example.invalid/?grant=1 (0.08685ms)
+✔ requires disjoint automation/manual clients and conversations (0.738155ms)
+✔ imports/configures without network and refuses unknown resource mutation routes (0.617264ms)
+✔ manual client current context refuses before any authenticated fetch (1.496451ms)
+✔ different immutable candidate refuses before any request (0.358898ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 265.010017

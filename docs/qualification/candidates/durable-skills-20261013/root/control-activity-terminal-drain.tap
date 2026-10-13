@@ -1,0 +1,12 @@
+synthetic-capture-ready 3
+✔ actual authenticated journal/activity pause retains exact checkpoint then resumes in a fresh session (158.701152ms)
+synthetic-capture-ready 3
+✔ actual authenticated journal/activity approval.wait retains exact checkpoint then resumes in a fresh session (233.853061ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2263.327982

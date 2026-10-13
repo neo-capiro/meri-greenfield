@@ -4,6 +4,7 @@ import {assertEvidence,assertSubject,assertWindow,resolveOperationContract} from
 import {validateShape as publicShape,canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {data,own} from '../../contracts/commands-0.2/execution-boundary.mjs';
 import {selectSkill} from '../index.mjs';
+import {bindWorkflowReads} from '../evidence/typed-reads.mjs';
 
 export const same=(a,b)=>hash(a)===hash(b);
 export const fail=code=>{throw new Error(code);};
@@ -13,6 +14,9 @@ const sourceIds=[...new Set(selectSkill('quick_skill.commitments_audit','1.0.0')
 const operations=selectSkill('quick_skill.commitments_audit','1.0.0').manifest.allowedOperations.map(ref=>resolveOperationContract(ref).descriptor);
 
 export function bindReads(rawContext,rawReads){
+  const candidateReads=data(rawReads);
+  if(Array.isArray(candidateReads)&&candidateReads.length&&candidateReads.every(row=>row&&Object.hasOwn(row,'resultSha256')&&Object.hasOwn(row,'result')))
+    return bindWorkflowReads(rawContext,candidateReads,{skillId:'quick_skill.commitments_audit',skillVersion:'1.0.0'});
   const context=data(own(rawContext,['binding','subject','window','asOf','mondayBoardIds']));
   publicShape('RunBinding',context.binding);assertSubject(context.subject,context.binding);assertWindow(context.window);
   if(context.subject.kind!=='client'||context.subject.entityIds.length!==1||!Number.isFinite(Date.parse(context.asOf))||
@@ -60,5 +64,6 @@ export function passage(raw,bound){
     found.record.content.text.slice(p.start,p.end)!==p.quote)fail('COMMITMENTS_PASSAGE');
   return {...p,citationId:found.record.citationId,contentSha256:found.record.contentSha256,passageSha256:digest(p.quote),
     scopes:found.record.scopes,authorizationDecisionId:found.authorizationDecisionId,observedAt:found.source.retrievedAt,
-    authority:found.source.authority,freshness:found.source.freshness,verification:'bound-source-excerpt'};
+    authority:found.source.authority,freshness:found.source.freshness,verification:found.verification??'bound-source-excerpt',
+    ...(found.authorizationDecisionIds?{authorizationDecisionIds:found.authorizationDecisionIds,receiptSha256s:found.receiptSha256s,materialMetadata:found.record.metadata}:{})};
 }

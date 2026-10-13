@@ -1,0 +1,61 @@
+✖ all8 original operations collect actual canonical pages across6 sources and exact late promise (66.516734ms)
+✔ all required source failures stay visible without inventing absence or a bound promise (5.109237ms)
+✖ call/body caps disclose unbound observations and retain original budgets (12.57369ms)
+✔ foreign binding/subject/window refuses rather than returning a partial authority failure (12.437787ms)
+✖ immutable skill, source body hash, quote and output request provenance cannot be substituted (0.239448ms)
+✖ no mapped Monday board means not-mapped coverage and no unrelated board source call (20.815076ms)
+✔ cancelled collection never reaches later source work (0.483473ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 3
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1749.526393
+
+✖ failing tests:
+
+test at apps/control/document-application/commitments-audit/test/compiler.test.mjs:8:1
+✖ all8 original operations collect actual canonical pages across6 sources and exact late promise (66.516734ms)
+  Error: Invalid private execution contract artifacts:ArtifactContext
+      at executionShape (file:///workspace/meri-commitments-workflow/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+      at validateShape (file:///workspace/meri-commitments-workflow/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+      at Object.context (file:///workspace/meri-commitments-workflow/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+      at Object.prepare (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/compose.mjs:45:162)
+      at async TestContext.<anonymous> (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/test/compiler.test.mjs:9:20)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/document-application/commitments-audit/test/compiler.test.mjs:23:1
+✖ call/body caps disclose unbound observations and retain original budgets (12.57369ms)
+  Error: Invalid private execution contract artifacts:ArtifactContext
+      at executionShape (file:///workspace/meri-commitments-workflow/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+      at validateShape (file:///workspace/meri-commitments-workflow/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+      at Object.context (file:///workspace/meri-commitments-workflow/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+      at Object.prepare (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/compose.mjs:45:162)
+      at async TestContext.<anonymous> (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/test/compiler.test.mjs:24:52)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/commitments-audit/test/compiler.test.mjs:32:1
+✖ immutable skill, source body hash, quote and output request provenance cannot be substituted (0.239448ms)
+  TypeError: Cannot assign to read only property 'skillVersion' of object '#<Object>'
+      at TestContext.<anonymous> (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/test/compiler.test.mjs:33:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/document-application/commitments-audit/test/compiler.test.mjs:39:1
+✖ no mapped Monday board means not-mapped coverage and no unrelated board source call (20.815076ms)
+  Error: Invalid private execution contract artifacts:ArtifactContext
+      at executionShape (file:///workspace/meri-commitments-workflow/packages/contracts/retrieval-0.2/validate.mjs:83:38)
+      at validateShape (file:///workspace/meri-commitments-workflow/packages/contracts/retrieval-0.2/execution-tool-validators.mjs:16:33)
+      at Object.context (file:///workspace/meri-commitments-workflow/packages/contracts/artifacts-0.2/artifact-validation.mjs:40:32)
+      at Object.prepare (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/compose.mjs:45:162)
+      at async TestContext.<anonymous> (file:///workspace/meri-commitments-workflow/apps/control/document-application/commitments-audit/test/compiler.test.mjs:40:55)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "node",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/post-e0-ast-audit.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "worktreeHead": "5963701c291ee4b10e33a6c53e9a5f393ff22cf2",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.226,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 495,
+  "stderrBytes": 0,
+  "stdoutSha256": "8d558f19a5e43a9834a7ef43b69a822a8a90841b42b55a4f6bcda0edd3428f00",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

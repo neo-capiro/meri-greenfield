@@ -1,0 +1,42 @@
+synthetic-capture-ready 3
+synthetic-owner-refusal nextControls CANCELLED
+synthetic-owner-refusal publish SESSION_REFUSED
+synthetic-owner-refusal publish SESSION_REFUSED
+✖ actual authenticated journal/activity pause retains exact checkpoint then resumes in a fresh session (138.811084ms)
+synthetic-capture-ready 3
+synthetic-owner-refusal nextControls CANCELLED
+synthetic-owner-refusal publish SESSION_REFUSED
+synthetic-owner-refusal publish SESSION_REFUSED
+✖ actual authenticated journal/activity approval.wait retains exact checkpoint then resumes in a fresh session (140.068084ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2166.51632
+
+✖ failing tests:
+
+test at apps/worker/conversation/test/control-application.test.mjs:7:47
+✖ actual authenticated journal/activity pause retains exact checkpoint then resumes in a fresh session (138.811084ms)
+  Error: EXECUTION_FAILED
+      at fault (file:///workspace/meri-durable-skills-batch/apps/worker/conversation/activity.mjs:14:33)
+      at executeConversation (file:///workspace/meri-durable-skills-batch/apps/worker/conversation/activity.mjs:51:10)
+      at async TestContext.<anonymous> (file:///workspace/meri-durable-skills-batch/apps/worker/conversation/test/control-application.test.mjs:26:19)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'EXECUTION_FAILED'
+  }
+
+test at apps/worker/conversation/test/control-application.test.mjs:7:47
+✖ actual authenticated journal/activity approval.wait retains exact checkpoint then resumes in a fresh session (140.068084ms)
+  Error: EXECUTION_FAILED
+      at fault (file:///workspace/meri-durable-skills-batch/apps/worker/conversation/activity.mjs:14:33)
+      at executeConversation (file:///workspace/meri-durable-skills-batch/apps/worker/conversation/activity.mjs:51:10)
+      at async TestContext.<anonymous> (file:///workspace/meri-durable-skills-batch/apps/worker/conversation/test/control-application.test.mjs:26:19)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'EXECUTION_FAILED'
+  }

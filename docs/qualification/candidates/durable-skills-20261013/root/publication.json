@@ -1,0 +1,25 @@
+{
+  "pullRequest": {
+    "base": "6307e1b6661dab1b6b82ecda8659bf70bc0113ab",
+    "baseRef": "codex/workflow-batch-20261013",
+    "draft": true,
+    "head": "5b575a739a084df76e4ed675ebdbb855be020046",
+    "headRef": "codex/durable-skills-20261013",
+    "state": "open",
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/63"
+  },
+  "remoteBranchHead": "5b575a739a084df76e4ed675ebdbb855be020046",
+  "localHead": "5b575a739a084df76e4ed675ebdbb855be020046",
+  "tree": "9c8883bb476bc63530e72bab0d5dfc6966aec389",
+  "remoteCommit": {
+    "commit": "5b575a739a084df76e4ed675ebdbb855be020046",
+    "tree": "9c8883bb476bc63530e72bab0d5dfc6966aec389"
+  },
+  "reviewedProduction": "123767d120e7286d0550fb8ba63166ea4ffcbd34",
+  "postReviewProductChanges": false,
+  "clean": true,
+  "sourceAcceptance": "ACCEPT_SOURCE",
+  "artifactAcceptance": "ACCEPT_ARTIFACT_SOURCE",
+  "runtimeAcceptance": "HOLD",
+  "wholeOpenRequirements": 51
+}

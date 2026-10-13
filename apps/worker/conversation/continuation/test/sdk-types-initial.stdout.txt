@@ -1,0 +1,4 @@
+apps/worker/conversation/continuation/options.mjs(14,15): error TS2351: This expression is not constructable.
+  Type 'typeof import("/workspace/meri-greenfield/node_modules/ajv/dist/2020")' has no construct signatures.
+apps/worker/conversation/continuation/options.mjs(14,49): error TS2349: This expression is not callable.
+  Type 'typeof import("/workspace/meri-greenfield/node_modules/ajv-formats/dist/index")' has no call signatures.

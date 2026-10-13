@@ -1,0 +1,20 @@
+
+> @meri/conversations@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+../../worker/conversation/continuation/options.mjs(18,13): error TS7006: Parameter 'a' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(18,15): error TS7006: Parameter 'b' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(20,12): error TS7006: Parameter 'code' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(21,41): error TS7006: Parameter 'request' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(21,49): error TS7006: Parameter 'scopes' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(23,42): error TS7006: Parameter 'value' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(23,48): error TS7006: Parameter 'target' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(34,75): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(34,107): error TS7006: Parameter 'scope' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(34,130): error TS7006: Parameter 'parent' implicitly has an 'any' type.
+../../worker/conversation/options.mjs(10,64): error TS7006: Parameter 'continuationContext' implicitly has an 'any' type.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

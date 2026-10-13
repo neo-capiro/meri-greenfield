@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/audit-accepted.py", line 33, in <module>
+    asts=json.loads((HERE/'post-e0-ast-details.json').read_text());check('Both post-e0 runtime option semantic ASTs exact',all(r['semanticAstEqual']for r in asts['results']))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/meri-durable-source-review/docs/qualification/candidates/durable-skills-20261013/source-independent/post-e0-ast-details.json'

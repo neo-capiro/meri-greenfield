@@ -1,0 +1,14 @@
+
+> @meri/conversations@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+../../worker/conversation/continuation/options.mjs(23,93): error TS2694: Namespace '"/workspace/meri-durable-skills-batch/packages/contracts/dist/conversation-application"' has no exported member 'ConversationStoredRequest'.
+../../worker/conversation/continuation/options.mjs(29,73): error TS2694: Namespace '"/workspace/meri-durable-skills-batch/packages/contracts/dist/contracts"' has no exported member 'Checkpoint'.
+../../worker/conversation/continuation/options.mjs(39,75): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(39,107): error TS7006: Parameter 'scope' implicitly has an 'any' type.
+../../worker/conversation/continuation/options.mjs(39,130): error TS7006: Parameter 'parent' implicitly has an 'any' type.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

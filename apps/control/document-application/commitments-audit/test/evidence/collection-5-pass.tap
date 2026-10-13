@@ -1,0 +1,13 @@
+✔ collection executes all8 original reads with actual canonical pages, exact body continuation and explicit unavailable native records (44.160229ms)
+✔ call/read cap never executes later source effects and preserves exact remaining source intent (5.799383ms)
+✔ source authority failure is terminal and cannot be treated as missing evidence (0.755942ms)
+✔ source byte budget refuses before compiling or reading later families (0.686648ms)
+✔ parked source deadline closes continuation and late return starts no later effects (20.530759ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1824.882279
