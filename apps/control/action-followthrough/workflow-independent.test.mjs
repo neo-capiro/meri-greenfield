@@ -109,3 +109,12 @@ test('followthrough independent: original task A evidence can prepare a task und
  const draft=await workflow.draft(f.selection),prepared=await workflow.prepare(draft);assert.deepEqual(prepared.proposal.command.binding,b);assert.equal(f.t.f.state.effects,0);
  assert.ok(JSON.stringify(draft.source).includes(a.attemptId));
 });
+
+test('followthrough independent: later caller configuration mutation cannot replace admitted metadata operation',async()=>{
+ const f=await setup(),draft=await f.workflow.draft(f.selection);f.t.base.operation.id='save_memory';
+ await f.workflow.prepare(draft);assert.deepEqual(f.t.retained().operation,{id:'create_task',version:'0.2.0'});assert.equal(f.t.f.state.effects,0);
+});
+test('followthrough independent: operation metadata accessors remain inert during construction',async()=>{
+ const f=await setup();let hits=0;const operation={get id(){hits++;return 'create_task';},version:'0.2.0'};
+ assert.throws(()=>createActionFollowthrough({...f.options,commandOptions:{...f.t.base,operation}}));assert.equal(hits,0);assert.equal(f.t.calls.length,0);
+});

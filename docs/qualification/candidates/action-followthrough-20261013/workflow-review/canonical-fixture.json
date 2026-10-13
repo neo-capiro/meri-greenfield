@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-followthrough/workflow-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-followthrough-workflow-review-20261013",
+  "sourceHead": "737d3e6102ae7dac93d0a32c9610fb014219e773",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T00:56:01.703297+00:00",
+  "durationSeconds": 3.181,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 434710,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-review/canonical-fixture.stdout.bin",
+      "bytes": 3179,
+      "sha256": "4d361a5ed6500d907ebcd9130974dee51157a263626482c10e2ca662de17d416"
+    },
+    {
+      "path": "docs/qualification/candidates/action-followthrough-20261013/workflow-review/canonical-fixture.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
