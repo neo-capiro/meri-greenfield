@@ -6,7 +6,7 @@ import {data} from '../../../packages/contracts/commands-0.2/execution-boundary.
 import {migrations,relations,sha256,requireSchema,schemaConfiguration,portMethod,rows,assertCatalog} from './schema-contract.mjs';
 const root=new URL('../../../',import.meta.url);
 const identitySQL=`SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS start_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier,current_setting('search_path') AS search_path`;
-const namespaceSQL="SELECT nspname AS name FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND nspname NOT LIKE 'pg_%' ORDER BY nspname";
+const namespaceSQL="SELECT nspname AS name FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
 const catalogSQL=`SELECT n.nspname||'.'||c.relname AS name,c.relkind::text AS kind,pg_catalog.pg_get_userbyid(c.relowner) AS owner,c.relrowsecurity AS "rowSecurity",c.relforcerowsecurity AS "forceRowSecurity",
  (SELECT count(*)::int FROM pg_catalog.pg_trigger t WHERE t.tgrelid=c.oid AND NOT t.tgisinternal) AS triggers,
  (SELECT count(*)::int FROM pg_catalog.pg_rewrite w WHERE w.ev_class=c.oid) AS rules,
