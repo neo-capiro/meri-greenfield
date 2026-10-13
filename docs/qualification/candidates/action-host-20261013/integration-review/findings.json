@@ -1,0 +1,25 @@
+{
+  "initialSource": "83f3308782dbd825d0c6d341e712f48b039c524e",
+  "sourceSha256": "59747c7a41025a46ad2235b1d90ffa0f1165d7b6371d178a8342ed08ebf95ffe",
+  "finding": "approve/revoke callback waits were outside the global deadline lifetime. Listener termination did not settle the overall invocation.",
+  "firstControls": {
+    "passed": 0,
+    "failed": 2,
+    "receipt": "deadline-before.json",
+    "mechanism": "Only exact30s global timer accelerated to100ms; real HTTP listeners."
+  },
+  "corroboration": {
+    "passed": 0,
+    "failed": 3,
+    "receipt": "deadline-real-before.json",
+    "durationSeconds": 31.927,
+    "observed": {
+      "state": "pending",
+      "hostsOpened": 2,
+      "allListenersClosed": true,
+      "activeConnections": 0
+    }
+  },
+  "repairSource": "bc45f120558625afc35f5a1ca9a126bb11cb743e",
+  "repairPendingReplay": true
+}
