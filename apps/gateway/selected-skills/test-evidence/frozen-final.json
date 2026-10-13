@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/selected-skills/mount.test.mjs",
+    "apps/gateway/test/original-tracking-mounted.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-admission-mount",
+  "sourceHead": "5f7c032d4e493dc4fb19aeb96294ca1d75d3b299",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T18:13:41.951461+00:00",
+  "durationSeconds": 4.258,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 299867,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/frozen-final.stdout.bin",
+      "bytes": 13840,
+      "sha256": "eb7649d4829d853bd8e5e003946d732471c4db2229b7ca44a574f0037449d8c8"
+    },
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/frozen-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add targeted actual gateway fresh decision IDs through the existing shared binder, without changing historical selector hashes or source semantics.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
