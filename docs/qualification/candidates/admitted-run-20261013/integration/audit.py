@@ -35,6 +35,18 @@ check('only allocated original source seams changed', changed <= allowed)
 check('all original paths preserved', all(path in current for path in original))
 check('all original tests contracts registry and failure evidence unchanged',
       all(current.get(path) == blob for path, blob in original.items() if path not in allowed))
+catalog = json.loads((root / 'packages/contracts/retrieval-0.2/catalog.json').read_text())
+scope = {'originals': len(catalog['originals']),
+         'selected': sum(item['disposition'] == 'selected' for item in catalog['originals']),
+         'deferred': sum(item['disposition'] == 'deferred' for item in catalog['originals']),
+         'mapped': sum(item['state'] == 'mapped' for item in catalog['originals']),
+         'operations': len(catalog['operations'])}
+check('full original capability denominator preserved', scope == {
+    'originals': 139, 'selected': 96, 'deferred': 43, 'mapped': 96, 'operations': 97})
+check('all production operation descriptors remain unavailable', all(
+    item['handler'] is None and item['availability'] == 'unimplemented'
+    and item['qualification'] == 'pending' and item['retry']['maxRetries'] == 0
+    for item in catalog['operations']))
 author_source = [path for path in accepted if path.startswith(('apps/', 'packages/'))
                  and accepted[path] != original.get(path)
                  and not path.startswith('apps/control/admitted-runs/independent/')]
@@ -78,6 +90,7 @@ result = {'base': base, 'acceptedSource': source, 'independentReview': review,
           'originalEntries': len(original), 'originalEntriesUnchanged': len(original)-len(changed),
           'allocatedOriginalChanges': sorted(changed), 'acceptedFiles': len(author_source),
           'independentFiles': len(review_source), 'laneManifestMembers': manifests,
+          'capabilityScope': scope,
           'receipts': receipts, 'passed': len(checks), 'failed': 0, 'checks': checks}
 (packet / 'audit.json').write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps({key: value for key, value in result.items() if key != 'checks'}))
