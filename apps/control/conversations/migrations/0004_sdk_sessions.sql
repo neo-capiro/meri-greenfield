@@ -7,8 +7,18 @@ CREATE TABLE meri_conversations.sdk_sessions (
  entries_count bigint NOT NULL DEFAULT 0 CHECK(entries_count BETWEEN 0 AND 100000),
  bytes bigint NOT NULL DEFAULT 0 CHECK(bytes BETWEEN 0 AND 33554432),
  PRIMARY KEY(tenant_id,conversation_id,run_id,session_id),
+ UNIQUE(tenant_id,conversation_id,run_id),
  FOREIGN KEY(tenant_id,conversation_id,run_id) REFERENCES meri_conversations.runs
 );
+CREATE FUNCTION meri_conversations.preserve_sdk_session_owner() RETURNS trigger
+LANGUAGE plpgsql AS $$ BEGIN
+ IF ROW(NEW.tenant_id,NEW.conversation_id,NEW.run_id,NEW.session_id,NEW.project_key,NEW.owner,NEW.owner_sha256)
+ IS DISTINCT FROM ROW(OLD.tenant_id,OLD.conversation_id,OLD.run_id,OLD.session_id,OLD.project_key,OLD.owner,OLD.owner_sha256)
+ THEN RAISE EXCEPTION 'SDK_SESSION_OWNER_IMMUTABLE'; END IF;
+ RETURN NEW;
+END $$;
+CREATE TRIGGER immutable_sdk_session_owner BEFORE UPDATE ON meri_conversations.sdk_sessions
+ FOR EACH ROW EXECUTE FUNCTION meri_conversations.preserve_sdk_session_owner();
 CREATE TABLE meri_conversations.sdk_session_streams (
  tenant_id text NOT NULL, conversation_id uuid NOT NULL, run_id uuid NOT NULL,
  session_id uuid NOT NULL, subpath text NOT NULL CHECK(length(subpath)<=1024),

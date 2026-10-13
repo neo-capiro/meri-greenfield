@@ -32,39 +32,41 @@ export function createDurableSdkSessionOwner(configuration){
     const b=request.binding,ownerArgs=[b.tenantId,b.conversationId,b.runId,request.key.sessionId];
     const query=async(sql,args)=>{if(operation==='append'&&/^(INSERT|UPDATE)/u.test(sql))attempted=true;const out=await client.query(sql,args);life.check();return out;};
     let row=(await query('SELECT * FROM meri_conversations.sdk_sessions WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 FOR UPDATE',ownerArgs)).rows[0];
+    if(row){own(row.owner,['binding','scopes','selectedClientId','policyRevision','key','allocationSha256','observationId','sessionEventSha256','expiresAtMs']);if(row.owner_sha256!==hash(row.owner)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.session_id!==request.key.sessionId||row.project_key!==row.owner.key?.projectKey)fail('SDK_SESSION_CORRUPT');}
+    const tuple=(r,path)=>{if(r.tenant_id!==b.tenantId||r.conversation_id!==b.conversationId||r.run_id!==b.runId||r.session_id!==request.key.sessionId||path!==undefined&&r.subpath!==path)fail('SDK_SESSION_CORRUPT');};
     if(operation==='register'){
      const owner=data({...pinned,key:request.key,allocationSha256:current.allocationSha256,observationId:observation.observationId,sessionEventSha256:observation.sessionEventSha256,expiresAtMs:Math.min(auth.expiresAtMs,observation.expiresAtMs,current.deadlineMs)});
-     if(row){if(row.owner_sha256!==hash(row.owner)||!same(row.owner,owner))fail('SDK_SESSION_REGISTRATION_CONFLICT');}
+     if(row){if(!same({...row.owner,expiresAtMs:owner.expiresAtMs},owner)||row.owner.expiresAtMs<=now())fail('SDK_SESSION_REGISTRATION_CONFLICT');limit(row.owner.expiresAtMs);}
      else await query('INSERT INTO meri_conversations.sdk_sessions(tenant_id,conversation_id,run_id,session_id,project_key,owner,owner_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[...ownerArgs,request.key.projectKey,owner,hash(owner)]);
      await fresh();return {registered:true,key:request.key};
     }
     if(!row)fail('SDK_SESSION_NOT_REGISTERED');const owner=row.owner;own(owner,['binding','scopes','selectedClientId','policyRevision','key','allocationSha256','observationId','sessionEventSha256','expiresAtMs']);
     if(row.owner_sha256!==hash(owner)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.session_id!==request.key.sessionId||row.project_key!==owner.key?.projectKey||!same(owner.binding,pinned.binding)||!same(owner.scopes,pinned.scopes)||owner.selectedClientId!==pinned.selectedClientId||owner.policyRevision!==pinned.policyRevision||owner.allocationSha256!==current.allocationSha256||owner.expiresAtMs<=now())fail('SDK_SESSION_CORRUPT');
-    scopedSessionKey(request.key,owner.key);const subpath=request.key.subpath??'',args=[...ownerArgs,subpath];
+    limit(owner.expiresAtMs);scopedSessionKey(request.key,owner.key);const subpath=request.key.subpath??'',args=[...ownerArgs,subpath];
     if(operation==='list-subkeys'){
      const rows=(await query('SELECT subpath FROM meri_conversations.sdk_session_streams WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 ORDER BY subpath',ownerArgs)).rows;
      const names=rows.map(r=>r.subpath).filter(Boolean);if(names.length>255||new Set(names).size!==names.length)fail('SDK_SESSION_CORRUPT');for(const subpath of names)scopedSessionKey({...owner.key,subpath},owner.key);await fresh();return {subkeys:names};
     }
-    let stream=(await query('SELECT * FROM meri_conversations.sdk_session_streams WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 FOR UPDATE',args)).rows[0],offset=stream?integer(stream.last_sequence):0;
+    let stream=(await query('SELECT * FROM meri_conversations.sdk_session_streams WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 FOR UPDATE',args)).rows[0],offset=stream?integer(stream.last_sequence):0;if(stream)tuple(stream,subpath);
     if(operation==='load'){
      if(!stream){await fresh();return {entries:null,offset:0};}
      const rows=(await query('SELECT * FROM meri_conversations.sdk_session_entries WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 ORDER BY sequence',args)).rows;
-     let sequence=0;for(const entry of rows)if(integer(entry.sequence)!==++sequence||entry.entry_sha256!==hash(entry.entry)||entry.entry_uuid!==(entry.entry.uuid??null))fail('SDK_SESSION_CORRUPT');if(sequence!==offset)fail('SDK_SESSION_CORRUPT');const retained=copySessionTranscript(rows.map(r=>r.entry));await fresh();return {entries:retained,offset};
+     let sequence=0;for(const entry of rows){tuple(entry,subpath);if(integer(entry.sequence)!==++sequence||entry.entry_sha256!==hash(entry.entry)||entry.entry_uuid!==(entry.entry.uuid??null))fail('SDK_SESSION_CORRUPT');}if(sequence!==offset)fail('SDK_SESSION_CORRUPT');const retained=copySessionTranscript(rows.map(r=>r.entry));await fresh();return {entries:retained,offset};
     }
     const prior=(await query('SELECT * FROM meri_conversations.sdk_session_batches WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND append_id=$5',[...ownerArgs,request.appendId])).rows[0];
-    if(prior){if(prior.request_sha256!==inputSha256||prior.receipt_sha256!==hash(prior.receipt))fail('SDK_SESSION_APPEND_CONFLICT');await fresh();return prior.receipt;}
+    if(prior){tuple(prior);if(prior.append_id!==request.appendId)fail('SDK_SESSION_CORRUPT');if(prior.request_sha256!==inputSha256||prior.receipt_sha256!==hash(prior.receipt))fail('SDK_SESSION_APPEND_CONFLICT');await fresh();return prior.receipt;}
     if(request.expectedOffset!==offset)fail('SDK_SESSION_STALE_OFFSET');if(!stream)await query('INSERT INTO meri_conversations.sdk_session_streams(tenant_id,conversation_id,run_id,session_id,subpath) VALUES($1,$2,$3,$4,$5)',args);
     let bytes=integer(row.bytes),count=integer(row.entries_count);const added=[];
     for(const entry of entries){const entrySha256=hash(entry),uuid=entry.uuid??null;if(uuid!==null&&(typeof uuid!=='string'||!uuid||uuid.length>256))fail('INVALID_SDK_SESSION_REQUEST');
-     if(uuid!==null){const found=(await query('SELECT * FROM meri_conversations.sdk_session_entries WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND entry_uuid=$6',[...args,uuid])).rows[0];if(found){if(found.entry_sha256!==entrySha256||hash(found.entry)!==entrySha256)fail('SDK_SESSION_ENTRY_CONFLICT');continue;}}
+     if(uuid!==null){const found=(await query('SELECT * FROM meri_conversations.sdk_session_entries WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND entry_uuid=$6',[...args,uuid])).rows[0];if(found){tuple(found,subpath);if(found.entry_uuid!==uuid)fail('SDK_SESSION_CORRUPT');if(found.entry_sha256!==entrySha256||hash(found.entry)!==entrySha256)fail('SDK_SESSION_ENTRY_CONFLICT');continue;}}
      const size=Buffer.byteLength(JSON.stringify(entry));if(++count>100000||(bytes+=size)>33554432||++offset>100000)fail('SDK_SESSION_LIMIT');added.push(entry);
      await query('INSERT INTO meri_conversations.sdk_session_entries(tenant_id,conversation_id,run_id,session_id,subpath,sequence,entry_uuid,entry,entry_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[...args,offset,uuid,entry,entrySha256]);
     }
-    const receipt=data({committed:true,appendId:request.appendId,key:request.key,entriesSha256:request.entriesSha256,offset,added:added.length});
+    const receipt=data({binding:request.binding,key:request.key,requestSha256:inputSha256,committed:true,appendId:request.appendId,entriesSha256:request.entriesSha256,offset,added:added.length});
     await query('UPDATE meri_conversations.sdk_session_streams SET last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5',[...args,offset]);
     await query('UPDATE meri_conversations.sdk_sessions SET entries_count=$5,bytes=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4',[...ownerArgs,count,bytes]);
     await query('INSERT INTO meri_conversations.sdk_session_batches(tenant_id,conversation_id,run_id,session_id,append_id,request_sha256,receipt,receipt_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[...ownerArgs,request.appendId,inputSha256,receipt,hash(receipt)]);await fresh();return receipt;
-   }));await fresh();life.check();return operation==='load'?{...result,entries:result.entries===null?null:copySessionTranscript(result.entries)}:data(result);
+   }));await fresh();life.check();const correlated={binding:request.binding,key:request.key,requestSha256:inputSha256,...result};return operation==='load'?{...correlated,entries:result.entries===null?null:copySessionTranscript(result.entries)}:data(correlated);
   }catch(error){if(error instanceof BudgetCommitUncertain||attempted)fail('SDK_SESSION_COMMIT_UNKNOWN');throw error;}finally{life.close();}
  }
  return Object.freeze(Object.fromEntries(['register','load','append','list-subkeys'].map(operation=>[operation==='list-subkeys'?'listSubkeys':operation,value=>execute(operation,value)])));

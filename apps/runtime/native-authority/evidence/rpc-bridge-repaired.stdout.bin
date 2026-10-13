@@ -1,0 +1,47 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-native-authority-session/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/native-authority/test/identity-context.test.mjs (1899.045763ms)
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (23.821139ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (1.618446ms)
+✔ missing actual native task authority yields503 before registration/admission (0.721702ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (1.108081ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (20.857907ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (3.880987ms)
+✔ native authority absent fails before any admitted transaction or SQL (1.60096ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (9.899209ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (2.610864ms)
+✔ foreign project key and stale offset cannot append or overwrite original (3.099406ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (4.851182ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (3.519195ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (4.309981ms)
+✔ parked canonical admission is bounded by the original caller lifetime (22.117675ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2197.775628
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/identity-context.test.mjs:1:1
+✖ apps/runtime/native-authority/test/identity-context.test.mjs (1899.045763ms)
+  'test failed'
