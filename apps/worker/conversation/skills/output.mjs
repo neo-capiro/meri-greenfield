@@ -1,6 +1,7 @@
 /** Literal task-result compilation; artifact governance remains in its separately approved owner. */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {artifactValidators as v,validateShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {assertSelectedOutput} from '../../../../packages/contracts/selected-skills/validate.mjs';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const fault=code=>Object.assign(Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 export function createSelectedSkillOutput({selected,binding,request,scopes,selection,readSource,current,compileArtifact,artifactOutput,receipts,life}) {
@@ -24,10 +25,13 @@ export function createSelectedSkillOutput({selected,binding,request,scopes,selec
    // it may not replace this source context or widen its read-only manifest.
    const delivered=await life.run(signal=>artifactOutput.deliver({prepared,binding,requestSha256:canonicalSha256(request),selectionSha256:canonicalSha256(selection),inputSha256:sha,preparationSha256,reads:receipts(),signal}));
    if(canonicalSha256(prepared)!==preparationSha256)throw fault('SKILL_PREPARATION_SUBSTITUTION');
-   if(delivered?.state==='awaiting-output-approval'){if(!same(delivered.sourceBinding,binding)||delivered.preparationSha256!==preparationSha256)throw fault('SKILL_PENDING_OUTPUT_REFUSED');await current();life.check();return pending;}
-   validateShape('ArtifactCreatedResult',delivered);const version=v.version(delivered.version),inspection=v.inspection(delivered.inspection);
-   if(!same(version.binding,context.binding)||!same(version.scopes,context.scopes)||!same(version.evidence,context.evidence)||version.parentVersionId!==base||version.mimeType!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||inspection.sha256!==version.object.sha256||inspection.bytes!==version.object.bytes||delivered.execution.requestSha256!==canonicalSha256({request:spec,context,baseVersionId:base}))throw fault('SKILL_ARTIFACT_RESULT_REFUSED');
-   await current();life.check();return delivered;
+   const correlated=assertSelectedOutput(delivered,{binding,request,selection,inputSha256:sha,prepared});
+   if(correlated.state==='awaiting-output-approval'){life.check();return correlated;}
+   const artifact=correlated.artifact,projection=correlated.projection;validateShape('ArtifactCreatedResult',artifact);const version=v.version(artifact.version),inspection=v.inspection(artifact.inspection);
+   if(!same(version.binding,projection.context.binding)||!same(version.scopes,projection.context.scopes)||!same(version.evidence,projection.context.evidence)||version.parentVersionId!==projection.baseVersionId||version.mimeType!=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'||inspection.format!=='docx'||inspection.sha256!==version.object.sha256||inspection.bytes!==version.object.bytes||artifact.execution.requestSha256!==canonicalSha256(projection))throw fault('SKILL_ARTIFACT_RESULT_REFUSED');
+   // The bridge rechecks current approved output and retained source access.
+   // A completed historical research writer is not the output access owner.
+   life.check();return correlated;
   })();return completion;
  }});
 }

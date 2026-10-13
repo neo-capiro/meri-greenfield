@@ -1,0 +1,48 @@
+✖ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (119.133697ms)
+✖ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (16.428748ms)
+✔ missing approval is pending with no IDs/effect; cloned source object cannot acquire preparation identity (42.616626ms)
+✔ approved output sourcePinsSha256 substitution refuses before artifact effects (38.442365ms)
+✔ approved output outputBinding substitution refuses before artifact effects (31.817784ms)
+✔ approved output scopes substitution refuses before artifact effects (30.356923ms)
+✔ approved output policyRevision substitution refuses before artifact effects (31.848651ms)
+✔ approved output allocationSha256 substitution refuses before artifact effects (30.037549ms)
+✔ approved output grantId substitution refuses before artifact effects (33.722047ms)
+✔ approved output approvalReceiptId substitution refuses before artifact effects (29.679485ms)
+✔ approved output deadlineMs substitution refuses before artifact effects (32.132044ms)
+✔ approved output maxBytes substitution refuses before artifact effects (28.756928ms)
+✔ native retained source revocation refuses output even though old source decisions and grant remain (30.382243ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 11
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2261.340467
+
+✖ failing tests:
+
+test at apps/control/document-application/selected-output/test/bridge.test.mjs:3:87
+✖ quick_skill.commitments_audit: separate approved output current allocation produces actual DOCX without source mutation (119.133697ms)
+  Error: SELECTED_OUTPUT_DOCUMENT_REFUSED
+      at fail (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/preparation.mjs:9:46)
+      at Object.deliver (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/bridge.mjs:26:29)
+      at async TestContext.<anonymous> (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/test/bridge.test.mjs:3:312)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'SELECTED_OUTPUT_DOCUMENT_REFUSED'
+  }
+
+test at apps/control/document-application/selected-output/test/bridge.test.mjs:3:87
+✖ quick_skill.relationship_brief: separate approved output current allocation produces actual DOCX without source mutation (16.428748ms)
+  Error: ClientKnowledgeMemoryContext: data/tenantId must match format "uuid", data/userId must match format "uuid"
+      at validateShape (file:///workspace/meri-selected-output-lineage/packages/contracts/retrieval-0.2/validate.mjs:78:28)
+      at Object.normalizeInput (file:///workspace/meri-selected-output-lineage/packages/contracts/retrieval-0.2/client-knowledge-memory-validation.mjs:22:55)
+      at Object.normalize (file:///workspace/meri-selected-output-lineage/packages/contracts/retrieval-0.2/catalog-validation.mjs:81:85)
+      at Object.normalizeInput (file:///workspace/meri-selected-output-lineage/packages/contracts/retrieval-0.2/operation-contracts.mjs:105:36)
+      at Object.read (file:///workspace/meri-selected-output-lineage/apps/control/document-application/relationship-brief/reads.mjs:12:29)
+      at collectRelationship (file:///workspace/meri-selected-output-lineage/apps/control/document-application/relationship-brief/collect.mjs:10:216)
+      at async Object.prepare (file:///workspace/meri-selected-output-lineage/apps/control/document-application/relationship-brief/compose.mjs:24:1485)
+      at async TestContext.<anonymous> (file:///workspace/meri-selected-output-lineage/apps/control/document-application/selected-output/test/bridge.test.mjs:3:266)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

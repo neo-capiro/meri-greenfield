@@ -1,0 +1,10 @@
+✔ quick_skill.commitments_audit: real separate-output original/revision/replay/inspect/download and every-page render (1893.796584ms)
+✔ quick_skill.relationship_brief: real separate-output original/revision/replay/inspect/download and every-page render (1770.093011ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5292.689153
