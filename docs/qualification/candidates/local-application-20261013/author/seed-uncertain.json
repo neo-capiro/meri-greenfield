@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/local-integration/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-author-20261013",
+  "sourceHead": "873a1a4b2372331ebbc0862de66594664b1753a3",
+  "sourceDiffSha256": "b679e526a6d31e6d19f1274e96816c12729dd86fb80772162615f8fd7accad5b",
+  "sourceDiffBytes": 6735,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:11:11.380274+00:00",
+  "durationSeconds": 3.226,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 471989,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/author/seed-uncertain.stdout.bin",
+      "bytes": 437,
+      "sha256": "d287a87b7ffa1d6869e4dec927aa408e3f89cbb071245e29324b8a632c838c8a"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/author/seed-uncertain.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
