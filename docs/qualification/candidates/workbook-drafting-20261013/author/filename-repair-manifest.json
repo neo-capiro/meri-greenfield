@@ -1,0 +1,184 @@
+{
+  "source": "16a4f883962bd72f9421949df95709f65b286555",
+  "historicalPacket": "fe81f220d3415c6934333b584f2b625f891a8378",
+  "negativeTestsCommit": "fc8cb9501c8170bf254d2aa96b82c94c5d9271d3",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-AUTHOR-20261013.md",
+      "bytes": 6894,
+      "sha256": "efd82a72c8679c74a43e089e753d5ff46035e3adf854f4a7f412d122b00240da"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/audit.py",
+      "bytes": 3505,
+      "sha256": "2f574bafd8a1851db84c992f79dde22a948530994c8d90cf179088a5261f06dc"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/author-report-before-filename.md",
+      "bytes": 4885,
+      "sha256": "e678cbdc82b58c063642481005369b19d7edef8d180b6eff7956a6b098de26e7"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/cleanup.json",
+      "bytes": 1744,
+      "sha256": "ae39c0b37bc9d6df117577af250575ed6417cc4e29c19bc7927733b15cbfae2c"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-audit.json",
+      "bytes": 1770,
+      "sha256": "146c1ff3920796fff4ae22801e50f2bfe9b86a0af667e1d0ff0b52ef6c4ba142"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-audit.py",
+      "bytes": 2808,
+      "sha256": "d0e73efae1bbf766409ab2b10b34d70b2b59be67c850c37a87428ef49bc5857d"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.json",
+      "bytes": 1404,
+      "sha256": "5c3587f4da7750738d4677077e1322fdcd704d50874108c8a74e718a959f7612"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-before.stdout.bin",
+      "bytes": 3403,
+      "sha256": "799b9a1afc48f3159b493a422057e3b62a4c2c5e404ba7061b25f70734d9929e"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-cleanup.json",
+      "bytes": 1130,
+      "sha256": "ee218a1763dfaf254a08d6c00728ad0714f4281394352dbf3f99fce4af8cb7c3"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.json",
+      "bytes": 1358,
+      "sha256": "a03bedd3a99d436a6b798fa0020380fdbfc8a5f0952241e6244c97a6473cc736"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/filename-repaired.stdout.bin",
+      "bytes": 1516,
+      "sha256": "d96663bd6f418a2243cc958b0a131bf9a896a8d0256db377d584c86fd2991344"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/manifest.json",
+      "bytes": 5328,
+      "sha256": "3806b48ea897234777a3c67b1ab26e5d34663138aeb712c9c494d43814c78a74"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/source-audit.json",
+      "bytes": 6024,
+      "sha256": "b956de9e1a2edb49eea6068ca86c0bc6818ecf8430b3bd29e8297cc132ec3d52"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.json",
+      "bytes": 1445,
+      "sha256": "46187e2fd75ab1b56bee63bbd2331474219177c79a22c56b74c807eb913da680"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stdout.bin",
+      "bytes": 2692,
+      "sha256": "0e7d625eefa88febd70797d4bacb2ad7c050ec23ef61bc606a5f6efd333fba83"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.json",
+      "bytes": 1600,
+      "sha256": "7f492894c1fd7ad76fd59868a49fb0d191b045f406111623434ee378c1dce214"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin",
+      "bytes": 6309,
+      "sha256": "d7bdad7a1f764af0228d6e3d4b45ac7e98cf0fc3938962f796adc77a3c17d682"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial-test.mjs.txt",
+      "bytes": 9144,
+      "sha256": "a52229e88d22a92a630e99bb637ba106258f0c47ff99db46bee1bd0a089f06d2"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.json",
+      "bytes": 1427,
+      "sha256": "05146502bfa61cd0649775d7a5b2b28b7488b826803380b714df7088ad4cb3d2"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stdout.bin",
+      "bytes": 4106,
+      "sha256": "2719f85cd5280c0d9a8cd6f233e8c2e9da9d412d6045c14c5bf7d6b5aa492c95"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/control/document-application/index.mjs",
+      "bytes": 6764,
+      "sha256": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+      "gitBlob": "8f698bdc490248536bcc33ca477642da872d7698"
+    },
+    {
+      "path": "apps/control/document-application/current.mjs",
+      "bytes": 5397,
+      "sha256": "37e3c4ae7fddaeec3c232d141d91e8a3969c61515289c04afe22e6ae65888194",
+      "gitBlob": "ca1a2852b35c6ac315aaab3c9b7d89659c08942b"
+    },
+    {
+      "path": "apps/control/document-application/format-admission.mjs",
+      "bytes": 1281,
+      "sha256": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75",
+      "gitBlob": "167f7ffb53570c33dab5910baa91dbfed9b598b8"
+    },
+    {
+      "path": "apps/control/document-application/README.md",
+      "bytes": 5698,
+      "sha256": "bc81faaca0a40c1771e4806f063291e915bceadea4a59e133297bde686bb22ef",
+      "gitBlob": "4c0b91550e01ebbc5d0d69036bd925b0000513da"
+    },
+    {
+      "path": "apps/control/document-application/OUTLINE.md",
+      "bytes": 2993,
+      "sha256": "d14b702d860ea7b47e1bc19e78095348fd1ed50cbe42565f140041374b9e7d9b",
+      "gitBlob": "550f3620a2d0a10864a6a1b8c505908b5aa19aaa"
+    },
+    {
+      "path": "apps/control/document-application/test/workbook-application.test.mjs",
+      "bytes": 11550,
+      "sha256": "c0ebec5ea25a73518c1eb9f1d283be5d303c8566be653981c198ca4e64c68cda",
+      "gitBlob": "0a53428b7d55393ecd20761ae4324616bf0ef61a"
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "bytes": 6476,
+      "sha256": "743ffee42f5604caf52a0c494bbcaa96c6740efa23b6e69d5ccfc2a72598538b",
+      "gitBlob": "6c11327b70676ba563368e3c02962e79c31127ca"
+    }
+  ],
+  "excludes": [
+    "this manifest to avoid recursion"
+  ]
+}

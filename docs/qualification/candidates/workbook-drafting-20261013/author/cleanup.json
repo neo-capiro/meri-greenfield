@@ -1,0 +1,53 @@
+{
+  "ownedDependencyLinks": [
+    {
+      "path": "node_modules/ajv",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "removedOwnLink": true,
+      "donorUnchangedByCleanup": true
+    }
+  ],
+  "ownedNodeModulesDirectoryRemoved": true,
+  "captureGroupsAbsent": [
+    530060,
+    530262,
+    531242
+  ],
+  "resourceScope": "Only owned dependency links removed; no donor, other worktree, source or evidence removed."
+}

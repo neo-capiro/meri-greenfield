@@ -1,0 +1,192 @@
+{
+  "base": "bc8b65cc7186e449cf20b4956e4cd88684b35325",
+  "source": "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+  "baselineEntries": 11557,
+  "unchangedBaselineEntries": 11552,
+  "allocatedChangedPaths": [
+    "apps/control/document-application/OUTLINE.md",
+    "apps/control/document-application/README.md",
+    "apps/control/document-application/current.mjs",
+    "apps/control/document-application/index.mjs",
+    "apps/control/document-application/local/fixture.mjs"
+  ],
+  "checks": [
+    {
+      "name": "all baseline entries preserved except five allocated paths",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/test/application.test.mjs unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/independent/application-independent.test.mjs unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/catalog.json unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/meri.schema.json unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/artifacts/service.mjs unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/artifacts/postgres-service.mjs unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/artifacts/python/office.py unchanged",
+      "passed": true
+    },
+    {
+      "name": "fixture equals exact root dependency",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/index.mjs worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/current.mjs worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/format-admission.mjs worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/README.md worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/OUTLINE.md worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/test/workbook-application.test.mjs worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "apps/control/document-application/local/fixture.mjs worktree matches source",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial exit preserved",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial bounded clean capture",
+      "passed": true
+    },
+    {
+      "name": "workbook-initial group physically absent",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stdout.bin exact",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-initial.stderr.bin exact",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected exit preserved",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected bounded clean capture",
+      "passed": true
+    },
+    {
+      "name": "workbook-fixture-corrected group physically absent",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stdout.bin exact",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-fixture-corrected.stderr.bin exact",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen exit preserved",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen bounded clean capture",
+      "passed": true
+    },
+    {
+      "name": "workbook-frozen group physically absent",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin exact",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin exact",
+      "passed": true
+    },
+    {
+      "name": "final exact immutable source",
+      "passed": true
+    },
+    {
+      "name": "initial test preimage retained",
+      "passed": true
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/control/document-application/index.mjs",
+      "gitBlob": "6b2d72496877df35a0c32ba320497e80286f7a48",
+      "bytes": 6677,
+      "sha256": "cd6490b1227fe7637ae3b910b1eacbe537fee620d631b29f3b02ebc93559da6a"
+    },
+    {
+      "path": "apps/control/document-application/current.mjs",
+      "gitBlob": "ca1a2852b35c6ac315aaab3c9b7d89659c08942b",
+      "bytes": 5397,
+      "sha256": "37e3c4ae7fddaeec3c232d141d91e8a3969c61515289c04afe22e6ae65888194"
+    },
+    {
+      "path": "apps/control/document-application/format-admission.mjs",
+      "gitBlob": "167f7ffb53570c33dab5910baa91dbfed9b598b8",
+      "bytes": 1281,
+      "sha256": "575e0ca5227400c86628765321c4c1d8b699f7725a41d464d86823d5d2c79a75"
+    },
+    {
+      "path": "apps/control/document-application/README.md",
+      "gitBlob": "4c0b91550e01ebbc5d0d69036bd925b0000513da",
+      "bytes": 5698,
+      "sha256": "bc81faaca0a40c1771e4806f063291e915bceadea4a59e133297bde686bb22ef"
+    },
+    {
+      "path": "apps/control/document-application/OUTLINE.md",
+      "gitBlob": "550f3620a2d0a10864a6a1b8c505908b5aa19aaa",
+      "bytes": 2993,
+      "sha256": "d14b702d860ea7b47e1bc19e78095348fd1ed50cbe42565f140041374b9e7d9b"
+    },
+    {
+      "path": "apps/control/document-application/test/workbook-application.test.mjs",
+      "gitBlob": "8f4d5da41b16f70872e6a8c28d7497bafc3a40a5",
+      "bytes": 9285,
+      "sha256": "db78cbc7e8e67fb1a02e8c9e8c190d77dc4d42803f4dacaebba0b7ad2cdb08f2"
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "gitBlob": "6c11327b70676ba563368e3c02962e79c31127ca",
+      "bytes": 6476,
+      "sha256": "743ffee42f5604caf52a0c494bbcaa96c6740efa23b6e69d5ccfc2a72598538b"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_AND_RECEIPT_AUDIT_NO_NATIVE_QUALIFICATION"
+}

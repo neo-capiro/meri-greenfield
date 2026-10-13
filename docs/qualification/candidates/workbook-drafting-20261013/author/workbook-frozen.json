@@ -1,0 +1,39 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-workbook-author-20261013",
+    "MERI_CHECK_REASON=Immutable-source-replay-with-original-independent-boundary-controls",
+    "node",
+    "--test",
+    "apps/control/document-application/test/workbook-application.test.mjs",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-workbook-author-20261013",
+  "sourceHead": "10295f0448a8c4f0a3464b7802b845efb1c00a33",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T07:18:44.598710+00:00",
+  "durationSeconds": 6.297,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 531242,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stdout.bin",
+      "bytes": 6309,
+      "sha256": "d7bdad7a1f764af0228d6e3d4b45ac7e98cf0fc3938962f796adc77a3c17d682"
+    },
+    {
+      "path": "docs/qualification/candidates/workbook-drafting-20261013/author/workbook-frozen.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
