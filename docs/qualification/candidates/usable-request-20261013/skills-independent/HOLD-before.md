@@ -1,0 +1,5 @@
+# Initial independent HOLD
+
+Source `ddfcc398d1064abe55f711a00e02941e5606e9ca`, tree `91d62ff5d477ebd8ad32cad3d2b847cf8e320e87`: **HOLD**. Original48 focused controls pass, but17 independent controls yield14PASS/3FAIL. The existing bindReads tests allowed operation membership and source membership separately; it accepts mail evidence under query_tasks, accepts authoritative Monday evidence under a derived-only canonical descriptor, and drops actual source authority from coverage/passages. These failures affect structural provenance; completed/free-form semantic claims remain unverified and no source access occurred.
+
+Raw independent-before output retains the failed assertions. Counterexamples retain synthetic inputs/outputs. Narrow repairs belong to the implementation owner: correlate actual operation descriptor with sourceId/authority and preserve source authority visibly. Do not change recipe, manifest, catalog, public schema or earlier assertions. This initial source HOLD remains historical evidence after any exact repaired acceptance.

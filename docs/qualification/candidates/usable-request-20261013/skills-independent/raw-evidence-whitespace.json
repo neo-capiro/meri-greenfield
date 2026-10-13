@@ -1,0 +1,10 @@
+{
+  "command": "git diff --cached --check",
+  "exitCode": 2,
+  "reason": "Raw Node assertion diagnostics contain6 lines with trailing spaces. Preserve bytes of failed output rather than formatting historical evidence.",
+  "affected": [
+    "independent-before.stdout.txt",
+    "independent-repaired.stdout.txt"
+  ],
+  "followup": "Authored review/source files checked with only raw *.stdout.txt excluded."
+}

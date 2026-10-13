@@ -1,0 +1,15 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/usable-request-20261013/skills-independent/counterexamples.mjs"
+  ],
+  "sourceHead": "ddfcc398d1064abe55f711a00e02941e5606e9ca",
+  "exitCode": 0,
+  "seconds": 1.7697604160002811,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 90706,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

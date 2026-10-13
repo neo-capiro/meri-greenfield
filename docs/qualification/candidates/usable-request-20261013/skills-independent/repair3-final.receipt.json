@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/skills/test/commitments-source-binding.test.mjs"
+  ],
+  "sourceHead": "5f60ba1e7bf37a0bedbd84a96c94d5aea4434ce6",
+  "exitCode": 1,
+  "seconds": 0.033296772999165114,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 91776,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

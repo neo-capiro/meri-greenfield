@@ -1,0 +1,25 @@
+✔ independent raw14-asset hashes/pins match exact loader values, canonical catalog and original selected inventory (107.11369ms)
+✔ every exact14 asset refuses execution through unchanged canonical unavailable operation validator (56.047305ms)
+✔ selection refuses inherited/coercible identifiers and omitted/wildcard versions without invoking conversion (0.299789ms)
+✔ Commitments source-read operation must bind the actual mail source, not merely be another allowed operation (7.552439ms)
+✔ Commitments source-read operation must bind exact declared Monday source authority (2.550599ms)
+✔ actual source authority remains visible on every returned coverage cell and bound passage (2.588446ms)
+✔ foreign client record scopes cannot bind even when tenant, context and all byte/version hashes match (0.938335ms)
+✔ zero record scopes cannot be marked a bound source excerpt (1.050173ms)
+✔ different worker identity and current policy revision refuse unchanged passage bytes (1.805143ms)
+✔ correct source hash with altered bytes, and correct bytes with altered source hash both refuse (1.892213ms)
+✔ candidate/snippet and missing decisive read cannot verify a promise or claim full coverage (3.395875ms)
+✔ complete/stale inconsistency refuses and disclosed partial stale read never supports absence (2.473704ms)
+✔ unmapped Monday and entirely absent reads remain visible without false absence (0.661721ms)
+✔ suggestion/delivery classifications and all semantic owner/date/tracking outputs stay unverified despite exact bound quotes (3.293212ms)
+✔ distinct original records cannot be semantically deduplicated by equal extracted owner/date or similar quote (2.67832ms)
+✔ model attempts to inject completion/verification/citation authority or mutations are refused (8.014751ms)
+✔ retained current evidence and projection are deep immutable snapshots (1.671322ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1933.303188

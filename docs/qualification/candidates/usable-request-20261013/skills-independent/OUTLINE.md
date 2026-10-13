@@ -1,0 +1,3 @@
+# Independent original skill review
+
+Review exact source ddfcc398d1064abe55f711a00e02941e5606e9ca, tree91d62ff5d477ebd8ad32cad3d2b847cf8e320e87, in an isolated worktree. Own this evidence directory only. Read all13 original recipe steps/manifests and immutable loader, preserve canonical Bill Watch bytes, verify hash/catalog/selection/unavailable-source boundaries, run48 focused tests, and add independent Commitments source/authority/semantic/isolation/full-read controls. No implementation/test/public contract edits, provider/private/cloud/native operations or recursive delegation. Preserve failed controls and bound each command to180seconds; check owned process-group cleanup. Source acceptance remains distinct from full original workflow or runtime qualification.
