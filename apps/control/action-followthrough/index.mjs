@@ -15,7 +15,8 @@ export function createActionFollowthrough(configuration){
  if(!Number.isSafeInteger(bounds.maxRequestMs)||bounds.maxRequestMs<1||bounds.maxRequestMs>60000||!Number.isSafeInteger(bounds.maxFactBytes)||bounds.maxFactBytes<1||bounds.maxFactBytes>16*1024*1024||!Number.isSafeInteger(context.deadlineMs)||!Array.isArray(context.scopes)||!context.scopes.length)deny('FOLLOWTHROUGH_CONFIGURATION');
  for(const scope of context.scopes){validateShape('Scope',scope);if(scope.tenantId!==context.currentBinding.tenantId)deny('FOLLOWTHROUGH_CONFIGURATION');}
  if(!context.scopes.some(s=>s.kind==='client'&&s.resourceId.toLowerCase()===clientId))deny('FOLLOWTHROUGH_CONFIGURATION');
- const options=own(commandOptions,['operation','action','outputShape','commandContext','validators','assertProposal','approvalMetadataOwner','executor','now','limits']);
+ const supplied=own(commandOptions,['operation','action','outputShape','commandContext','validators','assertProposal','approvalMetadataOwner','executor','now','limits']);
+ const options={...supplied,...data({operation:supplied.operation,action:supplied.action,outputShape:supplied.outputShape})};
  const commandContext=data(options.commandContext),commandLimits=data(options.limits),metadata=own(options.approvalMetadataOwner,['prepare','read']);
  if(!same(options.operation,descriptor.operation)||options.action!=='task.create'||options.outputShape!==descriptor.outputSchema.id.split('#/$defs/')[1]||options.validators!==commandToolValidators||options.assertProposal!==assertProposalIntegrity||options.now!==now||
   !same(commandContext.binding,context.currentBinding)||commandContext.clientResolution?.reference!==clientId||commandContext.clientResolution?.clientId!==clientId||typeof metadata.prepare!=='function'||typeof metadata.read!=='function')deny('FOLLOWTHROUGH_CONFIGURATION');
