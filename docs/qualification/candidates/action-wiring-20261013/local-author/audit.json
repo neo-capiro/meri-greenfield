@@ -1,0 +1,122 @@
+{
+  "scope": "LOCAL_SOURCE_NOT_NATIVE",
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "head": "6f76cf0ee3b8f84fc27a3aab68e38c67275b26ab",
+  "originalCount": 10378,
+  "checks": [
+    {
+      "name": "all original blobs and modes unchanged",
+      "pass": true
+    },
+    {
+      "name": "additions stay in own paths or explicit application import",
+      "pass": true
+    },
+    {
+      "name": "cli-final clean source",
+      "pass": true
+    },
+    {
+      "name": "cli-final owned process absent",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-final.stdout.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-final.stderr.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "cli-initial clean source",
+      "pass": true
+    },
+    {
+      "name": "cli-initial owned process absent",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-initial.stdout.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/cli-initial.stderr.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "dependency-final clean source",
+      "pass": true
+    },
+    {
+      "name": "dependency-final owned process absent",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/dependency-final.stdout.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/dependency-final.stderr.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "initial clean source",
+      "pass": true
+    },
+    {
+      "name": "initial owned process absent",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.stdout.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/action-wiring-20261013/local-author/initial.stderr.bin exact bytes",
+      "pass": true
+    },
+    {
+      "name": "cli-final.stdout actual full flow passed",
+      "pass": true
+    },
+    {
+      "name": "cli-final.stdout exactly one observed synthetic effect",
+      "pass": true
+    },
+    {
+      "name": "cli-final.stdout no activation or database claim",
+      "pass": true
+    },
+    {
+      "name": "cli-final.stdout closed with no retained approval",
+      "pass": true
+    },
+    {
+      "name": "cli-final.stdout no credential field or known synthetic secret",
+      "pass": true
+    },
+    {
+      "name": "cli-initial.stdout actual full flow passed",
+      "pass": true
+    },
+    {
+      "name": "cli-initial.stdout exactly one observed synthetic effect",
+      "pass": true
+    },
+    {
+      "name": "cli-initial.stdout no activation or database claim",
+      "pass": true
+    },
+    {
+      "name": "cli-initial.stdout closed with no retained approval",
+      "pass": true
+    },
+    {
+      "name": "cli-initial.stdout no credential field or known synthetic secret",
+      "pass": true
+    }
+  ],
+  "passed": 28,
+  "total": 28
+}

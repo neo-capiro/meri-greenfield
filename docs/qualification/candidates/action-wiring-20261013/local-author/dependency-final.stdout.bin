@@ -1,0 +1,18 @@
+✔ actual local HTTP graph prepares, refuses unapproved mutation, separately approves and replays one effect (196.706307ms)
+✔ opaque forged and other-session credentials never call source (15.557461ms)
+✔ current session revocation denies retained recommendation and command effects (68.150749ms)
+✔ current client policy denial refuses subsequent requests (6.643184ms)
+✔ current preparation denial creates no immutable metadata (58.286805ms)
+✔ separate approval revocation refuses before task effect (70.745799ms)
+✔ body cannot supply authority or approve HTTP route (6.704346ms)
+✔ closed session refuses all requests and cleanup is idempotent (6.538066ms)
+✔ construction bounds are closed and require explicit local mode (0.362194ms)
+✔ CLI help and invalid args do not construct the local graph or mutate configuration (0.359941ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3135.619295
