@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/original-tracking-mounted.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "apps/gateway/test/action-items-source.test.mjs",
+    "apps/gateway/test/action-items-source-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-tracking",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "5b2d19a7c10f78d3b9f21ec071061d8e3183011ccb905f2fadc3c532c0290a3b",
+  "sourceDiffBytes": 75433,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T17:30:21.071934+00:00",
+  "durationSeconds": 5.642,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 274338,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/sources/original-tracking/test-evidence/author-final.stdout.bin",
+      "bytes": 17802,
+      "sha256": "0b7dfced3e2d563688b5b434132aaacd0d30c8accb452d82e5541abb2edd59da"
+    },
+    {
+      "path": "apps/gateway/sources/original-tracking/test-evidence/author-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Action handler accepts root frozen default clock while canonicalizing action validator to actor-only; metadata+protocol review expanded. Run relevant original/correlation/successor regression.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

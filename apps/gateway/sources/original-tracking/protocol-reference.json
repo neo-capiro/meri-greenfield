@@ -1,0 +1,211 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "access": "Existing local Git object DATA reads; no imports, credentials, customer content, fixture edits, network or execution.",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-task-read.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "05254964f77173df35f6c4b68ec11b8550ebefed",
+          "bytes": 10560,
+          "sha256": "3f2ec7cd10ba3dcb3d5ae8126a36241d3b995070dc6cd33f517f9d694aa6c9e9"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "05254964f77173df35f6c4b68ec11b8550ebefed",
+          "bytes": 10560,
+          "sha256": "3f2ec7cd10ba3dcb3d5ae8126a36241d3b995070dc6cd33f517f9d694aa6c9e9"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-task-read.proof.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "c8c1a5a51b4505fb796aa1014858c49e1900e8c5",
+          "bytes": 5795,
+          "sha256": "4b6de679a1ed491b55367221de9afbcb9e9517718d5d115f7f07b0b71fc4284d"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "c8c1a5a51b4505fb796aa1014858c49e1900e8c5",
+          "bytes": 5795,
+          "sha256": "4b6de679a1ed491b55367221de9afbcb9e9517718d5d115f7f07b0b71fc4284d"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "9d1d56c9f2beea428ba94c4f206def1ce7bd2e38",
+          "bytes": 8211,
+          "sha256": "6b15f7c230330e23a887b440a0ee539759c96c718af1150b62fa443bf38dac29"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "9d1d56c9f2beea428ba94c4f206def1ce7bd2e38",
+          "bytes": 8211,
+          "sha256": "6b15f7c230330e23a887b440a0ee539759c96c718af1150b62fa443bf38dac29"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-action-item-read.proof.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "02c910e5b01868a57923644fb23f93c58ef1638b",
+          "bytes": 6374,
+          "sha256": "5a4c3c3ffb1de3e370fe656dffb2e0bcadee7e6abce79ce1479f920e48efb4fd"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "02c910e5b01868a57923644fb23f93c58ef1638b",
+          "bytes": 6374,
+          "sha256": "5a4c3c3ffb1de3e370fe656dffb2e0bcadee7e6abce79ce1479f920e48efb4fd"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "ee3a6844a184f87eede5eaf88dee687bb407472b",
+          "bytes": 17927,
+          "sha256": "a45690a2b4ec64cffe6a827eb96f5aa41a5f19fc401bcc9237827b28f8a617fc"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "ee3a6844a184f87eede5eaf88dee687bb407472b",
+          "bytes": 17927,
+          "sha256": "a45690a2b4ec64cffe6a827eb96f5aa41a5f19fc401bcc9237827b28f8a617fc"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "a451aa69bf0f3ce4dd12823f976259848328992e",
+          "bytes": 3409,
+          "sha256": "ee2d9b33cc31cbbaed7ed30fdd8b5e7234b2a3d222f318934a2fc890ae0adf00"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "a451aa69bf0f3ce4dd12823f976259848328992e",
+          "bytes": 3409,
+          "sha256": "ee2d9b33cc31cbbaed7ed30fdd8b5e7234b2a3d222f318934a2fc890ae0adf00"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+          "bytes": 499454,
+          "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+          "bytes": 499454,
+          "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+          "bytes": 2604,
+          "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+          "bytes": 2604,
+          "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+        }
+      ],
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+          "bytes": 22931,
+          "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+          "bytes": 22931,
+          "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+        }
+      ],
+      "changed": false
+    }
+  ],
+  "facts": {
+    "route": "POST /clio/tools/:name; user JWT plus ToolServiceSecretGuard",
+    "query_tasks": "engagement_tasks:canonical:v1; native_task proof and scoped authorized task page",
+    "query_action_items": "action_recommendation:canonical:v1; client-scoped action_recommendation proof; unscoped original unavailable",
+    "successor": "actions.query/action_items_complete is separate derived protocol; not admitted as original identity"
+  },
+  "liveQualification": false
+}

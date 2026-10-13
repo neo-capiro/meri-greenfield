@@ -1,0 +1,41 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/original-tracking-mounted.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "apps/gateway/test/action-items-source.test.mjs",
+    "apps/gateway/test/action-items-source-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete-independent.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-tracking",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "e577be4cce14ac77a82451a7f35bf17b158ac0a19c297008abafa44c4378cae7",
+  "sourceDiffBytes": 97616,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T17:31:25.346109+00:00",
+  "durationSeconds": 6.105,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 274870,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/sources/original-tracking/test-evidence/author-final-extended.stdout.bin",
+      "bytes": 19831,
+      "sha256": "b65c658f8bfd6b6597d71b5b592654254627f6a6e27b9de89383a9356685bbc5"
+    },
+    {
+      "path": "apps/gateway/sources/original-tracking/test-evidence/author-final-extended.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add exact originalidentity filter, native empty absence limits and frozen-overdue latency coverage; include original task contract and dispatch lifetime regressions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

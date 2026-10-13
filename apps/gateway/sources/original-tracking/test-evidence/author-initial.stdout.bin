@@ -1,0 +1,52 @@
+✔ query_tasks: actual mounted adapter decodes Fetch Response and preserves original identity/proofs (29.692669ms)
+✔ query_tasks: native opaque cursor stays opaque and explicitly incomplete (4.5187ms)
+✔ query_tasks: original source identity cannot be substituted with derived successor (0.692797ms)
+✔ query_tasks: fixed route and closed configuration are inert (0.806937ms)
+✔ query_tasks: current revocation/fence/source/budget refusal precedes credential acquisition (3.018656ms)
+✔ query_tasks: credential correlation binds full run, current subject, operation and original source (10.771463ms)
+✔ query_tasks: original rows, owner/proof and scope corruption cannot settle (19.625089ms)
+✔ query_tasks: direct admission rejects forged authority/input before source effect (2.78743ms)
+✔ query_tasks: strict Fetch response protocol and body byte decoding retain uncertainty (11.167556ms)
+✔ query_tasks: parked credentials expires and late body is retired (21.556679ms)
+✔ query_tasks: parked fetch expires and late body is retired (22.559959ms)
+✔ query_tasks: parked body expires and late body is retired (22.222324ms)
+✔ query_tasks: revocation after read/settle prevents result release (5.618294ms)
+✔ query_tasks: cancellation cancels acquired body before settlement (1.775466ms)
+✔ query_tasks: passive mount does not enable frozen catalog/production gateway (13.795247ms)
+✔ query_action_items: actual mounted adapter decodes Fetch Response and preserves original identity/proofs (10.460519ms)
+✔ query_action_items: native opaque cursor stays opaque and explicitly incomplete (2.963623ms)
+✔ query_action_items: original source identity cannot be substituted with derived successor (0.22736ms)
+✔ query_action_items: fixed route and closed configuration are inert (0.38072ms)
+✔ query_action_items: current revocation/fence/source/budget refusal precedes credential acquisition (1.648326ms)
+✔ query_action_items: credential correlation binds full run, current subject, operation and original source (9.430187ms)
+✔ query_action_items: original rows, owner/proof and scope corruption cannot settle (12.489284ms)
+✔ query_action_items: direct admission rejects forged authority/input before source effect (1.907002ms)
+✔ query_action_items: strict Fetch response protocol and body byte decoding retain uncertainty (10.12062ms)
+✔ query_action_items: parked credentials expires and late body is retired (22.135444ms)
+✔ query_action_items: parked fetch expires and late body is retired (22.431047ms)
+✔ query_action_items: parked body expires and late body is retired (22.102874ms)
+✔ query_action_items: revocation after read/settle prevents result release (5.399177ms)
+✔ query_action_items: cancellation cancels acquired body before settlement (1.667234ms)
+✔ query_action_items: passive mount does not enable frozen catalog/production gateway (9.631578ms)
+✔ tasks: assignedToMe and overdue clock use trusted actor/default without model owner authority (3.33601ms)
+✖ tasks: authorized portfolio scope preserves native overdue disclosure (0.65527ms)
+✔ original action: client-less mode remains unavailable and successor is untouched (0.487108ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 32
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2351.098199
+
+✖ failing tests:
+
+test at apps/gateway/test/original-tracking-mounted.test.mjs:147:1
+✖ tasks: authorized portfolio scope preserves native overdue disclosure (0.65527ms)
+  GatewayDenied: ACCESS_DENIED
+      at safeFailure (file:///workspace/meri-original-tracking/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-original-tracking/apps/gateway/dispatch/tool-dispatch.mjs:104:13)
+      at async TestContext.<anonymous> (file:///workspace/meri-original-tracking/apps/gateway/test/original-tracking-mounted.test.mjs:148:51)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

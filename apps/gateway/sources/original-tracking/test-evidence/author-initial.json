@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/original-tracking-mounted.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-tracking",
+  "sourceHead": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceDiffSha256": "4b972e526fdb5b316ce04cec493d0a8260ca57e61ac17fc9a7ca66282ac7950a",
+  "sourceDiffBytes": 52709,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T17:27:11.647799+00:00",
+  "durationSeconds": 2.429,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 272436,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/sources/original-tracking/test-evidence/author-initial.stdout.bin",
+      "bytes": 4033,
+      "sha256": "a51d3ee25b7cb9ec768ce19a0358032e405124ac0826fd66e52f3a72cdd20cf3"
+    },
+    {
+      "path": "apps/gateway/sources/original-tracking/test-evidence/author-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
