@@ -1,0 +1,147 @@
+
+> @capiro/meri-contracts@0.1.3 check
+> npm run check:generated && npm run typecheck && npm run test:public
+
+
+> @capiro/meri-contracts@0.1.3 check:generated
+> node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check
+
+{"schema":"meri-contract-distribution/1","check":true,"records":[{"path":"browser.mjs","bytes":466002,"sha256":"3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"},{"path":"contracts.d.ts","bytes":4090,"sha256":"e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"},{"path":"index.d.ts","bytes":85,"sha256":"b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"},{"path":"browser.d.ts","bytes":166,"sha256":"638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"},{"path":"metadata.mjs","bytes":533,"sha256":"63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"},{"path":"metadata.d.ts","bytes":485,"sha256":"63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"}]}
+[{"path":"action-application.mjs","bytes":1480808,"sha256":"9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"},{"path":"action-application.d.ts","bytes":17721,"sha256":"007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"},{"path":"action-application.schema.json","bytes":67726,"sha256":"a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"},{"path":"action-application.metadata.json","bytes":1980,"sha256":"9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"}]
+[{"path":"document-application.mjs","bytes":498894,"sha256":"4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde"},{"path":"document-application.d.ts","bytes":23960,"sha256":"1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31"},{"path":"document-application.schema.json","bytes":34642,"sha256":"712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51"},{"path":"document-application.metadata.json","bytes":1996,"sha256":"49def325d3792f56c99de484efb4193092a3c54dc82df0f4559ed462e9f4288f"}]
+[{"path":"conversation-application.mjs","bytes":1586722,"sha256":"55ea34346b510558764473818a15f28537c5ada510e2af964c76a0a477b1aaf0"},{"path":"conversation-application.d.ts","bytes":14150,"sha256":"8e8bd50df0bc9f1448f92cd77dfa8b168bee15484ec61cd9f4b60e3dea2b0f39"},{"path":"conversation-application.schema.json","bytes":39210,"sha256":"76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b"},{"path":"conversation-application.metadata.json","bytes":2374,"sha256":"34df7197bbc231a639966cee482da2011f76e142f5ffc5025518cd37752bf868"}]
+
+> @capiro/meri-contracts@0.1.3 typecheck
+> tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts
+
+
+> @capiro/meri-contracts@0.1.3 test:public
+> node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs
+
+✔ actual PR42 wire 0 query 200 (18.44052ms)
+✔ actual PR42 wire 1 draft 200 (1.733924ms)
+✔ actual PR42 wire 2 prepare 200 (3.722239ms)
+✔ actual PR42 wire 3 execute 409 (1.42242ms)
+✔ actual PR42 wire 4 execute 200 (1.032429ms)
+✔ actual PR42 wire 5 execute 200 (0.159068ms)
+✔ preserve uncertainty UNKNOWN (0.128812ms)
+✔ preserve uncertainty STORED_NOT_RELEASED (0.06008ms)
+✔ reject success/error status interchange query (0.691361ms)
+✔ reject success/error status interchange draft (0.392936ms)
+✔ reject success/error status interchange prepare (0.279126ms)
+✔ reject success/error status interchange execute (0.808706ms)
+✔ closed/correlated negative 0 (0.252426ms)
+✔ closed/correlated negative 1 (0.147129ms)
+✔ closed/correlated negative 2 (1.706934ms)
+✔ closed/correlated negative 3 (2.780565ms)
+✔ closed/correlated negative 4 (2.460007ms)
+✔ closed/correlated negative 5 (1.291215ms)
+✔ closed/correlated negative 6 (0.700364ms)
+✔ closed/correlated negative 7 (0.178957ms)
+✔ closed/correlated negative 8 (0.61017ms)
+✔ closed/correlated negative 9 (0.190725ms)
+✔ closed/correlated negative 10 (0.097525ms)
+✔ Proxy, accessor, revoked proxy rejected without traps (0.1274ms)
+✔ bounded primitive JSON (0.238005ms)
+✔ route coercion never occurs (0.070124ms)
+✔ deep immutable parsed output (1.088062ms)
+✔ execute pending outcome retained without claimed result (0.126278ms)
+✔ interleaved events retain increasing sequence (1.58334ms)
+✔ public closed submit request (2.446537ms)
+✔ public closed history request (0.276723ms)
+✔ public closed cancel request (0.721245ms)
+✔ public closed events request (0.331895ms)
+✔ submit receipt is immutable, matched to exact request, and admits a view cursor (1.300338ms)
+✔ history page binds exact current view and contiguous acknowledged sequence (12.732562ms)
+✔ terminal cancel receipt means the existing durable run state (0.878189ms)
+✔ history refuses binding tenant against the selected admitted view (0.572944ms)
+✔ history refuses binding actor against the selected admitted view (2.741266ms)
+✔ history refuses conversation against the selected admitted view (0.472574ms)
+✔ history refuses run against the selected admitted view (0.394938ms)
+✔ history refuses attempt against the selected admitted view (0.355019ms)
+✔ history refuses worker against the selected admitted view (0.272316ms)
+✔ history refuses fence against the selected admitted view (1.199318ms)
+✔ history refuses scope against the selected admitted view (0.426676ms)
+✔ history refuses request against the selected admitted view (0.378104ms)
+✔ history refuses policy against the selected admitted view (0.288049ms)
+✔ history refuses event binding against the selected admitted view (0.355791ms)
+✔ history refuses event scope against the selected admitted view (0.36895ms)
+✔ history refuses gap against the selected admitted view (0.758882ms)
+✔ history refuses next sequence against the selected admitted view (0.280378ms)
+✔ history refuses last sequence against the selected admitted view (0.363812ms)
+✔ history refuses has more against the selected admitted view (0.279767ms)
+✔ history refuses unknown field against the selected admitted view (0.192157ms)
+✔ history pages require complete bounded page and consistent continuation flags (0.602608ms)
+✔ duplicate immutable event ids and historical cursor regression are rejected (0.620264ms)
+✔ history window presence/basis mismatch is rejected without inferring source truth (0.640625ms)
+✔ request receipt identity, shape-only view and cursor reconstruction cannot bypass provenance (0.373527ms)
+✔ event refuses tenant before cursor advances (0.313026ms)
+✔ event refuses actor before cursor advances (0.193949ms)
+✔ event refuses conversation before cursor advances (0.179808ms)
+✔ event refuses run before cursor advances (0.251034ms)
+✔ event refuses attempt before cursor advances (0.202872ms)
+✔ event refuses worker before cursor advances (0.161561ms)
+✔ event refuses fence before cursor advances (0.985389ms)
+✔ event refuses scope before cursor advances (0.220729ms)
+✔ event refuses gap before cursor advances (0.150224ms)
+✔ event refuses repeat before cursor advances (0.169913ms)
+✔ event refuses protocol before cursor advances (0.117055ms)
+✔ event refuses extra before cursor advances (0.130895ms)
+✔ consumed cursor cannot branch/replay and repeated event identity at a new sequence is refused (0.418734ms)
+✔ history acknowledged event identities cannot be reused by a later stream event (0.69119ms)
+✔ safe sequence bounds, closed commands and typed skill identity (0.387928ms)
+✔ all actual error/status pairs are strict and return content-free immutable errors (0.520056ms)
+✔ byte receivers enforce UTF8, dangerous keys, Unicode, depth and size without user hooks (0.474177ms)
+✔ response and event byte caps reject before releasing content (0.252797ms)
+✔ browser ESM executes without Node globals, builtins or external imports (40.791681ms)
+✔ isolated distribution imports public receiving/schema exports without private source (57.103498ms)
+✔ public txt request/receipt/verified binary (22.077122ms)
+✔ public docx request/receipt/verified binary (2.177766ms)
+✔ public xlsx request/receipt/verified binary (2.973944ms)
+✔ revision parent and inspect current-byte receipt (1.645693ms)
+✔ refuse receipt extra (0.727745ms)
+✔ refuse receipt hash (0.307589ms)
+✔ refuse receipt bytes (0.242552ms)
+✔ refuse receipt mime (0.186168ms)
+✔ refuse receipt filename (0.196202ms)
+✔ refuse receipt parent (1.384444ms)
+✔ refuse receipt native (0.287368ms)
+✔ refuse receipt recalc (0.243483ms)
+✔ refuse receipt preview (0.218155ms)
+✔ refuse receipt scope (0.193308ms)
+✔ refuse receipt tenant (0.201811ms)
+✔ refuse receipt size (0.172046ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.406455ms)
+✔ typed-array overrides are not observed (0.132127ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.116593ms)
+✔ local request and version provenance cannot be reconstructed by shape (0.606544ms)
+✔ download header content-type refuses (0.295881ms)
+✔ download header content-length refuses (0.266507ms)
+✔ download header content-disposition refuses (0.245796ms)
+✔ download header cache-control refuses (0.234419ms)
+✔ download header x-content-type-options refuses (0.253978ms)
+✔ download header content-encoding refuses (0.238996ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (14.410652ms)
+✔ preabort/native Response brands and own getters (1.144236ms)
+✔ error status and uncertainty preserved without version or bytes (0.551162ms)
+✔ download JSON path accepts errors only (0.245847ms)
+✔ browser ESM has no Node globals/external imports and verifies real bytes (70.715059ms)
+✔ isolated package consumer exposes document export without private files/dependencies (121.793825ms)
+✔ canonical 125-character docx filename remains usable (1.132058ms)
+✔ canonical 125-character xlsx filename remains usable (1.850889ms)
+✔ native followed redirect with exact final bytes remains refused (18.547499ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (14.811411ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (2.201953ms)
+✔ structural validation deliberately grants no tenant authorization (0.231105ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (0.611131ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (33.722532ms)
+✔ generator help and invalid arguments exit before generation (74.771126ms)
+✔ generated distribution check is independent of caller working directory (661.210114ms)
+ℹ tests 119
+ℹ suites 0
+ℹ pass 119
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1062.760137
