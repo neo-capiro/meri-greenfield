@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/first-session.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "53c845e2da5e3c038d05688f3bafbd634391f38f",
+  "sourceDiffSha256": "9f7d1a940482615e3eae54e20a4a2c1f4c8d0498c8d94086e898645bb10eabdb",
+  "sourceDiffBytes": 16870,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T23:34:50.833816+00:00",
+  "durationSeconds": 0.674,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 2670,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-initial.stdout.bin",
+      "bytes": 1383,
+      "sha256": "ff2c7290b2094fd14c35502f0d6a960dee8c10f069d752ff1781c6f9da37f577"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

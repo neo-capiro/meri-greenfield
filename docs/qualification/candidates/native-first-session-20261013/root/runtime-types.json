@@ -1,0 +1,36 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/runtime"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "a657814b31c52c429e4ded13defe25a4488abdb0",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T23:36:41.604048+00:00",
+  "durationSeconds": 3.26,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 3711,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-types.stdout.bin",
+      "bytes": 76,
+      "sha256": "b9205ad279b7793153bca230ab7c3f290da1268763a1aa38303f79010a2455bc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-types.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Verify existing runtime SDK interface types on frozen source; no model or service call.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

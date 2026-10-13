@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/first-session.test.mjs",
+    "apps/runtime/native-authority/test/session-owner.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "apps/runtime/native-authority/test/session-integrity.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "a657814b31c52c429e4ded13defe25a4488abdb0",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a0ea14d9038879fb6baab895d8bad75328344ed559a9d8249c9c1090b199a6c8",
+  "startedAt": "2026-10-13T23:37:29.399657+00:00",
+  "durationSeconds": 9.671,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 4053,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/focused.stdout.bin",
+      "bytes": 4023,
+      "sha256": "518e499ad3ccc3cfa8c8898a14d07f3051fac6d03afdf7e9cd802e41498c6fce"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

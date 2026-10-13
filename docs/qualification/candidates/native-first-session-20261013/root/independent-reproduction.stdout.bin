@@ -1,0 +1,11 @@
+✔ SDK cleanup callback after run cancellation cannot newly register or retain a session (48.830657ms)
+✔ run abort cancels in-flight first registration and prevents subsequent retained effects and retries (3.1746ms)
+✔ fresh registration wait keeps canonical pending limit and failed completion barrier (21.299114ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4586.595064

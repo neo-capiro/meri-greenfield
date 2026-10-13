@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-first-session-20261013/independent/cancellation-review.test.mjs",
+    "docs/qualification/candidates/native-first-session-20261013/independent/queue-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "482e7e8af66516177c6e6599a8b11ecf07adf672",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T23:40:39.998337+00:00",
+  "durationSeconds": 4.648,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 5424,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/independent-reproduction.stdout.bin",
+      "bytes": 437,
+      "sha256": "c22cb43216f12c16e7b4ed5e30e763c9d65b15d4d61ada27428302fa68f181a9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/independent-reproduction.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root verification of the independent reviewer three added cancellation/queue assertions on exact repaired source; no broad suite repetition.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

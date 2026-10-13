@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/first-session.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "53c845e2da5e3c038d05688f3bafbd634391f38f",
+  "sourceDiffSha256": "9f7d1a940482615e3eae54e20a4a2c1f4c8d0498c8d94086e898645bb10eabdb",
+  "sourceDiffBytes": 16870,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T23:35:29.877308+00:00",
+  "durationSeconds": 5.479,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 2994,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-ready.stdout.bin",
+      "bytes": 1168,
+      "sha256": "ce648e7b359cb22bc2c146199aaaa0884f8f38b516fe1a2b0c5849245db80c33"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-ready.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Restore pinned ui-stream dependency after second preserved module-resolution failure.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

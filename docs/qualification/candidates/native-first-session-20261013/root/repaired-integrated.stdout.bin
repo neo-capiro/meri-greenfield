@@ -1,0 +1,26 @@
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (59.595312ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (10.804755ms)
+✔ missing actual native task authority yields503 before registration/admission (1.535741ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (2.341634ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (21.854556ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (8.975992ms)
+✔ fresh mirror is inert until actual main key and preserves ordered canonical native writes (61.31003ms)
+✔ fresh mirror cannot load old state or report completion without observed registration (1.805561ms)
+✔ invalid entries, first subkey and accessor keys refuse before registration and poison later dispatch (2.689499ms)
+✔ first callback key must match independently observed native key; rejection is never registered again (3.814012ms)
+✔ registered fresh mirror refuses another project/session and cannot settle it as success (15.009163ms)
+✔ native revocation and uncertain registration remain terminal barriers across SDK retries (7.473459ms)
+✔ null fresh selector cannot be used for continuation or changed binding (1.364036ms)
+✔ closing before registration acknowledgement retires queued effects without re-registering (2.458587ms)
+✔ one scripted SDK query obtains its first mirror key and settles before durable completion (207.394656ms)
+✔ scripted success without first mirror cannot produce durable completed state (409.910171ms)
+✔ assembled runner cancellation uses configured100ms bound for a parked owned close (630.623697ms)
+✔ actual bounded native mirror append acknowledgement precedes durable completed status (67.257452ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8008.377508

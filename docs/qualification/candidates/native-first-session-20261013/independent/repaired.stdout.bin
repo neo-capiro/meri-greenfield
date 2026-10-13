@@ -1,0 +1,21 @@
+✔ fresh mirror is inert until actual main key and preserves ordered canonical native writes (39.417903ms)
+✔ fresh mirror cannot load old state or report completion without observed registration (1.227408ms)
+✔ invalid entries, first subkey and accessor keys refuse before registration and poison later dispatch (1.622456ms)
+✔ first callback key must match independently observed native key; rejection is never registered again (2.513566ms)
+✔ registered fresh mirror refuses another project/session and cannot settle it as success (9.48449ms)
+✔ native revocation and uncertain registration remain terminal barriers across SDK retries (4.939945ms)
+✔ null fresh selector cannot be used for continuation or changed binding (0.7553ms)
+✔ closing before registration acknowledgement retires queued effects without re-registering (1.413806ms)
+✔ one scripted SDK query obtains its first mirror key and settles before durable completion (147.687828ms)
+✔ scripted success without first mirror cannot produce durable completed state (91.712795ms)
+✔ SDK cleanup callback after run cancellation cannot newly register or retain a session (53.072531ms)
+✔ run abort cancels in-flight first registration and prevents subsequent retained effects and retries (3.556822ms)
+✔ fresh registration wait keeps canonical pending limit and failed completion barrier (18.50498ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9740.505347
