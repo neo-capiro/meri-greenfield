@@ -1,0 +1,6 @@
+{
+  "prior": "be9bfc3b",
+  "reason": "Existing lookup fixture gateway closes over a different fixed epoch. Independent fixture now calls the unchanged canonical binding+envelope helpers with its chosen command epoch, before any candidate replay.",
+  "sourceChanged": false,
+  "testsRun": false
+}

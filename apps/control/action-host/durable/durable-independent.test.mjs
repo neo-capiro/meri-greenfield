@@ -6,7 +6,8 @@ import {createDurableActionServices} from './index.mjs';
 import {fixture,NOW} from '../../test/commands-fixture.mjs';
 import {createMetadataPoolFixture} from '../../commands/approval-metadata/test/fixture.mjs';
 import {createTaskLookupPoolFixture} from '../../task-lookup/postgres-fixture.mjs';
-import {fixture as lookupFixture} from '../../task-lookup/fixtures.mjs';
+import {fixture as lookupFixture,envelope} from '../../task-lookup/fixtures.mjs';
+import {prepare as prepareLookup} from '../../task-lookup/binding.mjs';
 import {createCommandToolInterface} from '../../commands/tool-interface.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 const {harness}=await import('../../../../docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs');
@@ -20,7 +21,7 @@ function setup(){
  lf.context.deadlineMs=NOW+5000;lf.readContext.deadlineMs=NOW+5000;
  const lookupAuthorize=async c=>{if(!readAllowed)throw Error('current read canary');return {authorized:true,bindingSha256:c.binding.bindingSha256,expiresAtMs:NOW+5000};};
  f.state.fetchHook=async(_url,init,native)=>{const args=JSON.parse(init.body);Object.assign(native.task,{title:args.title,clientId:args.clientId,dueDate:args.dueDate});return new Response(JSON.stringify(native),{headers:{'content-type':'application/json'}});};
- const config={lookup:{pool:lookupSql.pool,gateway:lf.gateway,authorize:lookupAuthorize},metadata:{pool:metadataSql.pool,preparePolicy},command:{journalPool:f.pg.pool,budgetPool:h.pool,allocationJson:JSON.stringify(h.allocation),producerContext:{context,producer:h.producer},authority:f.authority,approvalStore,source:f.source,contracts:f.contracts,descriptor:f.descriptor},commandContext:f.context,now:()=>f.state.now,newId:randomUUID,limits:{maxRequestMs:5000,maxFactBytes:65536,maxResponseBytes:65536,maxCleanupMs:50},sourceEnabled:true};
+ const config={lookup:{pool:lookupSql.pool,gateway:{async executeOwned(){return JSON.stringify(envelope(prepareLookup(lf.request,lf.context,f.state.now)));}},authorize:lookupAuthorize},metadata:{pool:metadataSql.pool,preparePolicy},command:{journalPool:f.pg.pool,budgetPool:h.pool,allocationJson:JSON.stringify(h.allocation),producerContext:{context,producer:h.producer},authority:f.authority,approvalStore,source:f.source,contracts:f.contracts,descriptor:f.descriptor},commandContext:f.context,now:()=>f.state.now,newId:randomUUID,limits:{maxRequestMs:5000,maxFactBytes:65536,maxResponseBytes:65536,maxCleanupMs:50},sourceEnabled:true};
  const make=changes=>createDurableActionServices({...config,...changes});
  const execution=p=>({...f.execution,proposalId:p.proposalId,commandSha256:p.commandSha256,idempotencyKey:p.command.idempotencyKey});
  const approve=p=>{approved=true;Object.assign(f.decision,{proposalId:p.proposalId,commandSha256:p.commandSha256,expiresAt:p.expiresAt,approver:p.requiredApprover});};
