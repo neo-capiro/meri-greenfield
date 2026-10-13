@@ -1,0 +1,30 @@
+✔ actual command interface prepares canonical immutable task proposal using concrete metadata owner/store (21.520955ms)
+✔ each explicit prepare has new IDs; no implicit deduplication or mutation (8.333924ms)
+✔ immutable prepared result and stored request survive caller edits (3.45823ms)
+✔ direct substituted input is refused before policy/SQL (0.854615ms)
+✔ direct substituted inputSha256 is refused before policy/SQL (0.572361ms)
+✔ direct substituted binding is refused before policy/SQL (0.515806ms)
+✔ direct substituted operation is refused before policy/SQL (0.439581ms)
+✔ direct substituted action is refused before policy/SQL (0.415886ms)
+✔ fresh release cannot rewrite policy scopes (3.440674ms)
+✔ fresh release cannot rewrite policy requiredApprover (3.132351ms)
+✔ fresh release cannot rewrite policy proposalExpiresAt (2.756186ms)
+✔ fresh release cannot rewrite policy binding (2.490185ms)
+✔ fresh release cannot rewrite policy selectionSha256 (2.960282ms)
+✔ denied initial policy does not allocate or insert (0.99091ms)
+✔ missing authorized read is unavailable, not an absent success (0.928707ms)
+✔ read binds full original actor/run/binding and command hash (4.624716ms)
+✔ lost insert acknowledgment retains possible row and UNKNOWN without retry (2.151265ms)
+✔ current read release denial retains immutable metadata and prevents executor call (5.578259ms)
+✔ metadata pool configuration requires finite bounds before any connect (0.21265ms)
+✔ query ACK corruption is UNKNOWN and borrowed client is evicted without pool close (2.53351ms)
+✔ known policy deadline published before parked receipt bounds call with no insert (26.03891ms)
+✔ late acquired SQL client issues no query after cancellation and is released (3.541897ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2874.079547
