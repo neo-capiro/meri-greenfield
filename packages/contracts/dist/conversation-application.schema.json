@@ -1,0 +1,1557 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:conversation-application:0.1.0",
+  "$defs": {
+    "ConversationSubmitRequest": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100000,
+          "pattern": "\\S"
+        },
+        "windowRequest": {
+          "$ref": "#/$defs/Canonical_WindowRequest_f314f340"
+        },
+        "skill": {
+          "type": "object",
+          "properties": {
+            "skillId": {
+              "$ref": "#/$defs/Canonical_skillId_31e12e8e"
+            },
+            "skillVersion": {
+              "$ref": "#/$defs/Canonical_skillVersion_7e2af095"
+            }
+          },
+          "required": [
+            "skillId",
+            "skillVersion"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "requestId",
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryRequest": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ConversationCancelRequest": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "ConversationEventsRequest": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "intent": {
+              "const": "view.subscribe"
+            }
+          },
+          "required": [
+            "conversationId",
+            "intent"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationSkillAssetPin": {
+      "type": "object",
+      "properties": {
+        "skillId": {
+          "$ref": "#/$defs/Canonical_skillId_31e12e8e"
+        },
+        "skillVersion": {
+          "$ref": "#/$defs/Canonical_skillVersion_7e2af095"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "proseSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "catalogSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "skillId",
+        "skillVersion",
+        "manifestSha256",
+        "proseSha256",
+        "catalogSha256"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationStoredRequest": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100000,
+          "pattern": "\\S"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConversationSkillAssetPin"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "window": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_NormalizedWindow_e50ec0ed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "windowRequest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_WindowRequest_f314f340"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requestId",
+        "prompt",
+        "skill",
+        "window",
+        "windowRequest"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationSubmittedResponse": {
+      "type": "object",
+      "properties": {
+        "run": {
+          "$ref": "#/$defs/Canonical_Run_aeee1939"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "lastSequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "run",
+        "requestId",
+        "lastSequence",
+        "replayed"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "run": {
+          "$ref": "#/$defs/Canonical_Run_aeee1939"
+        },
+        "request": {
+          "$ref": "#/$defs/ConversationStoredRequest"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_UIEvent_1691b714"
+          },
+          "maxItems": 100
+        },
+        "nextSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "lastSequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "run",
+        "request",
+        "events",
+        "nextSequence",
+        "hasMore",
+        "lastSequence"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationCancelledResponse": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationEvent": {
+      "$ref": "#/$defs/Canonical_UIEvent_1691b714"
+    },
+    "ConversationErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "enum": [
+                "NOT_FOUND",
+                "METHOD_NOT_ALLOWED",
+                "SESSION_REFUSED",
+                "UNSUPPORTED_MEDIA_TYPE",
+                "INVALID_REQUEST",
+                "INVALID_CURSOR",
+                "REQUEST_REPLAY_REFUSED",
+                "SCOPE_REFUSED",
+                "SESSION_CHANGED",
+                "STALE_WRITER",
+                "CONVERSATION_SELECTOR_REFUSED",
+                "DEADLINE",
+                "CANCELLED",
+                "REQUEST_TOO_LARGE",
+                "CONVERSATION_UNAVAILABLE"
+              ]
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_WindowRequest_f314f340": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "calendar-week"
+            },
+            "offset": {
+              "type": "integer",
+              "enum": [
+                -1,
+                0
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "weekStartsOn": {
+              "type": "string",
+              "enum": [
+                "monday",
+                "sunday"
+              ]
+            }
+          },
+          "required": [
+            "basis",
+            "offset",
+            "timezone",
+            "weekStartsOn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "calendar-month"
+            },
+            "offset": {
+              "type": "integer",
+              "enum": [
+                -1,
+                0
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "offset",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "calendar-year"
+            },
+            "offset": {
+              "type": "integer",
+              "enum": [
+                -1,
+                0
+              ]
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "offset",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "relative-duration"
+            },
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 3660
+            },
+            "anchorAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "days",
+            "anchorAt",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "explicit"
+            },
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "endExclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "startInclusive",
+            "endExclusive",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "fiscal-year"
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 3000
+            },
+            "calendarId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "stage": {
+              "type": "string",
+              "enum": [
+                "requested",
+                "authorized",
+                "appropriated",
+                "obligated",
+                "actual",
+                "outlay"
+              ]
+            },
+            "revisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "year",
+            "calendarId",
+            "stage",
+            "revisionId",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "unbounded"
+            }
+          },
+          "required": [
+            "basis"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_skillId_31e12e8e": {
+      "type": "string",
+      "enum": [
+        "quick_skill.research_company",
+        "quick_skill.relationship_brief",
+        "quick_skill.client_changes",
+        "quick_skill.portfolio_changes",
+        "quick_skill.portfolio_overlap",
+        "quick_skill.mail_history",
+        "quick_skill.meeting_prep",
+        "quick_skill.commitments_audit",
+        "quick_skill.funding_opportunity_match",
+        "quick_skill.pe_deep_dive",
+        "quick_skill.bill_watch",
+        "quick_skill.hearing_watch",
+        "quick_skill.representation_lookup",
+        "quick_skill.regulatory_docket_brief"
+      ]
+    },
+    "Canonical_skillVersion_7e2af095": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "Canonical_NormalizedWindow_e50ec0ed": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "type": "string",
+              "enum": [
+                "calendar-week",
+                "calendar-month",
+                "calendar-year",
+                "relative-duration",
+                "explicit"
+              ]
+            },
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "endExclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "weekStartsOn": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "monday",
+                    "sunday"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "basis",
+            "startInclusive",
+            "endExclusive",
+            "timezone",
+            "weekStartsOn"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "fiscal-year"
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 3000
+            },
+            "calendarId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "stage": {
+              "type": "string",
+              "enum": [
+                "requested",
+                "authorized",
+                "appropriated",
+                "obligated",
+                "actual",
+                "outlay"
+              ]
+            },
+            "revisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "startInclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "endExclusive": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "timezone": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": [
+            "basis",
+            "year",
+            "calendarId",
+            "stage",
+            "revisionId",
+            "startInclusive",
+            "endExclusive",
+            "timezone"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "basis": {
+              "const": "unbounded"
+            }
+          },
+          "required": [
+            "basis"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_RuntimeVersions_7edb8efc": {
+      "type": "object",
+      "properties": {
+        "imageDigest": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "sdk": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "cli": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "contracts": {
+          "const": "0.1.0"
+        },
+        "skillsDigest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "checkpointFormat": {
+          "const": "0.1.0"
+        }
+      },
+      "required": [
+        "imageDigest",
+        "sdk",
+        "cli",
+        "contracts",
+        "skillsDigest",
+        "checkpointFormat"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Run_aeee1939": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "starting",
+            "running",
+            "waiting-for-approval",
+            "paused",
+            "completed",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "versions": {
+          "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc"
+        }
+      },
+      "required": [
+        "binding",
+        "state",
+        "scopes",
+        "createdAt",
+        "policyRevision",
+        "versions"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_SourceEvidence_d9008775": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceVersionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "sourceUpdatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "contentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorizationDecisionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "sourceId",
+        "recordId",
+        "sourceVersionId",
+        "observedAt",
+        "sourceUpdatedAt",
+        "citationId",
+        "scopes",
+        "contentSha256",
+        "authorizationDecisionId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_UIEvent_1691b714": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "run.status"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "enum": [
+                    "queued",
+                    "starting",
+                    "running",
+                    "waiting-for-approval",
+                    "paused",
+                    "completed",
+                    "failed",
+                    "cancelled"
+                  ]
+                },
+                "reasonCode": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "state",
+                "reasonCode"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "message.delta"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "messageId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "messageId",
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "tool.started"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "tool": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "requestId",
+                "tool"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "tool.completed"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "resultReference": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "requestId",
+                "resultReference"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "source.available"
+            },
+            "data": {
+              "$ref": "#/$defs/Canonical_SourceEvidence_d9008775"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "approval.required"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "proposalId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "commandSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "Z$"
+                }
+              },
+              "required": [
+                "proposalId",
+                "commandSha256",
+                "expiresAt"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "artifact.available"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "artifactId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "versionId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "artifactId",
+                "versionId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "checkpoint.verified"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "checkpointId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "checkpointId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "usage.recorded"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "usageId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "usageId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "contractVersion": {
+              "const": "0.1.0"
+            },
+            "eventId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "binding": {
+              "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Canonical_Scope_f882edb5"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "type": {
+              "const": "run.error"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "code",
+                "retryable",
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "contractVersion",
+            "eventId",
+            "binding",
+            "sequence",
+            "createdAt",
+            "scopes",
+            "type",
+            "data"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

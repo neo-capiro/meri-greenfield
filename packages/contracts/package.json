@@ -1,6 +1,6 @@
 {
   "name": "@capiro/meri-contracts",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -36,13 +36,18 @@
       "types": "./dist/document-application.d.ts",
       "default": "./dist/document-application.mjs"
     },
-    "./document-application/schema": "./dist/document-application.schema.json"
+    "./document-application/schema": "./dist/document-application.schema.json",
+    "./conversation-application": {
+      "types": "./dist/conversation-application.d.ts",
+      "default": "./dist/conversation-application.mjs"
+    },
+    "./conversation-application/schema": "./dist/conversation-application.schema.json"
   },
   "scripts": {
-    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs",
-    "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check",
-    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts",
-    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs",
+    "build": "node generate.mjs && node generate-actions.mjs && node generate-documents.mjs && node generate-conversations.mjs",
+    "check:generated": "node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check",
+    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts",
+    "test:public": "node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs",
     "check": "npm run check:generated && npm run typecheck && npm run test:public"
   },
   "dependencies": {
