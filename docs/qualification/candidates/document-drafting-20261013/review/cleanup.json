@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-13T05:58:48.499084+00:00",
+  "groups": [
+    {
+      "label": "repaired",
+      "group": 508198,
+      "physicallyAbsent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "label": "port-boundaries-before",
+      "group": 507690,
+      "physicallyAbsent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "label": "isolated",
+      "group": 507447,
+      "physicallyAbsent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "label": "first",
+      "group": 507173,
+      "physicallyAbsent": true,
+      "killRequired": false,
+      "timedOut": false
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "node_modules",
+      "removedOwnLink": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "removedOwnLink": true,
+      "donorPreserved": true
+    }
+  ],
+  "testFixtureCleanup": "Each independent fixture asserted executorDirectoriesAbsent,storeRemoved and actual root absence; HTTP case asserted closed/listening false/zero sockets."
+}

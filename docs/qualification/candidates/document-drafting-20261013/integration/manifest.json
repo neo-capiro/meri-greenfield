@@ -1,0 +1,195 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceEvidenceFreeze": "b0756dcb3bed574a49dc967fc205d97c1a32fada",
+  "tree": "7116b4d3e5c51dc1d99e3b1e16e0d29545330f74",
+  "authorSource": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+  "independentReview": "2339dacda10ee9b0d63939c5dee6d6dc39a9e52d",
+  "checks": {
+    "canonicalRegressions": 512,
+    "finalWorkflow": 21,
+    "independent": 37,
+    "originalEntriesUnchanged": 11411
+  },
+  "members": [
+    {
+      "path": "apps/control/document-application/local/README.md",
+      "bytes": 2781,
+      "sha256": "d0559149533511afdf0c34826d7e0693d6c33cd27aac1ee04be05f57ed789450"
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "bytes": 6393,
+      "sha256": "25899f267cd7ce02c9a3578544717b12187a5fb19a59603294b0c6e847315255"
+    },
+    {
+      "path": "apps/control/document-application/local/flow.mjs",
+      "bytes": 5236,
+      "sha256": "4728d7889dc7a6ab03ef3f0465f29f5eaf66446b6a6d2e0fbaef6a95549f28df"
+    },
+    {
+      "path": "apps/control/document-application/local/inspect_docx.py",
+      "bytes": 1302,
+      "sha256": "6bb9792f9483c69101e0e20a00c71e9756d1568a5414dd054d17683a369ac507"
+    },
+    {
+      "path": "apps/control/document-application/local/local.test.mjs",
+      "bytes": 2231,
+      "sha256": "7d14e541955f2713ce078b98ef294c3b8ebda11b488f79372a4f19f190a89cf9"
+    },
+    {
+      "path": "apps/control/document-application/local/mount.mjs",
+      "bytes": 1072,
+      "sha256": "80380c1665b8621c8a5a1b3413742a289e21c07e6074f0882ec9071d772695c0"
+    },
+    {
+      "path": "apps/control/document-application/local/ports.mjs",
+      "bytes": 3954,
+      "sha256": "0aca6659854fdc5df758e207f73bfbc65c4f0158358c3d23730cb439abd52730"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-DOCUMENT-DRAFTING-20261013.md",
+      "bytes": 6648,
+      "sha256": "4276551517490a95e53ccfa0cdd29b945b5d11cb78343aa0f263f8b37c38aa64"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-DOCUMENT-DRAFTING-20261013.md",
+      "bytes": 3853,
+      "sha256": "9091379feb4f5c2e6e18c545b805f038f60953aeb50f809406b501e570136ce7"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/audit.json",
+      "bytes": 1096,
+      "sha256": "11d3f83c4266b3d84038c50244bc59868ed47fd3045c74c688c572369cf3f36a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/audit.py",
+      "bytes": 2768,
+      "sha256": "5318406ddafcf23163378616deac6ccc677f22934a2fa6006d724620549ca3c1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.json",
+      "bytes": 2774,
+      "sha256": "695615ce19962fa219ee91734ecdefba56580ba68fa4d17627b82e28d3243f4f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.stdout.bin",
+      "bytes": 44772,
+      "sha256": "0c959de29d7d4d97fe557df926a081071595a206961896031bd875a8a122e7b5"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/cleanup.json",
+      "bytes": 1355,
+      "sha256": "e0ceb3fe9b77e739db0372800575e4b790ce2d5f0ee62c65752801b86cbc8bb8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.json",
+      "bytes": 1483,
+      "sha256": "3420d8e26860c8d9fe94efd2bd71e8ffd31447d04fa1becc143836645b7c8c3f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/final-http-tests.stdout.bin",
+      "bytes": 1931,
+      "sha256": "0ca30e1066f391e6bd41492e1bb381766751f4c2be0b689b9478e53bbd647b4d"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.json",
+      "bytes": 1336,
+      "sha256": "d2f83ceabf0d6d4c8c8d52a71354140e39aa2add9b4f29864eb66c68b98225c1"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/first-http.stdout.bin",
+      "bytes": 7363,
+      "sha256": "8703d2fcccd81112d63e5cb5c7f4a6e8602ea73b1b06e3135e14d3dbc6e75e42"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/fixture-core.json",
+      "bytes": 2226,
+      "sha256": "a06db9b71eca6d958569240482c666561d756797fffc04a71df5e2c6229f8871"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/fixture-core.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/fixture-core.stdout.bin",
+      "bytes": 2930,
+      "sha256": "0406f7da05013be582cb10c2dd89d624f538ccb48da4cc3e3e3481f5815aeb1c"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests-bound.json",
+      "bytes": 1525,
+      "sha256": "0e60971531855e2df01344191e8a44822345f4a87acdba99d7123f7fa80d5bca"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests-bound.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests-bound.stdout.bin",
+      "bytes": 1594,
+      "sha256": "7db035c44563b1131079e3951cc4939075b21e8c86af5cf62600093d6c945b9f"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.json",
+      "bytes": 1355,
+      "sha256": "b2ec911c65b3f888d24466c5227d65f89059e3233de54879a319f1f7e033d432"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.stdout.bin",
+      "bytes": 16543,
+      "sha256": "4fb4d9f818085368a913029350ff1f2f57b695de2476ee75b98c349e06947168"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/packet-verification.json",
+      "bytes": 524,
+      "sha256": "11bd98eb49117adb53c9d4a87ae23578f0f34e35ee41355af264f3d86f3f1fb8"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/preservation-audit.json",
+      "bytes": 1292,
+      "sha256": "2c112075acfbe071894fcc7c8d638df94188f56cb1c83d1bf11144b1e95d7b1a"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/preservation-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/preservation-audit.stdout.bin",
+      "bytes": 988,
+      "sha256": "00501cbc9bae3852fdca9e620b49320f71ec46aa7c5761a9312200194e553233"
+    },
+    {
+      "path": "scripts/local-document/run.mjs",
+      "bytes": 3640,
+      "sha256": "88fde89c80cb1acd4ff233baa393db7e876206378e05db889e3b2528f68fd1e7"
+    }
+  ]
+}

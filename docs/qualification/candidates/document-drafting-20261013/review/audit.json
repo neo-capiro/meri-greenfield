@@ -1,0 +1,104 @@
+{
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "reviewHead": "2767b12f8a0532d4f2ad9316f43e8a7bd90ccbeb",
+  "authorSource": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+  "rootFixtureSource": "929ea5cc",
+  "originalEntries": 11411,
+  "unchangedOriginalEntries": 11411,
+  "originalChanges": [],
+  "pins": [
+    {
+      "path": "apps/control/document-application/index.mjs",
+      "gitRef": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+      "sha256": "2a3cdd00423ce6d3e734bdd96f167a6fb83647f273baa89c9ed3a9473e62f6c4",
+      "bytes": 6544
+    },
+    {
+      "path": "apps/control/document-application/current.mjs",
+      "gitRef": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+      "sha256": "f80ef77652cb307a87387fe95ef1d565a07969ddeae2e641b6a14b509db2bc76",
+      "bytes": 5714
+    },
+    {
+      "path": "apps/control/document-application/http.mjs",
+      "gitRef": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+      "sha256": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d",
+      "bytes": 2481
+    },
+    {
+      "path": "apps/control/document-application/test/application.test.mjs",
+      "gitRef": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+      "sha256": "5b8a657a1d00c20f66790280c8a00c6217799dce7db7e311679eba282e949bee",
+      "bytes": 10927
+    },
+    {
+      "path": "apps/control/document-application/local/fixture.mjs",
+      "gitRef": "929ea5cc",
+      "sha256": "25899f267cd7ce02c9a3578544717b12187a5fb19a59603294b0c6e847315255",
+      "bytes": 6393
+    },
+    {
+      "path": "apps/control/document-application/local/ports.mjs",
+      "gitRef": "929ea5cc",
+      "sha256": "0aca6659854fdc5df758e207f73bfbc65c4f0158358c3d23730cb439abd52730",
+      "bytes": 3954
+    },
+    {
+      "path": "apps/control/document-application/local/mount.mjs",
+      "gitRef": "929ea5cc",
+      "sha256": "80380c1665b8621c8a5a1b3413742a289e21c07e6074f0882ec9071d772695c0",
+      "bytes": 1072
+    },
+    {
+      "path": "apps/control/document-application/local/flow.mjs",
+      "gitRef": "929ea5cc",
+      "sha256": "4728d7889dc7a6ab03ef3f0465f29f5eaf66446b6a6d2e0fbaef6a95549f28df",
+      "bytes": 5236
+    },
+    {
+      "path": "apps/control/document-application/local/inspect_docx.py",
+      "gitRef": "929ea5cc",
+      "sha256": "6bb9792f9483c69101e0e20a00c71e9756d1568a5414dd054d17683a369ac507",
+      "bytes": 1302
+    },
+    {
+      "path": "apps/control/document-application/local/local.test.mjs",
+      "gitRef": "929ea5cc",
+      "sha256": "7d14e541955f2713ce078b98ef294c3b8ebda11b488f79372a4f19f190a89cf9",
+      "bytes": 2231
+    },
+    {
+      "path": "scripts/local-document/run.mjs",
+      "gitRef": "929ea5cc",
+      "sha256": "88fde89c80cb1acd4ff233baa393db7e876206378e05db889e3b2528f68fd1e7",
+      "bytes": 3640
+    }
+  ],
+  "receipts": [
+    {
+      "label": "first",
+      "exitCode": 1,
+      "group": 507173,
+      "freshAbsent": true
+    },
+    {
+      "label": "isolated",
+      "exitCode": 1,
+      "group": 507447,
+      "freshAbsent": true
+    },
+    {
+      "label": "port-boundaries-before",
+      "exitCode": 1,
+      "group": 507690,
+      "freshAbsent": true
+    },
+    {
+      "label": "repaired",
+      "exitCode": 0,
+      "group": 508198,
+      "freshAbsent": true
+    }
+  ],
+  "scope": "SOURCE_ONLY; actual local DOCX and HTTP, synthetic identity/SQL; no native qualification"
+}

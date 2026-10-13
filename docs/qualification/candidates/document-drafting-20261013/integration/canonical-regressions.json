@@ -1,0 +1,59 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/tmp/meri-document-drafting-20261013",
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+    "apps/artifacts/test/artifact-execution.test.mjs",
+    "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs",
+    "apps/artifacts/test/artifact-process-independent.test.mjs",
+    "apps/artifacts/test/artifact-service-independent.test.mjs",
+    "apps/artifacts/test/postgres-analysis-independent.test.mjs",
+    "apps/artifacts/test/postgres-service-independent.test.mjs",
+    "apps/control/action-host/session/http-independent.test.mjs",
+    "apps/control/action-host/session/owner-independent.test.mjs",
+    "apps/control/action-host/session/session.test.mjs",
+    "apps/control/action-application/application-independent.test.mjs",
+    "apps/control/action-application/application.test.mjs",
+    "apps/control/action-application/http-independent.test.mjs",
+    "apps/control/action-application/http.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/postgres-budget-admission.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "packages/contracts/test/artifact-execution-independent-general.test.mjs",
+    "packages/contracts/test/artifact-execution-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-20261013",
+  "sourceHead": "e36f1ae2c2ec3fce512518a8128de4c62bd0e32f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:51:59.583320+00:00",
+  "durationSeconds": 33.892,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 506651,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.stdout.bin",
+      "bytes": 44772,
+      "sha256": "0c959de29d7d4d97fe557df926a081071595a206961896031bd875a8a122e7b5"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/canonical-regressions.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,25 @@
+✔ document fixture CLI help and malformed arguments allocate no fixture or listener (0.943227ms)
+✔ actual HTTP Word draft and revision preserve originals, budgets and revoked download denial (3516.248555ms)
+✔ create/revise/inspect/download use immutable storage and one shared canonical ledger (354.565163ms)
+✔ actual DOCX produces truthful draft/preview metadata and exact ZIP bytes (245.626867ms)
+✔ default disabled allocates no document effect; borrowed session remains open (6.818758ms)
+✔ reject body authority before generation (7.379931ms)
+✔ reject wrong operation before generation (9.693759ms)
+✔ reject PDF before generation (11.629518ms)
+✔ native identity/tool tokens cannot authenticate application routes (7.505731ms)
+✔ revoked session denies older-version read without another reservation (90.308599ms)
+✔ post-object revocation preserves uncertainty without regeneration (83.517589ms)
+✔ strict native Request admission ignores hostile own url and rejects Proxy without traps (8.831462ms)
+✔ bounded body and fixed path/media handling preserve safe no-store errors (9.086777ms)
+✔ constructor snapshots data and rejects authority getters without invocation (82.649984ms)
+✔ canonical descriptor rejects accidental grant or source redefinition (6.108941ms)
+✔ shorter artifact receipt clips outer lifetime before the next parked session call (55.55968ms)
+✔ fresh session with changed full binding refuses before accounting (6.557956ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3664.978402

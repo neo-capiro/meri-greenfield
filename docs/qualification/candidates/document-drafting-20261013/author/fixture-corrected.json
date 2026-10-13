@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/test/application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-author-20261013",
+  "sourceHead": "f82e31fae54f0072aebc8ce5e0f0bfd89b86eb01",
+  "sourceDiffSha256": "87b5b9534c962dc0f3780b2c3c1694594ba682066d048e04aff4733dfc44c906",
+  "sourceDiffBytes": 4570,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:50:21.817163+00:00",
+  "durationSeconds": 3.93,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 505996,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/fixture-corrected.stdout.bin",
+      "bytes": 2075,
+      "sha256": "248e7d5ae6e034c4e7870080de292c92d0229788fdfae23e2f9c7600e973f5f2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/fixture-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

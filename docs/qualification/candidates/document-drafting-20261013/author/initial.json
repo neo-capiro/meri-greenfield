@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/test/application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-author-20261013",
+  "sourceHead": "28756c291a166fe2f4324b3970febc86ab621d4e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:48:30.342369+00:00",
+  "durationSeconds": 2.777,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 505599,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/initial.stdout.bin",
+      "bytes": 3938,
+      "sha256": "9c0592640da8662ceca405f079a8e16374745f6f7f84f3c58a4a3a9177dddd45"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

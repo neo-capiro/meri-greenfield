@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/test/application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-author-20261013",
+  "sourceHead": "01bd08564c5695641ad146a4441f3b3cdd5c66c4",
+  "sourceDiffSha256": "61387f5c64a1df928e10a12ce2e6a3dcf42f80c28ce4c544e03124a31584329d",
+  "sourceDiffBytes": 4366,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:55:25.743775+00:00",
+  "durationSeconds": 3.425,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 507861,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-repaired.stdout.bin",
+      "bytes": 1721,
+      "sha256": "ba00527dea136cfaccb034a8c89ae97b859f14991c56b0d482b5d1cce751ca0e"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/author/hostile-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

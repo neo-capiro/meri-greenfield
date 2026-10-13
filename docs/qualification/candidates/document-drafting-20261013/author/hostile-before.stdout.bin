@@ -1,0 +1,48 @@
+✖ hostile authorize rejection is inert before canonical owner catches (62.580836ms)
+✖ hostile authority rejection is inert before canonical owner catches (15.71557ms)
+✔ hostile executor rejection is inert before canonical owner catches (22.527407ms)
+✔ hostile objects rejection is inert before canonical owner catches (84.78658ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2709.821824
+
+✖ failing tests:
+
+test at apps/control/document-application/test/application.test.mjs:77:68
+✖ hostile authorize rejection is inert before canonical owner catches (62.580836ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-author-20261013/apps/control/document-application/test/application.test.mjs:80:182)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/document-application/test/application.test.mjs:77:68
+✖ hostile authority rejection is inert before canonical owner catches (15.71557ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-document-drafting-author-20261013/apps/control/document-application/test/application.test.mjs:80:182)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

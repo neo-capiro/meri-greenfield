@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-13T06:00:40.233137+00:00",
+  "groups": [
+    {
+      "receipt": "preservation-audit.json",
+      "pgid": 509041,
+      "freshlyAbsent": true
+    },
+    {
+      "receipt": "final-http-tests.json",
+      "pgid": 508310,
+      "freshlyAbsent": true
+    },
+    {
+      "receipt": "canonical-regressions.json",
+      "pgid": 506651,
+      "freshlyAbsent": true
+    },
+    {
+      "receipt": "integrated-http-tests-bound.json",
+      "pgid": 506582,
+      "freshlyAbsent": true
+    },
+    {
+      "receipt": "integrated-http-tests.json",
+      "pgid": 506450,
+      "freshlyAbsent": true
+    },
+    {
+      "receipt": "first-http.json",
+      "pgid": 505947,
+      "freshlyAbsent": true
+    },
+    {
+      "receipt": "fixture-core.json",
+      "pgid": 505399,
+      "freshlyAbsent": true
+    }
+  ],
+  "links": [
+    {
+      "path": "/tmp/meri-document-drafting-20261013/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules",
+      "removedOwnSymlink": true,
+      "borrowedTargetRetained": true
+    },
+    {
+      "path": "/tmp/meri-document-drafting-20261013/packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "removedOwnSymlink": true,
+      "borrowedTargetRetained": true
+    }
+  ],
+  "nativeJobsStarted": false
+}

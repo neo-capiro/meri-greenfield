@@ -1,0 +1,7 @@
+# Independent document application criteria
+
+Frozen before implementation inspection. Base/root candidate: 929ea5cc, author initial f82e31fa; baseline PR49 b5243ae164f68c7591b039e8365d9897390543d2. Read AGENTS and implementation standards.
+
+Require actual canonical PostgreSQL artifact accounting, immutable local version/object storage, real python-docx generation and HTTP exact-version download; inspect create/revision boundaries rather than treating creation-only catalog assertions as revision coverage. Preserve original versions and reject stale/replayed effects under canonical delivery accounting. Request data supplies no actor/tenant/client/binding/scopes/credentials or filesystem authority. Fresh authenticated current context and artifact authority at await/release boundaries, exact selected client/full binding/scopes, revocation and shrink-only original deadline must hold while ports park. Unknown write/settlement effects remain unknown and do not authorize retries. Strict inert bounded requests/errors, disabled default, safe CLI/help, borrowed-resource preservation and owned child/socket/temp cleanup required. No UI events, model loop, source filing, native runtime or live database claim.
+
+Independent tests and raw failure evidence only in allocated paths; author/root repair production. Each process <=180 seconds. No installs/external services/private native evidence. Reuse donor dependency symlinks then remove own.

@@ -1,0 +1,17 @@
+{
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/50",
+  "number": 50,
+  "draft": true,
+  "state": "open",
+  "merged": false,
+  "base": "task/meri-qualified-assembly-20261013",
+  "baseSha": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "head": "task/meri-document-drafting-20261013",
+  "initialPublicationHead": "5815c8e22b81243ed38cfa1d2acfda486fc11da2",
+  "createdAt": "2026-10-13T06:02:20Z",
+  "sourceEvidenceFreeze": "b0756dcb3bed574a49dc967fc205d97c1a32fada",
+  "acceptedApplication": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+  "independentReview": "2339dacda10ee9b0d63939c5dee6d6dc39a9e52d",
+  "runtimeQualification": "HOLD",
+  "g1": "OPEN"
+}

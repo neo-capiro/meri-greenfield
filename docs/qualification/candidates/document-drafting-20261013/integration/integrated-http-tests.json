@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/document-application/local/local.test.mjs",
+    "apps/control/document-application/test/application.test.mjs"
+  ],
+  "cwd": "/tmp/meri-document-drafting-20261013",
+  "sourceHead": "e36f1ae2c2ec3fce512518a8128de4c62bd0e32f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T05:51:10.764506+00:00",
+  "durationSeconds": 3.987,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 506450,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.stdout.bin",
+      "bytes": 16543,
+      "sha256": "4fb4d9f818085368a913029350ff1f2f57b695de2476ee75b98c349e06947168"
+    },
+    {
+      "path": "docs/qualification/candidates/document-drafting-20261013/integration/integrated-http-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
