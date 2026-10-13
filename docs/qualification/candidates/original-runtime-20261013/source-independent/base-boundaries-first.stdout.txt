@@ -1,0 +1,17 @@
+✔ all14 immutable asset pins remain correlated to the exact preservation catalog (113.876841ms)
+✔ commitments_audit: original selected skill still refuses unavailable sources and has no artifact operation (4.089571ms)
+✔ relationship_brief: original selected skill still refuses unavailable sources and has no artifact operation (3.630264ms)
+✔ canonical runtime exposes no executable base operation even with a handler table (5.067766ms)
+✔ merely stamping preservation metadata qualified is refused by the canonical catalog owner (12.79425ms)
+✔ renaming catalog identity cannot bypass exact canonical resolver descriptor binding (12.011739ms)
+✔ original action enumeration identity and authority are distinct from successor projection (0.267701ms)
+✔ original budget allocation cannot silently include create_word as a scheduled effect (1.701016ms)
+✔ trusted delivery key is stable but request digest detects altered arguments (1.579574ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1996.207501

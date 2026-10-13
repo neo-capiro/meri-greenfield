@@ -1,0 +1,34 @@
+{
+  "removedBorrowedLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-greenfield/packages/contracts/node_modules",
+      "removed": true
+    }
+  ],
+  "observedDependencyVersions": {
+    "ajv": "8.20.0",
+    "canonicalize": "5.1.0"
+  },
+  "receiptsVerified": [
+    {
+      "label": "base-boundaries-first",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "label": "base-audit",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "donorEdits": false,
+  "productEdits": false,
+  "entireHostCleanupClaim": false,
+  "limit": "Only task-owned links and captured process groups were checked; existing PID1-owned host zombies are outside this review."
+}

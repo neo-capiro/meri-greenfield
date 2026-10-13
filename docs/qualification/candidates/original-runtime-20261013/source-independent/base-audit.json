@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "66818b539b9910d9081fb19b2713b5713daefc81",
+  "sourceTree": "cf1e7e7c320e1477b7c1af8a39b4bab7f0cd1dc6",
+  "command": [
+    "python3",
+    "docs/qualification/candidates/original-runtime-20261013/source-independent/audit-base.py"
+  ],
+  "cwd": "/workspace/meri-original-runtime-source-review",
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 0.12,
+  "subreaper": true,
+  "adoptedChildrenReaped": [],
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 13937,
+  "stdoutSha256": "5460ed1e4f986e1c9acf7d654c068384c8b5c60cde684d64a93eaa5fbd5f985f",
+  "stderrBytes": 0,
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
