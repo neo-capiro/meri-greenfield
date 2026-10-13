@@ -1,0 +1,41 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=shorter inner deadline",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-source-review",
+  "sourceHead": "bc7cae12b63c9388b3bbe788be8a4abaef8ac624",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3ab7e80e74122ae9c3ba6ef24592767d8ae003cd56357fcfef49b090ecc6cc5b",
+  "startedAt": "2026-10-13T21:12:21.781917+00:00",
+  "durationSeconds": 2.172,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 382342,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-inner-admission-deadline.stdout.bin",
+      "bytes": 1067,
+      "sha256": "3e202685666ede2903aacf19873f87f895766fef0af904dfe48733d7b56f104d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-inner-admission-deadline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New meaningful shorter-inner-deadline control: options known20ms before parked admission must bound caller and trusted recheck instead of outer300ms",
+  "commandSourceFiles": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs",
+      "sha256": "61dcd7df002feb77e2b914d5d3f9d855770e524c1130e3eb6a5abaf1a51bea2b"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

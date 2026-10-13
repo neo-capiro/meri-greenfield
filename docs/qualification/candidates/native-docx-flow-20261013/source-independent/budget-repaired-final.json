@@ -1,0 +1,50 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs",
+    "apps/gateway/budget/product-runtime.test.mjs",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-source-review",
+  "sourceHead": "8505d9ef47dd57069bfb812da9a0447142e214c2",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3ab7e80e74122ae9c3ba6ef24592767d8ae003cd56357fcfef49b090ecc6cc5b",
+  "startedAt": "2026-10-13T21:06:40.240547+00:00",
+  "durationSeconds": 2.283,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 378887,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-repaired-final.stdout.bin",
+      "bytes": 8180,
+      "sha256": "0a9ffd743665a0ef4067aa3c563eb064b4979ba68495374281d5d8db933786b6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-repaired-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root7ef5 repaired original COMMIT counterexample; fix only capture environment for unchanged canonical baseline, add observer inertness and release uncertainty checks",
+  "commandSourceFiles": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs",
+      "sha256": "b4dd2cab3b7e15b7e63aadea6924136ecea93770b7d9dcb87132e3fe263ce5b2"
+    },
+    {
+      "path": "apps/gateway/budget/product-runtime.test.mjs",
+      "sha256": "4a6594492cc94fe738a9c5406d886778d773ef3b8a17233fd3a1ecfc7821c100"
+    },
+    {
+      "path": "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+      "sha256": "0c102a8d7c91c301f619b604fc8b3a80fd505c3418fa70e04c0657d10fc019b4"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

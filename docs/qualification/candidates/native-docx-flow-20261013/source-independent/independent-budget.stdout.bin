@@ -1,0 +1,45 @@
+✔ independent current lease preserves native receiver and immutable allocation across same transaction (11.083491ms)
+✔ independent callback deadline publisher only narrows and refuses before next SQL at exact cutoff (4.815708ms)
+✔ independent explicit caller deadline refuses before connect without changing canonical authority receipt (5.413853ms)
+✔ independent pending native SQL prevents callback result/COMMIT; late query is cleanup-only (5.873032ms)
+✔ independent foreign full actorId refuses before lease SQL (3.147697ms)
+✔ independent foreign full tenantId refuses before lease SQL (2.193658ms)
+✔ independent foreign full conversationId refuses before lease SQL (2.219807ms)
+✔ independent foreign full runId refuses before lease SQL (2.253467ms)
+✔ independent foreign full attemptId refuses before lease SQL (2.16207ms)
+✔ independent foreign full sessionId refuses before lease SQL (2.365285ms)
+✔ independent foreign full workerId refuses before lease SQL (2.196292ms)
+✔ independent foreign full writerFence refuses before lease SQL (2.03512ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (13.727223ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (6.852679ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (6.85901ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (7.158428ms)
+✔ independent stored completion corruption refuses without accounting repair or redispatch (6.466471ms)
+✔ independent completion current expiry publishes no marker and never refunds held/settled liabilities (5.868575ms)
+✔ independent readCompletion refuses substituted actor and producer namespace and literal request hashes (12.921195ms)
+✔ independent lost read COMMIT is typed uncertainty and returns no completion or accounting writes (6.967412ms)
+✖ independent cancellation during COMMIT must retain typed commit uncertainty (6.47212ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 20
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2000.854789
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs:61:1
+✖ independent cancellation during COMMIT must retain typed commit uncertainty (6.47212ms)
+  AssertionError [ERR_ASSERTION]: COMMIT dispatched before cancel must be typed BudgetCommitUncertain, received BudgetStateDenied:ADMITTED_RUN_STOPPED
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs:63:231)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

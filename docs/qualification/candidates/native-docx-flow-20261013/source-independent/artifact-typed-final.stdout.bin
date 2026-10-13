@@ -1,0 +1,29 @@
+✔ independent request opaque credential and canonical body hash reach trusted owner with ordinary method receiver intact (265.313279ms)
+✔ independent model/caller binding is not accepted as artifact authority (15.980173ms)
+✔ independent model/caller context is not accepted as artifact authority (13.524941ms)
+✔ independent model/caller scopes is not accepted as artifact authority (17.807683ms)
+✔ independent model/caller credential is not accepted as artifact authority (22.254581ms)
+✔ independent model/caller artifactOptions is not accepted as artifact authority (11.927756ms)
+✔ independent model/caller namespace is not accepted as artifact authority (23.026379ms)
+✔ independent native current refusal at admission prevents any accounting/generation/storage (19.771257ms)
+✔ independent literal outer credential is never replaced by task credential or accepted after source revoke (13.047144ms)
+✔ independent trusted sessions substitution refuses before artifact effects (17.374263ms)
+✔ independent trusted now substitution refuses before artifact effects (10.128528ms)
+✔ independent trusted selectedClientId substitution refuses before artifact effects (23.245768ms)
+✔ independent absent/boolean/non-own recheck never creates qualification authority (28.592822ms)
+✔ independent configuration getters and proxies are inert before owner reads (0.579659ms)
+✔ independent explicit product namespace threads root canonical chain and refuses missing product admission without qualification fallback (17.816616ms)
+✔ independent disabled original source flag remains closed and composer never enables it (15.12503ms)
+✔ independent request-specific outer response byte ceiling must be enforced before response release (10.634667ms)
+✔ independent inspect and download inherit narrower outer success response byte ceilings (152.212954ms)
+✔ independent outer request byte ceiling refuses before options owner/auth effects (11.689319ms)
+✔ independent malformed native inner limits must retain canonical typed refusal instead of numeric coercion (10.03644ms)
+✔ independent malformed native inner limits must retain canonical typed refusal instead of numeric coercion (14.099562ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2546.681764

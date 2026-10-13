@@ -1,0 +1,27 @@
+✔ independent request opaque credential and canonical body hash reach trusted owner with ordinary method receiver intact (151.117011ms)
+✔ independent model/caller binding is not accepted as artifact authority (11.843433ms)
+✔ independent model/caller context is not accepted as artifact authority (11.371855ms)
+✔ independent model/caller scopes is not accepted as artifact authority (9.301963ms)
+✔ independent model/caller credential is not accepted as artifact authority (9.292429ms)
+✔ independent model/caller artifactOptions is not accepted as artifact authority (8.288323ms)
+✔ independent model/caller namespace is not accepted as artifact authority (15.508385ms)
+✔ independent native current refusal at admission prevents any accounting/generation/storage (8.110107ms)
+✔ independent literal outer credential is never replaced by task credential or accepted after source revoke (9.149575ms)
+✔ independent trusted sessions substitution refuses before artifact effects (11.777394ms)
+✔ independent trusted now substitution refuses before artifact effects (8.669184ms)
+✔ independent trusted selectedClientId substitution refuses before artifact effects (7.537729ms)
+✔ independent absent/boolean/non-own recheck never creates qualification authority (8.914322ms)
+✔ independent configuration getters and proxies are inert before owner reads (0.364957ms)
+✔ independent explicit product namespace threads root canonical chain and refuses missing product admission without qualification fallback (9.739699ms)
+✔ independent disabled original source flag remains closed and composer never enables it (8.889464ms)
+✔ independent request-specific outer response byte ceiling must be enforced before response release (8.05256ms)
+✔ independent inspect and download inherit narrower outer success response byte ceilings (109.20628ms)
+✔ independent outer request byte ceiling refuses before options owner/auth effects (7.356797ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2199.102838

@@ -1,0 +1,79 @@
+✖ independent request opaque credential and canonical body hash reach trusted owner with ordinary method receiver intact (154.82879ms)
+✔ independent model/caller binding is not accepted as artifact authority (15.259754ms)
+✔ independent model/caller context is not accepted as artifact authority (9.367342ms)
+✔ independent model/caller scopes is not accepted as artifact authority (8.859621ms)
+✔ independent model/caller credential is not accepted as artifact authority (8.717257ms)
+✔ independent model/caller artifactOptions is not accepted as artifact authority (13.165054ms)
+✔ independent model/caller namespace is not accepted as artifact authority (17.575765ms)
+✔ independent native current refusal at admission prevents any accounting/generation/storage (9.066541ms)
+✔ independent literal outer credential is never replaced by task credential or accepted after source revoke (8.769966ms)
+✔ independent trusted sessions substitution refuses before artifact effects (7.949256ms)
+✔ independent trusted now substitution refuses before artifact effects (6.981465ms)
+✔ independent trusted selectedClientId substitution refuses before artifact effects (7.149057ms)
+✔ independent absent/boolean/non-own recheck never creates qualification authority (8.59911ms)
+✔ independent configuration getters and proxies are inert before owner reads (0.364576ms)
+✖ independent explicit product namespace threads root canonical chain and refuses missing product admission without qualification fallback (9.73342ms)
+✔ independent disabled original source flag remains closed and composer never enables it (9.712679ms)
+✖ independent request-specific outer response byte ceiling must be enforced before response release (84.12506ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 14
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2136.160025
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:12:1
+✖ independent request opaque credential and canonical body hash reach trusted owner with ordinary method receiver intact (154.82879ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'closed'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:13:922)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'closed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:34:1
+✖ independent explicit product namespace threads root canonical chain and refuses missing product admission without qualification fallback (9.73342ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(commands.some(s=>s.includes('meri_product_budget.budget')))
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:38:59)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:44:1
+✖ independent request-specific outer response byte ceiling must be enforced before response release (84.12506ms)
+  AssertionError [ERR_ASSERTION]: outer maxResponseBytes64 released200 response 1763 bytes
+      at TestContext.<anonymous> (file:///workspace/meri-native-docx-source-review/docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs:45:179)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

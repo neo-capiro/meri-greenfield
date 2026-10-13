@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-source-review",
+  "sourceHead": "0dd4a73d1c9f557ae7c83fe38404ea9ca7fd35da",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T21:05:13.888532+00:00",
+  "durationSeconds": 2.172,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 377789,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/independent-artifact.stdout.bin",
+      "bytes": 4655,
+      "sha256": "c359828a4acb0c3b1668ae4a2f7e23a311e739d8a6faacd48cf8475995effcaa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/independent-artifact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

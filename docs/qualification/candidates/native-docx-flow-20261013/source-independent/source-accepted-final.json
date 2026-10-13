@@ -1,0 +1,101 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs",
+    "apps/gateway/budget/product-runtime.test.mjs",
+    "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs",
+    "apps/artifacts/test/postgres-service-independent.test.mjs",
+    "apps/artifacts/storage/test/postgres.test.mjs",
+    "apps/artifacts/storage/test/s3.test.mjs",
+    "apps/artifacts/storage/test/constructor-ports.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-docx-source-review",
+  "sourceHead": "0a750e4126fe7a888a1abe78e4188e319cc2d23f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3ab7e80e74122ae9c3ba6ef24592767d8ae003cd56357fcfef49b090ecc6cc5b",
+  "startedAt": "2026-10-13T21:13:48.598481+00:00",
+  "durationSeconds": 12.501,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 383417,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/source-accepted-final.stdout.bin",
+      "bytes": 28297,
+      "sha256": "822cbbba378e6a27805d9e7cf2ba9f1aa9ee590e5ac450ca16cccc41d6bce845"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/source-accepted-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root9cd367 clips known shorter inner deadline at original outer call start and publishes same bound to native recheck; all four independently reproduced product/source defects now have narrow reviewed successors; final exact306controls",
+  "commandSourceFiles": [
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/budget-independent.test.mjs",
+      "sha256": "b4dd2cab3b7e15b7e63aadea6924136ecea93770b7d9dcb87132e3fe263ce5b2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/source-independent/artifact-independent.test.mjs",
+      "sha256": "61dcd7df002feb77e2b914d5d3f9d855770e524c1130e3eb6a5abaf1a51bea2b"
+    },
+    {
+      "path": "apps/gateway/budget/product-runtime.test.mjs",
+      "sha256": "4a6594492cc94fe738a9c5406d886778d773ef3b8a17233fd3a1ecfc7821c100"
+    },
+    {
+      "path": "apps/control/admitted-runs/independent/owner-independent.test.mjs",
+      "sha256": "0c102a8d7c91c301f619b604fc8b3a80fd505c3418fa70e04c0657d10fc019b4"
+    },
+    {
+      "path": "apps/gateway/test/durable-tool-budget.test.mjs",
+      "sha256": "519dc900f33f5c46dc2fbd2d3021a58c8e1f759656c7875f10d0b441bc6765c4"
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-owner.test.mjs",
+      "sha256": "2b64a89a1d8eaa1f4e81bdb74067390b8314a65a6de37d347d2ff2f59ec0ab95"
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-transaction.test.mjs",
+      "sha256": "a7ddb8660ebff3ed0abae6b864ea8dca11566c93cb5d60ec189135c5a3b12fdc"
+    },
+    {
+      "path": "apps/gateway/test/tool-budget-outcome.test.mjs",
+      "sha256": "fb85247c9b1e8ba97ca0fe318094eb10f0130d5977b923a70954f6b318585ae4"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "sha256": "b0c6bbacfa94c0fc7319f205644335c71fd686b51461a422fac01390762ecd89"
+    },
+    {
+      "path": "apps/artifacts/test/postgres-service-independent.test.mjs",
+      "sha256": "fd1befea68297fe27d1b90c5368c8618f943d18be63c9d72da7601ceef971d89"
+    },
+    {
+      "path": "apps/artifacts/storage/test/postgres.test.mjs",
+      "sha256": "bad5a6e49b3feb4191a6d20b826ee281e1cd67fa59399adb1200340175f587a1"
+    },
+    {
+      "path": "apps/artifacts/storage/test/s3.test.mjs",
+      "sha256": "36aab5a7410a821fd4ac94f9f7181cd37aea71fcf82d770bfe189e77885ad155"
+    },
+    {
+      "path": "apps/artifacts/storage/test/constructor-ports.test.mjs",
+      "sha256": "9ee0eaa8ae8c346c3a163ed1d3de98a618330bd2b24401a1c4f9c436828c0d32"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

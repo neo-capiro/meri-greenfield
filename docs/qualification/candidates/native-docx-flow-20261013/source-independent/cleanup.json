@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-13T21:16:39.047361+00:00",
+  "borrowedLinks": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-greenfield/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "target": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "removed": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "target": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "removed": true
+    },
+    {
+      "path": "apps/artifacts/storage/node_modules/@aws-sdk/client-s3",
+      "target": "/workspace/capirov2/node_modules/.pnpm/@aws-sdk+client-s3@3.1141.0/node_modules/@aws-sdk/client-s3",
+      "removed": true
+    },
+    {
+      "path": "apps/artifacts/storage/node_modules/pg",
+      "target": "/workspace/capirov2/node_modules/.pnpm/pg@8.23.0/node_modules/pg",
+      "removed": true
+    }
+  ],
+  "ownedNodeOrLibreOfficeProcesses": [],
+  "allCapturedOwnedProcessGroupsAbsent": true,
+  "donorTreesEdited": false,
+  "nativeCallsMade": false,
+  "scope": "SOURCE_ONLY_NOT_NATIVE_RUNTIME_ACCEPTANCE"
+}
