@@ -1,0 +1,108 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "source": "7cea5042a57f3fa9202d87b0c3ba433d7c77a9dd",
+  "authorPacket": "91c840d4582e94be28b694e878225141fc6805e2",
+  "runtime": "HOLD",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/actual-read-negative.json",
+      "bytes": 1362,
+      "sha256": "3c8680f5ce7e45c049f9af31c95e9a2a8f28a1ae3721af3f17b787ba421584af"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/actual-read-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/actual-read-negative.stdout.bin",
+      "bytes": 1062,
+      "sha256": "1c1b0143b16bb3c62d1e652cafca609685ef6246c27a3ed620e346a2ec90ef4c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/audit.json",
+      "bytes": 7242,
+      "sha256": "1ad8335a9b8c468ef712ddb76b09d214a0180002bbb86816c1593db344b3e9eb"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/audit.py",
+      "bytes": 3673,
+      "sha256": "a4d1dce4edd1be6d138906fd7ad82769c2abed0cf546ddb8f13095d73bdef49e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/cleanup.json",
+      "bytes": 818,
+      "sha256": "b6c3c3ef7f76fa7a9206906847b88fbc10cbbae87a92b5b8be221d9804ba6867"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.json",
+      "bytes": 1372,
+      "sha256": "afa7598e507b48a0d473f996c2b6b041d6aa867033d757a7846e6c7f0a164f69"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/error-metadata-negative.stdout.bin",
+      "bytes": 2703,
+      "sha256": "8bd8adfe134938138f93b9bd5a2beea674bbd44fd74adb5231bc522c9f268c55"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/initial.json",
+      "bytes": 1290,
+      "sha256": "02f768c869efd077849144313e338bf6ea1510546879f18998706814b32e4208"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/initial.stdout.bin",
+      "bytes": 3529,
+      "sha256": "c6519d927fb32826a865c5c1a48e342e134c66e8309aae88f162d7fbbcb003dd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/repaired.json",
+      "bytes": 1292,
+      "sha256": "f13fc25042569d9eeea791306d3fb9ee1651ab3f4bec6591762adbaebabba742"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/application-review/repaired.stdout.bin",
+      "bytes": 3238,
+      "sha256": "42fbdd30d44dd1cd0c78d6ecfb77a4233630a67f148899f0cba6e68d6ebed28f"
+    },
+    {
+      "path": "apps/control/action-application/application-independent.test.mjs",
+      "bytes": 16176,
+      "sha256": "4674c71b297c5f0fa0fb31afcfd4fd72eda2ebd7c8f57d6b8ced830aeda20e72"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-APPLICATION-REVIEW-20261013.md",
+      "bytes": 2509,
+      "sha256": "f9d733d6b912ae83b2ac0a3733bb96bf47e33024efa8e5d96163b081ab997e64"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-APPLICATION-REVIEW-20261013.md",
+      "bytes": 5135,
+      "sha256": "e4726afd93f8829486bc43914f029c52402c25f66bdd3f6845ffeb3470de49e8"
+    }
+  ]
+}
