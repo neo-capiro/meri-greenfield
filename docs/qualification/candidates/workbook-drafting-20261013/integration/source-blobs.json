@@ -1,0 +1,59 @@
+{
+  "flowSource": "fd993f5105deda49a88973b42906df3e928ac829",
+  "members": [
+    {
+      "path": "apps/artifacts/office-transform.mjs",
+      "blob": "1a54c6bb872121452f5ce0d9046c15a60ecadc76",
+      "bytes": 3069,
+      "sha256": "bac0619f374729a1197192d065cd16a41b87afd646a56f03e3ab72473cb4989d"
+    },
+    {
+      "path": "apps/artifacts/python/office.py",
+      "blob": "2267340cdc47aab6fef03b6b69e718553c0408c4",
+      "bytes": 7263,
+      "sha256": "0d96d65ec3f7a6dede443f1bfc0e8a175f5e838b4c3101e38c4293e8491a21ab"
+    },
+    {
+      "path": "apps/control/document-application/local/workbook/README.md",
+      "blob": "067025ab0fa03465ad5eedd361542d9b66f40929",
+      "bytes": 2455,
+      "sha256": "090d3509d89a8a99d7d373eba5f956c79317553768ccaeb759a9d7300c1c76b1"
+    },
+    {
+      "path": "apps/control/document-application/local/workbook/flow.mjs",
+      "blob": "e46c4b062667d96e44fcef4d1409bfcbfe41816f",
+      "bytes": 6658,
+      "sha256": "bc7d4cc645fdf9381dede2c4eb2c89b7ed21a7f627fa02c3d6af39bb4810fe84"
+    },
+    {
+      "path": "apps/control/document-application/local/workbook/inspect_pdf.py",
+      "blob": "9f73ba1b930bf18a583e3ea10c729b1423ab68ae",
+      "bytes": 1823,
+      "sha256": "95ceffecc5ffb3d9edca1e39354400766f7d55ea0d9cec1b96cfd7623095f51c"
+    },
+    {
+      "path": "apps/control/document-application/local/workbook/inspect_xlsx.py",
+      "blob": "2279a5aa5e484a4e7a30b8144959be2f346b713a",
+      "bytes": 2279,
+      "sha256": "d967aeba5b3d1a2a151a9e6b85df19eec79e2d8fc54e6391f0deca77c4a60c45"
+    },
+    {
+      "path": "apps/control/document-application/local/workbook/inspection.mjs",
+      "blob": "9da87ba130d58e59e296bde589efee12e2a565bf",
+      "bytes": 4766,
+      "sha256": "5d4ce32bdbc43ab1b3fdd6985ad2dc87b2ded4fd30131955488f2ea579e1f295"
+    },
+    {
+      "path": "apps/control/document-application/local/workbook/local.test.mjs",
+      "blob": "4b9ab644a565eb7e597185601dc054d886a9826a",
+      "bytes": 1524,
+      "sha256": "0cde3927b5db0d39c3de260d8b7dedd2d1e02308117fa46430b60f72e6edcbe6"
+    },
+    {
+      "path": "scripts/local-workbook/run.mjs",
+      "blob": "634046052570998b0adb7dc78622b73eac5aea97",
+      "bytes": 5669,
+      "sha256": "e7485e23594e58192498bf177461fd65706cc5e7ef2dfabf2892c633d80cba68"
+    }
+  ]
+}
