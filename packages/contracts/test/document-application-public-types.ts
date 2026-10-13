@@ -2,7 +2,7 @@ import {receiveDocumentRequest,receiveDocumentResponse,receiveDocumentDownload,t
 const dto:DocumentCreateRequest={deliveryId:'one',request:{operation:'create_word',format:'txt',title:'Text',content:{text:'Hello'}}};
 const request=receiveDocumentRequest('create',new TextEncoder().encode(JSON.stringify(dto)));
 const result=await receiveDocumentResponse('create',200,new Uint8Array(),request);
-if(!('error' in result)){const version:AdmittedDocumentVersion=result.version;const bytes=await receiveDocumentDownload(new Response(),version,{timeoutMs:1000});void bytes.bytes;}
+if(!('error' in result)){const version:AdmittedDocumentVersion=result.version;const bytes=await receiveDocumentDownload(new Response(),version,{timeoutMs:1000});const blob=new Blob([bytes.bytes],{type:bytes.version.mimeType});void blob;}
 // @ts-expect-error ordinary version DTOs cannot bypass receiving admission
 await receiveDocumentDownload(new Response(),{});
 // @ts-expect-error PDF is not admitted by the document application
