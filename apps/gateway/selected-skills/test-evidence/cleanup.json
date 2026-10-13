@@ -1,8 +1,20 @@
 {
-  "sourceHead": "85b37e4e19673ec5c542be2e90ee0404eed212ba",
+  "sourceHead": "39f8c6decac9da55ee96cb4ec4d7be829a2509c8",
   "ownDependencyLinkRemoved": true,
   "donorPreserved": true,
   "ownedGroups": [
+    {
+      "capture": "fixture-options-frozen.json",
+      "group": 302801,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "fixture-options.json",
+      "group": 302441,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
     {
       "capture": "frozen-final-repaired.json",
       "group": 300376,
@@ -46,5 +58,5 @@
       "observedAbsent": true
     }
   ],
-  "scope": "Only this phase's captures/link; other worktrees, donor dependencies and prior PID1 observations were not modified."
+  "scope": "Only this phase and authorized test-only followup captures/link; other worktrees, donor dependencies and prior PID1 observations were not modified."
 }
