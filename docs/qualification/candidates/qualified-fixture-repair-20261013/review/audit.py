@@ -51,6 +51,7 @@ for row in m['members']:
 receipt_names=['first','baseline-corrected','repaired-node','independent-python','repaired-python','regclass-before','final-node']
 if (OUT/'cast-type-before.json').exists():receipt_names+=['cast-type-before']
 if (OUT/'final-qualified-node.json').exists():receipt_names+=['final-qualified-node']
+if (OUT/'final-corrected-node.json').exists():receipt_names+=['final-corrected-node']
 for name in receipt_names:
  r=json.loads((OUT/(name+'.json')).read_text())
  check(name+' retained tracked source diff zero',r['sourceDiffBytes']==0)
@@ -60,7 +61,7 @@ for name in receipt_names:
  try:os.killpg(r['ownedPidAndPgid'],0);absent=False
  except ProcessLookupError:absent=True
  check(name+' group remains absent',absent)
-check('Node72 final pass',b'\xe2\x84\xb9 pass 72' in (OUT/('final-qualified-node.stdout.bin' if (OUT/'final-qualified-node.stdout.bin').exists() else 'final-node.stdout.bin')).read_bytes())
+check('Node72 final pass',b'\xe2\x84\xb9 pass 72' in (OUT/('final-corrected-node.stdout.bin' if (OUT/'final-corrected-node.stdout.bin').exists() else 'final-node.stdout.bin')).read_bytes())
 check('Python33 pass',b'Ran 33 tests' in (OUT/'repaired-python.stderr.bin').read_bytes() and (OUT/'repaired-python.stderr.bin').read_bytes().rstrip().endswith(b'OK'))
 # Python code unchanged after its final exact-source replay.
 r=json.loads((OUT/'repaired-python.json').read_text());pt=tree(r['sourceHead']);check('all Python runtime source unchanged since33 pass',all(pt.get(x)==b[x] for x in b if x.endswith('.py') and not x.endswith('test_compatibility_independent.py')))
