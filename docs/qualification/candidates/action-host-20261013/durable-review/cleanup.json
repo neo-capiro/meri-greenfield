@@ -1,0 +1,69 @@
+{
+  "removedOnlyOwnedCopies": [
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/ajv",
+      "bytes": 1033496,
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/ajv-formats",
+      "bytes": 56763,
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/canonicalize",
+      "bytes": 24474,
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/fast-deep-equal",
+      "bytes": 12966,
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/fast-uri",
+      "bytes": 220886,
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/json-schema-traverse",
+      "bytes": 22220,
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-action-host-durable-review-20261013/node_modules/require-from-string",
+      "bytes": 3422,
+      "absent": true
+    }
+  ],
+  "bytesRemoved": 1374227,
+  "donorUntouched": true,
+  "groups": [
+    {
+      "label": "initial",
+      "pgid": 457644,
+      "absent": true
+    },
+    {
+      "label": "fixture-corrected",
+      "pgid": 457969,
+      "absent": true
+    },
+    {
+      "label": "combined",
+      "pgid": 458775,
+      "absent": true
+    },
+    {
+      "label": "final-focused",
+      "pgid": 459302,
+      "absent": true
+    },
+    {
+      "label": "final",
+      "pgid": 459635,
+      "absent": true
+    }
+  ],
+  "databaseActions": false
+}

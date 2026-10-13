@@ -1,0 +1,42 @@
+✔ independent construction borrows resources and makes no SQL or source calls (11.539828ms)
+✔ independent pending refusal then explicit approval and reconstruction retains exactly one charge/effect (85.353938ms)
+✔ independent reconstructed metadata owner reads immutable proposal before effect (24.496106ms)
+✔ independent default-disabled command refuses without SQL preparation or effect (3.45857ms)
+✔ independent current read denial still applies after lookup reconstruction (39.177077ms)
+✔ independent current preparation revocation survives reconstruction (7.533675ms)
+✔ independent current capability revocation prevents reconstructed execution (12.16538ms)
+✔ independent current approval revocation prevents reconstructed execution (13.633857ms)
+✔ independent rehashed command substitution cannot reuse immutable metadata (8.449903ms)
+✔ independent lost prepare ACK keeps identity/liability without automatic re-effect (12.362044ms)
+✔ independent lost reserve ACK keeps identity/liability without automatic re-effect (24.360021ms)
+✔ independent lost marker ACK keeps identity/liability without automatic re-effect (26.292557ms)
+✔ independent lost settle ACK keeps identity/liability without automatic re-effect (31.413495ms)
+✔ independent lost journal completion ACK preserves retained outcome and never repeats effect (26.28807ms)
+✔ independent cancelled marker retains hold and late ACK cannot resume live settlement (32.213108ms)
+✔ independent retained command read needs fresh authority after reconstruction (19.23039ms)
+✔ independent expired approval/metadata cannot authorize reconstructed execution (6.604388ms)
+✔ independent disabled assembly refuses new lookup before SQL but retained reads still require current authority (16.41609ms)
+✔ independent closed configuration rejects accessors before execution (2.403133ms)
+✔ independent producer and metadata binding mismatch refuses before SQL (2.335781ms)
+✔ independent changing caller data after construction cannot change retained command context (5.618617ms)
+✔ independent stale current fence denies reconstructed command before effects (16.293014ms)
+✔ independent disabled canonical outcome read remains unavailable without journal access (3.210637ms)
+✔ pending approval creates no debit/effect, later approval and reconstructed owners replay one durable command (157.293116ms)
+✔ reconstructed lookup read uses retained concrete store and current authority (35.891568ms)
+✔ default disabled refuses new lookup before SQL and command before budget while preserving authorized lookup read (33.547423ms)
+✔ fresh approval revocation refuses reconstructed replay without a new effect or debit (44.011774ms)
+✔ lost prepare acknowledgement preserves canonical stage and never repeats effects (34.663351ms)
+✔ lost reserve acknowledgement preserves canonical stage and never repeats effects (42.054022ms)
+✔ lost marker acknowledgement preserves canonical stage and never repeats effects (43.94264ms)
+✔ lost settle acknowledgement preserves canonical stage and never repeats effects (46.444703ms)
+✔ lost command completion ACK retains completed journal and exact charged result across reconstruction (45.789808ms)
+✔ construction is inert, keeps borrowed pools open and rejects altered task descriptor/context (24.986173ms)
+✔ new lookup uses actual governed gateway HTTP adapter and durable read accounting before retained current read (69.18586ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3285.520223

@@ -1,0 +1,10 @@
+{
+  "reason": "Independent HTTP fixture incorrectly copied omitted optional wire fields as undefined, dropping required nullable result keys. Canonical source sends absent client/date by omission; project those result fields as null. All assertions preserved.",
+  "beforeSha256": "dd5c357e071d19a53f3948a797ecaafafaf29defd5469d68714f9de7b0d2f2b6",
+  "afterSha256": "2de643dd5f9ffb20326b449092f53ab4450f358e8636758826a67a4512e2bac5",
+  "prior": {
+    "pass": 11,
+    "fail": 7
+  },
+  "productionChanged": false
+}

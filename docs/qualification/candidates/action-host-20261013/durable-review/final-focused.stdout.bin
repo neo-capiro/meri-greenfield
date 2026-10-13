@@ -1,0 +1,52 @@
+✔ independent construction borrows resources and makes no SQL or source calls (14.985873ms)
+✔ independent pending refusal then explicit approval and reconstruction retains exactly one charge/effect (99.635127ms)
+✔ independent reconstructed metadata owner reads immutable proposal before effect (24.472126ms)
+✔ independent default-disabled command refuses without SQL preparation or effect (6.35167ms)
+✔ independent current read denial still applies after lookup reconstruction (41.298434ms)
+✔ independent current preparation revocation survives reconstruction (7.281388ms)
+✔ independent current capability revocation prevents reconstructed execution (8.271317ms)
+✔ independent current approval revocation prevents reconstructed execution (12.120705ms)
+✔ independent rehashed command substitution cannot reuse immutable metadata (9.16476ms)
+✔ independent lost prepare ACK keeps identity/liability without automatic re-effect (13.737284ms)
+✔ independent lost reserve ACK keeps identity/liability without automatic re-effect (53.748955ms)
+✔ independent lost marker ACK keeps identity/liability without automatic re-effect (28.963858ms)
+✔ independent lost settle ACK keeps identity/liability without automatic re-effect (26.43059ms)
+✔ independent lost journal completion ACK preserves retained outcome and never repeats effect (28.695676ms)
+✔ independent cancelled marker retains hold and late ACK cannot resume live settlement (46.410671ms)
+✔ independent retained command read needs fresh authority after reconstruction (22.482043ms)
+✔ independent expired approval/metadata cannot authorize reconstructed execution (6.751491ms)
+✔ independent disabled assembly refuses new lookup before SQL but retained reads still require current authority (17.666933ms)
+✔ independent closed configuration rejects accessors before execution (2.395843ms)
+✔ independent producer and metadata binding mismatch refuses before SQL (2.421361ms)
+✖ independent changing caller data after construction cannot change retained command context (3.768236ms)
+✔ independent stale current fence denies reconstructed command before effects (13.872788ms)
+✔ independent disabled canonical outcome read remains unavailable without journal access (4.490612ms)
+✔ pending approval creates no debit/effect, later approval and reconstructed owners replay one durable command (151.273007ms)
+✔ reconstructed lookup read uses retained concrete store and current authority (39.092057ms)
+✔ default disabled refuses new lookup before SQL and command before budget while preserving authorized lookup read (37.351881ms)
+✔ fresh approval revocation refuses reconstructed replay without a new effect or debit (67.243654ms)
+✔ lost prepare acknowledgement preserves canonical stage and never repeats effects (47.764863ms)
+✔ lost reserve acknowledgement preserves canonical stage and never repeats effects (52.061708ms)
+✔ lost marker acknowledgement preserves canonical stage and never repeats effects (57.819304ms)
+✔ lost settle acknowledgement preserves canonical stage and never repeats effects (51.22213ms)
+✔ lost command completion ACK retains completed journal and exact charged result across reconstruction (51.781256ms)
+✔ construction is inert, keeps borrowed pools open and rejects altered task descriptor/context (26.974118ms)
+✔ new lookup uses actual governed gateway HTTP adapter and durable read accounting before retained current read (56.667933ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 33
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3390.264339
+
+✖ failing tests:
+
+test at apps/control/action-host/durable/durable-independent.test.mjs:59:1
+✖ independent changing caller data after construction cannot change retained command context (3.768236ms)
+  Error [CommandError]: COMMAND_PREPARATION_REFUSED
+      at safe (file:///tmp/meri-action-host-durable-review-20261013/apps/control/commands/approval-metadata/owner.mjs:10:23)
+      at Object.prepare (file:///tmp/meri-action-host-durable-review-20261013/apps/control/commands/approval-metadata/owner.mjs:41:23) {
+    outcome: 'NOT_STORED'
+  }

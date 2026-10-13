@@ -1,0 +1,18 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "c581c63764f67a9a7a5ee9090cba9e103aa486d7",
+  "executableSource": "218379df28f2804342809fa484b6538ec028573b",
+  "authorPacket": "2549eca01ae567bb931a685b5d52ae42d2f92c74",
+  "tests": {
+    "independent": 23,
+    "author": 11,
+    "passed": 34,
+    "failed": 0
+  },
+  "sourceAudit": 10608,
+  "authorPacketAudit": 30,
+  "originalEntriesPreserved": 10564,
+  "productionDefects": 0,
+  "runtimeQualified": false,
+  "databaseExecuted": false
+}

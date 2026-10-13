@@ -1,0 +1,33 @@
+{
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "candidate": "2549eca01ae567bb931a685b5d52ae42d2f92c74",
+  "originalEntries": 10564,
+  "originalChanged": 0,
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-host/durable/README.md",
+      "bytes": 5507,
+      "sha256": "5dbee7561133003bf0f31f4a70e81d4f7ace4fde317a112a969d03ab19f95a60"
+    },
+    {
+      "path": "apps/control/action-host/durable/index.mjs",
+      "bytes": 3854,
+      "sha256": "cf9ff325c4b5330bfc5b24142c3e850f100a6b48e7264166eeaf79463182de3f"
+    },
+    {
+      "path": "apps/control/action-host/durable/test/durable.test.mjs",
+      "bytes": 7083,
+      "sha256": "03e13bedb98fe9d768f376c64887c8ccb42720e35785d9011126228530879da8"
+    },
+    {
+      "path": "apps/control/action-host/durable/test/fixture.mjs",
+      "bytes": 7175,
+      "sha256": "e1f7b6db90ccc0ef53db86dc96d32b971ac40177b8bac388622db8fab1a0771e"
+    }
+  ],
+  "checks": 10608,
+  "passed": 10608,
+  "failed": [],
+  "runtimeQualified": false,
+  "nativeDatabaseExecuted": false
+}
