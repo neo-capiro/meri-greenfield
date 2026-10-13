@@ -20,7 +20,7 @@ export function createTaskLookupExecution(configuration){
   for(const [i,t]of traces.entries())t.traceSha256=observations[i].traceSha256;
   let retainedBytes=size({capture:{run,observations},traces})+4096;
   if(retainedBytes>maxCaptureBytes)error('EXEC_CAPTURE_CAPACITY');
-  const l=createOperationLifetime({deadlineMs:data.deadlineMs,now,signal:signal?.aborted?undefined:signal,errorFactory:exception});let captureExhausted=false;let callSequence=0;const pending=new Map();let lifecycle;
+  const l=createOperationLifetime({deadlineMs:data.deadlineMs,now,signal:signal?.aborted?undefined:signal,errorFactory:exception});let captureExhausted=false,unsettledPredecessor=false;let callSequence=0;const pending=new Map();let lifecycle;
   try{
    for(const [index,c]of data.cases.entries()){
     const oldSize=size({observation:observations[index],trace:traces[index]});const o=snapshot(observations[index]),t=snapshot(traces[index].trace),binding=data.runBindings.find(b=>b.caseId===c.caseId).binding;
@@ -29,6 +29,7 @@ export function createTaskLookupExecution(configuration){
     try{
      o.startedAt=t.startedAt=at();
      if(c.mode!=='correct-tool'){o.reason='UNSUPPORTED_EXECUTION_MODE';t.stages.push({stage:'execution',outcome:'ineligible',resultSha256:null,error:null});}
+     else if(unsettledPredecessor){o.status='failed';o.reason='EXEC_UNSETTLED_PREDECESSOR';o.failure=failure(o.reason,'NOT_DISPATCHED');}
      else if(captureExhausted){o.status='failed';o.reason='EXEC_CAPTURE_EXHAUSTED';o.failure=failure(o.reason,'NOT_DISPATCHED');}
      else{
       if(signal?.aborted)throw exception('CANCELLED');l.check();
@@ -61,7 +62,7 @@ export function createTaskLookupExecution(configuration){
      o.status=stage==='read'&&code==='ACCESS_DENIED'&&t.authorization.some(a=>['before_read','before_release'].includes(a.phase)&&(a.receipt?.authorized===false||a.error?.code==='ACCESS_DENIED'))?'denied':'failed';
      o.reason=code;o.failure=failure(code,outcome);o.delivery=null;o.read=null;
      t.stages.push({stage,outcome:'failed',resultSha256:null,error:o.failure});
-    }finally{active=false;try{o.completedAt=t.completedAt=at();}catch{o.completedAt=t.completedAt=stamp();}t.unsettledCalls=[...pending.values()].filter(v=>v.caseId===c.caseId);}
+    }finally{active=false;try{o.completedAt=t.completedAt=at();}catch{o.completedAt=t.completedAt=stamp();}t.unsettledCalls=[...pending.values()].filter(v=>v.caseId===c.caseId);if(t.unsettledCalls.length)unsettledPredecessor=true;}
     // Only read callbacks belong to the existing scoring contract; lookup callbacks remain raw trace evidence.
     // Lookup's before_release precedes the read: isolate by the read's first callback.
     const readStart=t.authorization.findIndex(a=>a.phase==='before_read');o.authorization=readStart<0?[]:snapshot(t.authorization.slice(readStart));
@@ -69,7 +70,7 @@ export function createTaskLookupExecution(configuration){
     let nextSize=size({observation:o,trace});
     if(retainedBytes-oldSize+nextSize>maxCaptureBytes){
      const fullHash=trace.traceSha256,observedBytes=nextSize;captureExhausted=true;
-     o.status='failed';o.reason='EXEC_CAPTURE_LIMIT';o.failure=failure(o.reason,lookupStarted?'UNKNOWN':'NOT_DISPATCHED');o.authorization=[];o.delivery=null;o.read=null;
+     o.status='failed';o.reason='EXEC_CAPTURE_LIMIT';o.failure=failure(o.reason,t.read||t.lookup?'RESULT_NOT_RELEASED':lookupStarted?'UNKNOWN':'NOT_DISPATCHED');o.authorization=[];o.delivery=null;o.read=null;
      trace={caseId:c.caseId,traceSha256:null,trace:{caseId:c.caseId,mode:c.mode,runnerSha256:c.runnerSha256,startedAt:o.startedAt,completedAt:o.completedAt,omittedTraceSha256:fullHash,observedPairBytes:observedBytes,reason:'EXEC_CAPTURE_LIMIT',unsettledCalls:t.unsettledCalls,physicalStopProven:false}};
      trace.traceSha256=hash(trace.trace);o.traceSha256=trace.traceSha256;nextSize=size({observation:o,trace});
     }
