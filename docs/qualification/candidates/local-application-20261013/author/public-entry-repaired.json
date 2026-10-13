@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/local-integration/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-local-application-author-20261013",
+  "sourceHead": "7c562b59312ed880e46f2613de7c5ef2f3a249a0",
+  "sourceDiffSha256": "fdece5d67555139b6887460a38735fabad0e056bd791842c8ba5ba4fdb54bfb7",
+  "sourceDiffBytes": 4807,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T03:08:30.875718+00:00",
+  "durationSeconds": 3.131,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 470457,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/author/public-entry-repaired.stdout.bin",
+      "bytes": 1772,
+      "sha256": "e5bfc91176a89cedce884c97002514de2956a9d5586c49045286b9d1e4093803"
+    },
+    {
+      "path": "docs/qualification/candidates/local-application-20261013/author/public-entry-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
