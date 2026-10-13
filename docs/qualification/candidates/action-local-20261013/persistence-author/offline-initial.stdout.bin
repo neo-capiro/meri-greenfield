@@ -1,0 +1,28 @@
+✔ offline claim fault forwards actual call then loses only one selected COMMIT ACK (2.118365ms)
+✔ offline dispatch fault forwards actual call then loses only one selected COMMIT ACK (0.318789ms)
+✔ offline result fault forwards actual call then loses only one selected COMMIT ACK (0.287973ms)
+✔ offline failed COMMIT does not become injected ACK loss or get retried (0.390757ms)
+✔ offline rollback clears fault selection and separate client transactions do not inherit it (0.343246ms)
+✔ offline invalid phase refuses before connect (0.208634ms)
+✔ offline valid local descriptor is detached and source hashes are not authority (0.973303ms)
+✔ offline descriptor refuses host before pool work (1.232643ms)
+✔ offline descriptor refuses mode before pool work (0.357788ms)
+✔ offline descriptor refuses database before pool work (0.422926ms)
+✔ offline descriptor refuses user before pool work (0.234032ms)
+✔ offline descriptor refuses deadlineMs before pool work (3.453632ms)
+✔ offline descriptor refuses port before pool work (0.497508ms)
+✔ offline descriptor getter is not executed (0.297277ms)
+✔ offline mismatched migration bytes HOLD before any SQL or case producer (9.849868ms)
+✔ offline fresh pool is closed exactly once and initial borrowed pool untouched (0.441655ms)
+✔ offline late acquisition after owner close is cleaned once without returning a pool (0.263406ms)
+✔ offline cancelled acquisition cleans its eventual wrapper without borrowed queries (0.260842ms)
+✔ offline returning borrowed pool refuses and does not close it (0.170756ms)
+✔ offline close failure is retained as cleanup UNKNOWN (0.429496ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2644.122485
