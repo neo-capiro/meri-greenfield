@@ -1,0 +1,5 @@
+{
+  "result": "FAIL",
+  "reason": "Initial invocation and first correction lacked MERI_REVIEW_SOURCE_ROOT (first correction mistakenly set MERI_SOURCE_ROOT); eight fixture-import failures each before test execution, six unrelated cases passed each.",
+  "action": "Retain both raw outputs; rerun with documented MERI_REVIEW_SOURCE_ROOT. No assertions changed."
+}

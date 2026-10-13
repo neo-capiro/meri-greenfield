@@ -1,0 +1,200 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/local-integration/allocation-independent.test.mjs (2545.781455ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/local-integration/application-independent.test.mjs (2842.897139ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/local-integration/local.test.mjs (2884.844115ms)
+✔ independent async graph: query refusal closes listener then owned graph once (43.312297ms)
+✔ independent async graph: invalid graph credential still closes acquired ownership (0.643727ms)
+✔ independent async graph: total cutoff refuses parked acquisition and closes late graph exactly once (61.743726ms)
+✔ independent async graph: rejected acquisition starts no listener or approval (0.732582ms)
+✔ independent async graph: cleanup failure is surfaced and borrowed application is not disposed (6.342954ms)
+✔ independent async graph: uncooperative cleanup cannot park caller forever (1007.231883ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/admitted-runs/independent/mount-independent.test.mjs (2598.02682ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/admitted-runs/independent/owner-independent.test.mjs (2646.529999ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/admitted-runs/test/authority.test.mjs (2769.412528ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/admitted-runs/test/mount.test.mjs (2722.899819ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-assembly-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/admitted-runs/test/owner.test.mjs (2729.499299ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 6
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8279.175862
+
+✖ failing tests:
+
+test at apps/control/action-host/local-integration/allocation-independent.test.mjs:1:1
+✖ apps/control/action-host/local-integration/allocation-independent.test.mjs (2545.781455ms)
+  'test failed'
+
+test at apps/control/action-host/local-integration/application-independent.test.mjs:1:1
+✖ apps/control/action-host/local-integration/application-independent.test.mjs (2842.897139ms)
+  'test failed'
+
+test at apps/control/action-host/local-integration/local.test.mjs:1:1
+✖ apps/control/action-host/local-integration/local.test.mjs (2884.844115ms)
+  'test failed'
+
+test at apps/control/admitted-runs/independent/mount-independent.test.mjs:1:1
+✖ apps/control/admitted-runs/independent/mount-independent.test.mjs (2598.02682ms)
+  'test failed'
+
+test at apps/control/admitted-runs/independent/owner-independent.test.mjs:1:1
+✖ apps/control/admitted-runs/independent/owner-independent.test.mjs (2646.529999ms)
+  'test failed'
+
+test at apps/control/admitted-runs/test/authority.test.mjs:1:1
+✖ apps/control/admitted-runs/test/authority.test.mjs (2769.412528ms)
+  'test failed'
+
+test at apps/control/admitted-runs/test/mount.test.mjs:1:1
+✖ apps/control/admitted-runs/test/mount.test.mjs (2722.899819ms)
+  'test failed'
+
+test at apps/control/admitted-runs/test/owner.test.mjs:1:1
+✖ apps/control/admitted-runs/test/owner.test.mjs (2729.499299ms)
+  'test failed'

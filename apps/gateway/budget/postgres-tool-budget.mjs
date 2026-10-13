@@ -31,10 +31,12 @@ function assembleBudget({ pool, allocationJson, now = Date.now }) {
     if (!row || row.allocation_sha256 !== allocationSha256 || !same(row.allocation, a) || n(row.max_tool_calls) !== n(a.budgets.maxToolCalls) || n(row.max_cost_micro_usd) !== n(a.budgets.maxCostMicroUSD)) refuse('ALLOCATION_MISMATCH');
     return row;
   }
-  async function bindTrustedGrant(invocationJson) {
+  async function bindTrustedGrant(invocationJson, check = () => {}) {
+    if (typeof check !== 'function') refuse('BUDGET_CHECK_REQUIRED');check();
     // Explicit trusted-owner operation. No automatic grant activation or run creation.
     const i = invocation(invocationJson, a); const facts = grantFacts(i);
-    return store.transact(async client => {
+    return store.transact(async borrowed => {
+      const client = {async query(...args) {check();const result = await borrowed.query(...args);check();return result;}};
       const budget = await store.lock(client); await admit(client, i, budget);
       const old = (await client.query('SELECT * FROM meri_qualification.tool_run_allocations WHERE run_id=$1', [i.binding.runId])).rows[0];
       if (old) await storedAllocation(client, i);
@@ -42,7 +44,7 @@ function assembleBudget({ pool, allocationJson, now = Date.now }) {
       const previous = (await client.query('SELECT * FROM meri_qualification.tool_grant_bindings WHERE grant_id=$1', [i.grantId])).rows[0];
       if (previous && !same(previous.facts, facts)) refuse('GRANT_BINDING_IMMUTABLE');
       if (!previous) await client.query('INSERT INTO meri_qualification.tool_grant_bindings(grant_id,run_id,facts) VALUES($1,$2,$3)', [i.grantId, i.binding.runId, facts]);
-    });
+    }, check);
   }
   async function readInvocationOutcome(invocationJson, expectedJson) {
     // Internal pool/allocation-bound owner read. Historical identity grants no effect.
