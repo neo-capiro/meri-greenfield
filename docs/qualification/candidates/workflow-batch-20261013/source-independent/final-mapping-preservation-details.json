@@ -1,0 +1,239 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "sourceCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "sourceTree": "c9a6ed124ba143e8ab0c772939609a6313cc9a07",
+  "parent": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "checks": [
+    {
+      "name": "Exact source/tree/parent",
+      "pass": true
+    },
+    {
+      "name": "Only existing-file change is exact memory test",
+      "pass": true,
+      "changed": [
+        "apps/gateway/test/memory-context-independent.test.mjs"
+      ]
+    },
+    {
+      "name": "Only new executable is current mail test",
+      "pass": true,
+      "added": [
+        "apps/gateway/test/mail-continuation-regression.test.mjs",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-deltas-corrected.json",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-deltas-corrected.stderr.gz",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-deltas-corrected.stdout.gz",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-final-selection.json",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-final.json",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-final.stderr.gz",
+        "docs/qualification/candidates/workflow-batch-20261013/root/integration-final.stdout.gz",
+        "docs/qualification/candidates/workflow-batch-20261013/root/legacy-mail-control-mapping.json"
+      ]
+    },
+    {
+      "name": "Every other retained parent entry exact",
+      "pass": true,
+      "exactEntries": 13663
+    },
+    {
+      "name": "Memory repair contains six literal profiles once",
+      "pass": true
+    },
+    {
+      "name": "Entire memory test otherwise exact",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(catalog.operations.length,97)",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(catalog.originals.length,139)",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: for(const row of catalog.operations)",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(row.availability,'unimplemented')",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(row.qualification,'pending')",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(row.handler,null)",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(view.entry(row.operation),null)",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: /UNAVAILABLE/",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.equal(gateway.sourceEnabled,false)",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.deepEqual(await gateway.discover(),[])",
+      "pass": true
+    },
+    {
+      "name": "Retained catalog assertion: assert.deepEqual(f.events,[])",
+      "pass": true
+    },
+    {
+      "name": "Historical mail test is exact immutable PR61 preimage",
+      "pass": true,
+      "sha256": "17c37bd83df352affd4d47a49f1e8b8d460a89eca3428ac24b0bc337aa2aacf8"
+    },
+    {
+      "name": "Recorded historical hash matches actual bytes",
+      "pass": true
+    },
+    {
+      "name": "Exactly one mapped Unicode block plus helper import",
+      "pass": true
+    },
+    {
+      "name": "All remaining fixture and 20 controls are byte exact",
+      "pass": true,
+      "reconstructedSha256": "17c37bd83df352affd4d47a49f1e8b8d460a89eca3428ac24b0bc337aa2aacf8"
+    },
+    {
+      "name": "Mapped Unicode assertions keep refusal, positions, hash, version, cursor and unverified status",
+      "pass": true
+    },
+    {
+      "name": "Public/skill/native prefix exact PR61: packages/contracts/dist/",
+      "pass": true,
+      "entries": 18
+    },
+    {
+      "name": "Public/skill/native prefix exact PR61: infra/",
+      "pass": true,
+      "entries": 71
+    },
+    {
+      "name": "Public/skill/native prefix exact PR61: apps/worker/",
+      "pass": true,
+      "entries": 66
+    },
+    {
+      "name": "Protected PR61 file exact: packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "Protected PR61 file exact: packages/contracts/README.md",
+      "pass": true
+    },
+    {
+      "name": "Protected PR61 file exact: packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "name": "Previously reviewed source exact Unicode checkpoint: packages/contracts/retrieval-0.2/mail-utf16.mjs",
+      "pass": true,
+      "sha256": "a22497344de75f16c4048d47e80a4f4197be72c318318674c99371d00c066414"
+    },
+    {
+      "name": "Previously reviewed source exact Unicode checkpoint: packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "pass": true,
+      "sha256": "d36822bf76c4458a67741c943dfb111824390adb1f74453b2e6bfaf52fdad2fb"
+    },
+    {
+      "name": "Previously reviewed source exact Unicode checkpoint: packages/contracts/test/retrieval-mail-unicode.test.mjs",
+      "pass": true,
+      "sha256": "7f8f6e5c9b77f89884d480bece54daba14e0823307d3454ddcc5e1107f056b16"
+    },
+    {
+      "name": "Previously reviewed source exact Unicode checkpoint: packages/contracts/test/retrieval-mail.test.mjs",
+      "pass": true,
+      "sha256": "939111026e953660921031e054a951f2938b47d7515d897757afb7b0d7d1f264"
+    },
+    {
+      "name": "Previously reviewed source exact Unicode checkpoint: packages/contracts/test/backend-execution-expectations.mjs",
+      "pass": true,
+      "sha256": "f0851c34ae605fcc123fae1d26a4840a8d6ca7c2376fd39288572bfd502ba659"
+    },
+    {
+      "name": "Previously reviewed source exact Unicode checkpoint: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "pass": true,
+      "sha256": "ac6881b7abd5e4ecb91f8975d28efbbab3bd04128336a0ef90645067466cb56d"
+    },
+    {
+      "name": "Every original schema exact PR61",
+      "pass": true
+    },
+    {
+      "name": "Retained parent capture counts integration-final",
+      "pass": true,
+      "counts": {
+        "tests": 1256,
+        "pass": 1254,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "recordedCommit": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+      "precommitCandidateMetadata": false
+    },
+    {
+      "name": "Retained parent capture raw hash integration-final stdout",
+      "pass": true
+    },
+    {
+      "name": "Retained parent capture raw hash integration-final stderr",
+      "pass": true
+    },
+    {
+      "name": "Initial failure names exactly metadata inventory and old split control",
+      "pass": true,
+      "failedNames": [
+        "independent: canonical mail and memory profiles are selected; actual15 stay unavailable",
+        "UTF16 one-unit sections may split astral text and recombine without verified upgrade"
+      ]
+    },
+    {
+      "name": "Retained parent capture counts integration-deltas-corrected",
+      "pass": true,
+      "counts": {
+        "tests": 75,
+        "pass": 75,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "recordedCommit": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+      "precommitCandidateMetadata": true
+    },
+    {
+      "name": "Retained parent capture raw hash integration-deltas-corrected stdout",
+      "pass": true
+    },
+    {
+      "name": "Retained parent capture raw hash integration-deltas-corrected stderr",
+      "pass": true
+    },
+    {
+      "name": "Reviewer checkout has no executable or public diff from exact pin",
+      "pass": true
+    },
+    {
+      "name": "Earlier source review evidence unchanged",
+      "pass": true
+    }
+  ],
+  "passedAssertions": 44,
+  "testOnlyDelta": true,
+  "historicalAssertionsPreserved": true,
+  "fullNativeOrArtifactAcceptance": false,
+  "scopeNote": "Mapped glyph block does not itself compare scopes/input digest; immutable other controls and independent Unicode gateway controls cover those bindings."
+}

@@ -1,0 +1,200 @@
+TAP version 13
+# Subtest: actual canonical pages produce editable Word specification, late bound body quote and all original source coverage
+ok 1 - actual canonical pages produce editable Word specification, late bound body quote and all original source coverage
+  ---
+  duration_ms: 39.50279
+  type: 'test'
+  ...
+# Subtest: preview, unversioned or incomplete body cannot verify an excerpt
+ok 2 - preview, unversioned or incomplete body cannot verify an excerpt
+  ---
+  duration_ms: 21.434385
+  type: 'test'
+  ...
+# Subtest: version/hash/citation change across sections remains conflicting and provides no complete-body evidence
+ok 3 - version/hash/citation change across sections remains conflicting and provides no complete-body evidence
+  ---
+  duration_ms: 8.089688
+  type: 'test'
+  ...
+# Subtest: source missing/disconnected and bounded call budget are visible, with no negative claim
+ok 4 - source missing/disconnected and bounded call budget are visible, with no negative claim
+  ---
+  duration_ms: 6.00191
+  type: 'test'
+  ...
+# Subtest: refuses foreign actor
+ok 5 - refuses foreign actor
+  ---
+  duration_ms: 4.180832
+  type: 'test'
+  ...
+# Subtest: refuses foreign tenant
+ok 6 - refuses foreign tenant
+  ---
+  duration_ms: 4.352149
+  type: 'test'
+  ...
+# Subtest: refuses different conversation
+ok 7 - refuses different conversation
+  ---
+  duration_ms: 4.125149
+  type: 'test'
+  ...
+# Subtest: refuses different run
+ok 8 - refuses different run
+  ---
+  duration_ms: 3.680403
+  type: 'test'
+  ...
+# Subtest: refuses different attempt
+ok 9 - refuses different attempt
+  ---
+  duration_ms: 4.756705
+  type: 'test'
+  ...
+# Subtest: refuses stale fence
+ok 10 - refuses stale fence
+  ---
+  duration_ms: 3.809015
+  type: 'test'
+  ...
+# Subtest: refuses mailbox substitution
+ok 11 - refuses mailbox substitution
+  ---
+  duration_ms: 3.61833
+  type: 'test'
+  ...
+# Subtest: refuses scope substitution
+ok 12 - refuses scope substitution
+  ---
+  duration_ms: 3.707443
+  type: 'test'
+  ...
+# Subtest: refuses body hash
+ok 13 - refuses body hash
+  ---
+  duration_ms: 8.725701
+  type: 'test'
+  ...
+# Subtest: refuses operation source substitution
+ok 14 - refuses operation source substitution
+  ---
+  duration_ms: 3.094415
+  type: 'test'
+  ...
+# Subtest: refuses body range
+ok 15 - refuses body range
+  ---
+  duration_ms: 2.998611
+  type: 'test'
+  ...
+# Subtest: refuses window substitution
+ok 16 - refuses window substitution
+  ---
+  duration_ms: 12.653864
+  type: 'test'
+  ...
+# Subtest: refuses authority promotion
+ok 17 - refuses authority promotion
+  ---
+  duration_ms: 3.112262
+  type: 'test'
+  ...
+# Subtest: an exact source citation does not verify free-form interpretations or mismatched quoted text
+ok 18 - an exact source citation does not verify free-form interpretations or mismatched quoted text
+  ---
+  duration_ms: 5.711975
+  type: 'test'
+  ...
+# Subtest: immutable selected skill and private prepared result cannot be replaced or cloned
+ok 19 - immutable selected skill and private prepared result cannot be replaced or cloned
+  ---
+  duration_ms: 6.96997
+  type: 'test'
+  ...
+# Subtest: authority loss and cancellation abort instead of producing an unavailable-source draft
+ok 20 - authority loss and cancellation abort instead of producing an unavailable-source draft
+  ---
+  duration_ms: 0.904154
+  type: 'test'
+  ...
+# Subtest: body cap cannot hide five unread decisive messages from fifteen paged candidates
+ok 21 - body cap cannot hide five unread decisive messages from fifteen paged candidates
+  ---
+  duration_ms: 26.215327
+  type: 'test'
+  ...
+# Subtest: candidate page/call/body-size caps retain their exact stop reason and unverified coverage
+ok 22 - candidate page/call/body-size caps retain their exact stop reason and unverified coverage
+  ---
+  duration_ms: 41.340562
+  type: 'test'
+  ...
+# Subtest: canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage
+ok 23 - canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage
+  ---
+  duration_ms: 6.102581
+  type: 'test'
+  ...
+# Subtest: well-formed contiguous Unicode sections reconstruct only against the exact full body hash
+ok 24 - well-formed contiguous Unicode sections reconstruct only against the exact full body hash
+  ---
+  duration_ms: 5.313378
+  type: 'test'
+  ...
+# Subtest: fixed UTF16 page boundary splitting a surrogate pair is refused by the canonical JSON hash
+ok 25 - fixed UTF16 page boundary splitting a surrogate pair is refused by the canonical JSON hash
+  ---
+  duration_ms: 3.168276
+  type: 'test'
+  ...
+# Subtest: cancelling a parked read preserves the typed lifetime outcome and aborts its source signal
+not ok 26 - cancelling a parked read preserves the typed lifetime outcome and aborts its source signal
+  ---
+  duration_ms: 1.080147
+  type: 'test'
+  location: '/workspace/meri-mail-history-brief/apps/control/document-application/mail-history/test/compiler.test.mjs:77:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    Error: MAIL_HISTORY_SOURCE_FAILED
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/test/compiler.test.mjs:81:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: a parked read deadline preserves the typed lifetime outcome and aborts its source signal
+not ok 27 - a parked read deadline preserves the typed lifetime outcome and aborts its source signal
+  ---
+  duration_ms: 101.452173
+  type: 'test'
+  location: '/workspace/meri-mail-history-brief/apps/control/document-application/mail-history/test/compiler.test.mjs:83:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    Error: MAIL_HISTORY_SOURCE_FAILED
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/test/compiler.test.mjs:86:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 25
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2056.180247

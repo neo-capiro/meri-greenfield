@@ -1,3 +1,4 @@
+import {assertMailBodySection} from './mail-utf16.mjs';
 import { canonicalSha256 } from '../validate.mjs';
 const fail = message => { throw new Error(message); };
 
@@ -64,16 +65,13 @@ function assertMailThreadSourcePage(page, input) {
     if (source.authority !== 'authoritative') fail('Stored mail body requires authoritative source');
     if (page.snapshotVersionId !== null && source.snapshotVersionId !== page.snapshotVersionId) fail('Mail snapshot lineage mismatch');
     const section = message.section, length = section.text?.length;
-    if (section.endExclusive < section.start || section.endExclusive - section.start > normalized.maxCharacters || (section.text !== null && length !== section.endExclusive - section.start)) fail('Mail UTF-16 section length mismatch');
+    if (section.endExclusive < section.start || (section.text !== null && length !== section.endExclusive - section.start)) fail('Mail UTF-16 section length mismatch');
     if (section.text === null && (!['missing', 'unknown'].includes(message.bodyCompleteness) || section.totalCodeUnits !== null || section.start !== section.endExclusive)) fail('Missing mail text cannot claim material or known size');
     if (message.bodyCompleteness === 'missing' && section.text !== null) fail('Missing mail body cannot contain text');
     if (section.totalCodeUnits === null) {
       if (section.start !== normalized.bodyOffset || section.hasMore !== null) fail('Unknown body size cannot claim completion');
-    } else {
-      const start = Math.min(normalized.bodyOffset, section.totalCodeUnits);
-      const end = Math.min(section.totalCodeUnits, normalized.bodyOffset + normalized.maxCharacters);
-      if (section.start !== start || section.endExclusive !== end || section.hasMore !== (end < section.totalCodeUnits)) fail('Mail body continuation mismatch');
     }
+    assertMailBodySection(section, normalized.bodyOffset, normalized.maxCharacters);
     if (section.hasMore === true) bodies.push({ messageId: message.messageId, bodyOffset: section.endExclusive });
   }
   if (canonicalSha256(page.nextBodyOffsets) !== canonicalSha256(bodies)) fail('Mail body continuation inventory mismatch');

@@ -1,0 +1,144 @@
+{
+  "decision": "ACCEPT_SOURCE_BOUNDED",
+  "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+  "reviewedTree": "e9ec569d549b3263b88ba3620a0124c9b33c7d10",
+  "sixSourcePin": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+  "checks": [
+    {
+      "capture": "initial-independent",
+      "reviewedCommit": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+      "tests": 25,
+      "pass": 21,
+      "fail": 4,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "initial-author-and-context",
+      "reviewedCommit": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+      "tests": 111,
+      "pass": 111,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "initial-history40",
+      "reviewedCommit": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "six-source-independent41",
+      "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+      "tests": 41,
+      "pass": 41,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "six-source-author208",
+      "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+      "tests": 208,
+      "pass": 208,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "six-source-canonical",
+      "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+      "tests": 341,
+      "pass": 341,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "helper-independent30",
+      "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+      "tests": 30,
+      "pass": 30,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "helper-focused211",
+      "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+      "tests": 211,
+      "pass": 211,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "mail-unicode-compatibility4",
+      "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+      "tests": 4,
+      "pass": 1,
+      "fail": 3,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "mail-unicode-compatibility4-corrected",
+      "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "initial-source-audit",
+      "reviewedCommit": "35594d8a4034c4c05a8b0a954cd759bd5f5ded49",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "six-source-audit",
+      "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "six-source-inert-import",
+      "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "helper-source-audit",
+      "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "helper-source-whitespace",
+      "reviewedCommit": "18f77ae73d23f888ea3e46216cd1ab2ed1c22df0",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    }
+  ],
+  "passingSixSourceNodeCases": 590,
+  "passingHelperAndCompatibilityNodeCases": 245,
+  "original25SourceUnchanged": true,
+  "original25Sha256": "67046dd6abc97403ba3d2c747559fbffbbf28dc2365fd523f11e4f382d61a63f",
+  "initialFailuresPreserved": true,
+  "unicodeProtocolCompatibilityGap": "Fixed UTF16 window may end in a lone surrogate admitted by schema but refused by canonical gateway hash; arbitrary Unicode window support remains unimplemented/unqualified. Well-formed full/exact windows pass.",
+  "mailHistoryCompilerAcceptedByThisPacket": false,
+  "borrowedLinkRemoved": true,
+  "donorNotModified": true,
+  "executableDiffFromPin": false,
+  "nativeAcceptance": false
+}

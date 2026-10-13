@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "9d1bf92a08ea07ad49d63e80ade8249598060635^",
+    "9d1bf92a08ea07ad49d63e80ade8249598060635",
+    "--",
+    "*.mjs",
+    "*.json",
+    "*.md"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "worktreeHead": "4f545d6f63e267526bc22c5a5e3db7b177b79ac9",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.004,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

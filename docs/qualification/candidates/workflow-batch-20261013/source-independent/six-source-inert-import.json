@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "node",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/inert-import.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+  "worktreeHead": "38fb4cb1db310fefda5e7ec9f1cf677fe178ae89",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 2.074,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 777,
+  "stderrBytes": 0,
+  "stdoutSha256": "eb5bea9949579869235cd8935c81c8f3ef2c4274763347fd5308990b502b3e99",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

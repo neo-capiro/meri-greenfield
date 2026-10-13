@@ -1,0 +1,24 @@
+✖ canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage (11.041295ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1595.483268
+
+✖ failing tests:
+
+test at apps/control/document-application/mail-history/test/compiler.test.mjs:59:1
+✖ canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage (11.041295ms)
+  Error: MAIL_HISTORY_SOURCE_FAILED
+      at fail (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/source.mjs:8:46)
+      at read (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/source.mjs:31:274)
+      at async Object.identity (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/source.mjs:42:48)
+      at async Object.prepare (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/compose.mjs:51:76)
+      at async TestContext.<anonymous> (file:///workspace/meri-mail-history-brief/apps/control/document-application/mail-history/test/compiler.test.mjs:61:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'MAIL_HISTORY_SOURCE_FAILED'
+  }

@@ -1,0 +1,42 @@
+✔ profile exact full capabilities section survives actual response bytes (40.126842ms)
+✔ profile exact full people section survives actual response bytes (5.273085ms)
+✔ profile exact full facilities section survives actual response bytes (5.513725ms)
+✔ profile exact full submissionHistory section survives actual response bytes (8.525521ms)
+✔ profile exact full advocacyMatters section survives actual response bytes (4.753471ms)
+✔ profile exact full advocacyRecords section survives actual response bytes (5.821413ms)
+✔ broker whole-request digest equals the exact canonical UTF-8 bytes emitted to Fetch (15.763675ms)
+✔ profile overview preserves all requested and unavailable sections without equating a gap to empty (4.652361ms)
+✔ profile pagination preserves raw canonical metadata and selected afterId without promoting completeness (5.741524ms)
+✔ passive metadata inventory preserves canonical source data (5.994721ms)
+✔ passive stored exact body preserves canonical source data (4.154559ms)
+✔ passive stored transcription preserves canonical source data (3.729697ms)
+✔ passive blocked extraction preserves canonical source data (3.855784ms)
+✔ document UTF-16 preview, exact late read and hash-bound continuation preserve separate coverage (8.337131ms)
+✔ explicit later section remains a section read without claiming whole document completion (3.414787ms)
+✔ document query windows and section reads cannot become a complete document read (6.135771ms)
+✔ all current binding and client resolution substitutions refuse before credentials (12.099666ms)
+✔ get_client_context direct source refuses an additional foreign tenant capability scope before broker or Fetch (1.440926ms)
+✔ get_client_context direct source refuses an additional foreign policy capability scope before broker or Fetch (1.041211ms)
+✔ read_client_documents direct source refuses an additional foreign tenant capability scope before broker or Fetch (0.999599ms)
+✔ read_client_documents direct source refuses an additional foreign policy capability scope before broker or Fetch (1.121841ms)
+✔ closed broker receipt pins full authority, normalization context, metadata and both request digests (25.568763ms)
+✔ profile tenant, observation, record, section and Decimal precision substitutions refuse (25.687159ms)
+✔ documents preserve lineage, record/client/version/hash/range and extraction gaps (23.619599ms)
+✔ changed document or section hash during cursor continuation refuses (5.683397ms)
+✔ ordinary read methods keep their receiver and detached methods refuse (2.076584ms)
+✔ configuration, input and credentials refuse hostile getters without executing them (1.667844ms)
+✔ configured endpoints are closed explicit HTTPS URLs and importing/factories allocate nothing (0.872555ms)
+✔ HTTP error/media/encoding responses and malformed UTF-8/JSON/length never leak private diagnostics (16.779217ms)
+✔ parked credentials deadline blocks later effects and cancels owned response (21.92856ms)
+✔ parked fetch deadline blocks later effects and cancels owned response (21.377639ms)
+✔ parked body deadline blocks later effects and cancels owned response (22.305401ms)
+✔ abort on acquired response cancels body and suppresses successful output (1.974551ms)
+✔ production operation descriptors remain disabled and unqualified (0.565583ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2173.572907

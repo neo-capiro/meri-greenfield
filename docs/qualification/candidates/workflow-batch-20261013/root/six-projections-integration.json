@@ -1,0 +1,41 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "e7998c9cadb54c2411dcd39eb81c8e90eed2c9be",
+  "tree": "e99ca97fd3e334b565de94875e352dba2021d94a",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/test/passive-projections-integration.test.mjs",
+    "apps/gateway/sources/client-knowledge/test/adapter-handler.test.mjs"
+  ],
+  "startedAt": "2026-10-13T14:12:28.983584+00:00",
+  "seconds": 2.0077764010020474,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {
+    "tests": 29,
+    "pass": 29,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "blobs": {
+    "stdout": {
+      "path": "six-projections-integration.stdout.gz",
+      "rawBytes": 7181,
+      "rawSha256": "957d121771810e24a57cffcf6922509ab4420f1dba3ff254aa0b81c684ac5e45"
+    },
+    "stderr": {
+      "path": "six-projections-integration.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "ownedProcessId": 166776,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}

@@ -1,0 +1,7 @@
+{
+  "status": "AUDIT_SETUP_FAILURE",
+  "exitCode": 1,
+  "error": "AssertionError: apps/control/artifacts",
+  "reason": "Audit selected a nonexistent owner path; the canonical unchanged owner is apps/artifacts. No production predicate or file changed.",
+  "trace": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\nAssertionError: apps/control/artifacts\n"
+}

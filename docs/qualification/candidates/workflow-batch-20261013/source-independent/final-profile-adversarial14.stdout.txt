@@ -1,0 +1,551 @@
+TAP version 13
+# (node:198767) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Actual inventory assertion admits exact metadata and checks every source-disabled catalog row
+not ok 1 - Actual inventory assertion admits exact metadata and checks every source-disabled catalog row
+  ---
+  duration_ms: 2.50494
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:25:1'
+  failureType: 'testCodeFailure'
+  error: 'A dynamic import callback was not specified.'
+  code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for search_memory
+not ok 2 - Actual inventory assertion refuses missing metadata for search_memory
+  ---
+  duration_ms: 3.188481
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for search_memory
+not ok 3 - Actual inventory assertion refuses wrong metadata for search_memory
+  ---
+  duration_ms: 4.453219
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for read_monday_client_boards
+not ok 4 - Actual inventory assertion refuses missing metadata for read_monday_client_boards
+  ---
+  duration_ms: 1.05793
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for read_monday_client_boards
+not ok 5 - Actual inventory assertion refuses wrong metadata for read_monday_client_boards
+  ---
+  duration_ms: 0.988976
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for get_client_context
+not ok 6 - Actual inventory assertion refuses missing metadata for get_client_context
+  ---
+  duration_ms: 0.952162
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for get_client_context
+not ok 7 - Actual inventory assertion refuses wrong metadata for get_client_context
+  ---
+  duration_ms: 1.013323
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for find_contacts
+not ok 8 - Actual inventory assertion refuses missing metadata for find_contacts
+  ---
+  duration_ms: 1.099862
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for find_contacts
+not ok 9 - Actual inventory assertion refuses wrong metadata for find_contacts
+  ---
+  duration_ms: 1.126622
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for resolve_entity
+not ok 10 - Actual inventory assertion refuses missing metadata for resolve_entity
+  ---
+  duration_ms: 1.034665
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for resolve_entity
+not ok 11 - Actual inventory assertion refuses wrong metadata for resolve_entity
+  ---
+  duration_ms: 1.526029
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses missing metadata for read_client_documents
+not ok 12 - Actual inventory assertion refuses missing metadata for read_client_documents
+  ---
+  duration_ms: 0.770771
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses wrong metadata for read_client_documents
+not ok 13 - Actual inventory assertion refuses wrong metadata for read_client_documents
+  ---
+  duration_ms: 0.729219
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:26:59'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:27:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual inventory assertion refuses an additional profile on another registry entry
+not ok 14 - Actual inventory assertion refuses an additional profile on another registry entry
+  ---
+  duration_ms: 0.935117
+  type: 'test'
+  location: '/workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:30:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      Comparison {
+    +   code: 'ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING'
+    -   code: 'ERR_ASSERTION'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'A dynamic import callback was not specified.'
+  name: 'TypeError'
+  stack: |-
+    importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)
+    load (file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:10:29)
+    file:///workspace/meri-workflow-source-independent/apps/gateway/test/memory-context-independent.test.mjs:11:33
+    SourceTextModule.evaluate (node:internal/vm/module:233:26)
+    runActualInventory (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:23:41)
+    async waitForActual (node:assert:646:5)
+    async strict.rejects (node:assert:769:25)
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:31:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  operator: 'rejects'
+  stack: |-
+    async TestContext.<anonymous> (file:///workspace/meri-workflow-source-independent/docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs:31:2)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 0
+# fail 14
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 69.58992

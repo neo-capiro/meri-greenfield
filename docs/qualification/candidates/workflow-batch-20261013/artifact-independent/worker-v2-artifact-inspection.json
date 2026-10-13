@@ -1,0 +1,130 @@
+{
+  "status": "PASS",
+  "sourceHead": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "artifactDirectory": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2",
+  "docxLibrary": "1.2.0",
+  "pdfLibrary": "1.26.6",
+  "versions": [
+    {
+      "label": "original",
+      "versionId": "68a95f0b-c434-4327-82b0-f4ed72958620",
+      "artifactId": "5b3bd171-9224-438d-8175-125ace756904",
+      "parentVersionId": null,
+      "docxSha256": "8c329c99f0849fdf609bc55699f2d3da105045ebdac29507ca7364ccca5f0977",
+      "docxBytes": 39142,
+      "editableParagraphs": 41,
+      "pdfSha256": "40a6440ccf7c78fa9230e6c1bcb475a751fdbbab0b77e67c93a28ca680634f6c",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/original-preview-1.png",
+          "sha256": "d7333ec1703001a742af4771ca6cd678ddf0e41a2fd386951635b91e5b927550",
+          "textCharacters": 1676
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/original-preview-2.png",
+          "sha256": "2d1b5a76fc2f5ec05722afd85c1166d08e6a1c6210f71acb79bd8b03986920c9",
+          "textCharacters": 2287
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/original-preview-3.png",
+          "sha256": "bcd1059eac6204676db143593403ba053845cabc7512460bbb4f05da783d0f14",
+          "textCharacters": 2353
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/original-preview-4.png",
+          "sha256": "db72e838ba9b4602ff2229b839cfbba11268e9781c0b132fffa2f4169305193f",
+          "textCharacters": 814
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "df78c74e63d16647ec841d09745924a9e63f51f2d449869e0d9feb73ffafb357",
+      "nativeQualified": false
+    },
+    {
+      "label": "revision",
+      "versionId": "cb54a2a9-9acb-45d7-9ed1-aeacfb21c9ad",
+      "artifactId": "5b3bd171-9224-438d-8175-125ace756904",
+      "parentVersionId": "68a95f0b-c434-4327-82b0-f4ed72958620",
+      "docxSha256": "905eecbf051d05bafc337c5f6bdbf1489f3453f9e713dfa22d9da1765bf0e51e",
+      "docxBytes": 39342,
+      "editableParagraphs": 41,
+      "pdfSha256": "71a7160530ee08dacf2c653465f13ee8c23ccf2af6a2d6f37effd158a7fd985f",
+      "pages": [
+        {
+          "page": 1,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/revision-preview-1.png",
+          "sha256": "9d7cf3d39b05759ec175ca8c4455f5ae6202851f40b52dd69e0e9d732d56f568",
+          "textCharacters": 1701
+        },
+        {
+          "page": 2,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/revision-preview-2.png",
+          "sha256": "3c03cab8769656e08b3943c0e9ca52773b80a058228ea8fde1b8284484e71a8c",
+          "textCharacters": 2287
+        },
+        {
+          "page": 3,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/revision-preview-3.png",
+          "sha256": "25a956d3bd70caa6b49b9944ec360ca5a3acd4594b256b4631d1f59904a2b815",
+          "textCharacters": 2353
+        },
+        {
+          "page": 4,
+          "png": "/workspace/meri-mail-history-artifact-independent/apps/control/document-application/mail-history/local/receipts-v2/revision-preview-4.png",
+          "sha256": "5108801da1f4852f77d8f27093aa9c635a4dd5a851182c9285d1453fe670d483",
+          "textCharacters": 1114
+        }
+      ],
+      "decisivePassages": [
+        {
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "bodySha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a",
+          "utf16Range": [
+            2002,
+            2103
+          ],
+          "sections": 2,
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+        }
+      ],
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "provenanceSha256": "0315f91a6500b78612d8f949aaf24517cd533b07617573e4f611cfa94651dbd6",
+      "nativeQualified": false
+    }
+  ],
+  "everyPageRendered": true,
+  "visualInspectionRequiredSeparately": true,
+  "nativeQualified": false
+}

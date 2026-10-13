@@ -1,0 +1,23 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "docs/qualification/candidates/workflow-batch-20261013/artifact-independent/compiler-independent.test.mjs",
+    "docs/qualification/candidates/workflow-batch-20261013/artifact-independent/gateway-independent.test.mjs",
+    "docs/qualification/candidates/workflow-batch-20261013/artifact-independent/retained-base-conflict-independent.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs",
+    "apps/gateway/test/mail-history-gateway-flow.test.mjs"
+  ],
+  "sourceHead": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "exitCode": 0,
+  "seconds": 19.156721324998216,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 192921,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

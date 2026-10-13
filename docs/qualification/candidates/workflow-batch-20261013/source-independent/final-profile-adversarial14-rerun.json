@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/final-profile-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "worktreeHead": "4f545d6f63e267526bc22c5a5e3db7b177b79ac9",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 1.692,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 3388,
+  "stderrBytes": 0,
+  "stdoutSha256": "b61ed657bf61c035681d0ad8edb4c2b0f1d628469c17d7b5a0a8ca87768ec76b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

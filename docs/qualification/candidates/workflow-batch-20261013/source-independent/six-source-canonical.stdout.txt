@@ -1,0 +1,2056 @@
+TAP version 13
+# Subtest: six canonical private binding profiles compose existing context keys without activating catalog
+ok 1 - six canonical private binding profiles compose existing context keys without activating catalog
+  ---
+  duration_ms: 1.168886
+  type: 'test'
+  ...
+# Subtest: memory actor and tenant are current binding, Monday/contact contexts empty
+ok 2 - memory actor and tenant are current binding, Monday/contact contexts empty
+  ---
+  duration_ms: 1.501194
+  type: 'test'
+  ...
+# Subtest: profile observation is immutable while decision lineage can refresh
+ok 3 - profile observation is immutable while decision lineage can refresh
+  ---
+  duration_ms: 0.595844
+  type: 'test'
+  ...
+# Subtest: document lineage uses current authority, never the prior decision
+ok 4 - document lineage uses current authority, never the prior decision
+  ---
+  duration_ms: 0.287442
+  type: 'test'
+  ...
+# Subtest: Congress requires explicit trusted configuration
+ok 5 - Congress requires explicit trusted configuration
+  ---
+  duration_ms: 0.968675
+  type: 'test'
+  ...
+# Subtest: search_memory: another client selector cannot expand selected scope
+ok 6 - search_memory: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.385829
+  type: 'test'
+  ...
+# Subtest: read_monday_client_boards: another client selector cannot expand selected scope
+ok 7 - read_monday_client_boards: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.244658
+  type: 'test'
+  ...
+# Subtest: find_contacts: another client selector cannot expand selected scope
+ok 8 - find_contacts: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.183446
+  type: 'test'
+  ...
+# Subtest: read_client_documents: another client selector cannot expand selected scope
+ok 9 - read_client_documents: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.229555
+  type: 'test'
+  ...
+# Subtest: tenantId: current authority substitution is refused
+ok 10 - tenantId: current authority substitution is refused
+  ---
+  duration_ms: 0.355614
+  type: 'test'
+  ...
+# Subtest: actorId: current authority substitution is refused
+ok 11 - actorId: current authority substitution is refused
+  ---
+  duration_ms: 0.177266
+  type: 'test'
+  ...
+# Subtest: changed policy revision and unsupported canonical context are refused
+ok 12 - changed policy revision and unsupported canonical context are refused
+  ---
+  duration_ms: 0.21997
+  type: 'test'
+  ...
+# Subtest: independent nonempty list and Unicode read fixtures use exact source projections
+ok 13 - independent nonempty list and Unicode read fixtures use exact source projections
+  ---
+  duration_ms: 6.800092
+  type: 'test'
+  ...
+# Subtest: list/read defaults and required client scope never derive authority from model fields
+ok 14 - list/read defaults and required client scope never derive authority from model fields
+  ---
+  duration_ms: 1.400087
+  type: 'test'
+  ...
+# Subtest: declared null numeric defaults and list/read bounds refuse coercion
+ok 15 - declared null numeric defaults and list/read bounds refuse coercion
+  ---
+  duration_ms: 0.603754
+  type: 'test'
+  ...
+# Subtest: actual input limits use trimmed UTF16 characters, not Unicode code-point counts
+ok 16 - actual input limits use trimmed UTF16 characters, not Unicode code-point counts
+  ---
+  duration_ms: 0.331667
+  type: 'test'
+  ...
+# Subtest: read cursor decodes closed client/document/query/content and offset binding
+ok 17 - read cursor decodes closed client/document/query/content and offset binding
+  ---
+  duration_ms: 1.612093
+  type: 'test'
+  ...
+# Subtest: malformed mode-crossed cursors never become a source request
+ok 18 - malformed mode-crossed cursors never become a source request
+  ---
+  duration_ms: 0.488601
+  type: 'test'
+  ...
+# Subtest: current context and full returned binding or subject cannot be substituted
+ok 19 - current context and full returned binding or subject cannot be substituted
+  ---
+  duration_ms: 2.643769
+  type: 'test'
+  ...
+# Subtest: document/client/content/provenance and record reference substitutions refuse
+ok 20 - document/client/content/provenance and record reference substitutions refuse
+  ---
+  duration_ms: 2.015017
+  type: 'test'
+  ...
+# Subtest: full-section returned text hash rejects content or digest substitution
+ok 21 - full-section returned text hash rejects content or digest substitution
+  ---
+  duration_ms: 0.617795
+  type: 'test'
+  ...
+# Subtest: UTF16 ranges correlate coverage, payload, provenance and returned text length
+ok 22 - UTF16 ranges correlate coverage, payload, provenance and returned text length
+  ---
+  duration_ms: 1.43602
+  type: 'test'
+  ...
+# Subtest: stale content and section extraction cursors refuse despite same document identity
+ok 23 - stale content and section extraction cursors refuse despite same document identity
+  ---
+  duration_ms: 0.618826
+  type: 'test'
+  ...
+# Subtest: list coverage, ordering, uniqueness and filename selector stay correlated
+ok 24 - list coverage, ordering, uniqueness and filename selector stay correlated
+  ---
+  duration_ms: 1.65001
+  type: 'test'
+  ...
+# Subtest: blocked metadata never silently becomes usable or a document content read
+ok 25 - blocked metadata never silently becomes usable or a document content read
+  ---
+  duration_ms: 1.350011
+  type: 'test'
+  ...
+# Subtest: nullable listing metadata remains distinct from omission and invalid dates
+ok 26 - nullable listing metadata remains distinct from omission and invalid dates
+  ---
+  duration_ms: 1.38886
+  type: 'test'
+  ...
+# Subtest: closed projections refuse invented proof fields while inert metadata stays untrusted
+ok 27 - closed projections refuse invented proof fields while inert metadata stays untrusted
+  ---
+  duration_ms: 4.318526
+  type: 'test'
+  ...
+# Subtest: readability section, count and character declarations must agree with coverage
+ok 28 - readability section, count and character declarations must agree with coverage
+  ---
+  duration_ms: 1.340347
+  type: 'test'
+  ...
+# Subtest: extraction truncation cannot be erased by outer complete coverage
+ok 29 - extraction truncation cannot be erased by outer complete coverage
+  ---
+  duration_ms: 0.720719
+  type: 'test'
+  ...
+# Subtest: row provenance is paired and ordered when present
+ok 30 - row provenance is paired and ordered when present
+  ---
+  duration_ms: 0.912527
+  type: 'test'
+  ...
+# Subtest: hostile request/context/result admission invokes no supplied property effects
+ok 31 - hostile request/context/result admission invokes no supplied property effects
+  ---
+  duration_ms: 0.456884
+  type: 'test'
+  ...
+# Subtest: opaque metadata refuses exotic, sparse, cyclic and hidden data without mutation
+ok 32 - opaque metadata refuses exotic, sparse, cyclic and hidden data without mutation
+  ---
+  duration_ms: 1.249831
+  type: 'test'
+  ...
+# Subtest: matched query contains its literal case-insensitive match in returned evidence
+ok 33 - matched query contains its literal case-insensitive match in returned evidence
+  ---
+  duration_ms: 0.677475
+  type: 'test'
+  ...
+# Subtest: matched partial query cannot omit evidence while retaining a continuation claim
+ok 34 - matched partial query cannot omit evidence while retaining a continuation claim
+  ---
+  duration_ms: 0.620459
+  type: 'test'
+  ...
+# Subtest: partial continuation advances UTF16 offsets, preserves section hash and denies stale extraction
+ok 35 - partial continuation advances UTF16 offsets, preserves section hash and denies stale extraction
+  ---
+  duration_ms: 1.908187
+  type: 'test'
+  ...
+# Subtest: unreadable section blocks automatic traversal and never manufactures an evidence record
+ok 36 - unreadable section blocks automatic traversal and never manufactures an evidence record
+  ---
+  duration_ms: 1.297973
+  type: 'test'
+  ...
+# Subtest: list continuation retains partial history disclosure and advances by ID
+ok 37 - list continuation retains partial history disclosure and advances by ID
+  ---
+  duration_ms: 0.632858
+  type: 'test'
+  ...
+# Subtest: query no-match is disclosed without inventing an empty evidence record
+ok 38 - query no-match is disclosed without inventing an empty evidence record
+  ---
+  duration_ms: 0.428561
+  type: 'test'
+  ...
+# Subtest: text slice JSON ceiling and selected non-query character limit both remain strict
+ok 39 - text slice JSON ceiling and selected non-query character limit both remain strict
+  ---
+  duration_ms: 0.805286
+  type: 'test'
+  ...
+# Subtest: UTF16 continuation may split an astral pair without changing section-hash lineage
+ok 40 - UTF16 continuation may split an astral pair without changing section-hash lineage
+  ---
+  duration_ms: 0.359147
+  type: 'test'
+  ...
+# Subtest: partial OCR stays explicitly incomplete and uses its provider-transcribed scope
+ok 41 - partial OCR stays explicitly incomplete and uses its provider-transcribed scope
+  ---
+  duration_ms: 0.555893
+  type: 'test'
+  ...
+# Subtest: list/read defaults and nullish numeric defaults preserve explicit selected client
+ok 42 - list/read defaults and nullish numeric defaults preserve explicit selected client
+  ---
+  duration_ms: 3.577737
+  type: 'test'
+  ...
+# Subtest: raw selectors refuse authority injection, explicit null text and foreign client
+ok 43 - raw selectors refuse authority injection, explicit null text and foreign client
+  ---
+  duration_ms: 1.308129
+  type: 'test'
+  ...
+# Subtest: UTF-16 selector bounds differ from Unicode code point schema counts
+ok 44 - UTF-16 selector bounds differ from Unicode code point schema counts
+  ---
+  duration_ms: 0.575822
+  type: 'test'
+  ...
+# Subtest: mode-specific bounds and explicit range/list/cursor exclusions
+ok 45 - mode-specific bounds and explicit range/list/cursor exclusions
+  ---
+  duration_ms: 0.793639
+  type: 'test'
+  ...
+# Subtest: closed canonical context requires current selected-client subject
+ok 46 - closed canonical context requires current selected-client subject
+  ---
+  duration_ms: 0.403524
+  type: 'test'
+  ...
+# Subtest: read cursor retains content/query/section hash and exact decoded selection
+ok 47 - read cursor retains content/query/section hash and exact decoded selection
+  ---
+  duration_ms: 1.343602
+  type: 'test'
+  ...
+# Subtest: listing cursor remains a bounded identity hint, not a signed query or grant
+ok 48 - listing cursor remains a bounded identity hint, not a signed query or grant
+  ---
+  duration_ms: 0.383715
+  type: 'test'
+  ...
+# Subtest: exact listing metadata retains extraction and scan disclosure without content proof
+ok 49 - exact listing metadata retains extraction and scan disclosure without content proof
+  ---
+  duration_ms: 4.884664
+  type: 'test'
+  ...
+# Subtest: listing next cursor requires a full sorted page and partial coverage
+ok 50 - listing next cursor requires a full sorted page and partial coverage
+  ---
+  duration_ms: 0.825166
+  type: 'test'
+  ...
+# Subtest: continued listing cannot upgrade to full listing completeness or repeat previous identity
+ok 51 - continued listing cannot upgrade to full listing completeness or repeat previous identity
+  ---
+  duration_ms: 0.742132
+  type: 'test'
+  ...
+# Subtest: list total, returned count, filename query and mode variants are correlated
+ok 52 - list total, returned count, filename query and mode variants are correlated
+  ---
+  duration_ms: 2.413765
+  type: 'test'
+  ...
+# Subtest: complete text extraction checks full section hash, UTF-16 reference and external trust
+ok 53 - complete text extraction checks full section hash, UTF-16 reference and external trust
+  ---
+  duration_ms: 2.034656
+  type: 'test'
+  ...
+# Subtest: partial read preserves hash and exact next UTF-16 offset
+ok 54 - partial read preserves hash and exact next UTF-16 offset
+  ---
+  duration_ms: 2.051122
+  type: 'test'
+  ...
+# Subtest: incoming continuation refuses changed document bytes and extraction hash
+ok 55 - incoming continuation refuses changed document bytes and extraction hash
+  ---
+  duration_ms: 0.94871
+  type: 'test'
+  ...
+# Subtest: a physical next section resets offset and omits previous section hash
+ok 56 - a physical next section resets offset and omits previous section hash
+  ---
+  duration_ms: 0.708931
+  type: 'test'
+  ...
+# Subtest: unreadable PDF reports gap without evidence or automatic traversal
+ok 57 - unreadable PDF reports gap without evidence or automatic traversal
+  ---
+  duration_ms: 1.305886
+  type: 'test'
+  ...
+# Subtest: section-local no-match may advance but does not become complete evidence
+ok 58 - section-local no-match may advance but does not become complete evidence
+  ---
+  duration_ms: 0.60145
+  type: 'test'
+  ...
+# Subtest: search match remains incomplete and uses query-bound cursor context
+ok 59 - search match remains incomplete and uses query-bound cursor context
+  ---
+  duration_ms: 0.541802
+  type: 'test'
+  ...
+# Subtest: reported query matches require a record actually containing the literal query
+ok 60 - reported query matches require a record actually containing the literal query
+  ---
+  duration_ms: 0.490794
+  type: 'test'
+  ...
+# Subtest: Unicode lowercase index expansion is not mistaken for evidence of a returned match
+ok 61 - Unicode lowercase index expansion is not mistaken for evidence of a returned match
+  ---
+  duration_ms: 0.570274
+  type: 'test'
+  ...
+# Subtest: OCR partial/readability metadata cannot silently claim ordinary complete extraction
+ok 62 - OCR partial/readability metadata cannot silently claim ordinary complete extraction
+  ---
+  duration_ms: 0.86207
+  type: 'test'
+  ...
+# Subtest: readability reports cannot upgrade an empty section or a non-PDF source
+ok 63 - readability reports cannot upgrade an empty section or a non-PDF source
+  ---
+  duration_ms: 0.56064
+  type: 'test'
+  ...
+# Subtest: empty extraction is not an empty evidence record or a claim about other sections
+ok 64 - empty extraction is not an empty evidence record or a claim about other sections
+  ---
+  duration_ms: 0.436343
+  type: 'test'
+  ...
+# Subtest: UTF-16 text and serialized JSON ceiling are independent of character schema bounds
+ok 65 - UTF-16 text and serialized JSON ceiling are independent of character schema bounds
+  ---
+  duration_ms: 0.737555
+  type: 'test'
+  ...
+# Subtest: closed output shapes, timestamps and exact binding/subject correlation fail closed
+ok 66 - closed output shapes, timestamps and exact binding/subject correlation fail closed
+  ---
+  duration_ms: 1.581247
+  type: 'test'
+  ...
+# Subtest: metadata is bounded inert reported JSON and cannot mutate the caller input
+ok 67 - metadata is bounded inert reported JSON and cannot mutate the caller input
+  ---
+  duration_ms: 0.814309
+  type: 'test'
+  ...
+# Subtest: canonical admission refuses getters/proxies/hidden fields/cycles without invoking them
+ok 68 - canonical admission refuses getters/proxies/hidden fields/cycles without invoking them
+  ---
+  duration_ms: 0.423945
+  type: 'test'
+  ...
+# Subtest: memory request trims caps floors and preserves parseInt behavior
+ok 69 - memory request trims caps floors and preserves parseInt behavior
+  ---
+  duration_ms: 5.185946
+  type: 'test'
+  ...
+# Subtest: memory early missing query wins over invalid selectors
+ok 70 - memory early missing query wins over invalid selectors
+  ---
+  duration_ms: 25.53737
+  type: 'test'
+  ...
+# Subtest: memory invalid client refusal precedes content-cursor validation
+ok 71 - memory invalid client refusal precedes content-cursor validation
+  ---
+  duration_ms: 0.423183
+  type: 'test'
+  ...
+# Subtest: memory refusal cannot replace valid query result
+ok 72 - memory refusal cannot replace valid query result
+  ---
+  duration_ms: 0.29357
+  type: 'test'
+  ...
+# Subtest: memory normal full content is detached source observation
+ok 73 - memory normal full content is detached source observation
+  ---
+  duration_ms: 3.432159
+  type: 'test'
+  ...
+# Subtest: memory missing query result cannot claim an empty search
+ok 74 - memory missing query result cannot claim an empty search
+  ---
+  duration_ms: 0.270034
+  type: 'test'
+  ...
+# Subtest: memory exact lookup is single item, query may remain opaque
+ok 75 - memory exact lookup is single item, query may remain opaque
+  ---
+  duration_ms: 0.793038
+  type: 'test'
+  ...
+# Subtest: memory metadata-budget fallback is one not arbitrary intermediate size
+ok 76 - memory metadata-budget fallback is one not arbitrary intermediate size
+  ---
+  duration_ms: 0.654129
+  type: 'test'
+  ...
+# Subtest: memory requested k and effective cap bind returned rows
+ok 77 - memory requested k and effective cap bind returned rows
+  ---
+  duration_ms: 0.453319
+  type: 'test'
+  ...
+# Subtest: memory empty, unavailable and exact ineligible stay separate
+ok 78 - memory empty, unavailable and exact ineligible stay separate
+  ---
+  duration_ms: 0.613198
+  type: 'test'
+  ...
+# Subtest: memory metadata-only and empty records are not removed or silently facts
+ok 79 - memory metadata-only and empty records are not removed or silently facts
+  ---
+  duration_ms: 1.229621
+  type: 'test'
+  ...
+# Subtest: memory stale and controlling conflict observations remain admitted
+ok 80 - memory stale and controlling conflict observations remain admitted
+  ---
+  duration_ms: 0.414191
+  type: 'test'
+  ...
+# Subtest: memory pending proposals are not a recall output status
+ok 81 - memory pending proposals are not a recall output status
+  ---
+  duration_ms: 2.106594
+  type: 'test'
+  ...
+# Subtest: memory instructionsAllowed scalar never authorizes a call
+ok 82 - memory instructionsAllowed scalar never authorizes a call
+  ---
+  duration_ms: 0.25404
+  type: 'test'
+  ...
+# Subtest: memory selected client allows firm rows but rejects other client rows
+ok 83 - memory selected client allows firm rows but rejects other client rows
+  ---
+  duration_ms: 0.686968
+  type: 'test'
+  ...
+# Subtest: memory convenience rows bind identity title type client score
+ok 84 - memory convenience rows bind identity title type client score
+  ---
+  duration_ms: 0.74108
+  type: 'test'
+  ...
+# Subtest: memory full body hash includes source version
+ok 85 - memory full body hash includes source version
+  ---
+  duration_ms: 0.353569
+  type: 'test'
+  ...
+# Subtest: memory UTF16 offsets and non-surrogate ending bind
+ok 86 - memory UTF16 offsets and non-surrogate ending bind
+  ---
+  duration_ms: 0.733028
+  type: 'test'
+  ...
+# Subtest: memory search excerpt cap differs from exact item budget
+ok 87 - memory search excerpt cap differs from exact item budget
+  ---
+  duration_ms: 0.319459
+  type: 'test'
+  ...
+# Subtest: memory truncated search next-read cursor is unkeyed scope correlation
+ok 88 - memory truncated search next-read cursor is unkeyed scope correlation
+  ---
+  duration_ms: 1.47608
+  type: 'test'
+  ...
+# Subtest: memory content cursor binds actor client item hash and offset
+ok 89 - memory content cursor binds actor client item hash and offset
+  ---
+  duration_ms: 0.996092
+  type: 'test'
+  ...
+# Subtest: memory cursor requires exact item and excludes search cursor
+ok 90 - memory cursor requires exact item and excludes search cursor
+  ---
+  duration_ms: 0.161993
+  type: 'test'
+  ...
+# Subtest: memory current content cursor strict canonical data refuses extra and malformed encoding
+ok 91 - memory current content cursor strict canonical data refuses extra and malformed encoding
+  ---
+  duration_ms: 0.182764
+  type: 'test'
+  ...
+# Subtest: memory next-read cannot change client or body hash
+ok 92 - memory next-read cannot change client or body hash
+  ---
+  duration_ms: 0.605797
+  type: 'test'
+  ...
+# Subtest: memory terminal body has no next-read and zero-progress pages refuse
+ok 93 - memory terminal body has no next-read and zero-progress pages refuse
+  ---
+  duration_ms: 0.389934
+  type: 'test'
+  ...
+# Subtest: memory duplicate records and opaque extra authority reject
+ok 94 - memory duplicate records and opaque extra authority reject
+  ---
+  duration_ms: 0.439879
+  type: 'test'
+  ...
+# Subtest: memory request and output accessors are inertly refused
+ok 95 - memory request and output accessors are inertly refused
+  ---
+  duration_ms: 0.195903
+  type: 'test'
+  ...
+# Subtest: memory available content cannot carry metadata-only limitation
+ok 96 - memory available content cannot carry metadata-only limitation
+  ---
+  duration_ms: 0.264436
+  type: 'test'
+  ...
+# Subtest: memory metadata-only and empty status require emitted limitation
+ok 97 - memory metadata-only and empty status require emitted limitation
+  ---
+  duration_ms: 0.410154
+  type: 'test'
+  ...
+# Subtest: memory normalization preserves floor/clamp and early refusal branches
+ok 98 - memory normalization preserves floor/clamp and early refusal branches
+  ---
+  duration_ms: 31.706326
+  type: 'test'
+  ...
+# Subtest: memory full governed content and detached ownership
+ok 99 - memory full governed content and detached ownership
+  ---
+  duration_ms: 3.844646
+  type: 'test'
+  ...
+# Subtest: memory exact mode and fallback preserve requested/effective page sizes
+ok 100 - memory exact mode and fallback preserve requested/effective page sizes
+  ---
+  duration_ms: 1.492195
+  type: 'test'
+  ...
+# Subtest: memory content hash, offset and result projection substitutions refuse
+ok 101 - memory content hash, offset and result projection substitutions refuse
+  ---
+  duration_ms: 2.099244
+  type: 'test'
+  ...
+# Subtest: memory governed statuses are observations not pending proposal bodies
+ok 102 - memory governed statuses are observations not pending proposal bodies
+  ---
+  duration_ms: 0.580259
+  type: 'test'
+  ...
+# Subtest: memory empty/unavailable exact result stays distinct
+ok 103 - memory empty/unavailable exact result stays distinct
+  ---
+  duration_ms: 0.528331
+  type: 'test'
+  ...
+# Subtest: memory metadata-only classification counts content without approving it as fact
+ok 104 - memory metadata-only classification counts content without approving it as fact
+  ---
+  duration_ms: 0.833428
+  type: 'test'
+  ...
+# Subtest: memory cursor scope refuses actor substitution and cursor selector conflict
+ok 105 - memory cursor scope refuses actor substitution and cursor selector conflict
+  ---
+  duration_ms: 1.581898
+  type: 'test'
+  ...
+# Subtest: memory inert request boundary rejects getters without evaluation
+ok 106 - memory inert request boundary rejects getters without evaluation
+  ---
+  duration_ms: 0.251467
+  type: 'test'
+  ...
+# Subtest: memory source status limitations cannot contradict each other
+ok 107 - memory source status limitations cannot contradict each other
+  ---
+  duration_ms: 1.965824
+  type: 'test'
+  ...
+# Subtest: Monday reuses existing coverage schema and exposes one exact operation
+ok 108 - Monday reuses existing coverage schema and exposes one exact operation
+  ---
+  duration_ms: 1.172856
+  type: 'test'
+  ...
+# Subtest: omitted page size differs from explicit null and preserves requireComplete
+ok 109 - omitted page size differs from explicit null and preserves requireComplete
+  ---
+  duration_ms: 0.825976
+  type: 'test'
+  ...
+# Subtest: source numeric conversion clamps and truncates explicit page sizes
+ok 110 - source numeric conversion clamps and truncates explicit page sizes
+  ---
+  duration_ms: 0.332388
+  type: 'test'
+  ...
+# Subtest: cursor opts into paging and selectors retain UTF16 caps
+ok 111 - cursor opts into paging and selectors retain UTF16 caps
+  ---
+  duration_ms: 0.161152
+  type: 'test'
+  ...
+# Subtest: client UUID is wrapper-owned syntax but model authority and unknown fields refuse
+ok 112 - client UUID is wrapper-owned syntax but model authority and unknown fields refuse
+  ---
+  duration_ms: 0.239789
+  type: 'test'
+  ...
+# Subtest: managed row supports omitted untyped provider fields and inert opaque values
+ok 113 - managed row supports omitted untyped provider fields and inert opaque values
+  ---
+  duration_ms: 2.423108
+  type: 'test'
+  ...
+# Subtest: item and subitem provenance are exact without inventing parent visibility
+ok 114 - item and subitem provenance are exact without inventing parent visibility
+  ---
+  duration_ms: 0.44057
+  type: 'test'
+  ...
+# Subtest: record identity and client correlation prevent substitutions and duplicate IDs
+ok 115 - record identity and client correlation prevent substitutions and duplicate IDs
+  ---
+  duration_ms: 0.842411
+  type: 'test'
+  ...
+# Subtest: status is nullable or trimmed source text with no provider status enum
+ok 116 - status is nullable or trimmed source text with no provider status enum
+  ---
+  duration_ms: 0.891305
+  type: 'test'
+  ...
+# Subtest: URL is nullable or source-accepted Monday tenant URL without generic trust claim
+ok 117 - URL is nullable or source-accepted Monday tenant URL without generic trust claim
+  ---
+  duration_ms: 0.64115
+  type: 'test'
+  ...
+# Subtest: wrapper status correlates first source and domains remain Monday
+ok 118 - wrapper status correlates first source and domains remain Monday
+  ---
+  duration_ms: 0.694239
+  type: 'test'
+  ...
+# Subtest: explicit requested page size bounds even degraded result records
+ok 119 - explicit requested page size bounds even degraded result records
+  ---
+  duration_ms: 0.41435
+  type: 'test'
+  ...
+# Subtest: unavailable and empty source observations never acquire absence flags
+ok 120 - unavailable and empty source observations never acquire absence flags
+  ---
+  duration_ms: 0.222904
+  type: 'test'
+  ...
+# Subtest: current source actor is only an observation until adapter authority is qualified
+ok 121 - current source actor is only an observation until adapter authority is qualified
+  ---
+  duration_ms: 0.162093
+  type: 'test'
+  ...
+# Subtest: Monday result is detached and getters/proxies never execute
+ok 122 - Monday result is detached and getters/proxies never execute
+  ---
+  duration_ms: 0.319688
+  type: 'test'
+  ...
+# Subtest: Monday normalized complete/page distinction and Number string semantics
+ok 123 - Monday normalized complete/page distinction and Number string semantics
+  ---
+  duration_ms: 4.725776
+  type: 'test'
+  ...
+# Subtest: Monday requires UUID and bounded trimmed selectors
+ok 124 - Monday requires UUID and bounded trimmed selectors
+  ---
+  duration_ms: 0.312778
+  type: 'test'
+  ...
+# Subtest: Monday full provider JSON fields stay inert without invented scalar types
+ok 125 - Monday full provider JSON fields stay inert without invented scalar types
+  ---
+  duration_ms: 14.520333
+  type: 'test'
+  ...
+# Subtest: Monday parent and provenance binding preserves subitems
+ok 126 - Monday parent and provenance binding preserves subitems
+  ---
+  duration_ms: 0.535261
+  type: 'test'
+  ...
+# Subtest: Monday current status echoes first coverage source including unavailable
+ok 127 - Monday current status echoes first coverage source including unavailable
+  ---
+  duration_ms: 0.374571
+  type: 'test'
+  ...
+# Subtest: Monday client, record, domain and duplicate substitutions fail
+ok 128 - Monday client, record, domain and duplicate substitutions fail
+  ---
+  duration_ms: 1.078846
+  type: 'test'
+  ...
+# Subtest: Monday invalid cursors remain bounded request data awaiting source refusal
+ok 129 - Monday invalid cursors remain bounded request data awaiting source refusal
+  ---
+  duration_ms: 0.18669
+  type: 'test'
+  ...
+# Subtest: Monday source-only data detaches and rejects getters
+ok 130 - Monday source-only data detaches and rejects getters
+  ---
+  duration_ms: 0.321221
+  type: 'test'
+  ...
+# Subtest: Monday explicit page size bounds both healthy and degraded records
+ok 131 - Monday explicit page size bounds both healthy and degraded records
+  ---
+  duration_ms: 0.860418
+  type: 'test'
+  ...
+# Subtest: profile default scope resolves name only from trusted context
+ok 132 - profile default scope resolves name only from trusted context
+  ---
+  duration_ms: 5.165004
+  type: 'test'
+  ...
+# Subtest: profile UUID selector cannot rebind but case equivalence is preserved
+ok 133 - profile UUID selector cannot rebind but case equivalence is preserved
+  ---
+  duration_ms: 0.2068
+  type: 'test'
+  ...
+# Subtest: profile caller shape excludes resolution clock and authority fields
+ok 134 - profile caller shape excludes resolution clock and authority fields
+  ---
+  duration_ms: 0.247511
+  type: 'test'
+  ...
+# Subtest: profile default full named section and explicit summary/null limit
+ok 135 - profile default full named section and explicit summary/null limit
+  ---
+  duration_ms: 0.296354
+  type: 'test'
+  ...
+# Subtest: profile six exact sections and strict representation
+ok 136 - profile six exact sections and strict representation
+  ---
+  duration_ms: 0.22704
+  type: 'test'
+  ...
+# Subtest: profile cursor requires section, binds client section and stable ID
+ok 137 - profile cursor requires section, binds client section and stable ID
+  ---
+  duration_ms: 1.318094
+  type: 'test'
+  ...
+# Subtest: profile all-section empty projections retain six coverage entries
+ok 138 - profile all-section empty projections retain six coverage entries
+  ---
+  duration_ms: 59.453694
+  type: 'test'
+  ...
+# Subtest: profile capabilities full complete projection
+ok 139 - profile capabilities full complete projection
+  ---
+  duration_ms: 5.374737
+  type: 'test'
+  ...
+# Subtest: profile capabilities summary complete projection
+ok 140 - profile capabilities summary complete projection
+  ---
+  duration_ms: 4.779207
+  type: 'test'
+  ...
+# Subtest: profile people full complete projection
+ok 141 - profile people full complete projection
+  ---
+  duration_ms: 2.732522
+  type: 'test'
+  ...
+# Subtest: profile people summary complete projection
+ok 142 - profile people summary complete projection
+  ---
+  duration_ms: 1.559095
+  type: 'test'
+  ...
+# Subtest: profile facilities full complete projection
+ok 143 - profile facilities full complete projection
+  ---
+  duration_ms: 5.108049
+  type: 'test'
+  ...
+# Subtest: profile facilities summary complete projection
+ok 144 - profile facilities summary complete projection
+  ---
+  duration_ms: 1.531714
+  type: 'test'
+  ...
+# Subtest: profile submissionHistory full complete projection
+ok 145 - profile submissionHistory full complete projection
+  ---
+  duration_ms: 1.808749
+  type: 'test'
+  ...
+# Subtest: profile submissionHistory summary complete projection
+ok 146 - profile submissionHistory summary complete projection
+  ---
+  duration_ms: 1.134629
+  type: 'test'
+  ...
+# Subtest: profile advocacyMatters full complete projection
+ok 147 - profile advocacyMatters full complete projection
+  ---
+  duration_ms: 1.867676
+  type: 'test'
+  ...
+# Subtest: profile advocacyMatters summary complete projection
+ok 148 - profile advocacyMatters summary complete projection
+  ---
+  duration_ms: 1.55596
+  type: 'test'
+  ...
+# Subtest: profile advocacyRecords full complete projection
+ok 149 - profile advocacyRecords full complete projection
+  ---
+  duration_ms: 2.021627
+  type: 'test'
+  ...
+# Subtest: profile advocacyRecords summary complete projection
+ok 150 - profile advocacyRecords summary complete projection
+  ---
+  duration_ms: 1.539294
+  type: 'test'
+  ...
+# Subtest: profile unavailable requested section is distinct from unrequested and empty
+ok 151 - profile unavailable requested section is distinct from unrequested and empty
+  ---
+  duration_ms: 0.480279
+  type: 'test'
+  ...
+# Subtest: profile unrequested section cannot leak rows or claim complete
+ok 152 - profile unrequested section cannot leak rows or claim complete
+  ---
+  duration_ms: 0.256013
+  type: 'test'
+  ...
+# Subtest: profile every returned row and source reference bind original selection
+ok 153 - profile every returned row and source reference bind original selection
+  ---
+  duration_ms: 1.120578
+  type: 'test'
+  ...
+# Subtest: profile sorting uses immutable IDs with strict after cursor
+ok 154 - profile sorting uses immutable IDs with strict after cursor
+  ---
+  duration_ms: 5.291403
+  type: 'test'
+  ...
+# Subtest: profile partial pages require full window plus last-ID next cursor
+ok 155 - profile partial pages require full window plus last-ID next cursor
+  ---
+  duration_ms: 1.851302
+  type: 'test'
+  ...
+# Subtest: profile concurrent advocacy count can be lower than row count
+ok 156 - profile concurrent advocacy count can be lower than row count
+  ---
+  duration_ms: 0.593749
+  type: 'test'
+  ...
+# Subtest: profile summary UTF16 caps and collapse match producer without fabricated full text
+ok 157 - profile summary UTF16 caps and collapse match producer without fabricated full text
+  ---
+  duration_ms: 0.980288
+  type: 'test'
+  ...
+# Subtest: profile full free text and JSON are not summarized or typed as prose
+ok 158 - profile full free text and JSON are not summarized or typed as prose
+  ---
+  duration_ms: 0.461271
+  type: 'test'
+  ...
+# Subtest: profile person confidence retains Decimal string or inferred JS number
+ok 159 - profile person confidence retains Decimal string or inferred JS number
+  ---
+  duration_ms: 1.626446
+  type: 'test'
+  ...
+# Subtest: profile full DTOs reject relation expansions and projection omission
+ok 160 - profile full DTOs reject relation expansions and projection omission
+  ---
+  duration_ms: 1.954747
+  type: 'test'
+  ...
+# Subtest: profile archived client and observation substitution are refused
+ok 161 - profile archived client and observation substitution are refused
+  ---
+  duration_ms: 0.708791
+  type: 'test'
+  ...
+# Subtest: profile engagement counts are recent windows not global inventory
+ok 162 - profile engagement counts are recent windows not global inventory
+  ---
+  duration_ms: 0.425086
+  type: 'test'
+  ...
+# Subtest: profile stakeholder source combinations and latest activity ordering
+ok 163 - profile stakeholder source combinations and latest activity ordering
+  ---
+  duration_ms: 0.461461
+  type: 'test'
+  ...
+# Subtest: profile source results detach and nested getters never execute
+ok 164 - profile source results detach and nested getters never execute
+  ---
+  duration_ms: 0.432418
+  type: 'test'
+  ...
+# Subtest: profile full association-based mail preserves different primary client
+ok 165 - profile full association-based mail preserves different primary client
+  ---
+  duration_ms: 1.027449
+  type: 'test'
+  ...
+# Subtest: profile open mail rejects closed status and cross tenant
+ok 166 - profile open mail rejects closed status and cross tenant
+  ---
+  duration_ms: 0.631496
+  type: 'test'
+  ...
+# Subtest: profile full task projection preserves nullable owner and every scalar
+ok 167 - profile full task projection preserves nullable owner and every scalar
+  ---
+  duration_ms: 0.59494
+  type: 'test'
+  ...
+# Subtest: profile open tasks reject terminal and wrong client scope
+ok 168 - profile open tasks reject terminal and wrong client scope
+  ---
+  duration_ms: 0.924314
+  type: 'test'
+  ...
+# Subtest: profile named selector resolution and default summary are bound
+ok 169 - profile named selector resolution and default summary are bound
+  ---
+  duration_ms: 58.078836
+  type: 'test'
+  ...
+# Subtest: profile all six full-record variants retain nullable and opaque fields
+ok 170 - profile all six full-record variants retain nullable and opaque fields
+  ---
+  duration_ms: 24.004884
+  type: 'test'
+  ...
+# Subtest: profile missing scalar in full row cannot masquerade as summary
+ok 171 - profile missing scalar in full row cannot masquerade as summary
+  ---
+  duration_ms: 0.667629
+  type: 'test'
+  ...
+# Subtest: profile mixed stored decimal string and inferred number remain distinct
+ok 172 - profile mixed stored decimal string and inferred number remain distinct
+  ---
+  duration_ms: 1.714327
+  type: 'test'
+  ...
+# Subtest: profile unavailable sections remain unavailable with no evidence
+ok 173 - profile unavailable sections remain unavailable with no evidence
+  ---
+  duration_ms: 0.480339
+  type: 'test'
+  ...
+# Subtest: profile cursors bind exact resolved client and section
+ok 174 - profile cursors bind exact resolved client and section
+  ---
+  duration_ms: 1.296231
+  type: 'test'
+  ...
+# Subtest: profile selected sections cannot fabricate unrequested sections
+ok 175 - profile selected sections cannot fabricate unrequested sections
+  ---
+  duration_ms: 0.438787
+  type: 'test'
+  ...
+# Subtest: profile separate advocacy total may race returned page
+ok 176 - profile separate advocacy total may race returned page
+  ---
+  duration_ms: 0.390324
+  type: 'test'
+  ...
+# Subtest: profile open task status and summary counts must correlate
+ok 177 - profile open task status and summary counts must correlate
+  ---
+  duration_ms: 0.612157
+  type: 'test'
+  ...
+# Subtest: profile exact snapshot and hostile JSON admission
+ok 178 - profile exact snapshot and hostile JSON admission
+  ---
+  duration_ms: 0.504826
+  type: 'test'
+  ...
+# Subtest: independent entity: exact definitions and closed operation selector
+ok 179 - independent entity: exact definitions and closed operation selector
+  ---
+  duration_ms: 0.871385
+  type: 'test'
+  ...
+# Subtest: independent entity: missing optional selectors omitted and query has second trim
+ok 180 - independent entity: missing optional selectors omitted and query has second trim
+  ---
+  duration_ms: 2.546944
+  type: 'test'
+  ...
+# Subtest: independent entity: legacy scalar clamp is retained without complex coercion
+ok 181 - independent entity: legacy scalar clamp is retained without complex coercion
+  ---
+  duration_ms: 0.575352
+  type: 'test'
+  ...
+# Subtest: independent entity: unsupported types remain empty outcomes and never aliases
+ok 182 - independent entity: unsupported types remain empty outcomes and never aliases
+  ---
+  duration_ms: 1.559935
+  type: 'test'
+  ...
+# Subtest: independent entity: lowercase expansion preserves unsupported type semantics
+ok 183 - independent entity: lowercase expansion preserves unsupported type semantics
+  ---
+  duration_ms: 0.176644
+  type: 'test'
+  ...
+# Subtest: independent entity: defaultCongress is mandatory positiveInt32 trusted context on every branch
+ok 184 - independent entity: defaultCongress is mandatory positiveInt32 trusted context on every branch
+  ---
+  duration_ms: 0.54767
+  type: 'test'
+  ...
+# Subtest: independent entity: missing-query and nonempty-zero notes are exact
+ok 185 - independent entity: missing-query and nonempty-zero notes are exact
+  ---
+  duration_ms: 0.621801
+  type: 'test'
+  ...
+# Subtest: independent entity: returned count is exact and constrained by normalized limit
+ok 186 - independent entity: returned count is exact and constrained by normalized limit
+  ---
+  duration_ms: 1.612715
+  type: 'test'
+  ...
+# Subtest: independent entity: five exact variants retain their required projections
+ok 187 - independent entity: five exact variants retain their required projections
+  ---
+  duration_ms: 3.003186
+  type: 'test'
+  ...
+# Subtest: independent entity: stored scalars and current flags have no invented enums or positive-only Int
+ok 188 - independent entity: stored scalars and current flags have no invented enums or positive-only Int
+  ---
+  duration_ms: 0.468261
+  type: 'test'
+  ...
+# Subtest: independent entity: raw bill congress/state/session are not fabricated ID consistency rules
+ok 189 - independent entity: raw bill congress/state/session are not fabricated ID consistency rules
+  ---
+  duration_ms: 0.429774
+  type: 'test'
+  ...
+# Subtest: independent entity: direct member/committee IDs correlate case normalization and discriminator
+ok 190 - independent entity: direct member/committee IDs correlate case normalization and discriminator
+  ---
+  duration_ms: 0.314722
+  type: 'test'
+  ...
+# Subtest: independent entity: canonical federal grammar uses trusted default and explicit suffix override
+ok 191 - independent entity: canonical federal grammar uses trusted default and explicit suffix override
+  ---
+  duration_ms: 0.328291
+  type: 'test'
+  ...
+# Subtest: independent entity: approved state syntax helper correlates canonical keys without live lookup
+ok 192 - independent entity: approved state syntax helper correlates canonical keys without live lookup
+  ---
+  duration_ms: 0.410515
+  type: 'test'
+  ...
+# Subtest: independent entity: raw state designation match does not claim latest-session authority
+ok 193 - independent entity: raw state designation match does not claim latest-session authority
+  ---
+  duration_ms: 0.181532
+  type: 'test'
+  ...
+# Subtest: independent entity: crosswalk allows dynamic suffixes and repeat canonical candidates
+ok 194 - independent entity: crosswalk allows dynamic suffixes and repeat canonical candidates
+  ---
+  duration_ms: 0.336714
+  type: 'test'
+  ...
+# Subtest: independent entity: crosswalk phase has no committee or federal-bill adapter
+ok 195 - independent entity: crosswalk phase has no committee or federal-bill adapter
+  ---
+  duration_ms: 0.16019
+  type: 'test'
+  ...
+# Subtest: independent entity: syntax alone cannot prohibit fallbacks after a missing direct row
+ok 196 - independent entity: syntax alone cannot prohibit fallbacks after a missing direct row
+  ---
+  duration_ms: 0.09399
+  type: 'test'
+  ...
+# Subtest: independent entity: phase mixing is refused
+ok 197 - independent entity: phase mixing is refused
+  ---
+  duration_ms: 0.222433
+  type: 'test'
+  ...
+# Subtest: independent entity: name search requires Latin letters and supported name families
+ok 198 - independent entity: name search requires Latin letters and supported name families
+  ---
+  duration_ms: 0.255042
+  type: 'test'
+  ...
+# Subtest: independent entity: name family order and current-first apply within each group only
+ok 199 - independent entity: name family order and current-first apply within each group only
+  ---
+  duration_ms: 0.330035
+  type: 'test'
+  ...
+# Subtest: independent entity: supplied supported type restricts every candidate family
+ok 200 - independent entity: supplied supported type restricts every candidate family
+  ---
+  duration_ms: 0.47407
+  type: 'test'
+  ...
+# Subtest: independent entity: both bill dates are SQLDate UTC midnight and nullable
+ok 201 - independent entity: both bill dates are SQLDate UTC midnight and nullable
+  ---
+  duration_ms: 0.491406
+  type: 'test'
+  ...
+# Subtest: independent entity: generatedAt is serialization metadata, not freshness authority
+ok 202 - independent entity: generatedAt is serialization metadata, not freshness authority
+  ---
+  duration_ms: 0.138507
+  type: 'test'
+  ...
+# Subtest: independent entity: canonicalIdType and closed projection cannot substitute
+ok 203 - independent entity: canonicalIdType and closed projection cannot substitute
+  ---
+  duration_ms: 0.429063
+  type: 'test'
+  ...
+# Subtest: independent entity: normalized selection and nested helper metadata are immutable copies
+ok 204 - independent entity: normalized selection and nested helper metadata are immutable copies
+  ---
+  duration_ms: 0.237937
+  type: 'test'
+  ...
+# Subtest: independent entity: defaultCongress does not read ambient clock
+ok 205 - independent entity: defaultCongress does not read ambient clock
+  ---
+  duration_ms: 0.116395
+  type: 'test'
+  ...
+# Subtest: independent entity: getters proxies cycles and hidden fields do not execute
+ok 206 - independent entity: getters proxies cycles and hidden fields do not execute
+  ---
+  duration_ms: 0.258147
+  type: 'test'
+  ...
+# Subtest: independent entity: operation and shape names refuse hostile coercion
+ok 207 - independent entity: operation and shape names refuse hostile coercion
+  ---
+  duration_ms: 0.209684
+  type: 'test'
+  ...
+# Subtest: independent entity: name-query identities cannot repeat within member
+ok 208 - independent entity: name-query identities cannot repeat within member
+  ---
+  duration_ms: 0.131777
+  type: 'test'
+  ...
+# Subtest: independent entity: name-query identities cannot repeat within committee
+ok 209 - independent entity: name-query identities cannot repeat within committee
+  ---
+  duration_ms: 0.077436
+  type: 'test'
+  ...
+# Subtest: independent entity: name-query identities cannot repeat within state_legislator
+ok 210 - independent entity: name-query identities cannot repeat within state_legislator
+  ---
+  duration_ms: 0.106689
+  type: 'test'
+  ...
+# Subtest: independent entity: identical crosswalk projections and case-distinct name keys remain valid
+ok 211 - independent entity: identical crosswalk projections and case-distinct name keys remain valid
+  ---
+  duration_ms: 0.704185
+  type: 'test'
+  ...
+# Subtest: operation, shape and context selectors are inert and closed
+ok 212 - operation, shape and context selectors are inert and closed
+  ---
+  duration_ms: 1.123653
+  type: 'test'
+  ...
+# Subtest: trusted defaultCongress is mandatory positive Int32 on every branch
+ok 213 - trusted defaultCongress is mandatory positive Int32 on every branch
+  ---
+  duration_ms: 1.302941
+  type: 'test'
+  ...
+# Subtest: normalization preserves second query trim, lowercase type and source numeric/string clamp
+ok 214 - normalization preserves second query trim, lowercase type and source numeric/string clamp
+  ---
+  duration_ms: 1.177593
+  type: 'test'
+  ...
+# Subtest: UTF16 query clipping and expanding lowercase preserve unsupported type outcome
+ok 215 - UTF16 query clipping and expanding lowercase preserve unsupported type outcome
+  ---
+  duration_ms: 1.430722
+  type: 'test'
+  ...
+# Subtest: closed typed inputs refuse aliases, coercion objects and caller authority
+ok 216 - closed typed inputs refuse aliases, coercion objects and caller authority
+  ---
+  duration_ms: 0.279549
+  type: 'test'
+  ...
+# Subtest: getters and proxy traps are not executed at the JSON boundary
+ok 217 - getters and proxy traps are not executed at the JSON boundary
+  ---
+  duration_ms: 0.131767
+  type: 'test'
+  ...
+# Subtest: normalized input and metadata are detached and frozen without an ambient clock
+ok 218 - normalized input and metadata are detached and frozen without an ambient clock
+  ---
+  duration_ms: 0.149414
+  type: 'test'
+  ...
+# Subtest: missing query has its own refusal even with selectors and rejects candidates
+ok 219 - missing query has its own refusal even with selectors and rejects candidates
+  ---
+  duration_ms: 0.299499
+  type: 'test'
+  ...
+# Subtest: unsupported type returns only the exact no-match envelope
+ok 220 - unsupported type returns only the exact no-match envelope
+  ---
+  duration_ms: 0.319939
+  type: 'test'
+  ...
+# Subtest: direct member and committee keys normalize case and bind returned identity
+ok 221 - direct member and committee keys normalize case and bind returned identity
+  ---
+  duration_ms: 0.701411
+  type: 'test'
+  ...
+# Subtest: canonical federal helper handles explicit Congress and zero-preserving IDs
+ok 222 - canonical federal helper handles explicit Congress and zero-preserving IDs
+  ---
+  duration_ms: 0.486007
+  type: 'test'
+  ...
+# Subtest: state key/designation dependency is reused without a live lookup or session clock
+ok 223 - state key/designation dependency is reused without a live lookup or session clock
+  ---
+  duration_ms: 0.53437
+  type: 'test'
+  ...
+# Subtest: stored state/session/congress fields are not inferred from canonical keys
+ok 224 - stored state/session/congress fields are not inferred from canonical keys
+  ---
+  duration_ms: 0.264246
+  type: 'test'
+  ...
+# Subtest: all five variants have precise nulls and currentness placement
+ok 225 - all five variants have precise nulls and currentness placement
+  ---
+  duration_ms: 0.643593
+  type: 'test'
+  ...
+# Subtest: stored strings remain unrestricted on name/crosswalk paths and member district remains signed
+ok 226 - stored strings remain unrestricted on name/crosswalk paths and member district remains signed
+  ---
+  duration_ms: 0.191436
+  type: 'test'
+  ...
+# Subtest: arbitrary crosswalk namespaces including empty and duplicate canonical IDs survive
+ok 227 - arbitrary crosswalk namespaces including empty and duplicate canonical IDs survive
+  ---
+  duration_ms: 0.170595
+  type: 'test'
+  ...
+# Subtest: crosswalk does not support committee or federal bill projections
+ok 228 - crosswalk does not support committee or federal bill projections
+  ---
+  duration_ms: 0.172208
+  type: 'test'
+  ...
+# Subtest: direct crosswalk and name phases cannot mix, while a missed direct ID may fall back
+ok 229 - direct crosswalk and name phases cannot mix, while a missed direct ID may fall back
+  ---
+  duration_ms: 0.300961
+  type: 'test'
+  ...
+# Subtest: name-family order and current-first are local to each family
+ok 230 - name-family order and current-first are local to each family
+  ---
+  duration_ms: 0.286799
+  type: 'test'
+  ...
+# Subtest: name lookup preserves the ASCII-letter predicate and hidden lastName match
+ok 231 - name lookup preserves the ASCII-letter predicate and hidden lastName match
+  ---
+  duration_ms: 0.239549
+  type: 'test'
+  ...
+# Subtest: type filter applies across all match paths and no invented current-only restriction
+ok 232 - type filter applies across all match paths and no invented current-only restriction
+  ---
+  duration_ms: 0.165397
+  type: 'test'
+  ...
+# Subtest: returned count and cap do not imply total or corpus coverage
+ok 233 - returned count and cap do not imply total or corpus coverage
+  ---
+  duration_ms: 0.356974
+  type: 'test'
+  ...
+# Subtest: only an empty result may carry the correlated no-match note
+ok 234 - only an empty result may carry the correlated no-match note
+  ---
+  duration_ms: 0.504696
+  type: 'test'
+  ...
+# Subtest: finite canonical generatedAt and SQLDate midnight are distinct boundaries
+ok 235 - finite canonical generatedAt and SQLDate midnight are distinct boundaries
+  ---
+  duration_ms: 0.306159
+  type: 'test'
+  ...
+# Subtest: projection rejects hidden columns, wrong identity type and arbitrary methods
+ok 236 - projection rejects hidden columns, wrong identity type and arbitrary methods
+  ---
+  duration_ms: 0.301452
+  type: 'test'
+  ...
+# Subtest: accepted output is detached from the caller object
+ok 237 - accepted output is detached from the caller object
+  ---
+  duration_ms: 0.084116
+  type: 'test'
+  ...
+# Subtest: name primary-key identity is unique within each family while crosswalk duplicates remain valid
+ok 238 - name primary-key identity is unique within each family while crosswalk duplicates remain valid
+  ---
+  duration_ms: 0.25336
+  type: 'test'
+  ...
+# Subtest: contacts independent: selectorless defaults and null/blank selectors
+ok 239 - contacts independent: selectorless defaults and null/blank selectors
+  ---
+  duration_ms: 3.065701
+  type: 'test'
+  ...
+# Subtest: contacts independent: finite legacy number/string clamp and fallback are retained
+ok 240 - contacts independent: finite legacy number/string clamp and fallback are retained
+  ---
+  duration_ms: 0.576944
+  type: 'test'
+  ...
+# Subtest: contacts independent: raw admission ceilings are explicit rather than source caps
+ok 241 - contacts independent: raw admission ceilings are explicit rather than source caps
+  ---
+  duration_ms: 0.537815
+  type: 'test'
+  ...
+# Subtest: contacts independent: post-truncation trims differ from client reference
+ok 242 - contacts independent: post-truncation trims differ from client reference
+  ---
+  duration_ms: 0.105989
+  type: 'test'
+  ...
+# Subtest: contacts independent: UTF16 split boundary and lowercase expansion preserved
+ok 243 - contacts independent: UTF16 split boundary and lowercase expansion preserved
+  ---
+  duration_ms: 0.153009
+  type: 'test'
+  ...
+# Subtest: contacts independent: normalization preserves input case except domain and never mutates request
+ok 244 - contacts independent: normalization preserves input case except domain and never mutates request
+  ---
+  duration_ms: 0.17362
+  type: 'test'
+  ...
+# Subtest: contacts independent: unknown aliases and model authorization fields are excluded
+ok 245 - contacts independent: unknown aliases and model authorization fields are excluded
+  ---
+  duration_ms: 0.44066
+  type: 'test'
+  ...
+# Subtest: contacts independent: context is closed for both functions
+ok 246 - contacts independent: context is closed for both functions
+  ---
+  duration_ms: 0.182954
+  type: 'test'
+  ...
+# Subtest: contacts independent: refusal cannot carry a normal envelope or contacts
+ok 247 - contacts independent: refusal cannot carry a normal envelope or contacts
+  ---
+  duration_ms: 0.485827
+  type: 'test'
+  ...
+# Subtest: contacts independent: selectors require normal envelope even for an empty returned window
+ok 248 - contacts independent: selectors require normal envelope even for an empty returned window
+  ---
+  duration_ms: 1.054809
+  type: 'test'
+  ...
+# Subtest: contacts independent: exact supplied query/domain bind matchedOn fields
+ok 249 - contacts independent: exact supplied query/domain bind matchedOn fields
+  ---
+  duration_ms: 0.472477
+  type: 'test'
+  ...
+# Subtest: contacts independent: resolved client UUID is not forced equal to input alias or a UUID version
+ok 250 - contacts independent: resolved client UUID is not forced equal to input alias or a UUID version
+  ---
+  duration_ms: 0.279398
+  type: 'test'
+  ...
+# Subtest: contacts independent: selected-client presence is required, current visibility is not inferred
+ok 251 - contacts independent: selected-client presence is required, current visibility is not inferred
+  ---
+  duration_ms: 0.236765
+  type: 'test'
+  ...
+# Subtest: contacts independent: client-derived domain is an unreturned source assertion
+ok 252 - contacts independent: client-derived domain is an unreturned source assertion
+  ---
+  duration_ms: 0.273589
+  type: 'test'
+  ...
+# Subtest: contacts independent: OR within tenant never becomes a client AND domain AND query filter
+ok 253 - contacts independent: OR within tenant never becomes a client AND domain AND query filter
+  ---
+  duration_ms: 0.157336
+  type: 'test'
+  ...
+# Subtest: contacts independent: no client and all predicate columns NULL cannot match a search
+ok 254 - contacts independent: no client and all predicate columns NULL cannot match a search
+  ---
+  duration_ms: 0.276013
+  type: 'test'
+  ...
+# Subtest: contacts independent: nine projected fields required with six nullable values
+ok 255 - contacts independent: nine projected fields required with six nullable values
+  ---
+  duration_ms: 0.539849
+  type: 'test'
+  ...
+# Subtest: contacts independent: raw string values are not email phone enum or normalized-name formats
+ok 256 - contacts independent: raw string values are not email phone enum or normalized-name formats
+  ---
+  duration_ms: 0.108923
+  type: 'test'
+  ...
+# Subtest: contacts independent: contact IDs and authority/coverage extensions never appear
+ok 257 - contacts independent: contact IDs and authority/coverage extensions never appear
+  ---
+  duration_ms: 0.910864
+  type: 'test'
+  ...
+# Subtest: contacts independent: repeated name/email rows remain legitimate window rows
+ok 258 - contacts independent: repeated name/email rows remain legitimate window rows
+  ---
+  duration_ms: 0.097877
+  type: 'test'
+  ...
+# Subtest: contacts independent: supplied limits constrain returned rows without implying total
+ok 259 - contacts independent: supplied limits constrain returned rows without implying total
+  ---
+  duration_ms: 0.133439
+  type: 'test'
+  ...
+# Subtest: contacts independent: blank normalized email has no history but name can still be on profile
+ok 260 - contacts independent: blank normalized email has no history but name can still be on profile
+  ---
+  duration_ms: 0.462392
+  type: 'test'
+  ...
+# Subtest: contacts independent: mail count and nullable mail/calendar dates do not imply each other
+ok 261 - contacts independent: mail count and nullable mail/calendar dates do not imply each other
+  ---
+  duration_ms: 0.136845
+  type: 'test'
+  ...
+# Subtest: contacts independent: counts are safe nonnegative integers
+ok 262 - contacts independent: counts are safe nonnegative integers
+  ---
+  duration_ms: 0.286589
+  type: 'test'
+  ...
+# Subtest: contacts independent: returned history descends with ties and null last
+ok 263 - contacts independent: returned history descends with ties and null last
+  ---
+  duration_ms: 0.247671
+  type: 'test'
+  ...
+# Subtest: contacts independent: no timestamp bound against generatedAt or ambient now is invented
+ok 264 - contacts independent: no timestamp bound against generatedAt or ambient now is invented
+  ---
+  duration_ms: 0.07333
+  type: 'test'
+  ...
+# Subtest: contacts independent: date aliases invalid calendars and noncanonical strings refuse
+ok 265 - contacts independent: date aliases invalid calendars and noncanonical strings refuse
+  ---
+  duration_ms: 0.359599
+  type: 'test'
+  ...
+# Subtest: contacts independent: onProfile needs client and some normalized identity but not invented truth
+ok 266 - contacts independent: onProfile needs client and some normalized identity but not invented truth
+  ---
+  duration_ms: 0.173019
+  type: 'test'
+  ...
+# Subtest: contacts independent: source note counts the returned rows and missing profiles
+ok 267 - contacts independent: source note counts the returned rows and missing profiles
+  ---
+  duration_ms: 0.23358
+  type: 'test'
+  ...
+# Subtest: contacts independent: source guidance cannot grant profile update or execution options
+ok 268 - contacts independent: source guidance cannot grant profile update or execution options
+  ---
+  duration_ms: 0.19353
+  type: 'test'
+  ...
+# Subtest: contacts independent: getters proxies coercion and toJSON hooks stay inert
+ok 269 - contacts independent: getters proxies coercion and toJSON hooks stay inert
+  ---
+  duration_ms: 0.221521
+  type: 'test'
+  ...
+# Subtest: contacts independent: cycles sparse arrays hidden keys and prototypes refuse
+ok 270 - contacts independent: cycles sparse arrays hidden keys and prototypes refuse
+  ---
+  duration_ms: 0.139769
+  type: 'test'
+  ...
+# Subtest: contacts independent: output validation preserves original data
+ok 271 - contacts independent: output validation preserves original data
+  ---
+  duration_ms: 0.206299
+  type: 'test'
+  ...
+# Subtest: contacts independent: disclosed date wire admission excludes expanded native Date years
+ok 272 - contacts independent: disclosed date wire admission excludes expanded native Date years
+  ---
+  duration_ms: 0.257516
+  type: 'test'
+  ...
+# Subtest: contacts canonical follow-up: normal result is detached from caller mutation
+ok 273 - contacts canonical follow-up: normal result is detached from caller mutation
+  ---
+  duration_ms: 0.134421
+  type: 'test'
+  ...
+# Subtest: contacts canonical follow-up: refusal result and empty contacts are detached
+ok 274 - contacts canonical follow-up: refusal result and empty contacts are detached
+  ---
+  duration_ms: 0.10726
+  type: 'test'
+  ...
+# Subtest: contacts canonical follow-up: schema uses canonical Meri namespace
+ok 275 - contacts canonical follow-up: schema uses canonical Meri namespace
+  ---
+  duration_ms: 0.124226
+  type: 'test'
+  ...
+# Subtest: empty and null selectors normalize to explicit nullable values and refusal
+ok 276 - empty and null selectors normalize to explicit nullable values and refusal
+  ---
+  duration_ms: 2.83867
+  type: 'test'
+  ...
+# Subtest: explicit empty context only, model authority and lookup scopes rejected
+ok 277 - explicit empty context only, model authority and lookup scopes rejected
+  ---
+  duration_ms: 0.943122
+  type: 'test'
+  ...
+# Subtest: lookup references remain selectors; domain lowercases but query preserves case
+ok 278 - lookup references remain selectors; domain lowercases but query preserves case
+  ---
+  duration_ms: 0.108442
+  type: 'test'
+  ...
+# Subtest: text limits are UTF16 and second trim follows truncation for domain/query
+ok 279 - text limits are UTF16 and second trim follows truncation for domain/query
+  ---
+  duration_ms: 0.270264
+  type: 'test'
+  ...
+# Subtest: number/string limits clamp finitely while unrelated scalar types refuse
+ok 280 - number/string limits clamp finitely while unrelated scalar types refuse
+  ---
+  duration_ms: 0.629032
+  type: 'test'
+  ...
+# Subtest: declared transport ceilings are refused without changing effective source caps
+ok 281 - declared transport ceilings are refused without changing effective source caps
+  ---
+  duration_ms: 0.235353
+  type: 'test'
+  ...
+# Subtest: refusal and normal variants cannot substitute for one another
+ok 282 - refusal and normal variants cannot substitute for one another
+  ---
+  duration_ms: 0.878416
+  type: 'test'
+  ...
+# Subtest: normal unlinked page has exact query echo and null client projection
+ok 283 - normal unlinked page has exact query echo and null client projection
+  ---
+  duration_ms: 0.588361
+  type: 'test'
+  ...
+# Subtest: linked name selector admits resolved ID and nullable raced client name
+ok 284 - linked name selector admits resolved ID and nullable raced client name
+  ---
+  duration_ms: 0.672187
+  type: 'test'
+  ...
+# Subtest: unreturned derived domain is accepted only with selected client
+ok 285 - unreturned derived domain is accepted only with selected client
+  ---
+  duration_ms: 0.408311
+  type: 'test'
+  ...
+# Subtest: linked-client OR permits unrelated email/domain without claiming source link
+ok 286 - linked-client OR permits unrelated email/domain without claiming source link
+  ---
+  duration_ms: 0.155382
+  type: 'test'
+  ...
+# Subtest: SQL NULL cannot match sole domain or query predicates
+ok 287 - SQL NULL cannot match sole domain or query predicates
+  ---
+  duration_ms: 0.23314
+  type: 'test'
+  ...
+# Subtest: nonstandard address and stored scalars are preserved without invented formats
+ok 288 - nonstandard address and stored scalars are preserved without invented formats
+  ---
+  duration_ms: 0.138848
+  type: 'test'
+  ...
+# Subtest: every contact has exactly the nine projected fields
+ok 289 - every contact has exactly the nine projected fields
+  ---
+  duration_ms: 1.030073
+  type: 'test'
+  ...
+# Subtest: all stored contact and history scalar types are closed
+ok 290 - all stored contact and history scalar types are closed
+  ---
+  duration_ms: 1.053818
+  type: 'test'
+  ...
+# Subtest: history only exists when trimmed stored email supplies lookup identity
+ok 291 - history only exists when trimmed stored email supplies lookup identity
+  ---
+  duration_ms: 0.392387
+  type: 'test'
+  ...
+# Subtest: message count does not invent available mail timestamps or latest meeting truth
+ok 292 - message count does not invent available mail timestamps or latest meeting truth
+  ---
+  duration_ms: 0.117697
+  type: 'test'
+  ...
+# Subtest: returned last contact descends with nulls last and equal timestamps allowed
+ok 293 - returned last contact descends with nulls last and equal timestamps allowed
+  ---
+  duration_ms: 0.242683
+  type: 'test'
+  ...
+# Subtest: source Date ISO serializations refuse impossible dates and offset substitutions
+ok 294 - source Date ISO serializations refuse impossible dates and offset substitutions
+  ---
+  duration_ms: 0.376704
+  type: 'test'
+  ...
+# Subtest: duplicate name/email projections are legitimate since row IDs are omitted
+ok 295 - duplicate name/email projections are legitimate since row IDs are omitted
+  ---
+  duration_ms: 0.074862
+  type: 'test'
+  ...
+# Subtest: returned window never exceeds requested or absolute cap
+ok 296 - returned window never exceeds requested or absolute cap
+  ---
+  duration_ms: 1.411073
+  type: 'test'
+  ...
+# Subtest: profile assertion requires linked client and a nonblank name or email
+ok 297 - profile assertion requires linked client and a nonblank name or email
+  ---
+  duration_ms: 0.26082
+  type: 'test'
+  ...
+# Subtest: notes count only returned rows and missing-profile rows including empty linked page
+ok 298 - notes count only returned rows and missing-profile rows including empty linked page
+  ---
+  duration_ms: 0.227431
+  type: 'test'
+  ...
+# Subtest: whole output remains closed and cannot grant profile mutation or coverage
+ok 299 - whole output remains closed and cannot grant profile mutation or coverage
+  ---
+  duration_ms: 0.44776
+  type: 'test'
+  ...
+# Subtest: direct raw/options/result admission never invokes getters, proxies or coercion
+ok 300 - direct raw/options/result admission never invokes getters, proxies or coercion
+  ---
+  duration_ms: 0.23373
+  type: 'test'
+  ...
+# Subtest: symbol, hidden and array root data refuse; inputs are not mutated
+ok 301 - symbol, hidden and array root data refuse; inputs are not mutated
+  ---
+  duration_ms: 0.368922
+  type: 'test'
+  ...
+# Subtest: final canonical create_task advertises actual raw and invokes normalizer
+ok 302 - final canonical create_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 2.540875
+  type: 'test'
+  ...
+# Subtest: final canonical create_task refuses caller authority context and hostile substitutions
+ok 303 - final canonical create_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.609051
+  type: 'test'
+  ...
+# Subtest: final canonical update_task advertises actual raw and invokes normalizer
+ok 304 - final canonical update_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 0.821189
+  type: 'test'
+  ...
+# Subtest: final canonical update_task refuses caller authority context and hostile substitutions
+ok 305 - final canonical update_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.332097
+  type: 'test'
+  ...
+# Subtest: final canonical save_memory advertises actual raw and invokes normalizer
+ok 306 - final canonical save_memory advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.089992
+  type: 'test'
+  ...
+# Subtest: final canonical save_memory refuses caller authority context and hostile substitutions
+ok 307 - final canonical save_memory refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.313149
+  type: 'test'
+  ...
+# Subtest: final canonical save_chat_attachments advertises actual raw and invokes normalizer
+ok 308 - final canonical save_chat_attachments advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.57636
+  type: 'test'
+  ...
+# Subtest: final canonical save_chat_attachments refuses caller authority context and hostile substitutions
+ok 309 - final canonical save_chat_attachments refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.440169
+  type: 'test'
+  ...
+# Subtest: final canonical create_word advertises actual raw and invokes normalizer
+ok 310 - final canonical create_word advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 9.902899
+  type: 'test'
+  ...
+# Subtest: final canonical create_word refuses caller authority context and hostile substitutions
+ok 311 - final canonical create_word refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 3.187092
+  type: 'test'
+  ...
+# Subtest: final canonical create_excel advertises actual raw and invokes normalizer
+ok 312 - final canonical create_excel advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.341128
+  type: 'test'
+  ...
+# Subtest: final canonical create_excel refuses caller authority context and hostile substitutions
+ok 313 - final canonical create_excel refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.700619
+  type: 'test'
+  ...
+# Subtest: final canonical create_powerpoint advertises actual raw and invokes normalizer
+ok 314 - final canonical create_powerpoint advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.03483
+  type: 'test'
+  ...
+# Subtest: final canonical create_powerpoint refuses caller authority context and hostile substitutions
+ok 315 - final canonical create_powerpoint refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.553099
+  type: 'test'
+  ...
+# Subtest: final canonical run_analysis advertises actual raw and invokes normalizer
+ok 316 - final canonical run_analysis advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 0.901289
+  type: 'test'
+  ...
+# Subtest: final canonical run_analysis refuses caller authority context and hostile substitutions
+ok 317 - final canonical run_analysis refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.580689
+  type: 'test'
+  ...
+# Subtest: final canonical schedule_task advertises actual raw and invokes normalizer
+ok 318 - final canonical schedule_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 28.489159
+  type: 'test'
+  ...
+# Subtest: final canonical schedule_task refuses caller authority context and hostile substitutions
+ok 319 - final canonical schedule_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 2.298272
+  type: 'test'
+  ...
+# Subtest: final canonical update_scheduled_task advertises actual raw and invokes normalizer
+ok 320 - final canonical update_scheduled_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 3.682193
+  type: 'test'
+  ...
+# Subtest: final canonical update_scheduled_task refuses caller authority context and hostile substitutions
+ok 321 - final canonical update_scheduled_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 1.597712
+  type: 'test'
+  ...
+# Subtest: final canonical cancel_scheduled_task advertises actual raw and invokes normalizer
+ok 322 - final canonical cancel_scheduled_task advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 3.09225
+  type: 'test'
+  ...
+# Subtest: final canonical cancel_scheduled_task refuses caller authority context and hostile substitutions
+ok 323 - final canonical cancel_scheduled_task refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.839888
+  type: 'test'
+  ...
+# Subtest: final canonical list_scheduled_tasks advertises actual raw and invokes normalizer
+ok 324 - final canonical list_scheduled_tasks advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 5.09511
+  type: 'test'
+  ...
+# Subtest: final canonical list_scheduled_tasks refuses caller authority context and hostile substitutions
+ok 325 - final canonical list_scheduled_tasks refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.833047
+  type: 'test'
+  ...
+# Subtest: final canonical get_research_evidence advertises actual raw and invokes normalizer
+ok 326 - final canonical get_research_evidence advertises actual raw and invokes normalizer
+  ---
+  duration_ms: 1.780767
+  type: 'test'
+  ...
+# Subtest: final canonical get_research_evidence refuses caller authority context and hostile substitutions
+ok 327 - final canonical get_research_evidence refuses caller authority context and hostile substitutions
+  ---
+  duration_ms: 0.732066
+  type: 'test'
+  ...
+# Subtest: final canonical create_task correlates exact command even for indeterminate observation
+ok 328 - final canonical create_task correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 3.799259
+  type: 'test'
+  ...
+# Subtest: final canonical update_task correlates exact command even for indeterminate observation
+ok 329 - final canonical update_task correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 3.45962
+  type: 'test'
+  ...
+# Subtest: final canonical save_memory correlates exact command even for indeterminate observation
+ok 330 - final canonical save_memory correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 2.666322
+  type: 'test'
+  ...
+# Subtest: final canonical save_chat_attachments correlates exact command even for indeterminate observation
+ok 331 - final canonical save_chat_attachments correlates exact command even for indeterminate observation
+  ---
+  duration_ms: 3.784997
+  type: 'test'
+  ...
+# Subtest: final canonical schedule_task validators feed actual accepted schedule application
+ok 332 - final canonical schedule_task validators feed actual accepted schedule application
+  ---
+  duration_ms: 14.761774
+  type: 'test'
+  ...
+# Subtest: final canonical update_scheduled_task validators feed actual accepted schedule application
+ok 333 - final canonical update_scheduled_task validators feed actual accepted schedule application
+  ---
+  duration_ms: 6.745121
+  type: 'test'
+  ...
+# Subtest: final canonical cancel_scheduled_task validators feed actual accepted schedule application
+ok 334 - final canonical cancel_scheduled_task validators feed actual accepted schedule application
+  ---
+  duration_ms: 4.679386
+  type: 'test'
+  ...
+# Subtest: final canonical list_scheduled_tasks validators feed actual accepted schedule application
+ok 335 - final canonical list_scheduled_tasks validators feed actual accepted schedule application
+  ---
+  duration_ms: 2.332743
+  type: 'test'
+  ...
+# Subtest: final loader keeps generic private schema names out of global namespace
+ok 336 - final loader keeps generic private schema names out of global namespace
+  ---
+  duration_ms: 0.318747
+  type: 'test'
+  ...
+# Subtest: final one canonical catalog covers139 original96selected43deferred and97typed96mapped0pending
+ok 337 - final one canonical catalog covers139 original96selected43deferred and97typed96mapped0pending
+  ---
+  duration_ms: 4.613648
+  type: 'test'
+  ...
+# Subtest: final all97 production routes remain unavailable before authority budget or source effects
+ok 338 - final all97 production routes remain unavailable before authority budget or source effects
+  ---
+  duration_ms: 7.465268
+  type: 'test'
+  ...
+# Subtest: final thirteen descriptors bind exact schema bytes and refuse tampering
+ok 339 - final thirteen descriptors bind exact schema bytes and refuse tampering
+  ---
+  duration_ms: 65.36749
+  type: 'test'
+  ...
+# Subtest: final all84 prior descriptors and callback bodies retain two Portfolio footnotes and accepted passive projection dispatch metadata
+ok 340 - final all84 prior descriptors and callback bodies retain two Portfolio footnotes and accepted passive projection dispatch metadata
+  ---
+  duration_ms: 4.713317
+  type: 'test'
+  ...
+# Subtest: final source accounting cannot promote whole requirements or native gates
+ok 341 - final source accounting cannot promote whole requirements or native gates
+  ---
+  duration_ms: 0.560869
+  type: 'test'
+  ...
+1..341
+# tests 341
+# suites 0
+# pass 341
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5593.4424

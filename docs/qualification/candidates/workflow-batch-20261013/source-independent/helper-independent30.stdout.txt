@@ -1,0 +1,192 @@
+TAP version 13
+# (node:176552) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: retrieval-backend-next-independent.test.mjs: exact candidate accepts complete historical comparison
+ok 1 - retrieval-backend-next-independent.test.mjs: exact candidate accepts complete historical comparison
+  ---
+  duration_ms: 2900.76552
+  type: 'test'
+  ...
+# Subtest: retrieval-backend-next-independent.test.mjs: actual deep comparison refuses missing metadata
+ok 2 - retrieval-backend-next-independent.test.mjs: actual deep comparison refuses missing metadata
+  ---
+  duration_ms: 10.673036
+  type: 'test'
+  ...
+# Subtest: retrieval-backend-next-independent.test.mjs: actual deep comparison refuses wrong metadata
+ok 3 - retrieval-backend-next-independent.test.mjs: actual deep comparison refuses wrong metadata
+  ---
+  duration_ms: 9.176544
+  type: 'test'
+  ...
+# Subtest: retrieval-backend-next-independent.test.mjs: actual deep comparison refuses extra metadata
+ok 4 - retrieval-backend-next-independent.test.mjs: actual deep comparison refuses extra metadata
+  ---
+  duration_ms: 8.412065
+  type: 'test'
+  ...
+# Subtest: retrieval-backend-next-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+ok 5 - retrieval-backend-next-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+  ---
+  duration_ms: 8.364823
+  type: 'test'
+  ...
+# Subtest: retrieval-backend-next-independent.test.mjs: actual deep comparison refuses output callback mutation
+ok 6 - retrieval-backend-next-independent.test.mjs: actual deep comparison refuses output callback mutation
+  ---
+  duration_ms: 8.043244
+  type: 'test'
+  ...
+# Subtest: retrieval-civic-integration-independent.test.mjs: exact candidate accepts complete historical comparison
+ok 7 - retrieval-civic-integration-independent.test.mjs: exact candidate accepts complete historical comparison
+  ---
+  duration_ms: 7.038846
+  type: 'test'
+  ...
+# Subtest: retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses missing metadata
+ok 8 - retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses missing metadata
+  ---
+  duration_ms: 22.911967
+  type: 'test'
+  ...
+# Subtest: retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses wrong metadata
+ok 9 - retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses wrong metadata
+  ---
+  duration_ms: 7.603318
+  type: 'test'
+  ...
+# Subtest: retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses extra metadata
+ok 10 - retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses extra metadata
+  ---
+  duration_ms: 7.45077
+  type: 'test'
+  ...
+# Subtest: retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+ok 11 - retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+  ---
+  duration_ms: 7.490019
+  type: 'test'
+  ...
+# Subtest: retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses output callback mutation
+ok 12 - retrieval-civic-integration-independent.test.mjs: actual deep comparison refuses output callback mutation
+  ---
+  duration_ms: 7.416519
+  type: 'test'
+  ...
+# Subtest: retrieval-observed-integration-independent.test.mjs: exact candidate accepts complete historical comparison
+ok 13 - retrieval-observed-integration-independent.test.mjs: exact candidate accepts complete historical comparison
+  ---
+  duration_ms: 6.949644
+  type: 'test'
+  ...
+# Subtest: retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses missing metadata
+ok 14 - retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses missing metadata
+  ---
+  duration_ms: 7.300296
+  type: 'test'
+  ...
+# Subtest: retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses wrong metadata
+ok 15 - retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses wrong metadata
+  ---
+  duration_ms: 8.474256
+  type: 'test'
+  ...
+# Subtest: retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses extra metadata
+ok 16 - retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses extra metadata
+  ---
+  duration_ms: 11.267702
+  type: 'test'
+  ...
+# Subtest: retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+ok 17 - retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+  ---
+  duration_ms: 7.344452
+  type: 'test'
+  ...
+# Subtest: retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses output callback mutation
+ok 18 - retrieval-observed-integration-independent.test.mjs: actual deep comparison refuses output callback mutation
+  ---
+  duration_ms: 7.391241
+  type: 'test'
+  ...
+# Subtest: retrieval-reference-integration-independent.test.mjs: exact candidate accepts complete historical comparison
+ok 19 - retrieval-reference-integration-independent.test.mjs: exact candidate accepts complete historical comparison
+  ---
+  duration_ms: 17.24821
+  type: 'test'
+  ...
+# Subtest: retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses missing metadata
+ok 20 - retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses missing metadata
+  ---
+  duration_ms: 8.055473
+  type: 'test'
+  ...
+# Subtest: retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses wrong metadata
+ok 21 - retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses wrong metadata
+  ---
+  duration_ms: 8.145376
+  type: 'test'
+  ...
+# Subtest: retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses extra metadata
+ok 22 - retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses extra metadata
+  ---
+  duration_ms: 8.40263
+  type: 'test'
+  ...
+# Subtest: retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+ok 23 - retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses normalize callback mutation
+  ---
+  duration_ms: 15.061049
+  type: 'test'
+  ...
+# Subtest: retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses output callback mutation
+ok 24 - retrieval-reference-integration-independent.test.mjs: actual deep comparison refuses output callback mutation
+  ---
+  duration_ms: 8.661736
+  type: 'test'
+  ...
+# Subtest: read_monday_client_boards: helper cannot silently overwrite an existing historical profile
+ok 25 - read_monday_client_boards: helper cannot silently overwrite an existing historical profile
+  ---
+  duration_ms: 0.318655
+  type: 'test'
+  ...
+# Subtest: search_memory: helper cannot silently overwrite an existing historical profile
+ok 26 - search_memory: helper cannot silently overwrite an existing historical profile
+  ---
+  duration_ms: 0.087511
+  type: 'test'
+  ...
+# Subtest: get_client_context: helper cannot silently overwrite an existing historical profile
+ok 27 - get_client_context: helper cannot silently overwrite an existing historical profile
+  ---
+  duration_ms: 0.049203
+  type: 'test'
+  ...
+# Subtest: find_contacts: helper cannot silently overwrite an existing historical profile
+ok 28 - find_contacts: helper cannot silently overwrite an existing historical profile
+  ---
+  duration_ms: 0.06703
+  type: 'test'
+  ...
+# Subtest: resolve_entity: helper cannot silently overwrite an existing historical profile
+ok 29 - resolve_entity: helper cannot silently overwrite an existing historical profile
+  ---
+  duration_ms: 0.045407
+  type: 'test'
+  ...
+# Subtest: read_client_documents: helper cannot silently overwrite an existing historical profile
+ok 30 - read_client_documents: helper cannot silently overwrite an existing historical profile
+  ---
+  duration_ms: 0.040971
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3200.347492

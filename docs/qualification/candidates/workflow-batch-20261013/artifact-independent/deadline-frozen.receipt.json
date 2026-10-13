@@ -1,0 +1,18 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern",
+    "original deadline",
+    "docs/qualification/candidates/workflow-batch-20261013/artifact-independent/compiler-independent.test.mjs"
+  ],
+  "sourceHead": "f46f29bbc6c943785d620e66176dfdd70a188b5d",
+  "exitCode": 1,
+  "seconds": 1.769585547997849,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 179381,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

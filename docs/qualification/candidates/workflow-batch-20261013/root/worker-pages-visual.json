@@ -1,0 +1,58 @@
+{
+  "status": "VISUALLY_READ_LOCAL_SYNTHETIC_PAGES",
+  "artifacts": [
+    {
+      "label": "original",
+      "docxSha256": "6b6e24c667537eccc9b6ab06141c0c5c0e9ab494079ba8a2fd618c0ee5b3a3f7",
+      "pages": [
+        {
+          "path": "original-preview-1.png",
+          "sha256": "79bec2b1f627c2fbd83d533abe98cb6bd962afd462f149cc9aa8483e3b2f8d4f",
+          "openedByRoot": true
+        },
+        {
+          "path": "original-preview-2.png",
+          "sha256": "4fca11bcff3644966ed139f7b68bb70ffa554d09c4f380ee2e9845004e43e38e",
+          "openedByRoot": true
+        },
+        {
+          "path": "original-preview-3.png",
+          "sha256": "7701034c2ed78028ce5ef4532e49c4193c8d160eddf3a6853d229eefa2adc8e1",
+          "openedByRoot": true
+        },
+        {
+          "path": "original-preview-4.png",
+          "sha256": "c8944143f1fd2a577e72c84fa04d4d367d6ccd9b7d9ca1bda26b71e778d2d57a",
+          "openedByRoot": true
+        }
+      ]
+    },
+    {
+      "label": "revision",
+      "docxSha256": "0de3f76fbf4e76954a2405e2cdedfe7089d20954859a868a2f7a9300c37d889b",
+      "pages": [
+        {
+          "path": "revision-preview-1.png",
+          "sha256": "c8f270a410940fd6dd792dcb4f95ebc0d84c758e4bf8ab94694f6a9ee391f036",
+          "openedByRoot": true
+        },
+        {
+          "path": "revision-preview-2.png",
+          "sha256": "add4a30b2c029e7ea96df8857031d70029e25a33dd7d59e24a31df2f4962feeb",
+          "openedByRoot": true
+        },
+        {
+          "path": "revision-preview-3.png",
+          "sha256": "3c0782d7669c4ec63cf6569771fa2d807c274631386943f39f641c8e236ba9f5",
+          "openedByRoot": true
+        },
+        {
+          "path": "revision-preview-4.png",
+          "sha256": "17d657950ea32f85df02d2851e22264b67f8055aabc8ea922314cf8d6070dcad",
+          "openedByRoot": true
+        }
+      ]
+    }
+  ],
+  "findings": "All eight original/revised pages opened. Timeline, exact late quote, unverified interpretations, all three required source coverage entries, bound body and passage hashes/scopes and immutable parent provenance remain readable. Long provenance continues onto page four; no clipping or omitted appendix text observed. Final source binding remains subject to worker commit and independent acceptance."
+}

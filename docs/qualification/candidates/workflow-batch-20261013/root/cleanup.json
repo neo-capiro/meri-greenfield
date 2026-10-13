@@ -1,0 +1,173 @@
+{
+  "schema": "meri.workflow-owned-cleanup/1",
+  "scope": "Only integration-owned links/copy and captured workflow-batch leaders/groups; donors and all other sessions preserved.",
+  "removed": [
+    {
+      "path": "node_modules",
+      "donor": "/workspace/meri-greenfield/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "donor": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "donor": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "donor": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "donor": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "ownedCopiedDirectoryRemoved": true,
+      "donorPreserved": true
+    }
+  ],
+  "capturedProcesses": [
+    {
+      "receipt": "context-corrected.json",
+      "leader": 161213,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "context-initial.json",
+      "leader": 161165,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "context-sealed.json",
+      "leader": 161494,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "contracts-final.json",
+      "leader": 191354,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "contracts-stable.json",
+      "leader": 170447,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "historical-profiles-corrected.json",
+      "leader": 172506,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "integration-deltas-corrected.json",
+      "leader": 194845,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "integration-final.json",
+      "leader": 192410,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "integration-sealed.json",
+      "leader": 195705,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "mail-history-gateway-initial.json",
+      "leader": 187376,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "projections-integration-initial.json",
+      "leader": 162452,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "public-final.json",
+      "leader": 195727,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "public-preservation.json",
+      "leader": 163292,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "six-projections-correct-selectors.json",
+      "leader": 167118,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "six-projections-integration.json",
+      "leader": 166776,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "utf16-contract-focused.json",
+      "leader": 184093,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    },
+    {
+      "receipt": "utf16-contract-preserved.json",
+      "leader": 184540,
+      "leaderAbsentNow": true,
+      "processGroupAbsentNow": true,
+      "capturedReaped": true
+    }
+  ],
+  "allCapturedGroupsAbsent": true,
+  "reviewOwnersReportedClean": [
+    "source_review",
+    "artifact_review",
+    "knowledge_source",
+    "client_evidence_source",
+    "identity_contacts_source",
+    "mail_history_workflow"
+  ],
+  "nativeWorkStarted": false,
+  "historicalHostZombies": "Two already-exited prior-PR61 esbuild children under hostPID1 remain outside this batch and cannot be reaped by a nonparent. No PID1 or other session touched."
+}

@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: actual canonical pages produce editable Word specification, late bound body quote and all original source coverage
+ok 1 - actual canonical pages produce editable Word specification, late bound body quote and all original source coverage
+  ---
+  duration_ms: 34.891866
+  type: 'test'
+  ...
+# Subtest: preview, unversioned or incomplete body cannot verify an excerpt
+ok 2 - preview, unversioned or incomplete body cannot verify an excerpt
+  ---
+  duration_ms: 18.943798
+  type: 'test'
+  ...
+# Subtest: version/hash/citation change across sections remains conflicting and provides no complete-body evidence
+ok 3 - version/hash/citation change across sections remains conflicting and provides no complete-body evidence
+  ---
+  duration_ms: 6.549065
+  type: 'test'
+  ...
+# Subtest: source missing/disconnected and bounded call budget are visible, with no negative claim
+ok 4 - source missing/disconnected and bounded call budget are visible, with no negative claim
+  ---
+  duration_ms: 4.284638
+  type: 'test'
+  ...
+# Subtest: refuses foreign actor
+ok 5 - refuses foreign actor
+  ---
+  duration_ms: 3.343
+  type: 'test'
+  ...
+# Subtest: refuses foreign tenant
+ok 6 - refuses foreign tenant
+  ---
+  duration_ms: 2.93579
+  type: 'test'
+  ...
+# Subtest: refuses different conversation
+ok 7 - refuses different conversation
+  ---
+  duration_ms: 3.426404
+  type: 'test'
+  ...
+# Subtest: refuses different run
+ok 8 - refuses different run
+  ---
+  duration_ms: 3.347096
+  type: 'test'
+  ...
+# Subtest: refuses different attempt
+ok 9 - refuses different attempt
+  ---
+  duration_ms: 4.182365
+  type: 'test'
+  ...
+# Subtest: refuses stale fence
+ok 10 - refuses stale fence
+  ---
+  duration_ms: 4.749183
+  type: 'test'
+  ...
+# Subtest: refuses mailbox substitution
+ok 11 - refuses mailbox substitution
+  ---
+  duration_ms: 3.134437
+  type: 'test'
+  ...
+# Subtest: refuses scope substitution
+ok 12 - refuses scope substitution
+  ---
+  duration_ms: 3.060297
+  type: 'test'
+  ...
+# Subtest: refuses body hash
+ok 13 - refuses body hash
+  ---
+  duration_ms: 6.469626
+  type: 'test'
+  ...
+# Subtest: refuses operation source substitution
+ok 14 - refuses operation source substitution
+  ---
+  duration_ms: 2.98285
+  type: 'test'
+  ...
+# Subtest: refuses body range
+ok 15 - refuses body range
+  ---
+  duration_ms: 2.967578
+  type: 'test'
+  ...
+# Subtest: refuses window substitution
+ok 16 - refuses window substitution
+  ---
+  duration_ms: 12.648015
+  type: 'test'
+  ...
+# Subtest: refuses authority promotion
+ok 17 - refuses authority promotion
+  ---
+  duration_ms: 3.231282
+  type: 'test'
+  ...
+# Subtest: an exact source citation does not verify free-form interpretations or mismatched quoted text
+ok 18 - an exact source citation does not verify free-form interpretations or mismatched quoted text
+  ---
+  duration_ms: 5.838592
+  type: 'test'
+  ...
+# Subtest: immutable selected skill and private prepared result cannot be replaced or cloned
+ok 19 - immutable selected skill and private prepared result cannot be replaced or cloned
+  ---
+  duration_ms: 6.962653
+  type: 'test'
+  ...
+# Subtest: authority loss and cancellation abort instead of producing an unavailable-source draft
+ok 20 - authority loss and cancellation abort instead of producing an unavailable-source draft
+  ---
+  duration_ms: 0.964793
+  type: 'test'
+  ...
+# Subtest: body cap cannot hide five unread decisive messages from fifteen paged candidates
+ok 21 - body cap cannot hide five unread decisive messages from fifteen paged candidates
+  ---
+  duration_ms: 25.643268
+  type: 'test'
+  ...
+# Subtest: candidate page/call/body-size caps retain their exact stop reason and unverified coverage
+ok 22 - candidate page/call/body-size caps retain their exact stop reason and unverified coverage
+  ---
+  duration_ms: 59.695762
+  type: 'test'
+  ...
+# Subtest: canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage
+ok 23 - canonical disabled-source GatewayDenied UNAVAILABLE is disclosed partial coverage
+  ---
+  duration_ms: 10.462116
+  type: 'test'
+  ...
+# Subtest: well-formed contiguous Unicode sections reconstruct only against the exact full body hash
+ok 24 - well-formed contiguous Unicode sections reconstruct only against the exact full body hash
+  ---
+  duration_ms: 5.464431
+  type: 'test'
+  ...
+# Subtest: an explicitly malformed producer splitting a surrogate pair remains refused
+ok 25 - an explicitly malformed producer splitting a surrogate pair remains refused
+  ---
+  duration_ms: 3.355669
+  type: 'test'
+  ...
+# Subtest: a surrogate pair at requested2000 boundary preserves contiguous exact quote and full-body evidence
+ok 26 - a surrogate pair at requested2000 boundary preserves contiguous exact quote and full-body evidence
+  ---
+  duration_ms: 5.697691
+  type: 'test'
+  ...
+# Subtest: one-unit repeated-emoji paging makes progress without loss, duplication or an invented cap
+ok 27 - one-unit repeated-emoji paging makes progress without loss, duplication or an invented cap
+  ---
+  duration_ms: 12.52405
+  type: 'test'
+  ...
+# Subtest: cancelling a parked read preserves the typed lifetime outcome and aborts its source signal
+ok 28 - cancelling a parked read preserves the typed lifetime outcome and aborts its source signal
+  ---
+  duration_ms: 0.660198
+  type: 'test'
+  ...
+# Subtest: a parked read deadline preserves the typed lifetime outcome and aborts its source signal
+ok 29 - a parked read deadline preserves the typed lifetime outcome and aborts its source signal
+  ---
+  duration_ms: 101.350193
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2066.756586

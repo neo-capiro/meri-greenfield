@@ -1,0 +1,110 @@
+{
+  "reviewer": "skills_implementation",
+  "status": "PASS",
+  "scope": "All8 freshly generated local synthetic DOCX pages opened with view_image",
+  "nativeQualified": false,
+  "sharedDependencies": [
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-utf16.mjs",
+      "sha256": "a22497344de75f16c4048d47e80a4f4197be72c318318674c99371d00c066414",
+      "owner": "root",
+      "borrowedForTestsOnly": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "sha256": "5e12c5136a79a434a83f151b177b5bda8aa181149f364579df86490f0433d0e7",
+      "owner": "root",
+      "borrowedForTestsOnly": true
+    }
+  ],
+  "documents": [
+    {
+      "name": "original",
+      "docxSha256": "b1b5894ccbc089ef0d5e0da4b08c60b441f1de112596b2408f86ce0f006c6ff7",
+      "pdfSha256": "b1fe48d30c38c6d4ca4d4f85540e96045e5890747e45242e7196db833def922c",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "original-preview-1.png",
+          "sha256": "307a51d9de176baaf4e9600fb9228b07c01f8393d79f742dede98c7f8d6636d8",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, coverage and immutable provenance; no clipping."
+        },
+        {
+          "page": 2,
+          "path": "original-preview-2.png",
+          "sha256": "729842b726df73af1f24f17dfe1ecc8ba6c0c04e325e9c4f7e89198b09c875c2",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, coverage and immutable provenance; no clipping."
+        },
+        {
+          "page": 3,
+          "path": "original-preview-3.png",
+          "sha256": "4091d88239ae574a87e9135cb8f586482917d5dae4cf30fc0446400241ae1843",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, coverage and immutable provenance; no clipping."
+        },
+        {
+          "page": 4,
+          "path": "original-preview-4.png",
+          "sha256": "f78091b3da11b88a4d2821df8fee8cb945bc796d9eb07c8ff9c7d0004b6ab416",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable provenance continuation, ample whitespace, no clipping."
+        }
+      ]
+    },
+    {
+      "name": "revision",
+      "docxSha256": "60ba27df722d1b57dbf6651b7f7b47f3ad0b6c2a3e3183ffb18d7fb75917d5e8",
+      "pdfSha256": "065be5c4495a5d378993db84f7b1fc8be170b90ad3f4280661dd7aad993d599a",
+      "pageCount": 4,
+      "pages": [
+        {
+          "page": 1,
+          "path": "revision-preview-1.png",
+          "sha256": "de6c9edf5e6443f5e66a610f9c2ccb2afbde0c695c8938afe80179b4af9474e7",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, coverage and immutable provenance; no clipping."
+        },
+        {
+          "page": 2,
+          "path": "revision-preview-2.png",
+          "sha256": "ba189b20b2a5bd11a991640c8d2728f8955c9f8dca962aeb26374f4a3c3b1aa5",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, coverage and immutable provenance; no clipping."
+        },
+        {
+          "page": 3,
+          "path": "revision-preview-3.png",
+          "sha256": "9ebc883a2657717881616ed144d84cdbc6f67aadd5c8c4394c736abe14d5a2c9",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable draft, citations, coverage and immutable provenance; no clipping."
+        },
+        {
+          "page": 4,
+          "path": "revision-preview-4.png",
+          "sha256": "42a0c9f35b28d0f9ce541bcf177907443f6cd41ac5663ec08b78cced39b162f7",
+          "width": 765,
+          "height": 990,
+          "opened": true,
+          "finding": "Readable provenance continuation, ample whitespace, no clipping."
+        }
+      ]
+    }
+  ]
+}

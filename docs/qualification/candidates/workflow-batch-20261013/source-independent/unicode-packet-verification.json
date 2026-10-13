@@ -1,0 +1,50 @@
+{
+  "decision": "ACCEPT_SOURCE_PRIVATE_UNICODE",
+  "reviewedCommit": "516eb2a922c106745d0164bd9819a6bec2c104cc",
+  "reviewedTree": "4c102dbf74caa3efddf0723ab9035e7064dbe9de",
+  "passingNodeTests": 170,
+  "independentOffsetLimitCases": 427,
+  "sourceAuditChecks": 33,
+  "checks": [
+    {
+      "capture": "unicode-independent14",
+      "tests": 14,
+      "pass": 14,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "unicode-author156",
+      "tests": 156,
+      "pass": 156,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "unicode-source-audit",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "unicode-inert-import",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "unicode-source-whitespace",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    }
+  ],
+  "knownWellFormedMailBoundaryImplementationGapFixed": true,
+  "oldGapEvidencePreserved": true,
+  "codecSchemaCatalogInputNormalizerPublicPackageChanged": false,
+  "borrowedLinkRemoved": true,
+  "donorNotModified": true,
+  "executableDiffFromPin": false,
+  "nativeAcceptance": false,
+  "mailHistoryArtifactAcceptanceByThisPacket": false
+}

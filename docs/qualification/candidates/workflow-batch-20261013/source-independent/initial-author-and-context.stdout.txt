@@ -1,0 +1,676 @@
+TAP version 13
+# Subtest: profile exact full capabilities section survives actual response bytes
+ok 1 - profile exact full capabilities section survives actual response bytes
+  ---
+  duration_ms: 35.081362
+  type: 'test'
+  ...
+# Subtest: profile exact full people section survives actual response bytes
+ok 2 - profile exact full people section survives actual response bytes
+  ---
+  duration_ms: 5.870295
+  type: 'test'
+  ...
+# Subtest: profile exact full facilities section survives actual response bytes
+ok 3 - profile exact full facilities section survives actual response bytes
+  ---
+  duration_ms: 4.506603
+  type: 'test'
+  ...
+# Subtest: profile exact full submissionHistory section survives actual response bytes
+ok 4 - profile exact full submissionHistory section survives actual response bytes
+  ---
+  duration_ms: 3.160799
+  type: 'test'
+  ...
+# Subtest: profile exact full advocacyMatters section survives actual response bytes
+ok 5 - profile exact full advocacyMatters section survives actual response bytes
+  ---
+  duration_ms: 2.948453
+  type: 'test'
+  ...
+# Subtest: profile exact full advocacyRecords section survives actual response bytes
+ok 6 - profile exact full advocacyRecords section survives actual response bytes
+  ---
+  duration_ms: 3.005497
+  type: 'test'
+  ...
+# Subtest: broker whole-request digest equals the exact canonical UTF-8 bytes emitted to Fetch
+ok 7 - broker whole-request digest equals the exact canonical UTF-8 bytes emitted to Fetch
+  ---
+  duration_ms: 9.155018
+  type: 'test'
+  ...
+# Subtest: profile overview preserves all requested and unavailable sections without equating a gap to empty
+ok 8 - profile overview preserves all requested and unavailable sections without equating a gap to empty
+  ---
+  duration_ms: 2.62442
+  type: 'test'
+  ...
+# Subtest: profile pagination preserves raw canonical metadata and selected afterId without promoting completeness
+ok 9 - profile pagination preserves raw canonical metadata and selected afterId without promoting completeness
+  ---
+  duration_ms: 3.332635
+  type: 'test'
+  ...
+# Subtest: passive metadata inventory preserves canonical source data
+ok 10 - passive metadata inventory preserves canonical source data
+  ---
+  duration_ms: 3.2755
+  type: 'test'
+  ...
+# Subtest: passive stored exact body preserves canonical source data
+ok 11 - passive stored exact body preserves canonical source data
+  ---
+  duration_ms: 2.289561
+  type: 'test'
+  ...
+# Subtest: passive stored transcription preserves canonical source data
+ok 12 - passive stored transcription preserves canonical source data
+  ---
+  duration_ms: 1.987241
+  type: 'test'
+  ...
+# Subtest: passive blocked extraction preserves canonical source data
+ok 13 - passive blocked extraction preserves canonical source data
+  ---
+  duration_ms: 1.856756
+  type: 'test'
+  ...
+# Subtest: document UTF-16 preview, exact late read and hash-bound continuation preserve separate coverage
+ok 14 - document UTF-16 preview, exact late read and hash-bound continuation preserve separate coverage
+  ---
+  duration_ms: 4.663187
+  type: 'test'
+  ...
+# Subtest: explicit later section remains a section read without claiming whole document completion
+ok 15 - explicit later section remains a section read without claiming whole document completion
+  ---
+  duration_ms: 1.945949
+  type: 'test'
+  ...
+# Subtest: document query windows and section reads cannot become a complete document read
+ok 16 - document query windows and section reads cannot become a complete document read
+  ---
+  duration_ms: 3.639732
+  type: 'test'
+  ...
+# Subtest: all current binding and client resolution substitutions refuse before credentials
+ok 17 - all current binding and client resolution substitutions refuse before credentials
+  ---
+  duration_ms: 6.772779
+  type: 'test'
+  ...
+# Subtest: closed broker receipt pins full authority, normalization context, metadata and both request digests
+ok 18 - closed broker receipt pins full authority, normalization context, metadata and both request digests
+  ---
+  duration_ms: 21.652867
+  type: 'test'
+  ...
+# Subtest: profile tenant, observation, record, section and Decimal precision substitutions refuse
+ok 19 - profile tenant, observation, record, section and Decimal precision substitutions refuse
+  ---
+  duration_ms: 17.75771
+  type: 'test'
+  ...
+# Subtest: documents preserve lineage, record/client/version/hash/range and extraction gaps
+ok 20 - documents preserve lineage, record/client/version/hash/range and extraction gaps
+  ---
+  duration_ms: 17.26551
+  type: 'test'
+  ...
+# Subtest: changed document or section hash during cursor continuation refuses
+ok 21 - changed document or section hash during cursor continuation refuses
+  ---
+  duration_ms: 3.859328
+  type: 'test'
+  ...
+# Subtest: ordinary read methods keep their receiver and detached methods refuse
+ok 22 - ordinary read methods keep their receiver and detached methods refuse
+  ---
+  duration_ms: 1.85271
+  type: 'test'
+  ...
+# Subtest: configuration, input and credentials refuse hostile getters without executing them
+ok 23 - configuration, input and credentials refuse hostile getters without executing them
+  ---
+  duration_ms: 1.431545
+  type: 'test'
+  ...
+# Subtest: configured endpoints are closed explicit HTTPS URLs and importing/factories allocate nothing
+ok 24 - configured endpoints are closed explicit HTTPS URLs and importing/factories allocate nothing
+  ---
+  duration_ms: 0.726919
+  type: 'test'
+  ...
+# Subtest: HTTP error/media/encoding responses and malformed UTF-8/JSON/length never leak private diagnostics
+ok 25 - HTTP error/media/encoding responses and malformed UTF-8/JSON/length never leak private diagnostics
+  ---
+  duration_ms: 9.584357
+  type: 'test'
+  ...
+# Subtest: parked credentials deadline blocks later effects and cancels owned response
+ok 26 - parked credentials deadline blocks later effects and cancels owned response
+  ---
+  duration_ms: 20.875928
+  type: 'test'
+  ...
+# Subtest: parked fetch deadline blocks later effects and cancels owned response
+ok 27 - parked fetch deadline blocks later effects and cancels owned response
+  ---
+  duration_ms: 21.500366
+  type: 'test'
+  ...
+# Subtest: parked body deadline blocks later effects and cancels owned response
+ok 28 - parked body deadline blocks later effects and cancels owned response
+  ---
+  duration_ms: 21.490881
+  type: 'test'
+  ...
+# Subtest: abort on acquired response cancels body and suppresses successful output
+ok 29 - abort on acquired response cancels body and suppresses successful output
+  ---
+  duration_ms: 2.081219
+  type: 'test'
+  ...
+# Subtest: production operation descriptors remain disabled and unqualified
+ok 30 - production operation descriptors remain disabled and unqualified
+  ---
+  duration_ms: 0.605289
+  type: 'test'
+  ...
+# Subtest: resolve_entity: real Fetch bytes and canonical handler preserve exact passive result
+ok 31 - resolve_entity: real Fetch bytes and canonical handler preserve exact passive result
+  ---
+  duration_ms: 26.735369
+  type: 'test'
+  ...
+# Subtest: find_contacts: real Fetch bytes and canonical handler preserve exact passive result
+ok 32 - find_contacts: real Fetch bytes and canonical handler preserve exact passive result
+  ---
+  duration_ms: 4.064475
+  type: 'test'
+  ...
+# Subtest: trusted Congress controls implicit bill ID; explicit Congress and stored fields remain unchanged
+ok 33 - trusted Congress controls implicit bill ID; explicit Congress and stored fields remain unchanged
+  ---
+  duration_ms: 3.857637
+  type: 'test'
+  ...
+# Subtest: trusted normalizationContext must be present and closed; model Congress cannot supply it
+ok 34 - trusted normalizationContext must be present and closed; model Congress cannot supply it
+  ---
+  duration_ms: 3.84622
+  type: 'test'
+  ...
+# Subtest: full authority refuses tenant before broker/Fetch
+ok 35 - full authority refuses tenant before broker/Fetch
+  ---
+  duration_ms: 0.909475
+  type: 'test'
+  ...
+# Subtest: full authority refuses actor before broker/Fetch
+ok 36 - full authority refuses actor before broker/Fetch
+  ---
+  duration_ms: 0.853412
+  type: 'test'
+  ...
+# Subtest: full authority refuses run before broker/Fetch
+ok 37 - full authority refuses run before broker/Fetch
+  ---
+  duration_ms: 0.616769
+  type: 'test'
+  ...
+# Subtest: full authority refuses attempt before broker/Fetch
+ok 38 - full authority refuses attempt before broker/Fetch
+  ---
+  duration_ms: 0.413746
+  type: 'test'
+  ...
+# Subtest: full authority refuses worker before broker/Fetch
+ok 39 - full authority refuses worker before broker/Fetch
+  ---
+  duration_ms: 0.500796
+  type: 'test'
+  ...
+# Subtest: full authority refuses fence before broker/Fetch
+ok 40 - full authority refuses fence before broker/Fetch
+  ---
+  duration_ms: 0.450151
+  type: 'test'
+  ...
+# Subtest: full authority refuses conversation before broker/Fetch
+ok 41 - full authority refuses conversation before broker/Fetch
+  ---
+  duration_ms: 0.420686
+  type: 'test'
+  ...
+# Subtest: full authority refuses audience before broker/Fetch
+ok 42 - full authority refuses audience before broker/Fetch
+  ---
+  duration_ms: 0.39631
+  type: 'test'
+  ...
+# Subtest: full authority refuses action before broker/Fetch
+ok 43 - full authority refuses action before broker/Fetch
+  ---
+  duration_ms: 0.383271
+  type: 'test'
+  ...
+# Subtest: full authority refuses policy before broker/Fetch
+ok 44 - full authority refuses policy before broker/Fetch
+  ---
+  duration_ms: 0.421408
+  type: 'test'
+  ...
+# Subtest: full authority refuses decision id before broker/Fetch
+ok 45 - full authority refuses decision id before broker/Fetch
+  ---
+  duration_ms: 0.346146
+  type: 'test'
+  ...
+# Subtest: full authority refuses decision actor before broker/Fetch
+ok 46 - full authority refuses decision actor before broker/Fetch
+  ---
+  duration_ms: 0.407628
+  type: 'test'
+  ...
+# Subtest: full authority refuses decision scope before broker/Fetch
+ok 47 - full authority refuses decision scope before broker/Fetch
+  ---
+  duration_ms: 0.357873
+  type: 'test'
+  ...
+# Subtest: full authority refuses decision operation before broker/Fetch
+ok 48 - full authority refuses decision operation before broker/Fetch
+  ---
+  duration_ms: 0.345004
+  type: 'test'
+  ...
+# Subtest: full authority refuses denied decision before broker/Fetch
+ok 49 - full authority refuses denied decision before broker/Fetch
+  ---
+  duration_ms: 0.357693
+  type: 'test'
+  ...
+# Subtest: full authority refuses source id before broker/Fetch
+ok 50 - full authority refuses source id before broker/Fetch
+  ---
+  duration_ms: 0.354618
+  type: 'test'
+  ...
+# Subtest: full authority refuses claim scope before broker/Fetch
+ok 51 - full authority refuses claim scope before broker/Fetch
+  ---
+  duration_ms: 0.344614
+  type: 'test'
+  ...
+# Subtest: full authority refuses foreign claim policy before broker/Fetch
+ok 52 - full authority refuses foreign claim policy before broker/Fetch
+  ---
+  duration_ms: 0.351403
+  type: 'test'
+  ...
+# Subtest: broker credential refuses operation before Fetch
+ok 53 - broker credential refuses operation before Fetch
+  ---
+  duration_ms: 1.058146
+  type: 'test'
+  ...
+# Subtest: broker credential refuses argument hash before Fetch
+ok 54 - broker credential refuses argument hash before Fetch
+  ---
+  duration_ms: 0.88664
+  type: 'test'
+  ...
+# Subtest: broker credential refuses request hash before Fetch
+ok 55 - broker credential refuses request hash before Fetch
+  ---
+  duration_ms: 0.762355
+  type: 'test'
+  ...
+# Subtest: broker credential refuses metadata Congress before Fetch
+ok 56 - broker credential refuses metadata Congress before Fetch
+  ---
+  duration_ms: 0.681365
+  type: 'test'
+  ...
+# Subtest: broker credential refuses normalization Congress before Fetch
+ok 57 - broker credential refuses normalization Congress before Fetch
+  ---
+  duration_ms: 0.747363
+  type: 'test'
+  ...
+# Subtest: broker credential refuses tenant before Fetch
+ok 58 - broker credential refuses tenant before Fetch
+  ---
+  duration_ms: 0.808936
+  type: 'test'
+  ...
+# Subtest: broker credential refuses actor before Fetch
+ok 59 - broker credential refuses actor before Fetch
+  ---
+  duration_ms: 1.058598
+  type: 'test'
+  ...
+# Subtest: broker credential refuses client scope before Fetch
+ok 60 - broker credential refuses client scope before Fetch
+  ---
+  duration_ms: 0.738911
+  type: 'test'
+  ...
+# Subtest: broker credential refuses policy before Fetch
+ok 61 - broker credential refuses policy before Fetch
+  ---
+  duration_ms: 0.691661
+  type: 'test'
+  ...
+# Subtest: broker credential refuses source IDs before Fetch
+ok 62 - broker credential refuses source IDs before Fetch
+  ---
+  duration_ms: 18.039483
+  type: 'test'
+  ...
+# Subtest: broker credential refuses expired before Fetch
+ok 63 - broker credential refuses expired before Fetch
+  ---
+  duration_ms: 0.675276
+  type: 'test'
+  ...
+# Subtest: broker credential refuses beyond admitted authority before Fetch
+ok 64 - broker credential refuses beyond admitted authority before Fetch
+  ---
+  duration_ms: 0.727073
+  type: 'test'
+  ...
+# Subtest: broker credential refuses header injection before Fetch
+ok 65 - broker credential refuses header injection before Fetch
+  ---
+  duration_ms: 0.686252
+  type: 'test'
+  ...
+# Subtest: broker credential refuses service secret before Fetch
+ok 66 - broker credential refuses service secret before Fetch
+  ---
+  duration_ms: 0.706152
+  type: 'test'
+  ...
+# Subtest: normalized selection/original request hash mismatch never reaches the broker
+ok 67 - normalized selection/original request hash mismatch never reaches the broker
+  ---
+  duration_ms: 1.126979
+  type: 'test'
+  ...
+# Subtest: adapter method receives its original receiver and only the explicit operation/context
+ok 68 - adapter method receives its original receiver and only the explicit operation/context
+  ---
+  duration_ms: 0.97329
+  type: 'test'
+  ...
+# Subtest: canonical result refuses foreign binding without release
+ok 69 - canonical result refuses foreign binding without release
+  ---
+  duration_ms: 1.55718
+  type: 'test'
+  ...
+# Subtest: canonical result refuses foreign subject without release
+ok 70 - canonical result refuses foreign subject without release
+  ---
+  duration_ms: 1.272565
+  type: 'test'
+  ...
+# Subtest: canonical result refuses operation without release
+ok 71 - canonical result refuses operation without release
+  ---
+  duration_ms: 1.124455
+  type: 'test'
+  ...
+# Subtest: canonical result refuses hash without release
+ok 72 - canonical result refuses hash without release
+  ---
+  duration_ms: 1.334247
+  type: 'test'
+  ...
+# Subtest: canonical result refuses extra wrapper without release
+ok 73 - canonical result refuses extra wrapper without release
+  ---
+  duration_ms: 2.653323
+  type: 'test'
+  ...
+# Subtest: canonical result refuses raw promoted verified without release
+ok 74 - canonical result refuses raw promoted verified without release
+  ---
+  duration_ms: 1.519724
+  type: 'test'
+  ...
+# Subtest: canonical result refuses count without release
+ok 75 - canonical result refuses count without release
+  ---
+  duration_ms: 1.19455
+  type: 'test'
+  ...
+# Subtest: canonical result refuses mixed phases without release
+ok 76 - canonical result refuses mixed phases without release
+  ---
+  duration_ms: 1.137144
+  type: 'test'
+  ...
+# Subtest: canonical result refuses current-first order without release
+ok 77 - canonical result refuses current-first order without release
+  ---
+  duration_ms: 1.179628
+  type: 'test'
+  ...
+# Subtest: canonical result refuses duplicate name identity without release
+ok 78 - canonical result refuses duplicate name identity without release
+  ---
+  duration_ms: 1.324012
+  type: 'test'
+  ...
+# Subtest: legitimate crosswalk duplicates survive unchanged without verified identity claims
+ok 79 - legitimate crosswalk duplicates survive unchanged without verified identity claims
+  ---
+  duration_ms: 1.561306
+  type: 'test'
+  ...
+# Subtest: exact no-match/missing query remain source notes, never exhaustive absence
+ok 80 - exact no-match/missing query remain source notes, never exhaustive absence
+  ---
+  duration_ms: 3.257182
+  type: 'test'
+  ...
+# Subtest: current/former flags and old generatedAt are observations with no invented freshness
+ok 81 - current/former flags and old generatedAt are observations with no invented freshness
+  ---
+  duration_ms: 1.262291
+  type: 'test'
+  ...
+# Subtest: contact query/domain canonicalization and profile guidance remain passive source text
+ok 82 - contact query/domain canonicalization and profile guidance remain passive source text
+  ---
+  duration_ms: 2.772941
+  type: 'test'
+  ...
+# Subtest: client selector needs the exact current resolved client and returned client cannot substitute
+ok 83 - client selector needs the exact current resolved client and returned client cannot substitute
+  ---
+  duration_ms: 1.690418
+  type: 'test'
+  ...
+# Subtest: contact OR rows do not acquire invented client membership/profile completeness
+ok 84 - contact OR rows do not acquire invented client membership/profile completeness
+  ---
+  duration_ms: 1.237273
+  type: 'test'
+  ...
+# Subtest: contact no-selector refusal cannot dump all rows or claim authoritative absence
+ok 85 - contact no-selector refusal cannot dump all rows or claim authoritative absence
+  ---
+  duration_ms: 2.272235
+  type: 'test'
+  ...
+# Subtest: contact timestamps descend with nulls last; missing email cannot report hidden history
+ok 86 - contact timestamps descend with nulls last; missing email cannot report hidden history
+  ---
+  duration_ms: 3.495157
+  type: 'test'
+  ...
+# Subtest: deadlines/expiry and native aborted signal stop before any credential or Fetch
+ok 87 - deadlines/expiry and native aborted signal stop before any credential or Fetch
+  ---
+  duration_ms: 0.962664
+  type: 'test'
+  ...
+# Subtest: deadline after acquired response cancels its unread body and suppresses private content
+ok 88 - deadline after acquired response cancels its unread body and suppresses private content
+  ---
+  duration_ms: 18.468743
+  type: 'test'
+  ...
+# Subtest: stalled body is bounded by deadline and cancels its owned reader
+ok 89 - stalled body is bounded by deadline and cancels its owned reader
+  ---
+  duration_ms: 21.242155
+  type: 'test'
+  ...
+# Subtest: parent cancellation while reading bytes reaches source body without profile side effects
+ok 90 - parent cancellation while reading bytes reaches source body without profile side effects
+  ---
+  duration_ms: 1.375038
+  type: 'test'
+  ...
+# Subtest: bounded canonical JSON port refuses malformed UTF8
+ok 91 - bounded canonical JSON port refuses malformed UTF8
+  ---
+  duration_ms: 1.213888
+  type: 'test'
+  ...
+# Subtest: bounded canonical JSON port refuses invalid JSON
+ok 92 - bounded canonical JSON port refuses invalid JSON
+  ---
+  duration_ms: 0.904338
+  type: 'test'
+  ...
+# Subtest: bounded canonical JSON port refuses wrong type
+ok 93 - bounded canonical JSON port refuses wrong type
+  ---
+  duration_ms: 0.851178
+  type: 'test'
+  ...
+# Subtest: bounded canonical JSON port refuses compressed body
+ok 94 - bounded canonical JSON port refuses compressed body
+  ---
+  duration_ms: 0.75834
+  type: 'test'
+  ...
+# Subtest: bounded canonical JSON port refuses failed status
+ok 95 - bounded canonical JSON port refuses failed status
+  ---
+  duration_ms: 0.730007
+  type: 'test'
+  ...
+# Subtest: bounded canonical JSON port refuses false length
+ok 96 - bounded canonical JSON port refuses false length
+  ---
+  duration_ms: 0.836797
+  type: 'test'
+  ...
+# Subtest: overflow is refused and cancels source; hostile bytes cannot leak raw error data
+ok 97 - overflow is refused and cancels source; hostile bytes cannot leak raw error data
+  ---
+  duration_ms: 1.700884
+  type: 'test'
+  ...
+# Subtest: inert admission refuses getters/proxies and malformed context without executing caller hooks
+ok 98 - inert admission refuses getters/proxies and malformed context without executing caller hooks
+  ---
+  duration_ms: 0.587776
+  type: 'test'
+  ...
+# Subtest: explicit endpoint configuration and import safety never allocate ambient resources
+ok 99 - explicit endpoint configuration and import safety never allocate ambient resources
+  ---
+  duration_ms: 1644.551435
+  type: 'test'
+  ...
+# Subtest: six canonical private binding profiles compose existing context keys without activating catalog
+ok 100 - six canonical private binding profiles compose existing context keys without activating catalog
+  ---
+  duration_ms: 1.194449
+  type: 'test'
+  ...
+# Subtest: memory actor and tenant are current binding, Monday/contact contexts empty
+ok 101 - memory actor and tenant are current binding, Monday/contact contexts empty
+  ---
+  duration_ms: 1.125757
+  type: 'test'
+  ...
+# Subtest: profile observation is immutable while decision lineage can refresh
+ok 102 - profile observation is immutable while decision lineage can refresh
+  ---
+  duration_ms: 0.409851
+  type: 'test'
+  ...
+# Subtest: document lineage uses current authority, never the prior decision
+ok 103 - document lineage uses current authority, never the prior decision
+  ---
+  duration_ms: 0.16135
+  type: 'test'
+  ...
+# Subtest: Congress requires explicit trusted configuration
+ok 104 - Congress requires explicit trusted configuration
+  ---
+  duration_ms: 18.296306
+  type: 'test'
+  ...
+# Subtest: search_memory: another client selector cannot expand selected scope
+ok 105 - search_memory: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.36917
+  type: 'test'
+  ...
+# Subtest: read_monday_client_boards: another client selector cannot expand selected scope
+ok 106 - read_monday_client_boards: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.249201
+  type: 'test'
+  ...
+# Subtest: find_contacts: another client selector cannot expand selected scope
+ok 107 - find_contacts: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.209943
+  type: 'test'
+  ...
+# Subtest: read_client_documents: another client selector cannot expand selected scope
+ok 108 - read_client_documents: another client selector cannot expand selected scope
+  ---
+  duration_ms: 0.263743
+  type: 'test'
+  ...
+# Subtest: tenantId: current authority substitution is refused
+ok 109 - tenantId: current authority substitution is refused
+  ---
+  duration_ms: 0.325865
+  type: 'test'
+  ...
+# Subtest: actorId: current authority substitution is refused
+ok 110 - actorId: current authority substitution is refused
+  ---
+  duration_ms: 0.200168
+  type: 'test'
+  ...
+# Subtest: changed policy revision and unsupported canonical context are refused
+ok 111 - changed policy revision and unsupported canonical context are refused
+  ---
+  duration_ms: 0.285886
+  type: 'test'
+  ...
+1..111
+# tests 111
+# suites 0
+# pass 111
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4291.472685

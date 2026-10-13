@@ -1,0 +1,95 @@
+TAP version 13
+# {"case":"all-offset Unicode corpus","cases":427}
+# Subtest: Independent all-offset corpus keeps bounded original UTF16 positions, exact scalar slices and positive progress
+ok 1 - Independent all-offset corpus keeps bounded original UTF16 positions, exact scalar slices and positive progress
+  ---
+  duration_ms: 2.076734
+  type: 'test'
+  ...
+# Subtest: Sequential scalar paging reconstructs combining/ZWJ/astral text and original SHA without overlap
+ok 2 - Sequential scalar paging reconstructs combining/ZWJ/astral text and original SHA without overlap
+  ---
+  duration_ms: 0.365196
+  type: 'test'
+  ...
+# Subtest: BMP-only producer output remains the exact original requested span
+ok 3 - BMP-only producer output remains the exact original requested span
+  ---
+  duration_ms: 0.208271
+  type: 'test'
+  ...
+# Subtest: Six-thousand-unit edge and explicit mid-pair requests remain bounded and well formed
+ok 4 - Six-thousand-unit edge and explicit mid-pair requests remain bounded and well formed
+  ---
+  duration_ms: 0.090245
+  type: 'test'
+  ...
+# Subtest: Lone surrogates and malformed helper inputs refuse without replacement or hostile conversion
+ok 5 - Lone surrogates and malformed helper inputs refuse without replacement or hostile conversion
+  ---
+  duration_ms: 0.271426
+  type: 'test'
+  ...
+# Subtest: Actual canonical page refuses lone surrogates, arbitrary gaps, backward spans and expanded ASCII
+ok 6 - Actual canonical page refuses lone surrogates, arbitrary gaps, backward spans and expanded ASCII
+  ---
+  duration_ms: 10.158983
+  type: 'test'
+  ...
+# Subtest: Unknown/missing body disclosure keeps prior offset/null cursor rules and does not get a pair expansion
+ok 7 - Unknown/missing body disclosure keeps prior offset/null cursor rules and does not get a pair expansion
+  ---
+  duration_ms: 0.184596
+  type: 'test'
+  ...
+# Subtest: Actual gateway budget1 releases each well-formed section and reconstructs immutable full SHA
+ok 8 - Actual gateway budget1 releases each well-formed section and reconstructs immutable full SHA
+  ---
+  duration_ms: 38.903786
+  type: 'test'
+  ...
+# Subtest: Actual gateway budget2 releases each well-formed section and reconstructs immutable full SHA
+ok 9 - Actual gateway budget2 releases each well-formed section and reconstructs immutable full SHA
+  ---
+  duration_ms: 23.623638
+  type: 'test'
+  ...
+# Subtest: Actual gateway budget3 releases each well-formed section and reconstructs immutable full SHA
+ok 10 - Actual gateway budget3 releases each well-formed section and reconstructs immutable full SHA
+  ---
+  duration_ms: 21.775957
+  type: 'test'
+  ...
+# Subtest: Actual gateway budget2000 releases each well-formed section and reconstructs immutable full SHA
+ok 11 - Actual gateway budget2000 releases each well-formed section and reconstructs immutable full SHA
+  ---
+  duration_ms: 8.915144
+  type: 'test'
+  ...
+# Subtest: Explicit mid-pair gateway request keeps original input digest and actual source overlap
+ok 12 - Explicit mid-pair gateway request keeps original input digest and actual source overlap
+  ---
+  duration_ms: 4.588278
+  type: 'test'
+  ...
+# Subtest: Revocation after a Unicode section still refuses release and preserves uncertain accounting
+ok 13 - Revocation after a Unicode section still refuses release and preserves uncertain accounting
+  ---
+  duration_ms: 5.781571
+  type: 'test'
+  ...
+# Subtest: Actual loopback Fetch uses the canonical producer helper and unmodified request/hash/authority protocol
+ok 14 - Actual loopback Fetch uses the canonical producer helper and unmodified request/hash/authority protocol
+  ---
+  duration_ms: 41.653245
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2819.731858

@@ -1,0 +1,50 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "sourceCommit": "9d1bf92a08ea07ad49d63e80ade8249598060635",
+  "sourceTree": "c9a6ed124ba143e8ab0c772939609a6313cc9a07",
+  "reviewedTests": 103,
+  "propertySubcases": 427,
+  "preservationAssertions": 44,
+  "counts": {
+    "final-mapping-focused75": {
+      "tests": 75,
+      "pass": 75,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "final-profile-adversarial14": {
+      "tests": 14,
+      "pass": 0,
+      "fail": 14,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "final-profile-adversarial14-rerun": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "final-unicode-carry-forward14": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "initialSetupFailurePreserved": true,
+  "parentTwoFailuresPreserved": true,
+  "historicalFileUnchanged": true,
+  "other20ControlsAndFixturesByteExact": true,
+  "sourceOnly": true,
+  "nativeRuntimeOrArtifactAcceptance": false,
+  "borrowedLinkRemoved": true,
+  "processCapturesBoundedReapedAndAbsent": true
+}

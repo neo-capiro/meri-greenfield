@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python3",
+    "docs/qualification/candidates/workflow-batch-20261013/source-independent/audit-six-source.py"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+  "worktreeHead": "38fb4cb1db310fefda5e7ec9f1cf677fe178ae89",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.358,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 102,
+  "stderrBytes": 0,
+  "stdoutSha256": "c82941a59e55382d81db5080b9dfe179db001514a78e2a1b1f09376d9a67d7d9",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

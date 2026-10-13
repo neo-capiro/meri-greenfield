@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packages/contracts/test/retrieval-mail-unicode.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "apps/gateway/sources/mail/test/read-adapter.test.mjs",
+    "apps/gateway/sources/mail/test/review-repair.test.mjs"
+  ],
+  "cwd": "/workspace/meri-workflow-source-independent",
+  "reviewedCommit": "516eb2a922c106745d0164bd9819a6bec2c104cc",
+  "worktreeHead": "516eb2a922c106745d0164bd9819a6bec2c104cc",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 3.263,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 34482,
+  "stderrBytes": 0,
+  "stdoutSha256": "51d16f88d91b06cd1c7872b022ef2aa9bddcbaaf47b95995f84f0361b1385efe",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "d34a47b07c27ac5c55e9c4281991ae1657c1a723",
+  "tree": "c5f63a48fd23e09442d94429cfb9972b7a96782a",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/mail-continuation-regression.test.mjs"
+  ],
+  "startedAt": "2026-10-13T15:13:30.184724+00:00",
+  "seconds": 2.155978323000454,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {
+    "tests": 75,
+    "pass": 75,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "blobs": {
+    "stdout": {
+      "path": "integration-deltas-corrected.stdout.gz",
+      "rawBytes": 15682,
+      "rawSha256": "c8b298c8c8bb97f694cb9aeda453bfac24c786bcadd4ae75b5feba844fa4362e"
+    },
+    "stderr": {
+      "path": "integration-deltas-corrected.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "ownedProcessId": 194845,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}

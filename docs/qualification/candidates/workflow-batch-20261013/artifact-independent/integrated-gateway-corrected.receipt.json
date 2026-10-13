@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/workflow-batch-20261013/artifact-independent/gateway-independent.test.mjs"
+  ],
+  "sourceHead": "5e673db81bd8eda7b0a4b27972a948981429a7b6",
+  "exitCode": 0,
+  "seconds": 1.870143852000183,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 190074,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

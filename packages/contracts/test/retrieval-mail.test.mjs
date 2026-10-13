@@ -57,11 +57,12 @@ test('stored disconnected reads remain transport-only with unknown immutable ide
   assert.equal(p.messages[0].recordVersionId,null);assert.equal(p.evidenceReady,false);
   for(const status of ['connected','error','revoked']){const q=page();q.messages[0].connectionStatus=status;assertMailThreadSourcePage(q,input());}
 });
-test('UTF-16 offsets count a surrogate pair as two units and permit its legacy split',()=>{
+test('UTF-16 offsets retain whole surrogate pairs and refuse a legacy split before hashing',()=>{
   const request={...input(),messageId,maxCharacters:1},p=page(request);
   p.messages[0].section={start:0,endExclusive:1,totalCodeUnits:2,unit:'utf16-code-unit',text:'\ud83d',hasMore:true};
-  p.nextBodyOffsets=[{messageId,bodyOffset:1}];p.coverage.truncated=true;assertMailThreadSourcePage(p,request);
+  p.nextBodyOffsets=[{messageId,bodyOffset:1}];p.coverage.truncated=true;assert.throws(()=>assertMailThreadSourcePage(p,request),/UTF-16/);
   p.messages[0].section.text='😀';assert.throws(()=>assertMailThreadSourcePage(p,request),/UTF-16/);
+  p.messages[0].section.endExclusive=2;p.messages[0].section.hasMore=false;p.nextBodyOffsets=[];p.coverage.truncated=false;assertMailThreadSourcePage(p,request);
   p.messages[0].section.unit='unicode-scalar';assert.throws(()=>assertMailThreadSourcePage(p,request));
 });
 test('late decisive body section remains an unresolved read despite ending the stored body',()=>{

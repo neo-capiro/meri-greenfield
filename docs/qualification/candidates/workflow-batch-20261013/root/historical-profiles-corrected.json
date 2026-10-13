@@ -1,0 +1,45 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "c37cae311aab1578182a2391a3f7fd3f066a0e6e",
+  "tree": "502c245b3b93a7676580595255740db98361505d",
+  "command": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-reporter=tap",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/document-application-independent.test.mjs"
+  ],
+  "startedAt": "2026-10-13T14:20:38.641600+00:00",
+  "seconds": 4.381665886998235,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {
+    "tests": 211,
+    "pass": 211,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "blobs": {
+    "stdout": {
+      "path": "historical-profiles-corrected.stdout.gz",
+      "rawBytes": 48474,
+      "rawSha256": "945a6d7359c4cc52efd11dc066c5931477a372cf0ede3df909e727c4782259e3"
+    },
+    "stderr": {
+      "path": "historical-profiles-corrected.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "ownedProcessId": 172506,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}

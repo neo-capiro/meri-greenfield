@@ -44,6 +44,13 @@ export function expectedExistingBinding(row) {
   }
   if(row.id==='query_action_items')result={...result,supersededBy:'actions.query'};
   if(row.id==='list_global_datasets')result={...result,dispatchProfile:'dataset-metadata/1'};
+  const passiveProfiles={read_monday_client_boards:'bound-projection/1',search_memory:'bound-projection/1',
+    get_client_context:'bound-projection/1',find_contacts:'bound-projection/1',resolve_entity:'bound-projection/1',
+    read_client_documents:'client-documents/1'};
+  if(Object.hasOwn(passiveProfiles,row.id)) {
+    assert.equal(Object.hasOwn(row,'dispatchProfile'),false,'Historical snapshot already has a dispatch profile');
+    result={...result,dispatchProfile:passiveProfiles[row.id]};
+  }
   return result;
 }
 export function expectedExistingOriginal(row) {

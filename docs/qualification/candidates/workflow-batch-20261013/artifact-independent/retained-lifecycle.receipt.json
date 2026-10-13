@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs"
+  ],
+  "sourceHead": "f46f29bbc6c943785d620e66176dfdd70a188b5d",
+  "exitCode": 0,
+  "seconds": 9.67768881200027,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 179962,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

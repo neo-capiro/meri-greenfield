@@ -1,0 +1,43 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "c9dee2fc91c8ef218bc96fa815f003474c9a32a8",
+  "tree": "8d7a0ed7814742721eeb5965192a9a66cde332b4",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packages/contracts/test/retrieval-mail-unicode.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "apps/gateway/sources/mail/test/read-adapter.test.mjs",
+    "apps/gateway/sources/mail/test/review-repair.test.mjs"
+  ],
+  "startedAt": "2026-10-13T14:48:03.674254+00:00",
+  "seconds": 2.4835838350009,
+  "exitCode": 1,
+  "timedOut": false,
+  "counts": {
+    "tests": 156,
+    "pass": 155,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "blobs": {
+    "stdout": {
+      "path": "utf16-contract-focused.stdout.gz",
+      "rawBytes": 36220,
+      "rawSha256": "c9575051ce75c73f4cdd722265344ac080c1838fa62a661a122ca0f68d898a5d"
+    },
+    "stderr": {
+      "path": "utf16-contract-focused.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "ownedProcessId": 184093,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}

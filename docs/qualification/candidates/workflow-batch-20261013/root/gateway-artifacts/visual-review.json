@@ -1,0 +1,60 @@
+{
+  "status": "VISUALLY_INSPECTED_EVERY_PAGE",
+  "artifacts": [
+    {
+      "label": "original",
+      "docxSha256": "8b888675d339b0ffe92948f9a2e130539b2e0e4e574c314deed24add6900d146",
+      "pages": [
+        {
+          "path": "original-preview-1.png",
+          "sha256": "2fc477a3517760a5cec741ae93283a008b36095952233174bf32ccd29ef53f5c",
+          "openedByRoot": true
+        },
+        {
+          "path": "original-preview-2.png",
+          "sha256": "15d7ec9b3205775464b28a1b4c9ee220e7a584ab1b0d8bf7a1de048c36f466aa",
+          "openedByRoot": true
+        },
+        {
+          "path": "original-preview-3.png",
+          "sha256": "ee8e805784dcc6459075d652cefa65b22f36988fb842c1f31c3cd8233b31010e",
+          "openedByRoot": true
+        },
+        {
+          "path": "original-preview-4.png",
+          "sha256": "8eaf8cf4351bfaf68a713d3ffd5822b4b9f55c04551d77e6cbca84eeb15ccb27",
+          "openedByRoot": true
+        }
+      ]
+    },
+    {
+      "label": "revision",
+      "docxSha256": "ba91eeeba2dc6af3986ee82adfc568366896c8d8aa9846c950885f9c34ccddff",
+      "pages": [
+        {
+          "path": "revision-preview-1.png",
+          "sha256": "bb56a3bfb708726f94a8091405be4b4066502f2cd6173b7a2a83e8bd867fbddc",
+          "openedByRoot": true
+        },
+        {
+          "path": "revision-preview-2.png",
+          "sha256": "741ca1e2f0fa2ffceff22807aefc1fa7398089dc6d9f774e3ee0e4326cac8bc8",
+          "openedByRoot": true
+        },
+        {
+          "path": "revision-preview-3.png",
+          "sha256": "e872be8ba749da8c65a41c33888828543eee86d7afa2f020dab961cc229c5fb0",
+          "openedByRoot": true
+        },
+        {
+          "path": "revision-preview-4.png",
+          "sha256": "87882866c2708cc74e7b011599ab02b53ec87aa4cdcfc13c3023348e161be133",
+          "openedByRoot": true
+        }
+      ]
+    }
+  ],
+  "reviewedSource": "5e673db81bd8eda7b0a4b27972a948981429a7b6",
+  "laterHappyOutputUnchangedBy": "b4ce2a7c7d74e794e4bf383f5241bb38a6e8e1a1",
+  "findings": "All eight fresh gateway-derived original/revision pages opened by root. Full quote/versionv2, derived source timestamps and unknown freshness/snapshots, mail coverage/read caps, source/fullbody/passage hashes/scopes and immutable parent provenance remain readable. Provenance continuation onto page four is intact; no clipping observed. These are synthetic files; native authenticity, UI and renderer sandbox qualification are separate."
+}

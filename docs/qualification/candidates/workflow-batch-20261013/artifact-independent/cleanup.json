@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "ownedCaptureRuns": 9,
+  "allOwnedLeadersReaped": true,
+  "allOwnedGroupsAbsent": true,
+  "outerTimeouts": 0,
+  "finalFlowCleanup": {
+    "executorDirectoriesAbsent": true,
+    "storeRemoved": true
+  },
+  "borrowedNodeModulesRemoved": true,
+  "donorPreserved": true,
+  "nativeQualified": false
+}

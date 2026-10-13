@@ -1,0 +1,131 @@
+{
+  "format": "bit-exact gzip; mtime0",
+  "files": [
+    {
+      "originalName": "base-conflict-initial.stderr.txt",
+      "gzipName": "base-conflict-initial.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "base-conflict-initial.stdout.txt",
+      "gzipName": "base-conflict-initial.stdout.txt.gz",
+      "uncompressedBytes": 1251,
+      "uncompressedSha256": "c7425fb7e5ac81c3f662fd4e744d74f421f58ecae536927a668242767dc24069",
+      "gzipSha256": "862a20a0c86da889883a7c7a144997ab429ee3a246d8614b64e41c405fc7b733"
+    },
+    {
+      "originalName": "compiler-frozen.stderr.txt",
+      "gzipName": "compiler-frozen.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "compiler-frozen.stdout.txt",
+      "gzipName": "compiler-frozen.stdout.txt.gz",
+      "uncompressedBytes": 3541,
+      "uncompressedSha256": "30f3001fc770670f50f9984b78a0eba8bedd58839861cf67eaba440195fe17c3",
+      "gzipSha256": "7574d77cfe7c445e8b34b3b18c89411a3f1138d90e65398fc0e5d8d4e8b0f435"
+    },
+    {
+      "originalName": "compiler-lifetime-repaired.stderr.txt",
+      "gzipName": "compiler-lifetime-repaired.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "compiler-lifetime-repaired.stdout.txt",
+      "gzipName": "compiler-lifetime-repaired.stdout.txt.gz",
+      "uncompressedBytes": 1662,
+      "uncompressedSha256": "b3cd0213d3407478d1ba84e3fe43efaea2de889177f14bab804c11ea181cfc53",
+      "gzipSha256": "c28c0f20ed0bec9cfc2a320ce0f12b9bdc69fcdc5dcae19e8e2851149e59878c"
+    },
+    {
+      "originalName": "deadline-frozen.stderr.txt",
+      "gzipName": "deadline-frozen.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "deadline-frozen.stdout.txt",
+      "gzipName": "deadline-frozen.stdout.txt.gz",
+      "uncompressedBytes": 2251,
+      "uncompressedSha256": "c2ba31f7dd5db02c40112e46df46662faf476452bf18141df112a0b29b189b6b",
+      "gzipSha256": "3b280dad0f12bda2f3b3747c95cbbd24361f734aa80b22d56c12fc4f070220b1"
+    },
+    {
+      "originalName": "final-controls.stderr.txt",
+      "gzipName": "final-controls.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "final-controls.stdout.txt",
+      "gzipName": "final-controls.stdout.txt.gz",
+      "uncompressedBytes": 13270,
+      "uncompressedSha256": "a25646e5c9f00c91a6d8ad3fc9858ec6a026f74dec38b523bc2f4e3678b11ce8",
+      "gzipSha256": "1a222a5cf4a87baacd815b244dc2442732025ab746c5f56a327204158ca2fa0a"
+    },
+    {
+      "originalName": "integrated-controls-initial.stderr.txt",
+      "gzipName": "integrated-controls-initial.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "integrated-controls-initial.stdout.txt",
+      "gzipName": "integrated-controls-initial.stdout.txt.gz",
+      "uncompressedBytes": 3198,
+      "uncompressedSha256": "2b0b1f99fb5cf41270bd6b2a4d19e7848b5f4a5bfb7febeccb854f19d995b5b2",
+      "gzipSha256": "992468362fcb648194ddf85000d96a057271bd4e205e9fde8bb97d5289cb8adb"
+    },
+    {
+      "originalName": "integrated-gateway-corrected.stderr.txt",
+      "gzipName": "integrated-gateway-corrected.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "integrated-gateway-corrected.stdout.txt",
+      "gzipName": "integrated-gateway-corrected.stdout.txt.gz",
+      "uncompressedBytes": 580,
+      "uncompressedSha256": "e35d340d459d048b7d27761e7b3025dd34b3623ccb61f751cbf150be0f98f212",
+      "gzipSha256": "c9956cab16a7efdce04d097a8620d5347eecc8b701f0950285e4ecd2fe5eeeb0"
+    },
+    {
+      "originalName": "retained-lifecycle.stderr.txt",
+      "gzipName": "retained-lifecycle.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "retained-lifecycle.stdout.txt",
+      "gzipName": "retained-lifecycle.stdout.txt.gz",
+      "uncompressedBytes": 10571,
+      "uncompressedSha256": "6fccda901f1a2e8cd47505918069f8577f64bc107bfbf4caada6e6cfde0e9174",
+      "gzipSha256": "5d072643a8de082cff593fa325b4c4d47c8a6391d0319e526608dc198e00f349"
+    },
+    {
+      "originalName": "surrogate-initial.stderr.txt",
+      "gzipName": "surrogate-initial.stderr.txt.gz",
+      "uncompressedBytes": 0,
+      "uncompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "originalName": "surrogate-initial.stdout.txt",
+      "gzipName": "surrogate-initial.stdout.txt.gz",
+      "uncompressedBytes": 1813,
+      "uncompressedSha256": "39040a31d72d54b4504798782d3001f41de56be7f329183fe15e11ca36f4c347",
+      "gzipSha256": "227d8f9d9ecb3eb8d73819fb587c41d5aa2ebc36d7ef29e54194533cc49fd068"
+    }
+  ]
+}

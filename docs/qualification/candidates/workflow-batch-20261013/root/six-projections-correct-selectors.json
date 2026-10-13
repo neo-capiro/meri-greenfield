@@ -1,0 +1,43 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "cb44652943b57073c17db2d165586861915286f4",
+  "tree": "4271c1517a8c71baeef363ef3ccc24ecfaf149c0",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/test/passive-projections-integration.test.mjs",
+    "apps/gateway/sources/client-knowledge/test/read-adapter.test.mjs",
+    "apps/gateway/sources/client-evidence/test/adapter-handler.test.mjs",
+    "apps/gateway/sources/identity-contacts/test/adapter-handler.test.mjs"
+  ],
+  "startedAt": "2026-10-13T14:12:56.034806+00:00",
+  "seconds": 4.343533385999763,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {
+    "tests": 208,
+    "pass": 208,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "blobs": {
+    "stdout": {
+      "path": "six-projections-correct-selectors.stdout.gz",
+      "rawBytes": 45074,
+      "rawSha256": "819b63ff05de24459a816f8a028891824f9babab0451a6ea12a8231f22549f90"
+    },
+    "stderr": {
+      "path": "six-projections-correct-selectors.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "ownedProcessId": 167118,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}

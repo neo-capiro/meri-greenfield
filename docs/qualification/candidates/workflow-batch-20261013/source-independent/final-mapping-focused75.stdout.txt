@@ -1,0 +1,466 @@
+TAP version 13
+# {"case":"direct authority broker audience","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority command-only actions","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority denied decision","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority decision ID substitution","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority decision scope omission","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"native Promise assimilation versus inert DTO guard","promiseThenReads":3,"reflectionEffects":0,"credentialGetterEffects":0}
+# Subtest: Borrowed adapter read preserves its original receiver
+ok 1 - Borrowed adapter read preserves its original receiver
+  ---
+  duration_ms: 11.502023
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent broker audience before credential lookup
+ok 2 - Direct internal mail port refuses incoherent broker audience before credential lookup
+  ---
+  duration_ms: 1.321473
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent command-only actions before credential lookup
+ok 3 - Direct internal mail port refuses incoherent command-only actions before credential lookup
+  ---
+  duration_ms: 0.655318
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent denied decision before credential lookup
+ok 4 - Direct internal mail port refuses incoherent denied decision before credential lookup
+  ---
+  duration_ms: 0.688478
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent decision ID substitution before credential lookup
+ok 5 - Direct internal mail port refuses incoherent decision ID substitution before credential lookup
+  ---
+  duration_ms: 0.598163
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent decision scope omission before credential lookup
+ok 6 - Direct internal mail port refuses incoherent decision scope omission before credential lookup
+  ---
+  duration_ms: 0.634237
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies broker audience before source credentials
+ok 7 - Actual canonical dispatcher denies broker audience before source credentials
+  ---
+  duration_ms: 1.415193
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies command-only actions before source credentials
+ok 8 - Actual canonical dispatcher denies command-only actions before source credentials
+  ---
+  duration_ms: 0.506777
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies denied decision before source credentials
+ok 9 - Actual canonical dispatcher denies denied decision before source credentials
+  ---
+  duration_ms: 1.14533
+  type: 'test'
+  ...
+# Subtest: Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence
+ok 10 - Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence
+  ---
+  duration_ms: 25.764788
+  type: 'test'
+  ...
+# Subtest: Malformed nested later-page mailbox cannot pass actual dispatcher release
+ok 11 - Malformed nested later-page mailbox cannot pass actual dispatcher release
+  ---
+  duration_ms: 7.833557
+  type: 'test'
+  ...
+# Subtest: Current authority revocation after source bytes blocks dispatcher release/settlement
+ok 12 - Current authority revocation after source bytes blocks dispatcher release/settlement
+  ---
+  duration_ms: 3.855756
+  type: 'test'
+  ...
+# Subtest: Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash
+ok 13 - Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash
+  ---
+  duration_ms: 9.164172
+  type: 'test'
+  ...
+# Subtest: UTF16 one-unit requests retain complete pairs, preserve positions and refuse legacy split pages
+ok 14 - UTF16 one-unit requests retain complete pairs, preserve positions and refuse legacy split pages
+  ---
+  duration_ms: 8.168916
+  type: 'test'
+  ...
+# Subtest: Hostile credential data getters and Proxy reflection refuse without Fetch
+ok 15 - Hostile credential data getters and Proxy reflection refuse without Fetch
+  ---
+  duration_ms: 1.779337
+  type: 'test'
+  ...
+# Subtest: Caller input/authority accessor and Proxy refuse before credentials
+ok 16 - Caller input/authority accessor and Proxy refuse before credentials
+  ---
+  duration_ms: 0.402991
+  type: 'test'
+  ...
+# Subtest: Opaque request digest/metadata receipt edits refuse before Fetch
+ok 17 - Opaque request digest/metadata receipt edits refuse before Fetch
+  ---
+  duration_ms: 2.097802
+  type: 'test'
+  ...
+# Subtest: Actual Response short content-length refuses and unlocks owned body
+ok 18 - Actual Response short content-length refuses and unlocks owned body
+  ---
+  duration_ms: 1.055075
+  type: 'test'
+  ...
+# Subtest: Actual Response invalid UTF8 refuses and unlocks owned body
+ok 19 - Actual Response invalid UTF8 refuses and unlocks owned body
+  ---
+  duration_ms: 0.921046
+  type: 'test'
+  ...
+# Subtest: Actual Response compressed body refuses and unlocks owned body
+ok 20 - Actual Response compressed body refuses and unlocks owned body
+  ---
+  duration_ms: 0.974094
+  type: 'test'
+  ...
+# Subtest: Malformed response status cancels an unread owned body without waiting on transport cancellation
+ok 21 - Malformed response status cancels an unread owned body without waiting on transport cancellation
+  ---
+  duration_ms: 0.936989
+  type: 'test'
+  ...
+# Subtest: independent: canonical mail and memory profiles are selected; actual15 stay unavailable
+ok 22 - independent: canonical mail and memory profiles are selected; actual15 stay unavailable
+  ---
+  duration_ms: 16.027395
+  type: 'test'
+  ...
+# Subtest: independent: first page uses fresh server-selected client and canonical normalized input
+ok 23 - independent: first page uses fresh server-selected client and canonical normalized input
+  ---
+  duration_ms: 7.876279
+  type: 'test'
+  ...
+# Subtest: independent: canonical continuation consumes retained raw request/page and advances
+ok 24 - independent: canonical continuation consumes retained raw request/page and advances
+  ---
+  duration_ms: 4.261403
+  type: 'test'
+  ...
+# Subtest: independent: all invalid model shape/context inputs fail before trusted ports
+ok 25 - independent: all invalid model shape/context inputs fail before trusted ports
+  ---
+  duration_ms: 1.183918
+  type: 'test'
+  ...
+# Subtest: independent: client selector cannot override server subject before effects
+ok 26 - independent: client selector cannot override server subject before effects
+  ---
+  duration_ms: 0.611733
+  type: 'test'
+  ...
+# Subtest: independent: decision IDs rotate while stable authority remains required
+ok 27 - independent: decision IDs rotate while stable authority remains required
+  ---
+  duration_ms: 1.559068
+  type: 'test'
+  ...
+# Subtest: independent: stable subject drift at authority stage 2 never releases
+ok 28 - independent: stable subject drift at authority stage 2 never releases
+  ---
+  duration_ms: 0.711111
+  type: 'test'
+  ...
+# Subtest: independent: stable subject drift at authority stage 3 never releases
+ok 29 - independent: stable subject drift at authority stage 3 never releases
+  ---
+  duration_ms: 0.913224
+  type: 'test'
+  ...
+# Subtest: independent: stable subject drift at authority stage 4 never releases
+ok 30 - independent: stable subject drift at authority stage 4 never releases
+  ---
+  duration_ms: 1.257167
+  type: 'test'
+  ...
+# Subtest: independent: stable subject drift at authority stage 5 never releases
+ok 31 - independent: stable subject drift at authority stage 5 never releases
+  ---
+  duration_ms: 1.33304
+  type: 'test'
+  ...
+# Subtest: independent: absent retained context or context ports cannot invent continuation
+ok 32 - independent: absent retained context or context ports cannot invent continuation
+  ---
+  duration_ms: 0.733215
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects tenant
+ok 33 - independent: retained context rejects tenant
+  ---
+  duration_ms: 1.647109
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects actor
+ok 34 - independent: retained context rejects actor
+  ---
+  duration_ms: 1.405839
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects conversation
+ok 35 - independent: retained context rejects conversation
+  ---
+  duration_ms: 1.631345
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects run
+ok 36 - independent: retained context rejects run
+  ---
+  duration_ms: 1.384707
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects attempt
+ok 37 - independent: retained context rejects attempt
+  ---
+  duration_ms: 1.400732
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects worker
+ok 38 - independent: retained context rejects worker
+  ---
+  duration_ms: 1.464096
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects fence
+ok 39 - independent: retained context rejects fence
+  ---
+  duration_ms: 1.459459
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects policy
+ok 40 - independent: retained context rejects policy
+  ---
+  duration_ms: 1.538056
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects operation
+ok 41 - independent: retained context rejects operation
+  ---
+  duration_ms: 1.77473
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects version
+ok 42 - independent: retained context rejects version
+  ---
+  duration_ms: 1.269195
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects subject
+ok 43 - independent: retained context rejects subject
+  ---
+  duration_ms: 1.548442
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects cursor
+ok 44 - independent: retained context rejects cursor
+  ---
+  duration_ms: 1.456464
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects digest
+ok 45 - independent: retained context rejects digest
+  ---
+  duration_ms: 1.460942
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects staleRead
+ok 46 - independent: retained context rejects staleRead
+  ---
+  duration_ms: 1.262305
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects futureRead
+ok 47 - independent: retained context rejects futureRead
+  ---
+  duration_ms: 1.287713
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects futureRecord
+ok 48 - independent: retained context rejects futureRecord
+  ---
+  duration_ms: 1.2791
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects expired
+ok 49 - independent: retained context rejects expired
+  ---
+  duration_ms: 1.389445
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects beyondAuthority
+ok 50 - independent: retained context rejects beyondAuthority
+  ---
+  duration_ms: 1.497967
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects extra
+ok 51 - independent: retained context rejects extra
+  ---
+  duration_ms: 1.351318
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects limit
+ok 52 - independent: retained context rejects limit
+  ---
+  duration_ms: 1.631476
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects poisonedCursor
+ok 53 - independent: retained context rejects poisonedCursor
+  ---
+  duration_ms: 1.563224
+  type: 'test'
+  ...
+# Subtest: independent: retained context rejects invalidPage
+ok 54 - independent: retained context rejects invalidPage
+  ---
+  duration_ms: 1.468392
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject operation
+ok 55 - independent: envelope and raw DTO reject operation
+  ---
+  duration_ms: 0.848817
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject arguments
+ok 56 - independent: envelope and raw DTO reject arguments
+  ---
+  duration_ms: 0.842988
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject binding
+ok 57 - independent: envelope and raw DTO reject binding
+  ---
+  duration_ms: 0.759113
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject subject
+ok 58 - independent: envelope and raw DTO reject subject
+  ---
+  duration_ms: 0.830319
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject extra
+ok 59 - independent: envelope and raw DTO reject extra
+  ---
+  duration_ms: 0.720136
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject missing
+ok 60 - independent: envelope and raw DTO reject missing
+  ---
+  duration_ms: 0.660176
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject approved
+ok 61 - independent: envelope and raw DTO reject approved
+  ---
+  duration_ms: 0.823509
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject actor
+ok 62 - independent: envelope and raw DTO reject actor
+  ---
+  duration_ms: 0.79654
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject restricted
+ok 63 - independent: envelope and raw DTO reject restricted
+  ---
+  duration_ms: 0.829969
+  type: 'test'
+  ...
+# Subtest: independent: envelope and raw DTO reject coverage
+ok 64 - independent: envelope and raw DTO reject coverage
+  ---
+  duration_ms: 1.45347
+  type: 'test'
+  ...
+# Subtest: independent: retain receipt rejects decision
+ok 65 - independent: retain receipt rejects decision
+  ---
+  duration_ms: 1.234203
+  type: 'test'
+  ...
+# Subtest: independent: retain receipt rejects keySha256
+ok 66 - independent: retain receipt rejects keySha256
+  ---
+  duration_ms: 0.920875
+  type: 'test'
+  ...
+# Subtest: independent: retain receipt rejects previousSha256
+ok 67 - independent: retain receipt rejects previousSha256
+  ---
+  duration_ms: 0.896569
+  type: 'test'
+  ...
+# Subtest: independent: retain receipt rejects checkedAtMs
+ok 68 - independent: retain receipt rejects checkedAtMs
+  ---
+  duration_ms: 0.961486
+  type: 'test'
+  ...
+# Subtest: independent: load rejects hostile non-JSON receipt without property effects
+ok 69 - independent: load rejects hostile non-JSON receipt without property effects
+  ---
+  duration_ms: 1.536154
+  type: 'test'
+  ...
+# Subtest: independent: retain rejects hostile non-JSON receipt without property effects
+ok 70 - independent: retain rejects hostile non-JSON receipt without property effects
+  ---
+  duration_ms: 1.209296
+  type: 'test'
+  ...
+# Subtest: independent: retained ports receive immutable context detached from model objects
+ok 71 - independent: retained ports receive immutable context detached from model objects
+  ---
+  duration_ms: 2.303269
+  type: 'test'
+  ...
+# Subtest: independent: release revocation prevents retain, final revocation prevents release
+ok 72 - independent: release revocation prevents retain, final revocation prevents release
+  ---
+  duration_ms: 1.894879
+  type: 'test'
+  ...
+# Subtest: independent: fresh shortened authority bounds parked load and late completion
+ok 73 - independent: fresh shortened authority bounds parked load and late completion
+  ---
+  duration_ms: 102.181185
+  type: 'test'
+  ...
+# Subtest: independent: fresh shortened authority bounds parked retain and late completion
+ok 74 - independent: fresh shortened authority bounds parked retain and late completion
+  ---
+  duration_ms: 100.949572
+  type: 'test'
+  ...
+# Subtest: independent: fresh shortened authority bounds parked settle and late completion
+ok 75 - independent: fresh shortened authority bounds parked settle and late completion
+  ---
+  duration_ms: 100.962732
+  type: 'test'
+  ...
+1..75
+# tests 75
+# suites 0
+# pass 75
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2171.045688

@@ -1,0 +1,40 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "7200a932c60c5e534029bca29c74f00bcbbdd71b",
+  "tree": "668c5ccdeaffa21ec5458eb7a50c3b94ea09c6b2",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/gateway/test/mail-history-gateway-flow.test.mjs"
+  ],
+  "startedAt": "2026-10-13T14:56:37.209240+00:00",
+  "seconds": 3.214672107998922,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "blobs": {
+    "stdout": {
+      "path": "mail-history-gateway-initial.stdout.gz",
+      "rawBytes": 381,
+      "rawSha256": "e19924ba1fb0354bdce6eb787bc640de9313ae8c00f1c59d64ca3926a4487b08"
+    },
+    "stderr": {
+      "path": "mail-history-gateway-initial.stderr.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "ownedProcessId": 187376,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}
