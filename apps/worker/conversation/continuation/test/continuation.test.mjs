@@ -18,6 +18,7 @@ test('exact immutable whole-checkpoint prefix can omit resumeSessionAt without l
  assert.deepEqual(out,{resume:f.continuation.checkpoint.sessionId});
 });
 const mutations={checkpointHash:f=>f.continuation.checkpointSha256='d'.repeat(64),requestHash:f=>f.continuation.sourceRequestSha256='d'.repeat(64),
+ prompt:f=>f.target.request.prompt='Substituted original intent',requestId:f=>f.target.request.requestId=f.target.sourceRequest.requestId,
  window:f=>f.target.request.window={basis:'unbounded'},skill:f=>f.target.request.skill.proseSha256='d'.repeat(64),scope:f=>f.target.scopes=[{...f.target.scopes[0],resourceId:id(30)}],
  sdk:f=>f.target.versions={...f.target.versions,sdk:'0.0.0'},cli:f=>f.target.versions={...f.target.versions,cli:'0.0.0'},image:f=>f.target.versions={...f.target.versions,imageDigest:`sha256:${'d'.repeat(64)}`},
  tenant:f=>f.target.binding.tenantId='other',actor:f=>f.target.binding.actorId='other',run:f=>f.target.binding.runId=f.binding.runId,

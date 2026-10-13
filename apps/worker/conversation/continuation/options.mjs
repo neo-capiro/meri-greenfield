@@ -34,7 +34,8 @@ export function buildContinuationOptions(value,target) {
       !same(cp.scopes,cp.opaqueSession.scopes)||cp.workspace.entries.some(entry=>entry.object.scopes.some(scope=>!cp.scopes.some(parent=>same(scope,parent))))||
       !same(cp.scopes,t.scopes)||!same(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
       continuationContextSha256(t.sourceRequest,cp.scopes)!==c.contextSha256||continuationContextSha256(t.request,t.scopes)!==c.contextSha256||
-      !same(t.sourceRequest.windowRequest,t.request.windowRequest))fail('CONTINUATION_PIN_REFUSED');
+      !same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.request.prompt!==t.sourceRequest.prompt||
+      t.request.requestId===t.sourceRequest.requestId)fail('CONTINUATION_PIN_REFUSED');
   for(const key of ['tenantId','actorId'])if(cp.binding[key]!==t.binding[key])fail('CONTINUATION_SCOPE_REFUSED');
   if(cp.binding.runId===t.binding.runId||cp.binding.attemptId===t.binding.attemptId||cp.binding.workerId===t.binding.workerId||
       c.mode==='resume'&&t.binding.writerFence<=cp.binding.writerFence)fail('CONTINUATION_TARGET_REFUSED');
