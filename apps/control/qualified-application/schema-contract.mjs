@@ -1,6 +1,7 @@
 /** Fixed qualification schema identities and inert admission; no connections or DDL. */
 import {createHash} from 'node:crypto';
 import {types} from 'node:util';
+import {isIP} from 'node:net';
 import {own,data,nativeSignal,instant} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 
 export const migrations=data([
@@ -43,16 +44,28 @@ const defaults=[['consumed_micro_usd','quarantined'],[],[],['created_at'],['star
 export const sha256=value=>createHash('sha256').update(value).digest('hex');
 export const requireSchema=condition=>{if(!condition)throw new Error('QUALIFICATION_SCHEMA_REFUSED');};
 const hash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+export function fixtureDescriptor(value,allowUnprepared=false){
+ const f=data(own(value,['mode','fixtureId','host','port','database','user','systemIdentifier','serverStartTime','serverVersion','schemaSha256'],['serverAddress','serverPort','schemaScope']));
+ requireSchema(f.mode==='owned-disposable-qualification'&&typeof f.fixtureId==='string'&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(f.fixtureId));
+ requireSchema(f.host==='127.0.0.1'&&Number.isSafeInteger(f.port)&&f.port>=1&&f.port<=65535&&f.database==='meri_qualification_test'&&f.user==='qualification_owner');
+ requireSchema(typeof f.systemIdentifier==='string'&&/^[0-9]{1,20}$/.test(f.systemIdentifier)&&typeof f.serverVersion==='string'&&/^[1-9][0-9]{5}$/.test(f.serverVersion));instant(f.serverStartTime);
+ requireSchema(allowUnprepared&&f.schemaSha256===null||hash(f.schemaSha256));
+ const paired=Object.hasOwn(f,'serverAddress');requireSchema(paired===Object.hasOwn(f,'serverPort'));
+ if(paired)requireSchema(typeof f.serverAddress==='string'&&isIP(f.serverAddress)!==0&&!f.serverAddress.includes('%')&&Number.isSafeInteger(f.serverPort)&&f.serverPort>=1&&f.serverPort<=65535);
+ if(Object.hasOwn(f,'schemaScope')){
+  const scope=own(f.schemaScope,['mode','namespaces']);requireSchema(scope.mode==='preserve-declared-evidence'&&Array.isArray(scope.namespaces)&&scope.namespaces.length>=1&&scope.namespaces.length<=128);
+  for(const n of scope.namespaces){own(n,['name','owner']);requireSchema(typeof n.name==='string'&&/^[a-z_][a-z0-9_]{0,62}$/.test(n.name)&&!n.name.startsWith('pg_')&&!['public','information_schema','meri_qualification','meri_task_lookup'].includes(n.name)&&typeof n.owner==='string'&&/^[a-z_][a-z0-9_]{0,62}$/.test(n.owner));}
+  requireSchema(new Set(scope.namespaces.map(n=>n.name)).size===scope.namespaces.length);
+ }
+ return f;
+}
 export function schemaConfiguration(value,install){
  const c=own(value,['pool','fixture','deadlineMs'],['signal','now']);
  const now=c.now??Date.now;requireSchema(typeof now==='function');
  const began=now();requireSchema(Number.isSafeInteger(began)&&began>=0&&Number.isSafeInteger(c.deadlineMs)&&c.deadlineMs>began&&c.deadlineMs-began<=60000);nativeSignal(c.signal);requireSchema(!c.signal?.aborted);
- const f=data(own(c.fixture,['mode','fixtureId','host','port','database','user','systemIdentifier','serverStartTime','serverVersion','schemaSha256']));
- requireSchema(f.mode==='owned-disposable-qualification'&&typeof f.fixtureId==='string'&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(f.fixtureId));
- requireSchema(f.host==='127.0.0.1'&&Number.isSafeInteger(f.port)&&f.port>=1&&f.port<=65535&&f.database==='meri_qualification_test'&&f.user==='qualification_owner');
- requireSchema(typeof f.systemIdentifier==='string'&&/^[0-9]{1,20}$/.test(f.systemIdentifier)&&typeof f.serverVersion==='string'&&/^[1-9][0-9]{5}$/.test(f.serverVersion));instant(f.serverStartTime);
- requireSchema(install?f.schemaSha256===null:hash(f.schemaSha256));
+ const f=fixtureDescriptor(c.fixture,install);requireSchema(!install||f.schemaSha256===null);
  const connect=portMethod(c.pool,'connect'),opts=portValue(c.pool,'options');
+ requireSchema(portValue(opts,'host')===f.host&&portValue(opts,'port')===f.port&&portValue(opts,'database')===f.database&&portValue(opts,'user')===f.user);
  const connectionTimeout=portValue(opts,'connectionTimeoutMillis'),queryTimeout=portValue(opts,'query_timeout');
  requireSchema(Number.isSafeInteger(connectionTimeout)&&connectionTimeout>0&&connectionTimeout<=5000&&Number.isSafeInteger(queryTimeout)&&queryTimeout>0&&queryTimeout<=6000);
  return {...c,fixture:f,now,began,connect,queryTimeout:Math.min(queryTimeout,5000)};

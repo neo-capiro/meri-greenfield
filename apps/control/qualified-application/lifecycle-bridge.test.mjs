@@ -54,3 +54,13 @@ test('aborted and extended caller cutoffs cannot refresh constructor original de
  const f=await lifecycleFixture(t);const o=f.make();const a=new AbortController();a.abort();await assert.rejects(o.activate({signal:a.signal}));await assert.rejects(readFile(f.statePath));
  const short=f.make({originalDeadlineMs:Date.now()+40,expiresAtMs:Date.now()+35});await writeFile(f.interpreter,'#!/usr/bin/python3\nimport time\ntime.sleep(20)\n');const started=Date.now();await assert.rejects(short.activate({deadlineMs:Date.now()+5000}));assert(Date.now()-started<1200);assert.equal(short.status().ownedChildren,0);
 });
+test('mapped endpoint and25 declared namespaces cross actual fixed Python bridge unchanged',async t=>{
+ const f=await lifecycleFixture(t),fixture={...f.config.fixture,port:55432,serverAddress:'172.17.0.2',serverPort:5432,schemaScope:{mode:'preserve-declared-evidence',namespaces:Array.from({length:25},(_,i)=>({name:`evidence_${i}`,owner:'qualification_owner'}))}},connection={...f.config.connection,port:55432};
+ const o=f.make({fixture,connection});assert.equal((await o.activate()).status,'ACTIVE');assert.equal(o.status().ownedChildren,0);assert.equal(Object.keys((await f.rows()).grants).length,2);
+ const changed=f.make({fixture:{...fixture,serverPort:5433},connection});assert.notEqual(changed.status().admissionSha256,o.status().admissionSha256);
+ const changedScope=f.make({fixture:{...fixture,schemaScope:{...fixture.schemaScope,namespaces:fixture.schemaScope.namespaces.slice(1)}},connection});assert.notEqual(changedScope.status().admissionSha256,o.status().admissionSha256);
+ assert.throws(()=>f.make({fixture,connection:{...connection,host:fixture.serverAddress,port:fixture.serverPort}}));
+});
+test('bridge mapped descriptor refuses partial fields and invalid scope before child',async t=>{
+ const f=await lifecycleFixture(t);for(const change of [{serverAddress:'172.17.0.2'},{serverPort:5432},{serverAddress:'db.local',serverPort:5432},{schemaScope:{mode:'preserve-declared-evidence',namespaces:[{name:'public',owner:'qualification_owner'}]}}])assert.throws(()=>f.make({fixture:{...f.config.fixture,...change}}));await assert.rejects(readFile(f.statePath));
+});

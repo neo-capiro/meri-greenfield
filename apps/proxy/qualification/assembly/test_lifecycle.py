@@ -30,7 +30,7 @@ class Cursor:
         if s.after_query: s.after_query(sql)
         if sql.startswith('SELECT current_database'):
             f=s.fixture
-            self.row={'database': f['database'], 'username': f['user'], 'address': f['host'], 'port': f['port'], 'version': f['serverVersion'], 'started_ms': str(int(datetime.fromisoformat(f['serverStartTime'].replace('Z','+00:00')).timestamp()*1000)), 'fsync':'on', 'synchronous_commit':'on','system_identifier':f['systemIdentifier']}
+            self.row={'database': f['database'], 'username': f['user'], 'address': f.get('serverAddress', f['host']), 'port': f.get('serverPort', f['port']), 'version': f['serverVersion'], 'started_ms': str(int(datetime.fromisoformat(f['serverStartTime'].replace('Z','+00:00')).timestamp()*1000)), 'fsync':'on', 'synchronous_commit':'on','system_identifier':f['systemIdentifier']}
         elif 'SELECT * FROM meri_qualification.budget' in sql: self.row={'quarantined':s.quarantined}
         elif 'SELECT clock_timestamp' in sql: self.row={'now':datetime.fromtimestamp(s.now()/1000,timezone.utc)}
         elif sql.startswith('SELECT * FROM meri_qualification.runs'): self.row=copy.deepcopy(s.rows['run'])
