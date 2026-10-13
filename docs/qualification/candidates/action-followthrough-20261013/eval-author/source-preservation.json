@@ -1,0 +1,120 @@
+{
+  "base": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+  "source": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+  "tree": "bdb7c1d7b61ed65bf3433a10a3793b5c1762b40b",
+  "originalEntries": 10184,
+  "changedOriginals": [],
+  "referenceIdentities": [
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "AGENTS.md",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-20261013.md",
+      "blob": "b7adecbcf6e1e708babd65183c650e5b4891cfef",
+      "bytes": 4916,
+      "sha256": "218133d4a0f0b975ea82fee9f8801e91c2aa6cddc23d7d84e7336ac5090344e9"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "docs/ROUTING-EVALUATION.md",
+      "blob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "evals/task-lookup/corpus.mjs",
+      "blob": "e81dfef9e613405828a6350880e893f562179ce7",
+      "bytes": 5224,
+      "sha256": "226b2280acd17937d35302ebe256f7a07e4e86b0d1c92acb2b30a2736da388f8"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "evals/task-lookup/score.mjs",
+      "blob": "2fefb31ea4f6b0bd3c8ee73afd3ab7e378c7f1ba",
+      "bytes": 11169,
+      "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "evals/task-lookup/contracts.mjs",
+      "blob": "1ce42f9043b197cc7f28eb44c06b77a05e131bbe",
+      "bytes": 2598,
+      "sha256": "f116022bc0f70f7c77e7770c98ff95367dda8b880e4412ba27e622c2c798256f"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "evals/retrieval-r2/manifest.json",
+      "blob": "fdfde41dbf67cbcfc6eec372a2679647f70182c9",
+      "bytes": 568,
+      "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "apps/control/task-lookup/index.mjs",
+      "blob": "c3443288b9624c445ace541d1b1a447438323add",
+      "bytes": 334,
+      "sha256": "114e25b9a2973823dc4b1d17009cb32b377bc08e93f1b32963404cfef5e28440"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "apps/control/task-lookup/binding.mjs",
+      "blob": "5337c05f73a7535b0564da15f6f819b56409fa37",
+      "bytes": 8086,
+      "sha256": "eeb2cb69e3f20eacf123206d0faa2da7170ef53e8bdea624e7947bc9e81a1aeb"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "blob": "ed95692d75a0c4d028e6afaa5106d31d5d1cb6f6",
+      "bytes": 4418,
+      "sha256": "014e0a5520861ddbf87f315d8a57fdf124c2a5536df582189fa3d543a5bf8df2"
+    },
+    {
+      "ref": "b23a2cd027d43740bd99f937366e9be2df1be3ad",
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "blob": "a90524cdfe899260310d87bafed5a7a31a664317",
+      "bytes": 2595,
+      "sha256": "10730af13c7cf29623fc7e8c836262b02f01e3436ac6e1488d263ec6ed19b52f"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "ref": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+      "path": "evals/task-lookup/execution/admission.mjs",
+      "blob": "1e4f4cbe109a606aac09abce4bf5c55920b20ff1",
+      "sha256": "f0b2923427a427210d239065e94c2c5db0a4f624340b94162bf6ac4a3817e2c1"
+    },
+    {
+      "ref": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+      "path": "evals/task-lookup/execution/execute.mjs",
+      "blob": "84bcac625d1d6dd048ae3783a192742e61800d0e",
+      "sha256": "d7bd0b15454809996bd055014eb0ba792576e50eb29b531a3311363fe2a48cac"
+    },
+    {
+      "ref": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+      "path": "evals/task-lookup/execution/test/execution.test.mjs",
+      "blob": "002ecceb91740510443a8965a801e1a5f713889a",
+      "sha256": "dc70d71d0744fffc133bc20040a4b50f4fd5962937c04367fb84a2b862a82174"
+    },
+    {
+      "ref": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+      "path": "evals/task-lookup/execution/test/fixtures.mjs",
+      "blob": "d06a0ff36f241b7a8d965c7ccfb615506d9ebcce",
+      "sha256": "f457c6b7bcaea676cf4586d9d7bd6145f00b08a3528a260c6052c11ea0e7d15c"
+    }
+  ],
+  "initialSource": "e215f1b45d7fe179f7c63c9b607c7f75e91c7748"
+}

@@ -1,0 +1,33 @@
+✔ actual control lookup/read produces scorer-ready captured output without gold or qualification (45.040723ms)
+✔ unsupported original stays ineligible with no preparation or control calls (5.070158ms)
+✔ unsupported correct-evidence stays ineligible with no preparation or control calls (5.872615ms)
+✔ actual read receipt denial captures authority and safe error (10.686918ms)
+✔ actual read throw denial captures authority and safe error (10.0963ms)
+✔ lookup denial is not misrepresented as supported read denial (5.892646ms)
+✔ durable ACK uncertainty retains UNKNOWN and does not retry (9.028523ms)
+✔ invalid independent input pins or host binding refuses before ports (3.195858ms)
+✔ invalid independent input pins or host binding refuses before ports (2.903208ms)
+✔ invalid independent input pins or host binding refuses before ports (3.272293ms)
+✔ invalid independent input pins or host binding refuses before ports (3.493706ms)
+✔ invalid independent input pins or host binding refuses before ports (3.058001ms)
+✔ gold inserted into runner is rejected even with recomputed projection pin (3.202338ms)
+✔ prepared context cannot substitute host producer or selected client (3.699957ms)
+✔ abort parked prepare returns bounded failure and pending-call truth (9.57803ms)
+✔ abort parked gateway returns bounded failure and pending-call truth (11.752491ms)
+✔ abort parked read returns bounded failure and pending-call truth (10.233457ms)
+✔ abort parked authorize returns bounded failure and pending-call truth (8.237212ms)
+✔ shorter lookup authorization expiry cannot be expanded for later read (7.822108ms)
+✔ preaborted run retains failed case and invokes no host ports (3.106654ms)
+✔ all three splits retain exact pins and denominators across supported and unsupported modes (19.347237ms)
+✔ capture exhaustion retains digest and blocks remaining supported cases (20.969868ms)
+✔ an empty typed corpus yields no port calls and zero denominator, never task success (4.714954ms)
+✔ unsettled predecessor never starts a sibling lookup (9.735427ms)
+✔ thrown proxy error cannot escape or run traps; sibling still executes (23.813757ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2752.608919

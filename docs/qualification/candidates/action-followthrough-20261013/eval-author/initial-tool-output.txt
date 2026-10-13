@@ -1,0 +1,29 @@
+✔ actual control lookup/read produces scorer-ready captured output without gold or qualification (47.314679ms)
+✔ unsupported original stays ineligible with no preparation or control calls (5.206133ms)
+✔ unsupported correct-evidence stays ineligible with no preparation or control calls (4.973453ms)
+✔ actual read receipt denial captures authority and safe error (14.372465ms)
+✔ actual read throw denial captures authority and safe error (11.043296ms)
+✔ lookup denial is not misrepresented as supported read denial (5.991204ms)
+✔ durable ACK uncertainty retains UNKNOWN and does not retry (9.748928ms)
+✔ invalid independent input pins or host binding refuses before ports (3.136149ms)
+✔ invalid independent input pins or host binding refuses before ports (2.972852ms)
+✔ invalid independent input pins or host binding refuses before ports (3.554618ms)
+✔ invalid independent input pins or host binding refuses before ports (3.036409ms)
+✔ invalid independent input pins or host binding refuses before ports (2.851581ms)
+✔ gold inserted into runner is rejected even with recomputed projection pin (2.874315ms)
+✔ prepared context cannot substitute host producer or selected client (3.573366ms)
+✔ abort parked prepare returns bounded failure and pending-call truth (10.250924ms)
+✔ abort parked gateway returns bounded failure and pending-call truth (6.046086ms)
+✔ abort parked read returns bounded failure and pending-call truth (14.220485ms)
+✔ abort parked authorize returns bounded failure and pending-call truth (8.920892ms)
+✔ shorter lookup authorization expiry cannot be expanded for later read (8.051665ms)
+✔ preaborted run retains failed case and invokes no host ports (3.223851ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2891.262673
+
