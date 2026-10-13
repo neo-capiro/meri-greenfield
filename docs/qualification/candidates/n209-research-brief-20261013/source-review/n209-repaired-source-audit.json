@@ -1,0 +1,10 @@
+{
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "tree": "b2729e85e4bbf3647129128edabb455d6847f96b",
+  "frozenOwnersExact": {
+    "packages/contracts": true,
+    "apps/control/document-application/current.mjs": true,
+    "apps/control/document-application/index.mjs": true
+  },
+  "noNativeRuntimeAcceptance": true
+}

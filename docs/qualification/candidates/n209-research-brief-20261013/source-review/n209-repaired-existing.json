@@ -1,0 +1,35 @@
+{
+  "label": "n209-repaired-existing",
+  "argv": [
+    "node",
+    "--experimental-vm-modules",
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "apps/control/document-application/test/research-brief.test.mjs",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/test/workbook-application.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "packages/contracts/test/document-application-independent.test.mjs",
+    "packages/contracts/test/document-application-public.test.mjs",
+    "scripts/local-research-brief/cli.test.mjs"
+  ],
+  "cwd": "/workspace/meri-n209-source-review",
+  "reviewedCommit": "57c8f7b99043938666b8f29f1e61e81c96c81d39",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "taskEnvironment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-n209-source-review"
+  },
+  "durationSeconds": 17.951,
+  "processReaped": true,
+  "stdoutBytes": 41183,
+  "stderrBytes": 0,
+  "stdoutSha256": "87164bdefe338e33a2e8dcd3245c1c5ffb3a75cf310a4496640fb9f2db29f4b9",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeRuntimeAcceptance": false
+}

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {createHash,randomUUID} from 'node:crypto';
 import {readFile,access} from 'node:fs/promises';
 import {createCongressionalBriefCompiler,admitPreparedBrief} from '../research-brief/compose.mjs';
+import {bindPreparedBriefArtifactOptions} from '../research-brief/binding.mjs';
 import {briefManifest,briefSkillPin,briefSourceIds,briefReadOperation} from '../research-brief/skill.mjs';
 import {artifactValidators as v,assertEvidence} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createLocalDocumentFixture} from '../local/fixture.mjs';
@@ -123,6 +124,18 @@ test('preabort and parked source cancellation release no prepared result or subs
  const control=new AbortController();let entered;const ready=new Promise(r=>entered=r);
  const pending=compiler(()=>{count++;entered();return new Promise(()=>{});}).prepare(input(),context(),{signal:control.signal});await ready;control.abort();await assert.rejects(pending,/CANCELLED/);assert.equal(count,1);
 });
+test('private binder preserves the original borrowed authority receiver and call resource',async()=>{
+ const p=await compiler().prepare(input(),context()),call={input:{request:p.request,context:p.context,baseVersionId:null},credential:'synthetic-only',signal:new AbortController().signal};
+ let checked=0;const result={acceptedByOriginalOwner:true},authority={check(value){assert.equal(this,authority);assert.equal(value,call);checked++;return result;},identify(){throw Error('Not a policy lookup during binding');}};
+ const options={context:p.context,authority},bound=bindPreparedBriefArtifactOptions(p,options);assert.equal(checked,0);assert.equal(bound.context,options.context);
+ assert.equal(await bound.authority.check(call),result);assert.equal(checked,1);
+});
+test('private binder must pin context digest even if returned prepared context mutates after binding',async()=>{
+ const p=await compiler().prepare(input(),context());let checked=0;
+ const bound=bindPreparedBriefArtifactOptions(p,{context:p.context,authority:{check(){checked++;return {accepted:true};}}});
+ p.context.evidence[0].contentSha256='e'.repeat(64);
+ await assert.rejects(bound.authority.check({input:{request:p.request,context:bound.context,baseVersionId:null}}),e=>e.code==='ACCESS_DENIED');assert.equal(checked,0);
+});
 
 test('independent authorized exact-base create/revise/inspect/download isolation revocation and cleanup',async t=>{
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3',skillManifest:briefManifest()});
@@ -137,7 +150,7 @@ test('independent authorized exact-base create/revise/inspect/download isolation
  },readBase:async({versionId,signal})=>{const inspected=await response(post('inspect',{versionId}));baseInspects++;const retained=await f.artifactOptions.versions.read(versionId,signal);assert.deepEqual(retained.version,inspected.version);return retained;}});
  const i=input(new Date(f.now()).toISOString()),first=await compile.prepare(i,f.artifactOptions.context);
  const configure=p=>{app=mountLocalDocumentApplication({...f,artifactOptions:{...f.artifactOptions,context:p.context}},{researchBrief:p});};configure(first);
- const changed=structuredClone(first.request);changed.content.blocks[0].runs[0].text='Hostile title';assert.equal((await post('create',{deliveryId:'altered',request:changed})).status,400);assert.equal(f.stats().generations,0);
+ const changed=structuredClone(first.request);changed.content.blocks[0].runs[0].text='Hostile title';const denied=await post('create',{deliveryId:'altered',request:changed});assert.equal(denied.status,403);const deniedBody=await denied.json();assert.equal(deniedBody.error.code,'ACCESS_DENIED');assert.equal(deniedBody.error.outcome,'UNKNOWN');assert.equal(f.stats().generations,0);assert.equal(f.stats().versionCharges,0);assert.equal(f.stats().settled,0);assert.equal(f.stats().unknown,0);
  const original=await response(post('create',{deliveryId:'independent-create',request:first.request})),record=await f.artifactOptions.versions.read(original.version.versionId);
  const before=Buffer.from(await (await post('download',{versionId:original.version.versionId})).arrayBuffer());assert.equal(digest(before),original.version.object.sha256);
  const next=input(new Date(f.now()).toISOString());next.proposedLanguage=['Revised independent proposal: preserve the original and request a budget-stage source review.'];
@@ -148,7 +161,7 @@ test('independent authorized exact-base create/revise/inspect/download isolation
  }
  const rollback=structuredClone(next);rollback.asOf='2026-10-12T00:00:00.000Z';await assert.rejects(compile.prepare(rollback,first.context,{base:selection}));
  const second=await compile.prepare(next,first.context,{base:selection});assert.equal(second.provenance.parent.objectSha256,original.version.object.sha256);assert.equal(second.provenance.parent.specSha256,record.specSha256);assert(baseInspects>=7);configure(second);
- assert.equal((await post('revise',{deliveryId:'wrong-parent',baseVersionId:uid(98),request:second.request})).status,400);
+ const beforeWrongParent=f.stats();assert.equal((await post('revise',{deliveryId:'wrong-parent',baseVersionId:uid(98),request:second.request})).status,403);assert.equal(f.stats().generations,beforeWrongParent.generations);assert.equal(f.stats().versionCharges,beforeWrongParent.versionCharges);
  const revised=await response(post('revise',{deliveryId:'independent-revise',baseVersionId:selection.versionId,request:second.request}));
  assert.equal(revised.version.parentVersionId,selection.versionId);assert.equal(revised.version.artifactId,original.version.artifactId);assert.notEqual(revised.version.object.sha256,original.version.object.sha256);
  configure(second);for(const version of [original.version,revised.version]){const inspected=await response(post('inspect',{versionId:version.versionId}));assert.deepEqual(inspected.version,version);assert.equal(inspected.inspection.currentBytesVerified,true);
