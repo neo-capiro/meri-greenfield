@@ -73,3 +73,24 @@ test('application independent false Content-Length cannot evade streaming byte b
 test('application independent invalid UTF8 is refused rather than replacement decoded',async()=>{const f=await fixture();const bytes=new Uint8Array([...new TextEncoder().encode('{"request":{"status":"'),255,...new TextEncoder().encode('"}}')]);const r=await f.call('query',{}, {body:bytes});refused(r);assert.equal(f.state.resolves,0);});
 test('application independent duplicate credential header cannot resolve an identity',async()=>{const f=await fixture(),headers=new Headers({'content-type':'application/json'});headers.append('authorization','Bearer synthetic-session');headers.append('authorization','Bearer another');const r=await f.call('draft',{selection:f.t.wanted},{headers});refused(r);assert.equal(f.state.reads,0);});
 test('application independent output cap after known execution preserves withheld-result outcome',async()=>{const f=await fixture(),p=await f.prepared();f.state.approved=true;const app=createActionApplication({...f.config,limits:{...f.config.limits,maxResponseBytes:64}});const response=await app.handle(request('execute',{proposal:p.proposal})),text=await response.text(),r={response,text,value:JSON.parse(text)};refused(r);assert.equal(r.value.error.outcome,'RESULT_NOT_RELEASED');assert.equal(f.t.f.state.fetches,1);});
+// Root findings: retain inert error admission and canonical metadata liabilities.
+import {CommandError} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {createTaskCreateApprovalMetadataOwner,createPostgresApprovalMetadataStore} from '../commands/approval-metadata/index.mjs';
+import {createMetadataPoolFixture,createMetadataPolicyFixture} from '../commands/approval-metadata/test/fixture.mjs';
+for(const kind of ['proxy','command-message-getter'])test(`application independent hostile ${kind} rejection stays inert`,async()=>{
+ const f=await fixture();let traps=0;let error;
+ if(kind==='proxy')error=new Proxy({}, {getPrototypeOf(){traps++;throw Error('SECRET_PROXY');}});
+ else{error=new CommandError('COMMAND_OUTCOME_UNKNOWN');Object.defineProperty(error,'message',{get(){traps++;throw Error('SECRET_GETTER');}});}
+ f.hooks.lookup=async()=>{throw error;};let result;try{result=await f.call('query',{request:{limit:20}});}catch{}assert.equal(traps,0);assert.ok(result,'handle must return a Response');refused(result);assert.equal(result.value.error.outcome,'UNKNOWN');
+});
+async function metadata(f,kind){
+ const sql=createMetadataPoolFixture(),policy=createMetadataPolicyFixture({binding:f.t.f.binding,scopes:f.t.f.scopes,requiredApprover:f.t.f.proposal.requiredApprover,expiresAt:f.t.f.proposal.expiresAt,now:f.t.clock});
+ if(kind==='stored')policy.state.denyPhase='before_release';
+ if(kind==='not-stored')policy.state.denyPhase='prepare';
+ if(kind==='unknown'){const connect=sql.pool.connect;sql.pool.connect=async()=>{const c=await connect();return{...c,async query(q){const result=await c.query(q);if(q.text.startsWith('INSERT'))throw Error('SECRET_ACK');return result;}};};}
+ const store=createPostgresApprovalMetadataStore({pool:sql.pool});let n=800;
+ f.t.commandOptions.approvalMetadataOwner=createTaskCreateApprovalMetadataOwner({store,commandContext:f.t.f.context,preparePolicy:policy.preparePolicy,now:f.t.clock,newId:()=>id(n++)});return{sql,policy};
+}
+for(const [kind,outcome]of [['stored','STORED_NOT_RELEASED'],['unknown','UNKNOWN']])test(`application independent actual metadata ${kind} outcome survives HTTP`,async()=>{
+ const f=await fixture(),m=await metadata(f,kind),d=await f.call('draft',{selection:f.t.wanted});assert.equal(d.response.status,200,d.text);const r=await f.call('prepare',{draft:d.value});refused(r);assert.equal(r.value.error.outcome,outcome);assert.equal(m.sql.rows.size,1);assert.equal(f.t.f.state.fetches,0);
+});
