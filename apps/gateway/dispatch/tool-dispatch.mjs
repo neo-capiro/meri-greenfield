@@ -4,6 +4,7 @@ import { createDispatchLifetime, markBudgetUncertain } from './dispatch-lifetime
 import { deny, exactKeys, parseRawJson, rejectArgumentAuthority, safeFailure } from './operation-result.mjs';
 import { assertOperationArguments, prepareOperationContext } from './operation-context.mjs';
 import { assertDispatchResult } from './read-result-envelope.mjs';
+import { assertProjectionConfiguration } from './projection-read-context.mjs';
 
 const sameBinding = (a, b) => canonicalSha256(a.binding) === canonicalSha256(b.binding) && a.policyRevision === b.policyRevision;
 const subjectSelection = subject => {
@@ -14,7 +15,7 @@ function sameAuthority(a, b) {
   return sameBinding(a, b) && canonicalSha256(subjectSelection(a.subject)) === canonicalSha256(subjectSelection(b.subject));
 }
 
-export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts }) {
+export function createToolDispatch({ catalog, authority, budget, limits, now, newId, sourceEnabled = false, memoryContextPorts, mailContextPorts, defaultCongress }) {
   if (!catalog || typeof catalog.entry !== 'function' || typeof catalog.discoverable !== 'function' ||
       !authority || typeof authority.identify !== 'function' || typeof authority.check !== 'function' ||
       !budget || ['reserve', 'settle', 'markUncertain'].some(name => typeof budget[name] !== 'function') ||
@@ -23,6 +24,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
         !Number.isSafeInteger(limits[name]) || limits[name] < 1) || typeof sourceEnabled !== 'boolean') deny('GATEWAY_CONFIGURATION');
   if (limits.maxRequestBytes > 16*1024*1024 || limits.maxResponseBytes > 16*1024*1024 ||
       limits.maxRequestMs > 3600000 || limits.maxCleanupMs > 60000) deny('GATEWAY_CONFIGURATION');
+  assertProjectionConfiguration(defaultCongress);
 
   async function execute(requestJson, credential, signal) {
     const request = parseRawJson(requestJson, limits.maxRequestBytes);
@@ -46,7 +48,7 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
         input, signal, limitDeadline: lifetime.limitDeadline }));
       const context = await prepareOperationContext({ entry, request: request.arguments, identity, authorize,
         ports: memoryContextPorts, mailPorts: mailContextPorts, lifetime, readDeadline: () => deadlineMs,
-        now, maxBytes: limits.maxResponseBytes });
+        now, maxBytes: limits.maxResponseBytes, defaultCongress });
       let normalized;
       try { normalized = context.normalized ?? entry.contract.normalizeInput(request.arguments, context.options(context.authority)); }
       catch { deny('INVALID_ARGUMENTS'); }
@@ -71,8 +73,10 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
       lifetime.limitDeadline(effect.deadlineMs);
       context.observeAuthority(effect);
       let outputJson;
+      const projection = ['bound-projection/1','client-documents/1'].includes(entry.contract.binding?.dispatchProfile);
       try { outputJson = await lifetime.run(signal => entry.execute({ input: normalized.input,
-        request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256, signal })); }
+        request: normalized.request, authority: effect, argumentsSha256: normalized.argumentsSha256,
+        ...(projection ? {normalizationContext:context.options(effect)} : {}), signal })); }
       catch (error) {
         const failure = safeFailure(error);
         if (['DEADLINE', 'CANCELLED'].includes(failure.message)) throw failure;

@@ -13,9 +13,11 @@ import {createPostgresArtifactService} from '../../../artifacts/postgres-service
 import {createLocalDocumentPorts} from './ports.mjs';
 
 const root = fileURLToPath(new URL('../../../../',import.meta.url));
-export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',skillManifest}) {
+export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',skillManifest,mailboxIds = []}) {
   if (mode !== 'synthetic-local' || typeof pythonExecutable !== 'string' || !isAbsolute(pythonExecutable) ||
       !['create_word','create_excel'].includes(operation) ||
+      !Array.isArray(mailboxIds) || mailboxIds.length > 8 || new Set(mailboxIds).size !== mailboxIds.length ||
+      mailboxIds.some(id => typeof id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(id)) ||
       !process.env.MERI_REVIEW_SOURCE_ROOT || resolve(process.env.MERI_REVIEW_SOURCE_ROOT) !== resolve(root)) throw Error('LOCAL_DOCUMENT_CONFIGURATION');
   const {harness,uuid} = await import('../../../../docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs');
   const ledger = harness(), started = Date.now(), deadlineMs = started + 25000;
@@ -23,6 +25,8 @@ export async function createLocalDocumentFixture({mode,pythonExecutable,operatio
   now();
   const binding = structuredClone(ledger.f.binding), clientId = uuid('9');
   const scopes = [{tenantId: binding.tenantId,kind: 'client',resourceId: clientId,policyRevision: ledger.f.claims.policyRevision}];
+  scopes.push(...mailboxIds.map(resourceId => ({tenantId:binding.tenantId,kind:'mailbox',resourceId,policyRevision:ledger.f.claims.policyRevision})));
+  validateShape('ResolvedSubject', {...ledger.f.subject,kind:'client',entityType:'client',entityIds:[clientId],scopes});
   const entry = catalog.operations.find(e => e.operation.id === operation);
   const descriptor = structuredClone({operation: entry.operation,requiredGrants: entry.requiredGrants,sourceRequirements: entry.sourceRequirements});
   Object.assign(ledger.f.claims,{scopes,issuedAt: new Date(started - 1000).toISOString(),expiresAt: new Date(deadlineMs).toISOString()});

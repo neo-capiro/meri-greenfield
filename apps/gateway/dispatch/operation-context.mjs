@@ -4,22 +4,23 @@ import { validateShape } from '../../../packages/contracts/retrieval-0.2/validat
 import { prepareMemoryReadContext } from './memory-read-context.mjs';
 import { prepareMailReadContext } from './mail-read-context.mjs';
 import { normalizeActionReadRequest, prepareActionReadContext } from './action-read-context.mjs';
+import { prepareProjectionReadContext } from './projection-read-context.mjs';
 import { deny } from './operation-result.mjs';
 
 export function assertOperationArguments(entry, request) {
   const profile = entry.contract.binding?.dispatchProfile;
   if (profile === undefined) return;
-  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1', 'bound-projection/1', 'client-documents/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   try { validateShape(entry.contract.binding.input, request); } catch { deny('INVALID_ARGUMENTS'); }
 }
 
-export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, lifetime, readDeadline, now, maxBytes }) {
+export async function prepareOperationContext({ entry, request, identity, authorize, ports, mailPorts, lifetime, readDeadline, now, maxBytes, defaultCongress }) {
   const profile = entry.contract.binding?.dispatchProfile;
   if (profile === undefined) return Object.freeze({ authority: null,
     options: () => ({ nowMs: now(), actorId: identity.claims.binding.actorId }),
     observeAuthority() {}, async retain() {},
   });
-  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
+  if (!['memory-proposals/1', 'mail-candidates/1', 'dataset-metadata/1', 'portfolio-evidence/1', 'actions-complete/1', 'bound-projection/1', 'client-documents/1'].includes(profile)) deny('GATEWAY_CONFIGURATION');
   if (profile === 'dataset-metadata/1') return Object.freeze({ authority: null,
     options: () => ({}), observeAuthority() {}, async retain() {},
   });
@@ -33,6 +34,8 @@ export async function prepareOperationContext({ entry, request, identity, author
   const authority = await authorize(normalized?.input ?? request);
   if (canonicalSha256(authority.binding) !== canonicalSha256(identity.claims.binding) ||
       authority.policyRevision !== identity.claims.policyRevision) deny('ACCESS_DENIED');
+  if (['bound-projection/1','client-documents/1'].includes(profile)) return prepareProjectionReadContext({
+    entry, request, authority, defaultCongress, observedAtMs:now()});
   if (profile === 'actions-complete/1') return Object.freeze({
     ...prepareActionReadContext({ request, authority }), normalized });
   if (profile === 'portfolio-evidence/1') return Object.freeze({ authority,
