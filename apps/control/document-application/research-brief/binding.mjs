@@ -4,13 +4,18 @@ import {types} from 'node:util';
 import {artifactValidators as v} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {admitPreparedBrief} from './compose.mjs';
 export function bindPreparedBriefArtifactOptions(prepared,artifactOptions){
-  const guard=admitPreparedBrief(prepared,artifactOptions.context);
-  const contextSha256=v.hash(artifactOptions.context),authority=artifactOptions.authority;
+  if(!artifactOptions||typeof artifactOptions!=='object'||types.isProxy(artifactOptions))throw Error('BRIEF_CONFIGURATION');
+  // Capture inert own descriptor values before reading or spreading any outer
+  // port. The unchanged application constructor still owns its full schema.
+  const names=Reflect.ownKeys(artifactOptions);
+  const options=own(artifactOptions,['context','authority'],names.filter(x=>x!=='context'&&x!=='authority'));
+  const guard=admitPreparedBrief(prepared,options.context);
+  const contextSha256=v.hash(options.context),authority=options.authority;
   if(!authority||typeof authority!=='object'||types.isProxy(authority))throw Error('BRIEF_CONFIGURATION');
   const method=Object.getOwnPropertyDescriptor(authority,'check');
   if(!method||!Object.hasOwn(method,'value')||typeof method.value!=='function')throw Error('BRIEF_CONFIGURATION');
   const check=method.value.bind(authority);
-  return {...artifactOptions,authority:{async check(call){
+  return {...options,authority:{async check(call){
     // The canonical artifact service supplies the full typed intent at its first
     // current-authority check, before any budget reservation or byte generation.
     // This checks recipe correspondence only; existing authority owns policy.
