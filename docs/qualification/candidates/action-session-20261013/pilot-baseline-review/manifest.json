@@ -1,0 +1,131 @@
+{
+  "base": "658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c",
+  "source": "d16896b348daa765f3cb069732c9a70e5ffe13b0",
+  "authorPacket": "b2fb1f9e882a631be0ad9e0f5ffda35336da3422",
+  "verdict": "ACCEPT_SOURCE",
+  "exclusions": [
+    "this self-referential manifest"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-PILOT-BASELINE-REVIEW-20261013.md",
+      "bytes": 4434,
+      "sha256": "ca9fe4766636011e5b0d87f1749aa20ba6df8e97989d1b33d316841ebcd9d9ff"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-PILOT-BASELINE-REVIEW-20261013.md",
+      "bytes": 1877,
+      "sha256": "cbb81eee88f3b6ebd056c20dc3ff3cf3a5a34f7f83247063295ae5d273e6915a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/audit.py",
+      "bytes": 3193,
+      "sha256": "6aae45199a9c92c4babac3f57b271d89f3883b43d55ed01da6f857a54c006699"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/capture-provenance.json",
+      "bytes": 282,
+      "sha256": "92fa512c49f246eb61007eefe15b5a8e346c2f48425bc946b10aa03bd0cafad9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/cleanup.json",
+      "bytes": 1357,
+      "sha256": "705aa6fe8249f7387c2cd9bf49db5dd8a0a52a5bd866f31a1f498c31db2c5a99"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/decision.json",
+      "bytes": 1173,
+      "sha256": "9a678db2f3070f30b23821868da5878b8a2732720419aa415e4d92e6afec376a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/dependency-provenance.json",
+      "bytes": 2241,
+      "sha256": "54cc85426662d01a811d8ae08b79a39f03419ce3386004280635250181dd2599"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.json",
+      "bytes": 1448,
+      "sha256": "f2ffb79a7bb7c98d6b2161ccf88d9bcd9cce627aa89d1048037c8320c59d10bd"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/extended-initial.stdout.bin",
+      "bytes": 1040,
+      "sha256": "4de0591f54ba34f888dbe241dba3aad4d56f3c19fceb8421178ca7dcfd1a087e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/final-source-audit.json",
+      "bytes": 4636,
+      "sha256": "8c56ca599e28c77c8a640fdbd2bfae34d1d7c5ed8bee2bf07360b81a14fa1552"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/initial-independent.json",
+      "bytes": 1344,
+      "sha256": "8c9ee4eb7ab07aeb4c786be235718332af6cdcd1312667e3ce4a592bd8d55885"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/initial-independent.stdout.bin",
+      "bytes": 2989,
+      "sha256": "9e75c31baa4e2b0c6b13c355e1702c31c1ba1102526132497b4642867e0b15d0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/packet-audit.json",
+      "bytes": 6612,
+      "sha256": "ad6d66ae00be5688d342e56da8e103ffb0763250fff06a7ada0e374ae29ce580"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/packet-audit.py",
+      "bytes": 3437,
+      "sha256": "1681747a7cb86f657aeac3931c2cb637e7d78323187d65e083f856031c7c2a35"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.json",
+      "bytes": 1390,
+      "sha256": "6798262405f2868e0b324607630bfc8e0ba0bada83e8f59f60a07db9d0625d11"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/repaired-independent.stdout.bin",
+      "bytes": 1705,
+      "sha256": "760f28daea2c9b8f034956fa40a09fc8f1d177f41deff1504ed9359fe6acbe57"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/source-audit.json",
+      "bytes": 3186,
+      "sha256": "ab9534dff7a6523ab47fc95bbb2e0fb1f4b24f51e62ea5b237c0c991af3bccfe"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-session-20261013/pilot-baseline-review/whitespace-full.stdout.bin",
+      "bytes": 272,
+      "sha256": "9c12032122490face48151358a42336992a4b506bffb87a91950bc8c5b8076a3"
+    },
+    {
+      "path": "evals/action-followthrough/local-baseline/baseline-independent.test.mjs",
+      "bytes": 9023,
+      "sha256": "dfaf5beb3e2013e24529963937aacfb7ecf90cf0e44c8e0f3a791b00d16980b4"
+    }
+  ]
+}
