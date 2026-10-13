@@ -1,0 +1,163 @@
+{
+  "base": "3d34bf42983824327c63f96419abcfea8a587407",
+  "sourceCommit": "3253960035dbfd8cce4dd1b20925f4f4c7f152ae",
+  "metadataHeadBeforeManifest": "5f1cdae865143cc6fdf6f171882ab7babf6f7941",
+  "rootDependency": "77ddc682",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.fixture.mjs",
+      "bytes": 1124,
+      "sha256": "729125752ca779224197fd32947a4f8413be373a4591de997612508d841ccc51"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.mjs",
+      "bytes": 9519,
+      "sha256": "2452ee68f2f272a24766778518b9c3744ee0a4ea7a6145651f5fddefaba9fbdb"
+    },
+    {
+      "path": "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "bytes": 7655,
+      "sha256": "50c27bdb81071e835f6dac61696a6cd2c71c692eda7fad58acad1a16bcd4dcb3"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/__init__.py",
+      "bytes": 84,
+      "sha256": "0c8e599beba6fce624799523d0cf5c1a8034c901dbedd73dbe01aff5c5548971"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/bridge.py",
+      "bytes": 2892,
+      "sha256": "6e905fda6a2e0b1709c48733ce3675ffc3b3030a53bef9cd51ea70895ebf2cea"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/lifecycle.py",
+      "bytes": 7856,
+      "sha256": "6a2050f554819085a575f0b19219009d5d65d450763737fc2ec771c6899bf1a1"
+    },
+    {
+      "path": "apps/proxy/qualification/assembly/test_lifecycle.py",
+      "bytes": 10680,
+      "sha256": "3d55db8995d6eb88b2b82623845f9bf66806637690853c933fd1293aecaeee53"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-QUALIFIED-LIFECYCLE-AUTHOR-20261013.md",
+      "bytes": 4544,
+      "sha256": "fc6d9451ee7db6e1193c909167aca38c47b1205c732234e78e8d63a1c4b55c65"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-QUALIFIED-LIFECYCLE-20261013.md",
+      "bytes": 3112,
+      "sha256": "58d3c11f4f9d5cf1cafdb88cbebdce0ed256a39ec8a0e8a801123e1c7cfa8672"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.json",
+      "bytes": 1350,
+      "sha256": "da3e7233b05f42663103318dbbfe18c0515e5a40d0d2e364083b7838bc388dbd"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-node.stdout.bin",
+      "bytes": 2041,
+      "sha256": "45b5bfe20eb4e8c8b22f692735fa02cb83b83ade68d0c9299ebbfb6b0d630fc1"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-python.json",
+      "bytes": 1309,
+      "sha256": "5107779a443148098c8057a8a840abe042632eff00bdd7bba6807f43edd8bc93"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-python.stderr.bin",
+      "bytes": 110,
+      "sha256": "998c64efbc601a28b58dae773c8d11d98ed575e4030ce9e3f62ea5d9e910aaf2"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/author-python.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/bridge-initial.tap",
+      "bytes": 792,
+      "sha256": "aad9aff53ffa5f06f747acca57dd32bd7e36e3044d7ea55339b77ace7aa862a4"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/cleanup.json",
+      "bytes": 957,
+      "sha256": "0ea7540f3b8e964ee0db62003a8c7a631c4ae37b10922b6c3a8ec18a4d168524"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/jsonata-dependency.json",
+      "bytes": 354,
+      "sha256": "a9cf4a89eb87bba2e08f284af29329ce35c6f27894a0f3de59512a7f6404fb2b"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/observer-initial.tap",
+      "bytes": 2485,
+      "sha256": "79c53589ff04ee4dd3247d8472556b23125cb4efca408c84549ec1fa64ca463c"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/observer-realm-repair.tap",
+      "bytes": 991,
+      "sha256": "0dc580c5943f5659007540857613010b50187dec429e990ad63e12f21e6c79e5"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-checked.stderr.txt",
+      "bytes": 106,
+      "sha256": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-checked.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-initial.stderr.txt",
+      "bytes": 106,
+      "sha256": "60bb849356ffbc091f601e17fc6ae0b2eb5e26d734d433da020c6e775efbf97f"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/python-initial.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-assembly-20261013/lifecycle-author/source-freeze.json",
+      "bytes": 1291,
+      "sha256": "6af7e166e3986e6cb9e3c19fafe5f61c1d1d5492f2c40cb931eba8f70043947c"
+    },
+    {
+      "path": "infra/native-enforcement/worker-observer.fixture.mjs",
+      "bytes": 3293,
+      "sha256": "9e7c91e0d5600815b93a9a0d56aea1ffe2cff335d16cd9028c9f2d06ccb42319"
+    },
+    {
+      "path": "infra/native-enforcement/worker-observer.mjs",
+      "bytes": 6842,
+      "sha256": "28384e4abcb0fe818f496e886bfafe5b8dc258275f56872639dd89107ba3afe9"
+    },
+    {
+      "path": "infra/native-enforcement/worker-observer.test.mjs",
+      "bytes": 4725,
+      "sha256": "e304b8de6bc1f86162bde48dc6aaa0b607e8eea8aa17e0a2e8997b54bba249c6"
+    },
+    {
+      "path": "packages/contracts/qualification-assembly-0.2/README.md",
+      "bytes": 2087,
+      "sha256": "0208b9e20daca16245a8d380d800fe266f75c9f9de510ebe02c39791db182714"
+    },
+    {
+      "path": "packages/contracts/qualification-assembly-0.2/protocol.json",
+      "bytes": 865,
+      "sha256": "eae2f5d0e33318634b52b58a49d1f6d9e481837659d27fe14cb4686199f5a370"
+    }
+  ]
+}
