@@ -27,12 +27,12 @@ export async function setup(){
  const metadata={async prepare(call){metadataCalls++;if(hooks.metadata)await hooks.metadata(call);f.command.arguments=call.input.arguments;
   prepared={operation:call.operation,action:call.action,binding:call.binding,request:call.request,inputSha256:call.inputSha256,commandId:f.command.commandId,idempotencyKey:f.command.idempotencyKey,proposalId:f.proposal.proposalId,scopes:f.scopes,createdAt:f.proposal.createdAt,expiresAt:f.proposal.expiresAt,requiredApprover:f.proposal.requiredApprover,checkedAtMs:clock()};return structuredClone(prepared);},
   async read(){return {...structuredClone(prepared),checkedAtMs:clock()};}};
- f.state.fetchHook=async(url,init,native)=>{const args=JSON.parse(init.body);native.task.title=args.title;native.task.clientId=args.clientId;native.task.dueDate=args.dueDate;return new Response(JSON.stringify(native),{headers:{'content-type':'application/json'}});};
+ f.state.fetchHook=async(url,init,native)=>{const args=JSON.parse(init.body);native.task.title=args.title;native.task.clientId=args.clientId;native.task.dueDate=args.dueDate??null;return new Response(JSON.stringify(native),{headers:{'content-type':'application/json'}});};
  const commandOptions={operation:resolveOperationContract({id:'create_task',version:'0.2.0'}).descriptor.operation,action:'task.create',outputShape:'TaskCreateToolResult',commandContext:f.context,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:metadata,executor:f.create(),now:clock,limits:{maxRequestMs:5000,maxFactBytes:65536}};
  const readContext={currentBinding:f.binding,scopes,deadlineMs:NOW+10000};
  const config={lookup,readContext,selectedClientId:clientId,commandOptions,now:clock,limits:{maxRequestMs:1000,maxFactBytes:65536}};
  const wanted={resultReference:retained.resultReference,resultSha256:retained.resultSha256,actionId:row.id};
  const make=changes=>createActionFollowthrough({...config,...changes});
  return {f,identity,issued,scopes,clientId,pool,store,lookup,observation,retained,wanted,readContext,commandOptions,config,clock,hooks,make,metadataCalls:()=>metadataCalls,
-  async execute(proposal){f.execution.commandSha256=proposal.commandSha256;f.decision.commandSha256=proposal.commandSha256;return createCommandToolInterface(commandOptions).executeApproved(proposal,f.execution,'synthetic');},canonicalSha256};
+  async execute(proposal){f.execution.commandSha256=proposal.commandSha256;f.execution.proposalId=proposal.proposalId;f.execution.idempotencyKey=proposal.command.idempotencyKey;f.decision.proposalId=proposal.proposalId;f.decision.commandSha256=proposal.commandSha256;return createCommandToolInterface(commandOptions).executeApproved(proposal,f.execution,'synthetic');},canonicalSha256};
 }
