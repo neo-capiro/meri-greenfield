@@ -22,7 +22,7 @@ The descriptor must match the current `create_task@0.2.0` contract's `task.creat
 
 The default availability flag refuses new lookup invocations before delivery SQL and leaves the canonical command executor disabled. Current-authorized historical lookup reads remain available. Canonical command `readOutcome` retains its existing disabled refusal; this assembly does not create an alternative observer. Metadata preparation can create only a pending immutable proposal. Explicit `sourceEnabled:true` changes neither global registry availability nor current policy/approval requirements. No HTTP approval route is provided.
 
-A pending approval can leave one PREPARED invocation but no reservation, charge or effect. The same proposal can execute after separate exact approval. Acknowledgment loss retains the canonical stage/liability and does not authorize automatic retry. Reconstructing owners does not regenerate the command or invitation identity, or bypass fresh authority and approval checks. Historical reconciliation preserves liability; it is not proof of result delivery.
+A pending approval can leave one PREPARED invocation but no reservation, charge or effect. The same proposal can execute after separate exact approval. Acknowledgment loss retains the canonical stage/liability and does not authorize automatic retry. Reconstructing owners does not regenerate the command or invocation identity, or bypass fresh authority and approval checks. Historical reconciliation preserves liability; it is not proof of result delivery.
 
 ## Local verification fixture
 
