@@ -42,7 +42,7 @@ export const preservationSQL=`WITH ns AS (SELECT oid FROM pg_catalog.pg_namespac
  'indexes',COALESCE((SELECT jsonb_agg(to_jsonb(i) ORDER BY i.indexrelid) FROM pg_catalog.pg_index i WHERE i.indrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'views',COALESCE((SELECT jsonb_agg(to_jsonb(w) ORDER BY w.oid) FROM pg_catalog.pg_rewrite w WHERE w.ev_class IN (SELECT oid FROM rel)),'[]'::jsonb),
  'types',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM typ t),'[]'::jsonb),
- 'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
+ 'sequences',COALESCE((SELECT jsonb_agg(to_jsonb(s)||jsonb_build_object('seqstart',s.seqstart::text,'seqincrement',s.seqincrement::text,'seqmax',s.seqmax::text,'seqmin',s.seqmin::text,'seqcache',s.seqcache::text) ORDER BY s.seqrelid) FROM pg_catalog.pg_sequence s WHERE s.seqrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'triggers',COALESCE((SELECT jsonb_agg(to_jsonb(t) ORDER BY t.oid) FROM pg_catalog.pg_trigger t WHERE t.tgrelid IN (SELECT oid FROM rel)),'[]'::jsonb),
  'dependencies',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classid,d.objid,d.objsubid,d.refclassid,d.refobjid,d.refobjsubid,d.deptype) FROM pg_catalog.pg_depend d JOIN objects o ON o.classid=d.classid AND o.objid=d.objid),'[]'::jsonb),
  'comments',COALESCE((SELECT jsonb_agg(to_jsonb(d) ORDER BY d.classoid,d.objoid,d.objsubid) FROM pg_catalog.pg_description d WHERE EXISTS(SELECT 1 FROM objects o WHERE o.classid=d.classoid AND o.objid=d.objoid) OR (d.classoid='pg_namespace'::regclass AND d.objoid IN (SELECT oid FROM ns))),'[]'::jsonb),
