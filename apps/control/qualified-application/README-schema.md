@@ -51,3 +51,5 @@ node --test apps/control/qualified-application/schema.test.mjs
 ```
 
 The test uses explicitly scripted SQL ports. It is not a PostgreSQL parser, schema installation test or native qualification. Actual fixture preparation, trusted worker observation/activation, authority, approval and application execution retain their separate owners.
+
+`schema.fixture.mjs` exposes the same test-only observations for composition tests: `createScriptedSchemaFixture({fixture: descriptorOverrides, ...faultOptions})`, `fixtureSchemaDescriptor(overrides)`, `fixtureMigrationBytes`, and `fixtureCatalog()`. The returned fixture is `{pool,f,log,releases,state,args}`. Its target identity can match another source-test process; it does not open or impersonate an actual database. Production modules never import it. The original author test assertions remain intact after extracting these helpers.
