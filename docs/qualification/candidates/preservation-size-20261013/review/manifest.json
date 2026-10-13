@@ -77,6 +77,12 @@
       "path": "docs/qualification/candidates/preservation-size-20261013/review/final.stdout.bin",
       "bytes": 2043,
       "sha256": "bc40e5ec54fcf0d75417af86109b3ff21cc5d32c1e3180402b788a2085ebacb8"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/author-packet-audit.json",
+      "bytes": 379,
+      "sha256": "e71c4dbb85de767164f71ef3c1b2fbe1b55fd7a299123037623d787d589a4d31"
     }
-  ]
+  ],
+  "authorPacket": "b5ee4a4c3d21dd0e3bb40067ff608bb06a0f8cc6"
 }
