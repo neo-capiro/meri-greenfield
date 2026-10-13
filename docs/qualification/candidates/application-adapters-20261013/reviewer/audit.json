@@ -1,0 +1,87 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "base": "ad0bdfeb830fee11f1f39c4a8a7037215595c4cf",
+  "source": "1afbb5a53ebbf0eca9252b3b09ceb3e404918151",
+  "baseEntries": 11081,
+  "unchanged": 11079,
+  "onlyOriginalChanges": [
+    "apps/control/action-host/session/README.md",
+    "apps/control/action-host/session/owner.mjs"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/control/action-host/session/README.md",
+      "bytes": 7491,
+      "sha256": "f116facf1246ec17c631c2b13d00eef58e80fe6fc33011d9db10598b67caa4ea"
+    },
+    {
+      "path": "apps/control/action-host/session/owner.mjs",
+      "bytes": 9632,
+      "sha256": "7239a73d05784f492d1d7c68a371ab1ca5c94fada71fc74a20b8c3f372769084"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/adapters.test.mjs",
+      "bytes": 7717,
+      "sha256": "23e0c54b64b2baf93d81efc6a82ce75ed54dbcf6fd91c3c78b7ceb134037b2ac"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+      "bytes": 4673,
+      "sha256": "744a3a648ca293242f4cb1ba43501bb3ffb76733911d14f97e2462457ccbeff4"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/context-adapter.mjs",
+      "bytes": 6198,
+      "sha256": "766dfedd4277ec855d8e92c4e8e33c1fc48c2ca8a5be41249499833b43f88afb"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/mount.mjs",
+      "bytes": 2564,
+      "sha256": "6b18f000f21f97e53a94b78400c14d58c83aa6d4cdd3b38ef71f147f85292590"
+    },
+    {
+      "path": "packages/contracts/action-authority-0.2/validate.mjs",
+      "bytes": 1880,
+      "sha256": "40fa36caeedb7ec17bef27119c846feb372bf5e1c6678032d5bcd0ab540ebd79"
+    }
+  ],
+  "captures": [
+    {
+      "label": "first-independent",
+      "exitCode": 1,
+      "pgid": 484645,
+      "freshAbsent": true
+    },
+    {
+      "label": "transport-before",
+      "exitCode": 1,
+      "pgid": 484848,
+      "freshAbsent": true
+    },
+    {
+      "label": "final-source",
+      "exitCode": 1,
+      "pgid": 485249,
+      "freshAbsent": true
+    },
+    {
+      "label": "legacy-session",
+      "exitCode": 0,
+      "pgid": 485396,
+      "freshAbsent": true
+    }
+  ],
+  "checks": {
+    "independent": 50,
+    "author": 11,
+    "legacySession": 9,
+    "finalCombinedCapture": "61pass / 1 unchanged-module sparse import failure",
+    "affectedLegacyReplay": "9/9 PASS after exact missing blob restoration"
+  },
+  "liveNativeIntegration": false,
+  "authorPacket": {
+    "commit": "949842404dccc2bbed61f21de985a5f42f8204a2",
+    "manifestSha256": "2b875997563a4cf366966cef3351d2807176abf976c6a3d80440f3c29a0d1d8b",
+    "membersVerified": 23
+  }
+}
