@@ -1,0 +1,40 @@
+{
+  "reviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "historicalFinalFlowSha256": "90102635a013a7a020a5ad428a54f7b09769f550f98357762919c733b1848eb1",
+  "observedAt": "2026-10-13T09:04:34.096769+00:00",
+  "historicalProcessPaths": [
+    {
+      "pid": 11907,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11908,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11909,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11910,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11937,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11938,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11939,
+      "procPathExistsNow": false
+    },
+    {
+      "pid": 11963,
+      "procPathExistsNow": false
+    }
+  ],
+  "scope": "Current absence only; historical store/listener coordinates are absent from original receipt. Fresh independent observation verifies its own exact coordinates."
+}

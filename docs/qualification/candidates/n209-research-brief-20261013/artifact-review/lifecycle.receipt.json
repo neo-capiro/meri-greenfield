@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "node",
+    "--experimental-loader",
+    "./docs/qualification/candidates/n209-research-brief-20261013/artifact-review/installed-dependencies.mjs",
+    "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/observe-lifecycle.mjs",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override/soffice"
+  ],
+  "cwd": "/workspace/meri-n209-artifact-review",
+  "reviewedCommit": "7d1024d11e439393de3171a95892b7b0d402c78c",
+  "implementationDiffBytes": 0,
+  "startedAt": "2026-10-13T09:00:37.562130+00:00",
+  "durationSeconds": 3.785,
+  "timeoutSeconds": 180,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 27783,
+  "ownedGroupAbsent": true,
+  "reapedDescendants": [],
+  "cleanupKills": [],
+  "remainingOwnedChildren": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/lifecycle.stdout.txt",
+      "bytes": 2777,
+      "sha256": "c4867f618a1c6a5ac90f35faac73c9a42f2546d14fdeb30d5d28e44bc2ae2865"
+    },
+    {
+      "path": "docs/qualification/candidates/n209-research-brief-20261013/artifact-review/lifecycle.stderr.txt",
+      "bytes": 438,
+      "sha256": "4aee58a9eb8cda1ae47d4d1df7171923e8feec1fcaf06fa38b931b8d56fae320"
+    }
+  ],
+  "scope": "LOCAL_SYNTHETIC_SOURCE_QUALIFICATION_ONLY",
+  "nativeQualified": false
+}
