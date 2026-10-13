@@ -1,0 +1,562 @@
+TAP version 13
+# Subtest: mail independent: canonical list three-page continuation
+ok 1 - mail independent: canonical list three-page continuation
+  ---
+  duration_ms: 19.706098
+  type: 'test'
+  ...
+# Subtest: mail independent: canonical search three-page continuation
+ok 2 - mail independent: canonical search three-page continuation
+  ---
+  duration_ms: 7.209676
+  type: 'test'
+  ...
+# Subtest: mail independent: stable key retains exact full page and immutable snapshots
+ok 3 - mail independent: stable key retains exact full page and immutable snapshots
+  ---
+  duration_ms: 4.310885
+  type: 'test'
+  ...
+# Subtest: mail independent: first-page current decision IDs may rotate
+ok 4 - mail independent: first-page current decision IDs may rotate
+  ---
+  duration_ms: 1.807216
+  type: 'test'
+  ...
+# Subtest: mail independent: full previous/current page decision mismatch still refuses
+ok 5 - mail independent: full previous/current page decision mismatch still refuses
+  ---
+  duration_ms: 3.854391
+  type: 'test'
+  ...
+# Subtest: mail independent: terminal or unknown total 0 never retains invented continuation
+ok 6 - mail independent: terminal or unknown total 0 never retains invented continuation
+  ---
+  duration_ms: 1.345634
+  type: 'test'
+  ...
+# Subtest: mail independent: terminal or unknown total 1 never retains invented continuation
+ok 7 - mail independent: terminal or unknown total 1 never retains invented continuation
+  ---
+  duration_ms: 1.29537
+  type: 'test'
+  ...
+# Subtest: mail independent: terminal or unknown total null never retains invented continuation
+ok 8 - mail independent: terminal or unknown total null never retains invented continuation
+  ---
+  duration_ms: 1.307498
+  type: 'test'
+  ...
+# Subtest: mail independent: malformed shapes refuse before ports and semantic input before business effects
+ok 9 - mail independent: malformed shapes refuse before ports and semantic input before business effects
+  ---
+  duration_ms: 1.161179
+  type: 'test'
+  ...
+# Subtest: mail independent: missing context ports refuse without reservation or handler
+ok 10 - mail independent: missing context ports refuse without reservation or handler
+  ---
+  duration_ms: 0.486037
+  type: 'test'
+  ...
+# Subtest: mail independent: retained missing refuses before budget/effect
+ok 11 - mail independent: retained missing refuses before budget/effect
+  ---
+  duration_ms: 1.878392
+  type: 'test'
+  ...
+# Subtest: mail independent: retained digest refuses before budget/effect
+ok 12 - mail independent: retained digest refuses before budget/effect
+  ---
+  duration_ms: 1.895819
+  type: 'test'
+  ...
+# Subtest: mail independent: retained keyBinding refuses before budget/effect
+ok 13 - mail independent: retained keyBinding refuses before budget/effect
+  ---
+  duration_ms: 1.977551
+  type: 'test'
+  ...
+# Subtest: mail independent: retained keyOperation refuses before budget/effect
+ok 14 - mail independent: retained keyOperation refuses before budget/effect
+  ---
+  duration_ms: 1.922178
+  type: 'test'
+  ...
+# Subtest: mail independent: retained keyPolicy refuses before budget/effect
+ok 15 - mail independent: retained keyPolicy refuses before budget/effect
+  ---
+  duration_ms: 1.987255
+  type: 'test'
+  ...
+# Subtest: mail independent: retained keySubject refuses before budget/effect
+ok 16 - mail independent: retained keySubject refuses before budget/effect
+  ---
+  duration_ms: 1.861868
+  type: 'test'
+  ...
+# Subtest: mail independent: retained keySelection refuses before budget/effect
+ok 17 - mail independent: retained keySelection refuses before budget/effect
+  ---
+  duration_ms: 2.238051
+  type: 'test'
+  ...
+# Subtest: mail independent: retained staleReceipt refuses before budget/effect
+ok 18 - mail independent: retained staleReceipt refuses before budget/effect
+  ---
+  duration_ms: 1.973655
+  type: 'test'
+  ...
+# Subtest: mail independent: retained futureReceipt refuses before budget/effect
+ok 19 - mail independent: retained futureReceipt refuses before budget/effect
+  ---
+  duration_ms: 1.724972
+  type: 'test'
+  ...
+# Subtest: mail independent: retained expired refuses before budget/effect
+ok 20 - mail independent: retained expired refuses before budget/effect
+  ---
+  duration_ms: 1.684122
+  type: 'test'
+  ...
+# Subtest: mail independent: retained futureRecorded refuses before budget/effect
+ok 21 - mail independent: retained futureRecorded refuses before budget/effect
+  ---
+  duration_ms: 1.975869
+  type: 'test'
+  ...
+# Subtest: mail independent: retained extended refuses before budget/effect
+ok 22 - mail independent: retained extended refuses before budget/effect
+  ---
+  duration_ms: 1.899074
+  type: 'test'
+  ...
+# Subtest: mail independent: retained extra refuses before budget/effect
+ok 23 - mail independent: retained extra refuses before budget/effect
+  ---
+  duration_ms: 2.051462
+  type: 'test'
+  ...
+# Subtest: mail independent: rehashed retained anchor cannot bypass canonical continuation
+ok 24 - mail independent: rehashed retained anchor cannot bypass canonical continuation
+  ---
+  duration_ms: 1.999604
+  type: 'test'
+  ...
+# Subtest: mail independent: rehashed retained pageDecision cannot bypass canonical continuation
+ok 25 - mail independent: rehashed retained pageDecision cannot bypass canonical continuation
+  ---
+  duration_ms: 2.712532
+  type: 'test'
+  ...
+# Subtest: mail independent: rehashed retained nextOffset cannot bypass canonical continuation
+ok 26 - mail independent: rehashed retained nextOffset cannot bypass canonical continuation
+  ---
+  duration_ms: 1.950951
+  type: 'test'
+  ...
+# Subtest: mail independent: rehashed retained selection cannot bypass canonical continuation
+ok 27 - mail independent: rehashed retained selection cannot bypass canonical continuation
+  ---
+  duration_ms: 2.117692
+  type: 'test'
+  ...
+# Subtest: mail independent: rehashed retained window cannot bypass canonical continuation
+ok 28 - mail independent: rehashed retained window cannot bypass canonical continuation
+  ---
+  duration_ms: 1.884341
+  type: 'test'
+  ...
+# Subtest: mail independent: raw context field accessors are rejected without invocation
+ok 29 - mail independent: raw context field accessors are rejected without invocation
+  ---
+  duration_ms: 3.000262
+  type: 'test'
+  ...
+# Subtest: mail independent: retained acknowledgment receiptDigest suppresses settlement
+ok 30 - mail independent: retained acknowledgment receiptDigest suppresses settlement
+  ---
+  duration_ms: 1.572064
+  type: 'test'
+  ...
+# Subtest: mail independent: retained acknowledgment receiptKey suppresses settlement
+ok 31 - mail independent: retained acknowledgment receiptKey suppresses settlement
+  ---
+  duration_ms: 1.246767
+  type: 'test'
+  ...
+# Subtest: mail independent: retained acknowledgment stale suppresses settlement
+ok 32 - mail independent: retained acknowledgment stale suppresses settlement
+  ---
+  duration_ms: 1.19517
+  type: 'test'
+  ...
+# Subtest: mail independent: retained acknowledgment extra suppresses settlement
+ok 33 - mail independent: retained acknowledgment extra suppresses settlement
+  ---
+  duration_ms: 1.202201
+  type: 'test'
+  ...
+# Subtest: mail independent: retained acknowledgment oversized suppresses settlement
+ok 34 - mail independent: retained acknowledgment oversized suppresses settlement
+  ---
+  duration_ms: 1.290893
+  type: 'test'
+  ...
+# Subtest: mail independent: revoked authority after load never releases
+ok 35 - mail independent: revoked authority after load never releases
+  ---
+  duration_ms: 1.999935
+  type: 'test'
+  ...
+# Subtest: mail independent: revoked authority after retain never releases
+ok 36 - mail independent: revoked authority after retain never releases
+  ---
+  duration_ms: 1.359616
+  type: 'test'
+  ...
+# Subtest: mail independent: revoked authority after settle never releases
+ok 37 - mail independent: revoked authority after settle never releases
+  ---
+  duration_ms: 1.914347
+  type: 'test'
+  ...
+# Subtest: mail independent: fresh release deadline bounds parked load
+ok 38 - mail independent: fresh release deadline bounds parked load
+  ---
+  duration_ms: 43.179769
+  type: 'test'
+  ...
+# Subtest: mail independent: cancellation bounds parked load
+ok 39 - mail independent: cancellation bounds parked load
+  ---
+  duration_ms: 3.152361
+  type: 'test'
+  ...
+# Subtest: mail independent: fresh release deadline bounds parked retain
+ok 40 - mail independent: fresh release deadline bounds parked retain
+  ---
+  duration_ms: 41.169478
+  type: 'test'
+  ...
+# Subtest: mail independent: cancellation bounds parked retain
+ok 41 - mail independent: cancellation bounds parked retain
+  ---
+  duration_ms: 2.274446
+  type: 'test'
+  ...
+# Subtest: mail independent: fresh release deadline bounds parked settle
+ok 42 - mail independent: fresh release deadline bounds parked settle
+  ---
+  duration_ms: 41.633669
+  type: 'test'
+  ...
+# Subtest: mail independent: cancellation bounds parked settle
+ok 43 - mail independent: cancellation bounds parked settle
+  ---
+  duration_ms: 2.510419
+  type: 'test'
+  ...
+# Subtest: mail independent: budget-shortened lifetime bounds retained expiry
+ok 44 - mail independent: budget-shortened lifetime bounds retained expiry
+  ---
+  duration_ms: 1.884261
+  type: 'test'
+  ...
+# Subtest: mail independent: source-disabled canonical catalog never reaches supplied ports
+ok 45 - mail independent: source-disabled canonical catalog never reaches supplied ports
+  ---
+  duration_ms: 7.977786
+  type: 'test'
+  ...
+# Subtest: mail independent: context port proxy/accessor admission is inert
+ok 46 - mail independent: context port proxy/accessor admission is inert
+  ---
+  duration_ms: 0.895692
+  type: 'test'
+  ...
+# Subtest: mail independent: shortened retained expiry bounds the next parked authority port
+ok 47 - mail independent: shortened retained expiry bounds the next parked authority port
+  ---
+  duration_ms: 42.502965
+  type: 'test'
+  ...
+# Subtest: mail independent: candidate output cannot promote previews or omit decisive reads
+ok 48 - mail independent: candidate output cannot promote previews or omit decisive reads
+  ---
+  duration_ms: 5.874596
+  type: 'test'
+  ...
+# Subtest: mail.list_messages: three pages consume trusted prior results and one canonical normalization per call
+ok 49 - mail.list_messages: three pages consume trusted prior results and one canonical normalization per call
+  ---
+  duration_ms: 20.538064
+  type: 'test'
+  ...
+# Subtest: mail.search_messages: three pages consume trusted prior results and one canonical normalization per call
+ok 50 - mail.search_messages: three pages consume trusted prior results and one canonical normalization per call
+  ---
+  duration_ms: 10.757148
+  type: 'test'
+  ...
+# Subtest: mail first page keeps fresh decision rotation and exact output page identity
+ok 51 - mail first page keeps fresh decision rotation and exact output page identity
+  ---
+  duration_ms: 2.396719
+  type: 'test'
+  ...
+# Subtest: prior/current page decision mismatch refuses without rewriting retained history
+ok 52 - prior/current page decision mismatch refuses without rewriting retained history
+  ---
+  duration_ms: 4.653288
+  type: 'test'
+  ...
+# Subtest: unknown, exhausted and empty totals retain no cursor or completeness claim
+ok 53 - unknown, exhausted and empty totals retain no cursor or completeness claim
+  ---
+  duration_ms: 4.498405
+  type: 'test'
+  ...
+# Subtest: defaults and trimmed search filters feed the canonical selection key
+ok 54 - defaults and trimmed search filters feed the canonical selection key
+  ---
+  duration_ms: 2.96474
+  type: 'test'
+  ...
+# Subtest: model context or malformed family input is refused before authority calls
+ok 55 - model context or malformed family input is refused before authority calls
+  ---
+  duration_ms: 0.685046
+  type: 'test'
+  ...
+# Subtest: missing ports and missing retained offset fail before reservation and effects
+ok 56 - missing ports and missing retained offset fail before reservation and effects
+  ---
+  duration_ms: 0.964194
+  type: 'test'
+  ...
+# Subtest: mail port getters/proxies are rejected without running their hooks
+ok 57 - mail port getters/proxies are rejected without running their hooks
+  ---
+  duration_ms: 0.936322
+  type: 'test'
+  ...
+# Subtest: retained digest substitution cannot reserve or execute the next page
+ok 58 - retained digest substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 2.280745
+  type: 'test'
+  ...
+# Subtest: retained tenant substitution cannot reserve or execute the next page
+ok 59 - retained tenant substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 2.109499
+  type: 'test'
+  ...
+# Subtest: retained actor substitution cannot reserve or execute the next page
+ok 60 - retained actor substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 2.182589
+  type: 'test'
+  ...
+# Subtest: retained run substitution cannot reserve or execute the next page
+ok 61 - retained run substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 2.137842
+  type: 'test'
+  ...
+# Subtest: retained attempt substitution cannot reserve or execute the next page
+ok 62 - retained attempt substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.871642
+  type: 'test'
+  ...
+# Subtest: retained worker substitution cannot reserve or execute the next page
+ok 63 - retained worker substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 2.049489
+  type: 'test'
+  ...
+# Subtest: retained fence substitution cannot reserve or execute the next page
+ok 64 - retained fence substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.892904
+  type: 'test'
+  ...
+# Subtest: retained policy substitution cannot reserve or execute the next page
+ok 65 - retained policy substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.890651
+  type: 'test'
+  ...
+# Subtest: retained operation substitution cannot reserve or execute the next page
+ok 66 - retained operation substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.994637
+  type: 'test'
+  ...
+# Subtest: retained subject substitution cannot reserve or execute the next page
+ok 67 - retained subject substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.868528
+  type: 'test'
+  ...
+# Subtest: retained limit substitution cannot reserve or execute the next page
+ok 68 - retained limit substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 2.130339
+  type: 'test'
+  ...
+# Subtest: retained offset substitution cannot reserve or execute the next page
+ok 69 - retained offset substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.973245
+  type: 'test'
+  ...
+# Subtest: retained anchor substitution cannot reserve or execute the next page
+ok 70 - retained anchor substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.800406
+  type: 'test'
+  ...
+# Subtest: retained future recording substitution cannot reserve or execute the next page
+ok 71 - retained future recording substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.823641
+  type: 'test'
+  ...
+# Subtest: retained negative recording substitution cannot reserve or execute the next page
+ok 72 - retained negative recording substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.854918
+  type: 'test'
+  ...
+# Subtest: retained expired substitution cannot reserve or execute the next page
+ok 73 - retained expired substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.911882
+  type: 'test'
+  ...
+# Subtest: retained extended substitution cannot reserve or execute the next page
+ok 74 - retained extended substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.866836
+  type: 'test'
+  ...
+# Subtest: retained noninteger expiry substitution cannot reserve or execute the next page
+ok 75 - retained noninteger expiry substitution cannot reserve or execute the next page
+  ---
+  duration_ms: 1.884522
+  type: 'test'
+  ...
+# Subtest: correctly rehashed foreign page binding and wrong next selection still refuse
+ok 76 - correctly rehashed foreign page binding and wrong next selection still refuse
+  ---
+  duration_ms: 8.627659
+  type: 'test'
+  ...
+# Subtest: canonical deeper prior-page checks reject rehashed corrupt pagination and window
+ok 77 - canonical deeper prior-page checks reject rehashed corrupt pagination and window
+  ---
+  duration_ms: 8.737493
+  type: 'test'
+  ...
+# Subtest: stale/future receipt checks and oversized inbound records fail closed
+ok 78 - stale/future receipt checks and oversized inbound records fail closed
+  ---
+  duration_ms: 7.097028
+  type: 'test'
+  ...
+# Subtest: retention acknowledgements must bind actual immutable key/page and fresh time
+ok 79 - retention acknowledgements must bind actual immutable key/page and fresh time
+  ---
+  duration_ms: 6.669017
+  type: 'test'
+  ...
+# Subtest: retained key and page cannot be mutated by their storage port
+ok 80 - retained key and page cannot be mutated by their storage port
+  ---
+  duration_ms: 1.550852
+  type: 'test'
+  ...
+# Subtest: budget deadline publication caps the retained expiry, without a second timer owner
+ok 81 - budget deadline publication caps the retained expiry, without a second timer owner
+  ---
+  duration_ms: 1.621478
+  type: 'test'
+  ...
+# Subtest: a retained record exceeding a newly shorter request deadline cannot execute
+ok 82 - a retained record exceeding a newly shorter request deadline cannot execute
+  ---
+  duration_ms: 2.190039
+  type: 'test'
+  ...
+# Subtest: mail loadPrevious parking is bounded and late completion starts no further work
+ok 83 - mail loadPrevious parking is bounded and late completion starts no further work
+  ---
+  duration_ms: 22.04445
+  type: 'test'
+  ...
+# Subtest: mail retain parking is bounded and late completion starts no further work
+ok 84 - mail retain parking is bounded and late completion starts no further work
+  ---
+  duration_ms: 20.828439
+  type: 'test'
+  ...
+# Subtest: mail settle parking is bounded and late completion starts no further work
+ok 85 - mail settle parking is bounded and late completion starts no further work
+  ---
+  duration_ms: 20.150715
+  type: 'test'
+  ...
+# Subtest: freshly shortened release deadline bounds parked retain
+ok 86 - freshly shortened release deadline bounds parked retain
+  ---
+  duration_ms: 21.200686
+  type: 'test'
+  ...
+# Subtest: freshly shortened release deadline bounds parked settle
+ok 87 - freshly shortened release deadline bounds parked settle
+  ---
+  duration_ms: 20.979425
+  type: 'test'
+  ...
+# Subtest: known preflight deadline is published before a prior-page read can park
+ok 88 - known preflight deadline is published before a prior-page read can park
+  ---
+  duration_ms: 21.294357
+  type: 'test'
+  ...
+# Subtest: cancellation during retained lookup stops before effects and ignores late history
+ok 89 - cancellation during retained lookup stops before effects and ignores late history
+  ---
+  duration_ms: 0.950864
+  type: 'test'
+  ...
+# Subtest: revocation during retain prevents result release after historical settlement
+ok 90 - revocation during retain prevents result release after historical settlement
+  ---
+  duration_ms: 1.705003
+  type: 'test'
+  ...
+# Subtest: malformed source results are never retained or settled and keep uncertain liability
+ok 91 - malformed source results are never retained or settled and keep uncertain liability
+  ---
+  duration_ms: 1.049482
+  type: 'test'
+  ...
+# Subtest: canonical entry keeps both mail operations unavailable with no authority or store effects
+ok 92 - canonical entry keeps both mail operations unavailable with no authority or store effects
+  ---
+  duration_ms: 11.639409
+  type: 'test'
+  ...
+1..92
+# tests 92
+# suites 0
+# pass 92
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2060.105153
