@@ -1,0 +1,23 @@
+{
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/49",
+  "draft": true,
+  "state": "open",
+  "merged": false,
+  "base": "3d34bf42983824327c63f96419abcfea8a587407",
+  "initialPublishedHead": "7224e01af088562db721d76daf733e20627f0874",
+  "sourceEvidenceFreeze": "795ad9652473547a0806a716797a6f207299ad28",
+  "sourceEvidenceTree": "b32813c6cd7a7dc8bc0745970a183a3d2986097c",
+  "initialPublishedTree": "6b2706aab8c6786f8dfb295324dee836372b856b",
+  "remoteHeads": {
+    "refs/heads/main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "refs/heads/task/meri-admitted-run-20261013": "3d34bf42983824327c63f96419abcfea8a587407",
+    "refs/heads/task/meri-qualified-assembly-20261013": "7224e01af088562db721d76daf733e20627f0874"
+  },
+  "manifestMembersVerified": 161,
+  "integrationManifestSha256": "2c4e3b876fc15a5d8bec3233bee417b383c998908f1589694e6dcdf11f6cf4b8",
+  "sourceVerdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "G1": "OPEN",
+  "nativeQualificationRun": false,
+  "workingTreeCleanBeforeReceipt": true
+}
