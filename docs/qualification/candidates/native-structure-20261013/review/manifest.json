@@ -1,0 +1,157 @@
+{
+  "schema": "meri.native-structure-independent-manifest/1",
+  "source": "fa3f06cc8f23a822a8fc74662187e7d3a7a8144b",
+  "authorPacket": "9b67f63e1820a4fb9ad8a66d1f927655cdfe63ba",
+  "reviewVerdict": "ACCEPT_SOURCE",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/schema-structure-independent.test.mjs",
+      "bytes": 9303,
+      "sha256": "762487f83b02e6fcd77d63cd3638d14e3830dea7f3b371c4881a158f870b2034"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/audit-correction.json",
+      "bytes": 678,
+      "sha256": "12ece85951438e7a3c4bf6c172150e997170196824cbaf1780d43d2449d7cc94"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/audit-packet.py",
+      "bytes": 3044,
+      "sha256": "1a82cbe2bf7b0055bb645e0323c3a5d5ca0d685f5057727f386d59cfc00eeee4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/audit-source-initial.py",
+      "bytes": 8274,
+      "sha256": "93d3c38e57139253d059344c43629339595950175d29be6736927ea37eb99c4d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/audit-source.py",
+      "bytes": 8422,
+      "sha256": "ab9919635130fb220c4e0115b40dcb6606bd0fa0d7085820c0a12be4f36c8c31"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/baseline.json",
+      "bytes": 1329,
+      "sha256": "716cb7e95c490436d71f8c803828293000259e9261a96a63dea6cd078047d312"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/baseline.stdout.bin",
+      "bytes": 2591,
+      "sha256": "a0ba186192824b982a59cdf82c4765eae6c13da4762186e9bc74ff3f323b45da"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.json",
+      "bytes": 1276,
+      "sha256": "0430607380bfa99169179f9254e2e4d1a0a938c003f0e907114f13d5febbc4af"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/candidate.stdout.bin",
+      "bytes": 4027,
+      "sha256": "d917bb831e91c7abec4b822fe0f6244f13d4452bf8743076da2616b5f29e5b28"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/cleanup.json",
+      "bytes": 452,
+      "sha256": "a7e477c0edecf08ad6b747000200886719489d6813d21b2b9bcddce4524dd71c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/downstream-before.json",
+      "bytes": 1354,
+      "sha256": "66e168121536a5ae2791016657774a60af965a2cf093be49e3ea86f9182ef077"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/downstream-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/downstream-before.stdout.bin",
+      "bytes": 1330,
+      "sha256": "bdaab7045099127bb47d0c0ca3cfe305e45eba9075df596d22863586c9609c00"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/outline.md",
+      "bytes": 2767,
+      "sha256": "268bd4a6f0cdb142f823368c739da18b0954b927401b33f38e1f9baefeb43d30"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/packet-audit.json",
+      "bytes": 6448,
+      "sha256": "60b0d102493661087082824d2ac703ffa4234a5bcb67ea6334b95894f01668dc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/pre-replay-counter-correction.json",
+      "bytes": 577,
+      "sha256": "63efc5b9eca17344fe77b9b91d562ade429f171e98ab78b60b4ecdc0995aa257"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/report.md",
+      "bytes": 4564,
+      "sha256": "9749b0d36ede1fc4d4e6e0e1976d437de6c5526ea75236933ec1c3544cf84e66"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/source-audit-initial.json",
+      "bytes": 5827,
+      "sha256": "1df5a78d075a46d1a8e71d98eaafeeab517de9f8084c502a4662f6d8aaa20b8a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/source-audit.json",
+      "bytes": 5846,
+      "sha256": "77095a71ed3ed32c5c5346e892f0ff462229f32db474c2485f0a685cff6bd456"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/verify-manifest.py",
+      "bytes": 431,
+      "sha256": "be9a3a563f7f0256b799d680ed1d264e82d2d23cc0393104f20e12f02c25b547"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-authored.json",
+      "bytes": 633,
+      "sha256": "7c599302c568e7b1465098a46f0aae9de201c562c2f7eedaa9ae67253931790d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-whole.json",
+      "bytes": 290,
+      "sha256": "754a5c66c89bd9f6bfc498d8103378cd420714d0ca11012fbf7ae5cf6e544a1c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-whole.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/review/whitespace-whole.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "excludes": [
+    "this manifest (self-reference)"
+  ],
+  "nativeQualified": false
+}
