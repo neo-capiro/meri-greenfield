@@ -1,3 +1,13 @@
+# Canonical filename repair closeout
+
+Final source is `16a4f883962bd72f9421949df95709f65b286555`. The earlier accepted source `10295f04` and packet `fe81f220` below are preserved historical checkpoints, superseded for this filename boundary. Independent reviewer found canonical 120-character basenames plus `.xlsx` produce 125-character filenames; the existing application maximum124 falsely rejected a successfully generated workbook. DOCX has the same canonical suffix length. The unchanged `artifactFilename` helper owns the 120-character basename truncation; this repair changes only application ASCII length admission124→125 and its explanatory comment. Canonical request/retained-spec equality, safe characters and all authority/accounting checks remain unchanged. No renderer/generator edit occurred.
+
+Tests-only freeze `fc8cb950` reproduces **1 PASS / 4 FAIL** against unchanged production: XLSX and DOCX with120- and200-character request titles each fail release; the forged126-character retained filename refusal passes. Source repair then passes **15/15** focused controls, including the same unchanged five new controls and all ten original workbook controls. Existing original Word/independent suites remain byte-identical; their historical66/66 run stays retained, without claiming it ran again on this repair. Reviewer replay independently passes **33/33**, including actual maximum-length download, restoring ACCEPT_SOURCE at16a4f883. Narrow repair audit passes16/16; both process groups are physically absent with no timeout/kill, and seven temporary dependency links were removed again. No native/provider/SQL/cloud actions occurred.
+
+The new `filename-repair-manifest.json` binds this final report and additional receipts. The original `manifest.json` remains immutable historical evidence atfe81f220; its then-current report is retained as `author-report-before-filename.md` and in Git. Root workbook rendering/recalculation flow and public browser receiver are separately owned.
+
+---
+
 # Editable workbook application author
 
 Source freeze `10295f0448a8c4f0a3464b7802b845efb1c00a33` extends the existing document application to the exact canonical `create_excel` descriptor and XLSX, preserving the exact canonical `create_word` descriptor and DOCX/TXT defaults. Base: `bc8b65cc7186e449cf20b4956e4cd88684b35325`. Outline `1bfcc852` preceded source implementation. Root fixture dependency `00032028b57141631c3bbd6a6cc34d5d2bcad9e8` is imported locally as `934272907c25f65f324afa710e46f34627d44e1a`; root should skip that duplicate dependency when integrating author commits.
