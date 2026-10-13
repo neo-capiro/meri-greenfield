@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: existing conversation Fetch routes reuse opaque session and stop before fetch after revocation
+ok 1 - existing conversation Fetch routes reuse opaque session and stop before fetch after revocation
+  ---
+  duration_ms: 44.221941
+  type: 'test'
+  ...
+# Subtest: existing artifact owners create/revise/inspect/hash-check both downloads and exclude unowned versions
+ok 2 - existing artifact owners create/revise/inspect/hash-check both downloads and exclude unowned versions
+  ---
+  duration_ms: 224.099395
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target http://staging.example.invalid/
+ok 3 - refuses non-staging target http://staging.example.invalid/
+  ---
+  duration_ms: 1.182029
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://127.0.0.1/
+ok 4 - refuses non-staging target https://127.0.0.1/
+  ---
+  duration_ms: 0.441181
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://localhost/
+ok 5 - refuses non-staging target https://localhost/
+  ---
+  duration_ms: 1.916257
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://user:password@staging.example.invalid/
+ok 6 - refuses non-staging target https://user:password@staging.example.invalid/
+  ---
+  duration_ms: 0.148883
+  type: 'test'
+  ...
+# Subtest: refuses non-staging target https://staging.example.invalid/?grant=1
+ok 7 - refuses non-staging target https://staging.example.invalid/?grant=1
+  ---
+  duration_ms: 0.097185
+  type: 'test'
+  ...
+# Subtest: requires disjoint automation/manual clients and conversations
+ok 8 - requires disjoint automation/manual clients and conversations
+  ---
+  duration_ms: 0.785185
+  type: 'test'
+  ...
+# Subtest: imports/configures without network and refuses unknown resource mutation routes
+ok 9 - imports/configures without network and refuses unknown resource mutation routes
+  ---
+  duration_ms: 0.747248
+  type: 'test'
+  ...
+# Subtest: manual client current context refuses before any authenticated fetch
+ok 10 - manual client current context refuses before any authenticated fetch
+  ---
+  duration_ms: 1.585983
+  type: 'test'
+  ...
+# Subtest: different immutable candidate refuses before any request
+ok 11 - different immutable candidate refuses before any request
+  ---
+  duration_ms: 0.404375
+  type: 'test'
+  ...
+# Subtest: oversize response cleanup returns despite an unresponsive transport cancel
+ok 12 - oversize response cleanup returns despite an unresponsive transport cancel
+  ---
+  duration_ms: 14.195388
+  type: 'test'
+  ...
+# Subtest: closing client cancels parked requests and preserves borrowed transport
+ok 13 - closing client cancels parked requests and preserves borrowed transport
+  ---
+  duration_ms: 1.559584
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2036.544129

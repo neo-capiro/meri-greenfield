@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/durable-skills-20261013/source-independent/staging-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-source-review",
+  "reviewedCommit": "a0783b147b1439cf4fb4767e841cabd1ce6e7fa3",
+  "worktreeHead": "8554aaa1ce7656be4ed84256f30ff481347ad9c2",
+  "timeoutSeconds": 180,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 0.259,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 3926,
+  "stderrBytes": 0,
+  "stdoutSha256": "49531d7342b88545c314bc1cb37f31cb9cbb9c728c8f9170609259e954f81b1f",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
