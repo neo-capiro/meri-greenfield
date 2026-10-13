@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-13T07:00:45Z",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/52",
+  "number": 52,
+  "draft": true,
+  "state": "open",
+  "merged": false,
+  "base": "task/meri-document-drafting-20261013",
+  "baseSha": "a0614e7e16d6f92d0ca6eaa192cea7c5def21ec8",
+  "head": "task/meri-capiro-endpoint-integrated-20261013",
+  "publicationHead": "a8bec51890c733819b48e181e82c02fe8d02b406",
+  "publicationTree": "c488d750c8c700d6e5f214c7ec473c7c8b4baa94",
+  "authorSource": "9063f707e2ac618b0dcf5bb0c5165d13914748e6",
+  "reviewPacket": "6e52e6abfdf7a41256febea83cc8b15262f6cd06",
+  "integrationManifestSha256": "cebda126b9c51ce27bce3e11237941b3d7ef218889126aec4088563de6a55334",
+  "verdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "note": "This receipt is added in a documentation-only descendant; final head/tree are recorded in the PR body. No merge/deployment/runtime admission."
+}
