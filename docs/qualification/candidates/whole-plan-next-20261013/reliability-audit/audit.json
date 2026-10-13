@@ -1,0 +1,3793 @@
+{
+  "schema": "meri-original-reliability-source-audit/1",
+  "source": {
+    "commit": "18adda2c5461b8d346277135aafd3972b4768802",
+    "tree": "eaec635b6b1c6cdc353ad48a5fda1f7a3dc10b21"
+  },
+  "boundary": "Independent bounded source audit; no new implementation/tests, private/native/provider/cloud action, whole-requirement promotion or runtime acceptance.",
+  "classDefinitions": {
+    "implemented-but-unqualified": "Concrete bounded source/contract behavior exists, with whole authentic integration/runtime/criteria still unqualified.",
+    "missing-implementation": "Actual required product logic, full recipe/source composition or diagnostic execution is absent beyond documented/scaffolded inputs.",
+    "external-runtime": "An authentic external input, current authority/source snapshot, admitted native execution or measured benchmark/release action remains required.",
+    "genuinely-deferred": "Only optional Decisions/JEV is deliberately disabled pending baseline and independent adoption; retained as optional scope."
+  },
+  "originalInputs": {
+    "ledgerPath": "docs/qualification/candidates/vertical-source-20261012/integration/requirements-continuation.json",
+    "ledgerSha256": "d2ba9e1fac7d4045c818e5ac052800481b2c741b66b3f5ec33af0ef30cea2ae6",
+    "plan": {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    "workbook": {
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec"
+    },
+    "manifest": {
+      "path": "docs/plans/revisions/20261010-R2/manifest.json",
+      "sha256": "3af1bd511c4eff3bbb43c728808046c872768cf47da7ea6a83262bd95211cbe5"
+    },
+    "unavailableOriginalLedgerLookup": "original-ledger-lookup.json",
+    "joinBoundary": "Exact original plan lines verified against committed R2 hashes. Workbook row criteria/targets independently read; plan has more detailed qualifiers and current instructions supersede historical owner labels/statuses."
+  },
+  "counts": {
+    "records": 33,
+    "wholePending": 33,
+    "wholeRuntimeQualified": 0,
+    "primaryClassCounts": {
+      "implemented-but-unqualified": 8,
+      "missing-implementation": 9,
+      "external-runtime": 10,
+      "genuinely-deferred": 6
+    },
+    "subcriterionClassCounts": {
+      "implemented-but-unqualified": 27,
+      "missing-implementation": 22,
+      "external-runtime": 25,
+      "genuinely-deferred": 6
+    },
+    "originalPlanExactJoins": 33,
+    "originalWorkbookRowJoins": 45
+  },
+  "facts": {
+    "originalCatalog": {
+      "originals": 139,
+      "selected": 96,
+      "deferred": 43,
+      "operations": 97,
+      "selectedMapped": 96,
+      "selectedUnmapped": [],
+      "nullHandlerUnimplementedPending": 97
+    },
+    "originalSkills": {
+      "selectedIds": [
+        "quick_skill.research_company",
+        "quick_skill.relationship_brief",
+        "quick_skill.client_changes",
+        "quick_skill.portfolio_changes",
+        "quick_skill.portfolio_overlap",
+        "quick_skill.mail_history",
+        "quick_skill.meeting_prep",
+        "quick_skill.commitments_audit",
+        "quick_skill.funding_opportunity_match",
+        "quick_skill.pe_deep_dive",
+        "quick_skill.bill_watch",
+        "quick_skill.hearing_watch",
+        "quick_skill.representation_lookup",
+        "quick_skill.regulatory_docket_brief"
+      ],
+      "actualOriginalProseFiles": [
+        "apps/control/document-application/research-brief/SKILL.md"
+      ],
+      "actualOriginalManifestFiles": [
+        "apps/control/document-application/research-brief/manifest.json"
+      ],
+      "implementedBoundedRecipe": "quick_skill.bill_watch",
+      "absentOriginalPairs": [
+        "quick_skill.research_company",
+        "quick_skill.relationship_brief",
+        "quick_skill.client_changes",
+        "quick_skill.portfolio_changes",
+        "quick_skill.portfolio_overlap",
+        "quick_skill.mail_history",
+        "quick_skill.meeting_prep",
+        "quick_skill.commitments_audit",
+        "quick_skill.funding_opportunity_match",
+        "quick_skill.pe_deep_dive",
+        "quick_skill.hearing_watch",
+        "quick_skill.representation_lookup",
+        "quick_skill.regulatory_docket_brief"
+      ],
+      "boundary": "One bounded congressional brief recipe is not complete Bill Watch or all14 qualification."
+    },
+    "benchmark": {
+      "schema": "meri-retrieval-benchmark-manifest/0.1.0",
+      "revision": "R2-20261010",
+      "state": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+      "realRequestsReceived": 0,
+      "realSeedMinimum": 75,
+      "expandedCasesMinimum": 200,
+      "caseIds": [],
+      "sourceSnapshotManifest": null,
+      "frozenSplit": null,
+      "measuredBudgets": null,
+      "results": null,
+      "optionalDecisions": "DISABLED",
+      "optionalJev": "DISABLED",
+      "protocol": "docs/ROUTING-EVALUATION.md",
+      "authorityBoundary": "No production trace retrieval, paid real-data benchmark or extra model budget authorized."
+    },
+    "sourceOnly": true,
+    "nativeQualified": false,
+    "currentCoordinationCorrections": [
+      {
+        "fact": "Neo approved private Meri archive/receipt transfer at10:16UTC; producer Library401 remains the blocker, not approval pending.",
+        "authority": "Current parent task instruction; not independently executed connector access.",
+        "scope": "Exact authorized archive/receipt only; not other artifacts or75 real-request/model benchmarks."
+      },
+      {
+        "fact": "Separate native owner passed PR57 local install/prep/client-crash checks only; live worker/identity/activation remain blocked.",
+        "authority": "Current parent task instruction; no independent native work in this audit.",
+        "scope": "Reported narrow native checks do not satisfy R06/REL05/RG08 or source authentication."
+      }
+    ]
+  },
+  "evidenceGroups": {
+    "catalog": [
+      {
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "bytes": 330499,
+        "anchor": "\"originals\"",
+        "line": 6
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/validate.mjs",
+        "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+        "bytes": 31386,
+        "anchor": "export const {assertCatalog}",
+        "line": 140
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+        "sha256": "faea00e1b12401a0012dfb89dfb927aaabeb544d6c98aef29b062794bfbacdc5",
+        "bytes": 6129,
+        "anchor": "export",
+        "line": 61
+      },
+      {
+        "path": "apps/gateway/catalog/runtime-catalog.mjs",
+        "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff",
+        "bytes": 2396,
+        "anchor": "export function createRuntimeCatalog",
+        "line": 13
+      },
+      {
+        "path": "apps/gateway/index.mjs",
+        "sha256": "645e9490355d2ada5914444cc748df4e76bc38eb5e273fd35a82c17f9f1b26ee",
+        "bytes": 4193,
+        "anchor": "createSourceDisabledGateway",
+        "line": 16
+      }
+    ],
+    "scope": [
+      {
+        "path": "packages/contracts/retrieval-0.2/common.schema.json",
+        "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+        "bytes": 15134,
+        "anchor": "\"SubjectRequest\"",
+        "line": 26
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/validate.mjs",
+        "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+        "bytes": 31386,
+        "anchor": "export function assertSubject",
+        "line": 127
+      },
+      {
+        "path": "apps/gateway/authorization/current-tool-authority.mjs",
+        "sha256": "794e1f54f6966d2d852d0483606c76410ed684d889ca24c7ea78dac6f2c01043",
+        "bytes": 6613,
+        "anchor": "export function createCurrentToolAuthority",
+        "line": 13
+      },
+      {
+        "path": "apps/gateway/budget/admitted-run-owner.mjs",
+        "sha256": "896fbd043e76fb4d8dd201b0e7346f09d8c96416500adc36c5d5e0f45b718b34",
+        "bytes": 3920,
+        "anchor": "export function",
+        "line": 6
+      },
+      {
+        "path": "apps/control/action-host/resolver.mjs",
+        "sha256": "d54bf42a46afdb3eda0354683ec794e133e856eaffd49f685714f5f9423ec95e",
+        "bytes": 4196,
+        "anchor": "export function createHostResolver",
+        "line": 5
+      },
+      {
+        "path": "apps/control/action-host/session/owner.mjs",
+        "sha256": "7239a73d05784f492d1d7c68a371ab1ca5c94fada71fc74a20b8c3f372769084",
+        "bytes": 9632,
+        "anchor": "export function",
+        "line": 12
+      }
+    ],
+    "window": [
+      {
+        "path": "packages/contracts/retrieval-0.2/common.schema.json",
+        "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+        "bytes": 15134,
+        "anchor": "\"WindowRequest\"",
+        "line": 202
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/validate.mjs",
+        "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+        "bytes": 31386,
+        "anchor": "export function assertWindowResolution",
+        "line": 117
+      },
+      {
+        "path": "apps/control/document-application/research-brief/input.mjs",
+        "sha256": "cae958dc640990aecba93700e35d525a798d37aa47e60c124d0003db6bc4b4ba",
+        "bytes": 2808,
+        "anchor": "export",
+        "line": 5
+      },
+      {
+        "path": "apps/control/document-application/research-brief/README.md",
+        "sha256": "1bba225316fa67234fc90ea678d2ce86a429f250ffdd9681fcffba3c091e77c2",
+        "bytes": 4851,
+        "anchor": "No latest-version resolution",
+        "line": 3
+      }
+    ],
+    "read": [
+      {
+        "path": "packages/contracts/retrieval-0.2/validate.mjs",
+        "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+        "bytes": 31386,
+        "anchor": "export function assertEvidence",
+        "line": 160
+      },
+      {
+        "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+        "sha256": "d69827d3e46c53c544af183cbb43ca21bc932be4aa4c6c1bacec93fede7e7bfb",
+        "bytes": 1010,
+        "anchor": "export function assertDispatchResult",
+        "line": 5
+      },
+      {
+        "path": "apps/gateway/sources/research-portfolio-evidence/handler.mjs",
+        "sha256": "d43944b263ed074ec9dd0e0da9691dbcaad3ab7caa498fe2909a50e37c93de30",
+        "bytes": 1810,
+        "anchor": "export function createResearchPortfolioEvidenceHandler",
+        "line": 8
+      },
+      {
+        "path": "apps/gateway/sources/research-portfolio-evidence/http-adapter.mjs",
+        "sha256": "97634d2a4f16fce0c5ac697f5275a3e9254d269d8c1243cc064bb25575ffca06",
+        "bytes": 4476,
+        "anchor": "export",
+        "line": 11
+      },
+      {
+        "path": "apps/gateway/sources/action-items/handler.mjs",
+        "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453",
+        "bytes": 1804,
+        "anchor": "export",
+        "line": 6
+      },
+      {
+        "path": "apps/control/document-application/research-brief/evidence.mjs",
+        "sha256": "715bfeb5120672685c6e8beec85e4a1c76e97ef53f91e583c38b7af9a297cdde",
+        "bytes": 3853,
+        "anchor": "export",
+        "line": 8
+      }
+    ],
+    "skill": [
+      {
+        "path": "docs/coordination/r2/skills.json",
+        "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6",
+        "bytes": 25018,
+        "anchor": "\"records\"",
+        "line": 10
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+        "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+        "bytes": 9072,
+        "anchor": "\"SkillInvocation\"",
+        "line": 6
+      },
+      {
+        "path": "packages/contracts/retrieval-0.2/validate.mjs",
+        "sha256": "3798d5e55e10777b24397d0867b6b722218bceba9663de4f007e78e818b40c34",
+        "bytes": 31386,
+        "anchor": "export function assertSkillManifest",
+        "line": 301
+      },
+      {
+        "path": "apps/control/document-application/research-brief/SKILL.md",
+        "sha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+        "bytes": 2206,
+        "anchor": "Identity: quick_skill.bill_watch",
+        "line": 3
+      },
+      {
+        "path": "apps/control/document-application/research-brief/manifest.json",
+        "sha256": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
+        "bytes": 2375,
+        "anchor": "\"skillId\"",
+        "line": 3
+      },
+      {
+        "path": "apps/control/document-application/research-brief/skill.mjs",
+        "sha256": "b2b6fd4420507d551d77f2dc7485ddfc75255821576138e54b26715e10bbfad2",
+        "bytes": 1516,
+        "anchor": "export",
+        "line": 13
+      },
+      {
+        "path": "apps/control/document-application/research-brief/README.md",
+        "sha256": "1bba225316fa67234fc90ea678d2ce86a429f250ffdd9681fcffba3c091e77c2",
+        "bytes": 4851,
+        "anchor": "cannot pass",
+        "line": 13
+      }
+    ],
+    "budget": [
+      {
+        "path": "apps/gateway/budget/tool-budget-execution.mjs",
+        "sha256": "7cf8547b9357e11b656a2572c9036b5a0e364c628001a66ecd71fb8783b8723a",
+        "bytes": 4678,
+        "anchor": "export",
+        "line": 8
+      },
+      {
+        "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+        "sha256": "d6dace94cb0232047a2922b8c0cc6769f090e07b36aca51e64320287ebb552aa",
+        "bytes": 623,
+        "anchor": "export",
+        "line": 5
+      },
+      {
+        "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+        "sha256": "43e0da87bae2fd5e08c564a6c9d8f1a8ce9608fd51489aa83cbed86a0a8d7094",
+        "bytes": 13454,
+        "anchor": "export",
+        "line": 142
+      },
+      {
+        "path": "apps/gateway/budget/README.md",
+        "sha256": "33b6bf03a1c71a8b9f5217ed840e3a88f91aa1ee0cd9a05b8f14d04a1eadc469",
+        "bytes": 17448,
+        "anchor": "Settlement records",
+        "line": 17
+      },
+      {
+        "path": "apps/control/tool-invocations.mjs",
+        "sha256": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c",
+        "bytes": 2738,
+        "anchor": "export",
+        "line": 18
+      }
+    ],
+    "native": [
+      {
+        "path": "apps/worker/qualification/README.md",
+        "sha256": "7a55b8f45fd24e7630f77fbaf394f603d27754a4d505d97a607216ed49bc23fa",
+        "bytes": 16027,
+        "anchor": "PREPARATION ONLY",
+        "line": 6
+      },
+      {
+        "path": "apps/worker/qualification/sdk-options.mjs",
+        "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e",
+        "bytes": 5402,
+        "anchor": "export",
+        "line": 5
+      },
+      {
+        "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+        "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d",
+        "bytes": 5948,
+        "anchor": "export",
+        "line": 31
+      },
+      {
+        "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+        "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+        "bytes": 3849,
+        "anchor": "export",
+        "line": 8
+      },
+      {
+        "path": "apps/control/qualification-temporal/README.md",
+        "sha256": "72835dd067b5ea3b2d5d48a6089d73fb0b94e7a271a4d60b2e23114da1c4cb54",
+        "bytes": 12556,
+        "anchor": "Temporal",
+        "line": 1
+      }
+    ],
+    "evaluation": [
+      {
+        "path": "evals/retrieval-r2/manifest.json",
+        "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f",
+        "bytes": 568,
+        "anchor": "\"realRequestsReceived\"",
+        "line": 5
+      },
+      {
+        "path": "docs/RETRIEVAL-AUDIT.md",
+        "sha256": "3790e591154beabaa5a438f93dd1e4b6236ca33fc8922f8cde1cb9d9805a1a9d",
+        "bytes": 3213,
+        "anchor": "real baseline uncollected",
+        "line": 3
+      },
+      {
+        "path": "docs/ROUTING-EVALUATION.md",
+        "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add",
+        "bytes": 4222,
+        "anchor": "dataset empty",
+        "line": 3
+      },
+      {
+        "path": "evals/task-lookup/corpus.mjs",
+        "sha256": "226b2280acd17937d35302ebe256f7a07e4e86b0d1c92acb2b30a2736da388f8",
+        "bytes": 5224,
+        "anchor": "export",
+        "line": 3
+      },
+      {
+        "path": "evals/task-lookup/score.mjs",
+        "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414",
+        "bytes": 11169,
+        "anchor": "export",
+        "line": 72
+      },
+      {
+        "path": "evals/task-lookup/execution/README.md",
+        "sha256": "603db5dc3af50666736f39b03d80db160e603f9c56a40924f60c90eaa5dd4cce",
+        "bytes": 6127,
+        "anchor": "original",
+        "line": 3
+      },
+      {
+        "path": "evals/action-followthrough/local-baseline/README.md",
+        "sha256": "da9acd2a9b0d9e360f6126f1d13d395cb85498af63257f6e10351fbc817df324",
+        "bytes": 3044,
+        "anchor": "not human-authored-case",
+        "line": 11
+      }
+    ],
+    "replay": [
+      {
+        "path": "apps/artifacts/recovery.mjs",
+        "sha256": "abc8864fde912a049c4c3e86471069423e403e79d649ccab04587b36ad1617dc",
+        "bytes": 4180,
+        "anchor": "export async function recoverArtifact",
+        "line": 8
+      },
+      {
+        "path": "apps/artifacts/postgres-service.mjs",
+        "sha256": "3543453ff9831b024bf850fd8f3966083caab9dd64234f8c720eb7668a03ea59",
+        "bytes": 14164,
+        "anchor": "ports.budget.recheck",
+        "line": 54
+      },
+      {
+        "path": "apps/artifacts/local-replay.mjs",
+        "sha256": "0ae9ef98561521e32ab9827b1c97f3c4c1e23685b9173a7e00b9d83b884189a7",
+        "bytes": 2793,
+        "anchor": "artifact-replay",
+        "line": 7
+      },
+      {
+        "path": "apps/control/document-application/research-brief/compose.mjs",
+        "sha256": "4c9bc22bfb88331717ca963a810137cfbd4e5f83c843b78833aa7d4e70300240",
+        "bytes": 7775,
+        "anchor": "export",
+        "line": 48
+      },
+      {
+        "path": "docs/qualification/candidates/document-replay-20261013/artifact-review/final/report.md",
+        "sha256": "6f9f4ddcfc66f26a846f02fafddfa60188a191e44f6839eb685e6bfc50c6ab22",
+        "bytes": 7194,
+        "anchor": "111/111 PASS",
+        "line": 13
+      },
+      {
+        "path": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-report.md",
+        "sha256": "ede4bf1794fd469e0d024873f7ac9ba8190c6dbe0a0b54632241c0b3a5fdd716",
+        "bytes": 4131,
+        "anchor": "37/37 independent",
+        "line": 11
+      }
+    ],
+    "optional": [
+      {
+        "path": "docs/ROUTING-EVALUATION.md",
+        "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add",
+        "bytes": 4222,
+        "anchor": "Decisions/JEV remain disabled",
+        "line": 21
+      },
+      {
+        "path": "evals/retrieval-r2/manifest.json",
+        "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f",
+        "bytes": 568,
+        "anchor": "\"optionalDecisions\"",
+        "line": 13
+      },
+      {
+        "path": "evals/retrieval-r2/manifest.json",
+        "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f",
+        "bytes": 568,
+        "anchor": "\"optionalJev\"",
+        "line": 14
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "R-01",
+      "governingRequirement": {
+        "id": "R-01",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 218
+        },
+        "originalRequirement": "| R-01 | Canonical catalog and typed operations: one source for schemas, adapters, descriptions, availability, authority and eval mappings; no fixed total count, giant free-text query operation or raw SQL exposure | Catalog/handler drift checks, distinct operation examples, selected/deferred/replacement mapping, unavailable-recipe lint |",
+        "originalRecordSha256": "67e7c9fc11ec703a897dbff48fed5d028cdef04e73d00d9409ed0ae54f195d09",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Canonical catalog and closed schema callbacks source accepted; no second registry.",
+        "sourceReceiptIds": [
+          "read-source",
+          "read-catalog",
+          "combined-source",
+          "command-source",
+          "combined-review",
+          "backend-publication"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Remaining mappings and actual handler/availability/eval composition under current source authority.",
+        "owner": "contract/gateway owner",
+        "nextParallelSourceOrMetadataWork": "Integrate independently accepted71/70/26 source in order and close remaining selected interfaces; retain full139 mapping boundary.",
+        "decisionOrExternalPrerequisite": "Combined source review is accepted; real handlers require separate qualifications.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 218,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 318,
+          "idCell": "A318",
+          "cells": {
+            "A318": "R-01",
+            "B318": "Routing and retrieval reliability",
+            "C318": "Canonical catalog and typed operations",
+            "D318": "One authoritative catalog. Precise names, when-to-use, enums, inputs/outputs and failure semantics. Preserve domain distinctions. Tool count follows evidence.",
+            "E318": "Planned v1",
+            "F318": "Hermes gateway. REL-01. Gates: RG-01, RG-04, RG-08",
+            "G318": "Deployment reliability R-01. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 8,
+          "idCell": "A8",
+          "cells": {
+            "A8": "R-01",
+            "B8": "Canonical catalog and typed operations",
+            "C8": "One authoritative catalog. Precise names, when-to-use, enums, inputs/outputs and failure semantics. Preserve domain distinctions. Tool count follows evidence.",
+            "D8": "Core",
+            "E8": "Hermes gateway",
+            "F8": "REL-01",
+            "G8": "RG-01, RG-04, RG-08",
+            "H8": "Catalog diff, schema lint, domain fixtures",
+            "I8": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-01",
+            "Contract": "Canonical catalog and typed operations",
+            "Implementation rule": "One authoritative catalog. Precise names, when-to-use, enums, inputs/outputs and failure semantics. Preserve domain distinctions. Tool count follows evidence.",
+            "Scope": "Core",
+            "Owner": "Hermes gateway",
+            "Depends on": "REL-01",
+            "Qualification gates": "RG-01, RG-04, RG-08",
+            "Completion evidence": "Catalog diff, schema lint, domain fixtures",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "One typed catalog, domain contracts, preserved original mappings and availability guards",
+            "finding": "139 original IDs are preserved: 96 selected all map to operation IDs/aliases and 43 deferred. 97 typed descriptors use canonical validators; runtime catalog checks schema/handler/descriptor pins and refuses unavailable entries.",
+            "evidenceGroups": [
+              "catalog"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Actual complete handler/availability/evaluation composition and unavailable-recipe agreement",
+            "finding": "Every production descriptor still has null handler/unimplemented/pending. Concrete source seams cover selected slices, not all 96 originals; original 14 recipe bodies cannot yet be linted against available handlers. Mapping completeness is not handler completeness.",
+            "evidenceGroups": [
+              "catalog",
+              "skill",
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-02",
+      "governingRequirement": {
+        "id": "R-02",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 219
+        },
+        "originalRequirement": "| R-02 | Server-bound scope/entity identity: bind current actor/tenant/client or authorized portfolio, grants and entity IDs; validate model/UI scope requests; reauthorize every read/write/publication | Same-name clients, pronouns/follow-ups, denied IDs, portfolio/client/personal distinctions, revocation and within-tenant fixtures |",
+        "originalRecordSha256": "648c44edd8b86615afa31a7416eb550c602f5b68c116508c25af56a83eb72bb5",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Trusted context DTO/correlation/current-grant source boundaries exist.",
+        "sourceReceiptIds": [
+          "contracts",
+          "read-source",
+          "native-reported",
+          "scope"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Actual actor/tenant/client/portfolio/mail grant binding and reauthorization at every use/publication/replay.",
+        "owner": "identity/gateway + source owners",
+        "nextParallelSourceOrMetadataWork": "Bind canonical identity and policy services; add real same-name/denied/revoked stored-context fixtures.",
+        "decisionOrExternalPrerequisite": "Current identity/principal/policy receipts; native state pass alone is insufficient.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 219,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 319,
+          "idCell": "A319",
+          "cells": {
+            "A319": "R-02",
+            "B319": "Routing and retrieval reliability",
+            "C319": "Server-bound scope and entity",
+            "D319": "Bind tenant, actor, canonical client/entity IDs and grants in trusted code. Recheck at discovery, load, use, resume and destination. Clarify unresolved identity.",
+            "E319": "Planned v1",
+            "F319": "Hermes gateway/security. R-01. Gates: RG-02, RG-07, RG-12",
+            "G319": "Deployment reliability R-02. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 9,
+          "idCell": "A9",
+          "cells": {
+            "A9": "R-02",
+            "B9": "Server-bound scope and entity",
+            "C9": "Bind tenant, actor, canonical client/entity IDs and grants in trusted code. Recheck at discovery, load, use, resume and destination. Clarify unresolved identity.",
+            "D9": "Core",
+            "E9": "Hermes gateway/security",
+            "F9": "R-01",
+            "G9": "RG-02, RG-07, RG-12",
+            "H9": "Scope and ambiguous-identity fixtures",
+            "I9": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-02",
+            "Contract": "Server-bound scope and entity",
+            "Implementation rule": "Bind tenant, actor, canonical client/entity IDs and grants in trusted code. Recheck at discovery, load, use, resume and destination. Clarify unresolved identity.",
+            "Scope": "Core",
+            "Owner": "Hermes gateway/security",
+            "Depends on": "R-01",
+            "Qualification gates": "RG-02, RG-07, RG-12",
+            "Completion evidence": "Scope and ambiguous-identity fixtures",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Current actor/run/subject/grant boundaries at execution and result release",
+            "finding": "Canonical capability, current-run, business/source authorization and persisted admitted-run owners exist; session/control and artifact replay recheck current rights.",
+            "evidenceGroups": [
+              "scope",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "General same-name/pronoun/follow-up and authorized portfolio subject resolution",
+            "finding": "Typed SubjectRequest/ResolvedSubject and host-specific prepared scope do not implement a general trusted entity/pronoun resolver for every original skill.",
+            "evidenceGroups": [
+              "scope",
+              "skill"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual principals/policy/mail/memory/portfolio authorization and adversarial corpus",
+            "finding": "Authentic current identity/policy/source ports and original cross/within-tenant runtime suite are not established by local synthetic authority decisions.",
+            "evidenceGroups": [
+              "scope",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-03",
+      "governingRequirement": {
+        "id": "R-03",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 220
+        },
+        "originalRequirement": "| R-03 | Calendar/FY/version windows: calendar periods, relative durations and fiscal years are distinct; normalize timezone, inclusive start/exclusive end, document version and funding stage | This/last week, Monday/Sunday policy, DST, month/year boundaries, last seven days, fiscal-year rollover and conflicting version/stage fixtures |",
+        "originalRecordSha256": "d42de6b61d0768b656a4a46fc4d179ae7102e4c9e19bf81ecf36f49899cdad74",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Typed window/FY/version and domain observation boundaries exist.",
+        "sourceReceiptIds": [
+          "contracts",
+          "read-source",
+          "pe-source"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Trusted calendar/timezone/FY/version resolver and actual boundary/comparability behavior.",
+        "owner": "retrieval/window + domain owners",
+        "nextParallelSourceOrMetadataWork": "Close resolver semantics for calendar versus duration, week policy,DST,FY/stage/version without ambient model authority.",
+        "decisionOrExternalPrerequisite": "Owner choices only for unresolved consequential calendar/fiscal policies; domain known contracts proceed.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 220,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 320,
+          "idCell": "A320",
+          "cells": {
+            "A320": "R-03",
+            "B320": "Routing and retrieval reliability",
+            "C320": "Calendar, fiscal year and version",
+            "D320": "Resolve actor timezone, this week, inclusive/exclusive bounds, fiscal year, bill session, budget stage and exact revision. Validate comparable units.",
+            "E320": "Planned v1",
+            "F320": "Hermes retrieval. R-02. Gates: RG-02, RG-04",
+            "G320": "Deployment reliability R-03. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 10,
+          "idCell": "A10",
+          "cells": {
+            "A10": "R-03",
+            "B10": "Calendar, fiscal year and version",
+            "C10": "Resolve actor timezone, this week, inclusive/exclusive bounds, fiscal year, bill session, budget stage and exact revision. Validate comparable units.",
+            "D10": "Core",
+            "E10": "Hermes retrieval",
+            "F10": "R-02",
+            "G10": "RG-02, RG-04",
+            "H10": "Boundary, FY/stage/version fixtures",
+            "I10": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-03",
+            "Contract": "Calendar, fiscal year and version",
+            "Implementation rule": "Resolve actor timezone, this week, inclusive/exclusive bounds, fiscal year, bill session, budget stage and exact revision. Validate comparable units.",
+            "Scope": "Core",
+            "Owner": "Hermes retrieval",
+            "Depends on": "R-02",
+            "Qualification gates": "RG-02, RG-04",
+            "Completion evidence": "Boundary, FY/stage/version fixtures",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Typed calendar/duration/FY/version/stage contracts and supplied-boundary validation",
+            "finding": "WindowRequest separates calendar week/month/year, relative-duration, explicit and fiscal-year. Validators check supplied timezone/local-midnight calendar bounds and prevent basis/stage/revision substitution; research brief retains explicit legislative/FY/stage pins.",
+            "evidenceGroups": [
+              "window"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Trusted request-to-normalized-window and comparable domain basis resolution",
+            "finding": "No production resolver computes this/last week/month/year from a trusted clock and actor timezone, applies explicit Monday/Sunday policy, resolves fiscal-calendar bounds or authoritative revision/stage conflicts. assertWindowResolution checks supplied normalized bounds; it does not produce them.",
+            "evidenceGroups": [
+              "window",
+              "scope"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Authoritative actor preferences/fiscal calendars/version snapshots",
+            "finding": "Real policy/timezone and domain revision authority must be bound through existing trusted ports; synthetic supplied dates do not qualify the whole boundary suite.",
+            "evidenceGroups": [
+              "window",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-04",
+      "governingRequirement": {
+        "id": "R-04",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 221
+        },
+        "originalRequirement": "| R-04 | Candidate search/exact query/source-read distinction: hybrid candidate discovery where useful; typed authoritative counts/status/history/comparisons; full decisive passage reads | Search coverage versus enumerated counts; late-body match; multi-source history; bill version/status and PE identity/budget-stage truth |",
+        "originalRecordSha256": "4c5573411f6f5eea19788ca03c17faf67cb2d72f049b087b8b74d6ab897a78ad",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Exact/candidate/full-read contract separation and domain DTOs accepted.",
+        "sourceReceiptIds": [
+          "read-source",
+          "contracts",
+          "pe-source",
+          "combined-source",
+          "combined-review",
+          "backend-publication"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Actual query/source reads and authoritative count/status/history/comparison; no absence from excerpts.",
+        "owner": "retrieval/source adapter owners",
+        "nextParallelSourceOrMetadataWork": "Implement authentic full-read and exact adapter interfaces; keep PE Decimal/stage/mode and source policies intact.",
+        "decisionOrExternalPrerequisite": "Qualified source grants/snapshot/interfaces and domain oracle evidence.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 221,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 321,
+          "idCell": "A321",
+          "cells": {
+            "A321": "R-04",
+            "B321": "Routing and retrieval reliability",
+            "C321": "Search, exact query and source read",
+            "D321": "Separate candidate search, typed exact operations and evidence reading. Use qualified lexical/semantic discovery. No raw SQL or giant free-text query contract.",
+            "E321": "Planned v1",
+            "F321": "Hermes retrieval. R-01, R-02, R-03. Gates: RG-03, RG-04, RG-12",
+            "G321": "Deployment reliability R-04. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 11,
+          "idCell": "A11",
+          "cells": {
+            "A11": "R-04",
+            "B11": "Search, exact query and source read",
+            "C11": "Separate candidate search, typed exact operations and evidence reading. Use qualified lexical/semantic discovery. No raw SQL or giant free-text query contract.",
+            "D11": "Core",
+            "E11": "Hermes retrieval",
+            "F11": "R-01, R-02, R-03",
+            "G11": "RG-03, RG-04, RG-12",
+            "H11": "Adapter contracts and oracle retrieval runs",
+            "I11": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-04",
+            "Contract": "Search, exact query and source read",
+            "Implementation rule": "Separate candidate search, typed exact operations and evidence reading. Use qualified lexical/semantic discovery. No raw SQL or giant free-text query contract.",
+            "Scope": "Core",
+            "Owner": "Hermes retrieval",
+            "Depends on": "R-01, R-02, R-03",
+            "Qualification gates": "RG-03, RG-04, RG-12",
+            "Completion evidence": "Adapter contracts and oracle retrieval runs",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Distinct candidate/exact/full-read shapes and bounded decisive passage compiler",
+            "finding": "Canonical typed domain schemas separate discovery and authoritative observations. Existing research/action source seams and brief compiler validate actual supplied decisive text, selectors, scope and authorization decisions.",
+            "evidenceGroups": [
+              "read",
+              "window",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Authentic exact/search/full-read implementations for the entire selected source inventory",
+            "finding": "Disabled production facade plus contract bindings are not all selected source adapters. Complete multi-source history, hybrid candidate discovery, exact count/status/comparison and version/stage truth remain missing beyond the implemented slices.",
+            "evidenceGroups": [
+              "catalog",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Authorized source interfaces/snapshots and late-body/domain oracles",
+            "finding": "Authentic full text and authoritative producer versions/counts must come from qualified sources; synthetic passage/hash consistency is insufficient.",
+            "evidenceGroups": [
+              "read",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-05",
+      "governingRequirement": {
+        "id": "R-05",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 222
+        },
+        "originalRequirement": "| R-05 | Normalized evidence/coverage/freshness/paging: consistent envelopes, explicit status and method, authorized citations, source versions, filters and continuation | Partial/unavailable/stale/empty/truncated fixtures; no absence claim from incomplete coverage; exact-version evidence continuity |",
+        "originalRecordSha256": "d663b5e399aac596ea907fe5126f37d573b90194c271e8b854cbd471e4ecdf1d",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Normalized coverage/freshness/continuation/lineage consistency accepted.",
+        "sourceReceiptIds": [
+          "read-source",
+          "contracts"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Authentic source snapshots/cursors/versions/citations and true complete enumeration.",
+        "owner": "retrieval/source adapter owners",
+        "nextParallelSourceOrMetadataWork": "Compose same-version decisive reads and source-specific continuation with truthful partial/error results.",
+        "decisionOrExternalPrerequisite": "Actual producer/snapshot proof; hash syntax and reported dates are not authenticity.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 222,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 322,
+          "idCell": "A322",
+          "cells": {
+            "A322": "R-05",
+            "B322": "Routing and retrieval reliability",
+            "C322": "Evidence, coverage and freshness",
+            "D322": "Uniform success/empty/partial/unavailable status, IDs/revisions, timestamps, checked sources, applied scope, returned/total, cursor and truncation. Read material evidence.",
+            "E322": "Planned v1",
+            "F322": "Hermes retrieval. R-04. Gates: RG-03, RG-05, RG-12",
+            "G322": "Deployment reliability R-05. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 12,
+          "idCell": "A12",
+          "cells": {
+            "A12": "R-05",
+            "B12": "Evidence, coverage and freshness",
+            "C12": "Uniform success/empty/partial/unavailable status, IDs/revisions, timestamps, checked sources, applied scope, returned/total, cursor and truncation. Read material evidence.",
+            "D12": "Core",
+            "E12": "Hermes retrieval",
+            "F12": "R-04",
+            "G12": "RG-03, RG-05, RG-12",
+            "H12": "Envelopes, paging and false-absence fixtures",
+            "I12": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-05",
+            "Contract": "Evidence, coverage and freshness",
+            "Implementation rule": "Uniform success/empty/partial/unavailable status, IDs/revisions, timestamps, checked sources, applied scope, returned/total, cursor and truncation. Read material evidence.",
+            "Scope": "Core",
+            "Owner": "Hermes retrieval",
+            "Depends on": "R-04",
+            "Qualification gates": "RG-03, RG-05, RG-12",
+            "Completion evidence": "Envelopes, paging and false-absence fixtures",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Coverage/freshness/version/continuation consistency and visible artifact appendix",
+            "finding": "Evidence envelopes and read/result validation preserve explicit coverage and lineage; brief includes passages, missing/conflicting evidence, verification appendix and immutable citations without granting free-form claims verified status from URLs.",
+            "evidenceGroups": [
+              "read",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Complete source-specific cursor/snapshot/coverage implementation for all selected sources",
+            "finding": "Uniform DTO checks cannot prove truthful completeness, filters, freshness or stable cursors for source adapters not yet implemented/composed.",
+            "evidenceGroups": [
+              "catalog",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual producer authenticity and current citation/source authorization",
+            "finding": "Real producer/snapshot/current-source proof and complete enumeration remain unqualified; no hash/date syntax substitutes for source attestation.",
+            "evidenceGroups": [
+              "read",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-06",
+      "governingRequirement": {
+        "id": "R-06",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 223
+        },
+        "originalRequirement": "| R-06 | Native SDK discovery and proxy compatibility: small measured default surface and authorized domain discovery through pinned supported model/runtime/proxy | End-to-end reference/stream/header/compaction/resume compatibility; adversarial catalog recall; observed token/call/latency evidence |",
+        "originalRecordSha256": "ef37aa8f4320744029e7e4aa204b67554ddb664c7c9567a0cd08059a78693a99",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Catalog resolution and source proxy/discovery scaffolding accepted.",
+        "sourceReceiptIds": [
+          "read-source",
+          "runtime-source",
+          "native-reported",
+          "sdk-image-reported"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Native pinned SDK deferred discovery through actual model/proxy, references/stream/header/compaction/resume.",
+        "owner": "SDK/proxy native owner",
+        "nextParallelSourceOrMetadataWork": "Bind actual discovery traces and adversarial required-tool recall to exact catalog.",
+        "decisionOrExternalPrerequisite": "Admitted supported image/model/proxy and authorized bounded runtime action; native33/9/12 not discovery proof.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 223,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 323,
+          "idCell": "A323",
+          "cells": {
+            "A323": "R-06",
+            "B323": "Routing and retrieval reliability",
+            "C323": "Native discovery through proxy",
+            "D323": "Claude SDK owns the loop and native deferred search. Validate actual proxy tool_reference and schema loading. Small catalogs may load upfront.",
+            "E323": "Planned v1",
+            "F323": "Hermes runtime. R-01, R-02. Gates: RG-01, RG-08, RG-09",
+            "G323": "https://code.claude.com/docs/en/agent-sdk/tool-search"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 13,
+          "idCell": "A13",
+          "cells": {
+            "A13": "R-06",
+            "B13": "Native discovery through proxy",
+            "C13": "Claude SDK owns the loop and native deferred search. Validate actual proxy tool_reference and schema loading. Small catalogs may load upfront.",
+            "D13": "Core",
+            "E13": "Hermes runtime",
+            "F13": "R-01, R-02",
+            "G13": "RG-01, RG-08, RG-09",
+            "H13": "Proxy integration and catalog recall report",
+            "I13": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-06",
+            "Contract": "Native discovery through proxy",
+            "Implementation rule": "Claude SDK owns the loop and native deferred search. Validate actual proxy tool_reference and schema loading. Small catalogs may load upfront.",
+            "Scope": "Core",
+            "Owner": "Hermes runtime",
+            "Depends on": "R-01, R-02",
+            "Qualification gates": "RG-01, RG-08, RG-09",
+            "Completion evidence": "Proxy integration and catalog recall report",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Pinned SDK/proxy preparation, catalog discovery/availability and evidence contracts",
+            "finding": "SDK options/checkpoint/evidence source and default disabled catalog exist. They preserve Claude SDK as sole loop; source evidence is preparation or local qualification.",
+            "evidenceGroups": [
+              "native",
+              "catalog"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual model/runtime/proxy references, streaming, headers, compaction/resume and measured recall/cost/latency",
+            "finding": "No complete admitted supported native discovery-through-proxy run or adversarial required-capability recall benchmark is qualified by PR59.",
+            "evidenceGroups": [
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-07",
+      "governingRequirement": {
+        "id": "R-07",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 224
+        },
+        "originalRequirement": "| R-07 | Explicit skill invocation and executable manifest: selected ID/version plus typed scope/dates; manifest pins required evidence, allowed operations, approval constraints, completion and budget | Submit/steer/reconnect/resume/fork fixtures, manifest validation, active-version migration policy and required-source completion checks |",
+        "originalRecordSha256": "e7bb768c5d686d74bfa5289f5dcb1a7c73d40464cc894bd8a178d66bbcff1f79",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Invocation/version/manifest pin and continuity structure exists.",
+        "sourceReceiptIds": [
+          "skills",
+          "frontend",
+          "contracts"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Executable manifest resolver and true submit/steer/reconnect/resume/fork identity/completion across UI/runtime.",
+        "owner": "control/skills + frontend owners",
+        "nextParallelSourceOrMetadataWork": "Write original manifests and lifecycle producer/consumer fixtures; retain required sources even across mixed domains.",
+        "decisionOrExternalPrerequisite": "Reviewed operation availability/dependencies; no activation from synthetic manifest.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 224,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 324,
+          "idCell": "A324",
+          "cells": {
+            "A324": "R-07",
+            "B324": "Routing and retrieval reliability",
+            "C324": "Skill identity and manifest",
+            "D324": "UI sends selected ID/version and typed subject/date inputs. Server binds immutable evidence/completion manifest. Natural-language invocation reaches the same resolver.",
+            "E324": "Planned v1",
+            "F324": "Hermes UI/skills. R-01, R-02, R-03. Gates: RG-02, RG-06, RG-12",
+            "G324": "Deployment reliability R-07. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 14,
+          "idCell": "A14",
+          "cells": {
+            "A14": "R-07",
+            "B14": "Skill identity and manifest",
+            "C14": "UI sends selected ID/version and typed subject/date inputs. Server binds immutable evidence/completion manifest. Natural-language invocation reaches the same resolver.",
+            "D14": "Core",
+            "E14": "Hermes UI/skills",
+            "F14": "R-01, R-02, R-03",
+            "G14": "RG-02, RG-06, RG-12",
+            "H14": "Invocation payload and lifecycle fixtures",
+            "I14": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-07",
+            "Contract": "Skill identity and manifest",
+            "Implementation rule": "UI sends selected ID/version and typed subject/date inputs. Server binds immutable evidence/completion manifest. Natural-language invocation reaches the same resolver.",
+            "Scope": "Core",
+            "Owner": "Hermes UI/skills",
+            "Depends on": "R-01, R-02, R-03",
+            "Qualification gates": "RG-02, RG-06, RG-12",
+            "Completion evidence": "Invocation payload and lifecycle fixtures",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Explicit 14 IDs/version/typed-input and manifest/pin continuity foundation",
+            "finding": "Canonical invocation/manifest validators exist; original bill_watch congressional recipe pins prose, manifest, catalog, input/read hashes and exact immutable parent.",
+            "evidenceGroups": [
+              "skill",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Complete executable manifest selection/completion and lifecycle policy for all 14 skills",
+            "finding": "13 original prose/manifest pairs are absent; the one brief recipe is a bounded output, not whole Bill Watch. General submit/steer/reconnect/resume/fork selection, active-version migration and mandatory-source completion need existing SDK/control/frontend composition.",
+            "evidenceGroups": [
+              "skill",
+              "scope"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Real UI/SDK/Temporal lifecycle and qualified operation availability",
+            "finding": "Structural pin tests and local artifact repeats do not qualify frontend selection or native SDK durable skill execution.",
+            "evidenceGroups": [
+              "native",
+              "catalog",
+              "replay"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-08",
+      "governingRequirement": {
+        "id": "R-08",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 225
+        },
+        "originalRequirement": "| R-08 | Scoped original skills including Commitments: preserve the 14 quick-action workflow intents as proposed v1 selections; qualify their promises; ordinary questions remain lightweight | Skill-by-skill expected evidence/output rubric; Commitments proof/owner/date/ambiguity/dedup/coverage fixtures; no forbidden source widening |",
+        "originalRecordSha256": "7bbf86fd900163e0956887b0bf403d426f8ffc63adccbff602a72f2a1752d7ba",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Fourteen quick-action IDs and required Commitments rubric constraints preserved.",
+        "sourceReceiptIds": [
+          "skills",
+          "scope",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Original fourteen skills/prose and individual promised evidence/output/completion qualifications.",
+        "owner": "skills/domain + independent QA",
+        "nextParallelSourceOrMetadataWork": "Author original scoped skills/rubrics; prioritize Commitments and meeting-brief/drafting product outcome without legacy code.",
+        "decisionOrExternalPrerequisite": "Approved source scopes and operation dependencies; native ID deferral cannot delete product drafting.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 225,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 325,
+          "idCell": "A325",
+          "cells": {
+            "A325": "R-08",
+            "B325": "Routing and retrieval reliability",
+            "C325": "Original scoped skills and Commitments",
+            "D325": "Retain 14 current quick-action intents as original SDK skills. Qualify required sources. Commitments preserves promises, unknown fields and evidence-backed completion.",
+            "E325": "Planned v1",
+            "F325": "Hermes skills. R-05, R-07. Gates: RG-05, RG-06",
+            "G325": "Deployment reliability R-08. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 15,
+          "idCell": "A15",
+          "cells": {
+            "A15": "R-08",
+            "B15": "Original scoped skills and Commitments",
+            "C15": "Retain 14 current quick-action intents as original SDK skills. Qualify required sources. Commitments preserves promises, unknown fields and evidence-backed completion.",
+            "D15": "Core",
+            "E15": "Hermes skills",
+            "F15": "R-05, R-07",
+            "G15": "RG-05, RG-06",
+            "H15": "All 14 intent fixtures and procedure rubric",
+            "I15": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-08",
+            "Contract": "Original scoped skills and Commitments",
+            "Implementation rule": "Retain 14 current quick-action intents as original SDK skills. Qualify required sources. Commitments preserves promises, unknown fields and evidence-backed completion.",
+            "Scope": "Core",
+            "Owner": "Hermes skills",
+            "Depends on": "R-05, R-07",
+            "Qualification gates": "RG-05, RG-06",
+            "Completion evidence": "All 14 intent fixtures and procedure rubric",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Preserved 14 original quick-action intents and bounded original congressional brief",
+            "finding": "The committed R2 skill inventory retains all 14 IDs including commitments_audit; product apps/packages have one original SKILL.md/manifest pair for bill_watch1.0.0.",
+            "evidenceGroups": [
+              "skill"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Individual original skills and promised evidence/output/completion rubrics",
+            "finding": "13 original pairs are absent and complete Bill Watch remains pending. Commitments proof versus suggestion, unknown owner/date, evidence-backed completion, deduplication and mapped Monday coverage are requirements, not an implemented original skill procedure.",
+            "evidenceGroups": [
+              "skill",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Authorized required-source qualification for all promised workflows",
+            "finding": "Each skill must exercise genuine required-source coverage with current rights; no source widening or Quicklog UI is implied by filling original recipe gaps.",
+            "evidenceGroups": [
+              "skill",
+              "catalog",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-09",
+      "governingRequirement": {
+        "id": "R-09",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 226
+        },
+        "originalRequirement": "| R-09 | Complexity budget and bounded recovery: budget follows requested work and evidence, not a domain keyword; direct known-ID lookup avoids unnecessary discovery; recovery follows diagnosed failure | Simple versus comprehensive paired fixtures; no blind repeated search; explicit partial/clarify/block outcomes; enforced runtime/token/tool budgets |",
+        "originalRecordSha256": "c10ae4532bae25e9c7cc7a3bec0b5ea435fafad9fc455648592ed729603bb494",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Budget/fence/admission/recovery source;9 budget+12 invocation cases reported passing.",
+        "sourceReceiptIds": [
+          "runtime-source",
+          "native-reported",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Measured task-complexity budgets, actual runtime/token/tool enforcement and purposeful failure recovery.",
+        "owner": "runtime/budget owner",
+        "nextParallelSourceOrMetadataWork": "Join real engine invocation/settlement receipts; implement trusted issuance/reconciliation and paired simple/comprehensive tests.",
+        "decisionOrExternalPrerequisite": "Unreconciled paid allowance prohibits calls; host/test passes do not establish tenant global budget/runtime enforcement.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 226,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 326,
+          "idCell": "A326",
+          "cells": {
+            "A326": "R-09",
+            "B326": "Routing and retrieval reliability",
+            "C326": "Complexity and bounded recovery",
+            "D326": "Simple questions use main SDK loop. Delegate valuable parallel work. Retry with purposeful bounded source fallback. Preserve verified partial output and budgets.",
+            "E326": "Planned v1",
+            "F326": "Hermes runtime. R-04, R-05, R-06. Gates: RG-09, RG-12",
+            "G326": "Deployment reliability R-09. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 16,
+          "idCell": "A16",
+          "cells": {
+            "A16": "R-09",
+            "B16": "Complexity and bounded recovery",
+            "C16": "Simple questions use main SDK loop. Delegate valuable parallel work. Retry with purposeful bounded source fallback. Preserve verified partial output and budgets.",
+            "D16": "Core",
+            "E16": "Hermes runtime",
+            "F16": "R-04, R-05, R-06",
+            "G16": "RG-09, RG-12",
+            "H16": "Warm/cold cohorts, retries and stop receipts",
+            "I16": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-09",
+            "Contract": "Complexity and bounded recovery",
+            "Implementation rule": "Simple questions use main SDK loop. Delegate valuable parallel work. Retry with purposeful bounded source fallback. Preserve verified partial output and budgets.",
+            "Scope": "Core",
+            "Owner": "Hermes runtime",
+            "Depends on": "R-04, R-05, R-06",
+            "Qualification gates": "RG-09, RG-12",
+            "Completion evidence": "Warm/cold cohorts, retries and stop receipts",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Durable budgets, conservative unknown outcomes and bounded exact artifact recovery",
+            "finding": "Canonical admission/reservation/invocation/settlement owners enforce declared limits and preserve UNKNOWN. Exact replay retains original charge/version and current durable grant; no second physical generation is needed for verified completed results.",
+            "evidenceGroups": [
+              "budget",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Requested-work complexity allocation and diagnosed source/model recovery policy",
+            "finding": "Declared accounting caps and direct typed lookup do not implement/measure general simple versus comprehensive task budgeting, token ceilings or purposeful fallback across the full source/skill inventory.",
+            "evidenceGroups": [
+              "budget",
+              "skill",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual SDK usage, settlement/reconciliation and paired task/token/latency observations",
+            "finding": "Fixed conservative charges and synthetic local receipts do not establish real measured model usage or end-to-end runtime enforcement.",
+            "evidenceGroups": [
+              "budget",
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-10",
+      "governingRequirement": {
+        "id": "R-10",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 227
+        },
+        "originalRequirement": "| R-10 | End-to-end trace/oracle diagnostics: correlated route, arguments, result coverage, evidence read and final claims; correct-tool and correct-evidence runs localize failure | Replayable redacted traces, failure taxonomy, original/oracle comparisons and per-stage timings/costs |",
+        "originalRecordSha256": "5ddc513bc3c1c0016f028f0ebf7e65ba0bb691098de111a36f60f4e2cdbf9ee2",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Trace/oracle/scoring protocol adopted.",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "75 real seed ->200 labelled held-out cases with actual traces, gold evidence, per-stage timings/cost.",
+        "owner": "benchmark owner + independent QA",
+        "nextParallelSourceOrMetadataWork": "Freeze grouping/gold labels/denominators and redaction/trace schema before model tuning.",
+        "decisionOrExternalPrerequisite": "Approved real-request location/owner and authorized snapshots; preserve original60-task gate.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 227,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 327,
+          "idCell": "A327",
+          "cells": {
+            "A327": "R-10",
+            "B327": "Routing and retrieval reliability",
+            "C327": "Traces, benchmark and oracle",
+            "D327": "Trace subject/window, invocation, candidates, arguments, source statuses, evidence, calls and p50/p95 latency. Start 75 real queries and expand to 200 versioned cases with a held-out split.",
+            "E327": "Planned v1",
+            "F327": "Hermes QA/observability. REL-01. Gates: RG-01 through RG-12",
+            "G327": "Deployment reliability R-10. https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 17,
+          "idCell": "A17",
+          "cells": {
+            "A17": "R-10",
+            "B17": "Traces, benchmark and oracle",
+            "C17": "Trace subject/window, invocation, candidates, arguments, source statuses, evidence, calls and p50/p95 latency. Start 75 real queries and expand to 200 versioned cases with a held-out split.",
+            "D17": "Core",
+            "E17": "Hermes QA/observability",
+            "F17": "REL-01",
+            "G17": "RG-01 through RG-12",
+            "H17": "Baseline, labelled fixtures, oracle reports",
+            "I17": "Gap check pending"
+          },
+          "fields": {
+            "Requirement ID": "R-10",
+            "Contract": "Traces, benchmark and oracle",
+            "Implementation rule": "Trace subject/window, invocation, candidates, arguments, source statuses, evidence, calls and p50/p95 latency. Start 75 real queries and expand to 200 versioned cases with a held-out split.",
+            "Scope": "Core",
+            "Owner": "Hermes QA/observability",
+            "Depends on": "REL-01",
+            "Qualification gates": "RG-01 through RG-12",
+            "Completion evidence": "Baseline, labelled fixtures, oracle reports",
+            "Implementation state": "Gap check pending"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Redacted scoring/trace protocol and bounded correct-tool observation slice",
+            "finding": "Offline corpus/scorer and typed task-lookup observation producer retain pins, trace stage hashes, coverage and missing/ineligible denominators. Local six-case baseline is explicitly synthetic.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Complete original/correct-tool/correct-evidence execution and route-to-final-claims diagnostics",
+            "finding": "Task-lookup executor supports correct-tool only; original and correct-evidence stay ineligible. General multi-domain/model/claim diagnostic execution is not implemented by that slice.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "75 authenticated real requests, >=200 grouped cases, snapshots and actual timing/cost",
+            "finding": "Benchmark manifest has 0 real requests, empty case IDs, null source manifest/split/budgets/results. Original60-task and100-adversarial gates remain separate.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-11",
+      "governingRequirement": {
+        "id": "R-11",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 228
+        },
+        "originalRequirement": "| R-11 | Optional Decisions routing benchmark: bounded choice/predicate/score advice, multi-source coverage, abstention/fallback, no authority or argument generation | SDK baseline first, paired held-out shadow trials, calibrated confidence, outage/timeout tests and independent adoption decision |",
+        "originalRecordSha256": "147036f8c04d7bbfbd3b0738ea1639eaf6fb23e43278d8db5d3b8df265dc968a",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Optional advisory boundary documented, no mandatory second loop.",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Qualified baseline then paired supported Decisions shadow calibration/fallback/latency/adoption.",
+        "owner": "evaluation owner",
+        "nextParallelSourceOrMetadataWork": "Prepare bounded choice/abstention/fallback fixtures without enabling provider.",
+        "decisionOrExternalPrerequisite": "Optional stays disabled/shadow; no current provider authority or invented promotion.",
+        "optional": true,
+        "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 228,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 328,
+          "idCell": "A328",
+          "cells": {
+            "A328": "R-11",
+            "B328": "Routing and retrieval reliability",
+            "C328": "Optional Decisions routing evaluation",
+            "D328": "Public-beta choice/predicate/score service advises ambiguous family or complexity among authorized supplied options. SDK forms tool arguments. Bypass on error.",
+            "E328": "Qualification-dependent",
+            "F328": "Hermes evaluation. R-01 through R-10 qualified baseline. Gates: RG-09, RG-10",
+            "G328": "https://developers.openai.com/api/docs/guides/decisions"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 18,
+          "idCell": "A18",
+          "cells": {
+            "A18": "R-11",
+            "B18": "Optional Decisions routing evaluation",
+            "C18": "Public-beta choice/predicate/score service advises ambiguous family or complexity among authorized supplied options. SDK forms tool arguments. Bypass on error.",
+            "D18": "Optional experiment",
+            "E18": "Hermes evaluation",
+            "F18": "R-01 through R-10 qualified baseline",
+            "G18": "RG-09, RG-10",
+            "H18": "Paired held-out route and latency report",
+            "I18": "Not run"
+          },
+          "fields": {
+            "Requirement ID": "R-11",
+            "Contract": "Optional Decisions routing evaluation",
+            "Implementation rule": "Public-beta choice/predicate/score service advises ambiguous family or complexity among authorized supplied options. SDK forms tool arguments. Bypass on error.",
+            "Scope": "Optional experiment",
+            "Owner": "Hermes evaluation",
+            "Depends on": "R-01 through R-10 qualified baseline",
+            "Qualification gates": "RG-09, RG-10",
+            "Completion evidence": "Paired held-out route and latency report",
+            "Implementation state": "Not run"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "genuinely-deferred",
+        "subcriteria": [
+          {
+            "class": "genuinely-deferred",
+            "criterion": "Optional bounded Decisions advisor and independent adoption",
+            "finding": "Disabled pending qualified SDK baseline, actual supported API and paired held-out calibration/fallback/latency/adoption. Optional work is not mandatory core completion or permanently excluded.",
+            "evidenceGroups": [
+              "optional",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "R-12",
+      "governingRequirement": {
+        "id": "R-12",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 229
+        },
+        "originalRequirement": "| R-12 | Optional calibrated JEV evidence benchmark: task-specific passage relevance/claim support/client-fit improvement with abstention; no unsupported tool-router integration | Human-labelled gold data, withheld-evidence/authoritative-state safeguards, calibration plots, error slices and fallback tests |",
+        "originalRecordSha256": "c1ef9159ff075010e90f2c8a8e44ead6127f0f51b0e340239498bfaa9cd5af52",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Optional evidence-judge boundary documented.",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Task-specific human labels/calibration/abstention and required-evidence protection before JEV adoption.",
+        "owner": "evaluation/domain QA owner",
+        "nextParallelSourceOrMetadataWork": "Prepare passage/claim/client-fit gold rubric without replacing authoritative reads.",
+        "decisionOrExternalPrerequisite": "Optional after baseline; freeze task-specific threshold before any authorized shadow scoring.",
+        "optional": true,
+        "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 229,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "New Meri",
+          "row": 329,
+          "idCell": "A329",
+          "cells": {
+            "A329": "R-12",
+            "B329": "Routing and retrieval reliability",
+            "C329": "Optional calibrated JEV evidence",
+            "D329": "Evaluate passage/claim/client-fit tasks after retrieval against human labels. No existing JEV router. Calibrate abstention and retain all required evidence.",
+            "E329": "Qualification-dependent",
+            "F329": "Hermes evaluation. R-01 through R-10 qualified baseline. Gates: RG-11",
+            "G329": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/jev/jev-provider.factory.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/meriv2-core/src/jev/task-registry.ts"
+          },
+          "fields": null
+        },
+        {
+          "sheet": "Tool contracts",
+          "row": 19,
+          "idCell": "A19",
+          "cells": {
+            "A19": "R-12",
+            "B19": "Optional calibrated JEV evidence",
+            "C19": "Evaluate passage/claim/client-fit tasks after retrieval against human labels. No existing JEV router. Calibrate abstention and retain all required evidence.",
+            "D19": "Optional experiment",
+            "E19": "Hermes evaluation",
+            "F19": "R-01 through R-10 qualified baseline",
+            "G19": "RG-11",
+            "H19": "Human-labelled calibration and recall report",
+            "I19": "Not run"
+          },
+          "fields": {
+            "Requirement ID": "R-12",
+            "Contract": "Optional calibrated JEV evidence",
+            "Implementation rule": "Evaluate passage/claim/client-fit tasks after retrieval against human labels. No existing JEV router. Calibrate abstention and retain all required evidence.",
+            "Scope": "Optional experiment",
+            "Owner": "Hermes evaluation",
+            "Depends on": "R-01 through R-10 qualified baseline",
+            "Qualification gates": "RG-11",
+            "Completion evidence": "Human-labelled calibration and recall report",
+            "Implementation state": "Not run"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "genuinely-deferred",
+        "subcriteria": [
+          {
+            "class": "genuinely-deferred",
+            "criterion": "Optional calibrated task-specific JEV evidence evaluation",
+            "finding": "Disabled pending frozen human-labelled relevance/support/client-fit calibration, abstention/safeguards and independent adoption after baseline. No unsupported router or second loop is required.",
+            "evidenceGroups": [
+              "optional",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-01",
+      "governingRequirement": {
+        "id": "REL-01",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 308
+        },
+        "originalRequirement": "| REL-01 Traces and baseline | Codex + B/D scoped sessions; `docs/RETRIEVAL-AUDIT.md`, `evals/` baseline fixtures | W00; read-only current-Meri trace/source access where available | 75-case initial set, failure taxonomy, deployed settings, source snapshots, oracle protocol and measured budgets; inaccessible production traces explicitly blocked | R-09/R-10; RG-09 |",
+        "originalRecordSha256": "da0f8de298839f055b82282508e46e504765e2c369ba5a62d43cc19246f5907f",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Inventory/protocol source and current report joins exist.",
+        "sourceReceiptIds": [
+          "benchmark",
+          "plan-index"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Approved real75 seed, deployed settings and observed baseline/oracles missing.",
+        "owner": "benchmark owner",
+        "nextParallelSourceOrMetadataWork": "Obtain dataset owner/location and freeze real case provenance.",
+        "decisionOrExternalPrerequisite": "No real-data/provider access inferred.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 308,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 8,
+          "idCell": "A8",
+          "cells": {
+            "A8": "REL-01",
+            "B8": "Baseline",
+            "C8": "Inventory existing implementation and accepted evidence. Capture failed queries, traces and oracle controls. Pin current branches/config without interrupting in-flight sessions.",
+            "D8": "Codex + Hermes QA",
+            "E8": "Existing standalone handoff",
+            "F8": "R-10",
+            "G8": "RG-01 through RG-12",
+            "H8": "Trace packet, 75-query seed and gap matrix",
+            "I8": "Gap check pending",
+            "J8": "Resume existing work. Do not recreate qualified components."
+          },
+          "fields": {
+            "Ticket ID": "REL-01",
+            "Phase": "Baseline",
+            "Work": "Inventory existing implementation and accepted evidence. Capture failed queries, traces and oracle controls. Pin current branches/config without interrupting in-flight sessions.",
+            "Owner": "Codex + Hermes QA",
+            "Dependencies": "Existing standalone handoff",
+            "Requirement IDs": "R-10",
+            "Qualification gates": "RG-01 through RG-12",
+            "Completion evidence": "Trace packet, 75-query seed and gap matrix",
+            "State": "Gap check pending",
+            "Rollout guidance": "Resume existing work. Do not recreate qualified components."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Source inventory/failure taxonomy/oracle and benchmark protocol",
+            "finding": "Audit and evaluation protocol are committed, with real-source absence disclosed rather than substituted by synthetic cases.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "75 real seed traces, deployed settings/snapshots and measured baseline/budgets",
+            "finding": "Real seed and authenticated trace/source/config corpus remain unavailable; manifest still0. Archive transfer approval is not a real-request dataset or an approved provider benchmark.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-02",
+      "governingRequirement": {
+        "id": "REL-02",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 309
+        },
+        "originalRequirement": "| REL-02 Contracts and catalog | Codex + one B session; `packages/contracts/`, catalog/retrieval/skill docs | W00 discovery accepted; W01 contract ownership allocated; REL-01 inventory findings (REL-02 contributes to W01 completion) | Frozen typed operations, scope/window/evidence/skill contracts, handler/schema/description mapping and unavailable-recipe checks | R-01–R-05/R-07; RG-02/RG-07 |",
+        "originalRecordSha256": "b4cf180b32b865b3a20f5acaa654dfad39c577d24fe5fb2f46d2868ba3efc08c",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Canonical private read and command payload composition accepted.",
+        "sourceReceiptIds": [
+          "read-source",
+          "command-source",
+          "combined-source",
+          "combined-review",
+          "backend-publication"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Complete native mapping/handler/description/fixture and skill contract joins.",
+        "owner": "contract integration",
+        "nextParallelSourceOrMetadataWork": "Use accepted combined source and assign remaining26 closed interfaces.",
+        "decisionOrExternalPrerequisite": "Exact independent acceptance before dependent integration.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 309,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 9,
+          "idCell": "A9",
+          "cells": {
+            "A9": "REL-02",
+            "B9": "Contracts",
+            "C9": "Publish one typed catalog and alias/deprecation mapping for all 139 original IDs. Preserve domain semantics and action governance. Remove contradictions in descriptions.",
+            "D9": "Hermes gateway",
+            "E9": "REL-01 and allocated W01 contract ownership. Contributes to W01.",
+            "F9": "R-01, R-02",
+            "G9": "RG-01, RG-02, RG-04, RG-07",
+            "H9": "Catalog, typed contracts and preservation map",
+            "I9": "Gap check pending",
+            "J9": "Incremental PRs. No arbitrary ten-tool target."
+          },
+          "fields": {
+            "Ticket ID": "REL-02",
+            "Phase": "Contracts",
+            "Work": "Publish one typed catalog and alias/deprecation mapping for all 139 original IDs. Preserve domain semantics and action governance. Remove contradictions in descriptions.",
+            "Owner": "Hermes gateway",
+            "Dependencies": "REL-01 and allocated W01 contract ownership. Contributes to W01.",
+            "Requirement IDs": "R-01, R-02",
+            "Qualification gates": "RG-01, RG-02, RG-04, RG-07",
+            "Completion evidence": "Catalog, typed contracts and preservation map",
+            "State": "Gap check pending",
+            "Rollout guidance": "Incremental PRs. No arbitrary ten-tool target."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Frozen typed operations/scope/window/evidence/skill and original mapping foundation",
+            "finding": "One canonical139-original/97-operation catalog maps all96 selected aliases, retains43 deferred and validates unavailable activation. Public package/API bytes remain those accepted by prior owners.",
+            "evidenceGroups": [
+              "catalog",
+              "scope",
+              "window",
+              "skill"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Actual handler/schema/description/recipe agreement for full selected product",
+            "finding": "Production handler availability remains null/unimplemented/pending; 13 recipe pairs absent and full current available-handler evaluation mapping/completion are not supplied by schema publication alone.",
+            "evidenceGroups": [
+              "catalog",
+              "skill"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-03",
+      "governingRequirement": {
+        "id": "REL-03",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 310
+        },
+        "originalRequirement": "| REL-03 Retrieval adapters | B; `apps/gateway/` source adapters, scoped fixture files | Accepted REL-02; W03 for live source checks | Independently written exact/search/read adapters with coverage/freshness/paging; memory/client/portfolio and selected domain truth fixtures | R-02–R-05; RG-02–RG-05/RG-07/RG-12 |",
+        "originalRecordSha256": "d1b36bcb52f1a9f48b4dc45657b1ee87e87432844a72be859e22507715b7b1cc",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Many source contracts and normalization semantics accepted.",
+        "sourceReceiptIds": [
+          "read-source",
+          "contracts",
+          "pe-source"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Actual authorized exact/search/read adapters and domain truth, not only DTOs.",
+        "owner": "gateway/source adapters",
+        "nextParallelSourceOrMetadataWork": "Implement and independently review narrowly scoped trusted adapters under frozen policy.",
+        "decisionOrExternalPrerequisite": "Restricted source interface/role, W03 for live checks.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 310,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 10,
+          "idCell": "A10",
+          "cells": {
+            "A10": "REL-03",
+            "B10": "Retrieval",
+            "C10": "Qualify search/exact/source-read adapters, windows and evidence envelope. Repair gaps found in completed gateway work.",
+            "D10": "Hermes retrieval",
+            "E10": "REL-02",
+            "F10": "R-03, R-04, R-05",
+            "G10": "RG-02, RG-03, RG-04, RG-05, RG-12",
+            "H10": "Adapter/oracle fixtures and coverage reports",
+            "I10": "Gap check pending",
+            "J10": "Keep source authorization and reliable existing behavior."
+          },
+          "fields": {
+            "Ticket ID": "REL-03",
+            "Phase": "Retrieval",
+            "Work": "Qualify search/exact/source-read adapters, windows and evidence envelope. Repair gaps found in completed gateway work.",
+            "Owner": "Hermes retrieval",
+            "Dependencies": "REL-02",
+            "Requirement IDs": "R-03, R-04, R-05",
+            "Qualification gates": "RG-02, RG-03, RG-04, RG-05, RG-12",
+            "Completion evidence": "Adapter/oracle fixtures and coverage reports",
+            "State": "Gap check pending",
+            "Rollout guidance": "Keep source authorization and reliable existing behavior."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Exact/search/read contracts and independently written concrete source slices",
+            "finding": "Research-portfolio evidence, action items and related gateway projection/HTTP source boundaries exist, alongside typed domain contracts and full-read brief compilation.",
+            "evidenceGroups": [
+              "read",
+              "catalog"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "All selected adapters, trusted windows and complete memory/client/portfolio/domain behavior",
+            "finding": "The source-disabled facade and pending97 descriptors do not compose all96 original capabilities. Trusted window normalization and missing source-family product implementations still need canonical source owners.",
+            "evidenceGroups": [
+              "catalog",
+              "window",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "W03 qualified authentic current source checks and domain snapshots",
+            "finding": "Independent local source fixtures do not establish genuine source access/authorization/freshness/paging/oracle results.",
+            "evidenceGroups": [
+              "read",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-04",
+      "governingRequirement": {
+        "id": "REL-04",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 311
+        },
+        "originalRequirement": "| REL-04 Skills and UI identity | C; `apps/web/`, `packages/skills/`, owned manifests/UI ledger | Accepted REL-02; W05 for resume/fork integration | Typed explicit invocation, original scoped skills, Commitments, required evidence/completion, calendar/portfolio/memory regressions and Playwright checks | R-03/R-07/R-08; RG-02/RG-06/RG-12 |",
+        "originalRecordSha256": "973c80db415124f3a843e5af5945f3eff767e80ceed1567e7609f919365d00e7",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Typed invocation/manifest foundation plus current frontend source evidence.",
+        "sourceReceiptIds": [
+          "skills",
+          "frontend"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Original14skills, executable source/completion policy and real lifecycle UI.",
+        "owner": "skills/control/frontend",
+        "nextParallelSourceOrMetadataWork": "Implement original manifest+rubric and explicit selected identity/event flow.",
+        "decisionOrExternalPrerequisite": "Accepted REL02 and durable resume/fork dependencies.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 311,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 11,
+          "idCell": "A11",
+          "cells": {
+            "A11": "REL-04",
+            "B11": "Skills/UI",
+            "C11": "Carry skill identity/version and typed inputs. Implement original contracts for 14 quick-action intents with stronger Commitments & Deliverables rubric.",
+            "D11": "Hermes UI + skills",
+            "E11": "REL-02. Retrieval can progress in parallel.",
+            "F11": "R-07, R-08",
+            "G11": "RG-02, RG-05, RG-06, RG-12",
+            "H11": "Invocation fixtures and skill manifest matrix",
+            "I11": "Gap check pending",
+            "J11": "No implicit selection of historical built-ins/firm authoring."
+          },
+          "fields": {
+            "Ticket ID": "REL-04",
+            "Phase": "Skills/UI",
+            "Work": "Carry skill identity/version and typed inputs. Implement original contracts for 14 quick-action intents with stronger Commitments & Deliverables rubric.",
+            "Owner": "Hermes UI + skills",
+            "Dependencies": "REL-02. Retrieval can progress in parallel.",
+            "Requirement IDs": "R-07, R-08",
+            "Qualification gates": "RG-02, RG-05, RG-06, RG-12",
+            "Completion evidence": "Invocation fixtures and skill manifest matrix",
+            "State": "Gap check pending",
+            "Rollout guidance": "No implicit selection of historical built-ins/firm authoring."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Typed selected skill identity foundation and one original brief output",
+            "finding": "All14 IDs remain in contracts/inventory; brief pins original1.0.0 manifest/prose and exact revision provenance using existing artifact lifecycle.",
+            "evidenceGroups": [
+              "skill",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "14 complete original skills/Commitments and UI lifecycle/completion composition",
+            "finding": "13 original recipe pairs plus the rest of Bill Watch, common manifest execution/required-source completion and requested window/portfolio/memory regressions remain product implementation work.",
+            "evidenceGroups": [
+              "skill",
+              "window",
+              "scope"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Frontend Playwright submit/steer/reconnect/resume/fork/native binding",
+            "finding": "This repo/source-only audit cannot claim independent frontend/native acceptance. Frontend owner and admitted runtime must prove actual selected identity and completion.",
+            "evidenceGroups": [
+              "native",
+              "skill"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-05",
+      "governingRequirement": {
+        "id": "REL-05",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 312
+        },
+        "originalRequirement": "| REL-05 SDK discovery and loop | A; `apps/worker/`, trusted proxy integration; Codex owns catalog shared changes | Runtime checkpoint: accepted REL-02 and W02 spike environment ready. Final end-to-end checkpoint: accepted REL-03/04 and W03/W05 integration | Runtime-only discovery/proxy evidence contributes to W02 before W03. Later lightweight baseline, budgets/recovery, resume/compaction and adversarial integration evidence qualify under W09 | R-01/R-06/R-09/R-10; RG-01/RG-08/RG-09/RG-12 |",
+        "originalRecordSha256": "becdc40e5c488b7ac203e3076c2bf1451a98a12690ed7d849e528da4fc91ce30",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "SDK/proxy/runtime source; limited native state suites reported.",
+        "sourceReceiptIds": [
+          "runtime-source",
+          "native-reported",
+          "sdk-image-reported"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Runtime-only G1 discovery checkpoint AND later W09 full integration remain distinct.",
+        "owner": "native/runtime/proxy",
+        "nextParallelSourceOrMetadataWork": "Collect actual discovery/proxy traces first; later integrate adapters/skills/durability.",
+        "decisionOrExternalPrerequisite": "Supported admitted runtime and independent exact evidence; do not require later integration to start runtime checkpoint.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 312,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 12,
+          "idCell": "A12",
+          "cells": {
+            "A12": "REL-05",
+            "B12": "SDK runtime",
+            "C12": "Use one Claude loop and native deferred discovery through the actual proxy. Bound simple work, delegation, retries and recovery.",
+            "D12": "Hermes runtime",
+            "E12": "REL-02. Runtime-only checkpoint contributes to W02. Full integration follows REL-03/REL-04 under W09.",
+            "F12": "R-06, R-09",
+            "G12": "RG-01, RG-08, RG-09, RG-12",
+            "H12": "Proxy/discovery report and warm/cold timing",
+            "I12": "Gap check pending",
+            "J12": "Do not add another production planner loop."
+          },
+          "fields": {
+            "Ticket ID": "REL-05",
+            "Phase": "SDK runtime",
+            "Work": "Use one Claude loop and native deferred discovery through the actual proxy. Bound simple work, delegation, retries and recovery.",
+            "Owner": "Hermes runtime",
+            "Dependencies": "REL-02. Runtime-only checkpoint contributes to W02. Full integration follows REL-03/REL-04 under W09.",
+            "Requirement IDs": "R-06, R-09",
+            "Qualification gates": "RG-01, RG-08, RG-09, RG-12",
+            "Completion evidence": "Proxy/discovery report and warm/cold timing",
+            "State": "Gap check pending",
+            "Rollout guidance": "Do not add another production planner loop."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Sole Claude SDK loop preparation and bounded source checkpoint/controls",
+            "finding": "SDK/proxy/runtime evidence source exists; budgets and exact source adapters retain canonical ownership rather than adding an orchestrator.",
+            "evidenceGroups": [
+              "native",
+              "budget"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Full lightweight/complexity/recovery integration across original skills and sources",
+            "finding": "Existing typed/local control slices do not supply missing common window/skill/source product behavior required for the later W09 checkpoint.",
+            "evidenceGroups": [
+              "skill",
+              "window",
+              "read",
+              "budget"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Runtime-only W02 proxy checkpoint then actual W03/W05/W09 integration",
+            "finding": "Native model/proxy/discovery/headers/stream/compaction/resume/adversarial recall and measured latency are still unqualified. Runtime-only checkpoint precedes source integration; no dependency circularity is introduced.",
+            "evidenceGroups": [
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-06",
+      "governingRequirement": {
+        "id": "REL-06",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 313
+        },
+        "originalRequirement": "| REL-06 Benchmark and domain truth | D with scoped B evidence support; `evals/`, `docs/ROUTING-EVALUATION.md` | REL-01; accepted REL-03/04/05 baseline | Expanded 200-case frozen suite and held-out labels, exact domain truth, oracle diagnostics, baseline result manifest and independent adjudication | R-01–R-10; RG-01–RG-09/RG-12 |",
+        "originalRecordSha256": "b2f2e31fc8553e1b6da1d06f9d7b31cb36c38425246122604cc251cd6dd4d85e",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Evaluation protocol and source checks exist.",
+        "sourceReceiptIds": [
+          "benchmark",
+          "frontend"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "200-case frozen core benchmark, domain/oracle baseline and independent adjudication.",
+        "owner": "independent benchmark QA",
+        "nextParallelSourceOrMetadataWork": "Prepare gold snapshots/rubrics; run only after qualified baseline and authority.",
+        "decisionOrExternalPrerequisite": "REL01 plus accepted integrated REL03/04/05; actual real data owner.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 313,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 13,
+          "idCell": "A13",
+          "cells": {
+            "A13": "REL-06",
+            "B13": "Qualification",
+            "C13": "Expand seed to 200 cases with held-out routes, arguments, evidence, domain truth and oracle replays. Retain all original release gates.",
+            "D13": "Hermes QA + independent reviewer",
+            "E13": "REL-03, REL-04, REL-05",
+            "F13": "R-10",
+            "G13": "RG-01 through RG-09, RG-12",
+            "H13": "Pinned fixture set, paired results and release evidence",
+            "I13": "Not run",
+            "J13": "Core qualification. Actual results remain blank here."
+          },
+          "fields": {
+            "Ticket ID": "REL-06",
+            "Phase": "Qualification",
+            "Work": "Expand seed to 200 cases with held-out routes, arguments, evidence, domain truth and oracle replays. Retain all original release gates.",
+            "Owner": "Hermes QA + independent reviewer",
+            "Dependencies": "REL-03, REL-04, REL-05",
+            "Requirement IDs": "R-10",
+            "Qualification gates": "RG-01 through RG-09, RG-12",
+            "Completion evidence": "Pinned fixture set, paired results and release evidence",
+            "State": "Not run",
+            "Rollout guidance": "Core qualification. Actual results remain blank here."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Corpus freezing/scoring and limited observation/execution source",
+            "finding": "Existing evaluator protects grouping/gold/pins/denominators and correct-tool captures; synthetic baseline does not acquire real inputs.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Complete oracle execution and all domain/skill/route diagnostic modes",
+            "finding": "Original and correct-evidence executions remain ineligible in task-lookup slice; broader200-case runtime harness and original skill/domain behaviors are not closed by deterministic scoring source.",
+            "evidenceGroups": [
+              "evaluation",
+              "skill",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Frozen >=200 actual cases, gold snapshots/baseline results and independent adjudication",
+            "finding": "Real seed0, no authenticated source snapshot or frozen split, no measured baseline/held-out results. REL01/03/04/05 and original gates remain prerequisites.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-07",
+      "governingRequirement": {
+        "id": "REL-07",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 314
+        },
+        "originalRequirement": "| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |",
+        "originalRecordSha256": "c103b5051dc7de7c13ad43c03ede486f4eaccba2fc0de3703341eec13fa95981",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Optional boundary preserved.",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Paired Decisions shadow/adoption is not established or qualified by received evidence; this metadata lane ran none and makes no claim about unseen other-owner work.",
+        "owner": "optional evaluation",
+        "nextParallelSourceOrMetadataWork": "Prepare abstention/mixed-family/fallback design; leave disabled.",
+        "decisionOrExternalPrerequisite": "Qualified REL06 and separately authorized supported API.",
+        "optional": true,
+        "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 314,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 14,
+          "idCell": "A14",
+          "cells": {
+            "A14": "REL-07",
+            "B14": "Optional Decisions",
+            "C14": "Shadow bounded family/complexity choice for ambiguous requests after the baseline. Keep model arguments and authorization with Claude/gateway.",
+            "D14": "Hermes evaluation",
+            "E14": "REL-06 baseline",
+            "F14": "R-11",
+            "G14": "RG-09, RG-10",
+            "H14": "Paired sufficiently powered route/latency report",
+            "I14": "Not run",
+            "J14": "Optional. Failure/unavailability falls back to native discovery."
+          },
+          "fields": {
+            "Ticket ID": "REL-07",
+            "Phase": "Optional Decisions",
+            "Work": "Shadow bounded family/complexity choice for ambiguous requests after the baseline. Keep model arguments and authorization with Claude/gateway.",
+            "Owner": "Hermes evaluation",
+            "Dependencies": "REL-06 baseline",
+            "Requirement IDs": "R-11",
+            "Qualification gates": "RG-09, RG-10",
+            "Completion evidence": "Paired sufficiently powered route/latency report",
+            "State": "Not run",
+            "Rollout guidance": "Optional. Failure/unavailability falls back to native discovery."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "genuinely-deferred",
+        "subcriteria": [
+          {
+            "class": "genuinely-deferred",
+            "criterion": "Optional Decisions shadow after REL06 baseline",
+            "finding": "Remain disabled until qualified baseline and supported API; paired quality/coverage/argument/latency and independent adopt-or-disabled decision are pending.",
+            "evidenceGroups": [
+              "optional",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-08",
+      "governingRequirement": {
+        "id": "REL-08",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 315
+        },
+        "originalRequirement": "| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |",
+        "originalRecordSha256": "3fed09dafcf0e8be030acc543ddaeab3e6b283994c6b26d6c7d2c81efe5dcf3b",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Optional boundary preserved.",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Labelled JEV evidence shadow/calibration is not established or qualified by received evidence; this metadata lane ran none and makes no claim about unseen other-owner work.",
+        "owner": "optional evaluation",
+        "nextParallelSourceOrMetadataWork": "Prepare separate task-specific judge rubric; leave disabled.",
+        "decisionOrExternalPrerequisite": "Qualified REL06 and task/model availability/authority.",
+        "optional": true,
+        "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 315,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 15,
+          "idCell": "A15",
+          "cells": {
+            "A15": "REL-08",
+            "B15": "Optional JEV",
+            "C15": "Evaluate passage relevance, claim support and client fit after retrieval against human labels. Calibrate abstention and preserve required evidence.",
+            "D15": "Hermes evaluation",
+            "E15": "REL-06 baseline",
+            "F15": "R-12",
+            "G15": "RG-11",
+            "H15": "Human-label calibration and evidence-quality report",
+            "I15": "Not run",
+            "J15": "Optional. No serial Decisions/JEV chain on every tool call."
+          },
+          "fields": {
+            "Ticket ID": "REL-08",
+            "Phase": "Optional JEV",
+            "Work": "Evaluate passage relevance, claim support and client fit after retrieval against human labels. Calibrate abstention and preserve required evidence.",
+            "Owner": "Hermes evaluation",
+            "Dependencies": "REL-06 baseline",
+            "Requirement IDs": "R-12",
+            "Qualification gates": "RG-11",
+            "Completion evidence": "Human-label calibration and evidence-quality report",
+            "State": "Not run",
+            "Rollout guidance": "Optional. No serial Decisions/JEV chain on every tool call."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "genuinely-deferred",
+        "subcriteria": [
+          {
+            "class": "genuinely-deferred",
+            "criterion": "Optional JEV shadow after REL06 baseline",
+            "finding": "Remain disabled until human-label/calibration/required-evidence safeguards and paired quality/latency evidence support independent adoption.",
+            "evidenceGroups": [
+              "optional",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "REL-09",
+      "governingRequirement": {
+        "id": "REL-09",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 316
+        },
+        "originalRequirement": "| REL-09 Integration and canary | Codex; D reviews exact candidate | Pre-staging checkpoint: accepted REL-03–REL-06, W04–W08 and prior W09 checks; promoted optional services only. Canary checkpoint: W10 accepted, then W11 authorization | Pre-staging trace/reconnect/revocation/full-read/RG evidence completes W09 for W10. Post-staging immutable candidate and bounded canary evidence complete the ticket under W11; canary is not a W09 prerequisite | R-01–R-12 as applicable; RG-01–RG-12 as applicable |",
+        "originalRecordSha256": "6801e55e344aebb238863e6492daedd273a6ed155d8166a1e289b5ab32e50b43",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Source releases/reviews exist; active frontend build only reported.",
+        "sourceReceiptIds": [
+          "read-source",
+          "command-source",
+          "shipping-reported",
+          "frontend"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Pre-staging W09 integration then W10 candidate then W11 canary; none closed.",
+        "owner": "release/integration + QA",
+        "nextParallelSourceOrMetadataWork": "Bind source/image/runtime/catalog/skills/contracts/migrations and exact compatibility.",
+        "decisionOrExternalPrerequisite": "No canary prerequisite circularity; release action approval after candidate ready.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 316,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Deployment work",
+          "row": 16,
+          "idCell": "A16",
+          "cells": {
+            "A16": "REL-09",
+            "B16": "Integration/release",
+            "C16": "Merge reviewed increments, rerun impacted original and reliability gates, canary allowlisted tenants and exercise bypass/rollback. Publish evidence and handover.",
+            "D16": "Codex + Hermes reviewer/ops",
+            "E16": "REL-06. Pre-staging completes W09 for W10. Canary follows W10 and release authorization under W11. REL-07/08 only if enabled.",
+            "F16": "R-01 through R-12 as enabled",
+            "G16": "Core RG gates plus optional gates if enabled",
+            "H16": "Immutable candidate, canary receipts and rollback drill",
+            "I16": "Gap check pending",
+            "J16": "Continue existing deployment sequence. Optional experiments do not block core."
+          },
+          "fields": {
+            "Ticket ID": "REL-09",
+            "Phase": "Integration/release",
+            "Work": "Merge reviewed increments, rerun impacted original and reliability gates, canary allowlisted tenants and exercise bypass/rollback. Publish evidence and handover.",
+            "Owner": "Codex + Hermes reviewer/ops",
+            "Dependencies": "REL-06. Pre-staging completes W09 for W10. Canary follows W10 and release authorization under W11. REL-07/08 only if enabled.",
+            "Requirement IDs": "R-01 through R-12 as enabled",
+            "Qualification gates": "Core RG gates plus optional gates if enabled",
+            "Completion evidence": "Immutable candidate, canary receipts and rollback drill",
+            "State": "Gap check pending",
+            "Rollout guidance": "Continue existing deployment sequence. Optional experiments do not block core."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Recoverable reviewed immutable source candidates and bounded artifact/replay evidence",
+            "finding": "PR59 integrates source reviews including exact retained DOCX versions, current session/durable-grant reauthorization and unchanged public lifecycle. This is source/local acceptance only.",
+            "evidenceGroups": [
+              "replay",
+              "catalog"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Remaining required skill/window/source/oracle implementation",
+            "finding": "REL03/04/05/06 remaining product behaviors still prevent complete prestaging W09 evidence.",
+            "evidenceGroups": [
+              "skill",
+              "window",
+              "read",
+              "evaluation"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "W09 integrated native/full-RG evidence, W10 immutable staging candidate, later authorized W11 canary",
+            "finding": "No deployment/canary or runtime gate is granted by PR59. Canary follows W10 and separate release authority; it is not a prerequisite for W09.",
+            "evidenceGroups": [
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-01",
+      "governingRequirement": {
+        "id": "RG-01",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 432
+        },
+        "originalRequirement": "| RG-01 | Accepted route on at least 95% of held-out cases | Score allowed source/tool paths and all required families, including expected clarification; a route need not use one identical call sequence |",
+        "originalRecordSha256": "72906ff730282598d1b44a4dd84a2cb30595b9841b7c0d6b108d46b996cb8c1e",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Catalog source selection controls",
+        "sourceReceiptIds": [
+          "read-source",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Held-out accepted-route>=95%, all required families/clarifications",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Freeze accepted route labels and required families; qualify actual SDK results",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 432,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 8,
+          "idCell": "A8",
+          "cells": {
+            "A8": "RG-01",
+            "B8": "Accepted tool/source route",
+            "C8": 0.95,
+            "D8": "Rate",
+            "E8": "Held-out accepted routes, including multi-source questions. Start 75 real queries and expand to 200 cases.",
+            "F8": "Hermes QA",
+            "G8": "R-01, R-06, R-10",
+            "J8": "Not run",
+            "K8": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-01",
+            "Measure": "Accepted tool/source route",
+            "Target": 0.95,
+            "Unit": "Rate",
+            "Fixtures and protocol": "Held-out accepted routes, including multi-source questions. Start 75 real queries and expand to 200 cases.",
+            "Owner": "Hermes QA",
+            "Requirement IDs": "R-01, R-06, R-10",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Typed route/availability controls and score denominator protocol",
+            "finding": "Catalog refuses unavailable routes and offline scoring preserves missing/ineligible cases.",
+            "evidenceGroups": [
+              "catalog",
+              "evaluation"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Complete original request/model routing across all required source families and clarifications",
+            "finding": "The typed correct-tool lookup slice does not run original model routing; clarification observation remains ineligible and missing skills/sources limit complete route behavior.",
+            "evidenceGroups": [
+              "evaluation",
+              "skill",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": ">=95% accepted held-out routes with all required families/expected clarifications",
+            "finding": "No frozen actual200-case suite or independent SDK baseline result; synthetic control totals are not this denominator.",
+            "evidenceGroups": [
+              "evaluation",
+              "native"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-02",
+      "governingRequirement": {
+        "id": "RG-02",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 433
+        },
+        "originalRequirement": "| RG-02 | 100% deterministic subject/window/FY/version fixtures pass | Server-bound scope/entity IDs; normalized calendar/timezone, relative duration, funding stage and evidence version |",
+        "originalRecordSha256": "c948cb2cc8ecd4125761e9884e2fc74932b1567824d937471edcdf195ca9edeb",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Scope/window/version validators",
+        "sourceReceiptIds": [
+          "contracts",
+          "read-source",
+          "pe-source",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "100% deterministic subject/timezone/FY/stage/version fixture qualification",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Bind trusted resolvers and same-name/DST/FY/version cases to real services",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 433,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 9,
+          "idCell": "A9",
+          "cells": {
+            "A9": "RG-02",
+            "B9": "Subject, window, FY and version",
+            "C9": 1,
+            "D9": "Rate",
+            "E9": "Deterministic fixtures for canonical identity, this week/timezone, DST, FY/stage, bill/session and exact revisions.",
+            "F9": "Hermes QA",
+            "G9": "R-02, R-03, R-07",
+            "J9": "Not run",
+            "K9": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-02",
+            "Measure": "Subject, window, FY and version",
+            "Target": 1,
+            "Unit": "Rate",
+            "Fixtures and protocol": "Deterministic fixtures for canonical identity, this week/timezone, DST, FY/stage, bill/session and exact revisions.",
+            "Owner": "Hermes QA",
+            "Requirement IDs": "R-02, R-03, R-07",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Deterministic supplied subject/window/FY/version checks",
+            "finding": "Canonical validators and explicit brief basis pins provide source controls, including timezone/DST consistency on supplied normalized bounds.",
+            "evidenceGroups": [
+              "scope",
+              "window",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Trusted entity/window/fiscal/version resolution and full100% fixture behavior",
+            "finding": "General subject/pronoun and calendar/FY resolver plus all skill/domain conflict behavior are absent; validator checks are not resolver output tests.",
+            "evidenceGroups": [
+              "scope",
+              "window",
+              "skill"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual current subject/domain authority and exact full fixture suite",
+            "finding": "Real identity/source snapshots and authoritative revision/FY/stage proof remain unqualified.",
+            "evidenceGroups": [
+              "scope",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-03",
+      "governingRequirement": {
+        "id": "RG-03",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 434
+        },
+        "originalRequirement": "| RG-03 | Labelled answer-bearing evidence Recall@10 at least 95% on frozen discovery retrieval units with at most 10 gold records | Define unit/source/candidate pool; retain all gold labels and report denominators/source slices. Cases with more than 10 required records use completeness/paging RG-05/RG-12; exact lookup/counts use RG-04 |",
+        "originalRecordSha256": "b8ea24e93a203272d3ba69e0e188f3dea7eb06ef684d992a6b5f2d3236b5e7aa",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Candidate-result DTOs",
+        "sourceReceiptIds": [
+          "read-source",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Recall@10>=95% frozen atomic<=10gold units; never shrink gold set",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Freeze full gold labels and candidate pools; larger enumerations remain completeness cases",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 434,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 10,
+          "idCell": "A10",
+          "cells": {
+            "A10": "RG-03",
+            "B10": "Answer-bearing Recall@10",
+            "C10": 0.95,
+            "D10": "Rate",
+            "E10": "Frozen discovery units with <=10 gold answer-bearing records. Deduplicate chunks by canonical source record. Recall=gold records retrieved in top 10 / all gold records. Never truncate gold labels. Larger history/enumeration uses RG-04/RG-05/RG-12.",
+            "F10": "Hermes QA",
+            "G10": "R-04, R-05, R-10",
+            "J10": "Not run",
+            "K10": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-03",
+            "Measure": "Answer-bearing Recall@10",
+            "Target": 0.95,
+            "Unit": "Rate",
+            "Fixtures and protocol": "Frozen discovery units with <=10 gold answer-bearing records. Deduplicate chunks by canonical source record. Recall=gold records retrieved in top 10 / all gold records. Never truncate gold labels. Larger history/enumeration uses RG-04/RG-05/RG-12.",
+            "Owner": "Hermes QA",
+            "Requirement IDs": "R-04, R-05, R-10",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Candidate/evidence DTOs and preservation of full gold/denominators",
+            "finding": "Source schemas and protocol retain search-versus-completeness distinction; evaluator does not shrink gold or grant empty-cohort success.",
+            "evidenceGroups": [
+              "read",
+              "evaluation"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Full discovery retrieval and atomic-unit Recall@10 execution/scoring across sources",
+            "finding": "Current action recommendation scorer is not a complete answer-bearing discovery Recall@10 benchmark; missing selected discovery adapters remain.",
+            "evidenceGroups": [
+              "catalog",
+              "read",
+              "evaluation"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Labelled frozen <=10-gold-unit Recall@10>=95%",
+            "finding": "No authenticated frozen candidate pools/gold/sources/results. >10-record histories must remain paging/completeness cases, exact counts RG04.",
+            "evidenceGroups": [
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-04",
+      "governingRequirement": {
+        "id": "RG-04",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 435
+        },
+        "originalRequirement": "| RG-04 | 100% deterministic count/status/comparison fixtures pass | Authorized source snapshots, exact filters, bill/document version, PE identity/FY/stage and comparison consistency |",
+        "originalRecordSha256": "2afd80640ce1b53021bad42bd1c15cc7208a42325a8ec5c85049f8c99faa4cad",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Domain count/status/comparison contracts",
+        "sourceReceiptIds": [
+          "read-source",
+          "pe-source",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "100% authoritative snapshot exact-count/status/comparison cases",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Prepare exact authorized domain oracles including PE fiscal/Decimal semantics",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 435,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 11,
+          "idCell": "A11",
+          "cells": {
+            "A11": "RG-04",
+            "B11": "Exact counts/status/comparisons",
+            "C11": 1,
+            "D11": "Rate",
+            "E11": "Qualified deterministic domain fixtures. Compatible subject, year, stage, units and source authority required.",
+            "F11": "Hermes QA",
+            "G11": "R-03, R-04",
+            "J11": "Not run",
+            "K11": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-04",
+            "Measure": "Exact counts/status/comparisons",
+            "Target": 1,
+            "Unit": "Rate",
+            "Fixtures and protocol": "Qualified deterministic domain fixtures. Compatible subject, year, stage, units and source authority required.",
+            "Owner": "Hermes QA",
+            "Requirement IDs": "R-03, R-04",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Typed exact domain basis and supplied result consistency",
+            "finding": "Bill/PE/FY/stage/version contracts and read validators preserve domain distinctions; brief does not silently change requested budget stage/version.",
+            "evidenceGroups": [
+              "window",
+              "read"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "All authoritative count/status/comparison adapters and trusted comparable basis resolver",
+            "finding": "Schemas alone do not perform every required exact query or resolve compatible subject/FY/stage/units/version for comparison.",
+            "evidenceGroups": [
+              "catalog",
+              "window",
+              "read"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "100% authorized snapshot/oracle deterministic domain suite",
+            "finding": "No full authenticated source snapshot oracle corpus and runtime results; exact Decimal/domain semantics must remain independently qualified.",
+            "evidenceGroups": [
+              "evaluation",
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-05",
+      "governingRequirement": {
+        "id": "RG-05",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 436
+        },
+        "originalRequirement": "| RG-05 | Zero false absence claims on partial, unavailable or stale cases | Complete coverage or a clear limitation; empty candidate search does not prove no matching records |",
+        "originalRecordSha256": "c4e180bb61e41bf49176250f4b7fe9b2187fd4d3da5bc40f9ab27bc87152a1f8",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Incomplete/empty/denied/unavailable consistency controls",
+        "sourceReceiptIds": [
+          "read-source",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Zero false absence on partial/stale/unavailable real workflows",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Exercise source failure/paging/full-read completion and final answer assertions",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 436,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 12,
+          "idCell": "A12",
+          "cells": {
+            "A12": "RG-05",
+            "B12": "False absence claims",
+            "C12": 0,
+            "D12": "Count",
+            "E12": "Zero false absence/exhaustive assertions when sources are unavailable, stale, failed, unsupported, truncated or unpaged.",
+            "F12": "Hermes QA",
+            "G12": "R-05, R-08",
+            "J12": "Not run",
+            "K12": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-05",
+            "Measure": "False absence claims",
+            "Target": 0,
+            "Unit": "Count",
+            "Fixtures and protocol": "Zero false absence/exhaustive assertions when sources are unavailable, stale, failed, unsupported, truncated or unpaged.",
+            "Owner": "Hermes QA",
+            "Requirement IDs": "R-05, R-08",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Incomplete coverage/candidate absence guards and visible brief verification limits",
+            "finding": "Canonical envelope validations and brief compiler preserve unavailable/partial/conflicting evidence; free-form URL-cited claims remain unverified.",
+            "evidenceGroups": [
+              "read",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "Final answer/completion enforcement for every original workflow",
+            "finding": "Missing14-skill completion/source composition means local envelope guards do not establish universal final absence-claim behavior.",
+            "evidenceGroups": [
+              "skill",
+              "catalog"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Zero false absence on full real partial/unavailable/stale/truncated/unpaged suite",
+            "finding": "No complete real-source/end-to-end model corpus or final-claim adjudication exists for this gate.",
+            "evidenceGroups": [
+              "evaluation",
+              "native"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-06",
+      "governingRequirement": {
+        "id": "RG-06",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 437
+        },
+        "originalRequirement": "| RG-06 | 100% selected skill ID/version and required evidence/completion fixtures pass | Includes client/portfolio/relationship/memory collisions and Commitments; replay, steer, reconnect, resume and fork preserve or explicitly version the contract |",
+        "originalRecordSha256": "05105e98c85dcd87ed3028dc72d6e376c8d4ff4585f813d7670e6467c289a800",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Fourteen selected skill identifiers and structural continuity",
+        "sourceReceiptIds": [
+          "skills",
+          "frontend",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "100% all14 identity/version/evidence/completion and lifecycle fixtures",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Implement original manifests and run end-to-end required evidence/completion",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 437,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 13,
+          "idCell": "A13",
+          "cells": {
+            "A13": "RG-06",
+            "B13": "Explicit skill contract execution",
+            "C13": 1,
+            "D13": "Rate",
+            "E13": "All 14 selected starter intents. ID/version, typed inputs, required evidence, completion and coverage survive send/follow-up/resume.",
+            "F13": "Hermes QA",
+            "G13": "R-07, R-08",
+            "J13": "Not run",
+            "K13": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-06",
+            "Measure": "Explicit skill contract execution",
+            "Target": 1,
+            "Unit": "Rate",
+            "Fixtures and protocol": "All 14 selected starter intents. ID/version, typed inputs, required evidence, completion and coverage survive send/follow-up/resume.",
+            "Owner": "Hermes QA",
+            "Requirement IDs": "R-07, R-08",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "missing-implementation",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "14 ID/version contract foundation and one exact original brief recipe",
+            "finding": "Original inventory/contract IDs are preserved; brief immutable manifest/prose/parent tests exist.",
+            "evidenceGroups": [
+              "skill",
+              "replay"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "100% all14 required evidence/completion/lifecycle fixtures",
+            "finding": "13 pairs and full Bill Watch are absent; full client/portfolio/memory/Commitments submit/replay/steer/reconnect/resume/fork behavior is not implemented/qualified by this output slice.",
+            "evidenceGroups": [
+              "skill",
+              "scope"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual frontend and SDK/Temporal selected skill execution",
+            "finding": "Local artifact repeat is not UI skill submission or durable model replay acceptance.",
+            "evidenceGroups": [
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-07",
+      "governingRequirement": {
+        "id": "RG-07",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 438
+        },
+        "originalRequirement": "| RG-07 | Zero unauthorized disclosure/mutation in the qualification suite | Cross-tenant and within-tenant boundaries; current grants, memory/mailbox walls, stored context, citations, files and revoked access |",
+        "originalRecordSha256": "ce03a4aaf8ce9dcee26e2558814ac0903cd7cd60f06f3a169757ffce41c8d9d2",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Policy/context/fence source controls and reported native state checks",
+        "sourceReceiptIds": [
+          "contracts",
+          "native-reported",
+          "frontend",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Zero unauthorized disclosure/mutation, original100adversarial and stored-context rights",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Bind real principals/grants, revoked stored artifacts/context and multi-tenant case receipts",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 438,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 14,
+          "idCell": "A14",
+          "cells": {
+            "A14": "RG-07",
+            "B14": "Unauthorized disclosure/mutation",
+            "C14": 0,
+            "D14": "Count",
+            "E14": "Tenant, user/client walls, stale grants, custom tool discovery, citations, replay and mutation boundaries. Retain original 100-case isolation gate.",
+            "F14": "Hermes security/QA",
+            "G14": "R-02, R-05, R-06",
+            "J14": "Not run",
+            "K14": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-07",
+            "Measure": "Unauthorized disclosure/mutation",
+            "Target": 0,
+            "Unit": "Count",
+            "Fixtures and protocol": "Tenant, user/client walls, stale grants, custom tool discovery, citations, replay and mutation boundaries. Retain original 100-case isolation gate.",
+            "Owner": "Hermes security/QA",
+            "Requirement IDs": "R-02, R-05, R-06",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Current tenant/subject/session/resource and persisted grant controls",
+            "finding": "Gateway current authority, admitted run and artifact replay grant/resource/session checks fail closed; retained grant-only release counterexample and repair are visible.",
+            "evidenceGroups": [
+              "scope",
+              "replay"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Zero unauthorized disclosure/mutation original100 plus full source/context boundary qualification",
+            "finding": "Genuine principal/policy/source/storage and memory/mail/stored-context runtime suites remain required. Local synthetic decisions/test counts do not establish whole gate.",
+            "evidenceGroups": [
+              "scope",
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-08",
+      "governingRequirement": {
+        "id": "RG-08",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 439
+        },
+        "originalRequirement": "| RG-08 | Native discovery actual-proxy compatibility and adversarial catalog recall suite pass | Known required capabilities found or an explicit supported fallback invoked; reference/header/stream/compaction/resume behavior and authorization at execution verified |",
+        "originalRecordSha256": "137004bd9f9e9dc01181f1ece2099724dd4d5569da26ca437cc0c7f431c059eb",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "SDK/proxy preparation and catalog unavailable guard",
+        "sourceReceiptIds": [
+          "runtime-source",
+          "native-reported",
+          "sdk-image-reported"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Actual proxy tool references/schema loading/stream/compaction/resume and adversarial recall",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Obtain exact supported runtime/proxy traces; state tests alone do not cover discovery",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 439,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 15,
+          "idCell": "A15",
+          "cells": {
+            "A15": "RG-08",
+            "B15": "Native discovery and proxy",
+            "C15": "Pass",
+            "D15": "Contract",
+            "E15": "Actual proxy supports tool_reference/deferred schema loading. Synonyms, extra terms, large catalogs, revoked tools and smaller upfront baseline qualify.",
+            "F15": "Hermes runtime/QA",
+            "G15": "R-01, R-06",
+            "J15": "Not run",
+            "K15": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-08",
+            "Measure": "Native discovery and proxy",
+            "Target": "Pass",
+            "Unit": "Contract",
+            "Fixtures and protocol": "Actual proxy supports tool_reference/deferred schema loading. Synonyms, extra terms, large catalogs, revoked tools and smaller upfront baseline qualify.",
+            "Owner": "Hermes runtime/QA",
+            "Requirement IDs": "R-01, R-06",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Native SDK/proxy evidence preparation and unavailable catalog fallback guard",
+            "finding": "Pinned preparation/source observations exist with deliberately disabled production capabilities.",
+            "evidenceGroups": [
+              "native",
+              "catalog"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual proxy tool references/deferred schemas/headers/streams/compaction/resume/adversarial recall",
+            "finding": "No complete admitted supported runtime/proxy and known-required-capability recall/fallback result is qualified; local PG client crash/prep does not supply it.",
+            "evidenceGroups": [
+              "native",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-09",
+      "governingRequirement": {
+        "id": "RG-09",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 440
+        },
+        "originalRequirement": "| RG-09 | Proposed warm simple-lookup answer p95 at most 15 seconds; optional-router incremental p95 at most 500 ms and total p95 regression at most 10% | Measure and freeze actual benchmark cohort/load before qualification; unsupported beta or exceeded optional budget uses the baseline. Retain all original performance targets; this does not relax a stricter overlapping ordinary-answer target |",
+        "originalRecordSha256": "9bd86264d781c53727de856b590090ea8a73d3f1c56a14f3959107f7e7d91a4c",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Declared budget limits and reported9budget/12invocation controls",
+        "sourceReceiptIds": [
+          "native-reported",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Measured warm lookup p95<=15s; preserve stricter original cohort if applicable; optional<=500ms and<=10%regression",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Freeze distinct warm/cold/ack cohorts/load, time complete answers and all retries",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 440,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 16,
+          "idCell": "A16",
+          "cells": {
+            "A16": "RG-09",
+            "B16": "Simple lookup warm p95",
+            "C16": 15,
+            "D16": "Seconds",
+            "E16": "Proposed warm lookup budget. Measure and freeze before qualification. Optional router incremental p95<=500ms and <=10% answer-p95 regression. Preserve original broad/cold performance gates.",
+            "F16": "Hermes runtime/QA",
+            "G16": "R-06, R-09, R-11",
+            "J16": "Not run",
+            "K16": "Yes for baseline. Optional router may bypass."
+          },
+          "fields": {
+            "Gate ID": "RG-09",
+            "Measure": "Simple lookup warm p95",
+            "Target": 15,
+            "Unit": "Seconds",
+            "Fixtures and protocol": "Proposed warm lookup budget. Measure and freeze before qualification. Optional router incremental p95<=500ms and <=10% answer-p95 regression. Preserve original broad/cold performance gates.",
+            "Owner": "Hermes runtime/QA",
+            "Requirement IDs": "R-06, R-09, R-11",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes for baseline. Optional router may bypass."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "external-runtime",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Budget declarations and performance protocol",
+            "finding": "Fixed budget caps and source timing receipts exist; protocol distinguishes UIack/readiness/warm/cold/complete answer and preserves ordinary p95<=8s.",
+            "evidenceGroups": [
+              "budget",
+              "evaluation"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Frozen measured cohort/load, warm answer p95<=15s and overlapping original targets",
+            "finding": "No actual qualified model/native benchmark p50/p95 with full discovery/retry/advice/evidence latency. Optional<=500ms and<=10%regression applies only upon optional-service adoption.",
+            "evidenceGroups": [
+              "evaluation",
+              "native",
+              "optional"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-10",
+      "governingRequirement": {
+        "id": "RG-10",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 441
+        },
+        "originalRequirement": "| RG-10 | Optional classifier reduces held-out routing errors by at least 25% relatively, with no material coverage/argument regression | Paired sufficiently powered labelled cases, confidence intervals and human adjudication; low baseline error or insufficient data can require more cases; latency must also pass RG-09 |",
+        "originalRecordSha256": "0fa16a012eee042e97a8296e9bb7899fbcc9cc6f74a09d9d8292008178ed3613",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Optional Decisions boundary only",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": ">=25%relative held-out route improvement with confidence/coverage/latency",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Keep disabled; prepare paired sufficiently powered benchmark after baseline",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": true,
+        "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 441,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 17,
+          "idCell": "A17",
+          "cells": {
+            "A17": "RG-10",
+            "B17": "Optional router error reduction",
+            "C17": 0.25,
+            "D17": "Relative rate",
+            "E17": "Paired held-out test, sufficiently powered:>=25% relative routing-error reduction with no material argument/coverage regression and RG-09 latency pass.",
+            "F17": "Hermes evaluation",
+            "G17": "R-10, R-11",
+            "J17": "Not run",
+            "K17": "No. Keep disabled if unqualified."
+          },
+          "fields": {
+            "Gate ID": "RG-10",
+            "Measure": "Optional router error reduction",
+            "Target": 0.25,
+            "Unit": "Relative rate",
+            "Fixtures and protocol": "Paired held-out test, sufficiently powered:>=25% relative routing-error reduction with no material argument/coverage regression and RG-09 latency pass.",
+            "Owner": "Hermes evaluation",
+            "Requirement IDs": "R-10, R-11",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "No. Keep disabled if unqualified."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "genuinely-deferred",
+        "subcriteria": [
+          {
+            "class": "genuinely-deferred",
+            "criterion": "Optional >=25% relative held-out route-error improvement with confidence/adjudication/latency",
+            "finding": "Unmeasured and disabled pending sufficiently powered paired baseline, no coverage/argument regression and RG09. It is not a core release blocker while disabled.",
+            "evidenceGroups": [
+              "optional",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-11",
+      "governingRequirement": {
+        "id": "RG-11",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 442
+        },
+        "originalRequirement": "| RG-11 | Optional JEV improves labelled evidence quality with calibrated abstention and no required-evidence loss | Freeze task-specific improvement/calibration/adoption thresholds before shadow scoring; report relevant/support/client-fit separately; authoritative facts and mandatory reads remain protected |",
+        "originalRecordSha256": "3df5389e2ad8f0a1135623fd34fc39f353853a768a578f79ce28adf04a50b2f7",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Optional JEV boundary only",
+        "sourceReceiptIds": [
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [],
+        "remaining": "Frozen task-specific human-label calibration/improvement, abstention and no required-evidence loss",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Keep disabled; establish promotion rubric before shadow scoring",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": true,
+        "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 442,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 18,
+          "idCell": "A18",
+          "cells": {
+            "A18": "RG-11",
+            "B18": "JEV evidence calibration",
+            "C18": "Qualified",
+            "D18": "Contract",
+            "E18": "Human-labelled improvement, calibrated abstention, version/task pins and preserved candidate recall/required evidence. Freeze promotion criteria before test.",
+            "F18": "Hermes evaluation",
+            "G18": "R-10, R-12",
+            "J18": "Not run",
+            "K18": "No. Keep disabled if unqualified."
+          },
+          "fields": {
+            "Gate ID": "RG-11",
+            "Measure": "JEV evidence calibration",
+            "Target": "Qualified",
+            "Unit": "Contract",
+            "Fixtures and protocol": "Human-labelled improvement, calibrated abstention, version/task pins and preserved candidate recall/required evidence. Freeze promotion criteria before test.",
+            "Owner": "Hermes evaluation",
+            "Requirement IDs": "R-10, R-12",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "No. Keep disabled if unqualified."
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "genuinely-deferred",
+        "subcriteria": [
+          {
+            "class": "genuinely-deferred",
+            "criterion": "Optional labelled task-specific JEV improvement/calibrated abstention/no evidence loss",
+            "finding": "Unmeasured and disabled. Freeze separate relevance/support/client-fit/adoption thresholds before shadow trials; mandatory reads and authoritative facts remain protected.",
+            "evidenceGroups": [
+              "optional",
+              "evaluation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "RG-12",
+      "governingRequirement": {
+        "id": "RG-12",
+        "originalLocator": {
+          "path": "docs/plans/MERI-DEPLOYMENT.md",
+          "line": 443
+        },
+        "originalRequirement": "| RG-12 | Replay/reconnect/revocation/full-evidence-read/coverage-completeness contract suite passes | No stale discovered authorization; session/files/source versions pinned; decisive passage actually read; partial outcomes and continuation preserved |",
+        "originalRecordSha256": "cd5d7ef436e2229f6a9db2c44b6d401ff64c3a4985013c689216d2360e8ea2c0",
+        "status": "pending",
+        "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+        "completedSourceComponents": "Declared lineage/continuity/coverage source; limited native controls reported",
+        "sourceReceiptIds": [
+          "read-source",
+          "native-reported",
+          "frontend",
+          "skills",
+          "benchmark"
+        ],
+        "qualifiedRuntime": false,
+        "reportedRuntimeReceiptIds": [
+          "native-reported"
+        ],
+        "remaining": "Actual reconnect/replay/revocation/full-decisive-read/completeness behavior",
+        "owner": "independent QA + relevant component owner",
+        "nextParallelSourceOrMetadataWork": "Join versioned source evidence to real lifecycle persistence and revoked access tests",
+        "decisionOrExternalPrerequisite": "Qualified exact baseline and actual gate-specific corpus/receipts; source-test totals are not gate denominators.",
+        "optional": false,
+        "optionalDisposition": null
+      },
+      "originalPlanCheck": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 443,
+        "exactTextMatch": true
+      },
+      "originalWorkbookChecks": [
+        {
+          "sheet": "Qualification",
+          "row": 19,
+          "idCell": "A19",
+          "cells": {
+            "A19": "RG-12",
+            "B19": "Lifecycle and evidence contracts",
+            "C19": "Pass",
+            "D19": "Contract",
+            "E19": "Reconnect/replay, revocation, stop/resume, authoritative source read, full paging/coverage and action receipt fixtures. Preserve original recovery gate.",
+            "F19": "Hermes integration/QA",
+            "G19": "R-02, R-04, R-05, R-07, R-09",
+            "J19": "Not run",
+            "K19": "Yes"
+          },
+          "fields": {
+            "Gate ID": "RG-12",
+            "Measure": "Lifecycle and evidence contracts",
+            "Target": "Pass",
+            "Unit": "Contract",
+            "Fixtures and protocol": "Reconnect/replay, revocation, stop/resume, authoritative source read, full paging/coverage and action receipt fixtures. Preserve original recovery gate.",
+            "Owner": "Hermes integration/QA",
+            "Requirement IDs": "R-02, R-04, R-05, R-07, R-09",
+            "Measured result": null,
+            "Evidence": null,
+            "State": "Not run",
+            "Blocks core release": "Yes"
+          }
+        }
+      ],
+      "wholeRequirementStatus": "pending",
+      "qualifiedRuntime": false,
+      "assessment": {
+        "primaryClass": "implemented-but-unqualified",
+        "subcriteria": [
+          {
+            "class": "implemented-but-unqualified",
+            "criterion": "Exact published document replay, revision lineage, current revocation and bounded decisive read",
+            "finding": "PR59 contains reviewed exact immutable original/revision and no-second-generation/charge recovery, full byte inspection, session/resource/durable-grant rechecks, visible decisive passages and preserved UNKNOWN for unsupported/unpublished gaps. Independent111 controls/23HTTP/8rendered pages are local synthetic source evidence.",
+            "evidenceGroups": [
+              "replay",
+              "scope",
+              "read"
+            ]
+          },
+          {
+            "class": "missing-implementation",
+            "criterion": "All original skill/full-source completeness/reconnect/fork behavior",
+            "finding": "Document replay and congressional passage compilation are a bounded slice; missing skill/source/window product composition still prevents whole coverage/recovery contract completion.",
+            "evidenceGroups": [
+              "skill",
+              "read",
+              "window"
+            ]
+          },
+          {
+            "class": "external-runtime",
+            "criterion": "Actual SDK/Temporal/PostgreSQL/storage/identity/source lifecycle and original recovery gate",
+            "finding": "Local fs/HTTP/Office facts do not qualify native distributed durability, authentic source rights, rendering sandbox or all required recovery/reconnect actions.",
+            "evidenceGroups": [
+              "native",
+              "evaluation",
+              "replay"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "criticalPath": {
+    "latestAuthorizedExecutionPriority": "Neo now prioritizes general conversation/event lifecycle with parallel original-skill/calendar workers, as supplied by the parent task. This audit does not override that instruction or implement product code.",
+    "firstUnblockedProductIncrement": "Trusted typed WindowRequest-to-NormalizedWindow resolver through existing control/retrieval owners; no public package/API break or alternate orchestration.",
+    "why": "R03 explicitly remains missing; original workbook asks resolve actor timezone, this week, FY/session/stage/exact revision. It is a shared prerequisite for R07/R08/REL03/REL04/RG02/RG04 and can be tested without private/provider/native operations.",
+    "reuse": [
+      "packages/contracts/retrieval-0.2/common.schema.json",
+      "packages/contracts/retrieval-0.2/validate.mjs",
+      "apps/control/action-host/resolver.mjs",
+      "apps/gateway/authorization/current-tool-authority.mjs"
+    ],
+    "acceptance": "Explicit trusted now/timezone/week policy; this/last week/month/year local-midnight UTC bounds through DST; true fixed relative durations; explicit intervals; fiscal-calendar authority plus FY/stage/revision consistency. Normalize supplied typed requests, retain known IDs/version/stage, refuse unresolved consequential authority, and exercise end-to-end existing consumer inputs. Validators remain validation, not a second resolver.",
+    "secondProductIncrement": "Original versioned recipe/manifest/completion source for remaining13 intents plus complete Bill Watch, through existing Claude SDK/control/source/artifact owners. Prioritize required Commitments and a source-backed meeting brief; do not add Quicklog Commitment UI.",
+    "parallelExternalCriticalPath": "Separate native owner supplies admitted identity/live worker/proxy/Temporal/storage/runtime; authorized archive producer fixes Library401 and transfers only approved receipt/archive. Corpus owner supplies authenticated75 real requests/snapshots, then>=200 frozen cases and model benchmark authorization.",
+    "avoid": "No new qualification wrapper, generic registry, policy system, model loop, approval endpoint, new feature scope or synthetic substitution for original metrics."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceCommit": "18adda2c5461b8d346277135aafd3972b4768802",
+  "command": "python3 docs/qualification/candidates/whole-plan-next-20261013/reliability-audit/audit.py",
+  "exitCode": 1,
+  "failure": "AssertionError: ('packages/contracts/retrieval-0.2/validate.mjs', 'export function assertCatalog')",
+  "reason": "Audit locator expected a function declaration; the canonical owner is the exported destructured createCatalogValidators result at line140. Preflight also found case-sensitive Bill anchor absent in original lowercase bill_watch prose.",
+  "correction": "Only audit evidence anchors changed to actual exported declaration and exact original skill identity. No product code, test assertion, governing criterion, source count or requirement status changed.",
+  "boundary": "Verifier implementation failure retained; this was not a product test or native/runtime failure."
+}
