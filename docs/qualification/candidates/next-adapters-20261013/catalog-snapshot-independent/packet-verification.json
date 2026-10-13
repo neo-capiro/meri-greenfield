@@ -1,0 +1,57 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "reviewedCommit": "eda892e204e65ac9860a008002c262d7207523b8",
+  "reviewedTree": "704de8142cebe4665e87c082bce0e0dbd273aa23",
+  "checks": [
+    {
+      "capture": "focused40",
+      "tests": 40,
+      "pass": 40,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "adversarial9",
+      "tests": 9,
+      "pass": 0,
+      "fail": 9,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "adversarial9-corrected",
+      "tests": 9,
+      "pass": 9,
+      "fail": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "identities",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "source-audit",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    },
+    {
+      "capture": "source-whitespace",
+      "exit": 0,
+      "hashesMatch": true,
+      "ownedGroupAbsent": true
+    }
+  ],
+  "finalPassingNodeTests": 49,
+  "sourceAuditChecks": 35,
+  "failedReviewerSetupPreimageRetained": true,
+  "borrowedLinkRemoved": true,
+  "donorNotModified": true,
+  "executableDiffFromPin": false,
+  "nativeAcceptance": false,
+  "publicPackageChanged": false
+}

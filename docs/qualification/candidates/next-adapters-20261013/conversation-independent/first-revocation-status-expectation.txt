@@ -1,0 +1,34 @@
+✔ actual POST subscription and upstream DefaultChatTransport GET reconnect preserve durable events/cursor (95.287604ms)
+✔ actual mount rejects foreign selector, malformed/conflicting cursors, invalid commands and unauthenticated subscription (36.520498ms)
+✔ actual body-reader cancellation closes only subscription and leaves durable run queued (12.81357ms)
+✖ actual current-session revocation prevents reconnect release without leaking identity or source details (9.102659ms)
+✔ actual malformed client JSON/UTF8 remains a bounded client error without source dispatch (8.005599ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2038.142041
+
+✖ failing tests:
+
+test at docs/qualification/candidates/next-adapters-20261013/conversation-independent/fetch-client.test.mjs:78:1
+✖ actual current-session revocation prevents reconnect release without leaking identity or source details (9.102659ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  403 !== 502
+  
+      at file:///workspace/meri-conversation-contract-independent/docs/qualification/candidates/next-adapters-20261013/conversation-independent/fetch-client.test.mjs:81:9
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-conversation-contract-independent/docs/qualification/candidates/next-adapters-20261013/conversation-independent/fetch-client.test.mjs:27:99)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 403,
+    expected: 502,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

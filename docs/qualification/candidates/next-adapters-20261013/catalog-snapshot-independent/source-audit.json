@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python3",
+    "docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/audit.py"
+  ],
+  "cwd": "/workspace/meri-catalog-snapshot-independent",
+  "reviewedCommit": "eda892e204e65ac9860a008002c262d7207523b8",
+  "worktreeHead": "eda892e204e65ac9860a008002c262d7207523b8",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.162,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 127,
+  "stderrBytes": 0,
+  "stdoutSha256": "aa8fe5f9963494a73ea0a4d91968ef86e0b4d35a97a5782df3fc49ab779b181c",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

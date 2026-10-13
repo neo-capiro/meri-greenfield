@@ -1,0 +1,52 @@
+✔ actual Fetch bytes and canonical handler preserve personal calendar (23.812461ms)
+✔ actual Fetch bytes and canonical handler preserve client calendar (2.437162ms)
+✔ actual Fetch bytes and canonical handler preserve debrief list (6.805668ms)
+✔ actual Fetch bytes and canonical handler preserve exact debrief (2.553487ms)
+✔ actual Fetch bytes and canonical handler preserve meeting inventory (17.972079ms)
+✔ actual Fetch bytes and canonical handler preserve exact note (16.795246ms)
+✔ actual Fetch bytes and canonical handler preserve exact transcript (6.261572ms)
+✔ inventory contains source identity and hashes but never pretends bodies were read (7.815731ms)
+✔ UTF-16 windows preserve decisive late content and disclose the incomplete earlier window (7.533568ms)
+✔ opaque cursor stays in canonical metadata and is included in credential digest (2.394398ms)
+✔ calendar/debrief date basis and explicit bounded instants are preserved (2.27582ms)
+✔ configuration is inert, closed and limited to explicit trusted HTTPS endpoints (0.877475ms)
+✔ input, subject, scope, operation, capability and full authority binding drift refuse before credentials (4.388766ms)
+✔ correlated credentials reject every current binding, subject and protocol substitution (11.177088ms)
+✔ hostile configuration, source-call and credential getters do not run (1.015292ms)
+✔ canonical source binding, body hash, version, byte count and coverage corruption refuse (47.018213ms)
+✔ client calendar cannot substitute a foreign or absent row client (5.196236ms)
+✖ debrief body and exact version correlation remain canonical across UTF-16 pages (15.506125ms)
+✔ required decisive read cannot disappear from an incomplete body result (3.594896ms)
+✔ handler repeats canonical validation for a non-HTTP source port (0.96807ms)
+✔ HTTP status, redirects, media and content encoding fail without body diagnostics (7.728721ms)
+✔ shared strict byte reader enforces UTF-8, JSON, byte budgets and exact content length (8.024004ms)
+✔ parked credentials ends at deadline and late completion cannot release data (22.777961ms)
+✔ parked fetch ends at deadline and late completion cannot release data (21.238254ms)
+✔ parked body ends at deadline and late completion cannot release data (21.786985ms)
+✔ abort during response acquisition cancels acquired body and suppresses release (3.768557ms)
+✔ pre-abort and expired credential never allocate transport (1.30801ms)
+✔ production descriptor stays unavailable and source implementation does not activate it (0.457646ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 27
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1872.656186
+
+✖ failing tests:
+
+test at apps/gateway/sources/meetings/test/adapter-handler.test.mjs:112:1
+✖ debrief body and exact version correlation remain canonical across UTF-16 pages (15.506125ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-meeting-read-adapters/apps/gateway/sources/meetings/test/adapter-handler.test.mjs:118:99)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

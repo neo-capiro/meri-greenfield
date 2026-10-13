@@ -1,0 +1,26 @@
+✔ actual note body keeps exact late UTF-16 range/hash/client/authority without evidence promotion (25.921212ms)
+✔ actual transcript body keeps exact late UTF-16 range/hash/client/authority without evidence promotion (2.880244ms)
+✔ exact approved debrief cursor goes to metadata and protocol digest, never an invented body-offset authority (6.538698ms)
+✔ inventory hashes and source identities cannot become body/evidence/absence proof (12.049923ms)
+✔ coordinated UTF-16 counts cannot masquerade as actual UTF-8 byte provenance (2.000853ms)
+✔ foreign client, source kind/owner, source version and returned digest substitutions refuse actual HTTP bytes (9.047118ms)
+✔ approved-only debrief cannot return a draft and calendar cannot return a foreign client (6.1853ms)
+✔ cursor or protocol digest changes in a closed broker receipt refuse before transport (6.114425ms)
+✔ full current attempt/fence/operation/source input authority cannot be substituted before credential issuance (1.649199ms)
+✔ a stalled response and stalled cancel acknowledgement do not prevent deadline or reader release (21.370829ms)
+✔ a late acquired Response after cutoff is cancelled and never released (21.4526ms)
+✔ abort while body is parked aborts transport and releases the actual reader (1.462771ms)
+✔ actual dispatcher stale policy decision refuses before budget and source transport (1.765352ms)
+✔ actual dispatcher revocation after reservation prevents source effects and retains uncertain liability (0.915505ms)
+✔ actual dispatcher source-binding corruption withholds release and never settles (2.460859ms)
+✔ actual dispatcher post-response and post-settlement revocation preserve their distinct budget outcomes (7.73443ms)
+✔ retained mail continuation is required, pinned and cannot replay tampered earlier page authority (11.196111ms)
+✔ default production facade still refuses all meeting operations before any configured effect (15.795146ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1836.896247

@@ -1,0 +1,26 @@
+✔ actual note body keeps exact late UTF-16 range/hash/client/authority without evidence promotion (40.413396ms)
+✔ actual transcript body keeps exact late UTF-16 range/hash/client/authority without evidence promotion (3.204116ms)
+✔ exact approved debrief cursor goes to metadata and protocol digest, never an invented body-offset authority (6.723193ms)
+✔ inventory hashes and source identities cannot become body/evidence/absence proof (14.320387ms)
+✔ coordinated UTF-16 counts cannot masquerade as actual UTF-8 byte provenance (2.012503ms)
+✔ foreign client, source kind/owner, source version and returned digest substitutions refuse actual HTTP bytes (9.490947ms)
+✔ approved-only debrief cannot return a draft and calendar cannot return a foreign client (6.240932ms)
+✔ cursor or protocol digest changes in a closed broker receipt refuse before transport (4.033168ms)
+✔ full current attempt/fence/operation/source input authority cannot be substituted before credential issuance (1.701196ms)
+✔ a stalled response and stalled cancel acknowledgement do not prevent deadline or reader release (20.645084ms)
+✔ a late acquired Response after cutoff is cancelled and never released (21.035238ms)
+✔ abort while body is parked aborts transport and releases the actual reader (2.213904ms)
+✔ actual dispatcher stale policy decision refuses before budget and source transport (2.10426ms)
+✔ actual dispatcher revocation after reservation prevents source effects and retains uncertain liability (1.102039ms)
+✔ actual dispatcher source-binding corruption withholds release and never settles (3.097056ms)
+✔ actual dispatcher post-response and post-settlement revocation preserve their distinct budget outcomes (7.933305ms)
+✔ retained mail continuation is required, pinned and cannot replay tampered earlier page authority (12.39823ms)
+✔ default production facade still refuses all meeting operations before any configured effect (23.773577ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2449.559822

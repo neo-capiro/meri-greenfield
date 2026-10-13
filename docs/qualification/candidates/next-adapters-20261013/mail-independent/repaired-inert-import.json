@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "node",
+    "docs/qualification/candidates/next-adapters-20261013/mail-independent/inert-import.mjs"
+  ],
+  "cwd": "/workspace/meri-mail-independent",
+  "reviewedCommit": "6499f960f92f4a42f3bfa388fba68e026e1628ca",
+  "worktreeHead": "8032b3d56b4f2462775cea0528cf7494e639a5c6",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 1.645,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 187,
+  "stderrBytes": 0,
+  "stdoutSha256": "22cfbe750182d183a08607039505968ec7c1d6309232eac4bd3c8e6f4fa92e0b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

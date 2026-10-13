@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "node",
+    "docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/identities.mjs"
+  ],
+  "cwd": "/workspace/meri-catalog-snapshot-independent",
+  "reviewedCommit": "eda892e204e65ac9860a008002c262d7207523b8",
+  "worktreeHead": "eda892e204e65ac9860a008002c262d7207523b8",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 1.75,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1019,
+  "stderrBytes": 0,
+  "stdoutSha256": "8ec80fc30a2e6c279084f820a9ca34278af6108c501c157f7093df91878d38c1",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

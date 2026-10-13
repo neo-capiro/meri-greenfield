@@ -1,0 +1,233 @@
+{
+  "reviewedCommit": "951a7021852b5205357c6780ed2c27527bab9d4d",
+  "reviewedTree": "02f3887314970794384e26db42a41fa5ca133375",
+  "baseCommit": "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+  "publicPackageSourcePR54": "70516e5c9681917ce493bbc50e3023494f2e1209",
+  "verdict": "ACCEPT_SOURCE",
+  "publicPackageVersion": "0.1.2",
+  "wireContractVersion": "0.1.0",
+  "onlyFourVersionExpectationsChanged": true,
+  "testBindings": [
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "oldBlob": "e937ca289b6f09d941cd2166c98e8aff29e4aff0",
+      "newBlob": "b2adf88ffe60dc39926179038acf75bf14223bb5",
+      "oldSha256": "6c534eb966f74d0a5b809b4099c3df890a6489c308946f1af8ecf291545336e5",
+      "newSha256": "984d8508cab8f3d9329256a42947da2bc5f227e8765a098f2698abb61f8f3cfa",
+      "bytes": 30134,
+      "onlyChange": "pkg.version expectation0.1.0\u21920.1.2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "oldBlob": "b9f039e75a07e49060dc6127c5ee904c2d52ec94",
+      "newBlob": "7b9894bccf66cf2b3b90d659d37ae00132ef9c0e",
+      "oldSha256": "cb2972660effd42f4eed8bdf20d1ea8580a9db6e38700cdd56e80eb44615f479",
+      "newSha256": "9f5089b430c390eb2b834cb9773eda5190fb38c6f5dd700d8e2c0756e01bade5",
+      "bytes": 33626,
+      "onlyChange": "pkg.version expectation0.1.0\u21920.1.2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "oldBlob": "bd8dbbdcc0770d61003df2a7fc10e6d29b4f394a",
+      "newBlob": "51d52b61fa1b02fc4819e95bdb0597406e2bdf0a",
+      "oldSha256": "9f6981e2877abda950f74789a40fdd27dbeda805e23a5f65acb04f53a189343b",
+      "newSha256": "30075b25c04395351df8eff6671fdbe286d36961ee31b2893d681ff7d08183ed",
+      "bytes": 12940,
+      "onlyChange": "pkg.version expectation0.1.0\u21920.1.2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "oldBlob": "c5a82d0f53522a8273ba1fed3b18adf9f1903f1d",
+      "newBlob": "230cf73e147db6866d33678bd5b168c3020e6b6a",
+      "oldSha256": "eeaab623b9b23760a51e5550f8c116f6fd629d9e3771810b141f9b2f98b27034",
+      "newSha256": "6fe714288820d633aee4d8819dad54273d08dab65a1e6d79248cc68388601c65",
+      "bytes": 32260,
+      "onlyChange": "pkg.version expectation0.1.0\u21920.1.2"
+    }
+  ],
+  "rootReceiptBindings": [
+    {
+      "path": "docs/qualification/candidates/next-adapters-20261013/root/version-baseline.tap",
+      "bytes": 23718,
+      "sha256": "90d53c37c6c54ab1d2b4ba7940f98641c5bd7e3d472bf6ebbd1386f6d8589e4e",
+      "tests": 90,
+      "passed": 86,
+      "failed": 4,
+      "executionOwner": "root historical capture; inspected, not independently rerun baseline"
+    },
+    {
+      "path": "docs/qualification/candidates/next-adapters-20261013/root/version-repaired.tap",
+      "bytes": 20306,
+      "sha256": "27fcef43b772156033aa0a77c63d836e7d412fc5861a26d4c6ee2b352209a7f8",
+      "tests": 90,
+      "passed": 90,
+      "failed": 0,
+      "executionOwner": "root historical capture; inspected, not independently rerun baseline"
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact source tree",
+      "pass": true
+    },
+    {
+      "name": "only four executable/assertion paths changed",
+      "pass": true
+    },
+    {
+      "name": "one exact version expectation packages/contracts/test/retrieval-mail.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "all other bytes/assertions unchanged packages/contracts/test/retrieval-mail.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "review source file exact packages/contracts/test/retrieval-mail.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "one exact version expectation packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "all other bytes/assertions unchanged packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "review source file exact packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "one exact version expectation packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "all other bytes/assertions unchanged packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "review source file exact packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "one exact version expectation packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "all other bytes/assertions unchanged packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "review source file exact packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/README.md",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/retrieval-0.2",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/dist",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged packages/contracts/document-application",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged apps/gateway",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged apps/control",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged apps/worker",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged infra",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged package.json",
+      "pass": true
+    },
+    {
+      "name": "original owner/source byte/tree unchanged package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "published public package0.1.2",
+      "pass": true
+    },
+    {
+      "name": "package exactly PR54",
+      "pass": true
+    },
+    {
+      "name": "public README exactly PR54",
+      "pass": true
+    },
+    {
+      "name": "README distinguishes wire and package",
+      "pass": true
+    },
+    {
+      "name": "wire schema remains0.1.0",
+      "pass": true
+    },
+    {
+      "name": "retrieval private exports/files remain excluded",
+      "pass": true
+    },
+    {
+      "name": "all production operation handlers stay null/unavailable",
+      "pass": true
+    },
+    {
+      "name": "root retained count version-baseline.tap",
+      "pass": true
+    },
+    {
+      "name": "root retained count version-repaired.tap",
+      "pass": true
+    },
+    {
+      "name": "independent90 tests pass",
+      "pass": true
+    },
+    {
+      "name": "independent captured source/cleanup",
+      "pass": true
+    },
+    {
+      "name": "independent raw hash exact",
+      "pass": true
+    }
+  ],
+  "passed": 39,
+  "failed": 0,
+  "independentTests": 90,
+  "independentPass": 90,
+  "independentFail": 0,
+  "broad3217SuiteRerun": false,
+  "nativeRuntimeAccepted": false
+}

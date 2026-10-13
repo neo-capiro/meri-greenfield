@@ -1,0 +1,41 @@
+{
+  "schema": "meri.local-check-capture/1",
+  "commit": "4ce77b14c43b89103e797547b452714bd7c16f0b",
+  "tree": "ed55a287685ee29b42fbd283480125485387f90d",
+  "command": [
+    "npm",
+    "pack",
+    "--prefix",
+    "packages/contracts",
+    "--pack-destination",
+    "/tmp/meri-next-adapters-public-pack",
+    "--ignore-scripts",
+    "--offline",
+    "--json",
+    "--cache",
+    "/tmp/meri-next-adapters-pack-cache",
+    "--update-notifier=false"
+  ],
+  "startedAt": "2026-10-13T13:08:02.936621+00:00",
+  "seconds": 10.279636096001923,
+  "exitCode": 0,
+  "timedOut": false,
+  "counts": {},
+  "blobs": {
+    "stdout": {
+      "path": "public-package-pack.stdout.gz",
+      "rawBytes": 2255903,
+      "rawSha256": "d9037a61eea3d1fb613cc0db8b6055e44b53b87c8ae366df223d4d188820b4f3"
+    },
+    "stderr": {
+      "path": "public-package-pack.stderr.gz",
+      "rawBytes": 664,
+      "rawSha256": "ae67a98c6a1c19cda6c7cd37e714a91f5131d1751dede32e0302cc2f39c5bd25"
+    }
+  },
+  "ownedProcessId": 133431,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "finiteParentSubreaper": true,
+  "reapedDescendants": []
+}

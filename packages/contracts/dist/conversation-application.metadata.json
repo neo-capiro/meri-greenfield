@@ -1,0 +1,68 @@
+{
+  "packageVersion": "0.1.3",
+  "schemaId": "urn:meri:conversation-application:0.1.0",
+  "sources": [
+    {
+      "path": "../../apps/control/conversations/events.mjs",
+      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4",
+      "bytes": 2000
+    },
+    {
+      "path": "../../apps/control/conversations/http.mjs",
+      "sha256": "2e65b13ceb17ae74afc96490b639b1afc0a5cdce37ffd76ddc2c1eb28fb28b79",
+      "bytes": 5425
+    },
+    {
+      "path": "../../apps/control/conversations/service.mjs",
+      "sha256": "193760a9451b29dc3b59fd5e5c81d3f3e8a27f8591607050b734ad2344da4bae",
+      "bytes": 8029
+    },
+    {
+      "path": "conversation-application/protocol.mjs",
+      "sha256": "7c515d2eedaa17b5e76977c8c8650cc53920f5d5653acae4741e262baffe80e2",
+      "bytes": 2047
+    },
+    {
+      "path": "conversation-application/receive.mjs",
+      "sha256": "11d9b0a7f5636ebdffce3d0744be0b539a23c28bba56c26740db095ee11be2eb",
+      "bytes": 7555
+    },
+    {
+      "path": "conversation-application/schema.mjs",
+      "sha256": "c60771d1febe7cafdcacc0240345f019bbfa6e2097c0ba253279e922c58c7512",
+      "bytes": 2515
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "6a82c49b1db426d2435d751eaf754731658ac1d448750e1a8f060fdada869982",
+      "bytes": 2216
+    },
+    {
+      "path": "meri.schema.json",
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "bytes": 50043
+    },
+    {
+      "path": "retrieval-0.2/common.schema.json",
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "bytes": 15134
+    },
+    {
+      "path": "retrieval-0.2/skill.schema.json",
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "bytes": 9072
+    }
+  ],
+  "schemaSha256": "76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b",
+  "browserInputs": [
+    "conversation-application/conversation-application-receiver.mjs",
+    "conversation-application/protocol.mjs",
+    "conversation-generated:./generated-validator.mjs",
+    "document-application/boundary.mjs",
+    "node_modules/ajv-formats/dist/formats.js",
+    "node_modules/ajv/dist/runtime/equal.js",
+    "node_modules/ajv/dist/runtime/ucs2length.js",
+    "node_modules/canonicalize/lib/canonicalize.js",
+    "node_modules/fast-deep-equal/index.js"
+  ]
+}

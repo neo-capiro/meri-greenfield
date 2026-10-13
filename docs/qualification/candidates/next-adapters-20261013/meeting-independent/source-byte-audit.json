@@ -1,0 +1,212 @@
+{
+  "source": "95dd8f75915c731d27b2e2516cadd57cd07677eb",
+  "tree": "dc78ce3040f058169c7856a252f135a0d34ab92f",
+  "base": "a2aef4a5fcd3c19cec974dc62b69222836d71b3e",
+  "initial": "8adadbdfd61eee990c3e43a9c701884227cbef35",
+  "receiverCandidate": "7f9a23cc5edf29b113589428beabf79a2f9de431",
+  "checks": {
+    "apps/gateway/sources/meetings": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/test/next-read-adapters-integration.test.mjs": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/authorization": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/dispatch": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/budget": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/index.mjs": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/sources/json-response.mjs": {
+      "receiverCandidateExact": true
+    },
+    "apps/gateway/sources/source-admission.mjs": {
+      "receiverCandidateExact": true
+    },
+    "packages/contracts": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": [
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-meeting-source.test.mjs",
+        "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+        "packages/contracts/test/retrieval-operational-reads.test.mjs"
+      ]
+    },
+    "apps/proxy/qualification": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": []
+    },
+    "apps/worker/qualification": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": []
+    },
+    "apps/control/qualification-sdk-fixture": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": []
+    },
+    "apps/control/qualification-temporal": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": []
+    },
+    "apps/artifacts": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": []
+    },
+    "apps/control/document-application": {
+      "baseExactExceptAuthorizedFourTestConstants": true,
+      "changedPaths": []
+    }
+  },
+  "reviewedSourceInventory": [
+    {
+      "path": "apps/gateway/sources/mail/HANDOFF.md",
+      "bytes": 5505,
+      "sha256": "65f85e7f9890ad53076236bca034c89e61b8c5bf17285de8c0f483b47980864f"
+    },
+    {
+      "path": "apps/gateway/sources/mail/IMPLEMENTATION.md",
+      "bytes": 3823,
+      "sha256": "500220a72412b0416229875a56979d332a3388b64f3a6211aa3eec6717722762"
+    },
+    {
+      "path": "apps/gateway/sources/mail/README.md",
+      "bytes": 4336,
+      "sha256": "bfd059712081c4312190d16a83fb709dcd0a82752fe033f0bf9166a929542695"
+    },
+    {
+      "path": "apps/gateway/sources/mail/handler.mjs",
+      "bytes": 1436,
+      "sha256": "d0ee875b991d4865ade0de978c813ba99385b1d3656cf885df8ba083a41e5dae"
+    },
+    {
+      "path": "apps/gateway/sources/mail/http-adapter.mjs",
+      "bytes": 4778,
+      "sha256": "2b65da8539c61885d6476eaecdde1e62c2bb7e227fb3c31380db3e5c6fad31c7"
+    },
+    {
+      "path": "apps/gateway/sources/mail/request-context.mjs",
+      "bytes": 5750,
+      "sha256": "bdfa9414c83b3df9bf18f31df9d71963eff40d8a3bd8919e1e2886f8198af869"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/author-initial.tap.gz",
+      "bytes": 2437,
+      "sha256": "852f70f4c531be08e0e2f5206b65bdcf43b0319234a3d3d46b0f93aa68ab6fb5"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/author-protocol-rerun.tap",
+      "bytes": 14673,
+      "sha256": "a3461a36537e14cd9d471e7f47b52a4077985c05d22c72f240ae50dfea22252e"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/author-review-repair-rerun.tap",
+      "bytes": 23316,
+      "sha256": "3ffd20ac63d8680c08735ed10a8a4757a3e8c8a89bed335c91543fb81a59bfa0"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/author-review-repair.tap",
+      "bytes": 24035,
+      "sha256": "18fcb619fc9b4a6db15216d1399e89f4eb655acec1baf892b92801a921f05054"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/existing-continuation-regression.tap",
+      "bytes": 19890,
+      "sha256": "b6c7996fe7a9582f17da64557c42866123a7db11c6dc3361335912a23e2edc5d"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/fixtures.mjs",
+      "bytes": 9403,
+      "sha256": "5025b3a24bd1db753a710c37a87f51d096e98f2d33e1c47ff48f5644377d64c4"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/read-adapter.test.mjs",
+      "bytes": 17090,
+      "sha256": "0c8b505e6e826fc5ca8ac49b97b8d42fdd86cca99813b848039880ccaed590a4"
+    },
+    {
+      "path": "apps/gateway/sources/mail/test/review-repair.test.mjs",
+      "bytes": 3830,
+      "sha256": "ec38f30a80c16d3019c6b246425e5e8b9360c889637b9ac4ce905735f677f728"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/IMPLEMENTATION.md",
+      "bytes": 5396,
+      "sha256": "a6e4948ff51980566eda09c72596db5f82ff705db3b73763480ebe1fc45a87fb"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/handler.mjs",
+      "bytes": 1489,
+      "sha256": "7a16e82939fc37f41cc824971e37bd2b0fc1d22f17c6d1da380c16258aae9977"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/http-adapter.mjs",
+      "bytes": 4322,
+      "sha256": "f4309cf69d87b4f516b6b633099de4bf9b1343140929c12796ce08543f81537e"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/request-context.mjs",
+      "bytes": 5161,
+      "sha256": "8ab467703693e4241ac20b71a1ec746739cd70a33294761b37e913970f63b7fb"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/adapter-handler.test.mjs",
+      "bytes": 15793,
+      "sha256": "eaccdd546427c58d6f52c952c67bc13ca49d19c18a482e8edc3c860bae77fba6"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/debrief-status-counterexample.tap",
+      "bytes": 3400,
+      "sha256": "1b7b6de521f808a1aaefe2002e05736a273ebb90b76feee82c75df8369498be2"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/final-28-pass.tap",
+      "bytes": 2689,
+      "sha256": "f77c462416e532523dfea45f88d3b52cc777b636948ad5bc63b08fea78b37a2e"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/fixture-corrected-26.tap",
+      "bytes": 2508,
+      "sha256": "e5b7e3e4c4ac4bd7c7ce6ff9b14797363314c3cb9df05215715924cbd39f322d"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/initial-fixture-counterexample.tap",
+      "bytes": 3221,
+      "sha256": "2b46b0a0004cd2d6b2c17fad4bdb7c94165d19be00dc095fd7a78cf0a0a208f1"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/legacy-combined-44-of-45.json",
+      "bytes": 5818,
+      "sha256": "632c5738aafdf6f1a090d5cc1098446d4fcbda44c056dfa782f6bcfbccbfa630"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/receiver-counterexample-28-of-29.tap",
+      "bytes": 3538,
+      "sha256": "8ef035a51be8d2e3cde85003453af26a8759a8cbabca60763e2a79d7aecaa906"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/evidence/receiver-fixed-29-pass.tap",
+      "bytes": 2788,
+      "sha256": "c9fdcbd6ea06d2d290df8e123e529f14ec0ff444880cf55330c680444d5a7588"
+    },
+    {
+      "path": "apps/gateway/sources/meetings/test/fixtures.mjs",
+      "bytes": 10739,
+      "sha256": "499b4e6900c9938365cb8d32168a4c8834b9a6e614a220ce7af4065d8dab1e8e"
+    },
+    {
+      "path": "apps/gateway/test/next-read-adapters-integration.test.mjs",
+      "bytes": 10209,
+      "sha256": "572ca00371fd1ac43791d54719b5912879ff220e3dc8c9ab50d12d77fa248f41"
+    }
+  ],
+  "sourceOnly": true,
+  "nativeQualified": false,
+  "catalogPromotion": false,
+  "publicPackageBoundary": "Public0.1.2 and wire0.1.0 at this adapter pin; separately authorized public conversation addition is not part of this byte-exact claim."
+}

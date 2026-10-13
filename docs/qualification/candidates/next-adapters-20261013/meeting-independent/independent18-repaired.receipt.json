@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/next-adapters-20261013/meeting-independent/meeting-independent.test.mjs"
+  ],
+  "sourceHead": "7f9a23cc5edf29b113589428beabf79a2f9de431",
+  "exitCode": 0,
+  "seconds": 2.512770827001077,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 123611,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

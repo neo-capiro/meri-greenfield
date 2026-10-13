@@ -362,7 +362,7 @@ test('meeting schema objects stay closed and package public exports stay 0.1 onl
   const walk = node => { if (!node || typeof node !== 'object') return; if (node.type === 'object') assert.equal(node.additionalProperties, false); for (const child of Object.values(node)) if (child && typeof child === 'object') walk(child); };
   walk(meetingSchema);
   const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
-  assert.equal(pkg.version, '0.1.0');
+  assert.equal(pkg.version, '0.1.3');
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });

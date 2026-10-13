@@ -1,0 +1,142 @@
+TAP version 13
+# {"case":"direct authority broker audience","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority command-only actions","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority denied decision","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority decision ID substitution","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"direct authority decision scope omission","error":"ACCESS_DENIED","credentialCalls":0,"fetchCalls":0}
+# {"case":"native Promise assimilation versus inert DTO guard","promiseThenReads":3,"reflectionEffects":0,"credentialGetterEffects":0}
+# Subtest: Borrowed adapter read preserves its original receiver
+ok 1 - Borrowed adapter read preserves its original receiver
+  ---
+  duration_ms: 34.37327
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent broker audience before credential lookup
+ok 2 - Direct internal mail port refuses incoherent broker audience before credential lookup
+  ---
+  duration_ms: 2.698318
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent command-only actions before credential lookup
+ok 3 - Direct internal mail port refuses incoherent command-only actions before credential lookup
+  ---
+  duration_ms: 0.860625
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent denied decision before credential lookup
+ok 4 - Direct internal mail port refuses incoherent denied decision before credential lookup
+  ---
+  duration_ms: 0.753877
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent decision ID substitution before credential lookup
+ok 5 - Direct internal mail port refuses incoherent decision ID substitution before credential lookup
+  ---
+  duration_ms: 0.744704
+  type: 'test'
+  ...
+# Subtest: Direct internal mail port refuses incoherent decision scope omission before credential lookup
+ok 6 - Direct internal mail port refuses incoherent decision scope omission before credential lookup
+  ---
+  duration_ms: 0.81628
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies broker audience before source credentials
+ok 7 - Actual canonical dispatcher denies broker audience before source credentials
+  ---
+  duration_ms: 1.684977
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies command-only actions before source credentials
+ok 8 - Actual canonical dispatcher denies command-only actions before source credentials
+  ---
+  duration_ms: 0.564657
+  type: 'test'
+  ...
+# Subtest: Actual canonical dispatcher denies denied decision before source credentials
+ok 9 - Actual canonical dispatcher denies denied decision before source credentials
+  ---
+  duration_ms: 2.380387
+  type: 'test'
+  ...
+# Subtest: Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence
+ok 10 - Actual dispatcher first and retained later pages preserve full subject/anchor and explicit incomplete evidence
+  ---
+  duration_ms: 64.759671
+  type: 'test'
+  ...
+# Subtest: Malformed nested later-page mailbox cannot pass actual dispatcher release
+ok 11 - Malformed nested later-page mailbox cannot pass actual dispatcher release
+  ---
+  duration_ms: 11.690652
+  type: 'test'
+  ...
+# Subtest: Current authority revocation after source bytes blocks dispatcher release/settlement
+ok 12 - Current authority revocation after source bytes blocks dispatcher release/settlement
+  ---
+  duration_ms: 5.928504
+  type: 'test'
+  ...
+# Subtest: Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash
+ok 13 - Split UTF8 response chunks retain late decisive full-body Unicode and original version/hash
+  ---
+  duration_ms: 10.322885
+  type: 'test'
+  ...
+# Subtest: UTF16 one-unit sections may split astral text and recombine without verified upgrade
+ok 14 - UTF16 one-unit sections may split astral text and recombine without verified upgrade
+  ---
+  duration_ms: 7.302971
+  type: 'test'
+  ...
+# Subtest: Hostile credential data getters and Proxy reflection refuse without Fetch
+ok 15 - Hostile credential data getters and Proxy reflection refuse without Fetch
+  ---
+  duration_ms: 2.018601
+  type: 'test'
+  ...
+# Subtest: Caller input/authority accessor and Proxy refuse before credentials
+ok 16 - Caller input/authority accessor and Proxy refuse before credentials
+  ---
+  duration_ms: 1.857892
+  type: 'test'
+  ...
+# Subtest: Opaque request digest/metadata receipt edits refuse before Fetch
+ok 17 - Opaque request digest/metadata receipt edits refuse before Fetch
+  ---
+  duration_ms: 2.350672
+  type: 'test'
+  ...
+# Subtest: Actual Response short content-length refuses and unlocks owned body
+ok 18 - Actual Response short content-length refuses and unlocks owned body
+  ---
+  duration_ms: 1.303502
+  type: 'test'
+  ...
+# Subtest: Actual Response invalid UTF8 refuses and unlocks owned body
+ok 19 - Actual Response invalid UTF8 refuses and unlocks owned body
+  ---
+  duration_ms: 0.987102
+  type: 'test'
+  ...
+# Subtest: Actual Response compressed body refuses and unlocks owned body
+ok 20 - Actual Response compressed body refuses and unlocks owned body
+  ---
+  duration_ms: 0.959972
+  type: 'test'
+  ...
+# Subtest: Malformed response status cancels an unread owned body without waiting on transport cancellation
+ok 21 - Malformed response status cancels an unread owned body without waiting on transport cancellation
+  ---
+  duration_ms: 1.076094
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3456.762992

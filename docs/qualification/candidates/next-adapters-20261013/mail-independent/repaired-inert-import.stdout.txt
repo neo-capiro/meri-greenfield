@@ -1,0 +1,1 @@
+{"paths":["apps/gateway/sources/mail/handler.mjs","apps/gateway/sources/mail/request-context.mjs","apps/gateway/sources/mail/http-adapter.mjs"],"effects":[],"result":"PASS_INERT_IMPORT"}

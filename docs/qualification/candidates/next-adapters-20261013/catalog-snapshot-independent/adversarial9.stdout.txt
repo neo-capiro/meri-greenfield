@@ -1,0 +1,355 @@
+TAP version 13
+# (node:141874) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Unmodified repaired assertion accepts actual catalog and every original callback identity
+not ok 1 - Unmodified repaired assertion accepts actual catalog and every original callback identity
+  ---
+  duration_ms: 31.742091
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "Operation contract requires plain JSON data"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:34:151)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:34:151)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: Actual repaired assertion still refuses missing exact dispatch profile
+not ok 2 - Actual repaired assertion still refuses missing exact dispatch profile
+  ---
+  duration_ms: 4.035853
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:43:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual repaired assertion still refuses wrong dispatch profile
+not ok 3 - Actual repaired assertion still refuses wrong dispatch profile
+  ---
+  duration_ms: 3.089052
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:43:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual repaired assertion still refuses changed normalize function source
+not ok 4 - Actual repaired assertion still refuses changed normalize function source
+  ---
+  duration_ms: 2.945408
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:43:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual repaired assertion still refuses changed output assertion source
+not ok 5 - Actual repaired assertion still refuses changed output assertion source
+  ---
+  duration_ms: 2.828744
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:43:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual repaired assertion still refuses extra binding metadata
+not ok 6 - Actual repaired assertion still refuses extra binding metadata
+  ---
+  duration_ms: 2.803346
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:43:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Actual repaired assertion still refuses changed context members
+not ok 7 - Actual repaired assertion still refuses changed context members
+  ---
+  duration_ms: 2.935794
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:43:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:44:66)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Accepted field exclusion is confined to actions.query
+not ok 8 - Accepted field exclusion is confined to actions.query
+  ---
+  duration_ms: 2.856356
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:54:9)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:54:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: Original exact Portfolio footnote assertions remain enforced
+not ok 9 - Original exact Portfolio footnote assertions remain enforced
+  ---
+  duration_ms: 2.869324
+  type: 'test'
+  location: '/workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + Comparison {}
+    - Comparison {
+    -   code: 'ERR_ASSERTION'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    code: 'ERR_ASSERTION'
+  actual:
+  error: 'Operation contract requires plain JSON data'
+  stack: |-
+    fail (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+    copyDataWithLimits (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:38:7)
+    copyData (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:9:10)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/retrieval-0.2/operation-contracts.mjs:97:17)
+    Module.resolveOperationContract (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:25:30)
+    resolve (file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:18:29)
+    file:///workspace/meri-catalog-snapshot-independent/packages/contracts/test/vertical-final-integration-independent.test.mjs:104:61
+    getActual (node:assert:611:5)
+    strict.throws (node:assert:759:24)
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:58:9)
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-catalog-snapshot-independent/docs/qualification/candidates/next-adapters-20261013/catalog-snapshot-independent/adversarial.test.mjs:58:9)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 0
+# fail 9
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1766.761217

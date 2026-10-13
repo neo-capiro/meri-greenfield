@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "python",
+    "docs/qualification/candidates/next-adapters-20261013/version-independent/audit.py"
+  ],
+  "cwd": "/workspace/meri-version-independent",
+  "reviewedCommit": "951a7021852b5205357c6780ed2c27527bab9d4d",
+  "worktreeHead": "951a7021852b5205357c6780ed2c27527bab9d4d",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.088,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 117,
+  "stderrBytes": 0,
+  "stdoutSha256": "92dc7ff88da7dd4a54fda80305fb57b6572d3f24d62bce7534ff6bbe8010e21b",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
