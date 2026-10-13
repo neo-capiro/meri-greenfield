@@ -36,7 +36,7 @@ Return only bounded authority metadata with `no-store`. Omit profile/contact dat
 
 This request does not require Capiro to mint Meri scopes, grants, policy revisions, approvals, run IDs, attempt IDs, worker IDs or writer fences. Meri's adapter separately joins the fresh bridge facts to its trusted admitted command context and authoritative current-run port, requiring exact tenant/actor/conversation/client correlation, current policy revision and shortest deadline. Missing run ownership refuses rather than substituting telemetry, qualification rows or fixture state. The adapter implementation can be source-tested now, while deployment still requires both real Capiro endpoints and the authoritative Meri run composition.
 
-The current authentication files carry the explicit change-control instruction: “Investigate read-only and PROPOSE first; wait for go-ahead before editing, merging, or deploying.” No Capiro implementation is changed here. The request belongs to its designated owner under the existing Neo approval rule; no auth, deployment or network approval is inferred from these source findings.
+The user has expressly authorized actual adapter implementation and autonomous source continuation. This lane owns only Meri documentation; Capiro implementation belongs to its designated owner under that current user authorization. The authentication files contain a change-control note, but it does not introduce a fresh approval step for this already-authorized source work. No Capiro implementation or deployment occurred in this lane.
 
 ## Required owner checks and handoff
 

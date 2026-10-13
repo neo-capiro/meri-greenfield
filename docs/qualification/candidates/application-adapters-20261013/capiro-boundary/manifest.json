@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "docs/coordination/reports/CODEX-CAPIRO-APPLICATION-AUTHORITY-REQUEST-20261013.md",
-      "bytes": 10725,
-      "sha256": "0f5f4a51b2d0a0572e24f0e91b39dbc13ce4c1f23bca2cdd015baa1b94bd1baf"
+      "bytes": 10777,
+      "sha256": "b8f4f33f55cc47f11bc2ddfc6699c19190486e9734bdb9eecb81b71a278fd49b"
     },
     {
       "path": "docs/qualification/candidates/application-adapters-20261013/capiro-boundary/collect-metadata.py",
