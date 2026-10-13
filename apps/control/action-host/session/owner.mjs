@@ -8,6 +8,12 @@ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
 const errors=new WeakSet();
 export class ActionSessionError extends Error{constructor(code){super(code);this.name='ActionSessionError';this.code=code;errors.add(this);}}
 const deny=(code='SESSION_REFUSED')=>{throw new ActionSessionError(code);};
+// One minimal issuance wire owner, reused at construction and HTTP release.
+export function assertActionSessionReceipt(value,at){
+ const v=data(value);own(v,['credential','expiresAtMs','context']);own(v.context,['tenantId','actorId','conversationId','runId','selectedClientId']);
+ if(!Number.isSafeInteger(at)||at<0||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at||typeof v.credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(v.credential)||['tenantId','actorId'].some(k=>typeof v.context[k]!=='string'||!v.context[k]||v.context[k].length>256)||['conversationId','runId','selectedClientId'].some(k=>typeof v.context[k]!=='string'||!uuid.test(v.context[k]))||Buffer.byteLength(JSON.stringify(v))>4096)deny();
+ return v;
+}
 export function createActionSessionOwner(configuration){
  const {mode,verifyIdentity,resolveContext,now=Date.now,limits}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
@@ -16,6 +22,7 @@ export function createActionSessionOwner(configuration){
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);r.nativeCredential='';r.receipts.clear();}
  function valid(r,signal){const at=active(signal);if(!r||sessions.get(r.digest)!==r||ids.get(r.sessionId)!==r||r.expiresAtMs<=at) {if(r)remove(r);deny();}return at;}
+ function release(r,t){t.check();if(valid(r,t.signal)>=t.deadline())deny();}
  function life(deadlineMs,signal){nativeSignal(signal);const at=active(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();let cutoff=Math.min(deadlineMs??at+l.maxRequestMs,at+l.maxRequestMs);const timer=createOperationLifetime({deadlineMs:cutoff,now,signal,errorFactory:()=>new ActionSessionError('SESSION_REFUSED')});return {...timer,deadline:()=>cutoff,limitDeadline(next){cutoff=Math.min(cutoff,next);timer.limitDeadline(cutoff);}};}
  function fact(value,keys,started,t){const v=data(value);own(v,keys);if(Buffer.byteLength(JSON.stringify(v))>l.maxFactBytes)deny();const at=active(t.signal);t.check();if(!Number.isSafeInteger(v.checkedAtMs)||v.checkedAtMs<started||v.checkedAtMs>at||!Number.isSafeInteger(v.expiresAtMs)||v.expiresAtMs<=at)deny();t.limitDeadline(v.expiresAtMs);return v;}
  function hints(value){const v=data(value);own(v,[],['conversationId','runId','clientId']);if(Object.values(v).some(x=>typeof x!=='string'||!uuid.test(x)))deny();return v;}
@@ -32,17 +39,17 @@ export function createActionSessionOwner(configuration){
   const context=data({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId,contextRevision:current.contextRevision});if(record&&!same(context,record.context))deny();
   const expiresAtMs=Math.min(identity.expiresAtMs,current.expiresAtMs,record?.expiresAtMs??ceiling);t.limitDeadline(expiresAtMs);active(t.signal);t.check();return {identity,context,expiresAtMs};
  }
- async function issue(value){const {identityCredential,hints:rawHints={},signal}=own(value,['identityCredential'],['hints','signal']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(undefined,signal);let record;
+ async function issue(value){const {identityCredential,hints:rawHints={},signal,deadlineMs}=own(value,['identityCredential'],['hints','signal','deadlineMs']);if(typeof identityCredential!=='string'||!identityCredential||identityCredential.length>8192||!/^\S+$/u.test(identityCredential))deny();const selected=hints(rawHints),t=life(deadlineMs,signal);let record;
   try{const started=active(t.signal);for(const r of sessions.values())if(r.expiresAtMs<=started)remove(r);if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const resolved=await resolve(identityCredential,selected,t,undefined,started+l.maxTtlMs);
    active(t.signal);t.check();if(sessions.size>=l.maxSessions)deny('SESSION_CAPACITY');const credential=`action_session_${randomBytes(32).toString('base64url')}`,sessionId=randomUUID();record={...resolved,digest:hash(credential),sessionId,sessionRevision:randomUUID(),nativeCredential:identityCredential,hints:selected,receipts:new Set()};sessions.set(record.digest,record);ids.set(sessionId,record);
-   const b=record.context.binding;active(t.signal);t.check();return data({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}});
+   const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:{tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId,selectedClientId:record.context.selectedClientId}},active(t.signal));release(record,t);return out;
   }catch(error){if(record)remove(record);if(errors.has(error))throw error;deny();}finally{t.close();}
  }
  async function authenticateSession(value){const {credential,signal,deadlineMs}=own(value,['credential'],['signal','deadlineMs']);if(typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential))deny();const r=sessions.get(hash(credential));valid(r,signal);const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,out=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(out));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);return out;}catch{remove(r);deny();}finally{t.close();}
+  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;const b=r.context.binding,out=data({principal:{sessionId:r.sessionId,tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId,runId:b.runId},sessionRevision:r.sessionRevision,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});t.check();r.receipts.add(canonicalSha256(out));if(r.receipts.size>64)r.receipts.delete(r.receipts.values().next().value);release(r,t);return out;}catch{remove(r);deny();}finally{t.close();}
  }
  async function readCurrentState(value){const {authentication,signal,deadlineMs}=own(value,['authentication'],['signal','deadlineMs']),a=data(authentication);const r=ids.get(a.principal?.sessionId);valid(r,signal);if(!r.receipts.has(canonicalSha256(a)))deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
-  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();return data({authenticationSha256:canonicalSha256(a),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}catch{remove(r);deny();}finally{t.close();}
+  try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=data({authenticationSha256:canonicalSha256(a),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});release(r,t);return out;}catch{remove(r);deny();}finally{t.close();}
  }
  return Object.freeze({issue,authenticateSession,readCurrentState,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
 }
