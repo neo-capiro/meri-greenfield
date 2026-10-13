@@ -1,0 +1,74 @@
+✔ independent opaque sessions: inert constructor and exact detached public context, fresh canonical owner receipts (7.79094ms)
+✔ independent hints are selectors only: reject mismatched conversationId (1.312508ms)
+✔ independent hints are selectors only: reject mismatched runId (0.697708ms)
+✔ independent hints are selectors only: reject mismatched clientId (0.604659ms)
+✔ independent issuance rejects current owner identity hash (0.693302ms)
+✔ independent issuance rejects current owner tenant (0.582986ms)
+✔ independent issuance rejects current owner actor (0.738469ms)
+✔ independent issuance rejects current owner missing selected scope (0.428153ms)
+✔ independent issuance rejects current owner stale (0.627313ms)
+✔ independent issuance rejects current owner expired (0.502074ms)
+✔ independent current revision change invalidates issued token (0.733342ms)
+✔ independent current contextRevision change invalidates issued token (0.803357ms)
+✔ independent issued receipt cannot be forged or exchanged across session records (1.017579ms)
+✔ independent capacity is bounded and explicit revocation frees only its issued record (1.8824ms)
+✖ independent late revocation refuses in-flight authenticateSession (2.110442ms)
+✖ independent late revocation refuses in-flight readCurrentState (1.532303ms)
+✔ independent parked issue cancellation/close cannot leak a session after late owner return (11.358431ms)
+✖ independent hostile receipt and rejection are refused without traps or secret reflection (1.248256ms)
+✔ independent caller cutoff is passed unchanged or earlier to both owner ports (1.178481ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 16
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 342.25443
+
+✖ failing tests:
+
+test at apps/control/action-host/session/owner-independent.test.mjs:21:64
+✖ independent late revocation refuses in-flight authenticateSession (2.110442ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/owner-independent.test.mjs:21:540)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/session/owner-independent.test.mjs:21:64
+✖ independent late revocation refuses in-flight readCurrentState (1.532303ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/owner-independent.test.mjs:21:540)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/session/owner-independent.test.mjs:23:1
+✖ independent hostile receipt and rejection are refused without traps or secret reflection (1.248256ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/owner-independent.test.mjs:23:501)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
