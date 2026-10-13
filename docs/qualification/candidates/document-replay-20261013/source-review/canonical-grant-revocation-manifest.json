@@ -1,0 +1,35 @@
+{
+  "reviewedCommit": "c872db174eb34ab1396260242b54fd16e2bb42a3",
+  "supersedingDecision": "HOLD",
+  "priorPassesRetained": true,
+  "newFailedControl": 1,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/canonical-grant-revocation-hold.md",
+      "bytes": 1765,
+      "sha256": "0f26fc5a096423bf5a90c2cfc2e849cc201a075ec19d6d373a30316c460b9bb2"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/canonical-grant-revocation-counterexample.json",
+      "bytes": 902,
+      "sha256": "6ccfb450032a4d25061a1f498a043ecfb3d59a25be9e3a7ea51b4725e6731155"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/canonical-grant-revocation-counterexample.stdout.txt",
+      "bytes": 933,
+      "sha256": "30c6df44cb8b7be817af46708875b02031ccd04fa6bed33897b2f66060f99ff3"
+    },
+    {
+      "path": "docs/qualification/candidates/document-replay-20261013/source-review/canonical-grant-revocation-counterexample.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/independent/document-replay-independent.test.mjs",
+      "bytes": 20278,
+      "sha256": "ba10ad8e4bf6b2c256d12aa2394026f7cd3ba19f4cb8a2797ca3029f740dc78c"
+    }
+  ],
+  "borrowedSymlinkRemoved": true,
+  "nativeDatabase": false
+}

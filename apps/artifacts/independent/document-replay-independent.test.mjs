@@ -143,6 +143,10 @@ test('private observation never reconciles a marked UNKNOWN hold before current 
  const before=a.snapshot();a.f.revoke();a.f.ledger.state().grant.state='REVOKED';forbidNewEffects(a);await unresolved(a.run());a.noNewEffects(before);
  const history=await a.owner().reconcileInvocation(a.call);assert.equal(history.resultDelivered,false);assert.equal(history.stage,'SETTLED');assert.equal(a.f.stats().consumedMicroUsd,'10');assert.equal(a.f.stats().generations,1);assert.equal(a.f.stats().versionCharges,1);
 });
+test('canonical database grant revocation denies replay even when business/resource ports still allow',async t=>{
+ const a=await setup(t);await a.run();const before=a.snapshot();a.f.ledger.state().grant.state='REVOKED';forbidNewEffects(a);
+ await unresolved(a.run());a.noNewEffects(before);
+});
 
 function lookupFixture(count,{bytes=256,cycle=false}={}){
  const records=new Map(),artifactId=uid(9000),requestSha256='a'.repeat(64),target=uid(1),head=uid(count),calls=[];

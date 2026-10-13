@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "--test-name-pattern=canonical database grant revocation denies",
+    "apps/artifacts/independent/document-replay-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-document-replay-review",
+  "reviewedCommit": "8097d1596bfb4af8297106fb1a0b9037d780a18d",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 1.879,
+  "processReaped": true,
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-document-replay-review"
+  },
+  "stdoutBytes": 933,
+  "stderrBytes": 0,
+  "stdoutSha256": "30c6df44cb8b7be817af46708875b02031ccd04fa6bed33897b2f66060f99ff3",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
