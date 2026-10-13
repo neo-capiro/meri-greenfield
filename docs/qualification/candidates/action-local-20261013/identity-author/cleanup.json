@@ -1,0 +1,35 @@
+{
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/identity-author/denial-repaired.json",
+      "pgid": 429292,
+      "freshGroupAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/identity-author/final-audit.json",
+      "pgid": 430205,
+      "freshGroupAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/identity-author/initial.json",
+      "pgid": 425583,
+      "freshGroupAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/identity-author/setup-repaired.json",
+      "pgid": 426807,
+      "freshGroupAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/action-local-20261013/identity-author/source-audit.json",
+      "pgid": 430061,
+      "freshGroupAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "allAbsent": true
+}
