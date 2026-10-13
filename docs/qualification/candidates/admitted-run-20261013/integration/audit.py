@@ -9,6 +9,7 @@ import sys
 root = Path(__file__).resolve().parents[5]
 packet = Path(__file__).resolve().parent
 base = '84c2ca01d0bce025a0003b6e724d675a05f2975a'
+production = '863b71de6dc0a965f9961184d65c83f484ce5fb0'
 source, review = sys.argv[1:3]
 
 def git(*args):
@@ -52,6 +53,11 @@ author_source = [path for path in accepted if path.startswith(('apps/', 'package
                  and not path.startswith('apps/control/admitted-runs/independent/')]
 for path in author_source:
     check('accepted source ' + path, current.get(path) == accepted[path])
+production_tree = tree(production)
+production_files = [path for path in author_source if path.endswith('.mjs') and '/test/' not in path]
+check('seven reviewed production files', len(production_files) == 7)
+for path in production_files:
+    check('reviewed production freeze ' + path, current.get(path) == production_tree[path])
 review_source = [path for path in reviewed if path.startswith('apps/control/admitted-runs/independent/')]
 for path in review_source:
     check('independent control ' + path, current.get(path) == reviewed[path])
@@ -86,7 +92,7 @@ for label in ['integrated-check', 'mounted-http']:
     receipts.append({'label': label, 'testedHead': value['sourceHead'],
                      'ownedPidAndPgid': value['ownedPidAndPgid']})
 
-result = {'base': base, 'acceptedSource': source, 'independentReview': review,
+result = {'base': base, 'authorIntegrationCommit': source, 'productionFreeze': production, 'independentReview': review,
           'originalEntries': len(original), 'originalEntriesUnchanged': len(original)-len(changed),
           'allocatedOriginalChanges': sorted(changed), 'acceptedFiles': len(author_source),
           'independentFiles': len(review_source), 'laneManifestMembers': manifests,

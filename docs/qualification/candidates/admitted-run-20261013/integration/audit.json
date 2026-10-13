@@ -1,0 +1,374 @@
+{
+  "base": "84c2ca01d0bce025a0003b6e724d675a05f2975a",
+  "authorIntegrationCommit": "d8e20691dd1417cc79c051bdfa0940c0763cae0c",
+  "productionFreeze": "863b71de6dc0a965f9961184d65c83f484ce5fb0",
+  "independentReview": "370a0892921163abaacdec43def47c511f2aa2eb",
+  "originalEntries": 11160,
+  "originalEntriesUnchanged": 11157,
+  "allocatedOriginalChanges": [
+    "apps/gateway/budget/tool-budget-binding.mjs",
+    "apps/gateway/index.mjs",
+    "apps/gateway/local-action/control-authorizer.mjs"
+  ],
+  "acceptedFiles": 12,
+  "independentFiles": 2,
+  "laneManifestMembers": {
+    "author": 22,
+    "review": 26
+  },
+  "capabilityScope": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mapped": 96,
+    "operations": 97
+  },
+  "receipts": [
+    {
+      "label": "integrated-check",
+      "testedHead": "ab482aefa2c06d4cd8e6db389fe1e3824f00df2d",
+      "ownedPidAndPgid": 491565
+    },
+    {
+      "label": "mounted-http",
+      "testedHead": "d6d2b7912d95ac2f64f740ba0232d4018fc67e94",
+      "ownedPidAndPgid": 491132
+    }
+  ],
+  "passed": 83,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "only allocated original source seams changed",
+      "pass": true
+    },
+    {
+      "name": "all original paths preserved",
+      "pass": true
+    },
+    {
+      "name": "all original tests contracts registry and failure evidence unchanged",
+      "pass": true
+    },
+    {
+      "name": "full original capability denominator preserved",
+      "pass": true
+    },
+    {
+      "name": "all production operation descriptors remain unavailable",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/control/admitted-runs/README.md",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/control/admitted-runs/mount.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/control/admitted-runs/test/authority.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/control/admitted-runs/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/control/admitted-runs/test/mount.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/control/admitted-runs/test/owner.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/gateway/authorization/task-lookup-authorizer.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/gateway/budget/admitted-run-binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/gateway/budget/admitted-run-owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/gateway/budget/tool-budget-binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted source apps/gateway/local-action/control-authorizer.mjs",
+      "pass": true
+    },
+    {
+      "name": "seven reviewed production files",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/control/admitted-runs/mount.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/gateway/authorization/task-lookup-authorizer.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/gateway/budget/admitted-run-binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/gateway/budget/admitted-run-owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/gateway/budget/tool-budget-binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed production freeze apps/gateway/local-action/control-authorizer.mjs",
+      "pass": true
+    },
+    {
+      "name": "independent control apps/control/admitted-runs/independent/mount-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "independent control apps/control/admitted-runs/independent/owner-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/final-author.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/final-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/final-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/first-author.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/first-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/first-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/host-receipt-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/host-receipt-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/host-receipt-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/initial-findings.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/repaired-author.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/repaired-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/repaired-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/report.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/author/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ADMITTED-RUN-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/admitted-runs/independent/mount-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/admitted-runs/independent/owner-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ADMITTED-RUN-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/command-receipt-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/command-receipt-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/command-receipt-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/criteria.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/final-independent.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/final-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/final-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/fixture-correction.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/mount-initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/mount-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/mount-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/owner-initial.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/owner-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/owner-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/repaired-plus-host.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/repaired-plus-host.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/admitted-run-20261013/review/repaired-plus-host.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "passing bounded check integrated-check",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/admitted-run-20261013/integration/integrated-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/admitted-run-20261013/integration/integrated-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned process group integrated-check",
+      "pass": true
+    },
+    {
+      "name": "passing bounded check mounted-http",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned process group mounted-http",
+      "pass": true
+    }
+  ]
+}

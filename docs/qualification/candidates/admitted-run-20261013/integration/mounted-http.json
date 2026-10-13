@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/admitted-run-20261013/integration/run-mounted.mjs",
+    "--run"
+  ],
+  "cwd": "/tmp/meri-admitted-run-20261013",
+  "sourceHead": "d6d2b7912d95ac2f64f740ba0232d4018fc67e94",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:39:35.345117+00:00",
+  "durationSeconds": 2.788,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 491132,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.stdout.bin",
+      "bytes": 957,
+      "sha256": "84f3648d93e6ea1d29c65f32414c4c0f5d6a652e456b8712fbc684bc127ab93e"
+    },
+    {
+      "path": "docs/qualification/candidates/admitted-run-20261013/integration/mounted-http.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
