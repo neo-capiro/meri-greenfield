@@ -4,6 +4,14 @@ import {canonicalSha256 as hash,validateShape} from '../../contracts/validate.mj
 export const same=(a,b)=>hash(a)===hash(b);
 export const fail=code=>{throw Object.assign(new Error(code),{code});};
 export const utf8Sha=text=>createHash('sha256').update(text,'utf8').digest('hex');
+function citationReference(identity,locator){
+ if(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(locator))return {citationId:locator};
+ // A local UUIDv8 display reference is not an upstream citation or trust proof.
+ // Keep the complete canonical identity digest and actual source locators.
+ const citationIdentitySha256=hash([identity.sourceId,identity.recordId,identity.recordVersionId,identity.contentSha256,identity.scopes]);
+ const digits=citationIdentitySha256.slice(0,32).split('');digits[12]='8';digits[16]=((parseInt(digits[16],16)&3)|8).toString(16);const h=digits.join('');
+ return {citationId:`${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`,citationIdentitySha256};
+}
 export function aggregateMaterial(sections,context){
  const groups=new Map();
  for(const section of sections){
@@ -24,7 +32,8 @@ export function aggregateMaterial(sections,context){
   }
   if(bad||end!==g.identity.total||text.length!==end){incomplete.push({...g.identity,reason:'MISSING_OR_CONFLICTING_BODY_SECTIONS',readSections:g.sections.map(s=>({start:s.start,end:s.end}))});continue;}
   if(utf8Sha(text)!==g.identity.contentSha256)fail('WORKFLOW_MATERIAL_HASH');
-  const last=g.sections.at(-1),record={sourceId:g.identity.sourceId,recordId:g.identity.recordId,recordVersionId:g.identity.recordVersionId,content:{kind:'full-read',text},contentSha256:g.identity.contentSha256,citationId:g.sections[0].citationId,scopes:g.identity.scopes,metadata:g.identity.metadata};
+  const last=g.sections.at(-1),reference=citationReference(g.identity,g.sections[0].citationId),record={sourceId:g.identity.sourceId,recordId:g.identity.recordId,recordVersionId:g.identity.recordVersionId,content:{kind:'full-read',text},contentSha256:g.identity.contentSha256,citationId:reference.citationId,scopes:g.identity.scopes,metadata:{...g.identity.metadata,
+   sourceLocators:[...new Set(g.sections.map(s=>s.citationId))],...(reference.citationIdentitySha256?{citationKind:'derived-Meri-reference',citationIdentitySha256:reference.citationIdentitySha256}:{})}};
   records.set(key,{record,source:last.source,authorizationDecisionId:last.authorizationDecisionId,authorizationDecisionIds:[...decisions],receiptSha256s:[...new Set(g.sections.map(s=>s.receiptSha256))],verification:g.identity.metadata.materialKind==='stored-extracted-section'?'bound-extracted-section':'bound-source-excerpt'});
  }
  return {records,incomplete};
