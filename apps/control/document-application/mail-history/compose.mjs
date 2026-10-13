@@ -14,7 +14,7 @@ function baseRecord(value,base,context,i,selected){
  let prior;try{prior=JSON.parse(matches[0].runs[0].text.slice(marker.length));}catch{fail('MAIL_HISTORY_BASE');}
  const stableSelection=s=>{const {authorizationDecisionId,...subject}=s.subject;return {subject,window:s.window};};
  if(!same(prior.skill,i.skill)||!same(stableSelection(prior.selection),stableSelection(selected))||!same(prior.target,i.target)||Date.parse(i.asOf)<Date.parse(prior.asOf))fail('MAIL_HISTORY_BASE_CONTEXT');
- return {versionId:r.version.versionId,objectSha256:r.version.object.sha256,specSha256:r.specSha256,provenanceSha256:v.hash(prior)};
+ return {parent:{versionId:r.version.versionId,objectSha256:r.version.object.sha256,specSha256:r.specSha256,provenanceSha256:v.hash(prior)},evidence:r.version.evidence};
 }
 function assessQuotes(quotes,bodies){return quotes.map(q=>{
  const body=bodies.find(b=>b.candidate.mailboxId===q.mailboxId&&b.candidate.threadId===q.threadId&&b.candidate.messageId===q.messageId);
@@ -46,7 +46,7 @@ export function createMailHistoryCompiler({readSource,readBase,now,defaultCongre
   if(base!==null){own(base,['versionId','specSha256']);if(!readBase||!/^[a-f0-9]{64}$/u.test(base.specSha256??''))fail('MAIL_HISTORY_BASE');}
   const life=createOperationLifetime({deadlineMs:context.deadlineMs,now,signal:opts.signal,errorFactory:code=>Object.assign(new Error('MAIL_HISTORY_'+code),{code:'MAIL_HISTORY_'+code})});
   try{
-   let parent=null;if(base)parent=baseRecord(await life.run(signal=>readBase({versionId:base.versionId,context:v.snapshot(context),signal})),base,context,i,selected);
+   let parent=null,retainedEvidence=[];if(base){const retained=baseRecord(await life.run(signal=>readBase({versionId:base.versionId,context:v.snapshot(context),signal})),base,context,i,selected);parent=retained.parent;retainedEvidence=retained.evidence;}
    const collect=createCollection({readSource,context,selected,asOf:i.asOf,defaultCongress,life,now,limits:bounds});
    await collect.identity('resolve_entity',{query:i.target.query,limit:5});await collect.identity('find_contacts',{query:i.target.query,limit:10,...(selected.subject.kind==='client'?{clientId:selected.subject.entityIds[0]}:{})});
    await collect.candidates('mail.list_messages');const candidates=await collect.candidates('mail.search_messages',{query:i.target.query,...(i.target.participant?{participant:i.target.participant}:{})});
@@ -57,6 +57,7 @@ export function createMailHistoryCompiler({readSource,readBase,now,defaultCongre
    collect.coverage.push({sourceId:'mail',operation:'mail.read_thread',status:unread.length?'partial-decisive-reads':'bound-bodies-source-incomplete',reason:eligible.length>bounds.maxMessages?'MESSAGE_BODY_CAP':null,verified:false,enumeration:'unknown',candidateCount:candidates.length,distinctEligibleCount:eligible.length,excludedByWindow:unique.size-eligible.length,bodyAttempts:bodies.length,boundBodyCount:bodies.filter(b=>b.evidence).length,unreadCount:unread.length,unread,remainingReads:unread.map(b=>b.readHandle)});
    bodies.sort((a,b)=>(Date.parse(a.candidate.effectiveAt??'')||0)-(Date.parse(b.candidate.effectiveAt??'')||0));
    const quotes=assessQuotes(i.quotes,bodies),evidence=bodies.filter(b=>b.evidence).map(b=>b.evidence);if(new Set(evidence.map(e=>e.citationId)).size!==evidence.length)fail('MAIL_HISTORY_CITATION_COLLISION');
+   for(const current of evidence)if(retainedEvidence.some(prior=>prior.sourceId===current.sourceId&&prior.recordId===current.recordId&&prior.sourceVersionId===current.sourceVersionId&&prior.contentSha256!==current.contentSha256))fail('MAIL_HISTORY_SOURCE_VERSION_CONFLICT');
    const provenance={recipe:'mail-history-brief',skill:i.skill,selection:selected,target:i.target,asOf:i.asOf,inputSha256:v.hash(i),readsSha256:v.hash(collect.reads),parent,collection:{...collect.stats(),distinctEligibleCount:eligible.length,bodyAttempts:bodies.length,boundBodyCount:evidence.length,unreadCount:unread.length,unread}};
    const request=v.request({operation:'create_word',format:'docx',title:i.title,content:{blocks:blocks(i,selected,bodies,quotes,collect.coverage,provenance)}}),nextContext=v.context({...context,evidence});life.check();
    const result=data({request,context:nextContext,baseVersionId:base?.versionId??null,provenance,bodies,quotes,coverage:collect.coverage,reads:collect.reads});prepared.set(result,{requestSha256:v.hash(request),contextSha256:v.hash(nextContext),baseVersionId:result.baseVersionId});return result;

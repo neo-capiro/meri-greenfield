@@ -1,0 +1,2134 @@
+{
+  "snapshot": {
+    "version": {
+      "contractVersion": "0.1.0",
+      "artifactId": "5b3bd171-9224-438d-8175-125ace756904",
+      "versionId": "68a95f0b-c434-4327-82b0-f4ed72958620",
+      "parentVersionId": null,
+      "binding": {
+        "tenantId": "synthetic-tenant",
+        "actorId": "synthetic-actor",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "object": {
+        "objectId": "4eeb241b-8396-45f7-8ee8-28db7840ae5a",
+        "versionId": "8c329c99f0849fdf609bc55699f2d3da105045ebdac29507ca7364ccca5f0977",
+        "sha256": "8c329c99f0849fdf609bc55699f2d3da105045ebdac29507ca7364ccca5f0977",
+        "bytes": 39142,
+        "scopes": [
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "client",
+            "resourceId": "99999999-9999-4999-8999-999999999999",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "tenantId": "synthetic-tenant",
+            "kind": "mailbox",
+            "resourceId": "71000000-0000-4000-8000-000000000071",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ]
+      },
+      "filename": "Synthetic Mail History brief.docx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "scopes": [
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "mailbox",
+          "resourceId": "71000000-0000-4000-8000-000000000071",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "citationId": "71000000-0000-4000-8000-000000000075",
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+          "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "observedAt": "2026-10-13T14:53:31.104Z",
+          "sourceUpdatedAt": null
+        }
+      ],
+      "generationStatus": "draft",
+      "previewStatus": "pending",
+      "createdAt": "2026-10-13T14:53:31.286Z"
+    },
+    "spec": {
+      "operation": "create_word",
+      "format": "docx",
+      "title": "Synthetic Mail History brief",
+      "content": {
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "style": "Title",
+            "runs": [
+              {
+                "text": "Synthetic Mail History brief"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Mail History brief | Editable draft for review"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Requested correspondent/topic: Morgan. Identity matches remain candidate metadata."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "As of 2026-10-13T14:53:31.079Z"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Exact selected window: {\"basis\":\"unbounded\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Source-supplied correspondence timeline"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Dates, subjects and participants below are supplied discovery metadata; they do not verify identity or the meaning of a promise. Candidate previews are never decisive evidence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "2026-10-13T14:53:30.079Z | Revised briefing discussion"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Message 71000000-0000-4000-8000-000000000074; thread 71000000-0000-4000-8000-000000000073; mailbox 71000000-0000-4000-8000-000000000071. Received 2026-10-13T14:53:30.079Z; sent unknown; created 2026-10-13T14:53:30.079Z."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "From: Morgan morgan@example.invalid; To: owner@example.invalid. Metadata is unversioned and unverified; connection disconnected; body bound-full-body."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Exact quoted passages"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[bound-source-excerpt] I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Mail 71000000-0000-4000-8000-000000000071 / thread 71000000-0000-4000-8000-000000000073 / message 71000000-0000-4000-8000-000000000074 / version synthetic-message-utf16-v2; UTF-16 characters 2002-2103; locator URL, not verification: https://example.invalid/mail/locator-only."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Interpretations and outstanding items"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "All semantic chronology, ask, promise, owner, completion and follow-up interpretations are unverified drafts for human review. A citation or completed task cannot establish delivery or acceptance."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unverified interpretation] Morgan appears to have promised a revised briefing. This interpretation requires human verification."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Coverage and verification appendix"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "A bound excerpt means exact authorized supplied body bytes were reconstructed and hash-bound; source authenticity/freshness still depend on qualified gateway adapters. Unknown snapshots, source limits, missing dates, disconnection, candidate matching and paging never establish complete history or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "entity_candidates | resolve_entity | candidate-metadata; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unverified entity_candidates candidate projection: 0 returned; source result SHA256 b6cc736a10f2f035623810ca6e343b09a91f5e9e1ddd91ed075ab3adb86dd95d. This does not establish identity, relationship or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source entity_candidates; authority derived; supplied projection generatedAt 2026-10-13T12:00:00.000Z (unverified); freshness unknown; snapshot unknown."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "tenant_contacts | find_contacts | candidate-metadata; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unverified tenant_contacts candidate projection: 0 returned; source result SHA256 e7ddab10edbb025b5edaafce15ebd224218531b56c26647a0aec7b30a6fdf60e. This does not establish identity, relationship or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source tenant_contacts; authority derived; supplied projection generatedAt 2026-10-13T12:00:00.000Z (unverified); freshness unknown; snapshot unknown."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | mail.list_messages | bounded-candidates; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:53:31.079Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:53:31.079Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Candidate body handles remain discovery locators: synthetic-candidate-preview"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:53:31.079Z."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Synthetic incomplete previews; unknown immutable snapshot."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | mail.search_messages | bounded-candidates; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:53:31.079Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:53:31.079Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Candidate body handles remain discovery locators: synthetic-candidate-preview"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:53:31.079Z."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Synthetic incomplete previews; unknown immutable snapshot."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | mail.read_thread | bound-bodies-source-incomplete; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Decisive body reads: 1 bound / 1 eligible; unread 0; body attempts 1; excluded by selected window 0."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Body 71000000-0000-4000-8000-000000000074: bound-full-body; sections 2; connection disconnected; full-body evidence retained."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Citation 71000000-0000-4000-8000-000000000075; source mail; record 71000000-0000-4000-8000-000000000074; immutable version synthetic-message-utf16-v2; authority authoritative; authorization decision 71000000-0000-4000-8000-000000000072."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Full body SHA256 6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a\nQuoted passage SHA256 c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a\nScope [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T14:53:31.104Z; source updated unknown."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 2",
+            "runs": [
+              {
+                "text": "Original skill and immutable revision provenance"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Meri Mail History provenance: {\"recipe\":\"mail-history-brief\",\"skill\":{\"skillId\":\"quick_skill.mail_history\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1\",\"proseSha256\":\"a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"synthetic-tenant\",\"actorId\":\"synthetic-actor\",\"authorizationDecisionId\":\"71000000-0000-4000-8000-000000000072\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}},\"target\":{\"query\":\"Morgan\",\"participant\":\"morgan@example.invalid\"},\"asOf\":\"2026-10-13T14:53:31.079Z\",\"inputSha256\":\"4f65631f7c639e546ad0f79b00d327dac5787c9de36b5ec7238e38f25c7f6267\",\"readsSha256\":\"283f0e66b58df800c2f26e782a9016358e4adafa489de39f7bc7e2502e3eb757\",\"parent\":null,\"collection\":{\"calls\":6,\"bytes\":20042,\"limits\":{\"maxCalls\":24,\"maxCandidatePages\":3,\"candidatePageSize\":5,\"maxMessages\":10,\"bodySectionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":[],\"distinctEligibleCount\":1,\"bodyAttempts\":1,\"boundBodyCount\":1,\"unreadCount\":0,\"unread\":[]}}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "specSha256": "9f634f4d6315eb181f6cec7f00de001c8692b025f7c32b717afdd7a9e3cd0f0a",
+    "requestSha256": "a0e64bed005a3e6694b8cdf6e7dd19ebc190d37054c0f2f38853d684e3c89624",
+    "inspection": {
+      "sha256": "8c329c99f0849fdf609bc55699f2d3da105045ebdac29507ca7364ccca5f0977",
+      "bytes": 39142,
+      "format": "docx",
+      "nativeOpened": false,
+      "rendered": false,
+      "recalculated": false,
+      "members": [
+        "[Content_Types].xml",
+        "_rels/.rels",
+        "docProps/core.xml",
+        "docProps/app.xml",
+        "word/document.xml",
+        "word/_rels/document.xml.rels",
+        "word/styles.xml",
+        "word/stylesWithEffects.xml",
+        "word/settings.xml",
+        "word/webSettings.xml",
+        "word/fontTable.xml",
+        "word/theme/theme1.xml",
+        "customXml/item1.xml",
+        "customXml/_rels/item1.xml.rels",
+        "customXml/itemProps1.xml",
+        "word/numbering.xml",
+        "docProps/thumbnail.jpeg"
+      ],
+      "details": {
+        "paragraphs": 41,
+        "tables": 0,
+        "pictures": 0
+      }
+    }
+  },
+  "preparation": {
+    "request": {
+      "operation": "create_word",
+      "format": "docx",
+      "title": "Synthetic Mail History brief",
+      "content": {
+        "blocks": [
+          {
+            "kind": "paragraph",
+            "style": "Title",
+            "runs": [
+              {
+                "text": "Synthetic Mail History brief"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Mail History brief | Editable draft for review"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Requested correspondent/topic: Morgan. Identity matches remain candidate metadata."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "As of 2026-10-13T14:53:31.079Z"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Exact selected window: {\"basis\":\"unbounded\"}"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Source-supplied correspondence timeline"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Dates, subjects and participants below are supplied discovery metadata; they do not verify identity or the meaning of a promise. Candidate previews are never decisive evidence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "2026-10-13T14:53:30.079Z | Revised briefing discussion"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Message 71000000-0000-4000-8000-000000000074; thread 71000000-0000-4000-8000-000000000073; mailbox 71000000-0000-4000-8000-000000000071. Received 2026-10-13T14:53:30.079Z; sent unknown; created 2026-10-13T14:53:30.079Z."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "From: Morgan morgan@example.invalid; To: owner@example.invalid. Metadata is unversioned and unverified; connection disconnected; body bound-full-body."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Exact quoted passages"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[bound-source-excerpt] I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Mail 71000000-0000-4000-8000-000000000071 / thread 71000000-0000-4000-8000-000000000073 / message 71000000-0000-4000-8000-000000000074 / version synthetic-message-utf16-v2; UTF-16 characters 2002-2103; locator URL, not verification: https://example.invalid/mail/locator-only."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Interpretations and outstanding items"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "All semantic chronology, ask, promise, owner, completion and follow-up interpretations are unverified drafts for human review. A citation or completed task cannot establish delivery or acceptance."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "[unverified interpretation] Morgan appears to have promised a revised briefing. This interpretation requires human verification."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 1",
+            "runs": [
+              {
+                "text": "Coverage and verification appendix"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "A bound excerpt means exact authorized supplied body bytes were reconstructed and hash-bound; source authenticity/freshness still depend on qualified gateway adapters. Unknown snapshots, source limits, missing dates, disconnection, candidate matching and paging never establish complete history or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "entity_candidates | resolve_entity | candidate-metadata; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unverified entity_candidates candidate projection: 0 returned; source result SHA256 b6cc736a10f2f035623810ca6e343b09a91f5e9e1ddd91ed075ab3adb86dd95d. This does not establish identity, relationship or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source entity_candidates; authority derived; supplied projection generatedAt 2026-10-13T12:00:00.000Z (unverified); freshness unknown; snapshot unknown."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "tenant_contacts | find_contacts | candidate-metadata; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Unverified tenant_contacts candidate projection: 0 returned; source result SHA256 e7ddab10edbb025b5edaafce15ebd224218531b56c26647a0aec7b30a6fdf60e. This does not establish identity, relationship or absence."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source tenant_contacts; authority derived; supplied projection generatedAt 2026-10-13T12:00:00.000Z (unverified); freshness unknown; snapshot unknown."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | mail.list_messages | bounded-candidates; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:53:31.079Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:53:31.079Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Candidate body handles remain discovery locators: synthetic-candidate-preview"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:53:31.079Z."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Synthetic incomplete previews; unknown immutable snapshot."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | mail.search_messages | bounded-candidates; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Returned 1; more false; next offset none; source query scope {\"asOfInclusive\":\"2026-10-13T14:53:31.079Z\",\"storedCreatedAtEndInclusive\":\"2026-10-13T14:53:31.079Z\",\"effectiveStartInclusive\":null,\"missingEffectiveDates\":\"included\"}."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Candidate body handles remain discovery locators: synthetic-candidate-preview"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Source mail; authority authoritative; snapshot unknown; freshness unknown; retrieved 2026-10-13T14:53:31.079Z."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Limitation: Synthetic incomplete previews; unknown immutable snapshot."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "mail | mail.read_thread | bound-bodies-source-incomplete; enumeration unknown; reason none; verified false."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Decisive body reads: 1 bound / 1 eligible; unread 0; body attempts 1; excluded by selected window 0."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Body 71000000-0000-4000-8000-000000000074: bound-full-body; sections 2; connection disconnected; full-body evidence retained."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Citation 71000000-0000-4000-8000-000000000075; source mail; record 71000000-0000-4000-8000-000000000074; immutable version synthetic-message-utf16-v2; authority authoritative; authorization decision 71000000-0000-4000-8000-000000000072."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Full body SHA256 6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a\nQuoted passage SHA256 c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a\nScope [{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]\nObserved 2026-10-13T14:53:31.104Z; source updated unknown."
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Heading 2",
+            "runs": [
+              {
+                "text": "Original skill and immutable revision provenance"
+              }
+            ]
+          },
+          {
+            "kind": "paragraph",
+            "style": "Normal",
+            "runs": [
+              {
+                "text": "Meri Mail History provenance: {\"recipe\":\"mail-history-brief\",\"skill\":{\"skillId\":\"quick_skill.mail_history\",\"skillVersion\":\"1.0.0\",\"manifestSha256\":\"b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1\",\"proseSha256\":\"a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4\",\"catalogSha256\":\"27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968\"},\"selection\":{\"subject\":{\"kind\":\"client\",\"entityType\":\"client\",\"entityIds\":[\"99999999-9999-4999-8999-999999999999\"],\"tenantId\":\"synthetic-tenant\",\"actorId\":\"synthetic-actor\",\"authorizationDecisionId\":\"71000000-0000-4000-8000-000000000072\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"scopes\":[{\"tenantId\":\"synthetic-tenant\",\"kind\":\"client\",\"resourceId\":\"99999999-9999-4999-8999-999999999999\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},{\"tenantId\":\"synthetic-tenant\",\"kind\":\"mailbox\",\"resourceId\":\"71000000-0000-4000-8000-000000000071\",\"policyRevision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}],\"rosterVersionId\":null},\"window\":{\"basis\":\"unbounded\"}},\"target\":{\"query\":\"Morgan\",\"participant\":\"morgan@example.invalid\"},\"asOf\":\"2026-10-13T14:53:31.079Z\",\"inputSha256\":\"4f65631f7c639e546ad0f79b00d327dac5787c9de36b5ec7238e38f25c7f6267\",\"readsSha256\":\"283f0e66b58df800c2f26e782a9016358e4adafa489de39f7bc7e2502e3eb757\",\"parent\":null,\"collection\":{\"calls\":6,\"bytes\":20042,\"limits\":{\"maxCalls\":24,\"maxCandidatePages\":3,\"candidatePageSize\":5,\"maxMessages\":10,\"bodySectionCodeUnits\":2000,\"maxBodyCodeUnits\":120000,\"maxSourceBytes\":2097152},\"capHits\":[],\"distinctEligibleCount\":1,\"bodyAttempts\":1,\"boundBodyCount\":1,\"unreadCount\":0,\"unread\":[]}}"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "context": {
+      "binding": {
+        "tenantId": "synthetic-tenant",
+        "actorId": "synthetic-actor",
+        "conversationId": "11111111-1111-4111-8111-111111111111",
+        "runId": "22222222-2222-4222-8222-222222222222",
+        "attemptId": "33333333-3333-4333-8333-333333333333",
+        "workerId": "44444444-4444-4444-8444-444444444444",
+        "writerFence": 1
+      },
+      "scopes": [
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "client",
+          "resourceId": "99999999-9999-4999-8999-999999999999",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "tenantId": "synthetic-tenant",
+          "kind": "mailbox",
+          "resourceId": "71000000-0000-4000-8000-000000000071",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "evidence": [
+        {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "citationId": "71000000-0000-4000-8000-000000000075",
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+          "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "observedAt": "2026-10-13T14:53:31.104Z",
+          "sourceUpdatedAt": null
+        }
+      ],
+      "assets": [],
+      "deadlineMs": 1791903236061,
+      "maxBytes": 1048576
+    },
+    "baseVersionId": null,
+    "provenance": {
+      "recipe": "mail-history-brief",
+      "skill": {
+        "skillId": "quick_skill.mail_history",
+        "skillVersion": "1.0.0",
+        "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+        "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+      },
+      "selection": {
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "99999999-9999-4999-8999-999999999999"
+          ],
+          "tenantId": "synthetic-tenant",
+          "actorId": "synthetic-actor",
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+          "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        }
+      },
+      "target": {
+        "query": "Morgan",
+        "participant": "morgan@example.invalid"
+      },
+      "asOf": "2026-10-13T14:53:31.079Z",
+      "inputSha256": "4f65631f7c639e546ad0f79b00d327dac5787c9de36b5ec7238e38f25c7f6267",
+      "readsSha256": "283f0e66b58df800c2f26e782a9016358e4adafa489de39f7bc7e2502e3eb757",
+      "parent": null,
+      "collection": {
+        "calls": 6,
+        "bytes": 20042,
+        "limits": {
+          "maxCalls": 24,
+          "maxCandidatePages": 3,
+          "candidatePageSize": 5,
+          "maxMessages": 10,
+          "bodySectionCodeUnits": 2000,
+          "maxBodyCodeUnits": 120000,
+          "maxSourceBytes": 2097152
+        },
+        "capHits": [],
+        "distinctEligibleCount": 1,
+        "bodyAttempts": 1,
+        "boundBodyCount": 1,
+        "unreadCount": 0,
+        "unread": []
+      }
+    },
+    "bodies": [
+      {
+        "candidate": {
+          "sourceId": "mail",
+          "mailboxId": "71000000-0000-4000-8000-000000000071",
+          "threadId": "71000000-0000-4000-8000-000000000073",
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "recordVersionId": null,
+          "citationId": null,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "removed": false,
+          "connectionStatus": "disconnected",
+          "readHandle": "synthetic-candidate-preview",
+          "internetMessageId": "<synthetic-0@example.invalid>",
+          "clientId": "99999999-9999-4999-8999-999999999999",
+          "receivedAt": "2026-10-13T14:53:30.079Z",
+          "sentAt": null,
+          "createdAt": "2026-10-13T14:53:30.079Z",
+          "effectiveAt": "2026-10-13T14:53:30.079Z",
+          "subjectText": "Revised briefing discussion",
+          "preview": {
+            "kind": "incomplete-preview",
+            "text": "Preview excludes the decisive decision.",
+            "fullSizeKnown": false
+          },
+          "from": {
+            "name": "Morgan",
+            "email": "morgan@example.invalid"
+          },
+          "to": [
+            {
+              "name": "Meri owner",
+              "email": "owner@example.invalid"
+            }
+          ],
+          "cc": [],
+          "toTruncated": false,
+          "ccTruncated": false
+        },
+        "status": "bound-full-body",
+        "sections": [
+          {
+            "pageSha256": "ef48847a6ce13ced2b590a048123e05383acc46c6a0cd7d9f672131453890b12",
+            "start": 0,
+            "end": 1999,
+            "version": "synthetic-message-utf16-v2",
+            "sha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+            "citationId": "71000000-0000-4000-8000-000000000075",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+          },
+          {
+            "pageSha256": "8d8faa43b97c886e9a98dd768e28d6571445851c5fc044055acf599fd7971cd2",
+            "start": 1999,
+            "end": 2135,
+            "version": "synthetic-message-utf16-v2",
+            "sha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+            "citationId": "71000000-0000-4000-8000-000000000075",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072"
+          }
+        ],
+        "text": "Synthetic correspondence for local review. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background ma\ud83d\ude00 I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery. End of synthetic retained body.",
+        "evidence": {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "citationId": "71000000-0000-4000-8000-000000000075",
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+          "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "observedAt": "2026-10-13T14:53:31.104Z",
+          "sourceUpdatedAt": null
+        },
+        "source": {
+          "sourceId": "mail",
+          "authority": "authoritative",
+          "snapshotVersionId": null,
+          "adapterVersion": "0.2.0",
+          "status": "partial",
+          "synchronizedAt": null,
+          "asOf": null,
+          "retrievedAt": "2026-10-13T14:53:31.104Z",
+          "freshness": "unknown"
+        },
+        "conflicts": []
+      }
+    ],
+    "quotes": [
+      {
+        "mailboxId": "71000000-0000-4000-8000-000000000071",
+        "threadId": "71000000-0000-4000-8000-000000000073",
+        "messageId": "71000000-0000-4000-8000-000000000074",
+        "sourceVersionId": "synthetic-message-utf16-v2",
+        "start": 2002,
+        "end": 2103,
+        "text": "I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery.",
+        "url": "https://example.invalid/mail/locator-only",
+        "status": "bound-source-excerpt",
+        "evidence": {
+          "sourceId": "mail",
+          "recordId": "71000000-0000-4000-8000-000000000074",
+          "sourceVersionId": "synthetic-message-utf16-v2",
+          "citationId": "71000000-0000-4000-8000-000000000075",
+          "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+          "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "99999999-9999-4999-8999-999999999999",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "mailbox",
+              "resourceId": "71000000-0000-4000-8000-000000000071",
+              "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "observedAt": "2026-10-13T14:53:31.104Z",
+          "sourceUpdatedAt": null
+        },
+        "passage": "I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery.",
+        "passageSha256": "c3c9f68e66f2f43f26aba37883356d69a7dd7d0c8cf50f96c3cbf8a10a7f330a"
+      }
+    ],
+    "coverage": [
+      {
+        "sourceId": "entity_candidates",
+        "operation": "resolve_entity",
+        "status": "candidate-metadata",
+        "reason": null,
+        "verified": false,
+        "enumeration": "unknown",
+        "authority": "derived",
+        "generatedAt": "2026-10-13T12:00:00.000Z",
+        "freshness": "unknown",
+        "snapshotVersionId": null,
+        "result": {
+          "tool": "resolve_entity",
+          "generatedAt": "2026-10-13T12:00:00.000Z",
+          "matchesFound": 0,
+          "matches": [],
+          "note": "No canonical entity matched \"Morgan\". Say so explicitly \u2014 do NOT fabricate a member, committee, or bill identifier."
+        }
+      },
+      {
+        "sourceId": "tenant_contacts",
+        "operation": "find_contacts",
+        "status": "candidate-metadata",
+        "reason": null,
+        "verified": false,
+        "enumeration": "unknown",
+        "authority": "derived",
+        "generatedAt": "2026-10-13T12:00:00.000Z",
+        "freshness": "unknown",
+        "snapshotVersionId": null,
+        "result": {
+          "tool": "find_contacts",
+          "generatedAt": "2026-10-13T12:00:00.000Z",
+          "clientId": "99999999-9999-4999-8999-999999999999",
+          "clientName": "Synthetic client",
+          "matchedOn": {
+            "domain": null,
+            "query": "Morgan",
+            "linkedClient": true
+          },
+          "contacts": [],
+          "note": "0 correspondent(s) found; 0 not yet on the People tab. These come from synced mail and calendar \u2014 cite them as such. Propose only the missing ones via update_client_profile people[]."
+        }
+      },
+      {
+        "sourceId": "mail",
+        "operation": "mail.list_messages",
+        "status": "bounded-candidates",
+        "reason": null,
+        "verified": false,
+        "enumeration": "unknown",
+        "returned": 1,
+        "hasMore": false,
+        "nextOffset": null,
+        "queryScope": {
+          "asOfInclusive": "2026-10-13T14:53:31.079Z",
+          "storedCreatedAtEndInclusive": "2026-10-13T14:53:31.079Z",
+          "effectiveStartInclusive": null,
+          "missingEffectiveDates": "included"
+        },
+        "sources": [
+          {
+            "sourceId": "mail",
+            "authority": "authoritative",
+            "snapshotVersionId": null,
+            "adapterVersion": "0.2.0",
+            "status": "partial",
+            "synchronizedAt": null,
+            "asOf": null,
+            "retrievedAt": "2026-10-13T14:53:31.079Z",
+            "freshness": "unknown"
+          }
+        ],
+        "limitations": [
+          "Synthetic incomplete previews; unknown immutable snapshot."
+        ],
+        "remainingReads": [
+          "synthetic-candidate-preview"
+        ]
+      },
+      {
+        "sourceId": "mail",
+        "operation": "mail.search_messages",
+        "status": "bounded-candidates",
+        "reason": null,
+        "verified": false,
+        "enumeration": "unknown",
+        "returned": 1,
+        "hasMore": false,
+        "nextOffset": null,
+        "queryScope": {
+          "asOfInclusive": "2026-10-13T14:53:31.079Z",
+          "storedCreatedAtEndInclusive": "2026-10-13T14:53:31.079Z",
+          "effectiveStartInclusive": null,
+          "missingEffectiveDates": "included"
+        },
+        "sources": [
+          {
+            "sourceId": "mail",
+            "authority": "authoritative",
+            "snapshotVersionId": null,
+            "adapterVersion": "0.2.0",
+            "status": "partial",
+            "synchronizedAt": null,
+            "asOf": null,
+            "retrievedAt": "2026-10-13T14:53:31.079Z",
+            "freshness": "unknown"
+          }
+        ],
+        "limitations": [
+          "Synthetic incomplete previews; unknown immutable snapshot."
+        ],
+        "remainingReads": [
+          "synthetic-candidate-preview"
+        ]
+      },
+      {
+        "sourceId": "mail",
+        "operation": "mail.read_thread",
+        "status": "bound-bodies-source-incomplete",
+        "reason": null,
+        "verified": false,
+        "enumeration": "unknown",
+        "candidateCount": 1,
+        "distinctEligibleCount": 1,
+        "excludedByWindow": 0,
+        "bodyAttempts": 1,
+        "boundBodyCount": 1,
+        "unreadCount": 0,
+        "unread": [],
+        "remainingReads": []
+      }
+    ],
+    "reads": [
+      {
+        "operation": {
+          "id": "resolve_entity",
+          "version": "0.2.0"
+        },
+        "request": {
+          "query": "Morgan",
+          "limit": 5
+        },
+        "argumentsSha256": "de8e596502355c419e540da07b93291ce0fdd891b95ba5f45c7113edb9e1ecec",
+        "resultSha256": "57a8fa7c14bde12b28b90f4e9c7883398ac99b1e90d16ae94d4b6785731eeec2",
+        "result": {
+          "binding": {
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "conversationId": "11111111-1111-4111-8111-111111111111",
+            "runId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "workerId": "44444444-4444-4444-8444-444444444444",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "operation": {
+            "id": "resolve_entity",
+            "version": "0.2.0"
+          },
+          "argumentsSha256": "de8e596502355c419e540da07b93291ce0fdd891b95ba5f45c7113edb9e1ecec",
+          "result": {
+            "tool": "resolve_entity",
+            "generatedAt": "2026-10-13T12:00:00.000Z",
+            "matchesFound": 0,
+            "matches": [],
+            "note": "No canonical entity matched \"Morgan\". Say so explicitly \u2014 do NOT fabricate a member, committee, or bill identifier."
+          }
+        }
+      },
+      {
+        "operation": {
+          "id": "find_contacts",
+          "version": "0.2.0"
+        },
+        "request": {
+          "query": "Morgan",
+          "limit": 10,
+          "clientId": "99999999-9999-4999-8999-999999999999"
+        },
+        "argumentsSha256": "07811b0883a8102e40af9e9edcc9a5f48d127b4bc2d7edd5e205d8b8892b9ba2",
+        "resultSha256": "809e547324db0c2548dcee3bffbc02922d70fb5a0f6c27cf3decd9183288b7df",
+        "result": {
+          "binding": {
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "conversationId": "11111111-1111-4111-8111-111111111111",
+            "runId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "workerId": "44444444-4444-4444-8444-444444444444",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "operation": {
+            "id": "find_contacts",
+            "version": "0.2.0"
+          },
+          "argumentsSha256": "07811b0883a8102e40af9e9edcc9a5f48d127b4bc2d7edd5e205d8b8892b9ba2",
+          "result": {
+            "tool": "find_contacts",
+            "generatedAt": "2026-10-13T12:00:00.000Z",
+            "clientId": "99999999-9999-4999-8999-999999999999",
+            "clientName": "Synthetic client",
+            "matchedOn": {
+              "domain": null,
+              "query": "Morgan",
+              "linkedClient": true
+            },
+            "contacts": [],
+            "note": "0 correspondent(s) found; 0 not yet on the People tab. These come from synced mail and calendar \u2014 cite them as such. Propose only the missing ones via update_client_profile people[]."
+          }
+        }
+      },
+      {
+        "operation": {
+          "id": "mail.list_messages",
+          "version": "0.2.0"
+        },
+        "request": {
+          "subject": {
+            "kind": "client",
+            "entityId": "99999999-9999-4999-8999-999999999999"
+          },
+          "limit": 5,
+          "offset": 0,
+          "asOf": "2026-10-13T14:53:31.079Z"
+        },
+        "argumentsSha256": "5d241865a46e90a402faeea812dd388ebcfe801b9d1c4faa56ed4f826dd743c6",
+        "resultSha256": "5ac4bc0c5a09f4f34db8c014cdc2163f0704cab8df801a87f2a0482a9fded9c4",
+        "result": {
+          "contractVersion": "0.2.0",
+          "operation": {
+            "id": "mail.list_messages",
+            "version": "0.2.0"
+          },
+          "requestId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+          "traceId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+          "binding": {
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "conversationId": "11111111-1111-4111-8111-111111111111",
+            "runId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "workerId": "44444444-4444-4444-8444-444444444444",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "5d241865a46e90a402faeea812dd388ebcfe801b9d1c4faa56ed4f826dd743c6",
+          "appliedFilters": [],
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": null,
+              "adapterVersion": "0.2.0",
+              "status": "partial",
+              "synchronizedAt": null,
+              "asOf": null,
+              "retrievedAt": "2026-10-13T14:53:31.079Z",
+              "freshness": "unknown"
+            }
+          ],
+          "selection": {
+            "subject": {
+              "kind": "client",
+              "entityId": "99999999-9999-4999-8999-999999999999"
+            },
+            "limit": 5,
+            "offset": 0,
+            "asOf": "2026-10-13T14:53:31.079Z",
+            "folder": "all",
+            "withinDays": null
+          },
+          "snapshotVersionId": null,
+          "evidenceReady": false,
+          "negativeAssertion": {
+            "kind": "none"
+          },
+          "kind": "mail-candidate-source-page",
+          "messages": [
+            {
+              "sourceId": "mail",
+              "mailboxId": "71000000-0000-4000-8000-000000000071",
+              "threadId": "71000000-0000-4000-8000-000000000073",
+              "messageId": "71000000-0000-4000-8000-000000000074",
+              "recordVersionId": null,
+              "citationId": null,
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "mailbox",
+                  "resourceId": "71000000-0000-4000-8000-000000000071",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "removed": false,
+              "connectionStatus": "disconnected",
+              "readHandle": "synthetic-candidate-preview",
+              "internetMessageId": "<synthetic-0@example.invalid>",
+              "clientId": "99999999-9999-4999-8999-999999999999",
+              "receivedAt": "2026-10-13T14:53:30.079Z",
+              "sentAt": null,
+              "createdAt": "2026-10-13T14:53:30.079Z",
+              "effectiveAt": "2026-10-13T14:53:30.079Z",
+              "subjectText": "Revised briefing discussion",
+              "preview": {
+                "kind": "incomplete-preview",
+                "text": "Preview excludes the decisive decision.",
+                "fullSizeKnown": false
+              },
+              "from": {
+                "name": "Morgan",
+                "email": "morgan@example.invalid"
+              },
+              "to": [
+                {
+                  "name": "Meri owner",
+                  "email": "owner@example.invalid"
+                }
+              ],
+              "cc": [],
+              "toTruncated": false,
+              "ccTruncated": false
+            }
+          ],
+          "filterSha256": "96debaac43056ecf2c6c6bf8260e59da1464e4400b624d6248c9d816bd9aa8d8",
+          "order": "effectiveAt-desc-nullslast_messageId-desc",
+          "queryScope": {
+            "asOfInclusive": "2026-10-13T14:53:31.079Z",
+            "storedCreatedAtEndInclusive": "2026-10-13T14:53:31.079Z",
+            "effectiveStartInclusive": null,
+            "missingEffectiveDates": "included"
+          },
+          "totalMatches": 1,
+          "hasMore": false,
+          "nextOffset": null,
+          "threadGroups": [
+            {
+              "mailboxId": "71000000-0000-4000-8000-000000000071",
+              "threadId": "71000000-0000-4000-8000-000000000073",
+              "messageIds": [
+                "71000000-0000-4000-8000-000000000074"
+              ]
+            }
+          ],
+          "returnedThreadGroupCount": 1,
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "unknown",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "bounded",
+            "limitations": [
+              "Synthetic incomplete previews; unknown immutable snapshot."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [
+              "synthetic-candidate-preview"
+            ],
+            "remainingSources": []
+          }
+        }
+      },
+      {
+        "operation": {
+          "id": "mail.search_messages",
+          "version": "0.2.0"
+        },
+        "request": {
+          "subject": {
+            "kind": "client",
+            "entityId": "99999999-9999-4999-8999-999999999999"
+          },
+          "limit": 5,
+          "offset": 0,
+          "asOf": "2026-10-13T14:53:31.079Z",
+          "query": "Morgan",
+          "participant": "morgan@example.invalid"
+        },
+        "argumentsSha256": "37823a07a3e828f6aecf6dca07d11279cbdfdc0b0dace5a3ac2bb69e34c39751",
+        "resultSha256": "1b795bf4ded7f59d35c04e5882cb6d9a549ee5b155e151df26851a42c8c9af23",
+        "result": {
+          "contractVersion": "0.2.0",
+          "operation": {
+            "id": "mail.search_messages",
+            "version": "0.2.0"
+          },
+          "requestId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+          "traceId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+          "binding": {
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "conversationId": "11111111-1111-4111-8111-111111111111",
+            "runId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "workerId": "44444444-4444-4444-8444-444444444444",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "37823a07a3e828f6aecf6dca07d11279cbdfdc0b0dace5a3ac2bb69e34c39751",
+          "appliedFilters": [],
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": null,
+              "adapterVersion": "0.2.0",
+              "status": "partial",
+              "synchronizedAt": null,
+              "asOf": null,
+              "retrievedAt": "2026-10-13T14:53:31.079Z",
+              "freshness": "unknown"
+            }
+          ],
+          "selection": {
+            "subject": {
+              "kind": "client",
+              "entityId": "99999999-9999-4999-8999-999999999999"
+            },
+            "limit": 5,
+            "offset": 0,
+            "asOf": "2026-10-13T14:53:31.079Z",
+            "query": "Morgan",
+            "participant": "morgan@example.invalid",
+            "folder": "all",
+            "withinDays": null,
+            "from": ""
+          },
+          "snapshotVersionId": null,
+          "evidenceReady": false,
+          "negativeAssertion": {
+            "kind": "none"
+          },
+          "kind": "mail-candidate-source-page",
+          "messages": [
+            {
+              "sourceId": "mail",
+              "mailboxId": "71000000-0000-4000-8000-000000000071",
+              "threadId": "71000000-0000-4000-8000-000000000073",
+              "messageId": "71000000-0000-4000-8000-000000000074",
+              "recordVersionId": null,
+              "citationId": null,
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "mailbox",
+                  "resourceId": "71000000-0000-4000-8000-000000000071",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "removed": false,
+              "connectionStatus": "disconnected",
+              "readHandle": "synthetic-candidate-preview",
+              "internetMessageId": "<synthetic-0@example.invalid>",
+              "clientId": "99999999-9999-4999-8999-999999999999",
+              "receivedAt": "2026-10-13T14:53:30.079Z",
+              "sentAt": null,
+              "createdAt": "2026-10-13T14:53:30.079Z",
+              "effectiveAt": "2026-10-13T14:53:30.079Z",
+              "subjectText": "Revised briefing discussion",
+              "preview": {
+                "kind": "incomplete-preview",
+                "text": "Preview excludes the decisive decision.",
+                "fullSizeKnown": false
+              },
+              "from": {
+                "name": "Morgan",
+                "email": "morgan@example.invalid"
+              },
+              "to": [
+                {
+                  "name": "Meri owner",
+                  "email": "owner@example.invalid"
+                }
+              ],
+              "cc": [],
+              "toTruncated": false,
+              "ccTruncated": false
+            }
+          ],
+          "filterSha256": "1910fd6aebbc0efe850e0f77cd9b390697544bbf17b1234bfbaef94ad507bf74",
+          "order": "effectiveAt-desc-nullslast_messageId-desc",
+          "queryScope": {
+            "asOfInclusive": "2026-10-13T14:53:31.079Z",
+            "storedCreatedAtEndInclusive": "2026-10-13T14:53:31.079Z",
+            "effectiveStartInclusive": null,
+            "missingEffectiveDates": "included"
+          },
+          "totalMatches": 1,
+          "hasMore": false,
+          "nextOffset": null,
+          "threadGroups": null,
+          "returnedThreadGroupCount": null,
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "unknown",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "bounded",
+            "limitations": [
+              "Synthetic incomplete previews; unknown immutable snapshot."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [
+              "synthetic-candidate-preview"
+            ],
+            "remainingSources": []
+          }
+        }
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "request": {
+          "subject": {
+            "kind": "client",
+            "entityId": "99999999-9999-4999-8999-999999999999"
+          },
+          "threadId": "71000000-0000-4000-8000-000000000073",
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "limit": 1,
+          "bodyOffset": 0,
+          "maxCharacters": 2000
+        },
+        "argumentsSha256": "1acd33dad619d8a2f0f455a7680c2407ce53edf107059c2da10cb3d99fad5b6f",
+        "resultSha256": "1933c741fdc273afc60316e3bf054ab0df5277d35186d36ceacd824871a947b9",
+        "result": {
+          "contractVersion": "0.2.0",
+          "operation": {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          "requestId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+          "traceId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+          "binding": {
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "conversationId": "11111111-1111-4111-8111-111111111111",
+            "runId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "workerId": "44444444-4444-4444-8444-444444444444",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "1acd33dad619d8a2f0f455a7680c2407ce53edf107059c2da10cb3d99fad5b6f",
+          "appliedFilters": [],
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": null,
+              "adapterVersion": "0.2.0",
+              "status": "partial",
+              "synchronizedAt": null,
+              "asOf": null,
+              "retrievedAt": "2026-10-13T14:53:31.099Z",
+              "freshness": "unknown"
+            }
+          ],
+          "selection": {
+            "subject": {
+              "kind": "client",
+              "entityId": "99999999-9999-4999-8999-999999999999"
+            },
+            "threadId": "71000000-0000-4000-8000-000000000073",
+            "messageId": "71000000-0000-4000-8000-000000000074",
+            "limit": 1,
+            "bodyOffset": 0,
+            "maxCharacters": 2000,
+            "messageOffset": 0
+          },
+          "snapshotVersionId": null,
+          "evidenceReady": false,
+          "negativeAssertion": {
+            "kind": "none"
+          },
+          "kind": "mail-thread-source-page",
+          "order": "sentAt-asc_receivedAt-asc_createdAt-asc_nulls-and-ties-unspecified",
+          "messages": [
+            {
+              "sourceId": "mail",
+              "mailboxId": "71000000-0000-4000-8000-000000000071",
+              "threadId": "71000000-0000-4000-8000-000000000073",
+              "messageId": "71000000-0000-4000-8000-000000000074",
+              "recordVersionId": "synthetic-message-utf16-v2",
+              "citationId": "71000000-0000-4000-8000-000000000075",
+              "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "mailbox",
+                  "resourceId": "71000000-0000-4000-8000-000000000071",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "removed": false,
+              "connectionStatus": "disconnected",
+              "bodyCompleteness": "full",
+              "readHandle": "synthetic-full-body",
+              "section": {
+                "start": 0,
+                "endExclusive": 1999,
+                "totalCodeUnits": 2135,
+                "unit": "utf16-code-unit",
+                "text": "Synthetic correspondence for local review. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background material describing the meeting and source limitations. Background ma",
+                "hasMore": true
+              }
+            }
+          ],
+          "totalMessages": 1,
+          "hasMoreMessages": false,
+          "nextMessageOffset": null,
+          "nextBodyOffsets": [
+            {
+              "messageId": "71000000-0000-4000-8000-000000000074",
+              "bodyOffset": 1999
+            }
+          ],
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "unknown",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": true,
+            "historySupport": "bounded",
+            "limitations": [
+              "Synthetic bounded stored body; immutable snapshot unqualified."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [
+              "synthetic-full-body"
+            ],
+            "remainingSources": []
+          }
+        }
+      },
+      {
+        "operation": {
+          "id": "mail.read_thread",
+          "version": "0.2.0"
+        },
+        "request": {
+          "subject": {
+            "kind": "client",
+            "entityId": "99999999-9999-4999-8999-999999999999"
+          },
+          "threadId": "71000000-0000-4000-8000-000000000073",
+          "messageId": "71000000-0000-4000-8000-000000000074",
+          "limit": 1,
+          "bodyOffset": 1999,
+          "maxCharacters": 2000
+        },
+        "argumentsSha256": "43d7442c19d9b46bafec42b6277af6f5d07fba89f8f616beb3422d22f561156c",
+        "resultSha256": "5f020ed0005bf05af4db51c55562c89845bb43699490e37a3cb7aba3db445074",
+        "result": {
+          "contractVersion": "0.2.0",
+          "operation": {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          "requestId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+          "traceId": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+          "binding": {
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "conversationId": "11111111-1111-4111-8111-111111111111",
+            "runId": "22222222-2222-4222-8222-222222222222",
+            "attemptId": "33333333-3333-4333-8333-333333333333",
+            "workerId": "44444444-4444-4444-8444-444444444444",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "99999999-9999-4999-8999-999999999999"
+            ],
+            "tenantId": "synthetic-tenant",
+            "actorId": "synthetic-actor",
+            "authorizationDecisionId": "71000000-0000-4000-8000-000000000072",
+            "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "scopes": [
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "client",
+                "resourceId": "99999999-9999-4999-8999-999999999999",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "tenantId": "synthetic-tenant",
+                "kind": "mailbox",
+                "resourceId": "71000000-0000-4000-8000-000000000071",
+                "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "43d7442c19d9b46bafec42b6277af6f5d07fba89f8f616beb3422d22f561156c",
+          "appliedFilters": [],
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": null,
+              "adapterVersion": "0.2.0",
+              "status": "partial",
+              "synchronizedAt": null,
+              "asOf": null,
+              "retrievedAt": "2026-10-13T14:53:31.104Z",
+              "freshness": "unknown"
+            }
+          ],
+          "selection": {
+            "subject": {
+              "kind": "client",
+              "entityId": "99999999-9999-4999-8999-999999999999"
+            },
+            "threadId": "71000000-0000-4000-8000-000000000073",
+            "messageId": "71000000-0000-4000-8000-000000000074",
+            "limit": 1,
+            "bodyOffset": 1999,
+            "maxCharacters": 2000,
+            "messageOffset": 0
+          },
+          "snapshotVersionId": null,
+          "evidenceReady": false,
+          "negativeAssertion": {
+            "kind": "none"
+          },
+          "kind": "mail-thread-source-page",
+          "order": "sentAt-asc_receivedAt-asc_createdAt-asc_nulls-and-ties-unspecified",
+          "messages": [
+            {
+              "sourceId": "mail",
+              "mailboxId": "71000000-0000-4000-8000-000000000071",
+              "threadId": "71000000-0000-4000-8000-000000000073",
+              "messageId": "71000000-0000-4000-8000-000000000074",
+              "recordVersionId": "synthetic-message-utf16-v2",
+              "citationId": "71000000-0000-4000-8000-000000000075",
+              "contentSha256": "6d11d9c8182f5791f71a9a4bea6e99c79b5667dcea447e2c181cf8f13695415a",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "client",
+                  "resourceId": "99999999-9999-4999-8999-999999999999",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                {
+                  "tenantId": "synthetic-tenant",
+                  "kind": "mailbox",
+                  "resourceId": "71000000-0000-4000-8000-000000000071",
+                  "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                }
+              ],
+              "removed": false,
+              "connectionStatus": "disconnected",
+              "bodyCompleteness": "full",
+              "readHandle": "synthetic-full-body",
+              "section": {
+                "start": 1999,
+                "endExclusive": 2135,
+                "totalCodeUnits": 2135,
+                "unit": "utf16-code-unit",
+                "text": "\ud83d\ude00 I will send the revised briefing on Friday. This is a quoted source statement, not verified delivery. End of synthetic retained body.",
+                "hasMore": false
+              }
+            }
+          ],
+          "totalMessages": 1,
+          "hasMoreMessages": false,
+          "nextMessageOffset": null,
+          "nextBodyOffsets": [],
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "unknown",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "bounded",
+            "limitations": [
+              "Synthetic bounded stored body; immutable snapshot unqualified."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [
+              "synthetic-full-body"
+            ],
+            "remainingSources": []
+          }
+        }
+      }
+    ]
+  },
+  "realOriginalSha256": "8c329c99f0849fdf609bc55699f2d3da105045ebdac29507ca7364ccca5f0977"
+}
