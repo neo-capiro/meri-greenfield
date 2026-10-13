@@ -1,0 +1,22 @@
+✖ complete measured metadata independently passes the downstream snapshot choke point (136.778754ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 239.598342
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-structure-independent.test.mjs:84:1
+✖ complete measured metadata independently passes the downstream snapshot choke point (136.778754ms)
+  Error: Operation contract JSON structure limit
+      at fail (file:///tmp/meri-native-structure-review-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///tmp/meri-native-structure-review-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:44:40)
+      at data (file:///tmp/meri-native-structure-review-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:13:37)
+      at preservationSnapshot (file:///tmp/meri-native-structure-review-20261013/apps/control/qualified-application/schema-preservation.mjs:57:17)
+      at async TestContext.<anonymous> (file:///tmp/meri-native-structure-review-20261013/apps/control/qualified-application/schema-structure-independent.test.mjs:86:15)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

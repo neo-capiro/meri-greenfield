@@ -1,0 +1,8 @@
+{
+  "beforeCommit": "c35cc5f9",
+  "beforeSha256": "ff161fdf15cbb0148a8d946686afbff576c931a78e5ed92aabf1d03fbc57d3f0",
+  "afterSha256": "762487f83b02e6fcd77d63cd3638d14e3830dea7f3b371c4881a158f870b2034",
+  "reason": "Replace spread into stack.push in test-only independent node counter with iteration before first full replay, so250000-node fixture does not encounter JavaScript argument-count ceiling. Original measured-dimension baseline captures unchanged. No candidate source inspected when counters were written.",
+  "productionChange": false,
+  "observedFailure": false
+}
