@@ -1,0 +1,72 @@
+{
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "sourceFreeze": "8e21145f7f4745d20e84c3c2e51efcd93d33483f",
+  "originalEntries": 11411,
+  "originalEntriesUnchanged": 11411,
+  "changedOriginals": [],
+  "sourceMembers": [
+    {
+      "path": "apps/control/document-application/current.mjs",
+      "bytes": 5714,
+      "sha256": "f80ef77652cb307a87387fe95ef1d565a07969ddeae2e641b6a14b509db2bc76"
+    },
+    {
+      "path": "apps/control/document-application/http.mjs",
+      "bytes": 2481,
+      "sha256": "84c0c5cdf62ae040909bc174aa470fd50dc0d0f38d72396d6dcc001c51defe6d"
+    },
+    {
+      "path": "apps/control/document-application/index.mjs",
+      "bytes": 6544,
+      "sha256": "2a3cdd00423ce6d3e734bdd96f167a6fb83647f273baa89c9ed3a9473e62f6c4"
+    },
+    {
+      "path": "apps/control/document-application/test/application.test.mjs",
+      "bytes": 10927,
+      "sha256": "5b8a657a1d00c20f66790280c8a00c6217799dce7db7e311679eba282e949bee"
+    }
+  ],
+  "captures": [
+    {
+      "label": "initial",
+      "exitCode": 1,
+      "ownedPidAndPgid": 505599,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "fixture-corrected",
+      "exitCode": 1,
+      "ownedPidAndPgid": 505996,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "descriptor-repaired",
+      "exitCode": 0,
+      "ownedPidAndPgid": 506166,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "hostile-before",
+      "exitCode": 1,
+      "ownedPidAndPgid": 507547,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "hostile-repaired",
+      "exitCode": 0,
+      "ownedPidAndPgid": 507861,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "scope": "Local source preservation, not runtime qualification"
+}

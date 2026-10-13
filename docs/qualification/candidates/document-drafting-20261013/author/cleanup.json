@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-13T05:56:45.591855+00:00",
+  "ownedDependencies": [
+    {
+      "path": "node_modules",
+      "borrowedTarget": "/workspace/meri-read-continuation-20261012/node_modules",
+      "ownedSymlinkRemoved": true,
+      "donorRetained": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "borrowedTarget": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules",
+      "ownedSymlinkRemoved": true,
+      "donorRetained": true
+    }
+  ],
+  "processGroups": [
+    {
+      "label": "initial",
+      "exitCode": 1,
+      "ownedPidAndPgid": 505599,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "fixture-corrected",
+      "exitCode": 1,
+      "ownedPidAndPgid": 505996,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "descriptor-repaired",
+      "exitCode": 0,
+      "ownedPidAndPgid": 506166,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "hostile-before",
+      "exitCode": 1,
+      "ownedPidAndPgid": 507547,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "label": "hostile-repaired",
+      "exitCode": 0,
+      "ownedPidAndPgid": 507861,
+      "freshGroupAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "borrowedRuntimeOwnersDisposed": false,
+  "physicalStopClaim": "Recorded capture groups absent only; asynchronous borrowed ports retain canonical limitations"
+}
