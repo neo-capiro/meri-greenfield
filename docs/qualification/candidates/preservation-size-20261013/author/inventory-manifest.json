@@ -1,0 +1,36 @@
+{
+  "sourceFreeze": "2444edc0d6bcfb5771bf26eda9e1c8eb06525783",
+  "supplementalTestFreeze": "9e323dc1cfd061ff9da9ae2d234b70a6f4d3df7e",
+  "members": [
+    {
+      "path": "apps/control/qualified-application/schema-size-inventory.test.mjs",
+      "bytes": 3669,
+      "sha256": "72f17ebdf209246cf40c860024a3845ad22cd0a151bd61082787f01d40928e2e"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory.json",
+      "bytes": 1269,
+      "sha256": "033f0aca547f994f42d4c8aa50bd9828102315e3c0a339ab17f4b719da934a59"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory.stdout.bin",
+      "bytes": 233,
+      "sha256": "5158e675d416eb9265bc0a99e84d3ec1f081fa761c9f19a89ea760a6d1c44852"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory-cleanup.json",
+      "bytes": 331,
+      "sha256": "7b74d933196832261584e444d40cb12ab13c2df768cb182ad85b3d4c76445ad5"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/INVENTORY-SUPPLEMENT.md",
+      "bytes": 1392,
+      "sha256": "688fb4dd0991c9b914b08eb0cb7faf2d375c9f16d345df5875f1afc428b40a02"
+    }
+  ]
+}
