@@ -1,0 +1,685 @@
+{
+  "scope": "Host-wide observation only; no processes changed. PID1-held zombies cannot be reaped by this owner. Generator calls in this root turn did not use a subreaper; recent defunct esbuild rows may include this owner and independent review activity. No claim of complete host physical cleanup.",
+  "rows": [
+    {
+      "pid": 4234,
+      "ppid": 1,
+      "pgid": 4197,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:36:45 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 4910,
+      "ppid": 1,
+      "pgid": 4728,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:38:03 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 5587,
+      "ppid": 1,
+      "pgid": 5550,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:39:11 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 5624,
+      "ppid": 1,
+      "pgid": 5550,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:39:11 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 5644,
+      "ppid": 1,
+      "pgid": 5550,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:39:11 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 5801,
+      "ppid": 1,
+      "pgid": 5550,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:39:13 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 5820,
+      "ppid": 1,
+      "pgid": 5550,
+      "stat": "Z",
+      "started": "Tue Oct 13 08:39:13 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 27612,
+      "ppid": 1,
+      "pgid": 27532,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:00:32 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 27633,
+      "ppid": 1,
+      "pgid": 27532,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:00:32 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 27653,
+      "ppid": 1,
+      "pgid": 27532,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:00:33 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 32738,
+      "ppid": 1,
+      "pgid": 32686,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:12:43 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 32757,
+      "ppid": 1,
+      "pgid": 32686,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:12:44 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 32776,
+      "ppid": 1,
+      "pgid": 32686,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:12:45 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 32958,
+      "ppid": 1,
+      "pgid": 32686,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:12:46 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 32980,
+      "ppid": 1,
+      "pgid": 32686,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:12:47 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 34941,
+      "ppid": 1,
+      "pgid": 34895,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:17:25 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 34960,
+      "ppid": 1,
+      "pgid": 34895,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:17:25 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 34979,
+      "ppid": 1,
+      "pgid": 34895,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:17:26 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 35130,
+      "ppid": 1,
+      "pgid": 34895,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:17:27 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 35150,
+      "ppid": 1,
+      "pgid": 34895,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:17:28 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 37879,
+      "ppid": 1,
+      "pgid": 37800,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:24:39 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 37898,
+      "ppid": 1,
+      "pgid": 37800,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:24:39 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 37917,
+      "ppid": 1,
+      "pgid": 37800,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:24:39 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 38124,
+      "ppid": 1,
+      "pgid": 37800,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:24:41 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 38144,
+      "ppid": 1,
+      "pgid": 37800,
+      "stat": "Z",
+      "started": "Tue Oct 13 09:24:41 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 58060,
+      "ppid": 1,
+      "pgid": 57957,
+      "stat": "Z",
+      "started": "Tue Oct 13 10:17:59 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 58081,
+      "ppid": 1,
+      "pgid": 57957,
+      "stat": "Z",
+      "started": "Tue Oct 13 10:18:00 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 58110,
+      "ppid": 1,
+      "pgid": 57957,
+      "stat": "Z",
+      "started": "Tue Oct 13 10:18:00 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 58263,
+      "ppid": 1,
+      "pgid": 57957,
+      "stat": "Z",
+      "started": "Tue Oct 13 10:18:02 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 58292,
+      "ppid": 1,
+      "pgid": 57957,
+      "stat": "Z",
+      "started": "Tue Oct 13 10:18:02 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 117965,
+      "ppid": 1,
+      "pgid": 117948,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:41:56 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 119376,
+      "ppid": 1,
+      "pgid": 119339,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:45:40 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 120148,
+      "ppid": 1,
+      "pgid": 120132,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:47:07 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 120927,
+      "ppid": 1,
+      "pgid": 120869,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:48:39 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 120946,
+      "ppid": 1,
+      "pgid": 120869,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:48:39 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 120965,
+      "ppid": 1,
+      "pgid": 120869,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:48:40 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 120984,
+      "ppid": 1,
+      "pgid": 120869,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:48:40 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 121169,
+      "ppid": 1,
+      "pgid": 120869,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:48:42 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 121188,
+      "ppid": 1,
+      "pgid": 120869,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:48:42 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122301,
+      "ppid": 1,
+      "pgid": 122285,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:51:35 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122655,
+      "ppid": 1,
+      "pgid": 122613,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:52:15 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122674,
+      "ppid": 1,
+      "pgid": 122613,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:52:15 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122693,
+      "ppid": 1,
+      "pgid": 122613,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:52:16 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122712,
+      "ppid": 1,
+      "pgid": 122613,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:52:16 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122875,
+      "ppid": 1,
+      "pgid": 122613,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:52:18 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 122895,
+      "ppid": 1,
+      "pgid": 122613,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:52:18 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124416,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:29 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124537,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:32 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124556,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:32 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124576,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:32 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124596,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:33 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124774,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:34 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 124793,
+      "ppid": 1,
+      "pgid": 124398,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:55:35 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 125730,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:57:54 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 125831,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:57:57 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 125850,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:57:57 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 125869,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:57:57 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 125908,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:57:58 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126086,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:57:59 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126105,
+      "ppid": 1,
+      "pgid": 125714,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:58:00 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126356,
+      "ppid": 1,
+      "pgid": 126338,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:58:39 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126906,
+      "ppid": 1,
+      "pgid": 126696,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:59:18 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126925,
+      "ppid": 1,
+      "pgid": 126696,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:59:18 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126964,
+      "ppid": 1,
+      "pgid": 126696,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:59:19 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 126984,
+      "ppid": 1,
+      "pgid": 126696,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:59:19 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 127162,
+      "ppid": 1,
+      "pgid": 126696,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:59:21 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 127181,
+      "ppid": 1,
+      "pgid": 126696,
+      "stat": "Z",
+      "started": "Tue Oct 13 12:59:21 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129186,
+      "ppid": 1,
+      "pgid": 128874,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:12 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129215,
+      "ppid": 1,
+      "pgid": 128874,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:13 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129392,
+      "ppid": 1,
+      "pgid": 129302,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:17 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129440,
+      "ppid": 1,
+      "pgid": 129302,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:18 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129466,
+      "ppid": 1,
+      "pgid": 129302,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:19 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129486,
+      "ppid": 1,
+      "pgid": 129302,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:20 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129785,
+      "ppid": 1,
+      "pgid": 129302,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:23 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 129894,
+      "ppid": 1,
+      "pgid": 129302,
+      "stat": "Z",
+      "started": "Tue Oct 13 13:02:24 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251581,
+      "ppid": 1,
+      "pgid": 251472,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:55:27 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251605,
+      "ppid": 1,
+      "pgid": 251472,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:55:28 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251687,
+      "ppid": 1,
+      "pgid": 251472,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:55:30 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 251715,
+      "ppid": 1,
+      "pgid": 251472,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:55:31 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254005,
+      "ppid": 1,
+      "pgid": 253964,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:58:35 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254025,
+      "ppid": 1,
+      "pgid": 253964,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:58:35 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254046,
+      "ppid": 1,
+      "pgid": 253964,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:58:36 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254066,
+      "ppid": 1,
+      "pgid": 253964,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:58:36 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254268,
+      "ppid": 1,
+      "pgid": 253964,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:58:38 2026",
+      "command": "esbuild"
+    },
+    {
+      "pid": 254288,
+      "ppid": 1,
+      "pgid": 253964,
+      "stat": "Z",
+      "started": "Tue Oct 13 16:58:38 2026",
+      "command": "esbuild"
+    }
+  ]
+}
