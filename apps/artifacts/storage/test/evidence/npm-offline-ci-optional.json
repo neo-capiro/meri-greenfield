@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "apps/artifacts/storage/test/evidence/offline-ci.mjs",
+    "/tmp/meri-storage-offline-ci-optional"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "474d2d9941b2f430fb0d020142ae8f0134ecd83acb7f6e77ed01390f520ccda3",
+  "sourceDiffBytes": 120719,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:08:51.125342+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 330731,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/npm-offline-ci-optional.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/npm-offline-ci-optional.stderr.bin",
+      "bytes": 315,
+      "sha256": "1366f95ef04f28aa34b92c2147fb74b71055dcfb32ef909d308286da677a84cc"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/artifacts/storage/test/s3.test.mjs",
+    "apps/artifacts/storage/test/postgres.test.mjs",
+    "apps/artifacts/storage/test/pg-wire.test.mjs",
+    "apps/artifacts/storage/test/service.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e861c0026866b39aa76b047347b94732b1eae99c13e7a28858025b9a1053524b",
+  "sourceDiffBytes": 109577,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:06:07.271423+00:00",
+  "durationSeconds": 3.938,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 328875,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/storage-final.stdout.bin",
+      "bytes": 2130,
+      "sha256": "3e70bd76a26e6d7726f23d9673a5ab3f327afa96e4ec82a882bb4b35c62f588e"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/storage-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

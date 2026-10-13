@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "apps/artifacts/storage/test/evidence/lockfile.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "71d8c90c5a1fe5abc88b25fb74abba177949d3b1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:59:50.358623+00:00",
+  "durationSeconds": 76.774,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 325484,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/package-lock-clean.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/package-lock-clean.stderr.bin",
+      "bytes": 1049,
+      "sha256": "caf9f0aff55a60680fae81eadf3a47cb29832b2acf421a17f8424a9175783626"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
