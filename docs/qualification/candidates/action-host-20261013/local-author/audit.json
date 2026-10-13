@@ -1,0 +1,33 @@
+{
+  "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
+  "source": "8a3643e3564f676b66edc6b4cc220fb1c4193098",
+  "originalEntries": 10667,
+  "unchangedOriginalEntries": 10664,
+  "changedOriginals": [
+    "apps/control/action-host/local/fixture.mjs",
+    "apps/control/action-host/local/recovery.mjs",
+    "scripts/local-followthrough/host-run.mjs"
+  ],
+  "captures": [
+    {
+      "label": "initial-direct",
+      "exitCode": 1,
+      "group": 461194,
+      "freshAbsent": true
+    },
+    {
+      "label": "missing-approval-fact",
+      "exitCode": 0,
+      "group": 462522,
+      "freshAbsent": true
+    },
+    {
+      "label": "repaired-cli",
+      "exitCode": 0,
+      "group": 463544,
+      "freshAbsent": true
+    }
+  ],
+  "status": "PASS",
+  "scope": "Synthetic local source/HTTP only; native persistence unrun"
+}
