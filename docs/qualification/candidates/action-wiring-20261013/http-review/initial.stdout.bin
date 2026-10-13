@@ -1,0 +1,47 @@
+✔ HTTP independent real client performs accepted pending/approved/single-effect/replay flow and closes listener (256.71745ms)
+✔ HTTP independent real application requires session; revocation remains current (15.935523ms)
+✔ HTTP independent scope hints do not create session authority (4.090268ms)
+✔ HTTP independent disconnect cancels actual pending Fetch request (5.297833ms)
+✔ HTTP independent finite server deadline aborts pending requests and destroys sockets (84.245158ms)
+✖ HTTP independent app failure is bounded and content-free (4.173323ms)
+✖ HTTP independent header bytes are bounded before application dispatch (2.740038ms)
+✔ HTTP independent unsafe host/port/lifetime values refuse before binding (0.723988ms)
+✔ HTTP independent CLI help/invalid arguments are inert and bounded (68.330427ms)
+✔ HTTP independent raw duplicate Authorization and oversized body cannot bypass canonical admission (15.104423ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 8
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3866.60318
+
+✖ failing tests:
+
+test at apps/control/action-application/http-independent.test.mjs:40:1
+✖ HTTP independent app failure is bounded and content-free (4.173323ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  502 !== 500
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-wiring-http-review-20261013/apps/control/action-application/http-independent.test.mjs:40:203)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 500,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-application/http-independent.test.mjs:41:1
+✖ HTTP independent header bytes are bounded before application dispatch (2.740038ms)
+  Error: read ECONNRESET
+      at TCP.onStreamRead (node:internal/stream_base_commons:216:20) {
+    errno: -104,
+    code: 'ECONNRESET',
+    syscall: 'read'
+  }

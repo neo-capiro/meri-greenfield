@@ -1,0 +1,8 @@
+# Independent bounded Node HTTP completion review
+
+Base `f1a075e2eb6c63ee8b1785ad9a94f552a98f45f8`; root CODEX-ACTION-WIRING-20261013. Own only new http-independent.test.mjs, this task/report and http-review packet. Criteria frozen before candidate inspection. Dedicated sparse /tmp worktree, fifteen-minute task, <=240s captured subprocess, no delegation, installs, external network, SQL/native engine, provider/model/cloud/customer work. Authorized real HTTP is ephemeral loopback127.0.0.1 only.
+
+- Compose the real Node HTTP bridge with the unchanged accepted Fetch application/local demo. Query/draft/prepare cause no task effect; pending execution refuses, separate synthetic approval permits one effect and retained replay. Opaque authentication remains required; no request/header/browser hint creates authority or approval.
+- Bound server lifetime to<=30s, request/header/body/response handling, and pending/disconnected work. Propagate cancellation to the actual Fetch app; preserve its current expiry/revocation, closed fields and content-free unknown outcomes. No permissive CORS, credential logging, activation or new policy.
+- Observe actual listener and owned socket closure on success, failure, deadline and explicit stop. Idempotent cleanup must not dispose the borrowed application, owners or dependencies. Import/help/invalid CLI are inert, without listeners or external work.
+- Preserve all existing source/tests and raw failing evidence. Test observable socket behavior and true application composition, not replacement handlers for the main positive. Supplemental boundary stubs may isolate transport failures. Exact accepted source hashes, compact audit and cleanup evidence; no old broad suite rerun.
