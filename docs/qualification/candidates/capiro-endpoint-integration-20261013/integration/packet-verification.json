@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-13T06:59:43.139113+00:00",
+  "status": "PASS",
+  "verified": [
+    {
+      "role": "author",
+      "members": 24,
+      "manifestSha256": "b6c6c1e9ff627ed4bae1d98f778c5ddf832e0d35c50be04889674c4ad13d5a01"
+    },
+    {
+      "role": "review",
+      "members": 15,
+      "manifestSha256": "323ad1c9fee97e9826bc66dde9dc0c8c0be1228d1381de1500ffaa4b4fc0f3db"
+    },
+    {
+      "role": "integration",
+      "members": 29,
+      "manifestSha256": "cebda126b9c51ce27bce3e11237941b3d7ef218889126aec4088563de6a55334"
+    }
+  ],
+  "privateImplementationBodiesCommitted": false,
+  "scope": "SOURCE_ONLY_RUNTIME_HOLD"
+}

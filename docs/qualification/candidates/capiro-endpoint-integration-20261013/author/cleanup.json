@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-13T06:50:47.667546+00:00",
+  "ownedLinksRemoved": [
+    {
+      "path": "node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules"
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "target": "/workspace/meri-read-continuation-20261012/packages/contracts/node_modules"
+    }
+  ],
+  "ownedGroups": [
+    {
+      "capture": "initial",
+      "pgid": 518232,
+      "physicallyAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "capture": "repaired",
+      "pgid": 519379,
+      "physicallyAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "capture": "source-audit",
+      "pgid": 523074,
+      "physicallyAbsent": true,
+      "timeout": false,
+      "killRequired": false
+    }
+  ],
+  "borrowedCompilerAndSourceRepositoryPreserved": true,
+  "otherOwnerResourcesChanged": false
+}

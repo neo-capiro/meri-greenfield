@@ -1,0 +1,224 @@
+{
+  "status": "PASS",
+  "head": "750c289bd1b94fce0e67c576e283f5b7927cf8e6",
+  "base": "a0614e7e16d6f92d0ca6eaa192cea7c5def21ec8",
+  "authorSource": "9063f707e2ac618b0dcf5bb0c5165d13914748e6",
+  "authorPacket": "e37a648d464ae2fade173f8eda7fd6f60f7d7649",
+  "reviewFreeze": "6e52e6abfdf7a41256febea83cc8b15262f6cd06",
+  "originalEntriesRetained": 11497,
+  "originalEntriesUnchanged": 11495,
+  "allocatedExistingChanges": [
+    "apps/control/action-host/application-adapters/README.md",
+    "apps/control/action-host/application-adapters/authority-http.mjs"
+  ],
+  "sourceBlobs": [
+    {
+      "path": "apps/control/action-host/application-adapters/README.md",
+      "gitEntry": "100644 blob 7853fdd90a39eedb60cc99ea374b3b420f52379f",
+      "bytes": 8043,
+      "sha256": "604cf7c255c9a6dcc0f44fff7d6a5f2a828c848a6d2bed7253c52f02f46d4608"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+      "gitEntry": "100644 blob 7c4a83004884bd32834496ede86af907e18d21d1",
+      "bytes": 4664,
+      "sha256": "ba9af89c706dc6bbb27f55e06c9e6331e5c655edabb3a22d2cc13269750ef993"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+      "gitEntry": "100644 blob a83121088f8440464c1c2ef2afbcfb901a0cc934",
+      "bytes": 12379,
+      "sha256": "87ab4ab2d6e72a4ea5e868f7d6aada632249a164faf257f8e8f87f718809b15a"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+      "gitEntry": "100644 blob 46c6c62b9b0836a4d678b76e7890e1c558592fbe",
+      "bytes": 5132,
+      "sha256": "ad7eaa94dc2a2747a23301cd66eb5d6662120ef3b22e18381ff6ff59eb2504e4"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+      "gitEntry": "100644 blob b09c32d1fc161de5f4c54f02290a118122d99442",
+      "bytes": 7316,
+      "sha256": "d30bdec8e81785eb4635e2e594964493e5cbf0976617470ae8e5f5923bdf390a"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+      "gitEntry": "100644 blob 6f0c96ec69437a6b6a2a065d6e6fba0ce9fd16cb",
+      "bytes": 4787,
+      "sha256": "cc7355212242320db096c9b7ec2b711ba7c73d1734dfe7f735170c826034fa9e"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+      "gitEntry": "100644 blob b6845b894c9d4a29b82c248a1e7d63e219f1a94f",
+      "bytes": 7514,
+      "sha256": "6d9ff918eab365695125f7e65e486123e9ac0c957bc68bd00a384e814e6099eb"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+      "gitEntry": "100644 blob 1593bbaad3064bf8d8b2fd08328cac5557e35927",
+      "bytes": 2696,
+      "sha256": "66a8fe272dab84bf551406f2c6451666b209caa244ea6be8b1f05630fea9eb6c"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+      "gitEntry": "100644 blob cbf403db3cca3f056d8007738882dc258e20994e",
+      "bytes": 4101,
+      "sha256": "3132dfe886d1b893602c48c63629471663156671d6093975e5a06130c207944f"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/source.mjs",
+      "gitEntry": "100644 blob b9e2ea84145bc0570c6dbe5127d5852c592aca70",
+      "bytes": 3668,
+      "sha256": "8d4f415450a215901322cef3714dcaab19a25611222a4532983607c48febd4fa"
+    }
+  ],
+  "externalSource": {
+    "commit": "60cf2e51129f8358e6afe5fc600ffcdb6de01759",
+    "tree": "1b2c9f6e975a47397f08d34563087455ed1c2242",
+    "members": 19,
+    "selections": 22,
+    "compiler": {
+      "version": "5.9.3",
+      "license": "Apache-2.0",
+      "bytes": 9112572,
+      "sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+      "source": "existing caller-supplied cache; same5.9.3 version present in pinned pnpm lock"
+    }
+  },
+  "ledger": {
+    "originals": 139,
+    "selectedMapped": 96,
+    "deferred": 43,
+    "operations": 97,
+    "allUnavailable": true
+  },
+  "manifests": {
+    "author": {
+      "members": 24,
+      "sha256": "b6c6c1e9ff627ed4bae1d98f778c5ddf832e0d35c50be04889674c4ad13d5a01"
+    },
+    "review": {
+      "members": 15,
+      "sha256": "323ad1c9fee97e9826bc66dde9dc0c8c0be1228d1381de1500ffaa4b4fc0f3db"
+    }
+  },
+  "rootCaptures": [
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.json",
+      "group": 525568
+    },
+    {
+      "path": "docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.json",
+      "group": 520600
+    }
+  ],
+  "checks": [
+    "all original entries remain",
+    "only two allocated existing entries changed",
+    "all original tests/contracts/catalog/migrations/evidence preserved",
+    "production HTTP executable bytes unchanged",
+    "review identity: apps/control/action-host/application-adapters/README.md",
+    "working identity: apps/control/action-host/application-adapters/README.md",
+    "review identity: apps/control/action-host/application-adapters/authority-http.mjs",
+    "working identity: apps/control/action-host/application-adapters/authority-http.mjs",
+    "review identity: apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+    "working identity: apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/README.md",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/README.md",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/pins.json",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/pins.json",
+    "review identity: apps/control/action-host/application-adapters/cross-repo/source.mjs",
+    "working identity: apps/control/action-host/application-adapters/cross-repo/source.mjs",
+    "preserved reachable source/review: 9063f707e2ac618b0dcf5bb0c5165d13914748e6",
+    "preserved reachable source/review: e37a648d464ae2fade173f8eda7fd6f60f7d7649",
+    "preserved reachable source/review: 6e52e6abfdf7a41256febea83cc8b15262f6cd06",
+    "clean whitespace",
+    "no uncommitted executable changes",
+    "exact external commit/tree",
+    "nineteen external members",
+    "eight independently accepted external source files",
+    "external bytes: apps/api/src/auth/application-authority.spec.ts",
+    "external bytes: apps/api/src/auth/application-authority.ts",
+    "external bytes: apps/api/src/auth/clerk.service.ts",
+    "external bytes: apps/api/src/context/context-security-scope.service.ts",
+    "external bytes: apps/api/src/context/context.module.ts",
+    "external bytes: apps/api/src/meri/meri.controller.ts",
+    "external bytes: apps/api/src/meri/meri.service.ts",
+    "external bytes: apps/api/src/tenant/tenant-context.middleware.ts",
+    "external bytes: apps/api/src/auth/roles.guard.ts",
+    "external bytes: apps/api/src/tenant/tenant-context.store.ts",
+    "external bytes: apps/api/src/auth/clerk-role.util.ts",
+    "external bytes: apps/api/src/context/context.types.ts",
+    "external bytes: apps/api/src/meri/meri-prospect-scope.helpers.ts",
+    "external bytes: apps/api/src/business-development/bizdev-meri-scope.service.ts",
+    "external bytes: apps/api/src/research-portfolios/research-portfolio-artifact-authority.ts",
+    "external bytes: apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+    "external bytes: packages/shared/src/index.ts",
+    "external bytes: pnpm-lock.yaml",
+    "external bytes: apps/api/src/auth/roles.decorator.ts",
+    "exact caller supplied compiler bytes",
+    "compiler declared version",
+    "AST metadata exact pin",
+    "twenty-two exact AST selections recorded",
+    "complete original capability ledger retained",
+    "all selected capabilities remain mapped",
+    "all production operations remain unavailable",
+    "author packet member: apps/control/action-host/application-adapters/README.md",
+    "author packet member: apps/control/action-host/application-adapters/authority-http.mjs",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/README.md",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/endpoint.mjs",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/fixture.mjs",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/integration.test.mjs",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/pins.json",
+    "author packet member: apps/control/action-host/application-adapters/cross-repo/source.mjs",
+    "author packet member: docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-AUTHOR-20261013.md",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/audit.json",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/audit.mjs",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/capture-reaped.py",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/cleanup.json",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.json",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.stderr.bin",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/initial.stdout.bin",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.json",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.stderr.bin",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/repaired.stdout.bin",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.json",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.stderr.bin",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-audit.stdout.bin",
+    "author packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/author/source-identities.json",
+    "review packet member: apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs",
+    "review packet member: docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-REVIEW-20261013.md",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/.gitattributes",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/audit.json",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/audit.py",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/author-packet-audit.json",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/capture-reaped.py",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/cleanup.json",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/criteria.md",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.json",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.stderr.bin",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/final.stdout.bin",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.json",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.stderr.bin",
+    "review packet member: docs/qualification/candidates/capiro-endpoint-integration-20261013/review/first.stdout.bin",
+    "root capture bytes: docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.stdout.bin",
+    "root capture bytes: docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/independent-replay.stderr.bin",
+    "successful closed root process: independent-replay.json",
+    "root capture bytes: docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.stdout.bin",
+    "root capture bytes: docs/qualification/candidates/capiro-endpoint-integration-20261013/integration/integrated-node.stderr.bin",
+    "successful closed root process: integrated-node.json",
+    "never overwrite audit evidence"
+  ],
+  "checksPassed": 103,
+  "scope": "ACCEPT_SOURCE_RUNTIME_HOLD"
+}

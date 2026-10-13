@@ -1,0 +1,56 @@
+✔ independent exact Git source manifest and AST-selected implementations match received metadata (777.971154ms)
+✔ independent actual middleware/provider/context pipeline emits closed canonical receipts (289.179555ms)
+✔ independent actual Capiro owners refuse foreign tenant grant (247.38137ms)
+✔ independent actual Capiro owners refuse foreign actor grant (249.360436ms)
+✔ independent actual Capiro owners refuse foreign client grant (243.156519ms)
+✔ independent actual Capiro owners refuse missing wall grant (235.910089ms)
+✔ independent actual Capiro owners refuse foreign conversation tenant (213.142474ms)
+✔ independent actual Capiro owners refuse foreign conversation actor (215.439987ms)
+✔ independent actual Capiro owners refuse changed selected client (230.862839ms)
+✔ independent actual Capiro owners refuse null selected client (223.102306ms)
+✔ independent actual Capiro owners refuse archived conversation (209.59433ms)
+✔ independent actual Capiro owners refuse inactive conversation (219.54584ms)
+✔ independent actual Capiro owners refuse foreign tenant client (203.279881ms)
+✔ independent actual Capiro owners refuse archived client (199.214966ms)
+✔ independent actual Capiro owners refuse inactive membership (204.02053ms)
+✔ independent actual Capiro owners refuse inactive tenant (198.155032ms)
+✔ independent actual Capiro owners refuse unknown role (199.966096ms)
+✔ independent actual Capiro owners refuse lower role (208.442538ms)
+✔ independent actual Capiro owners refuse revoked online session (221.221199ms)
+✔ independent actual Capiro owners refuse invalid native token (234.245719ms)
+✔ independent wall false legitimately works without grant and tenant predicate remains explicit (220.117625ms)
+✔ independent headers and body do not supply identity or scope authority (222.274973ms)
+✔ independent context hash echo grants no authority and canonical join rejects a different echo (241.263168ms)
+✔ independent canonical receiver/join rejects forged native principal (239.103406ms)
+✔ independent canonical receiver/join rejects forged native revision (230.606232ms)
+✔ independent canonical receiver/join rejects forged native extra (318.805871ms)
+✔ independent canonical receiver/join rejects forged native future clock (263.878151ms)
+✔ independent canonical receiver/join rejects forged native expired clock (305.417804ms)
+✔ independent asynchronous online recheck re-evaluates revoked wall grant (309.897564ms)
+✔ independent final local membership recheck catches role change after context reads (270.308523ms)
+✔ independent expiry never refreshes after activity and token/session expiry bounds all receipts (269.800925ms)
+✔ independent changed Meri policy/fence between native context reads refuses current join (262.554956ms)
+✔ independent caller deadline refuses parked online session and consumes late completion (319.859264ms)
+✔ independent application flow retains exact pending proposal and separate approval with one effect/replay/revocation (619.491521ms)
+✖ independent production catalog remains unavailable with original scope (0.258919ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 34
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12023.110063
+
+✖ failing tests:
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:45:1
+✖ independent production catalog remains unavailable with original scope (0.258919ms)
+  TypeError: Cannot read properties of undefined (reading 'length')
+      at TestContext.<anonymous> (file:///tmp/meri-capiro-endpoint-integration-review-20261013/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:45:227)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

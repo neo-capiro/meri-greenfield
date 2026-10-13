@@ -1,0 +1,117 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "commit": "60cf2e51129f8358e6afe5fc600ffcdb6de01759",
+  "tree": "1b2c9f6e975a47397f08d34563087455ed1c2242",
+  "members": [
+    {
+      "path": "apps/api/src/auth/application-authority.spec.ts",
+      "bytes": 28650,
+      "sha256": "b738b2dbc1917255b062af225b08063f5092551c75fceddfff2542ed5bf9338c",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/auth/application-authority.ts",
+      "bytes": 9325,
+      "sha256": "80d7913e68d63cfec1c15f9a76ebe0657baeb107f1880725c4ba3db567aa7309",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/auth/clerk.service.ts",
+      "bytes": 8258,
+      "sha256": "c49fdba20da5152a5eadb1dca864e6f789c943ad1b1ca560a529edad4f343191",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/context/context-security-scope.service.ts",
+      "bytes": 7013,
+      "sha256": "2de05899ac1fd82af13eead5956b8cbe23a237714a4b645839d5a955f7bdab24",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/context/context.module.ts",
+      "bytes": 2627,
+      "sha256": "6c74d843772f14864fc4d563b8fdb625479d84e6b5c553e18e27ef5abc2d66d9",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "bytes": 45695,
+      "sha256": "5b33f8e8f538731f783bb014d9cfd8c8b10fdca9d45b876157ef2cf03c5b0467",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.service.ts",
+      "bytes": 295936,
+      "sha256": "71c40abfd50a0fa124946ce5fb589aab875af23242a37f4438af78be4a5f6595",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "bytes": 30010,
+      "sha256": "250df8d46a94f84239e99f46ce0dec5858cc06082c430ec4551d666491b83c0b",
+      "sameAcceptedSource": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "bytes": 2703,
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.store.ts",
+      "bytes": 884,
+      "sha256": "33b46f43722694f12986ff4d535e1ee31f8834c2e8cec0d70e319cfe91be5181"
+    },
+    {
+      "path": "apps/api/src/auth/clerk-role.util.ts",
+      "bytes": 1991,
+      "sha256": "01ef5660e55db04465edbfc553318a50e2cd47414a6ca50e37874c2dbcb8ca6d"
+    },
+    {
+      "path": "apps/api/src/context/context.types.ts",
+      "bytes": 5392,
+      "sha256": "b61dfd755bd161a77cba40dd2c23a8e9723cf93527220a060d80de67f2892746"
+    },
+    {
+      "path": "apps/api/src/meri/meri-prospect-scope.helpers.ts",
+      "bytes": 4140,
+      "sha256": "3a3089721a795836a4d4714e7f3fdc33869c0c1a26b1fa9a3726881170aee0ea"
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-meri-scope.service.ts",
+      "bytes": 8411,
+      "sha256": "570e95f5279cf7e3d8521d9b03920fa4dbafc8f301de5a1def76d2ece78e9525"
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-artifact-authority.ts",
+      "bytes": 4785,
+      "sha256": "d6700f4e06e24b894e7b3d8b7c940faf22b1d595d974ad015d375f0c166f4924"
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "bytes": 6332,
+      "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "bytes": 273692,
+      "sha256": "fde2cea920fcb64f3150bbe5849d2cfd438462edaf711634dc7ed48f0eba7d9a"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 728135,
+      "sha256": "ee1e9d1758ffa0fe45e5b8fb58294083cc57850a1984b035f99fb54747b6ddba"
+    },
+    {
+      "path": "apps/api/src/auth/roles.decorator.ts",
+      "bytes": 447,
+      "sha256": "48273cb64384cd3b22c90e3abc8a0a0e0c77d774ac1d30602e1d0a1a26715a62"
+    }
+  ],
+  "compiler": {
+    "version": "5.9.3",
+    "license": "Apache-2.0",
+    "bytes": 9112572,
+    "sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+    "source": "existing caller-supplied cache; same5.9.3 version present in pinned pnpm lock"
+  }
+}

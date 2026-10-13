@@ -1,0 +1,53 @@
+✔ exact published commit/tree/eight source hashes and compiler are admitted (392.406578ms)
+✔ actual middleware and separate provider issue canonical closed identity/context receipts (565.12487ms)
+✔ activity and lastSeen writes do not fabricate identity revision or renewed expiry (319.625794ms)
+✔ actual endpoint refuses foreign tenant wall grant (361.368269ms)
+✔ actual endpoint refuses no wall grant (295.553135ms)
+✔ actual endpoint refuses other actor wall grant (329.094498ms)
+✔ actual endpoint refuses archived client (253.838968ms)
+✔ actual endpoint refuses foreign conversation (264.641998ms)
+✔ actual endpoint refuses null bound client (231.444784ms)
+✔ actual endpoint refuses closed conversation (228.530178ms)
+✔ actual endpoint refuses archived conversation (250.888549ms)
+✔ actual endpoint refuses online revoked session (220.532163ms)
+✔ actual endpoint refuses online session substitution (225.022879ms)
+✔ actual endpoint refuses membership revision change (219.425745ms)
+✔ actual endpoint refuses principal membership change (249.278382ms)
+✔ actual endpoint refuses lower role (246.439213ms)
+✖ a foreign wall grant cannot authorize even with correct selected input and identity hash (259.929055ms)
+✔ wall revocation during online recheck is observed by second context pass (251.679269ms)
+✔ local membership change during final context reads fails final identity recheck (242.753456ms)
+✔ Capiro hash echo does not authorize a foreign Meri current run (254.303799ms)
+✔ closed request contract rejects additional authority fields (296.957119ms)
+✔ original native token expiry refuses without adapter refresh (275.647034ms)
+✔ actual pinned endpoint -> opaque Meri session -> query/draft/pending/approved once/replay/revocation (746.400022ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9788.604909
+
+✖ failing tests:
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:16:1
+✖ a foreign wall grant cannot authorize even with correct selected input and identity hash (259.929055ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'no-store, no-store'
+  - 'no-store'
+             ^
+  
+      at TestContext.<anonymous> (file:///tmp/meri-capiro-endpoint-integration-author-20261013/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:16:561)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'no-store, no-store',
+    expected: 'no-store',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
