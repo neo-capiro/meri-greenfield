@@ -1,0 +1,100 @@
+TAP version 13
+# {"case":"cancel stored-scope change","before":1,"after":2,"state":"cancelled"}
+# {"case":"fiscal config absent on exact replay","error":"fiscal_window_unavailable","before":{"basis":"fiscal-year","calendarId":"state-florida","year":2027,"stage":"appropriated","revisionId":"law-v2","timezone":"America/New_York","startInclusive":"2026-07-01T04:00:00Z","endExclusive":"2027-07-01T04:00:00Z"}}
+# {"case":"SDK immutable calendar context","window":{"basis":"calendar-week","startInclusive":"2026-10-05T04:00:00Z","endExclusive":"2026-10-12T04:00:00Z","timezone":"America/New_York","weekStartsOn":"monday"},"contextIncludesExactStart":false,"contextIncludesExactEnd":false,"contextIncludesTimezone":false}
+# {"case":"SDK close diagnostics","rawDiagnosticReleased":true,"state":"completed"}
+# Subtest: Cancellation binds current scopes to the exact locked run before append
+not ok 1 - Cancellation binds current scopes to the exact locked run before append
+  ---
+  duration_ms: 17.601843
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:8:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + undefined
+    - 'SCOPE_REFUSED'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'SCOPE_REFUSED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:16:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: Immutable fiscal replay uses retained window when current configuration is absent
+not ok 2 - Immutable fiscal replay uses retained window when current configuration is absent
+  ---
+  duration_ms: 7.706139
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:19:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Replay should not require resolving an already pinned fiscal window again
+    + actual - expected
+    
+    + 'fiscal_window_unavailable'
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual: 'fiscal_window_unavailable'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:29:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: The sole SDK query receives the persisted exact normalized window
+not ok 3 - The sole SDK query receives the persisted exact normalized window
+  ---
+  duration_ms: 15.230526
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:33:1'
+  failureType: 'testCodeFailure'
+  error: 'Normalized requested window must reach SDK inputs, not only storage'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:41:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: SDK close failure never releases raw provider diagnostics from activity
+not ok 4 - SDK close failure never releases raw provider diagnostics from activity
+  ---
+  duration_ms: 7.469575
+  type: 'test'
+  location: '/workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:44:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Close failure must cross the content-free activity boundary
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/meri-lifecycle-source-independent/docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs:51:10)
+    async Test.run (node:internal/test_runner/test:1389:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1826.227431

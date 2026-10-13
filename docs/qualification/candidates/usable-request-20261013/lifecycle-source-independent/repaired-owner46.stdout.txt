@@ -1,0 +1,286 @@
+TAP version 13
+# Subtest: real Fetch submit/history reuses existing opaque session and persisted cursor
+ok 1 - real Fetch submit/history reuses existing opaque session and persisted cursor
+  ---
+  duration_ms: 26.480864
+  type: 'test'
+  ...
+# Subtest: a lost Temporal start ack keeps request recoverable on exact resubmission
+ok 2 - a lost Temporal start ack keeps request recoverable on exact resubmission
+  ---
+  duration_ms: 5.222722
+  type: 'test'
+  ...
+# Subtest: current revocation blocks old history, publication and replay submit
+ok 3 - current revocation blocks old history, publication and replay submit
+  ---
+  duration_ms: 22.247495
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed tenant before transcript release
+ok 4 - existing session refuses changed tenant before transcript release
+  ---
+  duration_ms: 3.575482
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed actor before transcript release
+ok 5 - existing session refuses changed actor before transcript release
+  ---
+  duration_ms: 3.216143
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed fence before transcript release
+ok 6 - existing session refuses changed fence before transcript release
+  ---
+  duration_ms: 3.223044
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed attempt before transcript release
+ok 7 - existing session refuses changed attempt before transcript release
+  ---
+  duration_ms: 3.201832
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed worker before transcript release
+ok 8 - existing session refuses changed worker before transcript release
+  ---
+  duration_ms: 3.35391
+  type: 'test'
+  ...
+# Subtest: existing session refuses changed conversation before transcript release
+ok 9 - existing session refuses changed conversation before transcript release
+  ---
+  duration_ms: 3.355111
+  type: 'test'
+  ...
+# Subtest: normalizes actual last-week window and refuses unavailable selected skills
+ok 10 - normalizes actual last-week window and refuses unavailable selected skills
+  ---
+  duration_ms: 29.164529
+  type: 'test'
+  ...
+# Subtest: cancel fences late worker publications and cancellation survives repeat
+ok 11 - cancel fences late worker publications and cancellation survives repeat
+  ---
+  duration_ms: 11.207198
+  type: 'test'
+  ...
+# Subtest: reconnect emits only new events and source cancellation stops its polls
+ok 12 - reconnect emits only new events and source cancellation stops its polls
+  ---
+  duration_ms: 15.536851
+  type: 'test'
+  ...
+# Subtest: revocation after first stream event prevents subsequent disclosure
+ok 13 - revocation after first stream event prevents subsequent disclosure
+  ---
+  duration_ms: 4.443084
+  type: 'test'
+  ...
+# Subtest: upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+ok 14 - upstream Temporal pins stable workflow and rejects reuse while accepting a current start
+  ---
+  duration_ms: 0.300661
+  type: 'test'
+  ...
+# Subtest: HTTP body read and dispatch share one deadline signal
+ok 15 - HTTP body read and dispatch share one deadline signal
+  ---
+  duration_ms: 21.615117
+  type: 'test'
+  ...
+# Subtest: request is immutable and replay survives owner reconstruction
+ok 16 - request is immutable and replay survives owner reconstruction
+  ---
+  duration_ms: 13.641078
+  type: 'test'
+  ...
+# Subtest: events atomically advance state and stable IDs replay without duplicates
+ok 17 - events atomically advance state and stable IDs replay without duplicates
+  ---
+  duration_ms: 2.70043
+  type: 'test'
+  ...
+# Subtest: concurrent starting attempts serialize and allow one model admission
+ok 18 - concurrent starting attempts serialize and allow one model admission
+  ---
+  duration_ms: 1.06686
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign tenant
+ok 19 - stored reads/writes deny foreign tenant
+  ---
+  duration_ms: 0.576384
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign actor
+ok 20 - stored reads/writes deny foreign actor
+  ---
+  duration_ms: 2.031346
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign conversation
+ok 21 - stored reads/writes deny foreign conversation
+  ---
+  duration_ms: 0.638157
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign run
+ok 22 - stored reads/writes deny foreign run
+  ---
+  duration_ms: 0.552078
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign attempt
+ok 23 - stored reads/writes deny foreign attempt
+  ---
+  duration_ms: 0.599949
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign worker
+ok 24 - stored reads/writes deny foreign worker
+  ---
+  duration_ms: 0.648423
+  type: 'test'
+  ...
+# Subtest: stored reads/writes deny foreign fence
+ok 25 - stored reads/writes deny foreign fence
+  ---
+  duration_ms: 0.710786
+  type: 'test'
+  ...
+# Subtest: cancelled run refuses late text and completion but original events remain inspectable
+ok 26 - cancelled run refuses late text and completion but original events remain inspectable
+  ---
+  duration_ms: 1.489514
+  type: 'test'
+  ...
+# Subtest: lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+ok 27 - lost COMMIT acknowledgement is unknown and exact retry recovers one saved request
+  ---
+  duration_ms: 0.52044
+  type: 'test'
+  ...
+# Subtest: retained event corruption and a sequence hole refuse reconnect
+ok 28 - retained event corruption and a sequence hole refuse reconnect
+  ---
+  duration_ms: 1.099388
+  type: 'test'
+  ...
+# Subtest: cursor after durable end and oversized publication refuse
+ok 29 - cursor after durable end and oversized publication refuse
+  ---
+  duration_ms: 1.119899
+  type: 'test'
+  ...
+# Subtest: live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+ok 30 - live AI SDK transport preserves durable ids/sequences and upstream stream protocol
+  ---
+  duration_ms: 36.267321
+  type: 'test'
+  ...
+# Subtest: upstream reader cancellation reaches the owned live event source
+ok 31 - upstream reader cancellation reaches the owned live event source
+  ---
+  duration_ms: 1.08704
+  type: 'test'
+  ...
+# Subtest: live producer suppresses internal source error details
+ok 32 - live producer suppresses internal source error details
+  ---
+  duration_ms: 0.651427
+  type: 'test'
+  ...
+# Subtest: one SDK query persists streamed text once, hides reasoning and completes durable run
+ok 33 - one SDK query persists streamed text once, hides reasoning and completes durable run
+  ---
+  duration_ms: 36.401173
+  type: 'test'
+  ...
+# Subtest: nonstreamed final assistant text is displayed with a valid generated UUID
+ok 34 - nonstreamed final assistant text is displayed with a valid generated UUID
+  ---
+  duration_ms: 10.747208
+  type: 'test'
+  ...
+# Subtest: SDK mirror never leaks diagnostics or makes a duplicate model query
+ok 35 - SDK mirror never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 9.056292
+  type: 'test'
+  ...
+# Subtest: SDK missing never leaks diagnostics or makes a duplicate model query
+ok 36 - SDK missing never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 10.202772
+  type: 'test'
+  ...
+# Subtest: SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+ok 37 - SDK sdkFailure never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 8.359807
+  type: 'test'
+  ...
+# Subtest: SDK duplicate never leaks diagnostics or makes a duplicate model query
+ok 38 - SDK duplicate never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 9.086678
+  type: 'test'
+  ...
+# Subtest: SDK subagent never leaks diagnostics or makes a duplicate model query
+ok 39 - SDK subagent never leaks diagnostics or makes a duplicate model query
+  ---
+  duration_ms: 8.105966
+  type: 'test'
+  ...
+# Subtest: revocation during query stops publication and closes SDK before another result
+ok 40 - revocation during query stops publication and closes SDK before another result
+  ---
+  duration_ms: 5.585657
+  type: 'test'
+  ...
+# Subtest: output limit fails instead of truncating a completed response
+ok 41 - output limit fails instead of truncating a completed response
+  ---
+  duration_ms: 7.918616
+  type: 'test'
+  ...
+# Subtest: late SDK iterator is bounded by deadline and closed without a second query
+ok 42 - late SDK iterator is bounded by deadline and closed without a second query
+  ---
+  duration_ms: 35.422605
+  type: 'test'
+  ...
+# Subtest: SDK options reject ambient config, wrong workspace and upstream keys
+ok 43 - SDK options reject ambient config, wrong workspace and upstream keys
+  ---
+  duration_ms: 0.452929
+  type: 'test'
+  ...
+# Subtest: final assistant frame repairs a missing streamed suffix without duplicate prefix
+ok 44 - final assistant frame repairs a missing streamed suffix without duplicate prefix
+  ---
+  duration_ms: 9.036883
+  type: 'test'
+  ...
+# Subtest: a conflicting final text refuses completion instead of silently dropping the mismatch
+ok 45 - a conflicting final text refuses completion instead of silently dropping the mismatch
+  ---
+  duration_ms: 7.193929
+  type: 'test'
+  ...
+# Subtest: runtime preparation mismatch records a failed run without invoking SDK
+ok 46 - runtime preparation mismatch records a failed run without invoking SDK
+  ---
+  duration_ms: 6.56072
+  type: 'test'
+  ...
+1..46
+# tests 46
+# suites 0
+# pass 46
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2942.062916

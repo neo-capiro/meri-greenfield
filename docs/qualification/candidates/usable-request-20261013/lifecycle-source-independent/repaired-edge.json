@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "492c945547bd56e8471d3b65c7901114eb514791",
+  "worktreeHead": "f72e71851352384dd6d92670b5dcf369277d9753",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 1.925,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 3814,
+  "stderrBytes": 0,
+  "stdoutSha256": "e6e289abbc44a6bc150326330d086fcad3164332837c1a20607c25abf5d85381",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
