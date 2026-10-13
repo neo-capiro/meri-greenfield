@@ -1,0 +1,11 @@
+{
+  "removedOwnedPaths": [
+    "node_modules (owned seven-package copy)",
+    "apps/proxy/qualification/assembly/__pycache__",
+    "apps/proxy/qualification/state/__pycache__"
+  ],
+  "dependencyCopyAbsent": true,
+  "borrowedDependencyTreesModified": false,
+  "nativeDatabaseCalls": 0,
+  "cloudProviderCalls": 0
+}
