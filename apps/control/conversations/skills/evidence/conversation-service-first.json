@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "14db5f4f8a8a39c0297b5492782259b35a0043f6",
+  "sourceDiffSha256": "5606c456fb527d1e56e246cf6bb0a72de18b8f19dd903ef5e13f2e4a85d60545",
+  "sourceDiffBytes": 10053,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:06:14.586969+00:00",
+  "durationSeconds": 3.76,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 295108,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/conversation-service-first.stdout.bin",
+      "bytes": 5806,
+      "sha256": "62cd87d1f6d35e6abf43a5e8894b9f9a70dedea2064e480d75e412271d544378"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/conversation-service-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,55 @@
+✔ same canonical submit persists exact original pins only after trusted admission and rechecks before/after start and replay (41.573807ms)
+✖ refused deny native admission leaves no durable request or Temporal start (2.391224ms)
+✖ refused changed native admission leaves no durable request or Temporal start (1.718775ms)
+✖ revocation after durable acceptance blocks Temporal start and exact replay release (3.250351ms)
+✖ opaque session selected-client change during admission prevents durable release (1.988575ms)
+✔ plain worker publication cannot invent an artifact availability event (5.200078ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1838.312246
+
+✖ failing tests:
+
+test at apps/control/conversations/skills/service-admission.test.mjs:12:39
+✖ refused deny native admission leaves no durable request or Temporal start (2.391224ms)
+  TypeError: Cannot read properties of undefined (reading 'size')
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-batch/apps/control/conversations/skills/service-admission.test.mjs:12:288)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/conversations/skills/service-admission.test.mjs:12:39
+✖ refused changed native admission leaves no durable request or Temporal start (1.718775ms)
+  TypeError: Cannot read properties of undefined (reading 'size')
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-batch/apps/control/conversations/skills/service-admission.test.mjs:12:288)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/conversations/skills/service-admission.test.mjs:13:1
+✖ revocation after durable acceptance blocks Temporal start and exact replay release (3.250351ms)
+  TypeError: Cannot read properties of undefined (reading 'size')
+      at TestContext.<anonymous> (file:///workspace/meri-original-runtime-batch/apps/control/conversations/skills/service-admission.test.mjs:13:529)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/conversations/skills/service-admission.test.mjs:14:1
+✖ opaque session selected-client change during admission prevents durable release (1.988575ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /SESSION_CHANGED/. Input:
+  
+  "TypeError: Cannot set properties of undefined (setting 'selectedClientId')"
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-original-runtime-batch/apps/control/conversations/skills/service-admission.test.mjs:14:292)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Cannot set properties of undefined (setting 'selectedClientId')
+        at f.admission.admitSelection (file:///workspace/meri-original-runtime-batch/apps/control/conversations/skills/service-admission.test.mjs:14:268),
+    expected: /SESSION_CHANGED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

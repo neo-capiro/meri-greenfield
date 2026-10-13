@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/skills/service-admission.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-runtime-batch",
+  "sourceHead": "14db5f4f8a8a39c0297b5492782259b35a0043f6",
+  "sourceDiffSha256": "6afc51253501ef1afb132c1e4e8bdaed8f4fd145b3be6082add9ef6547922187",
+  "sourceDiffBytes": 14324,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T18:09:42.643796+00:00",
+  "durationSeconds": 1.82,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 296796,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/control/conversations/skills/evidence/admission-service-repaired.stdout.bin",
+      "bytes": 1808,
+      "sha256": "8c32dcceea2b0f408575365177535aa98baa5640515e25a6ec750f8488b33ef7"
+    },
+    {
+      "path": "apps/control/conversations/skills/evidence/admission-service-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserved initial fixture state shadowing failure; merged admission controls into existing canonical SQL/session fixture without changing assertions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
