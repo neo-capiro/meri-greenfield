@@ -1,0 +1,9 @@
+# Trusted window resolution
+
+Base: PR59 `18adda2c5461b8d346277135aafd3972b4768802` (`eaec635b6b1c6cdc353ad48a5fda1f7a3dc10b21`). Exclusive ownership: `packages/window-resolution/`. This bounded worker turn uses no database, model provider, cloud writes or private data.
+
+The control caller supplies a trusted UTC `referenceAt` and an optional array of exact, canonical fiscal-year windows in `fiscalCalendars`. `resolveWindow(request, { referenceAt, fiscalCalendars })` validates the existing WindowRequest, computes current/previous civil week/month/year in its requested IANA timezone, and validates the resulting NormalizedWindow with the existing retrieval validators. Relative days mean elapsed 24-hour durations; explicit timestamps remain byte-exact; unbounded remains explicit. Fiscal windows require one exact calendar/year/stage/revision/timezone record, with no default calendar, inferred stage or latest-version substitution.
+
+Use the upstream `@js-temporal/polyfill` package for civil arithmetic and IANA transitions. Keep resolution and fiscal selection cohesive and import-safe, without ambient clocks, persistence, authorization or activation. Ambiguous/nonexistent local midnight boundaries fail rather than silently shifting to an incompatible interval. The existing contracts remain unchanged. Root integrates this package at authenticated request normalization.
+
+Meaningful checks cover trusted reference time and offsets, Monday/Sunday weeks, DST start/end, month/leap/year boundaries, elapsed relative durations, exact explicit strings, missing/conflicting fiscal records and revision/stage isolation, malformed inputs, unavailable midnight and skipped dates. Targeted tests are source/local evidence only; broader subject/version resolution and live gate acceptance remain with root.

@@ -1,0 +1,52 @@
+
+> @capiro/meri-window-resolution@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ current Monday week (8.913649ms)
+✔ previous Monday week (1.24533ms)
+✔ current Sunday week (0.926271ms)
+✔ Sunday belongs to the previous Monday week (1.037007ms)
+✔ exact Monday boundary belongs to the current week (0.816516ms)
+✔ spring DST week has 167 elapsed hours (0.869126ms)
+✔ fall DST week has 169 elapsed hours (0.703356ms)
+✔ month is based on local date before UTC rollover (0.977989ms)
+✔ previous month across year rollover (0.844148ms)
+✔ leap February (0.762826ms)
+✔ current year uses local year (0.733242ms)
+✔ previous year includes leap day (0.721764ms)
+✔ half-hour DST transition (0.741213ms)
+✔ skipped civil date inside a week (0.582094ms)
+✔ repeated fall hour is unambiguous when the trusted reference is an instant (1.289066ms)
+✔ a non-existent midnight boundary is refused without shifting the week (0.68569ms)
+✔ an ambiguous midnight boundary is refused without selecting an offset (0.547312ms)
+✔ relative days stay elapsed 24-hour durations through DST (0.535604ms)
+✔ explicit timestamps are preserved byte-exact, without calendar reinterpretation (0.305488ms)
+✔ unbounded is explicit and immutable (0.191257ms)
+✔ fiscal identity preserves exact year, calendar, stage, revision and bounds (0.541434ms)
+✔ fiscal year substitution is unavailable, never inferred (0.292509ms)
+✔ fiscal calendarId substitution is unavailable, never inferred (0.191167ms)
+✔ fiscal stage substitution is unavailable, never inferred (0.213841ms)
+✔ fiscal revisionId substitution is unavailable, never inferred (0.187522ms)
+✔ fiscal timezone substitution is unavailable, never inferred (0.20638ms)
+✔ missing fiscal configuration is disclosed as unavailable (0.174723ms)
+✔ duplicate fiscal records are refused even with equal bounds (0.285159ms)
+✔ conflicting fiscal bounds for one identity are refused (0.366651ms)
+✔ malformed trusted fiscal configuration cannot supply a window (0.56612ms)
+✔ referenceAt is required, UTC and valid; ambient time cannot substitute (0.541934ms)
+✔ leap-second timestamps are refused rather than normalized to a different instant (0.320492ms)
+✔ invalid timezone, offsets, policy, duration and free-form fields are rejected by canonical contracts (0.319249ms)
+✔ resolution leaves request and trusted configuration untouched and returns a frozen object (1.006382ms)
+✔ package import creates no timers, connections, global Temporal or output (1654.968519ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3381.821792
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

@@ -1,0 +1,12 @@
+{
+  "name": "@capiro/meri-window-resolution",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "Trusted calendar and fiscal window resolution using canonical Meri retrieval contracts",
+  "exports": "./index.mjs",
+  "engines": { "node": ">=24 <25" },
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "dependencies": { "@js-temporal/polyfill": "0.5.1" }
+}
