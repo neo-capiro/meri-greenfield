@@ -1,0 +1,224 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.portfolio_overlap",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:portfolio-overlap:1.0.0",
+    "sha256": "3abdb87f27d60fd7f8dd85083d8aad8b0413884f297e9ed7e5a143aa50e20e8b"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "clients",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "contacts",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "meetings",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tasks",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "monday",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "action_recommendations",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "outreach",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "strategies_work",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "program_elements",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "legiwatch_bills",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "hearings",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "grants",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "contracts_opportunities",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_awards",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "directory",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "district_nexus",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "institutional_knowledge",
+      "authority": "approved-memory",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "entity_candidates",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "public_web",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_market",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "tenant_contacts",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "search_capiro_data",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_client_context",
+      "version": "0.2.0"
+    },
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_public_web",
+      "version": "0.2.0"
+    },
+    {
+      "id": "scrape_web_page",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_program_elements",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_program_element",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_contract_awards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_federal_subawards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_district_nexus_context",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "portfolio"
+  ],
+  "windowBases": [
+    "explicit",
+    "fiscal-year",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "two-sided-evidence",
+        "requirement": "Each overlap retains evidence for both external company and authorized client.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "dimension-and-relationship",
+        "requirement": "Compare capabilities, agency/service, mission, PE, NAICS, PSC, contracts, people and strategy; similarity does not establish a relationship.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

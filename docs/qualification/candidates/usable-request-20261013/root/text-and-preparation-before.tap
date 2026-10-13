@@ -1,0 +1,72 @@
+✔ one SDK query persists streamed text once, hides reasoning and completes durable run (29.173683ms)
+✔ nonstreamed final assistant text is displayed with a valid generated UUID (11.913664ms)
+✔ SDK mirror never leaks diagnostics or makes a duplicate model query (9.508384ms)
+✔ SDK missing never leaks diagnostics or makes a duplicate model query (10.526599ms)
+✔ SDK sdkFailure never leaks diagnostics or makes a duplicate model query (9.221794ms)
+✔ SDK duplicate never leaks diagnostics or makes a duplicate model query (21.228258ms)
+✔ SDK subagent never leaks diagnostics or makes a duplicate model query (8.936498ms)
+✔ revocation during query stops publication and closes SDK before another result (6.461353ms)
+✔ output limit fails instead of truncating a completed response (8.813564ms)
+✔ late SDK iterator is bounded by deadline and closed without a second query (35.734885ms)
+✔ SDK options reject ambient config, wrong workspace and upstream keys (0.611555ms)
+✖ final assistant frame repairs a missing streamed suffix without duplicate prefix (13.022264ms)
+✖ a conflicting final text refuses completion instead of silently dropping the mismatch (8.946803ms)
+✖ runtime preparation mismatch records a failed run without invoking SDK (7.119428ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 11
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2228.645844
+
+✖ failing tests:
+
+test at apps/worker/conversation/test/activity.test.mjs:12:1
+✖ final assistant frame repairs a missing streamed suffix without duplicate prefix (13.022264ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'Hel' !== 'Hello'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-next-batch/apps/worker/conversation/test/activity.test.mjs:12:297)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Hel',
+    expected: 'Hello',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:13:1
+✖ a conflicting final text refuses completion instead of silently dropping the mismatch (8.946803ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-next-batch/apps/worker/conversation/test/activity.test.mjs:13:223)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /EXECUTION_FAILED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/worker/conversation/test/activity.test.mjs:14:1
+✖ runtime preparation mismatch records a failed run without invoking SDK (7.119428ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'queued' !== 'failed'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-next-batch/apps/worker/conversation/test/activity.test.mjs:14:277)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'queued',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

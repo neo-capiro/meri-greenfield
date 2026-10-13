@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "packages/window-resolution/test/window-resolution.test.mjs"
+  ],
+  "cwd": "/workspace/meri-calendar-independent",
+  "reviewedCommit": "350ab86486b2b9e65e76b73ffd7c649f5efa1340",
+  "worktreeHead": "350ab86486b2b9e65e76b73ffd7c649f5efa1340",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 3.33,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 6274,
+  "stderrBytes": 0,
+  "stdoutSha256": "291ea3d73d2dafc7d27443b329d05b670839d736013422cf6e8683c78073a43a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

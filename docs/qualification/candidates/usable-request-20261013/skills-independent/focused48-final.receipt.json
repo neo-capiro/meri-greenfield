@@ -1,0 +1,17 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/skills/test/assets.test.mjs",
+    "packages/skills/test/commitments.test.mjs"
+  ],
+  "sourceHead": "5f60ba1e7bf37a0bedbd84a96c94d5aea4434ce6",
+  "exitCode": 0,
+  "seconds": 3.8394127930005197,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 91481,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

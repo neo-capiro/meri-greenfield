@@ -1,0 +1,7 @@
+{
+  "command": "Final JSON/owned diff readback",
+  "exitCode": 1,
+  "failure": "AttributeError: module 'importlib' has no attribute 'util'",
+  "reason": "Ad hoc post-run readback unnecessarily imported verifier definitions through an importlib shortcut. The already completed audit verifier/JSON remained valid.",
+  "correction": "Read actual audit IDs and compare directly with the explicit33 original IDs; no generated evidence or product changes."
+}

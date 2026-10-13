@@ -1,0 +1,11 @@
+✔ allowed operation from another source cannot bind a mail passage (8.345281ms)
+✔ Monday source authority cannot be promoted above its canonical operation requirement (2.544011ms)
+✔ actual canonical source authority is retained in coverage and bound passages (2.678582ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1756.272439

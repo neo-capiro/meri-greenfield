@@ -1,0 +1,596 @@
+{
+  "sourceCommit": "18adda2c5461b8d346277135aafd3972b4768802",
+  "sourceTree": "eaec635b6b1c6cdc353ad48a5fda1f7a3dc10b21",
+  "checks": [
+    {
+      "name": "W00: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W01: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W02: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W03: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W04: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W05: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W06: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W07: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W08: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W09: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W10: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "W11: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G0: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G1: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G2: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G3: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G4: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G5: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G6: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "G7: copied row equals actual plan row/line",
+      "pass": true
+    },
+    {
+      "name": "AGENTS.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/independent/document-replay-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/local-executor.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/local-replay.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/local-store.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/office-transform.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/postgres-analysis.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/postgres-service.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/presentation.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/python/office.py: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/recovery.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/sandbox-analysis.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/service.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/artifact-service-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/test_word_revision.py: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/artifacts/test/workbook-columns-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/action-followthrough/index.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/action-host/application-adapters/README.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/action-host/session/http.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/action-host/session/owner-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/admitted-runs/independent/mount-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/admitted-runs/independent/owner-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/admitted-runs/mount.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/README.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/approval-metadata/owner-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/approval-metadata/owner.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/approval-metadata/postgres-store.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/durable-executor.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/executor.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/postgres-command-journal.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/source-http.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/commands/source-projection.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/independent/research-brief-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/independent/workbook-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/index.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/research-brief/SKILL.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/research-brief/compose.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/research-brief/input.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/research-brief/manifest.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/document-application/research-brief/skill.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualification-sdk-fixture/service/checkpoint-store.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualification-sdk-fixture/state/registry.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualification-temporal/component-pins.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualification-temporal/recovery-activities.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualification-temporal/recovery-workflow.ts: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualified-application/application.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualified-application/independent/lifecycle-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/qualified-application/schema-host-address.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/schedules/schedule-lifecycle.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/schedules/test/lifecycle-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/task-lookup/postgres-results.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/task-lookup/test/store-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/test/commands-artifact-compatibility.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/test/commands-durable-budget.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/control/test/commands-execution.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/authorization/current-tool-authority.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/budget/admitted-run-owner.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/budget/tool-invocation-owner.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/dispatch/action-read-context.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/dispatch/mail-read-context.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/dispatch/memory-read-context.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/index.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/sources/action-items/handler.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/sources/dataset-metadata/handler.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/sources/memory-proposals/handler.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/sources/research-portfolio-evidence/handler.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/test/action-items-source-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/test/mail-context-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/test/memory-context-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/test/postgres-budget-host-address.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/gateway/test/research-evidence-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/proxy/qualification/assembly/lifecycle.py: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/Dockerfile: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/checkpoint/bound-session-store.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/checkpoint/native-session-files.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/checkpoint/native-session-files.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/component-pins.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/probes/browser.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/probes/runtime.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/probes/sdk-discovery-tools.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/CAPABILITIES.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/CAPABILITY-SCOPE.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/IMPLEMENTATION-STANDARDS.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/INTEGRATION-BOUNDARY.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/ROUTING-EVALUATION.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/SKILL-CONTRACT.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/SOURCE-INVENTORY.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/UI-COVERAGE.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/UI-SPEC.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/r2/skills.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-G0-DISCOVERY.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/plans/MERI-DEPLOYMENT.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/PROXY-TEMPORAL-DECISIONS.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-replay-20261013/integration/final-integrated-acceptance.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/document-replay-20261013/source-review/recheck-source-audit.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/n209-research-brief-20261013/source-review/n209-acceptance-report.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/vertical-source-20261012/integration/requirements-continuation.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "evals/retrieval-r2/manifest.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/browser-enforcement/workflow.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/native-qualification/README.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/native-qualification/app.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/native-qualification/security.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/qualification/README.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/qualification/app.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/qualification/checkpoint-app.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/qualification/checkpoint-security.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/qualification/host-assets.buildspec.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "infra/qualification/security.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/document-application/boundary.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/meri.schema.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/package.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/catalog.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/skill.schema.json: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/validate.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/document-application-public.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-r2.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/ui-stream/README.md: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/ui-stream/src/producer.ts: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "packages/ui-stream/src/protocol.ts: reviewed source bytes equal PR59",
+      "pass": true
+    },
+    {
+      "name": "Production catalog97 descriptors remain unavailable/pending/null handlers",
+      "pass": true
+    },
+    {
+      "name": "No local apps/web, packages/skills or .github OIDC/product owner at PR59",
+      "pass": true
+    }
+  ],
+  "passed": 143,
+  "failed": 0,
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "cat-file",
+        "-e",
+        "cbbd8c5a7fe94d977b7da896ff7d01c959815fac"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "expected": "unavailable original object; no fetch attempted"
+    }
+  ],
+  "referencedPathCount": 121,
+  "runtimeQualified": false
+}

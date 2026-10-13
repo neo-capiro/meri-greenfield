@@ -1,0 +1,2793 @@
+{
+  "synthetic": true,
+  "nativeQualified": false,
+  "results": [
+    {
+      "name": "operation-source-substitution",
+      "accepted": true,
+      "inputContext": {
+        "binding": {
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "conversationId": "70000000-0000-4000-8000-000000000001",
+          "runId": "70000000-0000-4000-8000-000000000002",
+          "attemptId": "70000000-0000-4000-8000-000000000003",
+          "workerId": "70000000-0000-4000-8000-000000000004",
+          "writerFence": 1
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "70000000-0000-4000-8000-000000000009"
+          ],
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+          "policyRevision": "skills-policy-1",
+          "scopes": [
+            {
+              "tenantId": "synthetic-skills",
+              "kind": "client",
+              "resourceId": "70000000-0000-4000-8000-000000000009",
+              "policyRevision": "skills-policy-1"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "asOf": "2026-10-13T12:00:00.000Z",
+        "mondayBoardIds": [
+          "mapped-client-board"
+        ]
+      },
+      "reads": [
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000020",
+          "traceId": "70000000-0000-4000-8000-000000000030",
+          "operation": {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "mail",
+                "recordId": "record-mail",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000040",
+                "contentSha256": "53c6462f4129cab07370417dbd76ce5f677912908984d6051c84a8a1b3130f11",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "We will send the draft memo. Perhaps also prepare a slide deck."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000021",
+          "traceId": "70000000-0000-4000-8000-000000000031",
+          "operation": {
+            "id": "meeting.read_client_meetings",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "meetings",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "meetings",
+                "recordId": "record-meetings",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000041",
+                "contentSha256": "50d5bd5efe955288c1a43316a4164c8cb878cd8c662c126e5ac119ce1e8b9284",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "The draft memo is owned by Ana and due on October 20."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "meetings"
+            ],
+            "sourcesChecked": [
+              "meetings"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000022",
+          "traceId": "70000000-0000-4000-8000-000000000032",
+          "operation": {
+            "id": "read_client_documents",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "client_documents",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "client_documents",
+                "recordId": "record-client_documents",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000042",
+                "contentSha256": "488a1affb526cd283b8f11d0025d76667876e97d13aa98132afd78d8c65b1848",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "The memo was reportedly delivered; receipt is not confirmed."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "client_documents"
+            ],
+            "sourcesChecked": [
+              "client_documents"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000023",
+          "traceId": "70000000-0000-4000-8000-000000000033",
+          "operation": {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "tasks",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "tasks",
+                "recordId": "record-tasks",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000043",
+                "contentSha256": "f99017a507eb0a0b81ecb7cdc72fec770919f00806901ad9782bc7de8d649f62",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Native task 7 is marked completed. This flag does not establish delivery or acceptance."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "tasks"
+            ],
+            "sourcesChecked": [
+              "tasks"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000024",
+          "traceId": "70000000-0000-4000-8000-000000000034",
+          "operation": {
+            "id": "query_action_items",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "action_recommendation",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "action_recommendation",
+                "recordId": "record-action_recommendation",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000044",
+                "contentSha256": "6bcee8e39acea23d021d42073c9ed865cee9cfbf674a19708842876d15675b43",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Recommendation: prepare the draft memo. This is not an accepted task."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "action_recommendation"
+            ],
+            "sourcesChecked": [
+              "action_recommendation"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000025",
+          "traceId": "70000000-0000-4000-8000-000000000035",
+          "operation": {
+            "id": "read_monday_client_boards",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [
+            {
+              "name": "board_ids",
+              "valueSha256": "6ad588c0e9ca5fe63ddce39f9480d8104a88a7a9f936bb51bdd7e696565ece00"
+            }
+          ],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "client_knowledge_monday",
+              "authority": "derived",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "client_knowledge_monday",
+                "recordId": "record-client_knowledge_monday",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000045",
+                "contentSha256": "29a3215826901059a22b6db4b015b95a12c7faecfdebb396ca4e347ba4010c11",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Board mapped-client-board has an in-progress memo item."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "client_knowledge_monday"
+            ],
+            "sourcesChecked": [
+              "client_knowledge_monday"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        }
+      ],
+      "input": {
+        "observations": [
+          {
+            "id": "promise",
+            "kind": "promise",
+            "relatedPromiseId": null,
+            "owner": null,
+            "dueDate": null,
+            "passage": {
+              "sourceId": "mail",
+              "recordId": "record-mail",
+              "recordVersionId": "v1",
+              "start": 0,
+              "end": 28,
+              "quote": "We will send the draft memo."
+            }
+          }
+        ]
+      },
+      "output": {
+        "skill": {
+          "skillId": "quick_skill.commitments_audit",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+          "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "70000000-0000-4000-8000-000000000009"
+          ],
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+          "policyRevision": "skills-policy-1",
+          "scopes": [
+            {
+              "tenantId": "synthetic-skills",
+              "kind": "client",
+              "resourceId": "70000000-0000-4000-8000-000000000009",
+              "policyRevision": "skills-policy-1"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "asOf": "2026-10-13T12:00:00.000Z",
+        "commitments": [
+          {
+            "originSha256": "1a71a09c065844b1a956fba0a7bb9a120dc3a2a403dd9319978c350afc2753b0",
+            "observationIds": [
+              "promise"
+            ],
+            "promise": {
+              "sourceId": "mail",
+              "recordId": "record-mail",
+              "recordVersionId": "v1",
+              "start": 0,
+              "end": 28,
+              "quote": "We will send the draft memo.",
+              "citationId": "70000000-0000-4000-8000-000000000040",
+              "contentSha256": "53c6462f4129cab07370417dbd76ce5f677912908984d6051c84a8a1b3130f11",
+              "passageSha256": "b23c2ca6904022e542605aeb4adfdc0d1a01c1f23190d84e939a6d9f4e4692aa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-skills",
+                  "kind": "client",
+                  "resourceId": "70000000-0000-4000-8000-000000000009",
+                  "policyRevision": "skills-policy-1"
+                }
+              ],
+              "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+              "observedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh",
+              "verification": "bound-source-excerpt"
+            },
+            "classificationVerification": "requires-human-verification",
+            "owner": {
+              "status": "unknown",
+              "value": null,
+              "candidates": []
+            },
+            "dueDate": {
+              "status": "unknown",
+              "value": null,
+              "candidates": []
+            },
+            "status": "no-linked-tracking-in-extracted-observations",
+            "completed": false,
+            "tracking": [],
+            "deliveryClaims": [],
+            "trackingLinkVerification": "proposed-link-unverified",
+            "untracked": true,
+            "followUp": "Check missing sources and confirm whether this promise needs a tracked action."
+          }
+        ],
+        "suggestions": [],
+        "coverage": [
+          {
+            "sourceId": "mail",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "meetings",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "client_documents",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "tasks",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "action_recommendation",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "client_knowledge_monday",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          }
+        ],
+        "status": "covered-extraction-unverified",
+        "negativeClaimSupported": false,
+        "mutations": [],
+        "limitations": [
+          "Exact excerpts are bound to supplied gateway records; semantic promise, owner, date and tracking links require verification.",
+          "No qualified delivery/acceptance adapter was supplied. This projection never upgrades native task completion to delivered work.",
+          "Current authorization and authenticity are gateway/control duties; hashes alone do not establish either."
+        ]
+      }
+    },
+    {
+      "name": "monday-authority-upgrade",
+      "accepted": true,
+      "inputContext": {
+        "binding": {
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "conversationId": "70000000-0000-4000-8000-000000000001",
+          "runId": "70000000-0000-4000-8000-000000000002",
+          "attemptId": "70000000-0000-4000-8000-000000000003",
+          "workerId": "70000000-0000-4000-8000-000000000004",
+          "writerFence": 1
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "70000000-0000-4000-8000-000000000009"
+          ],
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+          "policyRevision": "skills-policy-1",
+          "scopes": [
+            {
+              "tenantId": "synthetic-skills",
+              "kind": "client",
+              "resourceId": "70000000-0000-4000-8000-000000000009",
+              "policyRevision": "skills-policy-1"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "asOf": "2026-10-13T12:00:00.000Z",
+        "mondayBoardIds": [
+          "mapped-client-board"
+        ]
+      },
+      "reads": [
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000020",
+          "traceId": "70000000-0000-4000-8000-000000000030",
+          "operation": {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "mail",
+                "recordId": "record-mail",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000040",
+                "contentSha256": "53c6462f4129cab07370417dbd76ce5f677912908984d6051c84a8a1b3130f11",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "We will send the draft memo. Perhaps also prepare a slide deck."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000021",
+          "traceId": "70000000-0000-4000-8000-000000000031",
+          "operation": {
+            "id": "meeting.read_client_meetings",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "meetings",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "meetings",
+                "recordId": "record-meetings",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000041",
+                "contentSha256": "50d5bd5efe955288c1a43316a4164c8cb878cd8c662c126e5ac119ce1e8b9284",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "The draft memo is owned by Ana and due on October 20."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "meetings"
+            ],
+            "sourcesChecked": [
+              "meetings"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000022",
+          "traceId": "70000000-0000-4000-8000-000000000032",
+          "operation": {
+            "id": "read_client_documents",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "client_documents",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "client_documents",
+                "recordId": "record-client_documents",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000042",
+                "contentSha256": "488a1affb526cd283b8f11d0025d76667876e97d13aa98132afd78d8c65b1848",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "The memo was reportedly delivered; receipt is not confirmed."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "client_documents"
+            ],
+            "sourcesChecked": [
+              "client_documents"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000023",
+          "traceId": "70000000-0000-4000-8000-000000000033",
+          "operation": {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "tasks",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "tasks",
+                "recordId": "record-tasks",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000043",
+                "contentSha256": "f99017a507eb0a0b81ecb7cdc72fec770919f00806901ad9782bc7de8d649f62",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Native task 7 is marked completed. This flag does not establish delivery or acceptance."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "tasks"
+            ],
+            "sourcesChecked": [
+              "tasks"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000024",
+          "traceId": "70000000-0000-4000-8000-000000000034",
+          "operation": {
+            "id": "query_action_items",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "action_recommendation",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "action_recommendation",
+                "recordId": "record-action_recommendation",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000044",
+                "contentSha256": "6bcee8e39acea23d021d42073c9ed865cee9cfbf674a19708842876d15675b43",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Recommendation: prepare the draft memo. This is not an accepted task."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "action_recommendation"
+            ],
+            "sourcesChecked": [
+              "action_recommendation"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000025",
+          "traceId": "70000000-0000-4000-8000-000000000035",
+          "operation": {
+            "id": "read_monday_client_boards",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [
+            {
+              "name": "board_ids",
+              "valueSha256": "6ad588c0e9ca5fe63ddce39f9480d8104a88a7a9f936bb51bdd7e696565ece00"
+            }
+          ],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "client_knowledge_monday",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "client_knowledge_monday",
+                "recordId": "record-client_knowledge_monday",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000045",
+                "contentSha256": "29a3215826901059a22b6db4b015b95a12c7faecfdebb396ca4e347ba4010c11",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Board mapped-client-board has an in-progress memo item."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "client_knowledge_monday"
+            ],
+            "sourcesChecked": [
+              "client_knowledge_monday"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        }
+      ],
+      "input": {
+        "observations": [
+          {
+            "id": "promise",
+            "kind": "promise",
+            "relatedPromiseId": null,
+            "owner": null,
+            "dueDate": null,
+            "passage": {
+              "sourceId": "mail",
+              "recordId": "record-mail",
+              "recordVersionId": "v1",
+              "start": 0,
+              "end": 28,
+              "quote": "We will send the draft memo."
+            }
+          }
+        ]
+      },
+      "output": {
+        "skill": {
+          "skillId": "quick_skill.commitments_audit",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+          "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "70000000-0000-4000-8000-000000000009"
+          ],
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+          "policyRevision": "skills-policy-1",
+          "scopes": [
+            {
+              "tenantId": "synthetic-skills",
+              "kind": "client",
+              "resourceId": "70000000-0000-4000-8000-000000000009",
+              "policyRevision": "skills-policy-1"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "asOf": "2026-10-13T12:00:00.000Z",
+        "commitments": [
+          {
+            "originSha256": "1a71a09c065844b1a956fba0a7bb9a120dc3a2a403dd9319978c350afc2753b0",
+            "observationIds": [
+              "promise"
+            ],
+            "promise": {
+              "sourceId": "mail",
+              "recordId": "record-mail",
+              "recordVersionId": "v1",
+              "start": 0,
+              "end": 28,
+              "quote": "We will send the draft memo.",
+              "citationId": "70000000-0000-4000-8000-000000000040",
+              "contentSha256": "53c6462f4129cab07370417dbd76ce5f677912908984d6051c84a8a1b3130f11",
+              "passageSha256": "b23c2ca6904022e542605aeb4adfdc0d1a01c1f23190d84e939a6d9f4e4692aa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-skills",
+                  "kind": "client",
+                  "resourceId": "70000000-0000-4000-8000-000000000009",
+                  "policyRevision": "skills-policy-1"
+                }
+              ],
+              "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+              "observedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh",
+              "verification": "bound-source-excerpt"
+            },
+            "classificationVerification": "requires-human-verification",
+            "owner": {
+              "status": "unknown",
+              "value": null,
+              "candidates": []
+            },
+            "dueDate": {
+              "status": "unknown",
+              "value": null,
+              "candidates": []
+            },
+            "status": "no-linked-tracking-in-extracted-observations",
+            "completed": false,
+            "tracking": [],
+            "deliveryClaims": [],
+            "trackingLinkVerification": "proposed-link-unverified",
+            "untracked": true,
+            "followUp": "Check missing sources and confirm whether this promise needs a tracked action."
+          }
+        ],
+        "suggestions": [],
+        "coverage": [
+          {
+            "sourceId": "mail",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "meetings",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "client_documents",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "tasks",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "action_recommendation",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "client_knowledge_monday",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          }
+        ],
+        "status": "covered-extraction-unverified",
+        "negativeClaimSupported": false,
+        "mutations": [],
+        "limitations": [
+          "Exact excerpts are bound to supplied gateway records; semantic promise, owner, date and tracking links require verification.",
+          "No qualified delivery/acceptance adapter was supplied. This projection never upgrades native task completion to delivered work.",
+          "Current authorization and authenticity are gateway/control duties; hashes alone do not establish either."
+        ]
+      }
+    },
+    {
+      "name": "source-authority-visibility",
+      "accepted": true,
+      "inputContext": {
+        "binding": {
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "conversationId": "70000000-0000-4000-8000-000000000001",
+          "runId": "70000000-0000-4000-8000-000000000002",
+          "attemptId": "70000000-0000-4000-8000-000000000003",
+          "workerId": "70000000-0000-4000-8000-000000000004",
+          "writerFence": 1
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "70000000-0000-4000-8000-000000000009"
+          ],
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+          "policyRevision": "skills-policy-1",
+          "scopes": [
+            {
+              "tenantId": "synthetic-skills",
+              "kind": "client",
+              "resourceId": "70000000-0000-4000-8000-000000000009",
+              "policyRevision": "skills-policy-1"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "asOf": "2026-10-13T12:00:00.000Z",
+        "mondayBoardIds": [
+          "mapped-client-board"
+        ]
+      },
+      "reads": [
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000020",
+          "traceId": "70000000-0000-4000-8000-000000000030",
+          "operation": {
+            "id": "mail.read_thread",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "mail",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "mail",
+                "recordId": "record-mail",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000040",
+                "contentSha256": "53c6462f4129cab07370417dbd76ce5f677912908984d6051c84a8a1b3130f11",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "We will send the draft memo. Perhaps also prepare a slide deck."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "mail"
+            ],
+            "sourcesChecked": [
+              "mail"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000021",
+          "traceId": "70000000-0000-4000-8000-000000000031",
+          "operation": {
+            "id": "meeting.read_client_meetings",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "meetings",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "meetings",
+                "recordId": "record-meetings",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000041",
+                "contentSha256": "50d5bd5efe955288c1a43316a4164c8cb878cd8c662c126e5ac119ce1e8b9284",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "The draft memo is owned by Ana and due on October 20."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "meetings"
+            ],
+            "sourcesChecked": [
+              "meetings"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000022",
+          "traceId": "70000000-0000-4000-8000-000000000032",
+          "operation": {
+            "id": "read_client_documents",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "client_documents",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "client_documents",
+                "recordId": "record-client_documents",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000042",
+                "contentSha256": "488a1affb526cd283b8f11d0025d76667876e97d13aa98132afd78d8c65b1848",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "The memo was reportedly delivered; receipt is not confirmed."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "client_documents"
+            ],
+            "sourcesChecked": [
+              "client_documents"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000023",
+          "traceId": "70000000-0000-4000-8000-000000000033",
+          "operation": {
+            "id": "query_tasks",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "tasks",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "tasks",
+                "recordId": "record-tasks",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000043",
+                "contentSha256": "f99017a507eb0a0b81ecb7cdc72fec770919f00806901ad9782bc7de8d649f62",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Native task 7 is marked completed. This flag does not establish delivery or acceptance."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "tasks"
+            ],
+            "sourcesChecked": [
+              "tasks"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000024",
+          "traceId": "70000000-0000-4000-8000-000000000034",
+          "operation": {
+            "id": "query_action_items",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "action_recommendation",
+              "authority": "authoritative",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "action_recommendation",
+                "recordId": "record-action_recommendation",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000044",
+                "contentSha256": "6bcee8e39acea23d021d42073c9ed865cee9cfbf674a19708842876d15675b43",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Recommendation: prepare the draft memo. This is not an accepted task."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "action_recommendation"
+            ],
+            "sourcesChecked": [
+              "action_recommendation"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        },
+        {
+          "contractVersion": "0.2.0",
+          "requestId": "70000000-0000-4000-8000-000000000025",
+          "traceId": "70000000-0000-4000-8000-000000000035",
+          "operation": {
+            "id": "read_monday_client_boards",
+            "version": "0.2.0"
+          },
+          "binding": {
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "conversationId": "70000000-0000-4000-8000-000000000001",
+            "runId": "70000000-0000-4000-8000-000000000002",
+            "attemptId": "70000000-0000-4000-8000-000000000003",
+            "workerId": "70000000-0000-4000-8000-000000000004",
+            "writerFence": 1
+          },
+          "subject": {
+            "kind": "client",
+            "entityType": "client",
+            "entityIds": [
+              "70000000-0000-4000-8000-000000000009"
+            ],
+            "tenantId": "synthetic-skills",
+            "actorId": "skills-reviewer",
+            "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+            "policyRevision": "skills-policy-1",
+            "scopes": [
+              {
+                "tenantId": "synthetic-skills",
+                "kind": "client",
+                "resourceId": "70000000-0000-4000-8000-000000000009",
+                "policyRevision": "skills-policy-1"
+              }
+            ],
+            "rosterVersionId": null
+          },
+          "window": {
+            "basis": "unbounded"
+          },
+          "argumentsSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "appliedFilters": [
+            {
+              "name": "board_ids",
+              "valueSha256": "6ad588c0e9ca5fe63ddce39f9480d8104a88a7a9f936bb51bdd7e696565ece00"
+            }
+          ],
+          "method": "source-read",
+          "status": "complete",
+          "reasonCode": "OK",
+          "retryable": false,
+          "sources": [
+            {
+              "sourceId": "client_knowledge_monday",
+              "authority": "derived",
+              "snapshotVersionId": "snapshot-1",
+              "adapterVersion": "1.0.0",
+              "status": "checked",
+              "synchronizedAt": "2026-10-13T12:00:00.000Z",
+              "asOf": "2026-10-13T12:00:00.000Z",
+              "retrievedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh"
+            }
+          ],
+          "data": {
+            "kind": "source-read",
+            "records": [
+              {
+                "sourceId": "client_knowledge_monday",
+                "recordId": "record-client_knowledge_monday",
+                "recordVersionId": "v1",
+                "citationId": "70000000-0000-4000-8000-000000000045",
+                "contentSha256": "29a3215826901059a22b6db4b015b95a12c7faecfdebb396ca4e347ba4010c11",
+                "scopes": [
+                  {
+                    "tenantId": "synthetic-skills",
+                    "kind": "client",
+                    "resourceId": "70000000-0000-4000-8000-000000000009",
+                    "policyRevision": "skills-policy-1"
+                  }
+                ],
+                "content": {
+                  "kind": "full-read",
+                  "text": "Board mapped-client-board has an in-progress memo item."
+                }
+              }
+            ]
+          },
+          "coverage": {
+            "sourcesRequested": [
+              "client_knowledge_monday"
+            ],
+            "sourcesChecked": [
+              "client_knowledge_monday"
+            ],
+            "sourcesUnavailable": [],
+            "enumeration": "complete",
+            "enumerableTotal": 1,
+            "returnedCount": 1,
+            "truncated": false,
+            "historySupport": "supported",
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ]
+          },
+          "continuation": {
+            "cursor": null,
+            "requiredReads": [],
+            "remainingSources": []
+          },
+          "negativeAssertion": {
+            "kind": "none"
+          }
+        }
+      ],
+      "input": {
+        "observations": [
+          {
+            "id": "promise",
+            "kind": "promise",
+            "relatedPromiseId": null,
+            "owner": null,
+            "dueDate": null,
+            "passage": {
+              "sourceId": "mail",
+              "recordId": "record-mail",
+              "recordVersionId": "v1",
+              "start": 0,
+              "end": 28,
+              "quote": "We will send the draft memo."
+            }
+          }
+        ]
+      },
+      "output": {
+        "skill": {
+          "skillId": "quick_skill.commitments_audit",
+          "skillVersion": "1.0.0",
+          "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+          "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+          "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968"
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "70000000-0000-4000-8000-000000000009"
+          ],
+          "tenantId": "synthetic-skills",
+          "actorId": "skills-reviewer",
+          "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+          "policyRevision": "skills-policy-1",
+          "scopes": [
+            {
+              "tenantId": "synthetic-skills",
+              "kind": "client",
+              "resourceId": "70000000-0000-4000-8000-000000000009",
+              "policyRevision": "skills-policy-1"
+            }
+          ],
+          "rosterVersionId": null
+        },
+        "window": {
+          "basis": "unbounded"
+        },
+        "asOf": "2026-10-13T12:00:00.000Z",
+        "commitments": [
+          {
+            "originSha256": "1a71a09c065844b1a956fba0a7bb9a120dc3a2a403dd9319978c350afc2753b0",
+            "observationIds": [
+              "promise"
+            ],
+            "promise": {
+              "sourceId": "mail",
+              "recordId": "record-mail",
+              "recordVersionId": "v1",
+              "start": 0,
+              "end": 28,
+              "quote": "We will send the draft memo.",
+              "citationId": "70000000-0000-4000-8000-000000000040",
+              "contentSha256": "53c6462f4129cab07370417dbd76ce5f677912908984d6051c84a8a1b3130f11",
+              "passageSha256": "b23c2ca6904022e542605aeb4adfdc0d1a01c1f23190d84e939a6d9f4e4692aa",
+              "scopes": [
+                {
+                  "tenantId": "synthetic-skills",
+                  "kind": "client",
+                  "resourceId": "70000000-0000-4000-8000-000000000009",
+                  "policyRevision": "skills-policy-1"
+                }
+              ],
+              "authorizationDecisionId": "70000000-0000-4000-8000-000000000010",
+              "observedAt": "2026-10-13T12:00:00.000Z",
+              "freshness": "fresh",
+              "verification": "bound-source-excerpt"
+            },
+            "classificationVerification": "requires-human-verification",
+            "owner": {
+              "status": "unknown",
+              "value": null,
+              "candidates": []
+            },
+            "dueDate": {
+              "status": "unknown",
+              "value": null,
+              "candidates": []
+            },
+            "status": "no-linked-tracking-in-extracted-observations",
+            "completed": false,
+            "tracking": [],
+            "deliveryClaims": [],
+            "trackingLinkVerification": "proposed-link-unverified",
+            "untracked": true,
+            "followUp": "Check missing sources and confirm whether this promise needs a tracked action."
+          }
+        ],
+        "suggestions": [],
+        "coverage": [
+          {
+            "sourceId": "mail",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "meetings",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "client_documents",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "tasks",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "action_recommendation",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          },
+          {
+            "sourceId": "client_knowledge_monday",
+            "status": "checked",
+            "freshness": "fresh",
+            "asOf": "2026-10-13T12:00:00.000Z",
+            "retrievedAt": "2026-10-13T12:00:00.000Z",
+            "snapshotVersionId": "snapshot-1",
+            "enumeration": "complete",
+            "returnedCount": 1,
+            "limitations": [
+              "Synthetic one-record fixture; no live completeness claim."
+            ],
+            "continuation": {
+              "cursor": null,
+              "requiredReads": [],
+              "remainingSources": []
+            },
+            "complete": true
+          }
+        ],
+        "status": "covered-extraction-unverified",
+        "negativeClaimSupported": false,
+        "mutations": [],
+        "limitations": [
+          "Exact excerpts are bound to supplied gateway records; semantic promise, owner, date and tracking links require verification.",
+          "No qualified delivery/acceptance adapter was supplied. This projection never upgrades native task completion to delivered work.",
+          "Current authorization and authenticity are gateway/control duties; hashes alone do not establish either."
+        ]
+      }
+    }
+  ]
+}

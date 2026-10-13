@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+    "HEAD",
+    "--",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "worktreeHead": "da8f7524e9679b96a820ed64754f96c59096fca2",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 2,
+  "durationSeconds": 0.004,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 1452,
+  "stderrBytes": 0,
+  "stdoutSha256": "162f6f903aaa8ef22a920fa58a072fc8b54026b3fb88d82a3f4cd99d9a604546",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

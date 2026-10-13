@@ -1,0 +1,62 @@
+file:///workspace/meri-next-batch/apps/control/conversations/test/application.test.mjs:10
+test('upstream Temporal pins stable workflow and rejects reuse while accepting a current start',async()=>{const calls=[];const d=createTemporalConversationDispatcher({client:{workflow:{async start(...args){calls.push(args);},getHandle(value){return {async cancel(){calls.push(['cancel',value]);}}}},taskQueue:'meri-conversations'});await d.start({binding});await d.start({binding});await d.cancel({binding});assert.equal(calls[0][1].workflowId,workflowId(binding));assert.equal(calls[1][1].workflowId,calls[0][1].workflowId);assert.equal(calls[0][1].workflowIdReusePolicy,'REJECT_DUPLICATE');assert.equal(calls[0][1].workflowIdConflictPolicy,'USE_EXISTING');});
+                                                                                                                                                                                                                                                                                                                                          ^
+
+SyntaxError: Unexpected token ')'
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)
+    at #translate (node:internal/modules/esm/loader:434:20)
+    at afterLoad (node:internal/modules/esm/loader:502:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)
+    at afterResolve (node:internal/modules/esm/loader:607:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)
+    at node:internal/modules/esm/loader:632:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+
+Node.js v24.19.0
+✖ apps/control/conversations/test/application.test.mjs (28.09663ms)
+✔ request is immutable and replay survives owner reconstruction (38.520575ms)
+✔ events atomically advance state and stable IDs replay without duplicates (2.814021ms)
+✔ concurrent starting attempts serialize and allow one model admission (1.983725ms)
+✔ stored reads/writes deny foreign tenant (1.256074ms)
+✔ stored reads/writes deny foreign actor (0.610836ms)
+✔ stored reads/writes deny foreign conversation (0.489544ms)
+✔ stored reads/writes deny foreign run (0.544877ms)
+✔ stored reads/writes deny foreign attempt (0.609344ms)
+✔ stored reads/writes deny foreign worker (0.694432ms)
+✔ stored reads/writes deny foreign fence (0.740571ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (1.624567ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (0.651177ms)
+✔ retained event corruption and a sequence hole refuse reconnect (1.079499ms)
+✔ cursor after durable end and oversized publication refuse (1.170615ms)
+node:internal/test_runner/harness:124
+      throw err;
+      ^
+
+ReferenceError: Cannot access 'frames' before initialization
+    at file:///workspace/meri-next-batch/apps/worker/conversation/test/activity.test.mjs:7:110
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ apps/worker/conversation/test/activity.test.mjs (1865.295694ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 14
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1878.36716
+
+✖ failing tests:
+
+test at apps/control/conversations/test/application.test.mjs:1:1
+✖ apps/control/conversations/test/application.test.mjs (28.09663ms)
+  'test failed'
+
+test at apps/worker/conversation/test/activity.test.mjs:1:1
+✖ apps/worker/conversation/test/activity.test.mjs (1865.295694ms)
+  'test failed'

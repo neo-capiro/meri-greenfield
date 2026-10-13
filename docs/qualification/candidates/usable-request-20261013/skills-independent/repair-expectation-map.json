@@ -1,0 +1,10 @@
+{
+  "sourceBefore": "ddfcc398d1064abe55f711a00e02941e5606e9ca",
+  "sourceAfter": "5f60ba1e7bf37a0bedbd84a96c94d5aea4434ce6",
+  "changes": [
+    {"case": "Commitments operation/source substitution", "before": "must throw COMMITMENTS_READ_BINDING", "after": "must throw COMMITMENTS_READ_SOURCE", "reason": "Narrow canonical operation source/authority mismatch has its own new source error; inputs, refusal and ledger-withholding assertion remain exact."},
+    {"case": "Commitments Monday authority upgrade", "before": "must throw COMMITMENTS_READ_BINDING", "after": "must throw COMMITMENTS_READ_SOURCE", "reason": "Same new explicit source mismatch taxonomy; no relaxed success/denial assertion."}
+  ],
+  "unchanged": "All17 controls and every input/refusal/immutability/semantic assertion retained. The first ddfcc failures and two intermediate repaired taxonomy failures remain raw evidence. The original test preimage is retained.",
+  "nativeQualified": false
+}

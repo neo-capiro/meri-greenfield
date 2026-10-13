@@ -1,0 +1,330 @@
+{
+  "sourceCommit": "350ab86486b2b9e65e76b73ffd7c649f5efa1340",
+  "sourceTree": "267e51bf44c6d67c083035b760785dd618370034",
+  "baseCommit": "18adda2c5461b8d346277135aafd3972b4768802",
+  "candidateBindings": [
+    {
+      "path": "packages/window-resolution/IMPLEMENTATION.md",
+      "bytes": 1807,
+      "sha256": "0747f80dc1dd76c64a591b2a126da3eacfc175d2062c8306ebab94f89038f1b6",
+      "blob": "f90684edd64dca05c024db949d0ad85486666f30"
+    },
+    {
+      "path": "packages/window-resolution/README.md",
+      "bytes": 4957,
+      "sha256": "75cad47bbb22a7276a129ca1ee8d4c28bfad430fb0de16b441f31eb2e3231554",
+      "blob": "4c527b222ddcb6d439c957952a206714379f2fdb"
+    },
+    {
+      "path": "packages/window-resolution/index.mjs",
+      "bytes": 5077,
+      "sha256": "452d71d08cff304046a6390228babec2523cfe9c431909e3945215973f477768",
+      "blob": "c78a53338b38c85c9f67c73c54e36a72ae608c1b"
+    },
+    {
+      "path": "packages/window-resolution/package-lock.json",
+      "bytes": 1079,
+      "sha256": "9076beeb56b6f98772b013a7d7dbe50126d994c87443738c706bb66eb386293d",
+      "blob": "b566535f15928aa1ab13ee43592d23d24ec84104"
+    },
+    {
+      "path": "packages/window-resolution/package.json",
+      "bytes": 419,
+      "sha256": "7077fdf7f781a352143f13d4db02252a98f0376a0fe06d96e6f5a63897453f5e",
+      "blob": "9f0f3eb54fb8e732975c15cbd258ad25fafcaf52"
+    },
+    {
+      "path": "packages/window-resolution/test/initial-results.tap.gz",
+      "bytes": 1719,
+      "sha256": "c60f43ac6f3898e675c468824103aae222eadde79d88a4c14edb2260c752d089",
+      "blob": "f97f790d6afd2e0e0baf20de61e7f99da42e576d"
+    },
+    {
+      "path": "packages/window-resolution/test/legacy-retrieval-results.tap.gz",
+      "bytes": 117332,
+      "sha256": "b3f98f7c6379bf02ab12973c718a8fa696c6c5cdb56e21d4d60873e6f93bb2ff",
+      "blob": "7cd0caf0b6efbb9901b5153fdaa1ae2a2f86eb9b"
+    },
+    {
+      "path": "packages/window-resolution/test/repaired-results.tap",
+      "bytes": 2852,
+      "sha256": "d88e8bde745742cc9ef921868ecc88bfe5e1c3f6b3bd07e78a250181fad77137",
+      "blob": "e285269e01b2c061281e8bfff67544b318d2c997"
+    },
+    {
+      "path": "packages/window-resolution/test/window-resolution.test.mjs",
+      "bytes": 10395,
+      "sha256": "2255b4ee04c264f680b5aec03241562c35e699f30ce465931dd7177db95245cb",
+      "blob": "057b3ff77b983e8ea1889acfa3f87c2c7edf1816"
+    },
+    {
+      "path": "packages/window-resolution/third-party/jsbi-LICENSE",
+      "bytes": 10174,
+      "sha256": "9568a2b155e66ac3e0ba1fd80b52b827b9460e6cf6f233125e7cbca8e206ddc3",
+      "blob": "4f6f63985556c1de7fd12b3a9a5790d31615d67b"
+    },
+    {
+      "path": "packages/window-resolution/third-party/temporal-polyfill-LICENSE",
+      "bytes": 750,
+      "sha256": "ffc4aee7f1279fc0494ff2b27f6829e6b4d16c20aa93aa008c3bd8d8af176387",
+      "blob": "75c4ded485dee91270b2c06a75ed12e4b560fb85"
+    }
+  ],
+  "upstreamBindings": [
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/package.json",
+      "bytes": 4612,
+      "sha256": "8406de0f5b7642ee1518c01c40ee6b797da7bc97575fea406e1f17876493e9cc"
+    },
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/LICENSE",
+      "bytes": 750,
+      "sha256": "ffc4aee7f1279fc0494ff2b27f6829e6b4d16c20aa93aa008c3bd8d8af176387"
+    },
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/README.md",
+      "bytes": 5773,
+      "sha256": "e0b4db7ef68d62cfae50d0172e87272165e85505c038ba29b49e395d2a42e938"
+    },
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/lib/instant.ts",
+      "bytes": 6438,
+      "sha256": "124de3a069fb83673e5e61639c06fa7a92979da7c2ccf916e5c326d82cbba554"
+    },
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/lib/plaindate.ts",
+      "bytes": 8646,
+      "sha256": "e8bcaf941b761cc57259431bd303ffb87828d929752cc4566997e0b8beaa89cd"
+    },
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/lib/ecmascript.ts",
+      "bytes": 185054,
+      "sha256": "35fa564e2099557f54546a45aad0954a15b8d21e7636882b2025e447aab81a1e"
+    },
+    {
+      "package": "@js-temporal/polyfill",
+      "version": "0.5.1",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/@js-temporal/polyfill/dist/index.esm.js",
+      "bytes": 128868,
+      "sha256": "21f067c54fa5f532f20a8e85e3d2401a3ae1cf60d85fafea6502f621dc93b167"
+    },
+    {
+      "package": "jsbi",
+      "version": "4.3.2",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/jsbi/package.json",
+      "bytes": 1626,
+      "sha256": "756c2c1b6e80e9e8488fe7ad66403a8307b115a0dc141966e69adf41eb39efc6"
+    },
+    {
+      "package": "jsbi",
+      "version": "4.3.2",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/jsbi/LICENSE",
+      "bytes": 10174,
+      "sha256": "9568a2b155e66ac3e0ba1fd80b52b827b9460e6cf6f233125e7cbca8e206ddc3"
+    },
+    {
+      "package": "jsbi",
+      "version": "4.3.2",
+      "installedPath": "/workspace/meri-calendar-resolution/packages/window-resolution/node_modules/jsbi/dist/jsbi.mjs",
+      "bytes": 29207,
+      "sha256": "c0d70fb47e0818e31bdf964805a530d9a0fb4ee5bdadb442a13f3691a5f15583"
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact candidate tree",
+      "pass": true
+    },
+    {
+      "name": "all11 source delta paths owned packages/window-resolution",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/IMPLEMENTATION.md",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/README.md",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/package.json",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/test/initial-results.tap.gz",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/test/legacy-retrieval-results.tap.gz",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/test/repaired-results.tap",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/test/window-resolution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/third-party/jsbi-LICENSE",
+      "pass": true
+    },
+    {
+      "name": "exact candidate bytes packages/window-resolution/third-party/temporal-polyfill-LICENSE",
+      "pass": true
+    },
+    {
+      "name": "original owner byte/tree exact packages/contracts",
+      "pass": true
+    },
+    {
+      "name": "original owner byte/tree exact package.json",
+      "pass": true
+    },
+    {
+      "name": "original owner byte/tree exact package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "original owner byte/tree exact packages/ui-stream",
+      "pass": true
+    },
+    {
+      "name": "original owner byte/tree exact apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "original owner byte/tree exact apps/control/document-application/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact pinned installed @js-temporal/polyfill",
+      "pass": true
+    },
+    {
+      "name": "lock has SHA512 integrity @js-temporal/polyfill",
+      "pass": true
+    },
+    {
+      "name": "retained upstream license exact @js-temporal/polyfill",
+      "pass": true
+    },
+    {
+      "name": "exact pinned installed jsbi",
+      "pass": true
+    },
+    {
+      "name": "lock has SHA512 integrity jsbi",
+      "pass": true
+    },
+    {
+      "name": "retained upstream license exact jsbi",
+      "pass": true
+    },
+    {
+      "name": "pinned upstream rejects both zero/multiple midnight instants",
+      "pass": true
+    },
+    {
+      "name": "pinned upstream Instant refuses civil date durations",
+      "pass": true
+    },
+    {
+      "name": "pinned upstream uses 24hour elapsed instant duration",
+      "pass": true
+    },
+    {
+      "name": "pinned upstream documents no global Temporal install",
+      "pass": true
+    },
+    {
+      "name": "existing four stale public-version failures retained",
+      "pass": true
+    },
+    {
+      "name": "initial author import-resource failure retained",
+      "pass": true
+    },
+    {
+      "name": "author35 exact observed case counts",
+      "pass": true
+    },
+    {
+      "name": "author35 bounded process cleanup",
+      "pass": true
+    },
+    {
+      "name": "author35 raw capture hashes",
+      "pass": true
+    },
+    {
+      "name": "independent19 exact observed case counts",
+      "pass": true
+    },
+    {
+      "name": "independent19 bounded process cleanup",
+      "pass": true
+    },
+    {
+      "name": "independent19 raw capture hashes",
+      "pass": true
+    }
+  ],
+  "passed": 37,
+  "failed": 0,
+  "caseCounts": {
+    "author35": {
+      "tests": 35,
+      "passed": 35,
+      "failed": 0,
+      "labelNote": null
+    },
+    "independent19": {
+      "tests": 18,
+      "passed": 18,
+      "failed": 0,
+      "labelNote": "Capture name independent19 is historical; actual TAP count is18, correctly reported."
+    }
+  },
+  "totalDistinctTests": 53,
+  "legacySuiteRerun": false,
+  "retainedLegacyFailures": [
+    "not ok 1427 - mail schema objects stay closed and package public exports stay 0.1 only",
+    "not ok 1459 - meeting schema objects stay closed and package public exports stay 0.1 only",
+    "not ok 1486 - operation is mapped but unavailable and public exports stay separate",
+    "not ok 1582 - operational-read schema objects stay closed and package public exports stay 0.1 only"
+  ],
+  "upstreamEvidence": "Installed exact0.5.1 implementation/README and locked JSBI4.3.2; no website/network/library install needed or performed.",
+  "runtime": {
+    "node": "v24.19.0",
+    "icu": "78.3",
+    "tz": "2026b",
+    "cldr": "48.0",
+    "unicode": "17.0"
+  },
+  "verdict": "ACCEPT_SOURCE",
+  "nativeRuntimeAccepted": false,
+  "sourceActivation": false
+}

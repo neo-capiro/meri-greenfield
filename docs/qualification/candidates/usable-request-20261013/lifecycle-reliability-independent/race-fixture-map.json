@@ -1,0 +1,8 @@
+{
+  "case": "Concurrent activity admission cannot poison the winner",
+  "beforeSetup": "Barrier in prepareRuntime ensures both contender activities have observed queued before starting claims.",
+  "afterSetup": "Barrier in runOwner.load returns both exact queued snapshots before any starting claim, allowing repaired early admission to exclude the losing contender before preparation.",
+  "reason": "Provisional reviewer setup change assumed an admission reorder. Root confirmed the actual repair keeps the starting claim after preparation, so final verifier restores the original two-preparer barrier; no setup change is needed for acceptance. The temporary load-barrier experiment is retained and also detects the c985 source failure.",
+  "preserved": "Original preimages, failed c985 output and temporary load-barrier race run. Final concurrency setup is original-exact; only UTC formatting expectations differ. No success/refusal assertion changed or case removed.",
+  "nativeQualified": false
+}

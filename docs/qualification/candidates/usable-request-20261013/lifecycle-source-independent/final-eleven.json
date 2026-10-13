@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/repaired-edge.test.mjs"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "worktreeHead": "db93e15c63f6e4ad7990b3e8737d8a5d64012ced",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 2.446,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 5844,
+  "stderrBytes": 0,
+  "stdoutSha256": "ec8e032dde0640dfcdbb2a0a0f73b881eeeab67e945ad51f657229072f079298",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

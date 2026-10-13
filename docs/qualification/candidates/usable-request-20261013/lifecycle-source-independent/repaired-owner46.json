@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/stream.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "492c945547bd56e8471d3b65c7901114eb514791",
+  "worktreeHead": "f72e71851352384dd6d92670b5dcf369277d9753",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 2.968,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 9462,
+  "stderrBytes": 0,
+  "stdoutSha256": "16596eb214d721fb044e6b653f0282ba0e93733f0c9199c5c6f87bbc3907beda",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

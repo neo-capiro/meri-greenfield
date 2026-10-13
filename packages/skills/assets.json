@@ -1,0 +1,118 @@
+{
+  "schema": "meri-original-skill-assets/1",
+  "catalogSha256": "27db172a756ba1f5b58eb90a843779b5022e581203b0deca728ca278e8dfe968",
+  "assets": [
+    {
+      "skillId": "quick_skill.bill_watch",
+      "skillVersion": "1.0.0",
+      "manifestPath": "../../apps/control/document-application/research-brief/manifest.json",
+      "prosePath": "../../apps/control/document-application/research-brief/SKILL.md",
+      "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+      "proseSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55"
+    },
+    {
+      "skillId": "quick_skill.client_changes",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/client_changes/1.0.0/manifest.json",
+      "prosePath": "./originals/client_changes/1.0.0/SKILL.md",
+      "manifestSha256": "9980a0e23a484e02438d636dc017ff9cd43098b41c9628bd3eb57c84114ba53f",
+      "proseSha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8"
+    },
+    {
+      "skillId": "quick_skill.commitments_audit",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/commitments_audit/1.0.0/manifest.json",
+      "prosePath": "./originals/commitments_audit/1.0.0/SKILL.md",
+      "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+      "proseSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db"
+    },
+    {
+      "skillId": "quick_skill.funding_opportunity_match",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/funding_opportunity_match/1.0.0/manifest.json",
+      "prosePath": "./originals/funding_opportunity_match/1.0.0/SKILL.md",
+      "manifestSha256": "6de1b91a9481951d5ff016c5640b7c617f78de29705292a946698eacd846dcfd",
+      "proseSha256": "e7211a21a883ec59e43f5d719fbf7e313630e57674667f99f4e875a14b8ce26d"
+    },
+    {
+      "skillId": "quick_skill.hearing_watch",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/hearing_watch/1.0.0/manifest.json",
+      "prosePath": "./originals/hearing_watch/1.0.0/SKILL.md",
+      "manifestSha256": "d1bc18bcd07991c9e9a8ce06d9c7f75495d92f4b44c0dad09078abf1a71151ba",
+      "proseSha256": "d070a99280c30a38d29fa9f2fdc425faa735d30b43cd6ac80fc95cbb69626314"
+    },
+    {
+      "skillId": "quick_skill.mail_history",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/mail_history/1.0.0/manifest.json",
+      "prosePath": "./originals/mail_history/1.0.0/SKILL.md",
+      "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+      "proseSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4"
+    },
+    {
+      "skillId": "quick_skill.meeting_prep",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/meeting_prep/1.0.0/manifest.json",
+      "prosePath": "./originals/meeting_prep/1.0.0/SKILL.md",
+      "manifestSha256": "ba783cb9e955a2e797f6c103b95984ca2d09e3e68f14d640f100fe049150455d",
+      "proseSha256": "fe6f7c54e017e9f187344dd6968af7cb36c01a88c622cde868080ab118df3d7f"
+    },
+    {
+      "skillId": "quick_skill.pe_deep_dive",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/pe_deep_dive/1.0.0/manifest.json",
+      "prosePath": "./originals/pe_deep_dive/1.0.0/SKILL.md",
+      "manifestSha256": "6c39f93daeb9c824cbbd37d0ced433dfa0a14d0454e41bd2ba4d3b0e5f4379d9",
+      "proseSha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e"
+    },
+    {
+      "skillId": "quick_skill.portfolio_changes",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/portfolio_changes/1.0.0/manifest.json",
+      "prosePath": "./originals/portfolio_changes/1.0.0/SKILL.md",
+      "manifestSha256": "ccee9962b1ce75e1ab64b8c356d36164305f947f9d9c9a6ff2a9b446ef8a0915",
+      "proseSha256": "3e76da17d5dc490944b7f5464065cee69742ac554ebe7ceb12f4e3e327ce67b5"
+    },
+    {
+      "skillId": "quick_skill.portfolio_overlap",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/portfolio_overlap/1.0.0/manifest.json",
+      "prosePath": "./originals/portfolio_overlap/1.0.0/SKILL.md",
+      "manifestSha256": "7f859973a4371e37c4010cd2f27bab4f534020660ae06dbd34c60411861a92aa",
+      "proseSha256": "3abdb87f27d60fd7f8dd85083d8aad8b0413884f297e9ed7e5a143aa50e20e8b"
+    },
+    {
+      "skillId": "quick_skill.regulatory_docket_brief",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/regulatory_docket_brief/1.0.0/manifest.json",
+      "prosePath": "./originals/regulatory_docket_brief/1.0.0/SKILL.md",
+      "manifestSha256": "638b10d2a7c04389836a286a7cb61fd6f0eed31f39e601f49ab78de7d75c9151",
+      "proseSha256": "698a96dd6c6de443456a477a04d11e393487a38f8c82d34b68d97b01a7849da2"
+    },
+    {
+      "skillId": "quick_skill.relationship_brief",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/relationship_brief/1.0.0/manifest.json",
+      "prosePath": "./originals/relationship_brief/1.0.0/SKILL.md",
+      "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+      "proseSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee"
+    },
+    {
+      "skillId": "quick_skill.representation_lookup",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/representation_lookup/1.0.0/manifest.json",
+      "prosePath": "./originals/representation_lookup/1.0.0/SKILL.md",
+      "manifestSha256": "56c59dc649c5160d55dff2094bb1f07cff90c918fdee8bdf54c95f8ce446894e",
+      "proseSha256": "232dec9783f0cec8001043fae72e3e6d38a5b2799c98302571d54bde0d4f6a76"
+    },
+    {
+      "skillId": "quick_skill.research_company",
+      "skillVersion": "1.0.0",
+      "manifestPath": "./originals/research_company/1.0.0/manifest.json",
+      "prosePath": "./originals/research_company/1.0.0/SKILL.md",
+      "manifestSha256": "93344aee6750efe2a9d99d9571bee8e6dfaaa500d4d13285501d67e36b988602",
+      "proseSha256": "cbee7506868d65de5ef247add8390850de151398b074add2ce69d2aefd63b7ab"
+    }
+  ]
+}

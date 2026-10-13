@@ -1,0 +1,16 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/skills/commitments/review-regression.test.mjs"
+  ],
+  "sourceHead": "5f60ba1e7bf37a0bedbd84a96c94d5aea4434ce6",
+  "exitCode": 0,
+  "seconds": 1.820284815001287,
+  "outerTimeoutSeconds": 180,
+  "timeout": false,
+  "ownedPid": 91887,
+  "leaderReaped": true,
+  "groupRemaining": false,
+  "nativeQualified": false
+}

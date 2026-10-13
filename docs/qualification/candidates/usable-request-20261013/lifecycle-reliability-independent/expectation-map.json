@@ -1,0 +1,8 @@
+{
+  "source": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "case": "Actual submit consumer normalizes Sunday DST calendar window",
+  "beforeExpected": ["2026-11-01T04:00:00.000Z", "2026-11-08T05:00:00.000Z"],
+  "afterExpected": ["2026-11-01T04:00:00Z", "2026-11-08T05:00:00Z"],
+  "reason": "Upstream Temporal emits exact legal NormalizedWindow timestamps without redundant zero milliseconds. Identical UTC instants, Sunday/local-midnight/end-exclusive and169hour DST duration assertions retained. Original test preimage and failed raw output retained. No product change or other assertion edit.",
+  "nativeQualified": false
+}

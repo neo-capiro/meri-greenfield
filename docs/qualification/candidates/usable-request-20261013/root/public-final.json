@@ -1,0 +1,57 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-next-batch",
+  "sourceHead": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T11:57:52.371873+00:00",
+  "durationSeconds": 5.843,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 101050,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 101163,
+      "status": 0
+    },
+    {
+      "pid": 101182,
+      "status": 0
+    },
+    {
+      "pid": 101202,
+      "status": 0
+    },
+    {
+      "pid": 101368,
+      "status": 0
+    },
+    {
+      "pid": 101390,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/public-final.stdout.bin",
+      "bytes": 6764,
+      "sha256": "2a1c654d4711cc81bd4b36ae6ad10d8b15ea78f9926fda54ab557ff25c5e4cbc"
+    },
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/public-final.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

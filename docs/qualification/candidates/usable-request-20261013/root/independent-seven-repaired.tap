@@ -1,0 +1,59 @@
+TAP version 13
+# {"case":"changed fresh current scope","before":1,"after":1,"state":"queued"}
+# Subtest: Current changed scope refuses worker publication before any durable event mutation
+ok 1 - Current changed scope refuses worker publication before any durable event mutation
+  ---
+  duration_ms: 18.383385
+  type: 'test'
+  ...
+# {"case":"concurrent activities","results":[{"status":"fulfilled","value":{"state":"completed"}},{"status":"rejected","error":"EXECUTION_FAILED"}],"queries":1,"closed":1,"state":"completed"}
+# {"case":"calendar rollover replay","original":{"basis":"calendar-week","startInclusive":"2026-09-28T04:00:00Z","endExclusive":"2026-10-05T04:00:00Z","timezone":"America/New_York","weekStartsOn":"monday"},"replay":{"run":{"binding":{"tenantId":"tenant-a","actorId":"actor-a","conversationId":"00000001-0000-4000-8000-000000000000","runId":"00000002-0000-4000-8000-000000000000","attemptId":"00000003-0000-4000-8000-000000000000","workerId":"00000004-0000-4000-8000-000000000000","writerFence":1},"state":"queued","scopes":[{"tenantId":"tenant-a","kind":"client","resourceId":"00000005-0000-4000-8000-000000000000","policyRevision":"policy1"}],"createdAt":"2026-10-12T03:59:59.000Z","policyRevision":"policy1","versions":{"imageDigest":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","sdk":"0.3.295","cli":"2.1.295","contracts":"0.1.0","skillsDigest":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","checkpointFormat":"0.1.0"}},"requestId":"00000607-0000-4000-8000-000000000000","lastSequence":1,"replayed":true},"starts":2,"requests":1}
+# Subtest: Losing concurrent activity cannot poison the legitimate starting owner
+ok 2 - Losing concurrent activity cannot poison the legitimate starting owner
+  ---
+  duration_ms: 28.628396
+  type: 'test'
+  ...
+# Subtest: Exact calendar request replay retains original resolution across week rollover
+ok 3 - Exact calendar request replay retains original resolution across week rollover
+  ---
+  duration_ms: 12.144156
+  type: 'test'
+  ...
+# {"case":"HTTP outer deadline","status":408,"body":{"error":{"code":"DEADLINE"}}}
+# Subtest: HTTP original lifetime bounds a slow service even if it ignores cancellation
+ok 4 - HTTP original lifetime bounds a slow service even if it ignores cancellation
+  ---
+  duration_ms: 13.596262
+  type: 'test'
+  ...
+# {"case":"blocked failure observer cleanup","settled":true,"closed":1}
+# {"case":"event sequence column alias","error":"STORE_CORRUPT"}
+# {"case":"event ID column alias","error":"STORE_CORRUPT"}
+# Subtest: Failure observation cannot park SDK Query cleanup after original activity deadline
+ok 5 - Failure observation cannot park SDK Query cleanup after original activity deadline
+  ---
+  duration_ms: 36.898257
+  type: 'test'
+  ...
+# Subtest: Retained event sequence column alias refuses disclosure despite consistent JSON hash
+ok 6 - Retained event sequence column alias refuses disclosure despite consistent JSON hash
+  ---
+  duration_ms: 3.749919
+  type: 'test'
+  ...
+# Subtest: Retained event ID column alias refuses disclosure despite consistent JSON hash
+ok 7 - Retained event ID column alias refuses disclosure despite consistent JSON hash
+  ---
+  duration_ms: 2.753746
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2096.685828

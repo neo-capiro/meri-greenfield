@@ -1,0 +1,89 @@
+✔ independent raw14-asset hashes/pins match exact loader values, canonical catalog and original selected inventory (101.054461ms)
+✔ every exact14 asset refuses execution through unchanged canonical unavailable operation validator (55.461717ms)
+✔ selection refuses inherited/coercible identifiers and omitted/wildcard versions without invoking conversion (0.241041ms)
+✖ Commitments source-read operation must bind the actual mail source, not merely be another allowed operation (7.606371ms)
+✖ Commitments source-read operation must bind exact declared Monday source authority (2.424464ms)
+✔ actual source authority remains visible on every returned coverage cell and bound passage (2.282161ms)
+✔ foreign client record scopes cannot bind even when tenant, context and all byte/version hashes match (0.889833ms)
+✔ zero record scopes cannot be marked a bound source excerpt (0.970665ms)
+✔ different worker identity and current policy revision refuse unchanged passage bytes (1.829673ms)
+✔ correct source hash with altered bytes, and correct bytes with altered source hash both refuse (1.938405ms)
+✔ candidate/snippet and missing decisive read cannot verify a promise or claim full coverage (3.165765ms)
+✔ complete/stale inconsistency refuses and disclosed partial stale read never supports absence (2.149952ms)
+✔ unmapped Monday and entirely absent reads remain visible without false absence (0.41994ms)
+✔ suggestion/delivery classifications and all semantic owner/date/tracking outputs stay unverified despite exact bound quotes (2.143824ms)
+✔ distinct original records cannot be semantically deduplicated by equal extracted owner/date or similar quote (1.628431ms)
+✔ model attempts to inject completion/verification/citation authority or mutations are refused (5.945651ms)
+✔ retained current evidence and projection are deep immutable snapshots (1.589042ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 15
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1769.349108
+
+✖ failing tests:
+
+test at docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:42:1
+✖ Commitments source-read operation must bind the actual mail source, not merely be another allowed operation (7.606371ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /COMMITMENTS_READ_BINDING/u. Input:
+  
+  'Error: COMMITMENTS_READ_SOURCE'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:44:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: COMMITMENTS_READ_SOURCE
+        at fail (file:///workspace/meri-original-skills-independent/packages/skills/commitments/evidence.mjs:9:32)
+        at bindReads (file:///workspace/meri-original-skills-independent/packages/skills/commitments/evidence.mjs:33:122)
+        at compileCommitmentsAudit (file:///workspace/meri-original-skills-independent/packages/skills/commitments/index.mjs:28:15)
+        at compile (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:14:18)
+        at file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:44:20
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:44:9)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25),
+    expected: /COMMITMENTS_READ_BINDING/u,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:47:1
+✖ Commitments source-read operation must bind exact declared Monday source authority (2.424464ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /COMMITMENTS_READ_BINDING/u. Input:
+  
+  'Error: COMMITMENTS_READ_SOURCE'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:49:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: COMMITMENTS_READ_SOURCE
+        at fail (file:///workspace/meri-original-skills-independent/packages/skills/commitments/evidence.mjs:9:32)
+        at bindReads (file:///workspace/meri-original-skills-independent/packages/skills/commitments/evidence.mjs:33:122)
+        at compileCommitmentsAudit (file:///workspace/meri-original-skills-independent/packages/skills/commitments/index.mjs:28:15)
+        at compile (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:14:18)
+        at file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:49:20
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:49:9)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25),
+    expected: /COMMITMENTS_READ_BINDING/u,
+    operator: 'throws',
+    diff: 'simple'
+  }

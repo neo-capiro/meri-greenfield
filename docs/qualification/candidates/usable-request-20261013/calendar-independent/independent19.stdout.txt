@@ -1,0 +1,127 @@
+TAP version 13
+# {"case":"Kathmandu45minute offset","request":{"basis":"calendar-year","timezone":"Asia/Kathmandu","offset":0},"referenceAt":"2026-01-01T00:00:00Z","actual":{"basis":"calendar-year","startInclusive":"2025-12-31T18:15:00Z","endExclusive":"2026-12-31T18:15:00Z","timezone":"Asia/Kathmandu","weekStartsOn":null},"elapsedHours":8760}
+# {"case":"Berlin Sunday DST fall","request":{"basis":"calendar-week","timezone":"Europe/Berlin","offset":0,"weekStartsOn":"sunday"},"referenceAt":"2026-10-25T12:00:00Z","actual":{"basis":"calendar-week","startInclusive":"2026-10-24T22:00:00Z","endExclusive":"2026-10-31T23:00:00Z","timezone":"Europe/Berlin","weekStartsOn":"sunday"},"elapsedHours":169}
+# {"case":"Lord Howe half hour fall","request":{"basis":"calendar-week","timezone":"Australia/Lord_Howe","offset":0,"weekStartsOn":"monday"},"referenceAt":"2026-04-05T12:00:00Z","actual":{"basis":"calendar-week","startInclusive":"2026-03-29T13:00:00Z","endExclusive":"2026-04-05T13:30:00Z","timezone":"Australia/Lord_Howe","weekStartsOn":"monday"},"elapsedHours":168.5}
+# {"case":"New York March month","request":{"basis":"calendar-month","timezone":"America/New_York","offset":0},"referenceAt":"2026-03-31T23:00:00Z","actual":{"basis":"calendar-month","startInclusive":"2026-03-01T05:00:00Z","endExclusive":"2026-04-01T04:00:00Z","timezone":"America/New_York","weekStartsOn":null},"elapsedHours":743}
+# {"case":"Samoa December skipped day","request":{"basis":"calendar-month","timezone":"Pacific/Apia","offset":0},"referenceAt":"2011-12-29T12:00:00Z","actual":{"basis":"calendar-month","startInclusive":"2011-12-01T10:00:00Z","endExclusive":"2011-12-31T10:00:00Z","timezone":"Pacific/Apia","weekStartsOn":null},"elapsedHours":720}
+# {"case":"UTC Sunday prior year boundary","request":{"basis":"calendar-week","timezone":"Etc/UTC","offset":0,"weekStartsOn":"sunday"},"referenceAt":"2026-01-01T12:00:00Z","actual":{"basis":"calendar-week","startInclusive":"2025-12-28T00:00:00Z","endExclusive":"2026-01-04T00:00:00Z","timezone":"Etc/UTC","weekStartsOn":"sunday"},"elapsedHours":168}
+# {"case":"Local previous leap-year start","request":{"basis":"calendar-year","timezone":"Pacific/Kiritimati","offset":-1},"referenceAt":"2025-01-01T00:00:00Z","actual":{"basis":"calendar-year","startInclusive":"2023-12-31T10:00:00Z","endExclusive":"2024-12-31T10:00:00Z","timezone":"Pacific/Kiritimati","weekStartsOn":null},"elapsedHours":8784}
+# {"case":"maximum relative duration","actual":{"basis":"relative-duration","startInclusive":"2016-10-05T12:34:56.123456789Z","endExclusive":"2026-10-13T12:34:56.123456789Z","timezone":"America/New_York","weekStartsOn":null}}
+# {"case":"exact nonfederal fiscal","actual":{"basis":"fiscal-year","calendarId":"florida-state","year":2027,"stage":"appropriated","revisionId":"enrolled-exact-v2","timezone":"America/New_York","startInclusive":"2026-07-01T04:00:00Z","endExclusive":"2027-07-01T04:00:00Z"}}
+# Subtest: Kathmandu45minute offset
+ok 1 - Kathmandu45minute offset
+  ---
+  duration_ms: 9.526908
+  type: 'test'
+  ...
+# Subtest: Berlin Sunday DST fall
+ok 2 - Berlin Sunday DST fall
+  ---
+  duration_ms: 1.577025
+  type: 'test'
+  ...
+# Subtest: Lord Howe half hour fall
+ok 3 - Lord Howe half hour fall
+  ---
+  duration_ms: 1.075013
+  type: 'test'
+  ...
+# Subtest: New York March month
+ok 4 - New York March month
+  ---
+  duration_ms: 1.276694
+  type: 'test'
+  ...
+# Subtest: Samoa December skipped day
+ok 5 - Samoa December skipped day
+  ---
+  duration_ms: 1.023515
+  type: 'test'
+  ...
+# Subtest: UTC Sunday prior year boundary
+ok 6 - UTC Sunday prior year boundary
+  ---
+  duration_ms: 0.901712
+  type: 'test'
+  ...
+# Subtest: Local previous leap-year start
+ok 7 - Local previous leap-year start
+  ---
+  duration_ms: 0.835623
+  type: 'test'
+  ...
+# Subtest: Reference local boundary nanoseconds select current week
+ok 8 - Reference local boundary nanoseconds select current week
+  ---
+  duration_ms: 1.527892
+  type: 'test'
+  ...
+# Subtest: Relative duration preserves nanoseconds and maximum3660 elapsed days
+ok 9 - Relative duration preserves nanoseconds and maximum3660 elapsed days
+  ---
+  duration_ms: 0.749274
+  type: 'test'
+  ...
+# Subtest: Explicit nanosecond representation remains byte exact
+ok 10 - Explicit nanosecond representation remains byte exact
+  ---
+  duration_ms: 0.472889
+  type: 'test'
+  ...
+# Subtest: Canonical millisecond resolution refuses submillisecond-only intervals
+ok 11 - Canonical millisecond resolution refuses submillisecond-only intervals
+  ---
+  duration_ms: 0.496134
+  type: 'test'
+  ...
+# Subtest: Fiscal selection never synthesizes federal October rollover
+ok 12 - Fiscal selection never synthesizes federal October rollover
+  ---
+  duration_ms: 0.701883
+  type: 'test'
+  ...
+# Subtest: Fiscal source identity is exact, including case of revision
+ok 13 - Fiscal source identity is exact, including case of revision
+  ---
+  duration_ms: 0.447381
+  type: 'test'
+  ...
+# Subtest: Fiscal ambiguous bounds cannot be resolved by array order
+ok 14 - Fiscal ambiguous bounds cannot be resolved by array order
+  ---
+  duration_ms: 0.517066
+  type: 'test'
+  ...
+# Subtest: Malformed unrelated fiscal source is refused rather than ignored
+ok 15 - Malformed unrelated fiscal source is refused rather than ignored
+  ---
+  duration_ms: 0.492959
+  type: 'test'
+  ...
+# Subtest: Calendar resolution uses explicit reference even when ambient clock fails
+ok 16 - Calendar resolution uses explicit reference even when ambient clock fails
+  ---
+  duration_ms: 0.870576
+  type: 'test'
+  ...
+# Subtest: Repeated or skipped midnight is a typed refusal
+ok 17 - Repeated or skipped midnight is a typed refusal
+  ---
+  duration_ms: 1.17382
+  type: 'test'
+  ...
+# Subtest: Imports start no timers, network, filesystem writes or globalTemporal mutation
+ok 18 - Imports start no timers, network, filesystem writes or globalTemporal mutation
+  ---
+  duration_ms: 1742.165313
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3416.998357

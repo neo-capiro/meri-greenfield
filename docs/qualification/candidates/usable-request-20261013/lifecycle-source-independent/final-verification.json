@@ -1,0 +1,481 @@
+{
+  "sourceCommit": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "sourceTree": "f01345b8026ad85af237b05674ec2ee63b05e30a",
+  "baseCommit": "18adda2c5461b8d346277135aafd3972b4768802",
+  "candidateBindings": [
+    {
+      "path": "apps/control/conversations/README.md",
+      "blob": "67ed04f3c1403c4e4e90281f2fe3d9cadec2d23e",
+      "bytes": 5100,
+      "sha256": "8be890d97db73557e51695169e3c07c721bb6703faf50e8b8fc279aca7109034"
+    },
+    {
+      "path": "apps/control/conversations/boundary.mjs",
+      "blob": "1a93997b6fe51bbba74360545151788c653c9523",
+      "bytes": 1594,
+      "sha256": "3d0271a7194d3f10be9b8f1dd128d5d43c910fa663482f603115b5166cf80396"
+    },
+    {
+      "path": "apps/control/conversations/events.mjs",
+      "blob": "7837ef3bf3f642741b9ed54876b16f9e65ec76ab",
+      "bytes": 2000,
+      "sha256": "77a24116d21519347d6c08f3edd4fdbca8596258291f9b2c0386523c1f83b3a4"
+    },
+    {
+      "path": "apps/control/conversations/http.mjs",
+      "blob": "1a9c4d4b84f16ba012043084c37376141d547835",
+      "bytes": 3507,
+      "sha256": "afc044d5f087cbc419f2da17e294748537542952327ce0bf1607d8592ce43f71"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0001_conversations.sql",
+      "blob": "e3a9da923144f2b0ee5a6e02be6bd6d384ba35cf",
+      "bytes": 1353,
+      "sha256": "97d4e7058696b8ded1ad7dc0730ab271e75137968831ed34c0b73a7dadc16b26"
+    },
+    {
+      "path": "apps/control/conversations/package-lock.json",
+      "blob": "e118246c8dbf41c7c8a358dc30cf2b6242ecb907",
+      "bytes": 18775,
+      "sha256": "1ed426a0b19dc260b9821cf5cccb46f613efc7f064786c8c7755b5115c64bd13"
+    },
+    {
+      "path": "apps/control/conversations/package.json",
+      "blob": "7092cf174ae931554f1d9404e9c3f700ca5cce67",
+      "bytes": 387,
+      "sha256": "de3b0e41e2f7cce5abdf178adad363d14f6658946263f0bb24fa5c8b93aa4a2d"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "blob": "023ba4d404465b6aaa7a2a6ae6e6d9ee4795c091",
+      "bytes": 8214,
+      "sha256": "e2e9074a503239e10e32f8531954acb3ee8218906644b17c04c6ef6871e92725"
+    },
+    {
+      "path": "apps/control/conversations/service.mjs",
+      "blob": "9778847b74546efbe4b487c6bc7fd90cfd3e78c5",
+      "bytes": 8029,
+      "sha256": "193760a9451b29dc3b59fd5e5c81d3f3e8a27f8591607050b734ad2344da4bae"
+    },
+    {
+      "path": "apps/control/conversations/temporal-dispatch.mjs",
+      "blob": "79a0bf761ba5e17f97c2434461745e4e7ec2b2de",
+      "bytes": 1132,
+      "sha256": "ff9c56004e7b9b4cbf93461e980a7a25d896263d1965cbe0d5d0b8b73b1efa39"
+    },
+    {
+      "path": "apps/control/conversations/test/application-fixture.mjs",
+      "blob": "458ce193f9b60fbdadc5f6edf37f784f2c954a63",
+      "bytes": 2210,
+      "sha256": "e0df3b18b206b5dd280d961499e6439c589fdb0dba26c349ee741f1031e9909b"
+    },
+    {
+      "path": "apps/control/conversations/test/application.test.mjs",
+      "blob": "59aa4a809da4471c2eaf14df25305930d142a2a6",
+      "bytes": 6035,
+      "sha256": "de62ea91de79cbe9238895bc9e575de2ae46ffdc4dbc51cbfea088825c488b2a"
+    },
+    {
+      "path": "apps/control/conversations/test/store-fixture.mjs",
+      "blob": "8b8bc7b8159caa0b5a67a1fae019904018f4ae54",
+      "bytes": 3021,
+      "sha256": "c48cbb7eb5bdd78ced5ee183acfdf1ee720d431ecc42fbd8a3fb93f03c59d812"
+    },
+    {
+      "path": "apps/control/conversations/test/store.test.mjs",
+      "blob": "bc29bf63246def097b4a0334ae6b3180c31302fb",
+      "bytes": 4861,
+      "sha256": "68eeb89f0a170523c4df47370af3f5883349d273210fb431e4c3db66e12b5c2b"
+    },
+    {
+      "path": "apps/control/conversations/test/stream.test.mjs",
+      "blob": "970cbec0057e174de5d58964eeef97dac2924a86",
+      "bytes": 1994,
+      "sha256": "ef3a20cd2c94ef355373cb9de8ac3acf011a849cd08e09de067744a01504b629"
+    },
+    {
+      "path": "apps/control/conversations/tsconfig.json",
+      "blob": "d0cfef948467292eae22669a74697006f38bc6dc",
+      "bytes": 364,
+      "sha256": "5d26e834f1c9bdace029536f0afa9b6354cfbe4f14ba759a4436a7ebefd4257c"
+    },
+    {
+      "path": "apps/control/conversations/workflow.ts",
+      "blob": "1b4f3915eb581318185ad965cdc55efb39577d63",
+      "bytes": 728,
+      "sha256": "835a494d379d34e25845ae7567c3dcabbd481ea0341bbdb1aa67e82ece2863cf"
+    },
+    {
+      "path": "apps/worker/conversation/README.md",
+      "blob": "a5dfc997df13c65077be820bd5464d3a4bde60a8",
+      "bytes": 2794,
+      "sha256": "5357c5b4b1df1150db5886a7c30f82b3bcfa289d143445add35a8b1d6c1cf3d9"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "blob": "ed53cbcb758cc93c34839b8acea0d9fc458a552d",
+      "bytes": 5667,
+      "sha256": "67ebde7d903141b28859a3e99575cfa109deb7cbfb43670af7252c4b21300618"
+    },
+    {
+      "path": "apps/worker/conversation/options.mjs",
+      "blob": "eb63b79dfd59a06bea609f5655212d9b07a8fcea",
+      "bytes": 2301,
+      "sha256": "b33e6b3870ed985475ca3d634c3cf2aa88b211acea86686e4e4f047eb9bbfc28"
+    },
+    {
+      "path": "apps/worker/conversation/package-lock.json",
+      "blob": "28c4c7c27ecea0fa6477e77445bc7759f78d3f45",
+      "bytes": 52825,
+      "sha256": "b1459716b93afbf92800956b26b6c7c52b74ef38ed3314d27d8453ab76eacc26"
+    },
+    {
+      "path": "apps/worker/conversation/package.json",
+      "blob": "0b5e315fc1ff29325fac0b69dd5a1ad67d536c90",
+      "bytes": 225,
+      "sha256": "5fbb71de463f4e6ba6e246aa71a12139eb84b52a8c7c86742d7101d9fd6704d9"
+    },
+    {
+      "path": "apps/worker/conversation/test/activity.test.mjs",
+      "blob": "17ef440c4ad0a7d0f781923b3231878c06591c8d",
+      "bytes": 6909,
+      "sha256": "b0b213428cbe395a6a9e078d3599865c58342e512842dfda4ba2b39ed95fb30c"
+    },
+    {
+      "path": "apps/worker/conversation/text-projector.mjs",
+      "blob": "b808c179fec5d978ea3c7db83b2391daea47475b",
+      "bytes": 1675,
+      "sha256": "490deed3cd605cba5b5fcd5064a79ade100fa7d16af79d7bdd4be837b2d86899"
+    },
+    {
+      "path": "packages/ui-stream/src/producer.ts",
+      "blob": "7703aaf884569be202d172bd1cefce869febe68b",
+      "bytes": 3434,
+      "sha256": "b186b45cf9517f718bb0098ca04fe6e782f950764f92886c29928119e7bc3884"
+    },
+    {
+      "path": "packages/ui-stream/dist/producer.js",
+      "blob": "51d80116ca4965bb93e7ebf89eda563ad7ab0df5",
+      "bytes": 2627,
+      "sha256": "808ccc7b7236752fa4345f54b590db2786b8b376cdb534eadea9b6e344bc8116"
+    },
+    {
+      "path": "packages/ui-stream/dist/producer.d.ts",
+      "blob": "4d923bfe3205b56eb908681b6c57448a48afd6b2",
+      "bytes": 1553,
+      "sha256": "1beb8ba7a1e2c3ebaa0c1f2b095698ef76856bd2ad3d78cf14bcc345049c409a"
+    }
+  ],
+  "installedDependencies": [
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.295",
+      "owner": "apps/worker/conversation",
+      "resolvedPackage": "/workspace/meri-next-batch/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "bytes": 2546,
+      "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211"
+    },
+    {
+      "package": "@temporalio/client",
+      "version": "1.24.0",
+      "owner": "apps/control/conversations",
+      "resolvedPackage": "/workspace/meri-next-batch/apps/control/conversations/node_modules/@temporalio/client/package.json",
+      "bytes": 1096,
+      "sha256": "946629172fe386280e72e1856aacf0c8f760264991c3268b00790bf4929c2651"
+    },
+    {
+      "package": "@temporalio/workflow",
+      "version": "1.24.0",
+      "owner": "apps/control/conversations",
+      "resolvedPackage": "/workspace/meri-next-batch/apps/control/conversations/node_modules/@temporalio/workflow/package.json",
+      "bytes": 1235,
+      "sha256": "8e8f0e23d066c5795df6538fc18997ca3d58fdab85267e61fe21f3d693944260"
+    },
+    {
+      "package": "ai",
+      "version": "7.0.137",
+      "owner": "packages/ui-stream",
+      "resolvedPackage": "/workspace/meri-greenfield/packages/ui-stream/node_modules/ai/package.json",
+      "bytes": 3259,
+      "sha256": "4ca1b24eaf34eaa8921618695835114d65086b045e5754a55b0a6ee7242f4e94"
+    },
+    {
+      "package": "typescript",
+      "version": "5.9.3",
+      "owner": "apps/control/conversations",
+      "resolvedPackage": "/workspace/meri-next-batch/apps/control/conversations/node_modules/typescript/package.json",
+      "bytes": 3620,
+      "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact source tree",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/README.md",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/boundary.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/events.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/migrations/0001_conversations.sql",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/package.json",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/postgres-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/temporal-dispatch.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/test/application-fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/test/application.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/test/store-fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/test/store.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/test/stream.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/tsconfig.json",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/control/conversations/workflow.ts",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/README.md",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/activity.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/options.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/package.json",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/test/activity.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact apps/worker/conversation/text-projector.mjs",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact packages/ui-stream/src/producer.ts",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact packages/ui-stream/dist/producer.js",
+      "pass": true
+    },
+    {
+      "name": "candidate bytes exact packages/ui-stream/dist/producer.d.ts",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 packages/contracts",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 package.json",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/control/document-application",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/control/action-application",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/control/qualified-application",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/proxy/qualification/assembly/lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/gateway/test/postgres-budget-native-fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/control/task-lookup/local-integration/fixture-checks.mjs",
+      "pass": true
+    },
+    {
+      "name": "original public/owner/native pin exact PR59 apps/worker/qualification/component-pins.json",
+      "pass": true
+    },
+    {
+      "name": "calendar/skill source unchanged by lifecycle repairs packages/window-resolution",
+      "pass": true
+    },
+    {
+      "name": "calendar/skill source unchanged by lifecycle repairs packages/skills",
+      "pass": true
+    },
+    {
+      "name": "initial seven assertions byte unchanged",
+      "pass": true
+    },
+    {
+      "name": "second four assertions byte unchanged",
+      "pass": true
+    },
+    {
+      "name": "final-eleven actual counts",
+      "pass": true
+    },
+    {
+      "name": "final-eleven source pin and physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "final-eleven raw exact hash",
+      "pass": true
+    },
+    {
+      "name": "final-owner46 actual counts",
+      "pass": true
+    },
+    {
+      "name": "final-owner46 source pin and physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "final-owner46 raw exact hash",
+      "pass": true
+    },
+    {
+      "name": "final-upstream-types exit0/cleanup",
+      "pass": true
+    },
+    {
+      "name": "final-source-whitespace exit0/cleanup",
+      "pass": true
+    },
+    {
+      "name": "installed pinned package @anthropic-ai/claude-agent-sdk",
+      "pass": true
+    },
+    {
+      "name": "installed pinned package @temporalio/client",
+      "pass": true
+    },
+    {
+      "name": "installed pinned package @temporalio/workflow",
+      "pass": true
+    },
+    {
+      "name": "installed pinned package ai",
+      "pass": true
+    },
+    {
+      "name": "installed pinned package typescript",
+      "pass": true
+    },
+    {
+      "name": "ui-stream generated bytes exact producer.js",
+      "pass": true
+    },
+    {
+      "name": "ui-stream generated bytes exact producer.d.ts",
+      "pass": true
+    },
+    {
+      "name": "ui-stream generated bytes exact protocol.js",
+      "pass": true
+    },
+    {
+      "name": "ui-stream generated bytes exact protocol.d.ts",
+      "pass": true
+    }
+  ],
+  "passed": 60,
+  "failed": 0,
+  "counts": {
+    "final-eleven": {
+      "tests": 11,
+      "passed": 11,
+      "failed": 0
+    },
+    "final-owner46": {
+      "tests": 46,
+      "passed": 46,
+      "failed": 0
+    }
+  },
+  "distinctTests": 57,
+  "verdict": "ACCEPT_SOURCE",
+  "nativeRuntimeAccepted": false,
+  "sourceEnabled": false,
+  "uiTemporaryOutputRemoved": true,
+  "earlierHoldsPreserved": [
+    "c985c5fc7eda55689f9e3d256c9576b8c43c74b2 seven failed controls",
+    "492c945547bd56e8471d3b65c7901114eb514791 four failed controls"
+  ],
+  "limits": [
+    "Source/local scripted SQL and identity/SDK messages only; no native PostgreSQL/model/proxy/Temporal/worker/frontend qualification.",
+    "Steer/fork, authenticated checkpoint/workspace resume, approval-wait and general multi-run listing remain open.",
+    "No whole W05/other requirement closure or production release inferred."
+  ]
+}

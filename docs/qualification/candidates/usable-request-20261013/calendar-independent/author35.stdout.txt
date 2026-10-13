@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: current Monday week
+ok 1 - current Monday week
+  ---
+  duration_ms: 9.477004
+  type: 'test'
+  ...
+# Subtest: previous Monday week
+ok 2 - previous Monday week
+  ---
+  duration_ms: 1.332548
+  type: 'test'
+  ...
+# Subtest: current Sunday week
+ok 3 - current Sunday week
+  ---
+  duration_ms: 1.128132
+  type: 'test'
+  ...
+# Subtest: Sunday belongs to the previous Monday week
+ok 4 - Sunday belongs to the previous Monday week
+  ---
+  duration_ms: 1.05338
+  type: 'test'
+  ...
+# Subtest: exact Monday boundary belongs to the current week
+ok 5 - exact Monday boundary belongs to the current week
+  ---
+  duration_ms: 0.94027
+  type: 'test'
+  ...
+# Subtest: spring DST week has 167 elapsed hours
+ok 6 - spring DST week has 167 elapsed hours
+  ---
+  duration_ms: 0.970425
+  type: 'test'
+  ...
+# Subtest: fall DST week has 169 elapsed hours
+ok 7 - fall DST week has 169 elapsed hours
+  ---
+  duration_ms: 0.902634
+  type: 'test'
+  ...
+# Subtest: month is based on local date before UTC rollover
+ok 8 - month is based on local date before UTC rollover
+  ---
+  duration_ms: 1.04058
+  type: 'test'
+  ...
+# Subtest: previous month across year rollover
+ok 9 - previous month across year rollover
+  ---
+  duration_ms: 1.019759
+  type: 'test'
+  ...
+# Subtest: leap February
+ok 10 - leap February
+  ---
+  duration_ms: 0.857606
+  type: 'test'
+  ...
+# Subtest: current year uses local year
+ok 11 - current year uses local year
+  ---
+  duration_ms: 0.808993
+  type: 'test'
+  ...
+# Subtest: previous year includes leap day
+ok 12 - previous year includes leap day
+  ---
+  duration_ms: 0.768463
+  type: 'test'
+  ...
+# Subtest: half-hour DST transition
+ok 13 - half-hour DST transition
+  ---
+  duration_ms: 0.798568
+  type: 'test'
+  ...
+# Subtest: skipped civil date inside a week
+ok 14 - skipped civil date inside a week
+  ---
+  duration_ms: 0.575903
+  type: 'test'
+  ...
+# Subtest: repeated fall hour is unambiguous when the trusted reference is an instant
+ok 15 - repeated fall hour is unambiguous when the trusted reference is an instant
+  ---
+  duration_ms: 1.567891
+  type: 'test'
+  ...
+# Subtest: a non-existent midnight boundary is refused without shifting the week
+ok 16 - a non-existent midnight boundary is refused without shifting the week
+  ---
+  duration_ms: 0.77336
+  type: 'test'
+  ...
+# Subtest: an ambiguous midnight boundary is refused without selecting an offset
+ok 17 - an ambiguous midnight boundary is refused without selecting an offset
+  ---
+  duration_ms: 0.530376
+  type: 'test'
+  ...
+# Subtest: relative days stay elapsed 24-hour durations through DST
+ok 18 - relative days stay elapsed 24-hour durations through DST
+  ---
+  duration_ms: 0.598087
+  type: 'test'
+  ...
+# Subtest: explicit timestamps are preserved byte-exact, without calendar reinterpretation
+ok 19 - explicit timestamps are preserved byte-exact, without calendar reinterpretation
+  ---
+  duration_ms: 0.272048
+  type: 'test'
+  ...
+# Subtest: unbounded is explicit and immutable
+ok 20 - unbounded is explicit and immutable
+  ---
+  duration_ms: 0.186329
+  type: 'test'
+  ...
+# Subtest: fiscal identity preserves exact year, calendar, stage, revision and bounds
+ok 21 - fiscal identity preserves exact year, calendar, stage, revision and bounds
+  ---
+  duration_ms: 0.634912
+  type: 'test'
+  ...
+# Subtest: fiscal year substitution is unavailable, never inferred
+ok 22 - fiscal year substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.251477
+  type: 'test'
+  ...
+# Subtest: fiscal calendarId substitution is unavailable, never inferred
+ok 23 - fiscal calendarId substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.214882
+  type: 'test'
+  ...
+# Subtest: fiscal stage substitution is unavailable, never inferred
+ok 24 - fiscal stage substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.188002
+  type: 'test'
+  ...
+# Subtest: fiscal revisionId substitution is unavailable, never inferred
+ok 25 - fiscal revisionId substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.158638
+  type: 'test'
+  ...
+# Subtest: fiscal timezone substitution is unavailable, never inferred
+ok 26 - fiscal timezone substitution is unavailable, never inferred
+  ---
+  duration_ms: 0.156305
+  type: 'test'
+  ...
+# Subtest: missing fiscal configuration is disclosed as unavailable
+ok 27 - missing fiscal configuration is disclosed as unavailable
+  ---
+  duration_ms: 0.160971
+  type: 'test'
+  ...
+# Subtest: duplicate fiscal records are refused even with equal bounds
+ok 28 - duplicate fiscal records are refused even with equal bounds
+  ---
+  duration_ms: 0.30003
+  type: 'test'
+  ...
+# Subtest: conflicting fiscal bounds for one identity are refused
+ok 29 - conflicting fiscal bounds for one identity are refused
+  ---
+  duration_ms: 0.351647
+  type: 'test'
+  ...
+# Subtest: malformed trusted fiscal configuration cannot supply a window
+ok 30 - malformed trusted fiscal configuration cannot supply a window
+  ---
+  duration_ms: 0.581242
+  type: 'test'
+  ...
+# Subtest: referenceAt is required, UTC and valid; ambient time cannot substitute
+ok 31 - referenceAt is required, UTC and valid; ambient time cannot substitute
+  ---
+  duration_ms: 0.508933
+  type: 'test'
+  ...
+# Subtest: leap-second timestamps are refused rather than normalized to a different instant
+ok 32 - leap-second timestamps are refused rather than normalized to a different instant
+  ---
+  duration_ms: 0.309214
+  type: 'test'
+  ...
+# Subtest: invalid timezone, offsets, policy, duration and free-form fields are rejected by canonical contracts
+ok 33 - invalid timezone, offsets, policy, duration and free-form fields are rejected by canonical contracts
+  ---
+  duration_ms: 0.348253
+  type: 'test'
+  ...
+# Subtest: resolution leaves request and trusted configuration untouched and returns a frozen object
+ok 34 - resolution leaves request and trusted configuration untouched and returns a frozen object
+  ---
+  duration_ms: 1.112628
+  type: 'test'
+  ...
+# Subtest: package import creates no timers, connections, global Temporal or output
+ok 35 - package import creates no timers, connections, global Temporal or output
+  ---
+  duration_ms: 1613.930012
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3304.543463

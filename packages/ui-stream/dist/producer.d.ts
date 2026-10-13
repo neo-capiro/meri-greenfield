@@ -17,3 +17,11 @@ export interface MeriStreamOptions {
 export declare function createMeriEventStream(options: MeriStreamOptions): ReadableStream<UIMessageChunk>;
 /** Wraps the event stream as a standard SSE web `Response`. */
 export declare function meriEventStreamResponse(options: MeriStreamOptions): Response;
+export interface MeriLiveStreamOptions {
+    messageId: string;
+    /** Ordered, freshly authorized durable events. Cancelling the response cancels this source. */
+    events: ReadableStream<UIEvent>;
+}
+/** Projects a live event source through upstream merge so cancellation reaches its reader. */
+export declare function createMeriLiveEventStream(options: MeriLiveStreamOptions): ReadableStream<UIMessageChunk>;
+export declare function meriLiveEventStreamResponse(options: MeriLiveStreamOptions): Response;

@@ -1,0 +1,12 @@
+{
+  "request": {
+    "commit": "cbbd8c5a7fe94d977b7da896ff7d01c959815fac",
+    "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/requirements.json",
+    "sha256": "d38e450f384599a6b018e359ecb9691ebb6f5a1f03e6e77cb46e1a92167f8b60"
+  },
+  "exitCode": 128,
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr": "fatal: path 'docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/requirements.json' does not exist in 'cbbd8c5a7fe94d977b7da896ff7d01c959815fac'\n",
+  "boundary": "Original cbbd path is unavailable in this checkout; copied record hashes are preserved, not independently reconstructed from that unavailable object. All33 actual original plan lines and workbook rows are checked below."
+}

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/skills/test/assets.test.mjs",
+    "packages/skills/test/commitments.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 4.194604144999175,
+  "source": "ddfcc398d1064abe55f711a00e02941e5606e9ca",
+  "outerTimeoutSeconds": 180,
+  "nativeQualified": false
+}

@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-reliability-independent/lifecycle-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-next-batch",
+  "sourceHead": "39485c48dae9f26d365ec64eee1b0a214b60b2cd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T12:03:01.638048+00:00",
+  "durationSeconds": 2.42,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 103443,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/reliability-eleven-integrated.stdout.bin",
+      "bytes": 3126,
+      "sha256": "e06a52a903ad18324855cbdb24e665970f60500a402e03166a769d6573d07a97"
+    },
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/reliability-eleven-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Reliability review imported into integrated root after reviewer cleanup; replay its exact11 controls with owned root dependencies, preserving earlier omitted-selector/dependency failures.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

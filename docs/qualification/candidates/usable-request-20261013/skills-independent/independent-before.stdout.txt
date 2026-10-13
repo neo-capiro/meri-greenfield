@@ -1,0 +1,86 @@
+✔ independent raw14-asset hashes/pins match exact loader values, canonical catalog and original selected inventory (99.512721ms)
+✔ every exact14 asset refuses execution through unchanged canonical unavailable operation validator (53.717213ms)
+✔ selection refuses inherited/coercible identifiers and omitted/wildcard versions without invoking conversion (0.278095ms)
+✖ Commitments source-read operation must bind the actual mail source, not merely be another allowed operation (8.847966ms)
+✖ Commitments source-read operation must bind exact declared Monday source authority (2.149228ms)
+✖ actual source authority remains visible on every returned coverage cell and bound passage (1.935599ms)
+✔ foreign client record scopes cannot bind even when tenant, context and all byte/version hashes match (0.877259ms)
+✔ zero record scopes cannot be marked a bound source excerpt (0.934224ms)
+✔ different worker identity and current policy revision refuse unchanged passage bytes (1.645687ms)
+✔ correct source hash with altered bytes, and correct bytes with altered source hash both refuse (1.666898ms)
+✔ candidate/snippet and missing decisive read cannot verify a promise or claim full coverage (3.025696ms)
+✔ complete/stale inconsistency refuses and disclosed partial stale read never supports absence (2.109729ms)
+✔ unmapped Monday and entirely absent reads remain visible without false absence (0.414749ms)
+✔ suggestion/delivery classifications and all semantic owner/date/tracking outputs stay unverified despite exact bound quotes (2.028928ms)
+✔ distinct original records cannot be semantically deduplicated by equal extracted owner/date or similar quote (1.58796ms)
+✔ model attempts to inject completion/verification/citation authority or mutations are refused (5.869921ms)
+✔ retained current evidence and projection are deep immutable snapshots (1.479187ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 14
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2216.107096
+
+✖ failing tests:
+
+test at docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:42:1
+✖ Commitments source-read operation must bind the actual mail source, not merely be another allowed operation (8.847966ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:44:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /COMMITMENTS_READ_BINDING/u,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:47:1
+✖ Commitments source-read operation must bind exact declared Monday source authority (2.149228ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:49:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /COMMITMENTS_READ_BINDING/u,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:52:1
+✖ actual source authority remains visible on every returned coverage cell and bound passage (1.935599ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'authoritative'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-original-skills-independent/docs/qualification/candidates/usable-request-20261013/skills-independent/skills-independent.test.mjs:54:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'authoritative',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

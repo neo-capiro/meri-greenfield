@@ -34,3 +34,24 @@ export function createMeriEventStream(options) {
 export function meriEventStreamResponse(options) {
     return createUIMessageStreamResponse({ stream: createMeriEventStream(options) });
 }
+/** Projects a live event source through upstream merge so cancellation reaches its reader. */
+export function createMeriLiveEventStream(options) {
+    return createUIMessageStream({
+        onError: () => 'Meri event subscription unavailable',
+        execute({ writer }) {
+            writer.write({ type: 'start', messageId: options.messageId });
+            writer.merge(options.events.pipeThrough(new TransformStream({
+                transform(event, controller) {
+                    controller.enqueue({ type: MERI_EVENT_DATA_PART, id: event.eventId, data: event, transient: true });
+                },
+                flush(controller) {
+                    controller.enqueue({ type: 'finish' });
+                    writer.setOutcome({ status: 'completed' });
+                },
+            })));
+        },
+    });
+}
+export function meriLiveEventStreamResponse(options) {
+    return createUIMessageStreamResponse({ stream: createMeriLiveEventStream(options) });
+}

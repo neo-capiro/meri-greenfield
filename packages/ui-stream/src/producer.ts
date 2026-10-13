@@ -6,7 +6,7 @@
 // helpers directly instead of a replacement SSE/parser framework.
 
 import { createUIMessageStream, createUIMessageStreamResponse } from 'ai';
-import type { UIMessageChunk, UIMessageStreamOutcome } from 'ai';
+import type { UIMessageChunk, UIMessageStreamOutcome, InferUIMessageChunk } from 'ai';
 import type { UIEvent } from '@capiro/meri-contracts';
 import type { MeriUIMessage } from './protocol.js';
 import { MERI_EVENT_DATA_PART } from './protocol.js';
@@ -48,4 +48,32 @@ export function createMeriEventStream(options: MeriStreamOptions): ReadableStrea
 /** Wraps the event stream as a standard SSE web `Response`. */
 export function meriEventStreamResponse(options: MeriStreamOptions): Response {
   return createUIMessageStreamResponse({ stream: createMeriEventStream(options) });
+}
+
+export interface MeriLiveStreamOptions {
+  messageId: string;
+  /** Ordered, freshly authorized durable events. Cancelling the response cancels this source. */
+  events: ReadableStream<UIEvent>;
+}
+
+/** Projects a live event source through upstream merge so cancellation reaches its reader. */
+export function createMeriLiveEventStream(options: MeriLiveStreamOptions): ReadableStream<UIMessageChunk> {
+  return createUIMessageStream<MeriUIMessage>({
+    onError: () => 'Meri event subscription unavailable',
+    execute({ writer }) {
+      writer.write({ type: 'start', messageId: options.messageId });
+      writer.merge(options.events.pipeThrough(new TransformStream<UIEvent, InferUIMessageChunk<MeriUIMessage>>({
+        transform(event, controller) {
+          controller.enqueue({ type: MERI_EVENT_DATA_PART, id: event.eventId, data: event, transient: true });
+        },
+        flush(controller) {
+          controller.enqueue({ type: 'finish' });
+          writer.setOutcome({ status: 'completed' });
+        },
+      })));
+    },
+  });
+}
+export function meriLiveEventStreamResponse(options: MeriLiveStreamOptions): Response {
+  return createUIMessageStreamResponse({ stream: createMeriLiveEventStream(options) });
 }

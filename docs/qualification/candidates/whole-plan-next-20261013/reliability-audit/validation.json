@@ -1,0 +1,41 @@
+{
+  "decision": "ACCEPT_AUDIT_SOURCE_ONLY",
+  "source": {
+    "commit": "18adda2c5461b8d346277135aafd3972b4768802",
+    "tree": "eaec635b6b1c6cdc353ad48a5fda1f7a3dc10b21"
+  },
+  "counts": {
+    "records": 33,
+    "wholePending": 33,
+    "wholeRuntimeQualified": 0,
+    "primaryClassCounts": {
+      "implemented-but-unqualified": 8,
+      "missing-implementation": 9,
+      "external-runtime": 10,
+      "genuinely-deferred": 6
+    },
+    "subcriterionClassCounts": {
+      "implemented-but-unqualified": 27,
+      "missing-implementation": 22,
+      "external-runtime": 25,
+      "genuinely-deferred": 6
+    },
+    "originalPlanExactJoins": 33,
+    "originalWorkbookRowJoins": 45
+  },
+  "checks": {
+    "exactSourcePin": true,
+    "originalInputHashes": true,
+    "33OriginalPlanLines": true,
+    "45OriginalWorkbookRows": true,
+    "33UniqueAssessmentRecords": true,
+    "evidencePathsHashesAnchors": true,
+    "96SelectedOriginalMappings": true,
+    "14OriginalSkillInventory": true,
+    "zeroRealBenchmarkManifest": true,
+    "noWholePromotion": true
+  },
+  "nativeQualified": false,
+  "originalLedgerLookup": "Unavailable original cbbd path retained as failure; actual original plan/workbook criteria verified.",
+  "auditSha256": "783d9def6be3e46b252c988aec74253615d04f4652d5a9a0248fcf0395f3e5e1"
+}

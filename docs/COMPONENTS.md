@@ -10,6 +10,7 @@ Updated10October2026 UTC. Contract/CDK dependencies are locked. Historical sourc
 | --- | --- | --- | --- |
 | Schema validation | ajv 8.20.0; ajv-formats 3.0.1 | MIT | installed, npm lock integrity; 10 boundary tests pass |
 | Canonical JSON hashing | canonicalize 5.1.0 | Apache-2.0 | installed, npm lock integrity; approval-hash tests pass |
+| Calendar normalization | @js-temporal/polyfill 0.5.1; jsbi 4.3.2 | ISC; Apache-2.0 | product resolver locked and notices retained;35 author+18 independent calendar cases source accepted; real actor/fiscal authority and runtime integration remain unqualified |
 | Agent harness | @anthropic-ai/claude-agent-sdk 0.3.295 | SEE LICENSE IN README.md | inspect bundled runtime and commercial terms; qualify official SessionStore/configuration |
 | Runtime CLI reference | SDK-bundled CLI 2.1.295 / platform package0.3.295 | SEE LICENSE IN README.md | build/baseline measured exact version and pinned binary hash; no actual query/proxy/recovery acceptance |
 | UI transport | @ai-sdk/react4.0.140 with exact ai7.0.137 | Apache-2.0 | actual mock writer/transport/externalChat fixtures19+typecheck; separate exact review accepted; no React mount/real auth or second model loop |

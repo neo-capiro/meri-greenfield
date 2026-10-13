@@ -1,0 +1,105 @@
+{
+  "removedOwnedDependencyLinks": [
+    {
+      "path": "node_modules",
+      "borrowedTarget": "/workspace/meri-greenfield/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/control/conversations/node_modules",
+      "borrowedTarget": "/workspace/meri-next-batch/apps/control/conversations/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "apps/worker/conversation/node_modules",
+      "borrowedTarget": "/workspace/meri-next-batch/apps/worker/conversation/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/window-resolution/node_modules",
+      "borrowedTarget": "/workspace/meri-next-batch/packages/window-resolution/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    },
+    {
+      "path": "packages/ui-stream/node_modules",
+      "borrowedTarget": "/workspace/meri-greenfield/packages/ui-stream/node_modules",
+      "ownedLinkRemoved": true,
+      "donorPreserved": true
+    }
+  ],
+  "donorsPreserved": true,
+  "captures": [
+    {
+      "path": "focused42-before.receipt.json",
+      "sourceHead": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+      "exitCode": 0,
+      "seconds": 5.734657494000203,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "586e51acd69bd344f24606f298cf9d23524ced1260a3c26bf63c90ec1ee32654"
+    },
+    {
+      "path": "focused46-final.receipt.json",
+      "sourceHead": "492c945547bd56e8471d3b65c7901114eb514791",
+      "exitCode": 0,
+      "seconds": 2.925572190000821,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "e292a0f4a9fc1096850fa28ac14c764194200a5e05f362edc8dc8d0b2dbd55bb"
+    },
+    {
+      "path": "focused46-seal.receipt.json",
+      "sourceHead": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+      "exitCode": 0,
+      "seconds": 3.3001319370014244,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "1f3a8db62813f2feff0ee6cc18e30958dce1035941657e9e09b0aa2977311fbe"
+    },
+    {
+      "path": "independent-before.receipt.json",
+      "sourceHead": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+      "exitCode": 1,
+      "seconds": 2.2223994670002867,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "d23dcece3879de413a441678874ba969bf04efb44c6ed7fd202612cd5a1ef10a"
+    },
+    {
+      "path": "independent-final.receipt.json",
+      "sourceHead": "492c945547bd56e8471d3b65c7901114eb514791",
+      "exitCode": 0,
+      "seconds": 3.1933631760002754,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "0cc7d2b0f3cedd59262615a727d12d34f13f482165cd3f9eb0084075af48aab2"
+    },
+    {
+      "path": "independent11-seal.receipt.json",
+      "sourceHead": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+      "exitCode": 0,
+      "seconds": 3.251986390998354,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "f497134d2fa99a8f622a4ea88532dee7139d721f46f9ba2e36f7a9ec0f643603"
+    },
+    {
+      "path": "race-fixture-before.receipt.json",
+      "sourceHead": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+      "exitCode": 1,
+      "seconds": 2.236702692000108,
+      "leaderReaped": true,
+      "groupRemaining": false,
+      "sha256": "1728603bd9cd39ba581eeb347a190d32b331b448ec171be176332df7e76f61bb"
+    }
+  ],
+  "nativeQualified": false,
+  "listenersCreated": 0,
+  "sdkQueries": "Injected scripted Query only; all exercised streams closed by test assertions. No provider/model process.",
+  "artifactsCreated": 0,
+  "sourceOnly": true
+}

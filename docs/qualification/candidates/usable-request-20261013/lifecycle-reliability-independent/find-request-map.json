@@ -1,0 +1,11 @@
+{
+  "beforeSource": "492c945547bd56e8471d3b65c7901114eb514791",
+  "afterSource": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "changes": [
+    {"case": "Unknown request write COMMIT after persistence, then revocation blocks exact recovery", "before": "Set commitUnknown before submit", "after": "Set commitUnknown only after actual run INSERT; restore original connection port after observed failure", "reason": "New canonical read-only findRequest transaction precedes write acceptance. Faulting that earlier COMMIT would model a read ACK loss and never exercise intended persisted-write gap. All immutable one-request/one-event/no-dispatch/revocation assertions stay exact."},
+    {"case": "All14 selected skills refuse unavailable operations before persistence/dispatch", "before": "No SQL calls whatsoever", "after": "No INSERT/UPDATE/DELETE plus unchanged zero stored runs/events/Temporal starts", "reason": "Exact replay lookup now performs an authorized read-only existing-owner transaction before asset availability. The original no-SQL observation is retained in prior source/preimage; original protection is no persistence or effect, which remains explicit for all14 cases."}
+  ],
+  "newPositiveObservation": "Exact retained window/scopes reach actual scripted SDK query input, one query/close/completed state; no model/provider call.",
+  "preserved": "All10 prior cases/outcome assertions, initial failures,492 passes and exact verifier preimage. No removed/skipped case or change to source/public/implementation files.",
+  "nativeQualified": false
+}

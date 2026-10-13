@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: two simultaneously prepared activities permit one winning SDK execution without loser poisoning
+ok 1 - two simultaneously prepared activities permit one winning SDK execution without loser poisoning
+  ---
+  duration_ms: 36.74177
+  type: 'test'
+  ...
+# Subtest: actual submit consumer normalizes trusted Sunday calendar window through DST at fixed reference
+ok 2 - actual submit consumer normalizes trusted Sunday calendar window through DST at fixed reference
+  ---
+  duration_ms: 11.297665
+  type: 'test'
+  ...
+# Subtest: all14 explicit selected originals refuse unavailable source operations before store or Temporal dispatch
+ok 3 - all14 explicit selected originals refuse unavailable source operations before store or Temporal dispatch
+  ---
+  duration_ms: 186.206573
+  type: 'test'
+  ...
+# Subtest: worker exact immutable selected pin tampering refuses before SDK query and never injects changed prose
+ok 4 - worker exact immutable selected pin tampering refuses before SDK query and never injects changed prose
+  ---
+  duration_ms: 8.071845
+  type: 'test'
+  ...
+# Subtest: worker valid exact asset pin still refuses the unchanged canonical unavailable runtime manifest
+ok 5 - worker valid exact asset pin still refuses the unchanged canonical unavailable runtime manifest
+  ---
+  duration_ms: 11.7371
+  type: 'test'
+  ...
+# Subtest: lost event COMMIT acknowledgement preserves exact text/event identity after owner reconstruction without duplicate event
+ok 6 - lost event COMMIT acknowledgement preserves exact text/event identity after owner reconstruction without duplicate event
+  ---
+  duration_ms: 15.558007
+  type: 'test'
+  ...
+# Subtest: unknown request commit remains durable but current revocation blocks retry/release and no new dispatch
+ok 7 - unknown request commit remains durable but current revocation blocks retry/release and no new dispatch
+  ---
+  duration_ms: 7.043993
+  type: 'test'
+  ...
+# Subtest: external pipeline cancellation after SDK text stops completion, closes query and preserves earlier durable text
+ok 8 - external pipeline cancellation after SDK text stops completion, closes query and preserves earlier durable text
+  ---
+  duration_ms: 10.537611
+  type: 'test'
+  ...
+# Subtest: source/tool/thinking/subagent diagnostics never become public AI SDK events or receipts
+ok 9 - source/tool/thinking/subagent diagnostics never become public AI SDK events or receipts
+  ---
+  duration_ms: 9.994762
+  type: 'test'
+  ...
+# Subtest: cancelled subscription aborts its owned polling signal and cannot release a later page
+ok 10 - cancelled subscription aborts its owned polling signal and cannot release a later page
+  ---
+  duration_ms: 24.495962
+  type: 'test'
+  ...
+# Subtest: exact retained normalized calendar window reaches the actual SDK query input with scopes and immutable context
+ok 11 - exact retained normalized calendar window reaches the actual SDK query input with scopes and immutable context
+  ---
+  duration_ms: 13.678364
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2386.135229

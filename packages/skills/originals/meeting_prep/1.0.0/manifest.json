@@ -1,0 +1,197 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.meeting_prep",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:meeting-prep:1.0.0",
+    "sha256": "fe6f7c54e017e9f187344dd6968af7cb36c01a88c622cde868080ab118df3d7f"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "entity_candidates",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tenant_contacts",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_knowledge_profile",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "meetings",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_documents",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_knowledge_memory",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tasks",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "action_recommendation",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "client_knowledge_monday",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tracked_bills",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "federal_legislation",
+      "authority": "derived",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "public_domain_hearings",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "resolve_entity",
+      "version": "0.2.0"
+    },
+    {
+      "id": "find_contacts",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_client_context",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.search_messages",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.list_upcoming_meetings",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_client_documents",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_memory",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_tasks",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_action_items",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_tracked_bills",
+      "version": "0.2.0"
+    },
+    {
+      "id": "get_bill_status",
+      "version": "0.2.0"
+    },
+    {
+      "id": "search_committee_hearings",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client",
+    "entity"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "relative-duration",
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "meeting-context",
+        "requirement": "Recent exchanges, prior meetings, decisions, open issues, deadlines/developments and promises are covered.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "one-page-checklist",
+        "requirement": "End with a one-page pre-meeting checklist and visible evidence/coverage limitations.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

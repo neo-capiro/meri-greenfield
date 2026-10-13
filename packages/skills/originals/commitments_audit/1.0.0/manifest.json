@@ -1,0 +1,135 @@
+{
+  "contractVersion": "0.2.0",
+  "skillId": "quick_skill.commitments_audit",
+  "skillVersion": "1.0.0",
+  "prose": {
+    "id": "urn:meri:original:commitments-audit:1.0.0",
+    "sha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db"
+  },
+  "requiredSources": [
+    {
+      "sourceId": "mail",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "meetings",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "client_documents",
+      "authority": "authoritative",
+      "purpose": "evidence"
+    },
+    {
+      "sourceId": "tasks",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "action_recommendation",
+      "authority": "authoritative",
+      "purpose": "enumeration"
+    },
+    {
+      "sourceId": "client_knowledge_monday",
+      "authority": "derived",
+      "purpose": "evidence"
+    }
+  ],
+  "allowedOperations": [
+    {
+      "id": "mail.search_messages",
+      "version": "0.2.0"
+    },
+    {
+      "id": "mail.read_thread",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.read_client_meetings",
+      "version": "0.2.0"
+    },
+    {
+      "id": "meeting.query_debriefs",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_client_documents",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_tasks",
+      "version": "0.2.0"
+    },
+    {
+      "id": "query_action_items",
+      "version": "0.2.0"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "version": "0.2.0"
+    }
+  ],
+  "subjectKinds": [
+    "client"
+  ],
+  "windowBases": [
+    "calendar-week",
+    "calendar-month",
+    "calendar-year",
+    "relative-duration",
+    "explicit",
+    "unbounded"
+  ],
+  "completion": {
+    "requireAllSources": true,
+    "allowDisclosedPartial": true,
+    "negativeClaims": "complete-covered-only",
+    "rubric": [
+      {
+        "id": "promise-and-owner",
+        "requirement": "Preserve promise versus suggestion, original source, unknown/conflicting internal owner and date.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "tracking-and-delivery",
+        "requirement": "Deduplicate exact origins, flag untracked email/meeting promises; native completion is not delivery/acceptance.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "monday-and-coverage",
+        "requirement": "Only mapped/authorized supplied boards; disclose Monday checked, disconnected, unavailable or not mapped and all source gaps.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "decisive-evidence",
+        "requirement": "Read exact material records/passages and retain source/version/hash/scope/time binding; separate free-form inference from source excerpts.",
+        "evidenceRequired": true
+      },
+      {
+        "id": "coverage",
+        "requirement": "Expose per-required-source freshness, pagination, decisive-read and history limits; absence requires complete relevant current coverage.",
+        "evidenceRequired": true
+      }
+    ]
+  },
+  "approval": {
+    "mutations": "separate-immutable-proposal",
+    "autoCreateTasks": false
+  },
+  "budgets": {
+    "maxTurns": 12,
+    "maxToolCalls": 24,
+    "maxRecoveryAttempts": 0,
+    "maxRuntimeSeconds": 60,
+    "maxCostMicroUSD": 1000,
+    "maxOutputBytes": 1048576
+  },
+  "versionPolicy": {
+    "existingRuns": "pin-immutable",
+    "resume": "exact-or-explicit-migration",
+    "fork": "preserve-unless-explicit-reselection"
+  }
+}

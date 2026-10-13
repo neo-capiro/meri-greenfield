@@ -1,0 +1,55 @@
+{
+  "executableSource": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "baseline": "18adda2c5461b8d346277135aafd3972b4768802",
+  "publicAndNativePreservation": [
+    {
+      "path": "packages/contracts",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/control/document-application",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/gateway",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/worker/qualification",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/control/qualification-temporal",
+      "byteExactBaseline": true,
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "postReviewExecutableDiffBytes": 0,
+  "checks": {
+    "combinedNode": 359,
+    "publicNode": 71,
+    "reliabilityNode": 11,
+    "distinctNode": 441,
+    "wholeRequirementsOpen": 51,
+    "wholeRuntimeQualified": 0
+  },
+  "sourceAcceptances": [
+    "ce2336f4923374b7d9a7630a183740cd50883eda",
+    "7baa1ecefc38dba7ee9a3339c9067ace7ac4d5ac"
+  ],
+  "historicalFailuresRetained": true
+}

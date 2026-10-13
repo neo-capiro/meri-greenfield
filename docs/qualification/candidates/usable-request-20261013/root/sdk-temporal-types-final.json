@@ -1,0 +1,36 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/control/conversations"
+  ],
+  "cwd": "/workspace/meri-next-batch",
+  "sourceHead": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T11:57:52.362939+00:00",
+  "durationSeconds": 2.839,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 100994,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/sdk-temporal-types-final.stdout.bin",
+      "bytes": 72,
+      "sha256": "d28d0d8d0bfc8177073603548b355127a1e053747abdd0949e5f2acaf126e204"
+    },
+    {
+      "path": "docs/qualification/candidates/usable-request-20261013/root/sdk-temporal-types-final.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

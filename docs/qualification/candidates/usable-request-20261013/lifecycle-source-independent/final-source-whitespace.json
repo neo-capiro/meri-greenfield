@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--check",
+    "18adda2c5461b8d346277135aafd3972b4768802",
+    "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+    "--",
+    "apps/control/conversations",
+    "apps/worker/conversation",
+    "packages/ui-stream"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "5c5d9ebe6370acf7abca01d8a631d29adeb0c3cb",
+  "worktreeHead": "db93e15c63f6e4ad7990b3e8737d8a5d64012ced",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 0,
+  "durationSeconds": 0.009,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}

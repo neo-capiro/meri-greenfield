@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-lifecycle-source-independent",
+  "reviewedCommit": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "worktreeHead": "c985c5fc7eda55689f9e3d256c9576b8c43c74b2",
+  "timeoutSeconds": 240,
+  "timedOut": false,
+  "returncode": 1,
+  "durationSeconds": 2.129,
+  "processReaped": true,
+  "ownedProcessGroupAbsent": true,
+  "stdoutBytes": 7726,
+  "stderrBytes": 0,
+  "stdoutSha256": "20876ea1b7a3196c84aff734abe1edc1c4c9431c2b25fe920bac0bba8a8d2d4e",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidenceKind": "local-source-only-process",
+  "nativeDatabase": false,
+  "nativeRuntimeAcceptance": false
+}
