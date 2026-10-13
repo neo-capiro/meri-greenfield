@@ -1,0 +1,20 @@
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:14: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:16: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:36: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:38: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:59: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:62: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:82: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:84: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:107: trailing whitespace.
++    
+docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-independent.stdout.txt:109: trailing whitespace.
++    
