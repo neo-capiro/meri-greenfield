@@ -62,3 +62,9 @@ test('sequence bigint settings are transported losslessly as text, never JS numb
  for(const field of ['seqstart','seqincrement','seqmax','seqmin','seqcache'])assert.match(sql,new RegExp(`s\\.${field}::text`));
  preservedMetadata.sequences[0].seqstart='9007199254740993';await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
 });
+test('empty evidence schema identity includes namespace OID to detect replacement',async()=>{
+ const allowed=[{name:'empty_evidence',owner:'qualification_owner'}],observed=[{...allowed[0],oid:'30100',acl:null}],s=scripted({fixture:{schemaScope:{mode:'preserve-declared-evidence',namespaces:allowed}},namespaces:observed});
+ const r=await prepareOwnedApplicationSchema(s.args()),sql=s.log.find(q=>q.text.startsWith('SELECT nspname')).text;
+ assert.match(sql,/\boid::text AS oid\b/);observed[0].oid='30101';
+ await assert.rejects(verifyOwnedApplicationSchema({...s.args(),fixture:{...s.f,schemaSha256:r.schemaSha256}}),e=>e.outcome==='READ_UNAVAILABLE');
+});
