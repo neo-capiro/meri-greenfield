@@ -1,0 +1,5 @@
+# Independent column-sizing review
+
+Base3fb65433ff50cdc7bb48afcc4d437d290e24da3e. AGENTS and implementation standards read in the adjacent Office review and apply unchanged. Own only apps/artifacts/test/workbook-columns-independent.test.mjs plus this packet. No source edits/delegation/native evidence/cloud/provider/paid actions.
+
+Retain baseline clipped headers/Documentation by rendering the exact original-recalculated.xlsx supplied by root using actual local LibreOffice. Freeze independent behavior assertions before candidate. Inspect rendered PNG as well as PDF text; verify complete Workstream/Hours/Documentation labels fit separate columns. Exercise canonical XLSX creation and typed-cell revision; bounded widths and long text handling preserve values/formulas/literal strings, number formats, charts/images paths and previously accepted recalculation. Existing immutable input bytes must not be changed. Preserve original Office1c source exactly. Fixed local rendering only, no product xlsx-to-pdf route or image qualification claim. Retain failed controls and all process receipts; <=180second subprocesses, own cleanup only.
