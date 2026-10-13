@@ -7328,16 +7328,17 @@ async function receiveDocumentDownload(response, version, { maxBytes = 16 * 1024
       fail("INVALID_SIGNAL");
     }
   }
-  let body, headers, status;
+  let body, headers, status, redirected;
   try {
     body = getter(Response.prototype, "body").call(response);
     headers = getter(Response.prototype, "headers").call(response);
     status = getter(Response.prototype, "status").call(response);
+    redirected = getter(Response.prototype, "redirected").call(response);
   } catch {
     fail("INVALID_RESPONSE_OBJECT");
   }
   const header = (name) => Headers.prototype.get.call(headers, name);
-  if (status !== 200 || header("content-type") !== version.mimeType || header("content-disposition") !== `attachment; filename="${version.filename}"` || header("content-length") !== String(version.object.bytes) || header("cache-control") !== "no-store" || header("x-content-type-options") !== "nosniff" || header("content-encoding") !== null) fail("DOWNLOAD_HEADERS");
+  if (redirected || status !== 200 || header("content-type") !== version.mimeType || header("content-disposition") !== `attachment; filename="${version.filename}"` || header("content-length") !== String(version.object.bytes) || header("cache-control") !== "no-store" || header("x-content-type-options") !== "nosniff" || header("content-encoding") !== null) fail("DOWNLOAD_HEADERS");
   let reader;
   try {
     reader = ReadableStream.prototype.getReader.call(body);

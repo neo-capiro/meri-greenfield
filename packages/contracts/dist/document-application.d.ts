@@ -967,7 +967,7 @@ export type AdmittedDocumentVersion = Readonly<DocumentVersion> & {readonly [adm
 export type DocumentReceipt<T> = Omit<T,'version'> & {readonly version:AdmittedDocumentVersion};
 export interface DocumentResponseMap {create:DocumentReceipt<DocumentCreatedResponse>; revise:DocumentReceipt<DocumentCreatedResponse>; inspect:DocumentReceipt<DocumentInspectionResponse>; download:never;}
 export type DocumentResponse<R extends DocumentRoute> = DocumentResponseMap[R] | DocumentErrorResponse;
-export interface DocumentDownload {readonly version:AdmittedDocumentVersion; readonly bytes:Uint8Array;}
+export interface DocumentDownload {readonly version:AdmittedDocumentVersion; readonly bytes:Uint8Array<ArrayBuffer>;}
 export interface DocumentDownloadOptions {maxBytes?:number; timeoutMs?:number; signal?:AbortSignal;}
 export declare class DocumentResponseError extends Error {readonly code:string;}
 export declare function receiveDocumentRequest<R extends DocumentRoute>(route:R,utf8Bytes:Uint8Array):AdmittedDocumentRequest<R>;
