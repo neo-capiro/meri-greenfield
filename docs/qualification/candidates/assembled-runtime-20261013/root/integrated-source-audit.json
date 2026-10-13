@@ -187,5 +187,7 @@
   "priorArtifactEntriesExact": 30,
   "initialAuditError": "Nonexistent apps/artifacts/compilers locator; no source audit output written. Corrected by checking all prior canonical artifact entries from git tree. Cleanup completed before this audit error.",
   "fixtureOrMigrationApplied": false,
-  "nativeAcceptance": false
+  "nativeAcceptance": false,
+  "entirePublishedPR64BaseEntriesExact": 15126,
+  "existingBaseEntriesChangedOrRemoved": []
 }
