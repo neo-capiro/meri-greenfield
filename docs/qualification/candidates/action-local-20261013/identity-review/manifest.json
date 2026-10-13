@@ -1,0 +1,149 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "source": "351b23190e61b459e94c910da013d1a0ea0a4518",
+  "authorPacket": "7cb52bf9b8294ac42fa70bf20eec9fc6af58e970",
+  "cliSource": "bd118a04cdf79b2b6d06464f8f794fdd7c101b52",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/admission-before.json",
+      "bytes": 1283,
+      "sha256": "f1beb1f7d4b408071411f9417bd816cd638267328e9b884e9ef255355b96cfd5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/admission-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/admission-before.stdout.bin",
+      "bytes": 1205,
+      "sha256": "f7bdaa122ae983a2bd938f9d336d8e3dee7c2ef0fa154367acdf98cdb410a4e7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/admission-repaired.json",
+      "bytes": 1286,
+      "sha256": "6ac3c50095f74d20dfdc22cf71adfb0c791b2ec514aa70674cca4aac8059b2e3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/admission-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/admission-repaired.stdout.bin",
+      "bytes": 456,
+      "sha256": "1bbc09d8c95ee37bed381b39543c8359d068936a7df1db597de78c0a21648612"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/audit.py",
+      "bytes": 2717,
+      "sha256": "2b99d25885c726e063c50cbc65aa8aeb51a2c4da7f4c8e2c82b7a024c919e8a9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/author-packet-audit.json",
+      "bytes": 779,
+      "sha256": "c9d67e3d476c4c2a002778a7b6035d993abf1a01ce59c9eb5752e63b2de1dd7f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/child-environment.json",
+      "bytes": 249,
+      "sha256": "9f852292dc561ce76487014c19082221c8e2751d0137b98a905a7cc15ce71cc9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/cleanup.json",
+      "bytes": 907,
+      "sha256": "3210529635e7b1a3bd4b4cefd383999cae63f16d2fd46d9eca2006fdbf9bb9d6"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/findings.json",
+      "bytes": 1650,
+      "sha256": "5c3da0dada1e50f660643f55e9d66ac48531321222e4c694c31446c5b7ad2010"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-before.json",
+      "bytes": 1421,
+      "sha256": "461b9a75cdb17f977eaaf18ce376a3aee6910ad4b9a303d01a475fcd9ffe2aff"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-before.stdout.bin",
+      "bytes": 4278,
+      "sha256": "c09ae5d7e380979d0b6180b57bd7bcf1f4b971875708c09f30aa1124774e8635"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-repaired.json",
+      "bytes": 1425,
+      "sha256": "4a603f4233d488898d19882f76646a247efddff0fb31d7964f6e31cc2619e5e7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/identity-repaired.stdout.bin",
+      "bytes": 2880,
+      "sha256": "bb8c2f7f3759457c0aa34fe620fa2964e93dca433822f12df3decce5aeb57241"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/source-audit-empty.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/source-audit-failure.json",
+      "bytes": 588,
+      "sha256": "fa488f3b9830a046bf0544d49f1b53557e0a36711a096cd07fd48783f65c6a42"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-review/source-audit.json",
+      "bytes": 2217,
+      "sha256": "5aa29a6c8561f4d88b6f2406230fd3755aa14744f5e78c03ca0ec34233586560"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-LOCAL-IDENTITY-REVIEW-20261013.md",
+      "bytes": 2847,
+      "sha256": "822863052720ce1dc556cc3075eeee548f11f41d1dc37dc2152d3e17ca9728dc"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-IDENTITY-REVIEW-20261013.md",
+      "bytes": 5031,
+      "sha256": "b54093c4c0ca63be5b856959519d99a1e0c9b78c0ad022c7f2cd645ca87accfe"
+    },
+    {
+      "path": "scripts/local-action/admission-independent.test.mjs",
+      "bytes": 3091,
+      "sha256": "ad9602271df82e12783a1123d33495a49cf3039a4c2586dea6302fee664dc059"
+    },
+    {
+      "path": "apps/gateway/local-action/test/case-independent.test.mjs",
+      "bytes": 1780,
+      "sha256": "4cac49a24d9a1e31081b1c7c6eaa02cedbe0c7f75af5f9e8faa112e5f3208442"
+    },
+    {
+      "path": "apps/gateway/local-action/test/gateway-independent.test.mjs",
+      "bytes": 7204,
+      "sha256": "842a8f52b80c382d731187880740b7f0c5c1c4428b9ef32f1f40686b651a03e4"
+    },
+    {
+      "path": "apps/gateway/local-action/test/identity-independent.test.mjs",
+      "bytes": 7569,
+      "sha256": "fa8a167a692ba1177feff82e07ba7330b79002cf9f012a50d56ef7bca8e06e6d"
+    }
+  ]
+}

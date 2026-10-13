@@ -1,0 +1,44 @@
+{
+  "ownedGroups": [
+    {
+      "capture": "admission-before",
+      "pgid": 426594,
+      "absentNow": true,
+      "killed": false,
+      "timedOut": false
+    },
+    {
+      "capture": "admission-repaired",
+      "pgid": 427330,
+      "absentNow": true,
+      "killed": false,
+      "timedOut": false
+    },
+    {
+      "capture": "identity-before",
+      "pgid": 428294,
+      "absentNow": true,
+      "killed": false,
+      "timedOut": false
+    },
+    {
+      "capture": "identity-repaired",
+      "pgid": 429751,
+      "absentNow": true,
+      "killed": false,
+      "timedOut": false
+    }
+  ],
+  "ownedCopiedDependenciesRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "ownedNodeModulesAbsent": true,
+  "donorUntouched": true,
+  "scope": "No unrelated process or dependency cleanup"
+}
