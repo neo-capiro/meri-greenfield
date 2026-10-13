@@ -1,0 +1,35 @@
+{
+  "command": [
+    "git",
+    "push",
+    "origin",
+    "HEAD:refs/heads/codex/runtime-artifact-storage-20261013"
+  ],
+  "cwd": "/workspace/meri-runtime-artifact-storage",
+  "sourceHead": "d4561d6dff0596998179a98ff439142040b463dc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T19:10:21.299029+00:00",
+  "durationSeconds": 1.969,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 332328,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/artifacts/storage/test/evidence/source-publication.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/artifacts/storage/test/evidence/source-publication.stderr.bin",
+      "bytes": 365,
+      "sha256": "f63e3228daeaaf5e55e6eeba42c37212ee558e03cabd41c46f2a0f3935f0a8a1"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
