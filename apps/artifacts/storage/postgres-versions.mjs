@@ -1,7 +1,7 @@
 /** Durable versions over a borrowed pg-compatible pool; atomic immutable record/head CAS. */
 import {readLocalReplay} from '../local-replay.mjs';
 import {ARTIFACT_MIME_TYPES,artifactFilename} from '../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
-import {v,own,data,fail,same,uuid,digest,scopeFacts,storageLifetime,configuration} from './boundary.mjs';
+import {v,own,data,fail,same,uuid,digest,scopeFacts,storageLifetime,configuration,storageMethod} from './boundary.mjs';
 function recordValue(raw){const r=data(own(raw,['version','spec','specSha256','requestSha256','inspection']));
  const version=v.version(r.version),spec=v.request(r.spec),inspection=v.inspection(r.inspection);digest(r.requestSha256);uuid(version.versionId);uuid(version.artifactId);
  if(r.specSha256!==v.hash(spec)||!same(version.object.scopes,version.scopes)||version.scopes.some(s=>s.tenantId!==version.binding.tenantId)||
@@ -11,11 +11,11 @@ function recordValue(raw){const r=data(own(raw,['version','spec','specSha256','r
 function decode(row){if(!row||v.hash(row.record)!==row.record_sha256)fail('ARTIFACT_VERSION_CORRUPT');const r=recordValue(row.record),b=r.version.binding;
  if(row.version_id!==r.version.versionId||row.artifact_id!==r.version.artifactId||row.tenant_id!==b.tenantId||row.actor_id!==b.actorId||row.conversation_id!==b.conversationId||row.request_sha256!==r.requestSha256)fail('ARTIFACT_VERSION_CORRUPT');return r;}
 export function createPostgresArtifactVersions(options){const {pool,now,maxRequestMs=15000}=own(options,['pool','now'],['maxRequestMs']);configuration(now,maxRequestMs);
- if(typeof pool?.connect!=='function')fail('ARTIFACT_STORAGE_CONFIGURATION');
+ const connect=storageMethod(pool,'connect');
  async function transaction(signal,body){const life=storageLifetime({now,maxRequestMs},signal);let c,begun=false,committing=false,reusable=false,failure,result;
   // Capture a late connection and retire only this borrowed lease if acquisition
   // outlives the bounded caller. The caller's pool is never closed here.
-  const acquiring=Promise.resolve().then(()=>pool.connect());
+  const acquiring=Promise.resolve().then(()=>connect());
   try{c=await life.run(()=>acquiring);life.check();await life.run(()=>c.query('BEGIN'));begun=true;
    await life.run(()=>c.query("SET LOCAL statement_timeout = '5s'"));await life.run(()=>c.query("SET LOCAL lock_timeout = '2s'"));
    result=await body(c,life);life.check();committing=true;await life.run(()=>c.query('COMMIT'));reusable=true;life.check();

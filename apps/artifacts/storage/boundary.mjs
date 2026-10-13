@@ -1,5 +1,6 @@
 /** Canonical inert storage facts and owned deadlines; no scope authorization. */
 import {createHash} from 'node:crypto';
+import {types} from 'node:util';
 import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -14,3 +15,16 @@ export function scopeFacts(raw){const scopes=data(raw);if(!Array.isArray(scopes)
  scopes.forEach(scope=>validateShape('Scope',scope));if(new Set(scopes.map(v.hash)).size!==scopes.length||scopes.some(s=>s.tenantId!==scopes[0].tenantId))fail('ARTIFACT_STORAGE_INPUT');return scopes;}
 export function storageLifetime({now,maxRequestMs},signal){nativeSignal(signal);return createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:code=>Object.assign(Error('ARTIFACT_STORAGE_'+code),{code:'ARTIFACT_STORAGE_'+code})});}
 export function configuration(now,maxRequestMs){if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('ARTIFACT_STORAGE_CONFIGURATION');}
+/** Admit configured native prototype methods without executing getters or proxies. */
+export function storageMethod(port,name){
+ if(!port||typeof port!=='object'||types.isProxy(port))fail('ARTIFACT_STORAGE_CONFIGURATION');
+ let cursor=port;
+ for(let depth=0;cursor!==null&&depth<32;depth++){
+  if(types.isProxy(cursor))fail('ARTIFACT_STORAGE_CONFIGURATION');
+  const descriptor=Object.getOwnPropertyDescriptor(cursor,name);
+  if(descriptor){if(!Object.hasOwn(descriptor,'value')||typeof descriptor.value!=='function'||types.isProxy(descriptor.value))fail('ARTIFACT_STORAGE_CONFIGURATION');
+   const method=descriptor.value;return (...args)=>Reflect.apply(method,port,args);}
+  cursor=Object.getPrototypeOf(cursor);
+ }
+ fail('ARTIFACT_STORAGE_CONFIGURATION');
+}

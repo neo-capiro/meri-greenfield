@@ -1,0 +1,142 @@
+✖ postgres constructor refuses getter method without executing it (1.208373ms)
+✖ postgres constructor refuses proxy method without executing it (0.188914ms)
+✖ s3 constructor refuses getter method without executing it (0.383275ms)
+✖ s3 constructor refuses proxy method without executing it (0.210887ms)
+✔ native Pool/S3Client prototype methods remain valid and constructors perform no IO (3.716446ms)
+✖ postgres retains the admitted bound method if configured connect is later replaced by an accessor (0.923286ms)
+✖ s3 retains the admitted prototype method if configured send is later replaced by an accessor (1.004036ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 1
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1755.146314
+
+✖ failing tests:
+
+test at apps/artifacts/storage/test/constructor-ports.test.mjs:6:74
+✖ postgres constructor refuses getter method without executing it (1.208373ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:7:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/storage/test/constructor-ports.test.mjs:6:74
+✖ postgres constructor refuses proxy method without executing it (0.188914ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:7:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/storage/test/constructor-ports.test.mjs:6:74
+✖ s3 constructor refuses getter method without executing it (0.383275ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:7:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/storage/test/constructor-ports.test.mjs:6:74
+✖ s3 constructor refuses proxy method without executing it (0.210887ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:7:166)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/storage/test/constructor-ports.test.mjs:10:1
+✖ postgres retains the admitted bound method if configured connect is later replaced by an accessor (0.923286ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ENOENT/. Input:
+  
+  'Error: ARTIFACT_VERSION_UNAVAILABLE'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:10:302)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_VERSION_UNAVAILABLE
+        at transaction (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/postgres-versions.mjs:22:39)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:10:302)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/storage/test/constructor-ports.test.mjs:11:1
+✖ s3 retains the admitted prototype method if configured send is later replaced by an accessor (1.004036ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /VERSIONING_REQUIRED/. Input:
+  
+  'Error: LATE_GETTER'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:12:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: LATE_GETTER
+        at Client.get (file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/test/constructor-ports.test.mjs:11:381)
+        at file:///workspace/meri-runtime-artifact-storage/apps/artifacts/storage/s3-objects.mjs:14:76
+        at file:///workspace/meri-runtime-artifact-storage/packages/runtime/operation-lifetime.mjs:38:65,
+    expected: /VERSIONING_REQUIRED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
