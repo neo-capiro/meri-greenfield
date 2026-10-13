@@ -1,0 +1,124 @@
+✖ pending approval creates no debit/effect, later approval and reconstructed owners replay one durable command (68.882548ms)
+✔ reconstructed lookup read uses retained concrete store and current authority (46.519604ms)
+✔ default disabled refuses new lookup before SQL and command before budget while preserving authorized lookup read (54.738939ms)
+✖ fresh approval revocation refuses reconstructed replay without a new effect or debit (25.335622ms)
+✖ lost prepare acknowledgement preserves canonical stage and never repeats effects (24.364302ms)
+✖ lost reserve acknowledgement preserves canonical stage and never repeats effects (26.316766ms)
+✖ lost marker acknowledgement preserves canonical stage and never repeats effects (21.332145ms)
+✖ lost settle acknowledgement preserves canonical stage and never repeats effects (21.849743ms)
+✖ lost command completion ACK retains completed journal and exact charged result across reconstruction (21.732256ms)
+✔ construction is inert, keeps borrowed pools open and rejects altered task descriptor/context (22.270015ms)
+✖ new lookup uses actual governed gateway HTTP adapter and durable read accounting before retained current read (25.801131ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 3
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2970.58905
+
+✖ failing tests:
+
+test at apps/control/action-host/durable/test/durable.test.mjs:6:1
+✖ pending approval creates no debit/effect, later approval and reconstructed owners replay one durable command (68.882548ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:6:148)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:15:1
+✖ fresh approval revocation refuses reconstructed replay without a new effect or debit (25.335622ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:15:124)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:16:60
+✖ lost prepare acknowledgement preserves canonical stage and never repeats effects (24.364302ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:16:180)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:16:60
+✖ lost reserve acknowledgement preserves canonical stage and never repeats effects (26.316766ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:16:180)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:16:60
+✖ lost marker acknowledgement preserves canonical stage and never repeats effects (21.332145ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:16:180)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:16:60
+✖ lost settle acknowledgement preserves canonical stage and never repeats effects (21.849743ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:16:180)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:17:1
+✖ lost command completion ACK retains completed journal and exact charged result across reconstruction (21.732256ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async prepared (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:5:88)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:17:140)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/durable/test/durable.test.mjs:20:1
+✖ new lookup uses actual governed gateway HTTP adapter and durable read accounting before retained current read (25.801131ms)
+  Error: GRANT_ADMISSION_DENIED
+      at refuse (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:4:39)
+      at admit (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:24:128)
+      at async file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-tool-budget.mjs:38:48
+      at async PostgresBudgetStore.transact (file:///tmp/meri-action-host-durable-20261013/apps/gateway/budget/postgres-budget-store.mjs:18:16)
+      at async Object.ready (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/fixture.mjs:40:25)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-durable-20261013/apps/control/action-host/durable/test/durable.test.mjs:20:199)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

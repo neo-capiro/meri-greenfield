@@ -1,0 +1,88 @@
+{
+  "source": "c581c63764f67a9a7a5ee9090cba9e103aa486d7",
+  "productionExecutableSource": "218379df28f2804342809fa484b6538ec028573b",
+  "fixture": "8d8ae474604d6ee282516f8f1b891397389520e3",
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "members": [
+    {
+      "path": "apps/control/action-host/durable/README.md",
+      "bytes": 5507,
+      "sha256": "5dbee7561133003bf0f31f4a70e81d4f7ace4fde317a112a969d03ab19f95a60"
+    },
+    {
+      "path": "apps/control/action-host/durable/index.mjs",
+      "bytes": 3854,
+      "sha256": "cf9ff325c4b5330bfc5b24142c3e850f100a6b48e7264166eeaf79463182de3f"
+    },
+    {
+      "path": "apps/control/action-host/durable/test/durable.test.mjs",
+      "bytes": 7083,
+      "sha256": "03e13bedb98fe9d768f376c64887c8ccb42720e35785d9011126228530879da8"
+    },
+    {
+      "path": "apps/control/action-host/durable/test/fixture.mjs",
+      "bytes": 7175,
+      "sha256": "e1f7b6db90ccc0ef53db86dc96d32b971ac40177b8bac388622db8fab1a0771e"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-DURABLE-20261013.md",
+      "bytes": 4107,
+      "sha256": "8cd4520379d3780072bddd249dc3d6cb0bb41226da908e5a0a6303b03261cdf8"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-HOST-DURABLE-20261013.md",
+      "bytes": 2813,
+      "sha256": "cb5cd1736c752b680760812c0266c8c95dcd432bdec118aa60a1cc3e0ec4d63b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/audit.json",
+      "bytes": 2095,
+      "sha256": "4aff82ece3660d8b4d6b7bac406994417b6eaa30a2fa9ce423f9d5904820dd95"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/audit.py",
+      "bytes": 3507,
+      "sha256": "1f68b9f7efa8da63accc4fe564fccb2dfc21d9fc5e0fcdd54383f1d9a7879b87"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/cleanup.json",
+      "bytes": 1379,
+      "sha256": "d18cb60c715fec8ed13fdbfc748a63c015b4d94094724ea1b8f6436f930a5c2b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/initial.json",
+      "bytes": 1255,
+      "sha256": "86c6ac98353c62aee551b9f9eb2127b93a8ed265247b7d433a586c3c41aeefc4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/initial.stdout.bin",
+      "bytes": 11255,
+      "sha256": "7b8821b8bd0172cab4da3cdbced41c8e034e07b8c97cc9c01aef537dbfb9c33a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.json",
+      "bytes": 1275,
+      "sha256": "cd0530d5e024e92cedaaf3a46f23e8138ee29716b473174f593717916fb7bd86"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stdout.bin",
+      "bytes": 1326,
+      "sha256": "2f9970eb6ba07a4d69e37d26602f5b805bb00da7732b497083a0382440772e22"
+    }
+  ]
+}

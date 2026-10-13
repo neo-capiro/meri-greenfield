@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/binding.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-host-binding-20261013",
+  "sourceHead": "81c04d349e653047fdc4cff7155424de2d5eb64e",
+  "sourceDiffSha256": "581ca33b4ab05e2f3b9cefa5a75be512df604915df91e4f520872547fbe826df",
+  "sourceDiffBytes": 1834,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T02:19:19.158091+00:00",
+  "durationSeconds": 3.083,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 454623,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stdout.bin",
+      "bytes": 1213,
+      "sha256": "c60d3ebedee5bf94e47cc8b62167dbc5763610bbdaac522267b194d1c7dc09da"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

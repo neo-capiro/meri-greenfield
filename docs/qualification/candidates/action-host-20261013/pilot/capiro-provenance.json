@@ -1,0 +1,1386 @@
+{
+  "schemaVersion": 1,
+  "repository": "neo-capiro/capirov2",
+  "pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "access": "Existing local Git objects only; no customer/source/provider execution; no private bodies retained",
+  "qualifiedHumanCases": 0,
+  "primaryReferences": [
+    {
+      "path": "evals/meri/README.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "e0580b0a8bff568d06ea6b4a143fed70cefcf5c1",
+      "bytes": 7484,
+      "sha256": "7d73d2e9336d9d3e5a7c867f737b13fc8afab95ff0739ff7d633c5a2b0700e13",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "e0580b0a8bff568d06ea6b4a143fed70cefcf5c1",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/CONTRACT.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "d6aef2f3515c7e824f9657f7c57a13fbd8fc7ea8",
+      "bytes": 6624,
+      "sha256": "46c9d2db812826af89453fba6609331fa4647e088c4fa596d6e3155aa166e727",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "d6aef2f3515c7e824f9657f7c57a13fbd8fc7ea8",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/suite-contract.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "b2111c9a30d39a245b97cfd44b4f455d6f40c225",
+      "bytes": 2421,
+      "sha256": "25be466136f4d47fc141e4b024f732a5ee1c1a477cc084700208c7b2826c052d",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "b2111c9a30d39a245b97cfd44b4f455d6f40c225",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/live-75-case-spec.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "076678d1261dfec0ba77f9959f10245a1020682a",
+      "bytes": 28539,
+      "sha256": "b7761f5e986c7c360a2e68a98f573dcc0c4889fbdf6a8a3012d51b6d4dd44520",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "076678d1261dfec0ba77f9959f10245a1020682a",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/live-75-agent-handoff.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "3aacdc2ac9b993732e5b06f61a275a795f1c286f",
+      "bytes": 17691,
+      "sha256": "f54e3f06ac17da132bed3a7a9b68b15dc3c35cedacd153a7188e312c444118c9",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "3aacdc2ac9b993732e5b06f61a275a795f1c286f",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/simple/original-cases.mjs",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "d19e198e73bd1e463bbc7fb6d80bcaa0a4391e41",
+      "bytes": 62401,
+      "sha256": "447f813860860a32129e45ef7bfbdfb76f43ec7647bb3defedb4bcdc7aea5dec",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "d19e198e73bd1e463bbc7fb6d80bcaa0a4391e41",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/simple/capiro-internal-cases.mjs",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "0b51763deed402a422a793bd153efd59031343bf",
+      "bytes": 15500,
+      "sha256": "e3955707d8925a5aff0750131fcdef6b9bb471234a9aef856f2aa76a2b0e3b7f",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "0b51763deed402a422a793bd153efd59031343bf",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/simple/program-tasks.mjs",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "ce173abd08c3ea201697f9d304fd492c8b3725fb",
+      "bytes": 5164,
+      "sha256": "b8ed81b4fdd3a4d637ad4722ad8a6a62929a1bf30af94dcd4934f6a294514eab",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "ce173abd08c3ea201697f9d304fd492c8b3725fb",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/commitments-deliverables-extension.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "b10f47ba241241ecebc3f2c9ebc260205864d6b3",
+      "bytes": 7348,
+      "sha256": "4758e1b4a650506dd2b22c23db91919374a372438a992cdbfa50da8998ad0b25",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "b10f47ba241241ecebc3f2c9ebc260205864d6b3",
+      "changed": false
+    },
+    {
+      "path": "evals/meri/commitments-deliverables/README.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "3b5c52b1f1ab9dc00a094e92c3c99eca32358bd3",
+      "bytes": 1820,
+      "sha256": "e8944447f2e8b1eb6b3b15784e3623c7ceb6bd8c3b192cc6217aad0e286ee33c",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "3b5c52b1f1ab9dc00a094e92c3c99eca32358bd3",
+      "changed": false
+    },
+    {
+      "path": "docs/meri/implementation/01-Meri-Foundation-and-Reliability.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "c277882fd22ab218f5c2ab5548cd06f7e051ecc9",
+      "bytes": 236508,
+      "sha256": "77c55b7484343a766c3bd17047c513b50c7c5d045e2018f03ea9dd0c08b622bd",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "c277882fd22ab218f5c2ab5548cd06f7e051ecc9",
+      "changed": false
+    },
+    {
+      "path": ".session5-live/frozen-corpus.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "0b67cee7d9a577e8be1febc219660c1ddee8eb72",
+      "bytes": 9598,
+      "sha256": "ad9f4264db077baec8b64cc622018b50da1b6ca60226e316d6184cb3acaa0b1d",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "0b67cee7d9a577e8be1febc219660c1ddee8eb72",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/README.md",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "e09b71b32b1620f0f4caea33a876acfb554398b0",
+      "bytes": 5169,
+      "sha256": "35601900ef0cb001b52e83b4df7d8458e00d259bcc7058ac201ef4fcd9bc9570",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "e09b71b32b1620f0f4caea33a876acfb554398b0",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/amendment/fy27-defense-appropriations-floor-amendment-procurement-plus-up.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "3bbe57639b217c95b66213a4ef584a6bab3394d8",
+      "bytes": 6260,
+      "sha256": "5452c39730a3a50fd6ba05d5e336da25fa9d671a01ec461e271d494f3ad74f31",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "3bbe57639b217c95b66213a4ef584a6bab3394d8",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/amendment/senate-ndaa-managers-package-report-language.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "438b132992283f9c82494d8a1d6de2888d298e92",
+      "bytes": 4391,
+      "sha256": "23311910033c09e7ceb4cc9b320d4d0c6f0b942592bbcd50fbaa6316250e5d86",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "438b132992283f9c82494d8a1d6de2888d298e92",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/appropriations/fy28-dhp-research-line-increase.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "ac98c1651fc8b15d3adb502fe9e144bff415c279",
+      "bytes": 3854,
+      "sha256": "4333ee626974932c6bf4c586ad5edf36a23baa13d2916da15d745a3730fc7103",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "ac98c1651fc8b15d3adb502fe9e144bff415c279",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/appropriations/fy28-shipbuilding-plus-up.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "4f63f93c8e8758b05c0fcd41e5cc65e3d29aecb7",
+      "bytes": 4745,
+      "sha256": "145b1620f72100a30c989ea98b680507e2dd132d26f3f34a9553d165191159aa",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "4f63f93c8e8758b05c0fcd41e5cc65e3d29aecb7",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/authorization/ndaa-new-program-start-authorization.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "4519f7ede90d76fa4cc5a7ae210ddea5209a81ab",
+      "bytes": 4116,
+      "sha256": "1f590255a2beda89dfa7d828adcaf14fdd0cc1779223757bb2f70580752d7d89",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "4519f7ede90d76fa4cc5a7ae210ddea5209a81ab",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/authorization/reauthorize-expiring-pilot-program.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "bcdbc5e931e8ddb103c7a7d7067d07e8d8d71866",
+      "bytes": 3745,
+      "sha256": "18e02ae5fbd8455754115b88a36641181381ab4558525b15686dd6942bfd5853",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "bcdbc5e931e8ddb103c7a7d7067d07e8d8d71866",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/coalition/industry-coalition-shared-ask.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "64171589f1516c53729ef2e03b8465c0f837b77d",
+      "bytes": 3657,
+      "sha256": "5a5a071414d4df14f406a871a058c15a943261b2b111a0dd447df43719a894e8",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "64171589f1516c53729ef2e03b8465c0f837b77d",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/coalition/state-coalition-infrastructure-funding.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "36c27578103232abbcf9a32a25edff420219c4d5",
+      "bytes": 3444,
+      "sha256": "890a4a63a1d8c7031deadf0f3ac68f102a18f79ca3186a638ae883ff72516c87",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "36c27578103232abbcf9a32a25edff420219c4d5",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/earmark/community-project-funding-request.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "f20a5e5861d0c91e8c8337e5c72afa75fd73e7f3",
+      "bytes": 3315,
+      "sha256": "fb126bee9c4d002cbce6f3ac76e1bde38a9d6cb9cc019257dabec756343f8e44",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "f20a5e5861d0c91e8c8337e5c72afa75fd73e7f3",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/earmark/university-research-center-earmark.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "45fd476027bfb7651a1bf998e8aa993d0589233b",
+      "bytes": 3350,
+      "sha256": "f842543d623ee3a5bb1a4d1f9c646719a222eb00cc3bb4013a1af43874ebfcf2",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "45fd476027bfb7651a1bf998e8aa993d0589233b",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/procurement/rfp-response-positioning.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "b115b8bea6735770446512f2ba45c8b19b4b58cc",
+      "bytes": 2931,
+      "sha256": "d53388bb4d3a235d6c5ffe60688f8f6bc6c09b825965dab41b2901eea8229f91",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "b115b8bea6735770446512f2ba45c8b19b4b58cc",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/procurement/sole-source-justification-defense.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "1eef23ab8b0f184d247d6d7408bf53f5d1ceffd2",
+      "bytes": 2983,
+      "sha256": "c5645f06799f181997c57d5bc0e1ba3f965d049a85d9d0ef448ce8b0f0034b1a",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "1eef23ab8b0f184d247d6d7408bf53f5d1ceffd2",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/regulatory/faa-rulemaking-comment-response.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "dff78dbd4c0ff4799daf253b6d70641b855b83ce",
+      "bytes": 3398,
+      "sha256": "78ff1aaf4b9ee69f7b6e3a42306381404db58b97c563e524096b011602ffb509",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "dff78dbd4c0ff4799daf253b6d70641b855b83ce",
+      "changed": false
+    },
+    {
+      "path": "apps/api-strategy/eval/goldens/regulatory/fda-guidance-engagement.json",
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "8efbe8be757c2e475a67821583eb0577a48e0ed1",
+      "bytes": 3319,
+      "sha256": "3df3ded16a452f77be79dfddf1f7f06c5b84376cc33c8c8faad1c20318a0bbf6",
+      "observedRef": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "8efbe8be757c2e475a67821583eb0577a48e0ed1",
+      "changed": false
+    }
+  ],
+  "legacy75": {
+    "specRows": [
+      {
+        "id": "01",
+        "line": 31,
+        "rowSha256": "8191a9ad9ce493d7f767e07e36708d8cd915f44325d18eaf031b7708d7e25dca"
+      },
+      {
+        "id": "02",
+        "line": 32,
+        "rowSha256": "c2a7e607103b5d9edd09b485db580272dd40087b7d2f3e09dcb2c912edad3041"
+      },
+      {
+        "id": "03",
+        "line": 33,
+        "rowSha256": "5ec2b1e54a9538da53b2d1f7c0a06500c9b21606b2382752d505cb437d5bac6f"
+      },
+      {
+        "id": "04",
+        "line": 34,
+        "rowSha256": "e11a7cdf6e2055a976562cdf50b88c36bdd5231b1707e4a37256906d78b1d48b"
+      },
+      {
+        "id": "05",
+        "line": 35,
+        "rowSha256": "572209f698ff236f2d1d5a3b46e827e6bcedccc6bb4b4be59cf07ac73726920e"
+      },
+      {
+        "id": "06",
+        "line": 36,
+        "rowSha256": "5081d970b04be9f271a94aa82a6553a9130bbf227eedb32eec1864639657856b"
+      },
+      {
+        "id": "07",
+        "line": 37,
+        "rowSha256": "7d195de4bc9e176a0267bb2828cdeb5953f38e4d72560988dc2697c032dd6cc3"
+      },
+      {
+        "id": "08",
+        "line": 38,
+        "rowSha256": "ee9f1883c8dcea23f20f250863dff46022f53c1812c66a8a2ddaad48472a84f1"
+      },
+      {
+        "id": "09",
+        "line": 39,
+        "rowSha256": "0bcebaed7c46744515730c81d50a8bce7365f587e2de1dbf501e84f6f4a13ca9"
+      },
+      {
+        "id": "10",
+        "line": 40,
+        "rowSha256": "4bde1e82737ee5c3846d4890918dfa24db0dc218825d44c18dfc1e28eaa3bccd"
+      },
+      {
+        "id": "11",
+        "line": 41,
+        "rowSha256": "31854818f4bb73a9681407975d86ce2460c28f8b21019b1634b0db2de16b9c00"
+      },
+      {
+        "id": "12",
+        "line": 42,
+        "rowSha256": "9d60b4a6f5c6a2a5f6170602fd38eb095302a45925b0a3e4331d42d5a90cf0d5"
+      },
+      {
+        "id": "13",
+        "line": 48,
+        "rowSha256": "f9c937548bb6ee41a4fd8383910727534fb2b164b113bd54694ba7305793ccdb"
+      },
+      {
+        "id": "14",
+        "line": 49,
+        "rowSha256": "5756bcc8642c0520b4ff1384e4a55577bfc56c9686d96e0d149ffbad3d2e4b30"
+      },
+      {
+        "id": "15",
+        "line": 50,
+        "rowSha256": "5f2e0c0a69c90c889658d51697b5bb789b5daa0ecabbe847a9d5f22b931d882a"
+      },
+      {
+        "id": "16",
+        "line": 51,
+        "rowSha256": "3f382a9ee3c5edefa28a43ac6fab3499379d2019b6c70d42d31245d2d0b5d62d"
+      },
+      {
+        "id": "17",
+        "line": 52,
+        "rowSha256": "73d5fb40512691b058428a434392d08ddab74a681e073f0efd28b88010db58ba"
+      },
+      {
+        "id": "18",
+        "line": 53,
+        "rowSha256": "9483f9aeb62cfa2a57f154289b72f811c62fc9a59682ae705bd48fdaa0430ad5"
+      },
+      {
+        "id": "19",
+        "line": 54,
+        "rowSha256": "c48075b03753773ff32336b7485f34ca0bb85696ec80ad3db49f53bec4e00ae5"
+      },
+      {
+        "id": "20",
+        "line": 60,
+        "rowSha256": "34e4fe9939a735d6097b5ae45d047be0532a791c139b2e1520ae65fc862e4f22"
+      },
+      {
+        "id": "21",
+        "line": 61,
+        "rowSha256": "6a4cfe5fb21b821a131cb1a397f43fba4d6c20c74dc7c401e615a7b906a3bf41"
+      },
+      {
+        "id": "22",
+        "line": 62,
+        "rowSha256": "3fea14b5a65133459be1c8ebfa4abdc0132f5e2a532f6ed1223cb028f576de72"
+      },
+      {
+        "id": "23",
+        "line": 63,
+        "rowSha256": "5dd80b600d2e53c895f4a565de1802ccfd551e69eb8b64f591ae7d1284755c2b"
+      },
+      {
+        "id": "24",
+        "line": 64,
+        "rowSha256": "8c6b5c27d90fa60a0fbe77b1f5743c4224a7d0c554001313ccc45ff748aee9e5"
+      },
+      {
+        "id": "25",
+        "line": 65,
+        "rowSha256": "13d17a31824aca18e2d73204d28fa36bf4f3c1728d853ef990e4604996689ce8"
+      },
+      {
+        "id": "26",
+        "line": 66,
+        "rowSha256": "a5870ca6dce1e399c7695e63a70eb4d7a34d719dd5c2a1a6a7ce7a77f8331a9f"
+      },
+      {
+        "id": "27",
+        "line": 67,
+        "rowSha256": "851a2757de9c6f5e79315eff0b3e3628c94c519ccb99630c27d21d9744a6b675"
+      },
+      {
+        "id": "28",
+        "line": 73,
+        "rowSha256": "720825123147d53cfe89893f4951c93b631d8804d0c8727b319d07e55a5bc424"
+      },
+      {
+        "id": "29",
+        "line": 74,
+        "rowSha256": "5de3d8bba75999c240201ecec99c9a3348fb20d8434527f46f3b5266d4fe5e2e"
+      },
+      {
+        "id": "30",
+        "line": 75,
+        "rowSha256": "a4bc8b9c75ac5c656b76b35c3c20bbee02ace19c1a23caaf608359198e7946b8"
+      },
+      {
+        "id": "31",
+        "line": 76,
+        "rowSha256": "e8ab52ae49c07866556abcc2865969244299414ef6b34632e83785cd9180a79e"
+      },
+      {
+        "id": "32",
+        "line": 77,
+        "rowSha256": "0b08c035e6ae9b5531eb0574aed85b078b934c5a38cb0036d885638659fdeea5"
+      },
+      {
+        "id": "33",
+        "line": 78,
+        "rowSha256": "03b0e586d17bf80fbe65cda3777b757ccd9c731c1eac67002a4526712a090254"
+      },
+      {
+        "id": "34",
+        "line": 79,
+        "rowSha256": "90fb8ef2ba2af327bc21f638735cafd8afb6a268a51717db2f8a4aabbcb5e7f2"
+      },
+      {
+        "id": "35",
+        "line": 85,
+        "rowSha256": "580f88c92b2915d9d1cf333c04631ccdd41d1c6eb6871b531770df718b1e83f1"
+      },
+      {
+        "id": "36",
+        "line": 86,
+        "rowSha256": "a0c0b2b88caf0b50442d7ad9d063dfa99c843724f8c77850207339a8d6c3b289"
+      },
+      {
+        "id": "37",
+        "line": 87,
+        "rowSha256": "0fa683198be7409174f31b6da10260e606c17a789359d3c819f96c1e005bc91b"
+      },
+      {
+        "id": "38",
+        "line": 88,
+        "rowSha256": "48063804679c38d92b9d2c0e7e0f81b4d8fd263b0305a8995767b85bbe85d67e"
+      },
+      {
+        "id": "39",
+        "line": 89,
+        "rowSha256": "1a2f32456514083ed6525e38e7efa1eb083e896de344cfb5669792c74420ecc0"
+      },
+      {
+        "id": "40",
+        "line": 95,
+        "rowSha256": "41b2b4935a6a5cf2b4504a16a202ca8ccbe4ecf44f82c2e36c8e7e84d602ae48"
+      },
+      {
+        "id": "41",
+        "line": 96,
+        "rowSha256": "f8dbad71ecc10bc69402c42d235c2f5046dbc6ce15566e6dc1527c6e89eeaace"
+      },
+      {
+        "id": "42",
+        "line": 97,
+        "rowSha256": "ac3d6c85517462e91341f22ca2523b78db7ace9b6009355e01ad94bfdb40eda5"
+      },
+      {
+        "id": "43",
+        "line": 98,
+        "rowSha256": "a3e212e34023c4ededf69d8cb9aeec6221d3712b5b8e44d8846cb9ad0fccb25a"
+      },
+      {
+        "id": "44",
+        "line": 99,
+        "rowSha256": "57a901041cc10f0f2059b505bb094afe23250b2e67aae184e58a6cae25c4dd60"
+      },
+      {
+        "id": "45",
+        "line": 100,
+        "rowSha256": "697a62918b94cbf4cf636ab598995c75aa0dbfa88971104a18d90d5d0f5dcf54"
+      },
+      {
+        "id": "46",
+        "line": 101,
+        "rowSha256": "eb32390409d432b868fe374c9d25615ae122f76a8e574f2cafd6ba7f99bc5daf"
+      },
+      {
+        "id": "47",
+        "line": 107,
+        "rowSha256": "91b56f5f78d1a6e99ea66ce59d16727599f9013ae8c5a598aa8c9ac37a900faf"
+      },
+      {
+        "id": "48",
+        "line": 108,
+        "rowSha256": "1e975be5c6c5ba1d90d093b2871c9cdd376ef817dfebb4b95ef17fd201afe8dd"
+      },
+      {
+        "id": "49",
+        "line": 109,
+        "rowSha256": "7df820d44ac849112f3724299d08ccede7edc64fe94efdfb8e834d5055e14392"
+      },
+      {
+        "id": "50",
+        "line": 110,
+        "rowSha256": "0888c120349dbc59977caca62ae2092eba0aa50567d5f161cbdb44605b85f4da"
+      },
+      {
+        "id": "51",
+        "line": 111,
+        "rowSha256": "3844b49c2f454f7bd5a9d056a59449cfa0c16d88b8010297b77157c1a78ba42a"
+      },
+      {
+        "id": "52",
+        "line": 117,
+        "rowSha256": "7155a7fac5042f0af5574a0aa86013e6b886bbb72a25cf33e012596db356c3ba"
+      },
+      {
+        "id": "53",
+        "line": 118,
+        "rowSha256": "bd753c324bbde814de754a74efa889b0483c53596d1130147d70129b75f48e36"
+      },
+      {
+        "id": "54",
+        "line": 119,
+        "rowSha256": "40af69e619dc17786c37272b647af64f203460b6be41f8a44406d94c96d38629"
+      },
+      {
+        "id": "55",
+        "line": 120,
+        "rowSha256": "64611cc2bb41b0778cb561c480f523571c749e32c4314653172d0c808a2084a3"
+      },
+      {
+        "id": "56",
+        "line": 121,
+        "rowSha256": "a48847a759eb251fa328f297f4f0492392fa1ee7fd52e8796b20788cad724aed"
+      },
+      {
+        "id": "57",
+        "line": 122,
+        "rowSha256": "f847eee4affd872dbfc0c2f7eb4b225ee0d6c27918f887479b6c5fac160a486c"
+      },
+      {
+        "id": "58",
+        "line": 123,
+        "rowSha256": "d0115410946bd9d3755abe8e699ed5305d85a54ca1f1c5f5a385a74c3b653ee8"
+      },
+      {
+        "id": "59",
+        "line": 129,
+        "rowSha256": "2371943bbe69e431f33b870c55c1f5b88c0647de36d9f1ad6fde0e40201e7aeb"
+      },
+      {
+        "id": "60",
+        "line": 130,
+        "rowSha256": "ee284f06cbe56b438df9eb4adb4c84a0b34f5bc08d7825af7e4694ecf5775c19"
+      },
+      {
+        "id": "61",
+        "line": 131,
+        "rowSha256": "46f513db4b6ef0d1af084cf97fdfbb032e7914d9d8d6e81b771b0bcf6f3538c6"
+      },
+      {
+        "id": "62",
+        "line": 132,
+        "rowSha256": "0aa431f7b8e2a563ddd92d7fdeacbcacd97457f73ba467cf47b85ec96c192ebb"
+      },
+      {
+        "id": "63",
+        "line": 133,
+        "rowSha256": "2b1e02e8736185f2be78e6b38180e816685ac5dae4e39676876f42a132240a21"
+      },
+      {
+        "id": "64",
+        "line": 139,
+        "rowSha256": "828c1e360485deb4ca46a07f2b194876e7293ffa5ee9a2470c2d208fc3d7b45a"
+      },
+      {
+        "id": "65",
+        "line": 140,
+        "rowSha256": "9e3d258c4c2f807c8d26e2c2fabcec28d9fb40f48ca95ba89635db6fa4b230f1"
+      },
+      {
+        "id": "66",
+        "line": 141,
+        "rowSha256": "b0b8a4d72ac2ed6d8d9db3f246d65c35665350277fcf62aa41e2246e8d6b45b3"
+      },
+      {
+        "id": "67",
+        "line": 142,
+        "rowSha256": "052dfd4ed6774a3e1d5139f4717399a060ce13e17797d0246233f59cc3374f70"
+      },
+      {
+        "id": "68",
+        "line": 148,
+        "rowSha256": "b526a403cd9a276bcf972e34a2dd7307deb21f3b7815222925d22e3367e14909"
+      },
+      {
+        "id": "69",
+        "line": 149,
+        "rowSha256": "e18832a6bdedf3aa44c51950f97057adaab053febb7170d4c7e22bf5cb6a4a1a"
+      },
+      {
+        "id": "70",
+        "line": 150,
+        "rowSha256": "5485d82ee3455aaec2bb655285dd22f22bdd3d697ab66f62b7e2fb10f97fd7c2"
+      },
+      {
+        "id": "71",
+        "line": 156,
+        "rowSha256": "4d2f3a1467de7c2c544e41cc4ad97d3f64b137cd9b605c6a01e7f3b2a58b6f1c"
+      },
+      {
+        "id": "72",
+        "line": 157,
+        "rowSha256": "1f9b541564b7183683b67393a4b86ede5687610cfb2819e97ac194ea2e5bf35b"
+      },
+      {
+        "id": "73",
+        "line": 158,
+        "rowSha256": "925f500ad5217086586c704110777870776b06471df159134724a78b6a65f1ca"
+      },
+      {
+        "id": "74",
+        "line": 159,
+        "rowSha256": "ee035ab1ebaafe7be0424c5871efd53e51c78939c9f09db96384e358105f7562"
+      },
+      {
+        "id": "75",
+        "line": 160,
+        "rowSha256": "b41b1e3ca75ca552fccb33c9b71c99e2db5905511016ebeea0db203f96e810ce"
+      }
+    ],
+    "structuredRows": [
+      {
+        "id": "01",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 74,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "02",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 83,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "03",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 91,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "04",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 99,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "05",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 107,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "06",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 115,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "07",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 123,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "08",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 130,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "09",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 138,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "10",
+        "category": "institutional-memory-and-scope",
+        "surface": "workspace",
+        "line": 145,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "11",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 153,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "12",
+        "category": "institutional-memory-and-scope",
+        "surface": "api",
+        "line": 161,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "13",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 169,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "14",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 177,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "15",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 185,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "16",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 193,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "17",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 201,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "18",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 209,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "19",
+        "category": "memory-approval-workspace",
+        "surface": "workspace",
+        "line": 217,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "20",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 225,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "21",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 233,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "22",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 241,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "23",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 249,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "24",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 257,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "25",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 265,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "26",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 274,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "27",
+        "category": "budget-and-program-elements",
+        "surface": "api",
+        "line": 282,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "28",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 289,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "29",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 297,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "30",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 305,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "31",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 312,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "32",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 320,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "33",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 328,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "34",
+        "category": "bills-committees-and-congressional-direction",
+        "surface": "api",
+        "line": 336,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "35",
+        "category": "funding-opportunities",
+        "surface": "api",
+        "line": 344,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "36",
+        "category": "funding-opportunities",
+        "surface": "api",
+        "line": 352,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "37",
+        "category": "funding-opportunities",
+        "surface": "api",
+        "line": 360,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "38",
+        "category": "funding-opportunities",
+        "surface": "api",
+        "line": 367,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "39",
+        "category": "funding-opportunities",
+        "surface": "api",
+        "line": 375,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "40",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "api",
+        "line": 383,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "41",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "workspace",
+        "line": 390,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "42",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "workspace",
+        "line": 397,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "43",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "workspace",
+        "line": 404,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "44",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "workspace",
+        "line": 411,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "45",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "workspace",
+        "line": 418,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "46",
+        "category": "files-prior-uploads-and-generated-artifacts",
+        "surface": "workspace",
+        "line": 426,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "47",
+        "category": "meetings-transcripts-and-actions",
+        "surface": "api",
+        "line": 433,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "48",
+        "category": "meetings-transcripts-and-actions",
+        "surface": "api",
+        "line": 441,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "49",
+        "category": "meetings-transcripts-and-actions",
+        "surface": "api",
+        "line": 448,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "50",
+        "category": "meetings-transcripts-and-actions",
+        "surface": "api",
+        "line": 456,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "51",
+        "category": "meetings-transcripts-and-actions",
+        "surface": "workspace",
+        "line": 464,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "52",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 473,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "53",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 481,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "54",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 489,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "55",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 496,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "56",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 503,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "57",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 511,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "58",
+        "category": "web-evidence-jev-and-answer-quality",
+        "surface": "api",
+        "line": 519,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "59",
+        "category": "research-portfolios",
+        "surface": "api",
+        "line": 527,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "60",
+        "category": "research-portfolios",
+        "surface": "api",
+        "line": 535,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "61",
+        "category": "research-portfolios",
+        "surface": "workspace",
+        "line": 543,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "62",
+        "category": "research-portfolios",
+        "surface": "workspace",
+        "line": 551,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "63",
+        "category": "research-portfolios",
+        "surface": "research",
+        "line": 559,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "64",
+        "category": "business-development-and-company-enrichment",
+        "surface": "api",
+        "line": 567,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "65",
+        "category": "business-development-and-company-enrichment",
+        "surface": "api",
+        "line": 575,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "66",
+        "category": "business-development-and-company-enrichment",
+        "surface": "api",
+        "line": 583,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "67",
+        "category": "business-development-and-company-enrichment",
+        "surface": "workspace",
+        "line": 591,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "68",
+        "category": "district-nexus-and-federal-market",
+        "surface": "api",
+        "line": 599,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "69",
+        "category": "district-nexus-and-federal-market",
+        "surface": "api",
+        "line": 607,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "70",
+        "category": "district-nexus-and-federal-market",
+        "surface": "api",
+        "line": 615,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "71",
+        "category": "bounded-execution-and-long-work",
+        "surface": "research",
+        "line": 623,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "72",
+        "category": "bounded-execution-and-long-work",
+        "surface": "api",
+        "line": 631,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "73",
+        "category": "bounded-execution-and-long-work",
+        "surface": "research",
+        "line": 639,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "74",
+        "category": "bounded-execution-and-long-work",
+        "surface": "research",
+        "line": 647,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      },
+      {
+        "id": "75",
+        "category": "bounded-execution-and-long-work",
+        "surface": "api",
+        "line": 655,
+        "origin": "original75 seeded staging spec; authorship unverified",
+        "qualifiedForCurrentRealCorpus": false
+      }
+    ],
+    "uniqueIds": 75,
+    "sourceLocator": "docs/meri/implementation/01-Meri-Foundation-and-Reliability.md:1429 Appendix F",
+    "authorship": "Not established by supplied-file statement, Git author, humanRubric or human review instruction",
+    "gold": "sourceIds/exactFacts/requiredSources/forbiddenSources/expectedOperation/terminal/rowPassCondition and five-dimension human rubric; retained privately at pinned source"
+  },
+  "offline26": {
+    "declaredTotal": 26,
+    "groupCounts": {
+      "core": 11,
+      "ga": 6,
+      "plan": 5,
+      "sequence": 2,
+      "calibration": 2
+    },
+    "classification": "explicitly synthetic mechanism/grader calibration"
+  },
+  "strategyGoldens": {
+    "files": 14,
+    "classification": "explicitly synthetic; README says no real-dogfood review or Neo signoff"
+  },
+  "internalAdaptations": {
+    "declaredLiteralIds": [
+      "01",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "11",
+      "12",
+      "14",
+      "15",
+      "16",
+      "18",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "47",
+      "48",
+      "49",
+      "50",
+      "51",
+      "52",
+      "53",
+      "54",
+      "55",
+      "56",
+      "57",
+      "58",
+      "59",
+      "60",
+      "61",
+      "62",
+      "63",
+      "64",
+      "65",
+      "66",
+      "67",
+      "68",
+      "69",
+      "70",
+      "43",
+      "44",
+      "02",
+      "10",
+      "13",
+      "17",
+      "40",
+      "41",
+      "42",
+      "45",
+      "46"
+    ],
+    "programTaskIds": [
+      "T1",
+      "T2",
+      "T3",
+      "T4",
+      "T8",
+      "T9"
+    ],
+    "totalDistinct": 75,
+    "labels": [
+      "LIVE",
+      "TEST",
+      "PENDING",
+      "USER"
+    ],
+    "restriction": "Contains private/internal source scope and test-client write scenarios. Labels are execution/setup modes, not human-origin attestations. No private source values or content carried into new pilot."
+  },
+  "publicExtractionCorpus": {
+    "entries": 8,
+    "classification": "public-document extraction benchmark, not human assistant requests; local file source references require separate access/admission"
+  },
+  "commitmentsExtension": {
+    "ids": [
+      "CD-01",
+      "CD-02",
+      "CD-03",
+      "CD-04",
+      "CD-05",
+      "CD-06",
+      "CD-07"
+    ],
+    "classification": "seven separate scenario contracts; not added to original75 or qualified current real requests"
+  },
+  "limits": "No claim that the entire legacy repo lacks private human requests; this read covers the named benchmark contracts and all listed goldens. Historical release captures are not imported as current authorization."
+}

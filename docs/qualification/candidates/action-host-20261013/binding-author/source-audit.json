@@ -1,0 +1,60 @@
+{
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "source": "7c67345398aa5422f6c760f009b729d082cfeaea",
+  "docs": "4103791c0669d638407db73a294604bbfeca6214",
+  "baseEntriesPreserved": 10564,
+  "sourceFiles": [
+    {
+      "path": "apps/control/action-host/README.md",
+      "bytes": 5152,
+      "sha256": "67023ae38cae84ca1829e27e26d0a2881b6db6f8df20481af82a68f8fd83cffe"
+    },
+    {
+      "path": "apps/control/action-host/binding.test.mjs",
+      "bytes": 4581,
+      "sha256": "2c9940d53de501e88d9156b4a56a3f424fa0acf383170702b9a1b9eda423ba4f"
+    },
+    {
+      "path": "apps/control/action-host/current.mjs",
+      "bytes": 4639,
+      "sha256": "6e8c213156685769b0e6850db466e524112fd6210c9b13334108601f678b2bb7"
+    },
+    {
+      "path": "apps/control/action-host/index.mjs",
+      "bytes": 1891,
+      "sha256": "9c56953ada6eabbe19adae43d8fd051a68a333e67f2574924eb03d6f54a33363"
+    },
+    {
+      "path": "apps/control/action-host/resolver.mjs",
+      "bytes": 4196,
+      "sha256": "d54bf42a46afdb3eda0354683ec794e133e856eaffd49f685714f5f9423ec95e"
+    },
+    {
+      "path": "apps/control/action-host/test/fixture.mjs",
+      "bytes": 3364,
+      "sha256": "d1f2091306b4f9347116477dd8a5a7ce2c36e5fcfc57d087f13f93f2725c75d7"
+    }
+  ],
+  "captureHashesVerified": [
+    "docs/qualification/candidates/action-host-20261013/binding-author/initial.stdout.bin",
+    "docs/qualification/candidates/action-host-20261013/binding-author/initial.stderr.bin",
+    "docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stdout.bin",
+    "docs/qualification/candidates/action-host-20261013/binding-author/executor-shape.stderr.bin"
+  ],
+  "passingCaptureExactSourceDiff": true,
+  "cleanup": [
+    {
+      "label": "initial",
+      "pgid": 454087,
+      "absent": true,
+      "exitCode": 1
+    },
+    {
+      "label": "executor-shape",
+      "pgid": 454623,
+      "absent": true,
+      "exitCode": 0
+    }
+  ],
+  "dependencyCleanup": "Only two owned symlinks removed; no borrowed owner/donor disposed."
+}
