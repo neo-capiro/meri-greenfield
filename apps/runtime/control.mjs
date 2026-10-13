@@ -26,7 +26,9 @@ export function assembleControl({configuration,pool,client,native,now=Date.now})
 export async function startControl(configuration,{signal}={}){
  let pool,connection,listener,assembly,closing;const close=()=>closing??=(async()=>{await listener?.close();assembly?.close();await connection?.close();await pool?.end();})();
  try{
+  signal?.throwIfAborted();
   const [connectionBytes,capabilityBytes,tls]=await Promise.all([readSecret(configuration.database.connectionFile),readSecret(configuration.native.capabilityFile),temporalTls(configuration.temporal.tls)]);
+  signal?.throwIfAborted();
   const connectionString=connectionBytes.toString('utf8').trim();let u;try{u=new URL(connectionString);}catch{throw fault('DATABASE_CONFIGURATION');}
   // URL.get() selects the first duplicate; pg's adopted parser selects the
   // last. Accept one closed TLS parameter before either client is allocated.
