@@ -17,7 +17,7 @@ export function createQualificationApplication(configuration){
  const lifecycle={...rawLifecycle,connection:data(rawLifecycle.connection),worker:data(rawLifecycle.worker),limits:data(rawLifecycle.limits)};
  if(typeof c.now!=='function'||host.now!==c.now||!Number.isSafeInteger(c.originalDeadlineMs)||c.originalDeadlineMs<=c.now()||lifecycle.expiresAtMs>c.originalDeadlineMs||
     lookup.pool!==admission.pool||metadata.pool!==admission.pool||command.journalPool!==admission.pool||command.budgetPool!==admission.pool)throw Error('QUALIFICATION_APPLICATION_CONFIGURATION');
- const originalDeadlineMs=c.originalDeadlineMs,fixture=data(c.fixture),binding=grants.facts[0].binding;
+ const originalDeadlineMs=c.originalDeadlineMs,activationCutoff=Math.min(originalDeadlineMs,lifecycle.expiresAtMs),fixture=data(c.fixture),binding=grants.facts[0].binding;
  const lifecycleOptions={...lifecycle,fixture,allocationJson:admission.allocationJson,grantFactsJsons:admission.grantFactsJsons,originalDeadlineMs,now:c.now};
  validateQualificationLifecycleConfiguration(lifecycleOptions);
  const pool=admission.pool;
@@ -28,8 +28,8 @@ export function createQualificationApplication(configuration){
   if(state!=='NEW'||!reconstruction&&o.prepareSchema!==undefined&&typeof o.prepareSchema!=='boolean')throw Error('QUALIFICATION_APPLICATION_STATE');
   state='OPENING';let life;
   try{
-   life=createOperationLifetime({deadlineMs:originalDeadlineMs,now:c.now,signal:o.signal,errorFactory:code=>Error(code)});activeLife=life;
-   const schemaOptions={pool,fixture,deadlineMs:originalDeadlineMs,signal:life.signal,now:c.now};
+   life=createOperationLifetime({deadlineMs:activationCutoff,now:c.now,signal:o.signal,errorFactory:code=>Error(code)});activeLife=life;
+   const schemaOptions={pool,fixture,deadlineMs:Math.min(activationCutoff,c.now()+60000),signal:life.signal,now:c.now};
    schemaReceipt=await life.run(()=>!reconstruction&&o.prepareSchema?prepareOwnedApplicationSchema(schemaOptions):verifyOwnedApplicationSchema(schemaOptions));life.check();
    owner=createQualificationLifecycleBridge({...lifecycleOptions,fixture:{...fixture,schemaSha256:schemaReceipt.schemaSha256}});
    const result=await life.run(()=>owner[reconstruction?'rehydrate':'activate']({signal:life.signal,deadlineMs:originalDeadlineMs}));life.check();
