@@ -3,8 +3,8 @@ import {readFile} from 'node:fs/promises';
 import {PostgresBudgetStore,BudgetStateDenied} from '../../gateway/budget/postgres-budget-store.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {migrations,relations,sha256,requireSchema,schemaConfiguration,portMethod,rows,assertCatalog} from './schema-contract.mjs';
-import {namespaceSQL,assertNamespaces,preservationSnapshot,compatibilityBinding} from './schema-preservation.mjs';
+import {migrations,relations,sha256,requireSchema,schemaConfiguration,portMethod,rows,preservationRows,assertCatalog} from './schema-contract.mjs';
+import {namespaceSQL,preservationSQL,assertNamespaces,preservationSnapshot,compatibilityBinding} from './schema-preservation.mjs';
 const root=new URL('../../../',import.meta.url);
 const identitySQL=`SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS start_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier,current_setting('search_path') AS search_path`;
 
@@ -43,7 +43,7 @@ async function execute(value,install){
   }};
   const store=new PostgresBudgetStore(pool);
   const receipt=await life.run(()=>store.transact(async client=>{
-   const query=async(text,values)=>{life.check();const result=await client.query(text,values);life.check();return rows(result);};
+   const query=async(text,values)=>{life.check();const result=await client.query(text,values);life.check();return (text===preservationSQL?preservationRows:rows)(result);};
    stage='identity';await query('SET LOCAL search_path TO public');
    const identity=await query(identitySQL);requireSchema(identity.length===1);const r=identity[0],f=c.fixture;
    requireSchema(r.database===f.database&&r.username===f.user&&r.address===(f.serverAddress??f.host)&&r.port===(f.serverPort??f.port)&&r.version===f.serverVersion&&r.start_ms===String(Date.parse(f.serverStartTime))&&r.system_identifier===f.systemIdentifier&&r.fsync==='on'&&r.synchronous_commit==='on'&&r.search_path==='public');

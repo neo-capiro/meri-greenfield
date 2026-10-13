@@ -1,0 +1,155 @@
+✖ complete 3128280-byte ASCII inventory installs and reconstructs exactly (46.662077ms)
+✖ complete 4194304-byte ASCII inventory installs and reconstructs exactly (48.976279ms)
+✖ complete 4194304-byte multibyte inventory installs and reconstructs exactly (21.866069ms)
+✔ preservation byte+1 ASCII refuses before any DDL (35.195635ms)
+✔ preservation byte+1 multibyte refuses before any DDL (18.424872ms)
+✖ complete measured-size tail change during migration is UNKNOWN, never successful preservation (25.48884ms)
+✖ complete measured-size tail change on reconstruction refuses without rewriting (23.707499ms)
+✖ overflow after submitted migrations remains UNKNOWN and cannot COMMIT (39.279599ms)
+✔ ordinary rows retain exact1MiB/+1 UTF8 boundary and1024 row ceiling (8.755855ms)
+✔ preservation count guard survives scoped byte ceiling (48.509186ms)
+✔ preservation depth guard survives scoped byte ceiling (14.523692ms)
+✔ preservation nodes guard survives scoped byte ceiling (21.177924ms)
+✔ preservation accessor guard survives scoped byte ceiling (10.850381ms)
+✔ preservation proxy guard survives scoped byte ceiling (10.140246ms)
+✔ preservation metadata-shape guard survives scoped byte ceiling (28.774183ms)
+✔ preservation unsupported guard survives scoped byte ceiling (26.866778ms)
+✖ ordinary catalog does not acquire preservation4MiB allowance (34.555661ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 10
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 548.576876
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-size.test.mjs:20:72
+✖ complete 3128280-byte ASCII inventory installs and reconstructs exactly (46.662077ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:21:71)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:20:72
+✖ complete 4194304-byte ASCII inventory installs and reconstructs exactly (48.976279ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:21:71)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:20:72
+✖ complete 4194304-byte multibyte inventory installs and reconstructs exactly (21.866069ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:21:71)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:28:1
+✖ complete measured-size tail change during migration is UNKNOWN, never successful preservation (25.48884ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:30:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:30:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:32:1
+✖ complete measured-size tail change on reconstruction refuses without rewriting (23.707499ms)
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+      at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:33:44)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'QUALIFICATION_SCHEMA_REFUSED',
+    outcome: 'NOT_INSTALLED',
+    stage: 'preservation',
+    unsettledOperations: 0
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:36:1
+✖ overflow after submitted migrations remains UNKNOWN and cannot COMMIT (39.279599ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:38:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:38:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-size.test.mjs:56:1
+✖ ordinary catalog does not acquire preservation4MiB allowance (34.555661ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:57:89)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-preservation-size-author-20261013/apps/control/qualified-application/schema-size.test.mjs:57:89)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
