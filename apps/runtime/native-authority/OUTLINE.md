@@ -4,7 +4,7 @@ Base: `efacbfd9b599e458250f9bb624a72626f4e769d2`. Owned paths initially: new `ap
 
 ## Existing owners and source constraints
 
-- Clerk and current tenant/user membership remain authoritative outside Meri. Capiro auth source is read-only reference; it is not imported or copied. The actual `GET /me` and `/me/memberships` routes expose profiles, not the required bounded client-wall/context receipt.
+- Clerk and current tenant/user membership remain authoritative outside Meri. Capiro auth source is read-only reference; it is not imported or copied. The actual `GET /me` and `/me/memberships` routes expose profiles, not the required canonical bounded context receipt.
 - `createActionSessionOwner` remains the one process-local opaque application-session owner. It must continue to call current native identity/context, retain immutable context, and deny expiry/revocation/replacement.
 - `createCapiroApplicationAuthorityClient` and `createApplicationContextAdapters` already own the fixed proposed native identity/context wire and its join to a current Meri run.
 - `createPostgresAdmittedRunOwner` owns current persisted run/grant/fence/policy/allocation checks; source task must reuse it rather than duplicate authorization SQL or mint a parallel grant ledger.
@@ -30,3 +30,7 @@ Dependency direction is provider HTTP -> canonical current owner/context -> dura
 ## Verification and checkpoint
 
 Inspect the complete committed capability inventory and R-01 through R-12 requirements. Focus this increment on N-054/N-072/N-074/N-075/N-254 through N-267 and R-02/R-07/RG-07/RG-12; it does not close the whole plan. Local actual Fetch/upstream SDK/SQL-protocol controls should cover inert imports, closed bytes, current actor/tenant/client/scope/fence/policy/expiry/input-hash coherence, parked-port revocation, foreign keys/subpaths, opaque duplicates, UUID replay/conflicts, commit UNKNOWN, bounded cancellation, and owned cleanup. No synthetic reply establishes native acceptance. Preserve failures and record exact source pins and resource cleanup. First concrete interface/source checkpoint is bounded to 25 minutes.
+
+## Final source checkpoint
+
+The approved implementation now reuses the existing identity/context protocol at parent-verified backend37339931788d8384b864192f2c2eacf56cd9bf06 without DTO expansion. Canonical product admission dependencybea75ebd9e7d0af75c34e1a671ceed8af3a82935 supplies the same-lease callback; root allocated private header DTO and source-only migration0004. Fixed session Fetch/client/SDK-adapter source is implemented, with34 focused checks and retained actual pre-repair integrity failures. README records remaining native task/key observation, conservative mounting, cross-process recovery and same-lock refresh constraints. No new identity endpoint or native acceptance claim was made.

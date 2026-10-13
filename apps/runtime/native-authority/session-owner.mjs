@@ -2,7 +2,7 @@
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertWorkerAuthorization,same} from '../../../packages/contracts/runtime-0.2/validate.mjs';
-import {assertSdkSessionRequestHeaders} from '../../../packages/contracts/runtime-0.2/session.mjs';
+import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson,captureSessionMethods} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
@@ -54,7 +54,10 @@ export function createDurableSdkSessionOwner(configuration){
      let sequence=0;for(const entry of rows){tuple(entry,subpath);if(integer(entry.sequence)!==++sequence||entry.entry_sha256!==hash(entry.entry)||entry.entry_uuid!==(entry.entry.uuid??null))fail('SDK_SESSION_CORRUPT');}if(sequence!==offset)fail('SDK_SESSION_CORRUPT');const retained=copySessionTranscript(rows.map(r=>r.entry));await fresh();return {entries:retained,offset};
     }
     const prior=(await query('SELECT * FROM meri_conversations.sdk_session_batches WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND append_id=$5',[...ownerArgs,request.appendId])).rows[0];
-    if(prior){tuple(prior);if(prior.append_id!==request.appendId)fail('SDK_SESSION_CORRUPT');if(prior.request_sha256!==inputSha256||prior.receipt_sha256!==hash(prior.receipt))fail('SDK_SESSION_APPEND_CONFLICT');await fresh();return prior.receipt;}
+    if(prior){tuple(prior);if(prior.append_id!==request.appendId)fail('SDK_SESSION_CORRUPT');if(prior.request_sha256!==inputSha256||prior.receipt_sha256!==hash(prior.receipt))fail('SDK_SESSION_APPEND_CONFLICT');
+     let receipt;try{receipt=assertSdkSessionResponseHeaders('append',prior.receipt,inputSha256,request.binding,request.key);}catch{fail('SDK_SESSION_CORRUPT');}
+     if(receipt.committed!==true||receipt.appendId!==request.appendId||receipt.entriesSha256!==request.entriesSha256||!Number.isSafeInteger(receipt.offset)||receipt.offset<0||receipt.offset>100000||receipt.offset>offset||!Number.isSafeInteger(receipt.added)||receipt.added<0||receipt.added>entries.length||receipt.offset!==request.expectedOffset+receipt.added)fail('SDK_SESSION_CORRUPT');
+     await fresh();return receipt;}
     if(request.expectedOffset!==offset)fail('SDK_SESSION_STALE_OFFSET');if(!stream)await query('INSERT INTO meri_conversations.sdk_session_streams(tenant_id,conversation_id,run_id,session_id,subpath) VALUES($1,$2,$3,$4,$5)',args);
     let bytes=integer(row.bytes),count=integer(row.entries_count);const added=[];
     for(const entry of entries){const entrySha256=hash(entry),uuid=entry.uuid??null;if(uuid!==null&&(typeof uuid!=='string'||!uuid||uuid.length>256))fail('INVALID_SDK_SESSION_REQUEST');
@@ -66,7 +69,7 @@ export function createDurableSdkSessionOwner(configuration){
     await query('UPDATE meri_conversations.sdk_session_streams SET last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5',[...args,offset]);
     await query('UPDATE meri_conversations.sdk_sessions SET entries_count=$5,bytes=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4',[...ownerArgs,count,bytes]);
     await query('INSERT INTO meri_conversations.sdk_session_batches(tenant_id,conversation_id,run_id,session_id,append_id,request_sha256,receipt,receipt_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[...ownerArgs,request.appendId,inputSha256,receipt,hash(receipt)]);await fresh();return receipt;
-   }));await fresh();life.check();const correlated={binding:request.binding,key:request.key,requestSha256:inputSha256,...result};return operation==='load'?{...correlated,entries:result.entries===null?null:copySessionTranscript(result.entries)}:data(correlated);
+   }));await fresh();life.check();const correlated={...result,binding:request.binding,key:request.key,requestSha256:inputSha256};return operation==='load'?{...correlated,entries:result.entries===null?null:copySessionTranscript(result.entries)}:data(correlated);
   }catch(error){if(error instanceof BudgetCommitUncertain||attempted)fail('SDK_SESSION_COMMIT_UNKNOWN');throw error;}finally{life.close();}
  }
  return Object.freeze(Object.fromEntries(['register','load','append','list-subkeys'].map(operation=>[operation==='list-subkeys'?'listSubkeys':operation,value=>execute(operation,value)])));

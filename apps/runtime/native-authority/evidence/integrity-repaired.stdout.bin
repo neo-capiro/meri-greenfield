@@ -1,0 +1,42 @@
+✔ thin canonical native join uses actual currentRun product owner without DTO expansion (16.471802ms)
+✔ default bridge disabled makes no native reads or current-run queries (3.476293ms)
+✔ current native selected-client substitution is refused by canonical join (4.040763ms)
+✔ actual product grant revoked during native context read cannot release joined authority (4.155965ms)
+✔ thin bridge rejects active nested configuration without executing getter (0.253528ms)
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (27.326175ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (1.993987ms)
+✔ missing actual native task authority yields503 before registration/admission (0.795233ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (1.165254ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (21.376051ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (5.439635ms)
+✔ consistently rehashed retained receipt refuses foreign binding (7.369647ms)
+✔ consistently rehashed retained receipt refuses foreign observed key (2.316477ms)
+✔ consistently rehashed retained receipt refuses foreign append identity (2.052474ms)
+✔ consistently rehashed retained receipt refuses foreign entry digest (2.121817ms)
+✔ consistently rehashed retained receipt refuses uncommitted receipt (1.866227ms)
+✔ consistently rehashed retained receipt refuses impossible offset (1.940437ms)
+✔ consistently rehashed retained receipt refuses inconsistent added count (1.773318ms)
+✔ consistently rehashed retained receipt refuses undeclared receipt field (1.70712ms)
+✔ original append receipt remains exact after later stream advancement (2.547411ms)
+✔ bound native mirror configuration accessor is refused without execution (0.421998ms)
+✔ bound native mirror configuration Proxy is refused before traps (0.148521ms)
+✔ bound native mirror method accessor is refused without execution (0.110815ms)
+✔ bound native mirror captures original two-argument methods and class receiver (0.569859ms)
+✔ native authority absent fails before any admitted transaction or SQL (1.442407ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (9.648658ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (2.024432ms)
+✔ foreign project key and stale offset cannot append or overwrite original (2.278891ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (2.934988ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (2.129429ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (2.778364ms)
+✔ parked canonical admission is bounded by the original caller lifetime (20.489561ms)
+✔ immutable registration replay retains original expiry despite a shorter current authorization (1.836763ms)
+✔ redundant entry/stream/session owner tuples cannot substitute foreign retained rows (4.358016ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3730.527671

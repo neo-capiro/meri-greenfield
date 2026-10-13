@@ -6,6 +6,7 @@ import {assertSdkSessionRequestHeaders,assertSdkSessionResponseHeaders} from '..
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createRunBoundSessionStore,copySessionEntries,copySessionTranscript,scopedSessionKey} from '../../worker/qualification/checkpoint/bound-session-store.mjs';
 import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
+import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});},get=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 export function createNativeSdkSessionClient(configuration){
  const {origin,credential,binding,fetchImpl,now=Date.now,maxRequestMs=3000,maxResponseBytes=35651584}=own(configuration,['origin','credential','binding','fetchImpl'],['now','maxRequestMs','maxResponseBytes']);
@@ -32,15 +33,17 @@ export function createNativeSdkSessionClient(configuration){
 }
 
 /** Existing run-bound SDK adapter supplies queue bounds and uncertainty barrier. */
-export function createNativeBoundSdkSessionStore({client,binding,sessionKey,timeoutMs=3000}){
+export function createNativeBoundSdkSessionStore(configuration){
+ const {client,binding,sessionKey,timeoutMs=3000}=own(configuration,['client','binding','sessionKey'],['timeoutMs']);
+ const admitted=Object.freeze(Object.fromEntries(['register','load','append','listSubkeys'].map(name=>[name,storageMethod(client,name)])));
  const key=scopedSessionKey(sessionKey,sessionKey,true),offsets=new Map();
  const name=k=>k.subpath??'';
  const transport={
-  async load({key,signal}){const result=await client.load({key},{signal});offsets.set(name(key),result.offset);return result.entries;},
-  async listSubkeys({key,signal}){return (await client.listSubkeys({key},{signal})).subkeys;},
+  async load({key,signal}){const result=await admitted.load({key},{signal});offsets.set(name(key),result.offset);return result.entries;},
+  async listSubkeys({key,signal}){return (await admitted.listSubkeys({key},{signal})).subkeys;},
   async append({key,entries,signal}){if(!offsets.has(name(key)))await transport.load({key,signal});const appendId=randomUUID(),expectedOffset=offsets.get(name(key));
-   const result=await client.append({key,appendId,expectedOffset,entriesSha256:hash(entries),entries},{signal});offsets.set(name(key),result.offset);},
+   const result=await admitted.append({key,appendId,expectedOffset,entriesSha256:hash(entries),entries},{signal});offsets.set(name(key),result.offset);},
  };
  const bound=createRunBoundSessionStore({binding,sessionKey:key,transport,timeoutMs});
- return Object.freeze({...bound,register:options=>client.register({key},options)});
+ return Object.freeze({...bound,register:options=>admitted.register({key},options)});
 }
