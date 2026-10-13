@@ -1,0 +1,42 @@
+{
+  "removedOwnedBorrowedLinks": [
+    {
+      "path": "node_modules/ajv",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "targetStillExists": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "targetStillExists": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "targetStillExists": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "targetStillExists": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "targetStillExists": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "targetStillExists": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "targetStillExists": true
+    }
+  ],
+  "targetMutation": false,
+  "allAuthorCapturedGroupsAbsent": true,
+  "nativeProviderDatabaseJobsStarted": false
+}
