@@ -100,6 +100,11 @@
       "path": "pnpm-lock.yaml",
       "bytes": 728135,
       "sha256": "ee1e9d1758ffa0fe45e5b8fb58294083cc57850a1984b035f99fb54747b6ddba"
+    },
+    {
+      "path": "apps/api/src/auth/roles.decorator.ts",
+      "bytes": 447,
+      "sha256": "48273cb64384cd3b22c90e3abc8a0a0e0c77d774ac1d30602e1d0a1a26715a62"
     }
   ],
   "compiler": {
