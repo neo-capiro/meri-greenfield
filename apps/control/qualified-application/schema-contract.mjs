@@ -79,7 +79,15 @@ export function portValue(value,name){
  throw new Error('QUALIFICATION_SCHEMA_PORT');
 }
 export function portMethod(value,name){const method=portValue(value,name);requireSchema(typeof method==='function');return method.bind(value);}
-export function rows(result){const r=data(portValue(result,'rows'));requireSchema(Array.isArray(r)&&r.length<=1024&&Buffer.byteLength(JSON.stringify(r))<=1048576);return r;}
+function boundedRows(result,maxBytes,oneRow){
+ const r=data(portValue(result,'rows'));
+ requireSchema(Array.isArray(r)&&(oneRow?r.length===1:r.length<=1024)&&Buffer.byteLength(JSON.stringify(r),'utf8')<=maxBytes);
+ return r;
+}
+export function rows(result){return boundedRows(result,1048576,false);}
+// Only the fixed preservation query uses this ceiling. Keep the full metadata,
+// shared inert/depth/node guards and exactly one result row; no caller limit.
+export function preservationRows(result){return boundedRows(result,4194304,true);}
 
 export function assertCatalog(value){
  const catalog=data(value);requireSchema(Array.isArray(catalog)&&catalog.length===relations.length);
