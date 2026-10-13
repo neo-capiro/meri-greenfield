@@ -1,0 +1,100 @@
+✖ 157661-node decoder and157658-node metadata retain all8362 records through install and reconstruction (135.802937ms)
+✖ full downstream metadata cannot bypass its own structural or byte bounds (63.124395ms)
+✖ ordinary100000 nodes remain strict while preservation250000 exact and+1 use a fixed profile (166.214189ms)
+✖ every retained array tail contributes to the full metadata digest beyond100000 nodes (81.890641ms)
+✖ tail substitution after DDL at157661 nodes remains UNKNOWN without commit or retry (83.782791ms)
+✔ preservation increased profile retains inert proxy refusal (0.665911ms)
+✔ preservation increased profile retains inert accessor refusal (0.15304ms)
+✔ preservation increased profile retains inert cycle refusal (0.145579ms)
+✔ preservation increased profile retains inert sparse refusal (0.1728ms)
+✔ preservation increased profile retains inert depth refusal (0.419771ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 5
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 606.599735
+
+✖ failing tests:
+
+test at apps/control/qualified-application/schema-structure.test.mjs:33:1
+✖ 157661-node decoder and157658-node metadata retain all8362 records through install and reconstruction (135.802937ms)
+  Error: Operation contract JSON structure limit
+      at fail (file:///tmp/meri-native-structure-author-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///tmp/meri-native-structure-author-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:44:40)
+      at data (file:///tmp/meri-native-structure-author-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:13:37)
+      at boundedRows (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-contract.mjs:83:10)
+      at preservationRows (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-contract.mjs:90:49)
+      at TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:37:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/control/qualified-application/schema-structure.test.mjs:43:1
+✖ full downstream metadata cannot bypass its own structural or byte bounds (63.124395ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:46:49)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/schema-structure.test.mjs:48:1
+✖ ordinary100000 nodes remain strict while preservation250000 exact and+1 use a fixed profile (166.214189ms)
+  Error: Operation contract JSON structure limit
+      at fail (file:///tmp/meri-native-structure-author-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///tmp/meri-native-structure-author-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:36:43)
+      at data (file:///tmp/meri-native-structure-author-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:13:37)
+      at boundedRows (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-contract.mjs:83:10)
+      at preservationRows (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-contract.mjs:90:49)
+      at TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:52:103)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at apps/control/qualified-application/schema-structure.test.mjs:55:1
+✖ every retained array tail contributes to the full metadata digest beyond100000 nodes (81.890641ms)
+  Error: Operation contract JSON structure limit
+      at fail (file:///tmp/meri-native-structure-author-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///tmp/meri-native-structure-author-20261013/packages/contracts/retrieval-0.2/operation-contracts.mjs:44:40)
+      at data (file:///tmp/meri-native-structure-author-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:13:37)
+      at boundedRows (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-contract.mjs:83:10)
+      at preservationRows (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-contract.mjs:90:49)
+      at preservationSnapshot.schemaScope (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:56:68)
+      at preservationSnapshot (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-preservation.mjs:54:21)
+      at snap (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:56:38)
+      at TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:56:164)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+
+test at apps/control/qualified-application/schema-structure.test.mjs:59:1
+✖ tail substitution after DDL at157661 nodes remains UNKNOWN without commit or retry (83.782791ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: QUALIFICATION_SCHEMA_REFUSED
+      at async TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:61:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: QUALIFICATION_SCHEMA_REFUSED
+        at denied (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema.mjs:21:14)
+        at execute (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema.mjs:75:15)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///tmp/meri-native-structure-author-20261013/apps/control/qualified-application/schema-structure.test.mjs:61:2)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

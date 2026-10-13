@@ -1,0 +1,22 @@
+✔ complete source assembly installs, activates through actual Python Grants, binds one ledger and reconstructs HTTP hosts (1540.967303ms)
+✔ worker refusal leaves pending grants, no JS allocation or source, and terminal application state (141.290566ms)
+✔ fixed Python bridge invokes real canonical Grants over scripted SQL; recovery reads without reseed (611.55944ms)
+✔ worker refusal leaves PENDING and never auto-activates/reseeds/compensates (124.865911ms)
+✔ preflight permits only missing schema digest, never returns authority or starts child (36.967932ms)
+✔ same fixture connection and full grant context required before process (63.259525ms)
+✔ parked owned process is killed and close observed at original short deadline (83.488922ms)
+✔ stderr/error content is discarded and no automatic retry follows unknown receipt (36.719585ms)
+✔ post-mutation wrong receipt cannot admit or allow reattempt (89.894068ms)
+✔ bounded stdout flood closes owned child without releasing content (36.618725ms)
+✔ bounded stderr flood closes owned child without releasing content (39.513441ms)
+✔ aborted and extended caller cutoffs cannot refresh constructor original deadline (61.66874ms)
+✔ mapped endpoint and25 declared namespaces cross actual fixed Python bridge unchanged (319.433658ms)
+✔ bridge mapped descriptor refuses partial fields and invalid scope before child (38.220643ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4537.670464

@@ -1,0 +1,712 @@
+{
+  "base": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "sourceHead": "7d0822c77c20b3cf84d991cca9f9b25577bf5880",
+  "review": "025af58ccf4cf15d21a899c3c3829f8c4798965e",
+  "originalEntries": 11411,
+  "originalUnchanged": 11400,
+  "allocatedOriginalChanges": [
+    "apps/control/qualified-application/README-schema.md",
+    "apps/control/qualified-application/application.fixture.mjs",
+    "apps/control/qualified-application/independent/schema-independent.test.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.mjs",
+    "apps/control/qualified-application/lifecycle-bridge.test.mjs",
+    "apps/control/qualified-application/schema-contract.mjs",
+    "apps/control/qualified-application/schema-independent/fixture.mjs",
+    "apps/control/qualified-application/schema.fixture.mjs",
+    "apps/control/qualified-application/schema.mjs",
+    "apps/proxy/qualification/assembly/lifecycle.py",
+    "apps/proxy/qualification/assembly/test_lifecycle.py"
+  ],
+  "reviewedSourceFiles": 15,
+  "capabilityScope": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mapped": 96,
+    "operations": 97
+  },
+  "laneManifestMembers": {
+    "author": 70,
+    "review": 47
+  },
+  "receipts": [
+    {
+      "label": "integrated-node",
+      "testedHead": "93d8655c5466e4e199c0d6706cedd57391cb2f7a",
+      "ownedPidAndPgid": 511319
+    },
+    {
+      "label": "integrated-node-final",
+      "testedHead": "f7ce110d9c5e33e1ebf75641a85d51bd1bf0ac45",
+      "ownedPidAndPgid": 511928
+    },
+    {
+      "label": "integrated-python",
+      "testedHead": "0680f47d4d8943e881b044cef3938f639f1f2aad",
+      "ownedPidAndPgid": 511015
+    },
+    {
+      "label": "independent-node",
+      "testedHead": "9e0b0fcb12baec9edf6c2ee6bcad18f6f9304699",
+      "ownedPidAndPgid": 513913
+    },
+    {
+      "label": "independent-python",
+      "testedHead": "9e0b0fcb12baec9edf6c2ee6bcad18f6f9304699",
+      "ownedPidAndPgid": 513939
+    },
+    {
+      "label": "catalog-qualified-node",
+      "testedHead": "d150fe2d5570ebae1994446c88a72936b7bef0c6",
+      "ownedPidAndPgid": 516660
+    }
+  ],
+  "passed": 161,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all original entries retained",
+      "pass": true
+    },
+    {
+      "name": "only allocated existing paths changed",
+      "pass": true
+    },
+    {
+      "name": "all unrelated source contracts migrations registry tests failure evidence unchanged",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/application.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/independent/schema-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/lifecycle-bridge.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/lifecycle-bridge.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-compatibility.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-contract.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-independent/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema-preservation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema.fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/control/qualified-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/test_fixture_compatibility.py",
+      "pass": true
+    },
+    {
+      "name": "exact independently reviewed apps/proxy/qualification/assembly/test_lifecycle.py",
+      "pass": true
+    },
+    {
+      "name": "no removed original test assertions",
+      "pass": true
+    },
+    {
+      "name": "139 originals 96 selected 43 deferred 97 unavailable operations retained",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-QUALIFIED-FIXTURE-REPAIR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/allocated-boundary.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit-scope-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cast-types-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/expanded-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/first-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/initial-regressions.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/lifecycle-composed.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-e14-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/manifest-f41-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/namespace-identity-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/original-lifecycle.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/regclass-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/sequence-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/source-whitespace-followup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace-final.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/author/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "retained apps/control/qualified-application/compatibility-independent/test_compatibility_independent.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/audit-first.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/baseline-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-assertions-forward.patch",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/cast-type-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/cleanup-observation-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-corrected-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-qualified-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/final-review.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/independent-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/outline.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/pg-search-path-observation.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/python-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/regclass-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/repaired-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/report.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-authored.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace-full.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/qualified-fixture-repair-20261013/review/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "expected outcome and bounded cleanup integrated-node",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned group integrated-node",
+      "pass": true
+    },
+    {
+      "name": "expected outcome and bounded cleanup integrated-node-final",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-node-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned group integrated-node-final",
+      "pass": true
+    },
+    {
+      "name": "expected outcome and bounded cleanup integrated-python",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/integrated-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned group integrated-python",
+      "pass": true
+    },
+    {
+      "name": "expected outcome and bounded cleanup independent-node",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned group independent-node",
+      "pass": true
+    },
+    {
+      "name": "expected outcome and bounded cleanup independent-python",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-python.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/independent-python.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned group independent-python",
+      "pass": true
+    },
+    {
+      "name": "expected outcome and bounded cleanup catalog-qualified-node",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/catalog-qualified-node.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact output docs/qualification/candidates/qualified-fixture-repair-20261013/integration/catalog-qualified-node.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "freshly absent owned group catalog-qualified-node",
+      "pass": true
+    }
+  ]
+}

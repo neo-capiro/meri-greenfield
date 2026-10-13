@@ -1,0 +1,9 @@
+✔ complete8362-record measured inventory retains exact bytes/tail at100000 nodes; next node refuses (1555.898624ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1650.167155

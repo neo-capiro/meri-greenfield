@@ -1,0 +1,21 @@
+{
+  "sourceVerdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "base": "67ccac716bd6cbce4ee04e439a085bab75ae21a5",
+  "testedHead": "61d304d02794f2ffbff5a855e779828f002e0a47",
+  "auditHead": "ab3606eceb80ebb6e66ef61beccd49d3a9e84c80",
+  "baseEntries": 11621,
+  "unchangedBaseEntries": 11615,
+  "changedOriginalPaths": [
+    "apps/control/qualified-application/schema-contract.mjs",
+    "apps/control/qualified-application/schema-preservation.mjs",
+    "apps/control/qualified-application/schema-size-independent.test.mjs",
+    "apps/control/qualified-application/schema-size-inventory.test.mjs",
+    "apps/control/qualified-application/schema-size.test.mjs",
+    "packages/contracts/retrieval-0.2/operation-contracts.mjs"
+  ],
+  "sourceMembers": 6,
+  "rootTests": 244,
+  "ownedGroupAbsent": 572173,
+  "privateNativeInputRead": false
+}

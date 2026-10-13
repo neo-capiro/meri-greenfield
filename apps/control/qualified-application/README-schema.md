@@ -53,3 +53,61 @@ node --test apps/control/qualified-application/schema.test.mjs
 The test uses explicitly scripted SQL ports. It is not a PostgreSQL parser, schema installation test or native qualification. Actual fixture preparation, trusted worker observation/activation, authority, approval and application execution retain their separate owners.
 
 `schema.fixture.mjs` exposes the same test-only observations for composition tests: `createScriptedSchemaFixture({fixture: descriptorOverrides, ...faultOptions})`, `fixtureSchemaDescriptor(overrides)`, `fixtureMigrationBytes`, and `fixtureCatalog()`. The returned fixture is `{pool,f,log,releases,state,args}`. Its target identity can match another source-test process; it does not open or impersonate an actual database. Production modules never import it. The original author test assertions remain intact after extracting these helpers.
+
+### Mapped endpoint and declared evidence namespaces
+
+The trusted fixture owner may supply the optional paired server observation and
+an explicit evidence namespace allowlist. The names below are illustrative;
+actual names/owners are supplied privately by that owner, never learned from a
+refusal or an observed database:
+
+```js
+{
+  mode: 'owned-disposable-qualification',
+  fixtureId: '<existing lowercase UUID>',
+  host: '127.0.0.1', port: 55432,
+  serverAddress: '172.17.0.2', serverPort: 5432,
+  database: 'meri_qualification_test', user: 'qualification_owner',
+  systemIdentifier: '<trusted decimal identifier>',
+  serverStartTime: '<canonical UTC timestamp>', serverVersion: '170011',
+  schemaSha256: null,
+  schemaScope: {
+    mode: 'preserve-declared-evidence',
+    namespaces: [{name: 'example_evidence', owner: 'qualification_owner'}]
+  }
+}
+```
+
+Pool options must exactly match `host`, `port`, `database`, `user`. Python's
+connection uses the same dial tuple. SQL `inet_server_addr/port` instead match
+the explicit `serverAddress/serverPort` pair, or the legacy dial tuple when the
+pair is omitted. All other engine checks remain mandatory. No identity is
+inferred and no networking is configured here.
+
+Without `schemaScope`, strict unrelated-namespace refusal is unchanged. With it,
+all non-system namespaces must be exactly the supplied set (maximum128) plus the
+two canonical namespaces after installation. Canonical namespace ownership is
+checked. All public relations must still be absent before installation, and the
+two public target row-type names must not collide. This is not a general public
+schema installer. Retain the returned `schemaSha256` in the exact same fixture
+for reconstruction; do not rerun prepare or reset a failed/uncertain fixture.
+
+`schema-preservation.mjs` reads catalog metadata only for declared namespaces:
+namespace OID/owner/ACL; ordinary tables, views, indexes, sequences; columns, defaults,
+constraints, index metadata, view rewrite definitions, automatic composite/array
+types, sequence parameters, internal triggers, dependencies, comments and labels.
+It refuses custom routines/types, partitions/inheritance, foreign/materialized
+relations, extension objects, row policies, user triggers and non-view rules,
+and other namespace-dependent catalog classes. Unsupported classes need an
+explicitly scoped follow-up; they are never silently ignored. Ordinary relation
+statistics/freeze counters, sequence current values, physical TOAST storage,
+external dependency definitions and row contents are excluded. No function body
+is read. Catalog OIDs intentionally bind this same database's retained metadata.
+
+Only fingerprint/count/coverage is returned, not the evidence metadata itself.
+The before/after fingerprint and exact allowlist bind the schema hash, checked
+again at reconstruction. New mapped fields also bind that hash; legacy descriptors
+keep their prior hash algorithm. A fingerprint is a metadata observation, not row
+data, concurrency isolation, native qualification or live authority proof. The
+six migration bytes and existing transaction/deadline/unknown-ACK behavior are
+unchanged; no migration, drop, reset or unrelated-schema DDL is added.

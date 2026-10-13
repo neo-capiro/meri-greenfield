@@ -1,0 +1,15 @@
+# Bounded preservation inventory repair
+
+Parent native preflight reported one row containing twelve metadata arrays, 8,362 records and 3,128,280 serialized UTF-8 bytes; the columns array alone was 1,110,747 bytes. No unsupported object or schema write occurred. The ordinary 1 MiB query ceiling rejected this complete inventory. This report records the supplied dimensions, not a read of private native evidence.
+
+The accepted repair adds a fixed **4 MiB / exactly one row** decoder selected only for the exact existing preservation SQL constant. Ordinary queries retain **1 MiB / at most1,024 rows**. No caller chooses the ceiling. The full metadata remains subject to existing inert-data, depth64, 100,000-node, closed twelve-array and unsupported-object controls; all bytes continue into the original before/after and reconstruction comparisons. There is no truncation, dropped object, hash-only replacement or changed migration/SQL.
+
+The measured row uses74.58% of the fixed4 MiB allowance, leaving1,066,024 bytes (34.08% of the measured size) headroom. Both exact-limit and one-byte-over cases are tested with UTF-8 multibyte content. The supplemental synthetic inventory matches all supplied row/array/record/byte dimensions, distributes text across every record, succeeds at100,000 nodes, rejects a same-size final-record mutation on reconstruction and rejects100,001 nodes before DDL. This establishes bounded source handling; it does not establish native catalog topology or installation success.
+
+Base: PR51 `a16e52ef5bd8d570c995dff298facbc0d1969000`. Accepted source: `2444edc0d6bcfb5771bf26eda9e1c8eb06525783`. Author packets: `b5ee4a4c3d21dd0e3bb40067ff608bb06a0f8cc6` and `d55334558f4472b45e8d22ff12b3a77ffc97426a`. Final independent review: `abba9a8823cdaefe559b52aec7843297589f28af`; supplemental test: `9e323dc1cfd061ff9da9ae2d234b70a6f4d3df7e`. All original role histories are preserved in ancestry.
+
+Checks passed: author241/241 and supplemental1/1; unchanged independent23/23 and independent supplemental1/1; root composed schema suites123/123 at `08913a2b04e9863a39b82d67260101d02aa6398a` and supplemental1/1 at `f0970cb479c2013503c917afb2c515d3704e63c0`. Initial author10/17, intermediate109/241 missing-import failure and independent baseline13/23 are retained with raw streams. The missing import was repaired before exact source acceptance; no existing assertion was weakened.
+
+Only `schema-contract.mjs` and `schema.mjs` differ among11,565 base entries. The preservation query, six historical migrations, native fixture, Python lifecycle, original tests and public/private contracts are unchanged. The integration audit binds those two source blobs, every author/review manifest member and owned-process cleanup. No dependency link, native database connection, private packet read, deployment, cloud action or provider call occurred in this repair lane.
+
+Verdict: **ACCEPT_SOURCE / runtime HOLD**. G1 remains OPEN. The native owner can replay against the exact published correction pin; its actual database result remains required. This branch stacks on PR51 and does not alter the separately published Word or Capiro endpoint continuations.

@@ -1,0 +1,53 @@
+{
+  "sourceHead": "ab3606eceb80ebb6e66ef61beccd49d3a9e84c80",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/audit.json",
+      "bytes": 832,
+      "sha256": "7dda3dce903685b2a9e397681efa678535228cbda4b19d7a4a4a50f93cfb76f0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/audit.py",
+      "bytes": 2552,
+      "sha256": "df3c7ba3ecff19c12e31bce3eff6ec96c5f47ebe0ce7020c23d1dfc6fddc5e70"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/cleanup-and-packets.json",
+      "bytes": 233,
+      "sha256": "7c6eb464fbc1de8541f54bcf733b5b3e7261ee102538df93165a9f6c9315d377"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/schema-complete.json",
+      "bytes": 1854,
+      "sha256": "dc4c13967b43f958d30e61be6d9ef736b530ec32576b2c9555ff6f91d4a6c0de"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/schema-complete.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/schema-complete.stdout.bin",
+      "bytes": 21265,
+      "sha256": "3f41e3ad7fe5029133a0efd7a870384752497c4578c42bd8c5c88026647c97fa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-structure-20261013/integration/source-blobs.json",
+      "bytes": 2053,
+      "sha256": "fb9abce54070aa6516c8b1c0551fa99499838fc64273b44fb7bb86bfa7400983"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-STRUCTURE-INTEGRATION-20261013.md",
+      "bytes": 3389,
+      "sha256": "940e254323fa79f76b0af9d0b7140e8bc404db733acf66473cc1e64e316ecb07"
+    }
+  ],
+  "excludes": [
+    "manifest.json"
+  ]
+}

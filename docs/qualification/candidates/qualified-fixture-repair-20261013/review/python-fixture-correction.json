@@ -1,0 +1,6 @@
+{
+  "reason": "Synthetic worker ARN used an account value outside the unchanged canonical Grants WORKER grammar. Correct only that fixture literal to the existing public source constant; all assertions and source remain unchanged. Initial run15 pass14 failure4error.",
+  "beforeSha256": "3c74cc036b2ca2a9ea5127bc3032d620ae820900a3a6014a425b73e18b48677e",
+  "afterSha256": "0124b4f97196d9b2d786a00b3207dfa2be7bf32295e6804d1fcd5e7e4447d5d0",
+  "rawReceipt": "independent-python.json"
+}

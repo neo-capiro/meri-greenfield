@@ -1,0 +1,20 @@
+{
+  "command": [
+    "git",
+    "-c",
+    "gc.auto=0",
+    "diff",
+    "--check",
+    "67ccac716bd6cbce4ee04e439a085bab75ae21a5",
+    "HEAD",
+    "--",
+    "apps/control/qualified-application/schema-structure-independent.test.mjs",
+    "docs/qualification/candidates/native-structure-20261013/review/outline.md",
+    "docs/qualification/candidates/native-structure-20261013/review/audit-source.py",
+    "docs/qualification/candidates/native-structure-20261013/review/audit-packet.py"
+  ],
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 0
+}

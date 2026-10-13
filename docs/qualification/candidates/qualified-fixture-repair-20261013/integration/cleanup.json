@@ -1,0 +1,39 @@
+{
+  "removedOwnedDependencySymlinks": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "donorUnchanged": true,
+  "groups": [
+    {
+      "label": "integrated-node",
+      "pgid": 511319,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "integrated-node-final",
+      "pgid": 511928,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "integrated-python",
+      "pgid": 511015,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "independent-node",
+      "pgid": 513913,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "independent-python",
+      "pgid": 513939,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "catalog-qualified-node",
+      "pgid": 516660,
+      "freshlyAbsent": true
+    }
+  ]
+}

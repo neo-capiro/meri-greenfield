@@ -1,0 +1,92 @@
+{
+  "ownedDependencyLinksRemoved": [
+    {
+      "path": "node_modules/ajv",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv"
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats"
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize"
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri"
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal"
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse"
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "target": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string"
+    }
+  ],
+  "donorMutated": false,
+  "ownedCaptureGroups": [
+    {
+      "pid": 511643,
+      "absent": true
+    },
+    {
+      "pid": 511602,
+      "absent": true
+    },
+    {
+      "pid": 511090,
+      "absent": true
+    },
+    {
+      "pid": 511049,
+      "absent": true
+    },
+    {
+      "pid": 510904,
+      "absent": true
+    },
+    {
+      "pid": 510500,
+      "absent": true
+    },
+    {
+      "pid": 510334,
+      "absent": true
+    },
+    {
+      "pid": 510271,
+      "absent": true
+    },
+    {
+      "pid": 510060,
+      "absent": true
+    },
+    {
+      "pid": 509934,
+      "absent": true
+    },
+    {
+      "pid": 509857,
+      "absent": true
+    },
+    {
+      "pid": 509763,
+      "absent": true
+    },
+    {
+      "pid": 509713,
+      "absent": true
+    },
+    {
+      "pid": 509612,
+      "absent": true
+    }
+  ],
+  "nativeDatabaseOrContainerActions": false
+}

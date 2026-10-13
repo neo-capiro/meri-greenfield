@@ -1,0 +1,302 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-fixture-repair-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/qualified-application/application.test.mjs (2956.95427ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-fixture-repair-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/qualified-application/independent/application-independent.test.mjs (2565.737203ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-fixture-repair-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/qualified-application/independent/graph-independent.test.mjs (2763.125005ms)
+✔ actual fixed child creates pending then independently observes both grants before activation and reconstructs without writes (539.74713ms)
+✔ second worker refusal preserves one active and one pending grant, terminal unknown never compensates or retries (205.181329ms)
+✔ committed prepare with lost acknowledgement remains pending, content-free unknown and no automatic reattempt (80.546015ms)
+✔ short observation validity clips the actual activation child before delayed SQL can mutate (271.720651ms)
+✔ pre-aborted operation starts no child and consumes no worker observation (22.583775ms)
+✔ preflight is inert and rejects foreign connection, alias grants and fabricated observer (24.955329ms)
+✔ observer token is one-use and exact expected binding, never transferable approval (66.677239ms)
+✔ constructor snapshots grant and connection data before deferred child execution (279.322467ms)
+✔ namespace query must not hide pgx_private through SQL underscore wildcard (9.458497ms)
+✔ independent engine identity address refuses before DDL (2.678887ms)
+✔ independent engine identity username refuses before DDL (2.130832ms)
+✔ independent engine identity system_identifier refuses before DDL (1.480605ms)
+✔ independent engine identity start_ms refuses before DDL (5.939757ms)
+✔ independent engine identity fsync refuses before DDL (1.395738ms)
+✔ independent engine identity synchronous_commit refuses before DDL (1.741478ms)
+✔ own and inherited hostile port accessors and proxy cannot run during admission (0.594523ms)
+✔ verify without retained digest and install with a retained digest allocate nothing (0.493191ms)
+✔ cancel during borrowed acquisition releases late client and sends no SQL (12.304034ms)
+✔ cancellation while advisory lock waits prevents first migration after it returns (12.819858ms)
+✔ first submitted migration failure is terminal UNKNOWN, not a clean pre-effect refusal (3.557167ms)
+✔ host clock crossing original cutoff after identity cannot proceed to ownership or DDL (2.219516ms)
+✔ fixed Python bridge invokes real canonical Grants over scripted SQL; recovery reads without reseed (509.378329ms)
+✔ worker refusal leaves PENDING and never auto-activates/reseeds/compensates (126.398635ms)
+✔ preflight permits only missing schema digest, never returns authority or starts child (28.083531ms)
+✔ same fixture connection and full grant context required before process (56.063127ms)
+✔ parked owned process is killed and close observed at original short deadline (86.310577ms)
+✔ stderr/error content is discarded and no automatic retry follows unknown receipt (36.393613ms)
+✔ post-mutation wrong receipt cannot admit or allow reattempt (70.970166ms)
+✔ bounded stdout flood closes owned child without releasing content (43.474532ms)
+✔ bounded stderr flood closes owned child without releasing content (40.290472ms)
+✔ aborted and extended caller cutoffs cannot refresh constructor original deadline (59.32938ms)
+✔ mapped endpoint and25 declared namespaces cross actual fixed Python bridge unchanged (282.600949ms)
+✔ bridge mapped descriptor refuses partial fields and invalid scope before child (25.178998ms)
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///tmp/meri-qualified-fixture-repair-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/control/qualified-application/mount.test.mjs (2361.160556ms)
+✔ mapped server identity is independent from loopback dial identity (24.72695ms)
+✔ explicit25 unrelated schemas are retained through install and reconstruction (28.231493ms)
+✔ dial host mismatch refuses before allocation (1.050209ms)
+✔ dial port mismatch refuses before allocation (0.295084ms)
+✔ mapped server address mismatch preserves engine gates (2.997876ms)
+✔ mapped server port mismatch preserves engine gates (2.198745ms)
+✔ mapped server system_identifier mismatch preserves engine gates (5.595901ms)
+✔ mapped server fsync mismatch preserves engine gates (2.754355ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2"} (0.542936ms)
+✔ invalid paired server shape {"serverPort":5432} (0.408483ms)
+✔ invalid paired server shape {"serverAddress":"db.local","serverPort":5432} (2.98748ms)
+✔ invalid paired server shape {"serverAddress":"::1%lo","serverPort":5432} (1.060484ms)
+✔ invalid paired server shape {"serverAddress":"172.17.0.2","serverPort":0} (0.284518ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (4.587205ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (3.691348ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.171564ms)
+✔ declared evidence namespace set/owner/target mismatch refuses before DDL (2.020997ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.468645ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.33954ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.228163ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.386111ms)
+✔ closed scope refuses duplicates reserved names and invalid owners (0.246561ms)
+✔ legacy strict mode still refuses unrelated declared-looking namespaces (3.602344ms)
+✔ scoped mode does not permit unrelated public relations or target collisions (2.390463ms)
+✔ unsupported evidence class refuses before migration (3.344617ms)
+✔ populated25 schema metadata is exact across install/reconstruction without row reads (31.233865ms)
+✔ changed preserved relations metadata refuses reconstruction (33.801754ms)
+✔ changed preserved columns metadata refuses reconstruction (28.23635ms)
+✔ changed preserved defaults metadata refuses reconstruction (26.105197ms)
+✔ changed preserved constraints metadata refuses reconstruction (30.051919ms)
+✔ changed preserved indexes metadata refuses reconstruction (31.569524ms)
+✔ changed preserved views metadata refuses reconstruction (25.580168ms)
+✔ changed preserved types metadata refuses reconstruction (33.150236ms)
+✔ changed preserved sequences metadata refuses reconstruction (27.336253ms)
+✔ changed preserved dependencies metadata refuses reconstruction (26.00787ms)
+✔ changed preserved comments metadata refuses reconstruction (28.166826ms)
+✔ changed preserved labels metadata refuses reconstruction (25.308549ms)
+✔ metadata changing during migration yields UNKNOWN before COMMIT (12.599217ms)
+✔ mapped schema digest cannot be reused for changed mapped identity even when engine echoes it (15.101358ms)
+✔ public target type collision refuses before any DDL (3.010795ms)
+✔ target namespace ownership is checked after install (2.510253ms)
+✔ dial database must match trusted fixture (0.428474ms)
+✔ dial user must match trusted fixture (0.286371ms)
+✔ sequence bigint settings are transported losslessly as text, never JS numbers (23.450216ms)
+✔ actual entry applies only exact six migration bytes in order once and returns detached pinned receipt (28.18315ms)
+✔ reconstruction requires retained full digest; populated accounting remains an observation (28.625225ms)
+✔ retained digest detects constraint replacement without DDL (17.668796ms)
+✔ retained digest detects default replacement without DDL (16.592108ms)
+✔ retained digest detects index replacement without DDL (14.128005ms)
+✔ retained digest detects view replacement without DDL (15.268339ms)
+✔ retained digest detects collation replacement without DDL (16.767813ms)
+✔ pre-admission host cannot reach borrowed pool (0.57897ms)
+✔ pre-admission database cannot reach borrowed pool (0.717128ms)
+✔ pre-admission user cannot reach borrowed pool (0.3461ms)
+✔ pre-admission mode cannot reach borrowed pool (0.23991ms)
+✔ pre-admission fixtureCase cannot reach borrowed pool (0.220642ms)
+✔ pre-admission port cannot reach borrowed pool (0.216074ms)
+✔ pre-admission system cannot reach borrowed pool (0.280441ms)
+✔ pre-admission timestamp cannot reach borrowed pool (0.251087ms)
+✔ pre-admission version cannot reach borrowed pool (0.289175ms)
+✔ pre-admission hash cannot reach borrowed pool (0.378008ms)
+✔ pre-admission extra cannot reach borrowed pool (0.262805ms)
+✔ actual server database mismatch stops before DDL (4.455437ms)
+✔ actual server username mismatch stops before DDL (2.005194ms)
+✔ actual server address mismatch stops before DDL (1.530991ms)
+✔ actual server port mismatch stops before DDL (1.445412ms)
+✔ actual server version mismatch stops before DDL (2.277844ms)
+✔ actual server start_ms mismatch stops before DDL (5.895462ms)
+✔ actual server system_identifier mismatch stops before DDL (1.683391ms)
+✔ actual server fsync mismatch stops before DDL (1.471792ms)
+✔ actual server synchronous_commit mismatch stops before DDL (1.387997ms)
+✔ actual server search_path mismatch stops before DDL (1.907097ms)
+✔ no reset or retry for lock (1.663901ms)
+✔ no reset or retry for namespace (4.993485ms)
+✔ no reset or retry for existingRelation (1.479654ms)
+✔ post-DDL missing refusal preserves uncertainty (4.83058ms)
+✔ post-DDL duplicate refusal preserves uncertainty (4.600896ms)
+✔ post-DDL type refusal preserves uncertainty (4.036798ms)
+✔ post-DDL nullable refusal preserves uncertainty (3.915104ms)
+✔ post-DDL owner refusal preserves uncertainty (4.157058ms)
+✔ post-DDL rowSecurity refusal preserves uncertainty (3.900402ms)
+✔ post-DDL trigger refusal preserves uncertainty (4.321115ms)
+✔ post-DDL rule refusal preserves uncertainty (5.261329ms)
+✔ post-DDL invalidConstraint refusal preserves uncertainty (3.953883ms)
+✔ post-DDL missingConstraint refusal preserves uncertainty (7.514644ms)
+✔ post-DDL duplicateConstraint refusal preserves uncertainty (4.495937ms)
+✔ post-DDL invalidIndex refusal preserves uncertainty (8.110421ms)
+✔ post-DDL deferrable refusal preserves uncertainty (5.606667ms)
+✔ post-DDL generated refusal preserves uncertainty (4.944352ms)
+✔ fresh schema refuses consumed budget (7.879964ms)
+✔ fresh schema refuses quarantine budget (14.032746ms)
+✔ fresh schema refuses cap budget (7.295035ms)
+✔ fresh schema refuses any preexisting task row (7.121393ms)
+✔ pre-abort has no connection (0.500532ms)
+✔ pre-deadline has no connection (0.26636ms)
+✔ deadline returned by identity prevents any migration (2.052375ms)
+✔ deadline returned by first DDL allows rollback only (1.813186ms)
+✔ borrowed timeout 6000 is admitted and per-query capped; shorter timeout never widened (14.779895ms)
+✔ remaining original budget narrows statement timeout (7.913263ms)
+✔ failed BEGIN cannot produce success or retry (1.644652ms)
+✔ failed COMMIT cannot produce success or retry (6.567992ms)
+✔ failed release cannot produce success or retry (6.89244ms)
+✔ failed ROLLBACK cannot produce success or retry (1.693576ms)
+✔ late connection after cancellation is released exactly once without SQL (1.76336ms)
+✔ late DDL ACK after cancellation cannot resume migrations or claim physical stop (2.023161ms)
+✔ malformed acquired client with release is disposed without SQL (1.391281ms)
+✔ hostile options getter and pool Proxy execute no traps (0.638199ms)
+✔ hostile result rows getter never executes and is sanitized (1.799855ms)
+✔ emitted namespace SQL preserves underscore literally in the reserved pg_ prefix (8.386445ms)
+✔ reported user namespace pgx_private prevents every DDL statement (2.343442ms)
+✔ fixed original clock rejects an operation ceiling beyond sixty seconds (0.410787ms)
+✔ contending installer refuses lock while first owner completes exactly one DDL sequence (9.193518ms)
+✔ late COMMIT acknowledgement retains UNKNOWN, evicts client and performs no rollback or retry (7.314504ms)
+✔ installs exactly the six unchanged files, then verifies13 relations and empty accounting (24.597636ms)
+✔ reconstruction permits retained accounting but binds original complete catalog hash (28.704199ms)
+✔ identity database mismatch refuses before DDL (2.903795ms)
+✔ identity username mismatch refuses before DDL (1.927657ms)
+✔ identity address mismatch refuses before DDL (2.370824ms)
+✔ identity port mismatch refuses before DDL (1.680786ms)
+✔ identity version mismatch refuses before DDL (1.45036ms)
+✔ identity start_ms mismatch refuses before DDL (1.604001ms)
+✔ identity system_identifier mismatch refuses before DDL (1.821157ms)
+✔ identity fsync mismatch refuses before DDL (2.72127ms)
+✔ identity synchronous_commit mismatch refuses before DDL (1.759915ms)
+✔ identity search_path mismatch refuses before DDL (1.878303ms)
+✔ closed descriptor, accessors, proxy and expired/cancelled inputs allocate no client (0.937009ms)
+✔ install refuses partial namespaces, preexisting relation and same fixture reapply (22.570854ms)
+✔ concurrent installers cannot both acquire fixed transaction lock (10.612731ms)
+✔ post-install missing corruption is UNKNOWN, never retry/success (6.570806ms)
+✔ post-install nullable corruption is UNKNOWN, never retry/success (5.925407ms)
+✔ post-install type corruption is UNKNOWN, never retry/success (4.778893ms)
+✔ post-install constraint corruption is UNKNOWN, never retry/success (4.922649ms)
+✔ post-install unvalidated corruption is UNKNOWN, never retry/success (4.689468ms)
+✔ post-install index corruption is UNKNOWN, never retry/success (4.841106ms)
+✔ post-install trigger corruption is UNKNOWN, never retry/success (4.565732ms)
+✔ post-install owner corruption is UNKNOWN, never retry/success (9.039666ms)
+✔ post-install view corruption is UNKNOWN, never retry/success (6.122202ms)
+✔ post-install rowSecurity corruption is UNKNOWN, never retry/success (4.409378ms)
+✔ reconstruction catches changed check definition even when type/counts remain (15.707339ms)
+✔ fresh install requires exact empty application rows and zero unquarantined accounting (23.296215ms)
+✔ migration, commit and release errors preserve UNKNOWN and no retry (18.01059ms)
+✔ unknown errors are not reflected or evaluated (2.35545ms)
+✔ owner query timeout6000 is admitted and shorter bound is preserved for every query (9.471777ms)
+✔ late acquisition is released with no BEGIN or DDL after original deadline (60.676627ms)
+✔ cancelled parked migration remains UNKNOWN, then rolls back and releases without another DDL (13.187722ms)
+✔ absolute clock advancement after identity prevents migration despite responsive ports (3.053044ms)
+✔ receipt binds original cutoff and reports port observation without native qualification (13.648305ms)
+✔ namespace query excludes only literal pg_ prefix and refuses user pgx_private (2.979098ms)
+✔ reusable scripted fixture binds configured target identity without allocating a database (10.556562ms)
+✔ actual owner expressions admit exact synthetic running task and private ENI; observation is one use (85.557525ms)
+✔ refuses foreign task (42.106968ms)
+✔ refuses foreign run (47.242978ms)
+✔ refuses image (47.953345ms)
+✔ refuses stopped (57.789564ms)
+✔ refuses worker stopped (59.491868ms)
+✔ refuses override (44.128742ms)
+✔ refuses pending ENI (59.463996ms)
+✔ refuses public IP (60.178761ms)
+✔ refuses foreign ENI (50.555807ms)
+✔ refuses extra container (54.819385ms)
+✔ refuses missing tag (54.083979ms)
+✔ caller Boolean/lookalike observation cannot grant activation (19.63334ms)
+✔ parked read ends at caller original cutoff (47.361215ms)
+✔ late observation and cross-owner token refuse (99.594844ms)
+✔ raw getters/proxies are never inspected by observer (18.697853ms)
+✔ runtime hash and unbranded compilation refuse before reads (1.045872ms)
+✔ forbidden historical worker image is refused even with structurally compiled pins (10.084588ms)
+ℹ tests 204
+ℹ suites 0
+ℹ pass 200
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21051.684569
+
+✖ failing tests:
+
+test at apps/control/qualified-application/application.test.mjs:1:1
+✖ apps/control/qualified-application/application.test.mjs (2956.95427ms)
+  'test failed'
+
+test at apps/control/qualified-application/independent/application-independent.test.mjs:1:1
+✖ apps/control/qualified-application/independent/application-independent.test.mjs (2565.737203ms)
+  'test failed'
+
+test at apps/control/qualified-application/independent/graph-independent.test.mjs:1:1
+✖ apps/control/qualified-application/independent/graph-independent.test.mjs (2763.125005ms)
+  'test failed'
+
+test at apps/control/qualified-application/mount.test.mjs:1:1
+✖ apps/control/qualified-application/mount.test.mjs (2361.160556ms)
+  'test failed'

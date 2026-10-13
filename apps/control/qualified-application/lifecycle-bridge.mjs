@@ -1,4 +1,5 @@
 /** Fixed owner-only Python bridge. Import/construction never starts a process or connects. */
+import {fixtureDescriptor} from './schema-contract.mjs';
 import {spawn} from 'node:child_process';
 import {isAbsolute,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -13,11 +14,7 @@ const root=fileURLToPath(new URL('../../../',import.meta.url));
 const fail=()=>{throw Error('QUALIFICATION_LIFECYCLE_REFUSED');};
 const positive=(x,max=Number.MAX_SAFE_INTEGER)=>{if(!Number.isSafeInteger(x)||x<1||x>max)fail();return x;};
 const digest=x=>{if(typeof x!=='string'||!/^[0-9a-f]{64}$/.test(x))fail();return x;};
-function fixtureInput(value,allowUnprepared){
- const f=data(own(value,['mode','fixtureId','host','port','database','user','systemIdentifier','serverStartTime','serverVersion','schemaSha256']));
- if(f.mode!=='owned-disposable-qualification'||f.host!=='127.0.0.1'||f.database!=='meri_qualification_test'||f.user!=='qualification_owner'||!/^\d{1,20}$/.test(f.systemIdentifier)||!/^\d{6}$/.test(f.serverVersion)||!Number.isSafeInteger(Date.parse(f.serverStartTime))||new Date(f.serverStartTime).toISOString()!==f.serverStartTime||!(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/).test(f.fixtureId))fail();
- positive(f.port,65535);if(!(allowUnprepared&&f.schemaSha256===null))digest(f.schemaSha256);return f;
-}
+const fixtureInput=fixtureDescriptor;
 /** Transport is fixed to one source-owned Python entry. It does not accept a spawn callback. */
 function processFrame({pythonExecutable,frame,maxFrameBytes,maxCleanupMs,signal,processes}){
  return new Promise((resolve,reject)=>{
