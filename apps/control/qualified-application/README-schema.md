@@ -93,7 +93,7 @@ schema installer. Retain the returned `schemaSha256` in the exact same fixture
 for reconstruction; do not rerun prepare or reset a failed/uncertain fixture.
 
 `schema-preservation.mjs` reads catalog metadata only for declared namespaces:
-namespace owner/ACL; ordinary tables, views, indexes, sequences; columns, defaults,
+namespace OID/owner/ACL; ordinary tables, views, indexes, sequences; columns, defaults,
 constraints, index metadata, view rewrite definitions, automatic composite/array
 types, sequence parameters, internal triggers, dependencies, comments and labels.
 It refuses custom routines/types, partitions/inheritance, foreign/materialized

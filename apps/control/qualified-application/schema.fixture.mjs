@@ -39,7 +39,7 @@ function scripted(options={}){
    else if(text==='ROLLBACK'){if(state.locked===id)state.locked=null;}
    else if(text.startsWith('SELECT current_database()'))result={rows:[{database:f.database,username:f.user,address:f.serverAddress??f.host,port:f.serverPort??f.port,version:f.serverVersion,start_ms:String(Date.parse(f.serverStartTime)),fsync:'on',synchronous_commit:'on',system_identifier:f.systemIdentifier,search_path:'public',...options.identity}]};
    else if(text.startsWith('SELECT pg_catalog.pg_try')){const acquired=state.locked===null;state.locked??=id;result={rows:[{acquired}]};}
-   else if(text.startsWith('SELECT nspname'))result={rows:[...(options.namespaces??[]).map(n=>({owner:'qualification_owner',acl:null,...n})),...(state.installed?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null}]:[])]};
+   else if(text.startsWith('SELECT nspname'))result={rows:[...(options.namespaces??[]).map((n,i)=>({owner:'qualification_owner',acl:null,oid:String(30000+i),...n})),...(state.installed?[{name:'meri_qualification',owner:'qualification_owner',acl:null},{name:'meri_task_lookup',owner:'qualification_owner',acl:null}]:[])]};
    else if(text.startsWith('WITH ns AS'))result={rows:[{unsupported:options.unsupported??0,metadata:options.preservedMetadata??Object.fromEntries(['relations','columns','defaults','constraints','indexes','views','types','sequences','triggers','dependencies','comments','labels'].map(k=>[k,[]]))}]};
    else if(text.startsWith('SELECT t.typname'))result={rows:options.publicTypeCollision??[]};
    else if(text.startsWith('SELECT n.nspname'))result={rows:state.installed?structuredClone(state.catalog):options.preexisting??[]};

@@ -1,12 +1,12 @@
 /** Metadata-only preservation of explicitly declared unrelated evidence namespaces. */
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {requireSchema,sha256} from './schema-contract.mjs';
-export const namespaceSQL="SELECT nspname AS name,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
+export const namespaceSQL="SELECT nspname AS name,oid::text AS oid,pg_catalog.pg_get_userbyid(nspowner) AS owner,nspacl::text AS acl FROM pg_catalog.pg_namespace WHERE nspname NOT IN ('public','information_schema') AND left(nspname,3)<>'pg_' ORDER BY nspname";
 const targets=['meri_qualification','meri_task_lookup'];
 export function assertNamespaces(rows,fixture,prepared){
  const allowed=fixture.schemaScope?.namespaces??[],expected=[...allowed,...(prepared?targets.map(name=>({name,owner:fixture.user})):[])];
  requireSchema(rows.length===expected.length&&new Set(rows.map(r=>r.name)).size===rows.length);
- for(const e of expected){const r=rows.find(r=>r.name===e.name);requireSchema(r&&r.owner===e.owner&&(r.acl===null||typeof r.acl==='string'));}
+ for(const e of expected){const r=rows.find(r=>r.name===e.name);requireSchema(r&&r.owner===e.owner&&(r.acl===null||typeof r.acl==='string'));if(fixture.schemaScope&&!targets.includes(e.name))requireSchema(typeof r.oid==='string'&&/^[1-9][0-9]{0,9}$/.test(r.oid)&&BigInt(r.oid)<=4294967295n);}
  return data(rows.filter(r=>!targets.includes(r.name)).sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0));
 }
 // Only catalog metadata is read. No table rows, sequence last_value or function body.
