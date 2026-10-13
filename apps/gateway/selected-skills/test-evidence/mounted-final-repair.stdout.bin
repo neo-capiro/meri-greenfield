@@ -1,0 +1,41 @@
+✔ canonical original allocation admission works before persistence and after exact stored request (31.68983ms)
+✔ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (51.274699ms)
+✔ default disabled activation refuses before current installation, SQL or source (3.308431ms)
+✔ partial installation refuses an uninstalled original operation before owned invocation (11.673217ms)
+✔ installation cannot substitute binding (3.084517ms)
+✔ installation cannot substitute skill (2.754545ms)
+✔ installation cannot substitute requestSha256 (2.639524ms)
+✔ installation cannot substitute selectionSha256 (5.887345ms)
+✔ admission refuses current selectedClient mismatch without source execution (2.537232ms)
+✔ admission refuses current grant mismatch without source execution (3.674476ms)
+✔ admission refuses current allocation mismatch without source execution (3.259909ms)
+✔ admission refuses current policy mismatch without source execution (3.062023ms)
+✔ admission refuses current selection mismatch without source execution (2.084336ms)
+✔ admission refuses current manifest mismatch without source execution (1.971188ms)
+✔ current installation qualification revocation refuses before invocation/source (2.631171ms)
+✔ current source revocation after Fetch leaves canonical UNKNOWN and releases no result (21.916744ms)
+✔ registered source bytes are measured, not accepted from UUID or handler metadata (4.917649ms)
+✔ handler executes with its registered receiver (25.138536ms)
+✔ AbortSignal is kept native and pre-abort produces no installation/SQL/source (3.270375ms)
+✔ hostile admission data/getters/proxies are inert before callbacks (2.467988ms)
+✔ missing native installation owner and invented mutation remain refused (2.873763ms)
+✔ native installation rejects selectedClientId substitution before source (2.903578ms)
+✔ native installation rejects policyRevision substitution before source (2.637691ms)
+✔ native installation rejects scopes substitution before source (2.866011ms)
+✔ native installation rejects descriptorSha256 substitution before source (2.659664ms)
+✔ native installation rejects handlerSourceSha256 substitution before source (3.445866ms)
+✔ native installation rejects executionCatalogSha256 substitution before source (3.299978ms)
+✔ expired or parked native installation is bounded and late receipt cannot execute (16.832567ms)
+✔ installation configuration rejects proxy Map without executing its traps (2.468669ms)
+✔ current context expiry clips admission evidence instead of extending native grant (5.132409ms)
+✔ current opaque context after native read cannot change selected client (5.342462ms)
+✔ source failure details never escape configured installation/admission owner (2.429792ms)
+✔ SDK and compiler deliveries consume the SAME original 24-call SQL budget (360.835835ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2197.42213

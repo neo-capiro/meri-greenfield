@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/selected-skills/mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-admission-mount",
+  "sourceHead": "f1cee6add32411d17ac3eba6e5a60cc3d7818551",
+  "sourceDiffSha256": "fdb839cd5fe94c611113576b5d00837ace427a9690779c14b2af14843c12b5c6",
+  "sourceDiffBytes": 16005,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T18:08:08.493223+00:00",
+  "durationSeconds": 1.973,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 295937,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/mounted-first.stdout.bin",
+      "bytes": 2810,
+      "sha256": "264add3ff9f65ccc1c1718737f64e75a33031b40525cb4bf5fcea6c0ebcc1f3e"
+    },
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/mounted-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

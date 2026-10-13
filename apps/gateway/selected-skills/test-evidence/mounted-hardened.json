@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/selected-skills/mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-admission-mount",
+  "sourceHead": "f1cee6add32411d17ac3eba6e5a60cc3d7818551",
+  "sourceDiffSha256": "64c9fa41b01e9280df1bbe1fe59227246aa8552bb9cd8f3b0cd714747c72bd09",
+  "sourceDiffBytes": 16178,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T18:10:37.567473+00:00",
+  "durationSeconds": 2.074,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 297617,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/mounted-hardened.stdout.bin",
+      "bytes": 4364,
+      "sha256": "5c30e5334568cf2a908830e1f789032d0b6433e1ce26f6e4bda47871dc371584"
+    },
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/mounted-hardened.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add content-free port failures, inert proxy Map handling, current-context expiry clipping and bounded qualification controls after the mounted fixture repair.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

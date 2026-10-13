@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/selected-skills/mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-admission-mount",
+  "sourceHead": "f1cee6add32411d17ac3eba6e5a60cc3d7818551",
+  "sourceDiffSha256": "fdb839cd5fe94c611113576b5d00837ace427a9690779c14b2af14843c12b5c6",
+  "sourceDiffBytes": 16005,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T18:08:38.386308+00:00",
+  "durationSeconds": 2.126,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 296231,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/mounted-repaired.stdout.bin",
+      "bytes": 1940,
+      "sha256": "3dfed6b3222b448018fcf0e9e57419012294bce4013432915db624bad165d26d"
+    },
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/mounted-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial mounted fixture had false absenceSupported for an empty complete native page, contradicting the existing original contract. Corrected the synthetic producer assertion; Meri evidenceReady and negativeAssertion remain unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,43 @@
+✔ canonical original allocation admission works before persistence and after exact stored request (32.004102ms)
+✖ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (37.241438ms)
+✔ default disabled activation refuses before current installation, SQL or source (4.556185ms)
+✔ partial installation refuses an uninstalled original operation before owned invocation (9.358727ms)
+✔ installation cannot substitute binding (3.637581ms)
+✔ installation cannot substitute skill (3.148195ms)
+✔ installation cannot substitute requestSha256 (7.163316ms)
+✔ installation cannot substitute selectionSha256 (3.118441ms)
+✔ admission refuses current selectedClient mismatch without source execution (3.327721ms)
+✔ admission refuses current grant mismatch without source execution (3.815245ms)
+✔ admission refuses current allocation mismatch without source execution (3.276595ms)
+✔ admission refuses current policy mismatch without source execution (3.702307ms)
+✔ admission refuses current selection mismatch without source execution (2.578439ms)
+✔ admission refuses current manifest mismatch without source execution (6.59339ms)
+✔ current installation qualification revocation refuses before invocation/source (3.092292ms)
+✔ current source revocation after Fetch leaves canonical UNKNOWN and releases no result (21.932307ms)
+✔ registered source bytes are measured, not accepted from UUID or handler metadata (4.903551ms)
+✖ handler executes with its registered receiver (13.773091ms)
+✔ AbortSignal is kept native and pre-abort produces no installation/SQL/source (3.044571ms)
+✔ hostile admission data/getters/proxies are inert before callbacks (2.442387ms)
+✔ missing native installation owner and invented mutation remain refused (3.108646ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 19
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1893.946387
+
+✖ failing tests:
+
+test at apps/gateway/selected-skills/mount.test.mjs:17:1
+✖ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (37.241438ms)
+  GatewayDenied: INVALID_RESULT
+      at safeFailure (file:///workspace/meri-original-admission-mount/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-original-admission-mount/apps/gateway/dispatch/tool-dispatch.mjs:104:13)
+
+test at apps/gateway/selected-skills/mount.test.mjs:25:1
+✖ handler executes with its registered receiver (13.773091ms)
+  GatewayDenied: INVALID_RESULT
+      at safeFailure (file:///workspace/meri-original-admission-mount/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-original-admission-mount/apps/gateway/dispatch/tool-dispatch.mjs:104:13)

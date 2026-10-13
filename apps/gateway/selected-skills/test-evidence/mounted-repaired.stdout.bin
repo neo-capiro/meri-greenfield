@@ -1,0 +1,29 @@
+✔ canonical original allocation admission works before persistence and after exact stored request (35.182551ms)
+✔ actual measured installation mounts original HTTP adapter through owned invocation and same SQL accounting (62.326669ms)
+✔ default disabled activation refuses before current installation, SQL or source (11.129282ms)
+✔ partial installation refuses an uninstalled original operation before owned invocation (22.038478ms)
+✔ installation cannot substitute binding (22.20174ms)
+✔ installation cannot substitute skill (9.163524ms)
+✔ installation cannot substitute requestSha256 (8.843899ms)
+✔ installation cannot substitute selectionSha256 (3.998336ms)
+✔ admission refuses current selectedClient mismatch without source execution (5.222313ms)
+✔ admission refuses current grant mismatch without source execution (6.672656ms)
+✔ admission refuses current allocation mismatch without source execution (4.411189ms)
+✔ admission refuses current policy mismatch without source execution (5.818547ms)
+✔ admission refuses current selection mismatch without source execution (2.838625ms)
+✔ admission refuses current manifest mismatch without source execution (2.49208ms)
+✔ current installation qualification revocation refuses before invocation/source (5.056547ms)
+✔ current source revocation after Fetch leaves canonical UNKNOWN and releases no result (26.895338ms)
+✔ registered source bytes are measured, not accepted from UUID or handler metadata (5.832749ms)
+✔ handler executes with its registered receiver (29.495178ms)
+✔ AbortSignal is kept native and pre-abort produces no installation/SQL/source (3.72513ms)
+✔ hostile admission data/getters/proxies are inert before callbacks (2.786387ms)
+✔ missing native installation owner and invented mutation remain refused (3.561989ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2051.110784
