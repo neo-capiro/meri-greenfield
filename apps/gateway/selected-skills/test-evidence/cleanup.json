@@ -1,0 +1,50 @@
+{
+  "sourceHead": "85b37e4e19673ec5c542be2e90ee0404eed212ba",
+  "ownDependencyLinkRemoved": true,
+  "donorPreserved": true,
+  "ownedGroups": [
+    {
+      "capture": "frozen-final-repaired.json",
+      "group": 300376,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "frozen-final.json",
+      "group": 299867,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "frozen-regression.json",
+      "group": 299164,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "mounted-final-repair.json",
+      "group": 298051,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "mounted-first.json",
+      "group": 295937,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "mounted-hardened.json",
+      "group": 297617,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    },
+    {
+      "capture": "mounted-repaired.json",
+      "group": 296231,
+      "captureSaysAbsent": true,
+      "observedAbsent": true
+    }
+  ],
+  "scope": "Only this phase's captures/link; other worktrees, donor dependencies and prior PID1 observations were not modified."
+}

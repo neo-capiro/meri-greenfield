@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/selected-skills/mount.test.mjs",
+    "apps/gateway/test/original-tracking-mounted.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-original-admission-mount",
+  "sourceHead": "85b37e4e19673ec5c542be2e90ee0404eed212ba",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T18:14:15.108149+00:00",
+  "durationSeconds": 4.765,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 300376,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/frozen-final-repaired.stdout.bin",
+      "bytes": 13123,
+      "sha256": "fa0b14fb04fd06a05d813a6375b00eff032befbb59ce98353aedaa4e120999b0"
+    },
+    {
+      "path": "apps/gateway/selected-skills/test-evidence/frozen-final-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Fresh-decision actual gateway/binder checks passed; final empty-material assertion mistakenly used Array.length on canonical Map. Assert Map identity and size without changing product or semantic assertions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
