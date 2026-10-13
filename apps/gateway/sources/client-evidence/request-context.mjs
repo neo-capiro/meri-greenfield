@@ -28,6 +28,7 @@ export function readContext(call,now) {
   const {claims,subject,decision}=authority;
   if(!same(authority.binding,claims.binding)||authority.policyRevision!==claims.policyRevision||
       authority.policyRevision!==subject.policyRevision||authority.policyRevision!==decision.policyRevision||
+      claims.scopes.some(scope=>scope.tenantId!==authority.binding.tenantId||scope.policyRevision!==authority.policyRevision)||
       claims.audience!=='meri-gateway'||!claims.actions.includes('tool.read')||decision.decision!=='allowed'||
       decision.operation!==`${operation.id}@${operation.version}`||decision.decisionId!==subject.authorizationDecisionId||
       !same(decision.actor,{tenantId:authority.binding.tenantId,actorId:authority.binding.actorId})||

@@ -90,6 +90,19 @@ test('all current binding and client resolution substitutions refuse before cred
   // Split the trusted context from authority before trying a substitution.
   call.normalizationContext=structuredClone(call.normalizationContext);mutate(call);await assert.rejects(f.create()(call));assert.equal(f.credentialRequests.length,0);}
 });
+for(const [operation,request] of [[operations.profile,rawProfile],[operations.documents,rawDocument]]) {
+ for(const [kind,patch] of [['foreign tenant',scope=>scope.tenantId=id('b')],['foreign policy',scope=>scope.policyRevision='foreign-policy']]) {
+  test(`${operation.id} direct source refuses an additional ${kind} capability scope before broker or Fetch`,async()=>{
+   const f=setup(operation,request),call=structuredClone(f.call),scope=structuredClone(call.authority.claims.scopes[0]);
+   scope.resourceId=id('b');patch(scope);call.authority.claims.scopes.push(scope);
+   const adapter=createClientEvidenceHttpAdapter(f.config);
+   await assert.rejects(adapter.read({operation,input:call.input,request:call.request,authority:call.authority,
+    normalizationContext:call.normalizationContext}),/ACCESS_DENIED/);
+   assert.equal(f.credentialRequests.length,0);assert.equal(f.wire.length,0);
+   await assert.rejects(f.create()(call),/ACCESS_DENIED/);assert.equal(f.credentialRequests.length,0);assert.equal(f.wire.length,0);
+  });
+ }
+}
 test('closed broker receipt pins full authority, normalization context, metadata and both request digests',async()=>{
  for(const mutate of [c=>c.binding.tenantId=id('a'),c=>c.binding.actorId='foreign',c=>c.binding.conversationId=id('a'),c=>c.binding.runId=id('a'),
   c=>c.binding.attemptId=id('a'),c=>c.binding.workerId=id('a'),c=>c.binding.writerFence=2,c=>c.subject.entityIds=[id('a')],
