@@ -1,0 +1,7 @@
+{
+  "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
+  "candidateInspected": false,
+  "providerApiActions": 0,
+  "documentationReadsAllowed": true,
+  "setupReadCorrection": "Standards are docs/IMPLEMENTATION-STANDARDS.md; first root-level path was absent. Corrected read succeeded without changes."
+}

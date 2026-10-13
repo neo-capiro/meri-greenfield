@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
+  "sealedPilot": "9e08fc64471a28e2249dc5d7c5f48fbc8589e2b1",
+  "status": "DOCUMENTED_FEE_RESOLVED_PILOT_NOT_AUTHORIZED",
+  "supersedesOnly": [
+    "revised-pilot.json#/operationAccounting/CountTokensCharge: fee unknown clause",
+    "revised-pilot.json#/costing/scope: CountTokens charge prerequisite clause",
+    "revised-pilot.json#/costing/nonInferenceCharges: count fee unknown clause",
+    "CODEX-ACTION-HOST-PILOT-20261013.md: final pricing paragraph fee unknown statement"
+  ],
+  "countTokens": {
+    "documentedApiFeeUsdPerAttempt": "0",
+    "maximumAttempts": 18,
+    "documentedApiFeeUsdMaximum": "0",
+    "supportStatus": "MODEL_CARD_DOCUMENTED_NOT_RUNTIME_QUALIFIED",
+    "runtimeCompatibility": "UNRUN",
+    "accountAvailabilityVerified": false
+  },
+  "preservedProposal": {
+    "inferenceAttempts": 18,
+    "countTokensAttempts": 18,
+    "providerHttpOperations": 36,
+    "inferenceApprovalCeilingUsd": "0.75",
+    "spendAuthorized": false,
+    "accountPricesVerified": false,
+    "estimatedInferenceUsd": "0.183744",
+    "maximumInferenceUsdAtAdmittedRates": "0.551232",
+    "inputTokensMaximum": 144000,
+    "outputTokensMaximum": 4608,
+    "modelProfile": "us.anthropic.claude-sonnet-4-6",
+    "region": "us-east-1"
+  },
+  "remainingPrerequisites": [
+    "Independent explicit spending approval, exact pilot admission and actual human prompts/gold remain required.",
+    "Effective account rates and any storage/network/tax/platform or other costs remain unverified; neither inference figure is an all-in account bill.",
+    "Exact profile/request/SDK/counter runtime compatibility and current permissions remain unrun in this slice.",
+    "No native/provider activity, endpoint/model/counter code change, retry, additional allowance or claim about another owner's runtime work."
+  ],
+  "activity": {"providerApiCalls": 0,"accountApiCalls": 0,"modelCalls": 0,"publicDocumentationReadsOnly": true}
+}

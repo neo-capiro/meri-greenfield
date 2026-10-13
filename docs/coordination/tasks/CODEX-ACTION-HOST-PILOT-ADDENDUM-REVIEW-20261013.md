@@ -1,0 +1,5 @@
+# Independent pilot documentation addendum review
+
+Base `61ffc8f2487a010c9baba0c8e18088b42569d90a`. Criteria recorded before addendum inspection. Fifteen-minute bounded source/documentation review; no provider API, SQL, native, model, cloud-resource, install or paid action. Public documentation reads only.
+
+Verify official AWS CountTokens fee wording and exact Claude Sonnet 4.6 model-card API compatibility, distinguishing bedrock-runtime from bedrock-mantle. Bind exact URLs, dates and captured byte hashes, without implying actual account availability, inference success or account-specific rates. Preserve all sealed original pilot packet/source bytes. Keep 36 planned operations, 18 inference calls, proposed $0.75 cap unapproved, rates/availability unresolved. No authorization or gate changes. Addendum must correct historical uncertainty transparently, not rewrite it. Audit only additive allocated documentation and retain failures. Own this task/report and pilot-addendum-review packet only; no recursive delegation.

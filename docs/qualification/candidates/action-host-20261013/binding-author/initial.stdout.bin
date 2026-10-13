@@ -1,0 +1,192 @@
+✖ actual host application query/draft/proposal/explicit approval executes once and replays (50.364251ms)
+✖ host denies receipt hash before reservation/effect (15.526849ms)
+✖ host denies actor before reservation/effect (15.399537ms)
+✖ host denies client before reservation/effect (13.759783ms)
+✖ host denies scopes before reservation/effect (13.834767ms)
+✖ host denies expired before reservation/effect (13.691911ms)
+✖ host denies stale before reservation/effect (12.628184ms)
+✖ credential receipt cannot substitute actor or stale authentication (12.850518ms)
+✖ host mutation during reservation is refused before credential issuance (13.400334ms)
+✖ fresh host revocation after actual stored query preserves result liability (20.13376ms)
+✖ metadata ACK followed by host revocation preserves stored proposal (13.089166ms)
+✖ parked authentication cancellation cannot begin reservation (13.035715ms)
+✖ host snapshots configured command binding rather than retaining caller alias (12.380932ms)
+✖ host own-data receipts reject getters without executing them (13.260182ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 0
+ℹ fail 14
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2659.797452
+
+✖ failing tests:
+
+test at apps/control/action-host/binding.test.mjs:4:1
+✖ actual host application query/draft/proposal/explicit approval executes once and replays (50.364251ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:4:115)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/action-host/binding.test.mjs:5:260
+✖ host denies receipt hash before reservation/effect (15.526849ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:5:331)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:5:260
+✖ host denies actor before reservation/effect (15.399537ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:5:331)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:5:260
+✖ host denies client before reservation/effect (13.759783ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:5:331)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:5:260
+✖ host denies scopes before reservation/effect (13.834767ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:5:331)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:5:260
+✖ host denies expired before reservation/effect (13.691911ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:5:331)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:5:260
+✖ host denies stale before reservation/effect (12.628184ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:5:331)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:6:1
+✖ credential receipt cannot substitute actor or stale authentication (12.850518ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:6:148)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:7:1
+✖ host mutation during reservation is refused before credential issuance (13.400334ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:7:97)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:8:1
+✖ fresh host revocation after actual stored query preserves result liability (20.13376ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:8:101)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:9:1
+✖ metadata ACK followed by host revocation preserves stored proposal (13.089166ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:9:93)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:10:1
+✖ parked authentication cancellation cannot begin reservation (13.035715ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:10:86)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:11:1
+✖ host snapshots configured command binding rather than retaining caller alias (12.380932ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:11:103)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/action-host/binding.test.mjs:12:1
+✖ host own-data receipts reject getters without executing them (13.260182ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///tmp/meri-action-host-binding-20261013/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createActionHostApplication (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/index.mjs:9:80)
+      at make (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:22)
+      at fixture (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/test/fixture.mjs:17:78)
+      at async TestContext.<anonymous> (file:///tmp/meri-action-host-binding-20261013/apps/control/action-host/binding.test.mjs:12:87)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

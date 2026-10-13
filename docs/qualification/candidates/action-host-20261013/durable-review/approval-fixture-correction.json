@@ -1,0 +1,11 @@
+{
+  "reason": "Independent approval fixture retained old decidedAt before the newly prepared proposal.createdAt; canonical guard correctly refused. Set explicit synthetic approval time to new proposal creation, preserving all assertions.",
+  "source": "218379df28f2804342809fa484b6538ec028573b",
+  "beforeSha256": "d7d2061d635917bb69a89d776a7a2a19d7fb4ecb22f95f696491fadfc34e7720",
+  "afterSha256": "dd5c357e071d19a53f3948a797ecaafafaf29defd5469d68714f9de7b0d2f2b6",
+  "initial": {
+    "pass": 10,
+    "fail": 8
+  },
+  "productionChanged": false
+}

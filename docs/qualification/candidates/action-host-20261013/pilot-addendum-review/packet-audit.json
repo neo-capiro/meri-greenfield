@@ -1,0 +1,96 @@
+{
+  "candidate": "cd88c8dec7035da9fb6019f98572da4814af3411",
+  "checks": 22,
+  "passed": 22,
+  "failed": [],
+  "detail": [
+    {
+      "name": "manifest-pin",
+      "passed": true
+    },
+    {
+      "name": "member:docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "member:docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/capture-public-docs.py",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/documentation-findings.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/public-retrievals.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/rendered-observations.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/verification.json",
+      "passed": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/pilot-addendum/verify.py",
+      "passed": true
+    },
+    {
+      "name": "dated-observations",
+      "passed": true
+    },
+    {
+      "name": "retained-observation-pin",
+      "passed": true
+    },
+    {
+      "name": "no-raw-or-full-response-identity",
+      "passed": true
+    },
+    {
+      "name": "two-proxy-denials",
+      "passed": true
+    },
+    {
+      "name": "counting-fee-explicit",
+      "passed": true
+    },
+    {
+      "name": "no-live-support-claim",
+      "passed": true
+    },
+    {
+      "name": "unchanged-limits",
+      "passed": true
+    },
+    {
+      "name": "spend-unapproved",
+      "passed": true
+    },
+    {
+      "name": "no-provider-actions",
+      "passed": true
+    },
+    {
+      "name": "inference-arithmetic",
+      "passed": true
+    },
+    {
+      "name": "exact-two-official-sources",
+      "passed": true
+    },
+    {
+      "name": "author41-receipt",
+      "passed": true
+    }
+  ]
+}

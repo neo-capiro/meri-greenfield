@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/local/recovery-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-host-integration-review-20261013",
+  "sourceHead": "05b4a35fe09cfff1474992c1f6a922be8b696b93",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-13T02:22:41.607641+00:00",
+  "durationSeconds": 31.927,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 456102,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.stdout.bin",
+      "bytes": 3166,
+      "sha256": "111295f91ee1a27083eec1a3f31a6d41c92dd072bc4a7a464d4be41f10d80961"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

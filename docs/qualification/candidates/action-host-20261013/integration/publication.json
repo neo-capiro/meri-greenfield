@@ -1,0 +1,23 @@
+{
+  "readAt": "2026-10-13 02:49:54 UTC",
+  "repository": "neo-capiro/meri-greenfield",
+  "pr": 44,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/44",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "head": "f944eb38bc0f7044ec2fab11b86d27e4b776cfc8",
+  "tree": "912157221985b710de634979ce4cdb5a5acceef7",
+  "base": "f1df1bc20b8f5ef06495c50d885b18ce2af73eb1",
+  "testedSource": "1972ef9df1eb78050154896cc1da251185b4df0a",
+  "cliSource": "aa8ed6d633a7fa969d36a392470bc0875d90e2da",
+  "sourceVerdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "checksPassed": 89,
+  "standaloneCliPassed": true,
+  "sourceConnectivityEnabled": false,
+  "mainObserved": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "wirePR": 43,
+  "wireArtifactCommit": "08ba900965f54d4f0cd3776a9bb2158877e76dfd",
+  "frontendHandoff": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6137056397"
+}

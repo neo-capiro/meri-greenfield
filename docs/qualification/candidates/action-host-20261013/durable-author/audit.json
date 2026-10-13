@@ -1,0 +1,94 @@
+{
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "sourceHead": "c581c63764f67a9a7a5ee9090cba9e103aa486d7",
+  "originalEntryCount": 10564,
+  "passed": 21,
+  "total": 21,
+  "checks": [
+    {
+      "name": "every committed path allocated",
+      "passed": true
+    },
+    {
+      "name": "every original Git entry preserved",
+      "passed": true
+    },
+    {
+      "name": "production tokens unchanged from reviewed initial (leading comment precision only)",
+      "passed": true
+    },
+    {
+      "name": "production graph no fixture imports",
+      "passed": true
+    },
+    {
+      "name": "no new SQL/DDL in production index",
+      "passed": true
+    },
+    {
+      "name": "no pool creation/end or native adapter",
+      "passed": true
+    },
+    {
+      "name": "old tests unmodified",
+      "passed": true
+    },
+    {
+      "name": "initial expected exit",
+      "passed": true
+    },
+    {
+      "name": "initial physically absent owned group",
+      "passed": true
+    },
+    {
+      "name": "initial exact source no dirty delta",
+      "passed": true
+    },
+    {
+      "name": "initial stream stdout",
+      "passed": true
+    },
+    {
+      "name": "initial stream stderr",
+      "passed": true
+    },
+    {
+      "name": "read-clock-repair expected exit",
+      "passed": true
+    },
+    {
+      "name": "read-clock-repair physically absent owned group",
+      "passed": true
+    },
+    {
+      "name": "read-clock-repair exact source no dirty delta",
+      "passed": true
+    },
+    {
+      "name": "read-clock-repair stream stdout",
+      "passed": true
+    },
+    {
+      "name": "read-clock-repair stream stderr",
+      "passed": true
+    },
+    {
+      "name": "focused exact eleven success",
+      "passed": true
+    },
+    {
+      "name": "initial fixture failures retained",
+      "passed": true
+    },
+    {
+      "name": "clock repair only test fixture plus retained receipt",
+      "passed": true
+    },
+    {
+      "name": "original test assertion bytes unchanged",
+      "passed": true
+    }
+  ],
+  "scope": "offline only; no native engine or source calls"
+}

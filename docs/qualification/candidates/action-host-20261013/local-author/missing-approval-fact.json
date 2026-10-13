@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/action-host/local/local.test.mjs"
+  ],
+  "cwd": "/tmp/meri-action-host-local-20261013",
+  "sourceHead": "8fccbd9da01444b60e3298dc7d72807fd10e3e0f",
+  "sourceDiffSha256": "0f561a0f5690af9ca1e0370ec14b2484bba0966dd623573bf93e468872087c4c",
+  "sourceDiffBytes": 13675,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T02:35:48.511021+00:00",
+  "durationSeconds": 2.984,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 462522,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.stdout.bin",
+      "bytes": 284,
+      "sha256": "cdada00dc8a859d5afa969f0c2ef38cafc98a060d4d9939731c0e876bd2508aa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/local-author/missing-approval-fact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

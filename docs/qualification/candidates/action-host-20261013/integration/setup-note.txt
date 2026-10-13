@@ -1,0 +1,1 @@
+Initial root task-file write exited128 because sparse checkout had no docs/coordination/tasks directory. No source was changed. Created only allocated directories and repeated the task-document write successfully; no test or runtime action was duplicated.

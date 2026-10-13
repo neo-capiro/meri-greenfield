@@ -1,0 +1,197 @@
+{
+  "source": "8a3643e3564f676b66edc6b4cc220fb1c4193098",
+  "tree": "6b4b9e7ec6c973b6964dda1a86009cd8840ceb85",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "members": [
+    {
+      "path": "apps/control/action-host/local/recovery-independent.test.mjs",
+      "bytes": 12673,
+      "sha256": "8cb1d704a6967deae260d9fb687598bc23755ef079f319f7631f662cb976d4ab"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-INTEGRATION-REVIEW-20261013.md",
+      "bytes": 5592,
+      "sha256": "92d052354612f1b6321af1c8273acfbe2acbc1f43b6cee2402b2c4fc93543e1d"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-HOST-INTEGRATION-REVIEW-20261013.md",
+      "bytes": 1600,
+      "sha256": "b5c2c66a6360c513a60db62cabcfaaa8b17d00cac7ed7922a897c450076db40f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/audit-before.py.txt",
+      "bytes": 2711,
+      "sha256": "b7353c8e99768935048514632ed56d82c72e7adff43ac2165dd757f324686baa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/audit-correction.json",
+      "bytes": 383,
+      "sha256": "77cb0774788468963a90c78612d646bbecd2dbfd42395f4bada02d8a0a562088"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/audit-final.json",
+      "bytes": 3995,
+      "sha256": "fb6deaff2b332f21caa29e1adb8bd92cf90c1f91e1650cf8b0db8da92de49d55"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/audit-initial.stderr.bin",
+      "bytes": 599,
+      "sha256": "693a6b6963b92b31e7b113128306ec80728604296d4b589fc167361629793325"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/audit-initial.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/audit.py",
+      "bytes": 3171,
+      "sha256": "0f6a258527479ea1153346a74250c9dac074dedc799bea3abe60e284ab5aa14c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/author-packet-audit.json",
+      "bytes": 4282,
+      "sha256": "04a2b667277e20bec70b560b913673f4c39e5a8f02c48b5d87c701eaea9d215e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/capture-reaped.py",
+      "bytes": 3385,
+      "sha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/cleanup.json",
+      "bytes": 1827,
+      "sha256": "f848e708e704fa69801e2817230ef192b7216c504e823af3ffc72c637751178c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-final.json",
+      "bytes": 1294,
+      "sha256": "79eb144bf635dc1f45be46e7cd01b7e0cd1efd37d92aa326442579eab8ae5602"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-final.stdout.bin",
+      "bytes": 881,
+      "sha256": "fde593d9a0204c3717dda9b72706a8e1c86c09142f04420cfb35be98fe952023"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.json",
+      "bytes": 1383,
+      "sha256": "416950d29ad596d2d71ab165b6845351a41fa83086f170526c849572998ca22f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/coherent-first.stdout.bin",
+      "bytes": 4119,
+      "sha256": "7e12fe6ffe8181e8e842f0dfb7628e251cf20c7fc9e88829cf0536e515627e1f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/criteria.json",
+      "bytes": 1915,
+      "sha256": "43240431028ea0a9f99f8f3717b9f1ed0a43dd424fe34330b357792787dd2902"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.json",
+      "bytes": 1296,
+      "sha256": "af47910b23c0c75d78b7e81b9f1ceb17795e89cd77b7281c1c3c73dec93b8954"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.recovery.mjs.txt",
+      "bytes": 4007,
+      "sha256": "59747c7a41025a46ad2235b1d90ffa0f1165d7b6371d178a8342ed08ebf95ffe"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-before.stdout.bin",
+      "bytes": 1917,
+      "sha256": "be12039aab2f0886918c87750a3cd99e5a23734299acb4069483c55ea9963aaa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.json",
+      "bytes": 1307,
+      "sha256": "3cf2091563a69223abedf20891c837aa8eeea470512a2bed6eff5082c9dcedc4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-real-before.stdout.bin",
+      "bytes": 3166,
+      "sha256": "111295f91ee1a27083eec1a3f31a6d41c92dd072bc4a7a464d4be41f10d80961"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-repaired.json",
+      "bytes": 1347,
+      "sha256": "eb6f14d33d8072d503a28deef94169c17bb05dc7492a2c177846d13006cf675b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/deadline-repaired.stdout.bin",
+      "bytes": 307,
+      "sha256": "8d874a709b5d33d2a1b0fadd27399f4d6fef6778d486274114093abbe899ac6e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/findings.json",
+      "bytes": 1552,
+      "sha256": "68247a06f0d36fe94472c9657bbfded03652e6e85f59dbe443f7a6ff1863a1b0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/integration-controls-plan.json",
+      "bytes": 1056,
+      "sha256": "43a230f0b4ea84b7e6c6506deae920a80366c35e0d1f05a2bf8a481a4f84d5ab"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/oracle-correction.json",
+      "bytes": 783,
+      "sha256": "ef531a770a99a2eef0a7a7688e214a1f65a546adf6766aa50c2fa8d13c5501f0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/review-only-commits.json",
+      "bytes": 631,
+      "sha256": "06169c156f9699909ff3b7a97cc8167920757fb272619fdf425148a4def43e3c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/verify-author.py",
+      "bytes": 2329,
+      "sha256": "06b5b454966b87056e59a28adfb28f0bfe13002377109a32d336768e8b63b854"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/whitespace-authored.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/whitespace-full.txt",
+      "bytes": 2165,
+      "sha256": "57355b99d44e434fa969848a855cf7081f67ca48284bc043a39db9e4f717609e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/integration-review/whitespace.json",
+      "bytes": 150,
+      "sha256": "c99854cf201e0ff7b4ce1c766690487536c76d29d17c0956017ec93fd2d485aa"
+    }
+  ],
+  "exclusions": [
+    "manifest.json (self)",
+    "manifest-verification.json (binds manifest)"
+  ]
+}

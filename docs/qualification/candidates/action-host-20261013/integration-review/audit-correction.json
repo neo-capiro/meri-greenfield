@@ -1,0 +1,7 @@
+{
+  "initialExitCode": 1,
+  "originalAssertion": "every baseline tracked entry unchanged",
+  "finding": "only root-owned CODEX-ACTION-HOST task has its authorized append allocating local repair after failed CLI",
+  "correction": "require all other original entries exact; root outline starts with exact baseline bytes and exact source61ffc8f2 outline",
+  "productException": false
+}

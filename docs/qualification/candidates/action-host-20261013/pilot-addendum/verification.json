@@ -1,0 +1,174 @@
+{
+  "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
+  "head": "3f0831aa767ef350170665911988799bd68b6e26",
+  "sealedPilot": "9e08fc64471a28e2249dc5d7c5f48fbc8589e2b1",
+  "originalEntriesPreserved": 10667,
+  "passed": 41,
+  "total": 41,
+  "checks": [
+    {
+      "name": "sealed hash docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/capiro-provenance.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/capiro-provenance.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/discovery-notes.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/discovery-notes.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/local-references.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/local-references.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/meri-inventory.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/meri-inventory.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/outline.md",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/outline.md",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/pricing-refresh.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/pricing-refresh.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/verification.json",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/verification.json",
+      "passed": true
+    },
+    {
+      "name": "sealed hash docs/qualification/candidates/action-host-20261013/pilot/verify.py",
+      "passed": true
+    },
+    {
+      "name": "original unchanged docs/qualification/candidates/action-host-20261013/pilot/verify.py",
+      "passed": true
+    },
+    {
+      "name": "sealed manifest unchanged",
+      "passed": true
+    },
+    {
+      "name": "preserved inferenceAttempts",
+      "passed": true
+    },
+    {
+      "name": "preserved countTokensAttempts",
+      "passed": true
+    },
+    {
+      "name": "preserved providerHttpOperations",
+      "passed": true
+    },
+    {
+      "name": "preserved inputTokensMaximum",
+      "passed": true
+    },
+    {
+      "name": "preserved outputTokensMaximum",
+      "passed": true
+    },
+    {
+      "name": "operation sum",
+      "passed": true
+    },
+    {
+      "name": "cap unapproved",
+      "passed": true
+    },
+    {
+      "name": "account rates remain unverified",
+      "passed": true
+    },
+    {
+      "name": "inference maximum exact",
+      "passed": true
+    },
+    {
+      "name": "inference estimate exact",
+      "passed": true
+    },
+    {
+      "name": "count fee exact",
+      "passed": true
+    },
+    {
+      "name": "route unchanged",
+      "passed": true
+    },
+    {
+      "name": "runtime remains unrun",
+      "passed": true
+    },
+    {
+      "name": "no provider/account/model calls",
+      "passed": true
+    },
+    {
+      "name": "retrieval script pinned",
+      "passed": true
+    },
+    {
+      "name": "two direct failures preserved",
+      "passed": true
+    },
+    {
+      "name": "rendered versus raw provenance",
+      "passed": true
+    },
+    {
+      "name": "retained observation artifact exact",
+      "passed": true
+    },
+    {
+      "name": "all additions exclusively owned",
+      "passed": true
+    },
+    {
+      "name": "no production/source delta",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "status": "SOURCE_METADATA_PROPOSAL_ONLY_NOT_EXECUTABLE",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-PILOT-20261013.md",
+      "bytes": 11701,
+      "sha256": "1ec57a3e4f1586d80092491d54f2334886e162ce974a43746f1736bd5799ca10"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/capiro-provenance.json",
+      "bytes": 46483,
+      "sha256": "156593178b13c7d96cead1b7957db70dae84776be8b28e01c38762cc4041168a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/discovery-notes.json",
+      "bytes": 1014,
+      "sha256": "5a9654757bc1719e421b1205d9239199accc4f5416b2752e45ef237dec2f70e5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/local-references.json",
+      "bytes": 3586,
+      "sha256": "c9b217e15e90a5fadadd773edc65b3860f1a48158e29bc7f6253ff7530dac977"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/meri-inventory.json",
+      "bytes": 9026,
+      "sha256": "64b60438fc1f6c0075ecb261ae1531f6184cd0edd771e1c8ef1a443f73291b1c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/outline.md",
+      "bytes": 893,
+      "sha256": "0f8cf7011c3777eaf53695efe9dd16b3ead8644e4fa752e50ec9dd5bc0e111ee"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/pricing-refresh.json",
+      "bytes": 1998,
+      "sha256": "5e4f56261abcaddf07adba1e6d69c31bbe2337c3ed6ca6b6adf90a4dbf04aa24"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/revised-pilot.json",
+      "bytes": 13792,
+      "sha256": "c401feda6047ac2467c43cdedfbb4e19695143bb35c1711a9f7a036e8d49d941"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/verification.json",
+      "bytes": 28724,
+      "sha256": "21a09234200277ad71a71215dd5a053bad8d4d100d8642256f5c2da02b6e5168"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot/verify.py",
+      "bytes": 7803,
+      "sha256": "615ae130a923dfebbe2bc2d2bc085e9518ec8567d3d01cb45eb5f99b27863be6"
+    }
+  ],
+  "excluded": [
+    "manifest.json (self-reference)"
+  ]
+}

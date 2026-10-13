@@ -1,0 +1,40 @@
+✔ host independent actual Fetch query/draft/prepare/pending/approved effect and replay (164.009225ms)
+✔ host independent fresh query identities and event reservations come from host owner (65.450548ms)
+✔ host independent body tenant is not authority (19.982209ms)
+✔ host independent request client is not authority (15.344086ms)
+✔ host independent header identity cannot override authenticated principal (29.571363ms)
+✔ host independent absent credential refuses without any owner calls (13.546355ms)
+✔ host independent auth expired refuses before owner read (13.360425ms)
+✔ host independent auth stale refuses before owner read (14.893248ms)
+✔ host independent current stale refuses before owner read (14.200737ms)
+✔ host independent current expired refuses before owner read (13.734147ms)
+✔ host independent auth hash substitution refuses before owner read (13.222508ms)
+✔ host independent tenant substitution refuses before owner read (12.699672ms)
+✔ host independent actor substitution refuses before owner read (13.328457ms)
+✔ host independent run substitution refuses before owner read (18.527559ms)
+✔ host independent selected client outside scopes refuses before owner read (13.457421ms)
+✔ host independent reserve receipt binds exact fresh authentication (13.439173ms)
+✔ host independent credential receipt binds exact fresh authentication (12.582065ms)
+✔ host independent changed revision during same request refuses (12.96444ms)
+✔ host independent changed binding during same request refuses (15.39345ms)
+✔ host independent changed client during same request refuses (12.970679ms)
+✔ host independent changed scopes during same request refuses (12.955957ms)
+✔ host independent abort parked authBefore starts no later domain work (28.635898ms)
+✔ host independent abort parked currentBefore starts no later domain work (14.504484ms)
+✔ host independent shrink-only expiry crosses metadata boundary (35.540912ms)
+✔ host independent query acknowledged then revoked is RESULT_NOT_RELEASED (27.076954ms)
+✔ host independent query uncertain ACK remains UNKNOWN with no redispatch (15.44712ms)
+✔ host independent actual metadata revoked insertion retains STORED_NOT_RELEASED (42.20092ms)
+✔ host independent actual metadata unknown insertion retains UNKNOWN (35.51245ms)
+✔ host independent observed command denied host release is RESULT_NOT_RELEASED (46.237905ms)
+✔ host independent changed execution receipt binding refuses before effect (34.924225ms)
+✔ host independent hostile getter receipt is inert (17.425052ms)
+✔ host independent hostile proxy receipt is inert (12.694424ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3300.559068

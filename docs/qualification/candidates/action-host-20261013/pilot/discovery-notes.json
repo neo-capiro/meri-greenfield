@@ -1,0 +1,13 @@
+{
+  "privateBodiesPublished": false,
+  "legacyModulesExecutedOrImported": false,
+  "servicesExecuted": false,
+  "providerCalls": 0,
+  "allCurrentMeriEvalFilesInventoried": 21,
+  "legacyPrimaryReferences": 27,
+  "sourceDrift": 0,
+  "noMatchRead": "git grep for human-authored/user-authored/user-provided/real-request markers over named legacy eval scopes returned no matches (exit1); a no-match is not proof of global absence.",
+  "history": "The live75 spec introducing commit6f50afe09d297784fae946ae3d487e4877e121c7 is recorded metadata, not proof that commit author personally wrote the prompts.",
+  "excludedBodies": "Historical live-capture/release results and internal source rows were not imported or used as current grants; public extraction URLs/local user paths remain in private pinned source only.",
+  "scopeLimit": "All current Meri eval files inspected as source/metadata; legacy inspection covers named benchmark contracts and14 strategy goldens, not every test/capture in the private repository."
+}

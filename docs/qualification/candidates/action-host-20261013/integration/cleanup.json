@@ -1,0 +1,13 @@
+{
+  "removedOwnedLinks": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "ownedGroupsAbsent": [
+    460304,
+    466184,
+    466556
+  ],
+  "donorUnchanged": true,
+  "otherOwnersUntouched": true
+}

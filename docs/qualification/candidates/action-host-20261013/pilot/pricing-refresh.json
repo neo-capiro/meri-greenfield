@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-13",
+  "method": "Public primary web documentation reads only; no account/provider API operation",
+  "accountPricesVerified": false,
+  "sources": [
+    {
+      "url": "https://platform.claude.com/docs/en/models/sonnet-4-6/overview",
+      "locators": "55,84-115,146-158",
+      "summary": "Published model identity and $3/$15 per million input/output; active legacy lifecycle. No account availability inferred."
+    },
+    {
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "locators": "101-108",
+      "summary": "10% geographic premium; $3.30/$16.50 proposed admitted rate ceiling is conditional on exact effective account rate."
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
+      "locators": "111-123",
+      "summary": "Bedrock profile us.anthropic.claude-sonnet-4-6 and us-east-1 runtime endpoint; pricing points to AWS pricing page."
+    },
+    {
+      "url": "https://aws.amazon.com/bedrock/pricing/",
+      "locators": "Anthropic section; current rendered page",
+      "summary": "Relevant account/model rate rows not rendered; no numeric AWS account quote obtained."
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_CountTokens.html",
+      "locators": "7-17,24-31",
+      "summary": "Model-specific input count for subsequent inference. Retrieved API reference contains no fee statement; free counting not assumed."
+    }
+  ],
+  "searchLimit": "Additional official-domain search did not establish CountTokens price. No further account access or bypass attempted.",
+  "arithmetic": {
+    "estimated": "12*(4000*3.30+128*16.50)/1000000 = 0.183744",
+    "inferenceMaximum": "18*(8000*3.30+256*16.50)/1000000 = 0.551232",
+    "approvalProposal": "0.75 USD inference only; not authorized"
+  },
+  "nonPricingProof": "Rendered documentation is not an authenticated account tariff or exact downloaded HTML capture."
+}

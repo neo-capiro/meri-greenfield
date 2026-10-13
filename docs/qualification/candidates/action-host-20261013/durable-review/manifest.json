@@ -1,0 +1,192 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "c581c63764f67a9a7a5ee9090cba9e103aa486d7",
+  "authorPacket": "2549eca01ae567bb931a685b5d52ae42d2f92c74",
+  "reviewEvidenceHead": "e8b5ef63ff7f9b72c0271a9fe55616b1e22e98ba",
+  "members": [
+    {
+      "path": "apps/control/action-host/durable/durable-independent.test.mjs",
+      "bytes": 14140,
+      "sha256": "24137e93e4a917bd4114f46133c8ca60c804c974121601afaa15a00270afe2f8"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-DURABLE-REVIEW-20261013.md",
+      "bytes": 4885,
+      "sha256": "18f8b3c0e98eda0ce474295eec177ce44870b71f205b961aa2362f934ef6280e"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-HOST-DURABLE-REVIEW-20261013.md",
+      "bytes": 2155,
+      "sha256": "6eba21d8f3fef8a5b738695030966a5f1df371800e7dd943b08a8717dfc645fc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/approval-fixture-correction.json",
+      "bytes": 548,
+      "sha256": "07128ea64d1daacf5a497879db7d1e4c1b7036a78d97e2e6fde22334b657b4ad"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/audit.py",
+      "bytes": 2655,
+      "sha256": "c6cd557faebafa9b2492e3c8b9a8ead173912d42074083a4ef1ce7f2cf7b8367"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/author-packet-audit.json",
+      "bytes": 3623,
+      "sha256": "2dcfb49d7655a21e09815d9a7a121e08ca2756cb903edfd90cbf049fcc82347e"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/cleanup.json",
+      "bytes": 1582,
+      "sha256": "e68c056baf0c96c5c4e99582c7bdb66ef43257fdfccb6164dca1aa820e87d72d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/combined.json",
+      "bytes": 1332,
+      "sha256": "525237c905510b0cc0f683ca0f6d774a3b2f7acaa9ba8b692c6174dfe40014a2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/combined.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/combined.stdout.bin",
+      "bytes": 3113,
+      "sha256": "fe8a299d63a7f26505d4d435ae2b0e5cefdf1d74b4cff0495c807c9b00445b60"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/criteria.json",
+      "bytes": 203,
+      "sha256": "e912845382c6a75db8c570ca10438fb5a5e8a3d41be50f13647e37197e344083"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/dependencies.json",
+      "bytes": 1356,
+      "sha256": "a93c5507e9a544520ea23267e42e596cc35a57bfa5110b6a609e6d464b479618"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final-focused.json",
+      "bytes": 1343,
+      "sha256": "a25d7785cb67e980d783d30227e14a4c4242ddf7eaa741ca1fdb6525f6cb2d4a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final-focused.stdout.bin",
+      "bytes": 4140,
+      "sha256": "3873426d217f49a8380033761de8c5222d1cc9bb24070dc3693bee3287070708"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final-review.json",
+      "bytes": 482,
+      "sha256": "2829b9bb6774ffebbfefd32e71f455e31064a5c807f4c3d6584b66d3c4efc3c3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final.json",
+      "bytes": 1327,
+      "sha256": "ebefd6ed3ddb4bf133998601de2df4a4e58c8a5d5e0c1e3b010f39c253e98cfc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/final.stdout.bin",
+      "bytes": 3590,
+      "sha256": "ff7fa85f6f09ade22b87417ccf9dbdb7b5c7c0359bac3c6a1aac74c10439804c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/fixture-corrected.json",
+      "bytes": 1289,
+      "sha256": "44df4c8c972f7847e1441bc0024b944116d933fe170a9476039257adc7ee557f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/fixture-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/fixture-corrected.stdout.bin",
+      "bytes": 6112,
+      "sha256": "752399dedad1a460f5a1dc02ad365df1efab36f68230dc336f066908db9eea51"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/initial.json",
+      "bytes": 1269,
+      "sha256": "9295ce66244ba4f5b63626794ba2879970ef86fc953836f397d3ea7a900ddea8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/initial.stdout.bin",
+      "bytes": 7068,
+      "sha256": "acfdb2b0d4f98d7d708ecdb106ec85177ecbbf59be85f14769cd0c1d7320888b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/null-result-fixture-correction.json",
+      "bytes": 512,
+      "sha256": "e879735a1cd05a65ae44a13f18827dd976956e970123733cd4040fef65d66d6b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/pre-replay-fixture-correction.json",
+      "bytes": 296,
+      "sha256": "53d18288cb13d1e9fce472e43dab3c30007b1b5dc09d389f8e60240030d56846"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/review-only-commits.json",
+      "bytes": 892,
+      "sha256": "631887b87acf5e63b02cd9ae7784c39238351a0b4c4fcec6f56777548e48c91f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/snapshot-fixture-correction.json",
+      "bytes": 468,
+      "sha256": "b0a382350edb72efc13838acf1aa34a64a598a96de0c078bbe4bfd27b3e979c0"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/source-audit.json",
+      "bytes": 1041,
+      "sha256": "eacc3a19b9d2af0cab3b3f2a08866a033af1da124179ffb9b6aaddfb3a2c248c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/verify-author-packet.py",
+      "bytes": 2012,
+      "sha256": "9453931334642140d9d7ced4a0d11a2401e01637340ddddce98190d659264f88"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/whitespace-authored.exit",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/whitespace-authored.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/whitespace-full.exit",
+      "bytes": 2,
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/durable-review/whitespace-full.txt",
+      "bytes": 1428,
+      "sha256": "36529d8602f6919733319f549680c1639f1789b8b11216f735dfe27775111d9b"
+    }
+  ],
+  "selfExcluded": [
+    "manifest.json",
+    "manifest-verification.json"
+  ]
+}

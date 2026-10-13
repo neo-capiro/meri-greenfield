@@ -1,0 +1,21 @@
+{
+  "method": "Short authored extraction from successful public web-tool rendering; quote explicitly labeled, other facts paraphrased. Not raw HTML or complete tool output.",
+  "observedDate": "2026-10-13",
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
+      "title": "Monitor your token usage by counting tokens before running inference",
+      "locator": "Opening Note; supported-models section; rendered lines 10,13,33-35",
+      "shortQuote": "Using the CountTokens API doesn't incur charges.",
+      "paraphrase": "Some CRIS-only Anthropic models are exceptions to runtime token-counting support; model-specific support must be checked."
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
+      "title": "Claude Sonnet 4.6",
+      "locator": "Endpoints and APIs supported; Features supported using bedrock-runtime; Programmatic Access; rendered lines 48-51,70-78,117-121,173-178",
+      "paraphrase": "The card marks bedrock-runtime and Count tokens supported, mantle unsupported, and lists the US geographic profile. Its in-region endpoint entry is N/A.",
+      "profile": "us.anthropic.claude-sonnet-4-6",
+      "documentedRuntimeEndpointExample": "https://bedrock-runtime.us-east-1.amazonaws.com"
+    }
+  ]
+}

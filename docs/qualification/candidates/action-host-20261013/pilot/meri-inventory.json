@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "base": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+  "allEvalFiles": [
+    {
+      "path": "evals/qualification/hermes-session.fixture.json",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "9a076965741916d8afd5cc8e724a6cf3ad1d0b82",
+      "bytes": 3260,
+      "sha256": "59fcee0913c875fb8cf45adfa4fe2d71a02c2446152c9560181236b0d8914362",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/qualification/hermes-session.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "5c9cc1eea61d899c03b1d9f6e222018becb8e499",
+      "bytes": 2105,
+      "sha256": "49c8ecfc57dc54aed699986b124602f5b49fab668803d2c68a6c9b7217f03131",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/retrieval-r2/manifest.json",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "fdfde41dbf67cbcfc6eec372a2679647f70182c9",
+      "bytes": 568,
+      "sha256": "79f6ed6d9da40eccca7285124bf971ba79b7e0247091f6fbcdc35c3957e5070f",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/README.md",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "b9b58b9b42212d4c02c476520006474946c7741d",
+      "bytes": 5061,
+      "sha256": "e900df2e358f10c84e63359e2457b8fa2cf2a17c26a71c23d4a56562a19f32c6",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/cli.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "ee8afffba20012e65eaaad62f5932da5626e2499",
+      "bytes": 4326,
+      "sha256": "a5b01a38dda1edef56d4e2d87d2be5c7663c3dc85d35f810e818da273a389a4f",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/contracts.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "1ce42f9043b197cc7f28eb44c06b77a05e131bbe",
+      "bytes": 2598,
+      "sha256": "f116022bc0f70f7c77e7770c98ff95367dda8b880e4412ba27e622c2c798256f",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/corpus.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "e81dfef9e613405828a6350880e893f562179ce7",
+      "bytes": 5224,
+      "sha256": "226b2280acd17937d35302ebe256f7a07e4e86b0d1c92acb2b30a2736da388f8",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/execution/README.md",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "eaab3cc1629dc3e4db2cbeb2a19cf95145754c30",
+      "bytes": 6127,
+      "sha256": "603db5dc3af50666736f39b03d80db160e603f9c56a40924f60c90eaa5dd4cce",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/execution/admission.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "1e4f4cbe109a606aac09abce4bf5c55920b20ff1",
+      "bytes": 6425,
+      "sha256": "f0b2923427a427210d239065e94c2c5db0a4f624340b94162bf6ac4a3817e2c1",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/execution/execute.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "84bcac625d1d6dd048ae3783a192742e61800d0e",
+      "bytes": 9699,
+      "sha256": "d7bd0b15454809996bd055014eb0ba792576e50eb29b531a3311363fe2a48cac",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/execution/execution-independent.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "d9578cd4952c5cf13ddc3676c4077b4df5eb8ff9",
+      "bytes": 28498,
+      "sha256": "8d284695a834c61986831e37b0879f2b5e2be2dd412c5be1795674ebbd351d92",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/execution/test/execution.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "002ecceb91740510443a8965a801e1a5f713889a",
+      "bytes": 10986,
+      "sha256": "dc70d71d0744fffc133bc20040a4b50f4fd5962937c04367fb84a2b862a82174",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/execution/test/fixtures.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "d06a0ff36f241b7a8d965c7ccfb615506d9ebcce",
+      "bytes": 1513,
+      "sha256": "f457c6b7bcaea676cf4586d9d7bd6145f00b08a3528a260c6052c11ea0e7d15c",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/score.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "2fefb31ea4f6b0bd3c8ee73afd3ab7e378c7f1ba",
+      "bytes": 11169,
+      "sha256": "95283d523907a7fd043500e56ec501459d14f1a33ee937e39b2a53169442a414",
+      "classification": "evaluation tooling/protocol, not a received human corpus",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/actual-control.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "cd86d99782c01fcd8188d70c8631b0f7145211c3",
+      "bytes": 4263,
+      "sha256": "264e66ffd3fee8830a7f5c694c090a8bc4c90aef3eee72fb669d89b05287f466",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/cli.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "5584ca3cc0418161f70596cd586fc7a20c4ae64f",
+      "bytes": 4236,
+      "sha256": "634ab8cb9a1616ff997dd275eb6bf7d25aa746622c27d8b83db61435819d0058",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/corpus.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "ad6787a4fd7134d3a8f5c855550f5e459b12ab04",
+      "bytes": 4248,
+      "sha256": "5fcc98b529ecfd3114885abf14f6d8b3d32aa905c8b4333e0d70bfeb4a355c1c",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/eval-independent.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "838789ca365131842fef1f79da4a1b0749690453",
+      "bytes": 28847,
+      "sha256": "2fc9905fd7c9ee83c9c01941ed54a0b727db4bfcd75a56a66109954b7fa2ed40",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/fixtures.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "2cdb45d6bac1375f7bb4d9f4dd9f3f40caea59e8",
+      "bytes": 2843,
+      "sha256": "bcc253d6f22636c1d6b6f2c5426a5d3d918eacc3890bbddf24fec85f471c729e",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/result-fixture.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "e4247b2ec2df1d39f6c5b2a226d01205ad73b909",
+      "bytes": 5520,
+      "sha256": "41e50b7f3e911756ecea92a6d3047fd88129e0a32f5fc1f25b4fa0c7e1f7925d",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    },
+    {
+      "path": "evals/task-lookup/test/score.test.mjs",
+      "ref": "f8e3507307640ee6b4904782cfb20f2b05e5e7b0",
+      "blob": "79ab4b789c36beb5ad1ede1bf218d6f0557de0bc",
+      "bytes": 8432,
+      "sha256": "5a6f0a371a3dcef7b5512815ac3775450d9979e000a13657a4c2b1a97a2bcac0",
+      "classification": "synthetic fixture or test source",
+      "qualifiedHumanCases": 0
+    }
+  ],
+  "candidatePathCensus": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/first-corpus.mjs.txt",
+      "blob": "e81dfef9e613405828a6350880e893f562179ce7"
+    },
+    {
+      "path": "evals/task-lookup/corpus.mjs",
+      "blob": "e81dfef9e613405828a6350880e893f562179ce7"
+    },
+    {
+      "path": "evals/task-lookup/test/corpus.test.mjs",
+      "blob": "ad6787a4fd7134d3a8f5c855550f5e459b12ab04"
+    }
+  ],
+  "censusMeaning": "File and provenance discovery, not one case per test or complete product/runtime qualification",
+  "realRequestsReceived": 0,
+  "qualifiedHumanCases": 0,
+  "unseenOtherOwnerInputs": "Not assessed; no absence assertion outside named pinned trees."
+}
