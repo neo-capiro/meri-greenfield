@@ -24,7 +24,7 @@ export function createSelectedControl(configuration){
    if(!same(task.binding,input.binding)||hash(task.request)!==input.requestSha256||task.checkedAtMs<started||task.checkedAtMs>c.now()||!Number.isSafeInteger(task.checkedAtMs)||!Number.isSafeInteger(task.expiresAtMs)||task.expiresAtMs<=c.now())throw fault('SELECTED_TASK_AUTHORITY_REFUSED');
    const stable={binding:task.binding,versions:task.versions,request:task.request,scopes:task.scopes,selectedClientId:task.selectedClientId};if(pinned&&!same(pinned,stable))throw fault('SELECTED_TASK_AUTHORITY_CHANGED');pinned??=stable;life.limitDeadline(task.expiresAtMs);return task;
   }
-  try{const task=await fresh(),result=await body(input,task,life,fresh);await fresh();life.check();return result;}finally{life.close();}
+  let result;try{const task=await fresh();result=await body(input,task,life,fresh);await fresh();life.check();return result;}catch(error){if(operation==='prepare'&&result?.sessionId){const r=records.get(result.sessionId);records.delete(result.sessionId);r?.controller.abort();await r?.runtime.close();}throw error;}finally{life.close();}
  }
  async function handle(operation,input,capability,signal){return withTask(operation,input,capability,signal,async(i,task,life,fresh)=>{
   if(operation==='prepare'){if(records.size>=64)throw fault('SELECTED_SESSION_LIMIT');const controller=new AbortController(),abort=()=>controller.abort(life.signal.reason);life.signal.addEventListener('abort',abort,{once:true});let runtime;

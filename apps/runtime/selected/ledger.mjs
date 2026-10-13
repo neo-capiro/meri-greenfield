@@ -6,7 +6,7 @@ const hash=canonicalSha256,same=(a,b)=>hash(a)===hash(b),digest=v=>typeof v==='s
 export function createSelectedReadLedger(configuration){
  const c=own(configuration,['allocationOwner','readCompletion','now']);if(typeof c.allocationOwner?.withCurrentAllocation!=='function'||typeof c.readCompletion!=='function'||typeof c.now!=='function')throw fault('SELECTED_LEDGER_CONFIGURATION');
  function selector(raw){const v=data(raw);own(v,['binding','requestSha256','selectionSha256','operation','arguments','deliveryId']);validateShape('RunBinding',v.binding);if(!digest(v.requestSha256)||!digest(v.selectionSha256)||!/^(sdk|compiler):[a-f0-9]{64}$/u.test(v.deliveryId))throw fault('SELECTED_LEDGER_SELECTOR');return v;}
- async function locked(raw,signal,body){nativeSignal(signal);const v=selector(raw);return c.allocationOwner.withCurrentAllocation({binding:v.binding,signal},async({client,current})=>{
+ async function locked(raw,signal,body,deadlineMs){nativeSignal(signal);const v=selector(raw);return c.allocationOwner.withCurrentAllocation({binding:v.binding,signal,...(deadlineMs===undefined?{}:{deadlineMs})},async({client,current})=>{
   if(!same(current.binding,v.binding)||!digest(current.allocationSha256)||current.deadlineMs<=c.now())throw fault('SELECTED_LEDGER_AUTHORITY');
   return body(v,client,current,[v.binding.tenantId,v.binding.conversationId,v.binding.runId,hash({binding:v.binding,deliveryId:v.deliveryId})]);
  });}
@@ -21,7 +21,7 @@ export function createSelectedReadLedger(configuration){
   if(marker.stage!=='SETTLED'||!same(marker.binding,v.binding)||!same(marker.operation,v.operation)||marker.rawRequestSha256!==hash({operation:v.operation,arguments:v.arguments})||![marker.argumentsSha256,marker.factsSha256,marker.producerKeySha256,marker.allocationSha256].every(digest)||marker.resultSha256!==hash(body)||marker.outputBytes!==Buffer.byteLength(result)||!Number.isSafeInteger(marker.checkedAtMs)||!Number.isSafeInteger(marker.deadlineMs)||marker.checkedAtMs<started||marker.checkedAtMs>c.now()||marker.deadlineMs<=c.now())throw fault('SELECTED_READ_NATIVE_MARKER_REFUSED');
   return locked(v,signal,async(v,client,current,key)=>{if(marker.allocationSha256!==current.allocationSha256)throw fault('SELECTED_READ_NATIVE_MARKER_REFUSED');
    const retained=await client.query("UPDATE meri_conversations.selected_reads SET stage='RETAINED',result_text=$5,completion=$6::jsonb WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND delivery_sha256=$4 AND stage='PENDING' AND allocation_sha256=$7 AND selector=$8::jsonb RETURNING stage",[...key,result,JSON.stringify(marker),current.allocationSha256,JSON.stringify(v)]);if(retained.rows.length!==1)throw fault('SELECTED_READ_NOT_RETAINED');return {retained:true};
-  });}
+  },marker.deadlineMs);}
  async function unknown(raw,{signal}={}){return locked(raw,signal,async(_v,client,_current,key)=>{await client.query("UPDATE meri_conversations.selected_reads SET stage='UNKNOWN' WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND delivery_sha256=$4 AND stage='PENDING'",key);return {stage:'UNKNOWN'};});}
  return Object.freeze({claim,retain,unknown});
 }

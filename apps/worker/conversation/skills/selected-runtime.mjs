@@ -46,13 +46,15 @@ export async function createSelectedSkillExecutionRuntime(configuration) {
 
 /** Worker MCP mounting over the same canonical execution owner. No second loop. */
 export async function createSelectedSkillRuntime(configuration){
- const core=await createSelectedSkillExecutionRuntime(configuration);let server,closed=false;
- try{server=createOriginalSkillServer({selected:core.selected,read:core.read,binding:configuration.binding,
-  expectedSessionId:configuration.continuation?(configuration.continuation.mode==='resume'?configuration.continuation.checkpoint.sessionId:configuration.continuation.targetSessionId):undefined,
+ const captured=own(configuration,['binding','versions','request','scopes','selection','readForSkill','currentSkillRun','gateway','compileArtifact','now'],['artifactOutput','signal','continuation','sourceRequest','outputSchema']),binding=data(captured.binding),continuation=captured.continuation===undefined?undefined:data(captured.continuation),outputSchema=captured.outputSchema===undefined?undefined:data(captured.outputSchema),now=captured.now;
+ const core=await createSelectedSkillExecutionRuntime(captured);let server,closed=false;
+ const stopServer=async()=>{const cleanup=createOperationLifetime({deadlineMs:now()+1000,now,errorFactory:fault});try{await cleanup.run(()=>server?.close());}finally{cleanup.close();}};
+ try{server=createOriginalSkillServer({selected:core.selected,read:core.read,binding,
+  expectedSessionId:continuation?(continuation.mode==='resume'?continuation.checkpoint.sessionId:continuation.targetSessionId):undefined,
   timeoutMs:core.selected.manifest.budgets.maxRuntimeSeconds*1000});
   return Object.freeze({selected:core.selected,sdkOptions:{mcpServers:{meri_original_reads:server.server},allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks,
-   ...(configuration.outputSchema?{outputFormat:{type:'json_schema',schema:data(configuration.outputSchema)}}:{})},finish:core.finish,receipts:core.receipts,
-   async close(){if(closed)return;closed=true;await core.close();const cleanup=createOperationLifetime({deadlineMs:configuration.now()+1000,now:configuration.now,errorFactory:fault});try{await cleanup.run(()=>server.close());}finally{cleanup.close();}}
+   ...(outputSchema?{outputFormat:{type:'json_schema',schema:outputSchema}}:{})},finish:core.finish,receipts:core.receipts,
+   async close(){if(closed)return;closed=true;try{await core.close();}finally{await stopServer();}}
   });
- }catch(error){await core.close();await server?.close();throw error;}
+ }catch(error){try{await core.close();}finally{await stopServer();}throw error;}
 }
