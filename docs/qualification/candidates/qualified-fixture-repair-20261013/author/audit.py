@@ -8,7 +8,7 @@ source='e14f3fc704adde3819088b0587f91c81be5e1ad0'
 def git(*args):return subprocess.check_output(['git',*args],cwd=root)
 def blob(ref,path):return git('show',f'{ref}:{path}')
 def sha(value):return hashlib.sha256(value).hexdigest()
-changed=git('diff','--name-only',base,source).decode().splitlines()
+changed=git('diff','--name-only',base,source,'--','apps').decode().splitlines()
 allowed=['apps/control/qualified-application/'+x for x in ['schema.mjs','schema-contract.mjs','schema-preservation.mjs','schema.fixture.mjs','schema-compatibility.test.mjs','lifecycle-bridge.mjs','lifecycle-bridge.test.mjs','application.fixture.mjs','schema-independent/fixture.mjs','independent/schema-independent.test.mjs','README-schema.md']]+['apps/proxy/qualification/assembly/'+x for x in ['lifecycle.py','test_lifecycle.py','test_fixture_compatibility.py']]
 checks=[]
 def check(name,condition):

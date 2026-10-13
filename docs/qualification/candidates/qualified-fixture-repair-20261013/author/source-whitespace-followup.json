@@ -1,0 +1,14 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "f41ec1a78191bff882f1dbc7310e3d69a99bc111",
+    "e14f3fc704adde3819088b0587f91c81be5e1ad0",
+    "--",
+    "apps"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": ""
+}
