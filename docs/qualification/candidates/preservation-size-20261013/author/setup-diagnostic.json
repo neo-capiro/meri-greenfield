@@ -1,0 +1,7 @@
+{
+  "action": "outline git add before evidence sparse-path allocation",
+  "exitCode": 1,
+  "reason": "new evidence directory outside sparse-checkout definition",
+  "repair": "add allocated evidence directory to this worktree sparse definition; retry exact unchanged outline",
+  "sourceEdits": false
+}

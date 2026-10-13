@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/schema-size-inventory.test.mjs"
+  ],
+  "cwd": "/tmp/meri-preservation-size-integrated-20261013",
+  "sourceHead": "f0970cb479c2013503c917afb2c515d3704e63c0",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T07:22:01.804805+00:00",
+  "durationSeconds": 1.724,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 532789,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.stdout.bin",
+      "bytes": 234,
+      "sha256": "fe364edb6d9e7c5fb27469ee7b9eecb6a1bf7f5fca983520be7b634a3e1148f7"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/integration/integrated-inventory.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

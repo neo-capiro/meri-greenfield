@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/schema-size-inventory.test.mjs"
+  ],
+  "cwd": "/tmp/meri-preservation-size-review-20261013",
+  "sourceHead": "823f44b1641801a240aa9a03fc19f4554c498ab6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T07:20:40.981998+00:00",
+  "durationSeconds": 1.321,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 531994,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.stdout.bin",
+      "bytes": 234,
+      "sha256": "e4ce3716b4053c6e09e4962529cb65e833044469687cb1c5f193706b04e91ad7"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/inventory.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

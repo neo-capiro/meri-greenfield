@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/schema-size.test.mjs",
+    "apps/control/qualified-application/schema.test.mjs",
+    "apps/control/qualified-application/schema-compatibility.test.mjs",
+    "apps/control/qualified-application/schema-independent/schema-independent.test.mjs",
+    "apps/control/qualified-application/compatibility-independent/compatibility-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-preservation-size-author-20261013",
+  "sourceHead": "5176ad2d9ed79fb95688cd851939eb9b46e30292",
+  "sourceDiffSha256": "4ce8ef77c7bb496775ddf0c3255f8bbf154188bead3da96fdb99f37789e182c7",
+  "sourceDiffBytes": 3917,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T07:13:21.474252+00:00",
+  "durationSeconds": 0.62,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 528922,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/repaired.stdout.bin",
+      "bytes": 166920,
+      "sha256": "9c1a9d710f743f5686822d0f0ace657b2e042f11f2cb7098d44d25ca2857b44e"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

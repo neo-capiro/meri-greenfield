@@ -1,0 +1,110 @@
+{
+  "status": "PASS",
+  "base": "a16e52ef5bd8d570c995dff298facbc0d1969000",
+  "source": "2444edc0d6bcfb5771bf26eda9e1c8eb06525783",
+  "head": "df6de9610c1c734625d5ad7603aa312a79854344",
+  "originalEntries": 11565,
+  "unchangedOriginalEntries": 11563,
+  "changed": [
+    "apps/control/qualified-application/schema-contract.mjs",
+    "apps/control/qualified-application/schema.mjs"
+  ],
+  "sourceBlobs": [
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "gitBlob": "ef019df2257a8d2aefcff1613a2ccf2ae84a8c40",
+      "bytes": 12491,
+      "sha256": "1fc77874417f0e8b05598e15919bbaac892f759692f73d3cee224d56d8dfc694"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "gitBlob": "0a30dd166c055b314cceaf3ad109361894ed5821",
+      "bytes": 9030,
+      "sha256": "2c39f712d3fe3d4338e44b3539200009c7dade5b3c2cd8db8477c77eb5196f27"
+    }
+  ],
+  "manifests": [
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/manifest.json",
+      "members": 18,
+      "sha256": "e2f66e4228101c8aaeb4fdca207653d8e7cb4f235f8c70986847c5fd3d66dad7"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/author/inventory-manifest.json",
+      "members": 6,
+      "sha256": "6367f93b3ecc3cddc466a889ad1a2981d4b4d61ff0a325635c2b07d53adf1822"
+    },
+    {
+      "path": "docs/qualification/candidates/preservation-size-20261013/review/manifest.json",
+      "members": 20,
+      "sha256": "ba5f5f6ba3fa367c4892845ba7a4a35eda79f1dd445118527a054b0f96f9b8eb"
+    }
+  ],
+  "groups": [
+    {
+      "role": "author",
+      "label": "before",
+      "group": 528723,
+      "freshlyAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "role": "author",
+      "label": "import-repaired",
+      "group": 529264,
+      "freshlyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "role": "author",
+      "label": "inventory",
+      "group": 531533,
+      "freshlyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "role": "author",
+      "label": "repaired",
+      "group": 528922,
+      "freshlyAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "role": "review",
+      "label": "baseline",
+      "group": 528800,
+      "freshlyAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "role": "review",
+      "label": "final",
+      "group": 529623,
+      "freshlyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "role": "review",
+      "label": "inventory",
+      "group": 531994,
+      "freshlyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "role": "integration",
+      "label": "integrated-inventory",
+      "group": 532789,
+      "freshlyAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "role": "integration",
+      "label": "integrated-schema",
+      "group": 530861,
+      "freshlyAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "checkedAt": "2026-10-13T07:23:47.944530+00:00",
+  "nativeDatabaseExecuted": false
+}

@@ -1,0 +1,45 @@
+{
+  "base": "a16e52ef5bd8d570c995dff298facbc0d1969000",
+  "sourceFreeze": "2444edc0d6bcfb5771bf26eda9e1c8eb06525783",
+  "originalEntries": 11565,
+  "unchangedOriginalEntries": 11563,
+  "approvedOriginalChanges": [
+    "apps/control/qualified-application/schema-contract.mjs",
+    "apps/control/qualified-application/schema.mjs"
+  ],
+  "sourcePins": [
+    {
+      "path": "apps/control/qualified-application/schema-contract.mjs",
+      "bytes": 12491,
+      "sha256": "1fc77874417f0e8b05598e15919bbaac892f759692f73d3cee224d56d8dfc694"
+    },
+    {
+      "path": "apps/control/qualified-application/schema.mjs",
+      "bytes": 9030,
+      "sha256": "2c39f712d3fe3d4338e44b3539200009c7dade5b3c2cd8db8477c77eb5196f27"
+    },
+    {
+      "path": "apps/control/qualified-application/schema-preservation.mjs",
+      "bytes": 7947,
+      "sha256": "f487219178395847dee406b8db60fcc4e945fca8707265a5e475beca9e07f4e0"
+    }
+  ],
+  "captures": [
+    {
+      "label": "baseline",
+      "exitCode": 1,
+      "group": 528800,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "final",
+      "exitCode": 0,
+      "group": 529623,
+      "freshlyAbsent": true
+    }
+  ],
+  "allOriginalTestsAndMigrationsUnchanged": true,
+  "nativeFixtureAndSQLUnchanged": true,
+  "dependencyLinksCreated": false,
+  "nativeOrDatabaseActivity": false
+}

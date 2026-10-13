@@ -1,0 +1,31 @@
+✔ ordinary rows accepts exact UTF8 1048575 bytes (23.049583ms)
+✔ ordinary rows accepts exact UTF8 1048576 bytes (17.628088ms)
+✔ ordinary default refuses one byte over1MiB even if caller supplies larger second argument (9.395873ms)
+✔ preservation accepts exact UTF8 4194303 bytes (72.011795ms)
+✔ preservation accepts exact UTF8 4194304 bytes (68.913143ms)
+✔ preservation refuses UTF8 byte overflow even with fewer than4MiB JS characters (63.506972ms)
+✔ preservation refuses plain ASCII byte overflow (35.599581ms)
+✔ preservation exact one row; ordinary1024 rows ceiling unchanged (2.06749ms)
+✔ both admissions reject Proxy and accessors without invocation (0.43841ms)
+✔ preservation keeps node and depth guards despite larger byte limit (14.635465ms)
+✔ all3,128,280 bytes survive preparation and reconstruction unchanged (175.000107ms)
+✔ mutating the final byte of every metadata array changes retained signature (469.853647ms)
+✔ changed measured-inventory tail refuses later reconstruction with no additional DDL (181.759745ms)
+✔ oversized preservation refuses before first DDL and releases borrowed connection (41.432216ms)
+✔ post-DDL snapshot overflow remains UNKNOWN, never downgraded to not installed (107.597551ms)
+✔ same-size post-DDL last-character mutation remains UNKNOWN (90.46938ms)
+✔ measured inventory with unsupported object still refuses before DDL (25.425346ms)
+✔ large admission does not weaken closed metadata array shape (11.385641ms)
+✔ large admission does not weaken closed metadata array shape (22.186975ms)
+✔ large admission does not weaken closed metadata array shape (23.728889ms)
+✔ nonpreservation query still rejects oversized rows before shape interpretation (18.729508ms)
+✔ preservation SQL alone gets larger limit and retains exact namespace parameters (78.463566ms)
+✔ commit acknowledgement loss stays UNKNOWN with measured inventory (96.275458ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1735.338235
