@@ -1,0 +1,48 @@
+✔ actual upstream condition durably holds paused, ignores foreign selector, resumes exact source once (3.190916ms)
+✔ actual upstream condition durably holds waiting-for-approval, ignores foreign selector, resumes exact source once (0.734797ms)
+✔ actual upstream cancellation rejects durable wait without restarting activity (0.593657ms)
+✔ actual upstream completed activity closes lifecycle workflow directly (0.277434ms)
+✔ actual SQL/control facade persists one immutable steer, first claim only, exact UUID ack (79.126889ms)
+✔ pause fences worker messages before checkpoint; exact readback publishes paused and immutable history (36.006861ms)
+✔ approval wait is bound immutable proposal and publishes waiting; unapproved decision blocks resume (74.414686ms)
+✔ resume uses immutable checkpoint and fresh target, with retirement only resume (64.418621ms)
+✔ fork uses immutable checkpoint and fresh target, with retirement only resume (59.843924ms)
+✔ native retirement UNKNOWN is a durable barrier and identical replay performs no second effect (43.61858ms)
+✔ current revoke blocks control/claim/ack/checkpoint with no second effect (26.289374ms)
+✔ legacy authenticated cancel works on held run while worker cannot spoof USER_CANCELLED (26.816233ms)
+✔ control redundant conversation_id cannot be relabelled even with untouched projection hash (13.024927ms)
+✔ control redundant run_id cannot be relabelled even with untouched projection hash (13.21302ms)
+✔ control redundant control_sequence cannot be relabelled even with untouched projection hash (13.364586ms)
+✔ private Fetch route strictness and uncertainty contain no raw credentials (23.239949ms)
+✔ upstream Temporal signal is wake-only and never directly sends SDK text (0.399538ms)
+✔ fork reads trusted immutable checkpoint while original remains running and independently writable (31.288427ms)
+✔ resume target requires a fresh existing session; old credential cannot execute target (66.379467ms)
+✔ restart cannot redeliver a durable DISPATCHING/UNKNOWN steer and APPLIED cannot regress (39.237117ms)
+✔ checkpoint redundant conversation_id cannot select another originating owner (41.856427ms)
+✔ checkpoint redundant run_id cannot select another originating owner (32.461473ms)
+✔ checkpoint redundant checkpoint_id cannot select another originating owner (33.64191ms)
+✔ checkpoint redundant control_id cannot select another originating owner (42.31259ms)
+✔ control persisted sourceRequestSha256 must match immutable source even if projection hash is recomputed (12.523417ms)
+✔ control persisted contextSha256 must match immutable source even if projection hash is recomputed (12.93298ms)
+✔ control persisted commandSha256 must match immutable source even if projection hash is recomputed (13.002284ms)
+✔ resume refuses native target worker substitution before target publication (54.867004ms)
+✔ resume refuses native target fence substitution before target publication (41.526904ms)
+✔ resume refuses native target scope substitution before target publication (53.695329ms)
+✔ malformed UTF8/JSON and over-budget Fetch bytes are refused before durable control (6.109145ms)
+✔ dispatcher lifecycle is opt-in and preserves legacy start definition (0.208833ms)
+✔ multiple authorized clients do not permit changing the exact source selected subject on admission (46.875951ms)
+✔ fresh target session with another in-scope selected client cannot load a persisted continuation (73.731622ms)
+✔ parked native admission then authenticated cancel prevents pause resume target/start/continued (68.497347ms)
+ℹ {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+✔ parked native admission then authenticated cancel prevents approval.wait resume target/start/continued (74.227514ms)
+ℹ {"sourceState":"cancelled","targetRuns":0,"newStarts":0,"continued":0,"outcome":"LIFECYCLE_EFFECT_UNKNOWN"}
+✔ parked native admission rechecks retained hold inside target insertion transaction (42.115886ms)
+✔ parked native admission rechecks retained proof inside target insertion transaction (48.693983ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3260.923893

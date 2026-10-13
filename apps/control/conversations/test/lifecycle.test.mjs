@@ -42,3 +42,25 @@ test('dispatcher lifecycle is opt-in and preserves legacy start definition',asyn
 test('multiple authorized clients do not permit changing the exact source selected subject on admission',async()=>{const f=await lifecycleFixture({extraClient:true});try{await f.running();await f.control({controlId:id(340),intent:'pause'});await f.claim(id(340));await f.checkpoint(id(340));f.state.badAdmission='selected';const p=f.proofs.get(id(220));await assert.rejects(f.control({controlId:id(341),intent:'resume',checkpointId:id(220),checkpointSha256:p.checkpointSha256}));assert.equal(f.state.runs.size,1);}finally{f.close();}});
 
 test('fresh target session with another in-scope selected client cannot load a persisted continuation',async()=>{const f=await lifecycleFixture({extraClient:true});try{await f.running();await f.control({controlId:id(350),intent:'pause'});await f.claim(id(350));await f.checkpoint(id(350));const p=f.proofs.get(id(220)),r=await f.control({controlId:id(351),intent:'resume',checkpointId:id(220),checkpointSha256:p.checkpointSha256});f.state.context.binding=r.targetBinding;f.state.context.selectedClientId=id(7);const other=await f.sessions.issue({identityCredential:'synthetic-native-other-selected'});await assert.rejects(f.service.loadForExecution({credential:other.credential,binding:r.targetBinding}));}finally{f.close();}});
+
+for(const heldIntent of ['pause','approval.wait'])test(`parked native admission then authenticated cancel prevents ${heldIntent} resume target/start/continued`,async t=>{
+ const f=await lifecycleFixture();let release;try{
+  await f.running();const holdId=id(360),input={controlId:holdId,intent:heldIntent,...(heldIntent==='approval.wait'?{proposalId:f.proposal.proposalId}:{})};await f.control(input);await f.claim(holdId);await f.checkpoint(holdId);
+  const beforeStarts=f.state.starts,p=f.proofs.get(id(220)),parked=Promise.withResolvers(),admitted=Promise.withResolvers(),original=f.nativeAdmission.admit;release=parked.resolve;
+  f.nativeAdmission.admit=async args=>{const receipt=await original(args);admitted.resolve();await parked.promise;return receipt;};
+  const pending=f.control({controlId:id(361),intent:'resume',checkpointId:id(220),checkpointSha256:p.checkpointSha256}).then(value=>({value}),error=>({error}));
+  await admitted.promise;const cancelled=await f.app.handle(new Request('https://meri.invalid/api/conversations/cancel',{method:'POST',headers:{authorization:`Bearer ${f.credential}`,'content-type':'application/json'},body:'{}'}));assert.equal(cancelled.status,200);assert.deepEqual(await cancelled.json(),{state:'cancelled'});release();
+  const outcome=await pending;t.diagnostic(JSON.stringify({sourceState:(await f.service.history({credential:f.credential})).run.state,targetRuns:f.state.runs.size-1,newStarts:f.state.starts-beforeStarts,continued:f.state.continued,outcome:outcome.value?.state??outcome.error?.code}));
+  assert.equal(f.state.runs.size,1,'cancelled source must not insert a target run');assert.equal(f.state.starts,beforeStarts,'cancelled source must not start a target workflow');assert.equal(f.state.continued,0,'cancelled source must not signal continuation');assert.match(outcome.error?.message??'',/UNKNOWN/);assert.equal((await f.service.history({credential:f.credential})).run.state,'cancelled');
+ }finally{release?.();f.close();}
+});
+
+for(const changed of ['hold','proof'])test(`parked native admission rechecks retained ${changed} inside target insertion transaction`,async()=>{
+ const f=await lifecycleFixture();let release;try{
+  await f.running();await f.control({controlId:id(370),intent:'pause'});await f.claim(id(370));await f.checkpoint(id(370));const beforeStarts=f.state.starts,p=f.proofs.get(id(220)),parked=Promise.withResolvers(),admitted=Promise.withResolvers(),original=f.nativeAdmission.admit;release=parked.resolve;
+  f.nativeAdmission.admit=async args=>{const receipt=await original(args);admitted.resolve();await parked.promise;return receipt;};
+  const pending=f.control({controlId:id(371),intent:'resume',checkpointId:id(220),checkpointSha256:p.checkpointSha256}).then(value=>({value}),error=>({error}));await admitted.promise;
+  if(changed==='hold')f.state.runs.values().next().value.hold_control_id=id(999);else{const row=f.state.checkpoints.values().next().value;row.proof.sourceRequestSha256='e'.repeat(64);row.proof_sha256=hash(row.proof);}release();const outcome=await pending;
+  assert.match(outcome.error?.message??'',/UNKNOWN/);assert.equal(f.state.runs.size,1);assert.equal(f.state.starts,beforeStarts);assert.equal(f.state.continued,0);
+ }finally{release?.();f.close();}
+});
