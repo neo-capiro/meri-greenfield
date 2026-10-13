@@ -1,0 +1,510 @@
+{
+  "base": "158fa00828cd46864c20f481a998c9d3e9cc236a",
+  "source": "924979b527b1b8c7f3f7883ceddd2cf78eebd63f",
+  "authorPacket": "6800a9d9fe62e3536764ccf9e2f49cf6cecf686c",
+  "authorManifestSha256": "5d731df875e693d1666c9410f560afe5e0c2f5633fe22583e6419124b2da6505",
+  "originalEntries": 10184,
+  "changedOriginals": [],
+  "sources": [
+    {
+      "path": "apps/control/commands/approval-metadata/binding.mjs",
+      "bytes": 4611,
+      "sha256": "6eedd92962688ab4d2fe4ff2303966f0626bf4453f298daaf59d3a0830eef9ce"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/index.mjs",
+      "bytes": 223,
+      "sha256": "0731f3aceedd6c1d33aae783c8fe081ca2ab6c718f6dd0248fb6ceb95338a835"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "bytes": 685,
+      "sha256": "3270e42c779bbe5a367506142a45b31ed3d9ccbe90b88658d52ba3bcf5543e3b"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/owner.mjs",
+      "bytes": 5171,
+      "sha256": "e78ff4055432263c25679da68af7291d936f0ce6e139720ee51467b5a184d39e"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/postgres-store.mjs",
+      "bytes": 3730,
+      "sha256": "5a61bd703bb883ae39aacf82f0351ee5d3fafe1aa0812c2e683136a3c5896f71"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/fixture.mjs",
+      "bytes": 3766,
+      "sha256": "0322dcab58da95b3be82101048a34df247cc6c0c76083545d0684a0508c4c58f"
+    },
+    {
+      "path": "apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "bytes": 8114,
+      "sha256": "5653b975a73dc55b8d5c821ef76ad7489679e501a44dddc599763a4c2838d06b"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all original entries preserved at source",
+      "pass": true
+    },
+    {
+      "name": "all originals preserved at packet",
+      "pass": true
+    },
+    {
+      "name": "author packet unchanged in review branch",
+      "pass": true
+    },
+    {
+      "name": "seven approved source/migration/test files",
+      "pass": true
+    },
+    {
+      "name": "no additions to other app/package paths",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/postgres-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/postgres-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "packet source identity apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "worktree source identity apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author manifest hash",
+      "pass": true
+    },
+    {
+      "name": "author manifest unique paths",
+      "pass": true
+    },
+    {
+      "name": "author manifest source",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/binding.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/postgres-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/control/commands/approval-metadata/test/metadata.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/authored-whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/whitespace.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/action-followthrough-20261013/metadata-author/whitespace.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "original author test bytes retained",
+      "pass": true
+    },
+    {
+      "name": "one author fixture selector correction only",
+      "pass": true
+    },
+    {
+      "name": "binding/index/DDL unchanged through repair",
+      "pass": true
+    },
+    {
+      "name": "owner boundary createOperationLifetime",
+      "pass": true
+    },
+    {
+      "name": "owner boundary l.limitDeadline",
+      "pass": true
+    },
+    {
+      "name": "owner boundary STORED_NOT_RELEASED",
+      "pass": true
+    },
+    {
+      "name": "owner boundary UNKNOWN",
+      "pass": true
+    },
+    {
+      "name": "owner boundary READ_UNAVAILABLE",
+      "pass": true
+    },
+    {
+      "name": "owner boundary NOT_STORED",
+      "pass": true
+    },
+    {
+      "name": "owner boundary newId()",
+      "pass": true
+    },
+    {
+      "name": "owner boundary preparePolicy({phase,selection,selectionSha256,signal,limitDeadline:l.limitDeadline})",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard normalizeTaskCreateInput",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard assertTaskCreateCommand",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard assertProposalIntegrity",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard canonicalSha256",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard scopes,payload.record.scopes",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard requiredApprover,payload.record.requiredApprover",
+      "pass": true
+    },
+    {
+      "name": "canonical immutable guard r.proposalExpiresAt!==payload.record.expiresAt",
+      "pass": true
+    },
+    {
+      "name": "no approval decision minted",
+      "pass": true
+    },
+    {
+      "name": "fixed parameterized tenant actor proposal read",
+      "pass": true
+    },
+    {
+      "name": "single autocommit store no transaction/retry/destructive SQL",
+      "pass": true
+    },
+    {
+      "name": "borrowed pool never ended",
+      "pass": true
+    },
+    {
+      "name": "shorter configured statement bound retained",
+      "pass": true
+    },
+    {
+      "name": "metadata uniqueness constraints",
+      "pass": true
+    },
+    {
+      "name": "initial-independent exact counts",
+      "pass": true
+    },
+    {
+      "name": "initial-independent no uncommitted source",
+      "pass": true
+    },
+    {
+      "name": "initial-independent no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "initial-independent raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "initial-independent raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "initial-independent owned group absent",
+      "pass": true
+    },
+    {
+      "name": "signal-corrected exact counts",
+      "pass": true
+    },
+    {
+      "name": "signal-corrected no uncommitted source",
+      "pass": true
+    },
+    {
+      "name": "signal-corrected no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "signal-corrected raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "signal-corrected raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/signal-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "signal-corrected owned group absent",
+      "pass": true
+    },
+    {
+      "name": "timeout-error-baseline exact counts",
+      "pass": true
+    },
+    {
+      "name": "timeout-error-baseline no uncommitted source",
+      "pass": true
+    },
+    {
+      "name": "timeout-error-baseline no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "timeout-error-baseline raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "timeout-error-baseline raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/timeout-error-baseline.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "timeout-error-baseline owned group absent",
+      "pass": true
+    },
+    {
+      "name": "repaired-composed exact counts",
+      "pass": true
+    },
+    {
+      "name": "repaired-composed no uncommitted source",
+      "pass": true
+    },
+    {
+      "name": "repaired-composed no timeout/kill",
+      "pass": true
+    },
+    {
+      "name": "repaired-composed raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-composed raw docs/qualification/candidates/action-followthrough-20261013/metadata-review/repaired-composed.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "repaired-composed owned group absent",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author initial finite exited capture",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/fixture-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author fixture-corrected finite exited capture",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author boundary-before finite exited capture",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author stream docs/qualification/candidates/action-followthrough-20261013/metadata-author/boundary-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author boundary-repaired finite exited capture",
+      "pass": true
+    },
+    {
+      "name": "signal-fixture-correction preimage hash",
+      "pass": true
+    },
+    {
+      "name": "timeout-expectation-correction preimage hash",
+      "pass": true
+    }
+  ],
+  "pass": 113,
+  "fail": 0,
+  "capturedGroups": [
+    437662,
+    438232,
+    438791,
+    439303
+  ],
+  "nativePostgreSQL": "UNRUN",
+  "policyProducerQualified": false,
+  "runtimeAccepted": false
+}

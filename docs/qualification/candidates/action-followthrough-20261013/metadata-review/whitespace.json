@@ -1,0 +1,40 @@
+{
+  "checks": [
+    {
+      "name": "all-review",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "158fa00828cd46864c20f481a998c9d3e9cc236a",
+        "HEAD",
+        "--",
+        "apps/control/commands/approval-metadata/*independent*.test.mjs",
+        "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+        "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+        "docs/qualification/candidates/action-followthrough-20261013/metadata-review"
+      ],
+      "exitCode": 2,
+      "bytes": 1924,
+      "sha256": "bf5c5ccdea9cf0f6f58c321100239cb001662a7f24aa6ca5c63a1b71845f364a"
+    },
+    {
+      "name": "authored",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "158fa00828cd46864c20f481a998c9d3e9cc236a",
+        "HEAD",
+        "--",
+        "apps/control/commands/approval-metadata/*independent*.test.mjs",
+        "docs/coordination/tasks/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md",
+        "docs/coordination/reports/CODEX-ACTION-FOLLOWTHROUGH-METADATA-REVIEW-20261013.md"
+      ],
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rawEvidenceNeverNormalized": true
+}
