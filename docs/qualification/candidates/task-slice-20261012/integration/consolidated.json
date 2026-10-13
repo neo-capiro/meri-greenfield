@@ -1,0 +1,63 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "apps/gateway/test/action-items-source-independent.test.mjs",
+    "apps/gateway/test/action-items-source.test.mjs",
+    "apps/gateway/test/action-lookup-dispatch.test.mjs",
+    "apps/gateway/test/action-lookup-eval.test.mjs",
+    "apps/gateway/test/action-lookup-slice.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/mail-context.test.mjs",
+    "apps/gateway/test/dataset-metadata-handler-independent.test.mjs",
+    "apps/gateway/test/dataset-metadata-handler.test.mjs",
+    "apps/gateway/test/research-evidence-source.test.mjs",
+    "apps/gateway/test/research-evidence-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+    "apps/control/task-lookup/delivery.test.mjs",
+    "apps/control/task-lookup/postgres-results.test.mjs",
+    "apps/control/task-lookup/test/delivery-independent.test.mjs",
+    "apps/control/task-lookup/test/store-independent.test.mjs",
+    "evals/task-lookup/test/actual-control.test.mjs",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/eval-independent.test.mjs",
+    "evals/task-lookup/test/score.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "565c01b10d3a26ec499ac810bb56fb3f6fdf8f84",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:58:07.408986+00:00",
+  "durationSeconds": 82.431,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 419799,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated.stdout.bin",
+      "bytes": 65986,
+      "sha256": "353fa9a2dbc171904b0c97632ab860357ed22de3bb4783169fa50a13365f1970"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/consolidated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "One consolidated check of accepted action adapter, canonical dispatch profiles, durable control delivery, evaluator, and actual cross-owner integration.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

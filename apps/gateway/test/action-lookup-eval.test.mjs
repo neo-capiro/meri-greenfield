@@ -13,9 +13,10 @@ async function replay(){
   c.request={...f.c.request,clientId:f.c.context.selectedClientId};
   c.context={binding:f.h.f.binding,clientResolution:{reference:c.request.clientId,clientId:c.request.clientId}};
   c.scopes=f.c.context.scopes;
+  c.sourceIds=expected.observation.result.sources.map(source=>source.sourceId);
   c.expected={outcome:'returned',semanticSha256:hash(semanticResult(expected.observation)),replaySha256:null,
     recordIds:expected.observation.result.actions.map(row=>row.id),absence:false,exhaustive:false};
-  value.sources[0].asOf=at;value.approval.issuedAt=at;
+  value.sources=c.sourceIds.map(sourceId=>({...value.sources[0],sourceId,asOf:at}));value.approval.issuedAt=at;
   sign(value);const frozen=freezeCorpus(value,options(value));
   const delivered=await f.lookup(),read=await f.read(),observed=capture(frozen);
   observed.run.startedAt=at;observed.run.completedAt=at;
