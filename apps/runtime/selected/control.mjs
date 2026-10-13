@@ -7,15 +7,18 @@ import {createSelectedSkillExecutionRuntime} from '../../worker/conversation/ski
 import {createOriginalSelectedSkillExecution} from '../../control/conversations/skills/execution.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {fault} from '../config.mjs';
+import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const hash=canonicalSha256,same=(a,b)=>hash(a)===hash(b);
 export function createSelectedControl(configuration){
  const c=own(configuration,['executionOptions','loadCurrentTask','ledger','now'],['sourceEnabled']);if(typeof c.loadCurrentTask!=='function'||typeof c.now!=='function'||typeof(c.sourceEnabled??false)!=='boolean')throw fault('SELECTED_CONTROL_CONFIGURATION');
+ const options=own(c.executionOptions,['admissionForBinding','gatewayForBinding','readSelection','readContext','publishForBinding','retention','defaultCongress'],['outputBridge','readBase','readRevisionBase','now','runtimeFactory']);
+ const ledger=Object.freeze({claim:storageMethod(c.ledger,'claim'),retain:storageMethod(c.ledger,'retain'),unknown:storageMethod(c.ledger,'unknown')});
  const records=new Map();let closed=false;
- const execution=createOriginalSelectedSkillExecution({...c.executionOptions,now:c.now,runtimeFactory:async args=>{
+ const execution=createOriginalSelectedSkillExecution({...options,now:c.now,runtimeFactory:async args=>{
   const gateway=args.gateway,selector={binding:args.binding,requestSha256:hash(args.request),selectionSha256:hash(args.selection)};
   const execute=async value=>{const {signal,...raw}=value,request=data(raw),delivery={...selector,operation:request.operation,arguments:request.arguments,deliveryId:request.deliveryId};
-   const claimed=await c.ledger.claim(delivery,{signal});if(!claimed.claimed)throw fault('SELECTED_READ_NOT_REDISPATCHED');
-   try{const result=await gateway.execute(value);await c.ledger.retain(delivery,result,{signal});return result;}catch(error){await c.ledger.unknown(delivery).catch(()=>{});throw error;}
+   const claimed=await ledger.claim(delivery,{signal});if(!claimed.claimed)throw fault('SELECTED_READ_NOT_REDISPATCHED');
+   try{const result=await gateway.execute(value);await ledger.retain(delivery,result,{signal});return result;}catch(error){await ledger.unknown(delivery).catch(()=>{});throw error;}
   };
   return createSelectedSkillExecutionRuntime({...args,gateway:{execute}});
  }});

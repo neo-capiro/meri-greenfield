@@ -1,0 +1,13 @@
+✔ selected ledger captures only inert native allocation method before initialization effects (1.683225ms)
+✔ selected execution option getters cannot execute during trusted control construction (0.458648ms)
+✔ selected HTTP method getter cannot execute during constructor validation (0.187872ms)
+✔ private selected wire rejects getters, prepared injections and worker compiler delivery IDs without effects (2.12666ms)
+✔ inactive selected HTTP route refuses before native authority/controller effects (2.610035ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2423.772885

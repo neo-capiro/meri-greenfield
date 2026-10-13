@@ -2,11 +2,12 @@
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {fault} from '../config.mjs';
+import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 const hash=canonicalSha256,same=(a,b)=>hash(a)===hash(b),digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 export function createSelectedReadLedger(configuration){
- const c=own(configuration,['allocationOwner','readCompletion','now']);if(typeof c.allocationOwner?.withCurrentAllocation!=='function'||typeof c.readCompletion!=='function'||typeof c.now!=='function')throw fault('SELECTED_LEDGER_CONFIGURATION');
+ const c=own(configuration,['allocationOwner','readCompletion','now']),withCurrentAllocation=storageMethod(c.allocationOwner,'withCurrentAllocation');if(typeof c.readCompletion!=='function'||typeof c.now!=='function')throw fault('SELECTED_LEDGER_CONFIGURATION');
  function selector(raw){const v=data(raw);own(v,['binding','requestSha256','selectionSha256','operation','arguments','deliveryId']);validateShape('RunBinding',v.binding);if(!digest(v.requestSha256)||!digest(v.selectionSha256)||!/^(sdk|compiler):[a-f0-9]{64}$/u.test(v.deliveryId))throw fault('SELECTED_LEDGER_SELECTOR');return v;}
- async function locked(raw,signal,body,deadlineMs){nativeSignal(signal);const v=selector(raw);return c.allocationOwner.withCurrentAllocation({binding:v.binding,signal,...(deadlineMs===undefined?{}:{deadlineMs})},async({client,current})=>{
+ async function locked(raw,signal,body,deadlineMs){nativeSignal(signal);const v=selector(raw);return withCurrentAllocation({binding:v.binding,signal,...(deadlineMs===undefined?{}:{deadlineMs})},async({client,current})=>{
   if(!same(current.binding,v.binding)||!digest(current.allocationSha256)||current.deadlineMs<=c.now())throw fault('SELECTED_LEDGER_AUTHORITY');
   return body(v,client,current,[v.binding.tenantId,v.binding.conversationId,v.binding.runId,hash({binding:v.binding,deliveryId:v.deliveryId})]);
  });}
