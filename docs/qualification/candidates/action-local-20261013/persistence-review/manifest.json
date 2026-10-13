@@ -188,8 +188,8 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-PERSISTENCE-REVIEW-20261013.md",
-      "bytes": 6882,
-      "sha256": "cbfece11a6278540bfb825e55c95a39445b0373fb19b8b2c97ac8c1700280828"
+      "bytes": 7282,
+      "sha256": "cb4e4912090ef6f2909a90df06b67b7e2909fc3e48490f74954e49e8e9191b9f"
     },
     {
       "path": "apps/control/task-lookup/local-integration/admission-independent.test.mjs",
