@@ -1,0 +1,96 @@
+✔ fixed bridge transport and canonical current-run join produce one exact client scope (78.910717ms)
+✔ refuses native identity principal substitution (30.192445ms)
+✔ refuses native identity revision substitution (28.768385ms)
+✔ refuses native client substitution (27.519979ms)
+✔ refuses native expired substitution (26.457033ms)
+✔ refuses native extra field substitution (29.265226ms)
+✔ refuses stale current run and mismatched hints before native context call (20.314721ms)
+✔ disabled mount is inert and owned close does not dispose borrowed services (21.433417ms)
+✔ parked native body is cancelled at original cutoff with no later context port (47.038935ms)
+✔ actual mounted HTTP obtains action session then query/draft/proposal/refusal/approved once/replay/revocation (360.038906ms)
+✔ native credential requests explicitly omit ambient credentials and disable caches (18.53982ms)
+✔ authority independent default disabled is inert through invocation (2.848821ms)
+✔ authority independent explicit client uses only fixed origin/path and bearer (8.219594ms)
+✔ authority independent context request preserves only exact selectors/hash (1.689563ms)
+✔ authority independent refuses unsafe origin http://authority.invalid (0.342614ms)
+✔ authority independent refuses unsafe origin https://u:p@authority.invalid (0.268282ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/path (0.231968ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/?x=1 (0.26624ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/#x (0.193791ms)
+✔ authority independent extra identity receipt refuses (2.131295ms)
+✔ authority independent principal identity receipt refuses (0.916845ms)
+✔ authority independent redirect refusal never retries (0.621322ms)
+✔ authority independent content type refusal never retries (0.767331ms)
+✔ authority independent invalid JSON refusal never retries (0.69372ms)
+✔ authority independent invalid UTF8 refusal never retries (0.688051ms)
+✔ authority independent body cap refusal never retries (0.774221ms)
+✔ authority independent cancellation while fetch is parked does not release late receipt (12.160353ms)
+✔ authority independent caller cutoff is enforced after response acquisition (0.865408ms)
+✔ authority independent hostile input/configuration is inert (0.378378ms)
+✔ authority independent fetch explicitly omits ambient credentials and cache (0.535873ms)
+✔ authority independent previously redirected native Response is refused (32.818622ms)
+✔ authority independent late fetch body is physically cancelled after caller abort (1.224296ms)
+✔ authority independent parked response body is cancelled at the original cutoff (16.84724ms)
+✔ context independent joins actual HTTP receipts with canonical currentRun only (75.828548ms)
+✔ context independent conversationId hint cannot select another configured owner (19.457118ms)
+✔ context independent runId hint cannot select another configured owner (16.314817ms)
+✔ context independent clientId hint cannot select another configured owner (18.348463ms)
+✔ context independent native hash substitution refuses (22.038365ms)
+✔ context independent native identity revision substitution refuses (17.265615ms)
+✔ context independent native conversation substitution refuses (17.39446ms)
+✔ context independent native client substitution refuses (15.386193ms)
+✔ context independent native extra scope substitution refuses (15.836048ms)
+✔ context independent currentRun tenant refuses (20.369008ms)
+✔ context independent currentRun fence refuses (14.417158ms)
+✔ context independent currentRun expired refuses (14.688525ms)
+✔ context independent currentRun stale refuses (14.328955ms)
+✔ context independent currentRun extra refuses (20.198742ms)
+✔ context independent cancellation while canonical run owner is parked cannot release context (23.395885ms)
+✔ mount independent disabled refuses without native or current calls (16.572374ms)
+✔ mount independent session issuance reaches actual query/proposal/separate approved execution (242.214258ms)
+✔ mount independent fresh identityRevision change revokes retained session (16.340216ms)
+✔ mount independent fresh contextRevision change revokes retained session (15.47091ms)
+✔ mount independent fresh writerFence change revokes retained session (15.274135ms)
+✔ context independent stale identity refuses before run authority (43.946005ms)
+✔ context independent future identity refuses before run authority (12.423232ms)
+✔ context independent expired identity refuses before run authority (12.086516ms)
+✔ context independent other actor identity refuses before run authority (11.802679ms)
+✔ context independent changed policy around native context denies release (12.393177ms)
+✔ context independent a later longer run deadline cannot widen original context expiry (13.945227ms)
+✔ context independent principal mismatch with coherent hash echo still refuses (13.235061ms)
+✔ mount independent close owns session only and leaves borrowed client callable (13.534041ms)
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/tmp/meri-application-adapters-review-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs' imported from /tmp/meri-application-adapters-review-20261013/apps/control/action-host/local-integration/test-pool.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///tmp/meri-application-adapters-review-20261013/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs'
+}
+
+Node.js v24.19.0
+✖ apps/control/action-host/session/session.test.mjs (116.958113ms)
+ℹ tests 62
+ℹ suites 0
+ℹ pass 61
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4015.790172
+
+✖ failing tests:
+
+test at apps/control/action-host/session/session.test.mjs:1:1
+✖ apps/control/action-host/session/session.test.mjs (116.958113ms)
+  'test failed'
