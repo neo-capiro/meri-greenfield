@@ -1,0 +1,110 @@
+✔ canonical read and command authorities use same persisted reader and both refuse revoked configured grant (35.999829ms)
+✔ generic retained authorizer calls current canonical authority and refuses current scopes/client tampering (19.092872ms)
+✔ actual HTTP issuance uses persisted current state; reconstructed mount and source-off query (144.3075ms)
+✔ closed/default-disabled mount has no authority or persistence IO; override keys rejected (18.321233ms)
+✖ actual host receipt cannot escape watched read grant: reservation (33.181454ms)
+✖ actual host receipt cannot escape watched read grant: credential (54.797492ms)
+✔ read-only currentRun reconstructs exact persisted full identity and original deadline (33.081033ms)
+✔ fresh persisted refusal: revoked second grant (22.316938ms)
+✔ fresh persisted refusal: grant expired (13.517133ms)
+✔ fresh persisted refusal: quarantine (12.699505ms)
+✔ fresh persisted refusal: fence (9.691995ms)
+✔ fresh persisted refusal: policy (10.61741ms)
+✔ fresh persisted refusal: allocation hash (9.979717ms)
+✔ fresh persisted refusal: retained facts (9.479836ms)
+✔ fresh persisted refusal: allocation numeric mirror (8.754445ms)
+✔ input and configuration refuse substitutions without SQL (8.706174ms)
+✔ lost read COMMIT acknowledgement releases no authority (7.735064ms)
+✔ late connection after deadline releases without BEGIN (28.007103ms)
+✔ newly observed short grant deadline clips a parked subsequent query (38.844925ms)
+✔ mount rejects split budget ledger and unmonitored producer/read credentials (10.508752ms)
+✔ local gateway independent: actual owned credential reaches canonical durable dispatch/source/store/read (115.511472ms)
+✔ local gateway independent: narrowing client after real source acquisition blocks release and result retention (24.262689ms)
+✔ local gateway independent: narrowing grants after real source acquisition blocks release and result retention (21.148236ms)
+✔ local gateway independent: narrowing sources after real source acquisition blocks release and result retention (21.116899ms)
+✔ local gateway independent: local capability cannot override canonical durable grant revocation (13.271905ms)
+✔ local gateway independent: historical result survives exact task replacement but requires newly issued current credential (45.828653ms)
+✔ local gateway independent: source acquisition token revocation leaves UNKNOWN without redispatch (21.145012ms)
+✔ local gateway independent: concrete construction rejects production origin, forged owner and extra request-selected ports (7.060306ms)
+✔ local identity independent: actual canonical authority consumes owned facts and exposes no token in status (10.119255ms)
+✔ local identity independent: random opaque credential is not caller-supplied claims or portable across owners (3.17229ms)
+✔ local identity independent: even valid credential text cannot be issued through raw claims/extra fields (0.909758ms)
+✔ local identity independent: direct policy port rejects altered retained claims and normalized foreign scope (2.205176ms)
+✔ local identity independent: current client change refuses old execution (2.32139ms)
+✔ local identity independent: current grants change refuses old execution (1.947007ms)
+✔ local identity independent: current source change refuses old execution (2.503094ms)
+✔ local identity independent: current revision change refuses old execution (1.45007ms)
+✔ local identity independent: expiry and explicit revoke are exact and close cannot resurrect a token (2.018515ms)
+✔ local identity independent: run replacement requires exact old binding and invalidates task A (1.697162ms)
+✔ local identity independent: reentrant policy narrowing between real owned ports cannot become release authority (0.805662ms)
+✔ local identity independent: abort remains active through actual policy/source ports (0.664268ms)
+✔ local identity independent: bounded token owner refuses overflow and frees only expired or revoked issuance (16.081889ms)
+✔ opaque issuer computes canonical claims from closed owned state (10.286255ms)
+✔ forged token changed token foreign issuer restart and close all fail closed (1.459735ms)
+✔ capability expiry and current run deadline deny (1.3834ms)
+✔ revoke denies actual canonical authority without mutating claim history (0.826553ms)
+✔ current policy denies clientAllowed (1.158301ms)
+✔ current policy denies sourceEnabled (1.653316ms)
+✔ current policy denies grants (0.979122ms)
+✔ revision change invalidates existing token; new current token may validate (1.099723ms)
+✔ coherent replacement preserves stable owner and invalidates prior task token (1.984844ms)
+✔ policy ports refuse forged claims wrong operation client grants and source requirements (2.781533ms)
+✔ hostile configuration, calls and signals are inert (0.730227ms)
+✔ abort inside clock callback cannot release an authority fact (0.781155ms)
+✔ actual owned durable gateway reserves executes records completion settles and refuses duplicate dispatch (62.706208ms)
+✔ wrong operation before preparation allocates no durable invocation (5.225467ms)
+✔ unknown reserve acknowledgement never dispatches and reconstructs exact prepared identity (18.60329ms)
+✔ actual gateway source is denied after local revocation and production descriptors remain null (5.693841ms)
+✔ gateway only accepts branded identity explicit local transport and exact allocation (4.336069ms)
+✔ real local case composes control current authorizer store owned gateway and source response (57.613221ms)
+✔ control authorizer recomputes binding digest scopes and current capability (2.788703ms)
+✔ failed setup acknowledgement keeps safe owned IDs and evicts failed-BEGIN connection (5.171295ms)
+✔ uncertain BEGIN evicts connection and never retries (1.178101ms)
+✔ uncertain ROLLBACK evicts connection and never retries (0.175524ms)
+✔ uncertain COMMIT evicts connection and never retries (0.176165ms)
+✔ release error preserves original commit uncertainty (1.146104ms)
+✔ database time is sampled only after budget lock acknowledgement (6.330668ms)
+ℹ tests 66
+ℹ suites 0
+ℹ pass 64
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6544.326347
+
+✖ failing tests:
+
+test at apps/control/admitted-runs/test/mount.test.mjs:14:48
+✖ actual host receipt cannot escape watched read grant: reservation (33.181454ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  401 !== 403
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-author-20261013/apps/control/admitted-runs/test/mount.test.mjs:17:180)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 401,
+    expected: 403,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/admitted-runs/test/mount.test.mjs:14:48
+✖ actual host receipt cannot escape watched read grant: credential (54.797492ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  401 !== 403
+  
+      at TestContext.<anonymous> (file:///tmp/meri-admitted-run-author-20261013/apps/control/admitted-runs/test/mount.test.mjs:17:180)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 401,
+    expected: 403,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
