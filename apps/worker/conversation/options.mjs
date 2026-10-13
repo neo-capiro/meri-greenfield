@@ -6,7 +6,7 @@ import {buildContinuationOptions} from './continuation/options.mjs';
 import {assertRestoreReceipt} from './continuation/native-receipts.mjs';
 /** @returns {never} */
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
-/** @param {any} value @param {AbortController} abortController @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
+/** @param {any} value @param {AbortController} abortController @param {unknown} [continuationContext] @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
 export function buildConversationOptions(value,abortController,continuationContext){
  const r=own(value,['binding','versions','cwd','proxyUrl','proxyCredential','model','sessionStore','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],continuationContext===undefined?[]:['restoreReceipt']);
  if(r.versions.sdk!=='0.3.295'||r.versions.cli!=='2.1.295')fail();

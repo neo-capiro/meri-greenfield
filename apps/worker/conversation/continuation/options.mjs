@@ -15,11 +15,14 @@ const ajv=new AjvModule.default({strict:true,allErrors:true});formatsModule.defa
 for(const schema of [publicSchema,commonSchema,skillSchema,conversationSchema()])ajv.addSchema(schema);
 /** @type {import('ajv').ValidateFunction<any>} */
 const validRequest=ajv.compile({$ref:'urn:meri:conversation-application:0.1.0#/$defs/ConversationStoredRequest'});
+/** @param {unknown} a @param {unknown} b */
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+/** @param {string} code @returns {never} */
 const fail=code=>{throw new Error(code);};
+/** @param {Pick<import('../../../../packages/contracts/dist/conversation-application.js').ConversationStoredRequest,'window'|'skill'>} request @param {import('../../../../packages/contracts/dist/contracts.js').Scope[]} scopes */
 export const continuationContextSha256=(request,scopes)=>canonicalSha256({window:request.window,skill:request.skill,scopes});
-/** @returns {Pick<import('@anthropic-ai/claude-agent-sdk').Options,'resume'|'resumeSessionAt'|'forkSession'|'sessionId'>} */
+/** @param {unknown} value @param {unknown} target @returns {Pick<import('@anthropic-ai/claude-agent-sdk').Options,'resume'|'resumeSessionAt'|'forkSession'|'sessionId'>} */
 export function buildContinuationOptions(value,target) {
   const c=assertContinuationEnvelope(value);
   const t=data(own(target,['binding','versions','scopes','request','sourceRequest'])),cp=c.checkpoint;
@@ -31,7 +34,7 @@ export function buildContinuationOptions(value,target) {
   if(typeof cp.sessionId!=='string'||!UUID.test(cp.sessionId)||
       canonicalSha256(cp)!==c.checkpointSha256||canonicalSha256(t.sourceRequest)!==c.sourceRequestSha256||
       !same(cp.binding,cp.workspace.binding)||canonicalSha256(cp.workspace)!==cp.workspaceSha256||!same(cp.scopes,cp.workspace.scopes)||
-      !same(cp.scopes,cp.opaqueSession.scopes)||cp.workspace.entries.some(entry=>entry.object.scopes.some(scope=>!cp.scopes.some(parent=>same(scope,parent))))||
+      !same(cp.scopes,cp.opaqueSession.scopes)||cp.workspace.entries.some((/** @type {{object:{scopes:import('../../../../packages/contracts/dist/contracts.js').Scope[]}}} */ entry)=>entry.object.scopes.some(scope=>!cp.scopes.some((/** @type {import('../../../../packages/contracts/dist/contracts.js').Scope} */ parent)=>same(scope,parent))))||
       !same(cp.scopes,t.scopes)||!same(cp.versions,t.versions)||t.versions.sdk!=='0.3.295'||t.versions.cli!=='2.1.295'||
       continuationContextSha256(t.sourceRequest,cp.scopes)!==c.contextSha256||continuationContextSha256(t.request,t.scopes)!==c.contextSha256||
       !same(t.sourceRequest.windowRequest,t.request.windowRequest)||t.request.prompt!==t.sourceRequest.prompt||
