@@ -57,7 +57,7 @@ export async function openNativePool(c) {
 }
 export async function verifyDatabase(pool,c,{empty=false}={}) {
   active(c);
-  const {rows:[r]}=await pool.query("SELECT current_database() AS db,current_user AS usr,inet_server_addr()::text AS addr,inet_server_port() AS port,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS sync,current_setting('server_version_num') AS version,pg_postmaster_start_time() AS started,(SELECT system_identifier::text FROM pg_control_system()) AS system");
+  const {rows:[r]}=await pool.query("SELECT current_database() AS db,current_user AS usr,pg_catalog.host(pg_catalog.inet_server_addr()) AS addr,inet_server_port() AS port,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS sync,current_setting('server_version_num') AS version,pg_postmaster_start_time() AS started,(SELECT system_identifier::text FROM pg_control_system()) AS system");
   assert.equal(r.db,c.database);assert.equal(r.usr,c.user);assert.equal(r.addr,c.host);assert.equal(r.port,c.port);
   assert.equal(r.fsync,'on');assert.equal(r.sync,'on');assert.equal(r.version,c.serverVersion);
   assert.equal(r.started.getTime(),Date.parse(c.serverStartTime));assert.equal(r.system,c.systemIdentifier);
