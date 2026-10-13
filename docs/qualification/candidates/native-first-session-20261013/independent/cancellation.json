@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-first-session-20261013/independent/cancellation-review.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "a657814b31c52c429e4ded13defe25a4488abdb0",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "a0ea14d9038879fb6baab895d8bad75328344ed559a9d8249c9c1090b199a6c8",
+  "startedAt": "2026-10-13T23:38:06.380315+00:00",
+  "durationSeconds": 6.653,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 4261,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation.stdout.bin",
+      "bytes": 1277,
+      "sha256": "37a531c2b763c28c646d0a65e96c8678ddf0baf3066f5feb7dcfe8c17fda27c1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

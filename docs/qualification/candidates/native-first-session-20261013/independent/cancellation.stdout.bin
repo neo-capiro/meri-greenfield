@@ -1,0 +1,34 @@
+✖ SDK cleanup callback after run cancellation cannot newly register or retain a session (74.444427ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6517.090385
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-first-session-20261013/independent/cancellation-review.test.mjs:10:1
+✖ SDK cleanup callback after run cancellation cannot newly register or retain a session (74.444427ms)
+  AssertionError [ERR_ASSERTION]: cancelled run must refuse fresh registration before SDK cleanup flush
+  + actual - expected
+  
+  + [
+  +   '/v1/runner/session/register',
+  +   '/v1/runner/session/load',
+  +   '/v1/runner/session/append'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-first-session/docs/qualification/candidates/native-first-session-20261013/independent/cancellation-review.test.mjs:24:110)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ '/v1/runner/session/register', '/v1/runner/session/load', '/v1/runner/session/append' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

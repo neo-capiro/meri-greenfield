@@ -1,0 +1,85 @@
+{
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "originalSourceHead": "a657814b31c52c429e4ded13defe25a4488abdb0",
+  "repairedSourceHead": "482e7e8af66516177c6e6599a8b11ecf07adf672",
+  "verifiedPostRunAt": "2026-10-13T23:40:09.717039+00:00",
+  "postRunProductionDiffBytes": 0,
+  "postRunProductionDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sdkVersion": "0.3.295",
+  "sdkPath": "node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs",
+  "sdkSha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+  "originalTestPreservation": "cancellation-original.test.mjs preserves the exact initial single-test content. A second in-flight cancellation test was appended to cancellation-review.test.mjs for the repaired check. Initial capture binds clean production source; this manifest separately hashes test evidence.",
+  "blockedCheck": "Queue check on initial source did not allocate a test process: capture refused changed production source during coordinator repair. Repaired queue check executed and passed.",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/capture-reaped.py",
+      "bytes": 3582,
+      "sha256": "a0ea14d9038879fb6baab895d8bad75328344ed559a9d8249c9c1090b199a6c8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/capture-repaired.py",
+      "bytes": 3591,
+      "sha256": "431a99e5d03d319bd3a16f49d0a49cd94320d4fe00228e07ed27e4f98235c32e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation-original.test.mjs",
+      "bytes": 3021,
+      "sha256": "11d7f73d6abec143eb592a1d77648356dc09f5a29165ae9371b2faf9f193aa72"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation-review.test.mjs",
+      "bytes": 4321,
+      "sha256": "df02e97610bb3107a2f1dd778b510cfc0f458f2f2fcd3d4188deda8928e5ad68"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/queue-review.test.mjs",
+      "bytes": 1522,
+      "sha256": "2f4fdc00e3a5727c5c54c8d409eff7f5a924e4b5eb41fb09eca6ea27e90da2d8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/focused.json",
+      "bytes": 1440,
+      "sha256": "b2065510af915ee6e9011c4d73a3922ca3cf869bba856129ab0b90f05b166b34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/focused.stdout.bin",
+      "bytes": 4023,
+      "sha256": "518e499ad3ccc3cfa8c8898a14d07f3051fac6d03afdf7e9cd802e41498c6fce"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation.json",
+      "bytes": 1312,
+      "sha256": "7f255b31a0ee7c3c7f1427e953ce81e2c9976671e2de305055680e7a9a5de141"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation.stdout.bin",
+      "bytes": 1277,
+      "sha256": "37a531c2b763c28c646d0a65e96c8678ddf0baf3066f5feb7dcfe8c17fda27c1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/cancellation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/repaired.json",
+      "bytes": 1539,
+      "sha256": "de8773c86d572744a385737881df44de7c7dc9d3db3ef56c8e8205813b637fb5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/repaired.stdout.bin",
+      "bytes": 1494,
+      "sha256": "8eacb3b671170a48dec957109c43696fe739cbdea1a21a24683b2c673d50d91f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/independent/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

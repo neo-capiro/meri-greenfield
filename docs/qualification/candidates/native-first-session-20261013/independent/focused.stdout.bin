@@ -1,0 +1,48 @@
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (47.327671ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (3.072112ms)
+✔ missing actual native task authority yields503 before registration/admission (4.75481ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (4.09941ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (22.096036ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (8.578233ms)
+✔ consistently rehashed retained receipt refuses foreign binding (19.942589ms)
+✔ consistently rehashed retained receipt refuses foreign observed key (8.449632ms)
+✔ consistently rehashed retained receipt refuses foreign append identity (12.690076ms)
+✔ consistently rehashed retained receipt refuses foreign entry digest (10.113226ms)
+✔ consistently rehashed retained receipt refuses uncommitted receipt (6.884557ms)
+✔ consistently rehashed retained receipt refuses impossible offset (6.676688ms)
+✔ consistently rehashed retained receipt refuses inconsistent added count (6.443694ms)
+✔ consistently rehashed retained receipt refuses coherent but false empty marker acknowledgement (7.169582ms)
+✔ consistently rehashed retained receipt refuses undeclared receipt field (6.35773ms)
+✔ original append receipt remains exact after later stream advancement (9.070346ms)
+✔ bound native mirror configuration accessor is refused without execution (0.620793ms)
+✔ bound native mirror configuration Proxy is refused before traps (0.333283ms)
+✔ bound native mirror method accessor is refused without execution (0.39903ms)
+✔ bound native mirror captures original two-argument methods and class receiver (1.542888ms)
+✔ native authority absent fails before any admitted transaction or SQL (2.682043ms)
+✔ observed registration, opaque transcript/subkeys, UUID idempotency and marker duplicates use actual owner (23.474335ms)
+✔ current authority revocation refuses release and new SQL while retained entries remain (6.392783ms)
+✔ foreign project key and stale offset cannot append or overwrite original (8.213564ms)
+✔ same UUID with altered bytes and same appendId with altered request refuse (7.327067ms)
+✔ lost COMMIT acknowledgement remains UNKNOWN; exact appendId replay does not duplicate markers (4.795503ms)
+✔ opaque depth beyond ordinary RPC depth64 is retained through canonical codec (12.53914ms)
+✔ parked canonical admission is bounded by the original caller lifetime (22.636795ms)
+✔ immutable registration replay retains original expiry despite a shorter current authorization (16.325955ms)
+✔ redundant entry/stream/session owner tuples cannot substitute foreign retained rows (10.253275ms)
+✔ fresh mirror is inert until actual main key and preserves ordered canonical native writes (38.650562ms)
+✔ fresh mirror cannot load old state or report completion without observed registration (2.938047ms)
+✔ invalid entries, first subkey and accessor keys refuse before registration and poison later dispatch (6.558148ms)
+✔ first callback key must match independently observed native key; rejection is never registered again (5.385979ms)
+✔ registered fresh mirror refuses another project/session and cannot settle it as success (18.711667ms)
+✔ native revocation and uncertain registration remain terminal barriers across SDK retries (12.250049ms)
+✔ null fresh selector cannot be used for continuation or changed binding (0.594413ms)
+✔ closing before registration acknowledgement retires queued effects without re-registering (4.800905ms)
+✔ one scripted SDK query obtains its first mirror key and settles before durable completion (143.038631ms)
+✔ scripted success without first mirror cannot produce durable completed state (36.063961ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9576.920822

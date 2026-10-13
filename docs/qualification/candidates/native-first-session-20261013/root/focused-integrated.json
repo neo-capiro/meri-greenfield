@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/first-session.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "docs/qualification/candidates/native-docx-flow-20261013/mount-recovery-independent/runner-recovery.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session",
+  "sourceHead": "a657814b31c52c429e4ded13defe25a4488abdb0",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T23:36:32.709391+00:00",
+  "durationSeconds": 8.829,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 3557,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/focused-integrated.stdout.bin",
+      "bytes": 1993,
+      "sha256": "e19dff83a7beaa15800158846e2a84de96a06e7f665bbf23cc1e1880950e6eba"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/focused-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Verify changed fresh-session join together with original known-key, cancellation and native HTTP ownership controls on frozen a657814b.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

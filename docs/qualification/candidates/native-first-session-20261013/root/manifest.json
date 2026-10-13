@@ -1,0 +1,212 @@
+{
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "sourceHead": "482e7e8af66516177c6e6599a8b11ecf07adf672",
+  "base": "53c845e2da5e3c038d05688f3bafbd634391f38f",
+  "changedSource": [
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 6286,
+      "sha256": "f9ffeed06769309f8ed4ac69755805f43dd4a48b4f17f7e84f8450d6c19844a3"
+    },
+    {
+      "path": "apps/runtime/sdk-session-runtime.mjs",
+      "bytes": 4426,
+      "sha256": "76c3e7f9597b51868e92514bad85dbed4a62bd6cd6fc86008f21281bdbe43d55"
+    },
+    {
+      "path": "apps/runtime/sdk-first-session.mjs",
+      "bytes": 3260,
+      "sha256": "917b01c4002c9a1f7c99c2bd73d768bdbc6967cfe59e911ca574600e4ab37c4d"
+    },
+    {
+      "path": "apps/runtime/test/first-session.test.mjs",
+      "bytes": 9466,
+      "sha256": "da37fa03b9010489f81e47728def79ab8c12574f8c904c8d08820650d140be93"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "bytes": 8351,
+      "sha256": "fa260e1e3dddb203cbb2fe9eefaa56b5c208ee9d434fda41add804bb64c92e1e"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-dependencies.json",
+      "bytes": 1306,
+      "sha256": "2e0c995dc456ddc0c70ec0b868fc9bf54e8505632d57c6bc319237ac04da9f0d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-dependencies.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-dependencies.stdout.bin",
+      "bytes": 1363,
+      "sha256": "839a6be5d81e0fbea758aeb866f2ed54eef06e6865a8966283d2410d07c7b59a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-initial.json",
+      "bytes": 1260,
+      "sha256": "2ef3543a963d51a55ee71f540cfe4b2573f3de63cababbcb5d85c3c2759f2737"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-initial.stdout.bin",
+      "bytes": 1383,
+      "sha256": "ff2c7290b2094fd14c35502f0d6a960dee8c10f069d752ff1781c6f9da37f577"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-ready.json",
+      "bytes": 1280,
+      "sha256": "6f95636879b8c1c10f01cf1d18c6f6f0d9a04cc9ca61baac1d30ca569786e6ac"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-ready.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/first-session-ready.stdout.bin",
+      "bytes": 1168,
+      "sha256": "ce648e7b359cb22bc2c146199aaaa0884f8f38b516fe1a2b0c5849245db80c33"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/focused-integrated.json",
+      "bytes": 1503,
+      "sha256": "ca6d81f964da8985648c90a0f5971cc11447d42a717bb3e30edc8f43371dac9a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/focused-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/focused-integrated.stdout.bin",
+      "bytes": 1993,
+      "sha256": "e19dff83a7beaa15800158846e2a84de96a06e7f665bbf23cc1e1880950e6eba"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/independent-reproduction.json",
+      "bytes": 1501,
+      "sha256": "68374ac6b640cb41f4909b8ec18f57ade927c6bf8191b91fae5729cebabf211a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/independent-reproduction.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/independent-reproduction.stdout.bin",
+      "bytes": 437,
+      "sha256": "c22cb43216f12c16e7b4ed5e30e763c9d65b15d4d61ada27428302fa68f181a9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/repaired-activity.json",
+      "bytes": 1393,
+      "sha256": "cd9293e83d9afc95f0e943273e1e981b9e6ed6ea93d2240276ad5ff0140a0b78"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/repaired-activity.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/repaired-activity.stdout.bin",
+      "bytes": 4714,
+      "sha256": "86672a79ba08ab7e152ed1e29341b825ebe54c6090ab3601c1d0b0b6445cc54e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/repaired-integrated.json",
+      "bytes": 1476,
+      "sha256": "f2181a25180b86c0727a8687f58e51a2117bf670acfe64c9fbb48dda965b6000"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/repaired-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/repaired-integrated.stdout.bin",
+      "bytes": 1999,
+      "sha256": "265577df05e321bb64652b58c772a98cd727bee826e632c4efde28b4877c3de4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/root-install.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/root-install.stdout.txt",
+      "bytes": 25,
+      "sha256": "6f6b47d9319b49aa05673a8b9e2f406d20741ea4252768508fc60e9227618cdc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-install.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-install.stdout.txt",
+      "bytes": 27,
+      "sha256": "17a73ac42d66f3652e76c4bf19fa75f2e445f42ec83b3c6ec399f0b5b33dfa74"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-types.json",
+      "bytes": 1266,
+      "sha256": "f9a08a397810d7e3a91a256519f30565446daea56819f7cb931e2885d09c1c5e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-types.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/runtime-types.stdout.bin",
+      "bytes": 76,
+      "sha256": "b9205ad279b7793153bca230ab7c3f290da1268763a1aa38303f79010a2455bc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/sdk-install.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/sdk-install.stdout.txt",
+      "bytes": 27,
+      "sha256": "5a71c69a5c3e6271966880d01c30bd46e782d6bdb9bac405bf568733bffa9bde"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/ui-stream-install.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/ui-stream-install.stdout.txt",
+      "bytes": 25,
+      "sha256": "fd6a3a06e4a48eef9c77e69788094f98b3278fdbb9a65fe2c768792e617e075f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/window-install.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-session-20261013/root/window-install.stdout.txt",
+      "bytes": 27,
+      "sha256": "d69f95134ce2657d05b50bb42a14b3326dfed95241bcd6941c0ef83ecf52d576"
+    }
+  ],
+  "dependencyRestoration": "npm ci from unchanged root/conversation/runtime/window/ui-stream locks; owned cache /tmp/meri-first-session-npm-cache; root owned symlinks @capiro/meri-contracts -> canonical package, @anthropic-ai/claude-agent-sdk and @modelcontextprotocol/sdk -> installed conversation lock. These development resolution links are not product isolation evidence.",
+  "preservedSetupFailure": "Initial npm ci --prefix apps/worker/conversation --ignore-scripts --no-audit --no-fund exited254, ENOENT mkdir /home/agent/.npm/_cacache. Tool transcript output truncated; no complete raw local capture exists for that attempt. Dedicated-cache retry succeeded. Subsequent two import-failure captures are retained exactly.",
+  "originalCheckouts": "meri-greenfield8b123bea4c90794dc2d766814b6ddbdbfe0928bc and capiro-frontend02c02d95bdf3949662b9123f425271c6491ffdab stayed clean; no fixture service/data/credential/renderer was accessed."
+}
