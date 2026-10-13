@@ -143,7 +143,7 @@ class QualificationLifecycle:
     def verify_fixture(self):
         expected = self.value['fixture']
         def read(cursor):
-            cursor.execute("SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS started_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier")
+            cursor.execute("SELECT current_database() AS database,current_user AS username,pg_catalog.host(pg_catalog.inet_server_addr()) AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,floor(extract(epoch FROM pg_postmaster_start_time())*1000)::text AS started_ms,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier")
             row = cursor.fetchone()
             if not row or any(row[key] != expected[field] for key, field in [('database', 'database'), ('username', 'user'), ('version', 'serverVersion'), ('system_identifier', 'systemIdentifier')]) or row['address'] != expected.get('serverAddress', expected['host']) or row['port'] != expected.get('serverPort', expected['port']) or row['fsync'] != 'on' or row['synchronous_commit'] != 'on':
                 raise StateDenied('LIFECYCLE_FIXTURE_MISMATCH')

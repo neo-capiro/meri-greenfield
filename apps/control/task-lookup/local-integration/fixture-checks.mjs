@@ -25,7 +25,7 @@ export async function verifyFixture(pool,d,run){
   assert.equal(createHash('sha256').update(bytes).digest('hex'),d.migrationSha256[key],`source migration ${key}`);
  }
  const query=method(pool,'query');
- const result=await run(()=>query("SELECT current_database() AS database,current_user AS username,inet_server_addr()::text AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,pg_postmaster_start_time() AS started,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier"));
+ const result=await run(()=>query("SELECT current_database() AS database,current_user AS username,pg_catalog.host(pg_catalog.inet_server_addr()) AS address,inet_server_port() AS port,current_setting('server_version_num') AS version,pg_postmaster_start_time() AS started,current_setting('fsync') AS fsync,current_setting('synchronous_commit') AS synchronous_commit,(SELECT system_identifier::text FROM pg_control_system()) AS system_identifier"));
  assert.equal(result.rows.length,1);const r=result.rows[0];
  assert.equal(r.database,d.database);assert.equal(r.username,d.user);assert.equal(r.address,d.host);assert.equal(r.port,d.port);assert.equal(r.version,d.serverVersion);
  assert(r.started instanceof Date);assert.equal(r.started.toISOString(),d.serverStartTime);assert.equal(r.system_identifier,d.systemIdentifier);assert.equal(r.fsync,'on');assert.equal(r.synchronous_commit,'on');
