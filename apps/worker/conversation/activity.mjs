@@ -21,6 +21,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    await publish('run.status',{state:'starting',reasonCode:null});claimed=true;if(!same(runtime.binding,binding)||!same(runtime.versions,saved.run.versions))throw fault('RUNTIME_PIN_REFUSED');
    const options=buildConversationOptions(runtime,controller);let selected;
    if(saved.request.skill){selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');assertSkillManifest(selected.manifest,catalog);options.maxTurns=Math.min(options.maxTurns,selected.manifest.budgets.maxTurns);options.maxBudgetUsd=Math.min(options.maxBudgetUsd,selected.manifest.budgets.maxCostMicroUSD/1000000);life.limitDeadline(now()+selected.manifest.budgets.maxRuntimeSeconds*1000);options.systemPrompt=selected.prose;}
+   options.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes:saved.run.scopes,skill:saved.request.skill});
    await publish('run.status',{state:'running',reasonCode:null});
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
@@ -37,6 +38,6 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // A denied/unknown starting claimant cannot terminalize another admitted activity.
    if(claimed){const cleanup=createOperationLifetime({deadlineMs:now()+30,now,errorFactory:fault});try{await cleanup.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'}},signal}));}catch{}finally{cleanup.close();}}
    throw fault(cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED');
-  }finally{clearInterval(heartbeatTimer);controller.abort(failure);try{closeQuery();}finally{life?.close();preparation?.close();}}
+  }finally{clearInterval(heartbeatTimer);controller.abort(failure);try{closeQuery();}catch{throw fault('SDK_CLEANUP_UNKNOWN');}finally{life?.close();preparation?.close();}}
  };
 }
