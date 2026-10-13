@@ -1,0 +1,15 @@
+{
+  "beforeCommit": "08827c64",
+  "beforeSha256": "d26fce5a1a0d0e552f4dd66d253fede9ffb4282da7882265212edbaa2f0d13c2",
+  "afterSha256": "323b3f8f1cca2328ccd3c2e68139b796b975099599918a136807ab9f71e1452a",
+  "executionsBeforeCorrection": 0,
+  "corrections": [
+    "Word and Excel descriptors share the same required grant and source metadata; changing canonical operation ID alone yields a valid other-family descriptor, not malformed data. Nonexistent operation tests constructor refusal; a separate actual request tests wrong allocation refusal.",
+    "Post-object-read revocation fixture now calls fixture.revoke after actual object acquisition instead of revoking before the request."
+  ],
+  "setupObservations": [
+    "Main clone checkout is deliberately absent; only dedicated exact-base worktree used.",
+    "Sparse-checkout add does not accept --no-cone; corrected add used existing mode.",
+    "Attempted nonexistent criteria.json read; actual frozen outline.md located; no source affected."
+  ]
+}
