@@ -86,3 +86,8 @@ test('complete measured metadata independently passes the downstream snapshot ch
  const result=await preservationSnapshot(async()=>envelope(m),{schemaScope:scope},n);
  assert.equal(result.metadataSha256,digest({namespaces:n,metadata:m}));
 });
+test('ordinary callers cannot widen resource limits with a second argument',()=>{
+ assert.throws(()=>snapshotOperationData(Array(100000).fill(null),{nodes:1000000,depth:1000,bytes:32000000}));
+ const m=empty();m.labels=Array(250001).fill(null);
+ assert.throws(()=>preservationRows({rows:envelope(m)},{nodes:1000000,maxNodes:1000000,maxBytes:32000000}));
+});
