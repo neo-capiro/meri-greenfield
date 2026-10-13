@@ -1,0 +1,12 @@
+{
+  "source": "25da80dc",
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "evals/task-lookup/execution/test/execution.test.mjs"
+  ],
+  "result": "20/20 passed; exit0 via execution tool",
+  "receipt": "initial-tool-output.txt",
+  "provenanceLimit": "This initial foreground check retained the tool-returned output, not separate raw stdout/stderr or its process-group ID. Later focused/final captures use the bounded owned collector and preserve both raw streams, exact source and group absence. No native or detached target was launched."
+}

@@ -1,0 +1,21 @@
+{
+  "originalSource": "e215f1b45d7fe179f7c63c9b607c7f75e91c7748",
+  "repairedSource": "33a0d21b005d32d9c27de5f3a7939b77588921db",
+  "independentCounterexample": "3b21545a",
+  "reportedCounterexampleResult": {
+    "independentPass": 40,
+    "independentFail": 1,
+    "group": 436615,
+    "groupAbsent": true
+  },
+  "defect": "A thrown Proxy error was passed to Object.getOwnPropertyDescriptor for outcome after safeCode had safely classified it. The proxy trap escaped the outer catch and lost entire capture.",
+  "repair": "Check util.types.isProxy before extracting an own outcome data descriptor. Preserve normal known outcome values; hostile rejection becomes generic failed case, allowing a later case if no operation remains unsettled.",
+  "sourceDelta": "diff --git a/evals/task-lookup/execution/execute.mjs b/evals/task-lookup/execution/execute.mjs\nindex b739cc63..84bcac62 100644\n--- a/evals/task-lookup/execution/execute.mjs\n+++ b/evals/task-lookup/execution/execute.mjs\n@@ -1,3 +1,4 @@\n+import {types} from 'node:util';\n import {createTaskLookupDelivery} from '../../../apps/control/task-lookup/index.mjs';\n import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';\n import {admit,prepared,options,method,safeCode,snapshot,hash,freeze,error,operation} from './admission.mjs';\n@@ -60,7 +61,7 @@ export function createTaskLookupExecution(configuration){\n       o.status='returned';o.reason=null;o.route={operation,request:snapshot(c.request)};o.delivery=snapshot(lookup);o.read=snapshot(read);o.failure=null;\n      }\n     }catch(e){\n-     const code=safeCode(e);const d=e&&typeof e==='object'?Object.getOwnPropertyDescriptor(e,'outcome'):null;\n+     const code=safeCode(e);const d=e&&typeof e==='object'&&!types.isProxy(e)?Object.getOwnPropertyDescriptor(e,'outcome'):null;\n      const outcome=d&&Object.hasOwn(d,'value')&&['NOT_DISPATCHED','UNKNOWN','RESULT_NOT_RELEASED'].includes(d.value)?d.value:stage==='lookup'&&lookupStarted?'UNKNOWN':'NOT_DISPATCHED';\n      o.status=stage==='read'&&code==='ACCESS_DENIED'&&t.authorization.some(a=>['before_read','before_release'].includes(a.phase)&&(a.receipt?.authorized===false||a.error?.code==='ACCESS_DENIED'))?'denied':'failed';\n      o.reason=code;o.failure=failure(code,outcome);o.delivery=null;o.read=null;\n",
+  "original24AssertionsPreserved": true,
+  "authorResult": {
+    "capture": "proxy-repaired",
+    "pass": 25,
+    "fail": 0
+  },
+  "originalFailures": "Independent reviewer preserves hostile-before raw streams and exact controls. Author original20 and24 passing captures remain; no failed author assertion was hidden."
+}
