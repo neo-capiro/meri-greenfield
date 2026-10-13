@@ -13,7 +13,7 @@ import {createPostgresArtifactService} from '../../../artifacts/postgres-service
 import {createLocalDocumentPorts} from './ports.mjs';
 
 const root = fileURLToPath(new URL('../../../../',import.meta.url));
-export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',skillManifest,mailboxIds = []}) {
+export async function createLocalDocumentFixture({mode,pythonExecutable,operation = 'create_word',skillManifest,mailboxIds = [],identityIds}) {
   if (mode !== 'synthetic-local' || typeof pythonExecutable !== 'string' || !isAbsolute(pythonExecutable) ||
       !['create_word','create_excel'].includes(operation) ||
       !Array.isArray(mailboxIds) || mailboxIds.length > 8 || new Set(mailboxIds).size !== mailboxIds.length ||
@@ -21,6 +21,13 @@ export async function createLocalDocumentFixture({mode,pythonExecutable,operatio
       !process.env.MERI_REVIEW_SOURCE_ROOT || resolve(process.env.MERI_REVIEW_SOURCE_ROOT) !== resolve(root)) throw Error('LOCAL_DOCUMENT_CONFIGURATION');
   const {harness,uuid} = await import('../../../../docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs');
   const ledger = harness(), started = Date.now(), deadlineMs = started + 25000;
+  if(identityIds!==undefined){
+    const ids=artifactValidators.snapshot(identityIds);
+    if(Object.keys(ids).sort().join(',')!=='actorId,tenantId'||Object.values(ids).some(id=>typeof id!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(id)))throw Error('LOCAL_DOCUMENT_CONFIGURATION');
+    const oldTenant=ledger.f.binding.tenantId;
+    Object.assign(ledger.f.binding,ids);Object.assign(ledger.f.subject,ids);Object.assign(ledger.allocation.run,ids);
+    for(const scope of ledger.f.claims.scopes){scope.tenantId=ids.tenantId;if(scope.kind==='tenant'&&scope.resourceId===oldTenant)scope.resourceId=ids.tenantId;}
+  }
   const now = () => {const at = Date.now(); ledger.setClock(at); return at;};
   now();
   const binding = structuredClone(ledger.f.binding), clientId = uuid('9');
