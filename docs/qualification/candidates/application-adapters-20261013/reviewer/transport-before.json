@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=explicitly omits|previously redirected",
+    "apps/control/action-host/application-adapters/authority-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-application-adapters-review-20261013",
+  "sourceHead": "7da8b333539a453e4ce9df5f6a18b246eabef559",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-13T04:04:23.952198+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 484848,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/reviewer/transport-before.stdout.bin",
+      "bytes": 1903,
+      "sha256": "0ebc63f61773a31448d9d195feb49a59738bae8ccba05ca463d667237e06310a"
+    },
+    {
+      "path": "docs/qualification/candidates/application-adapters-20261013/reviewer/transport-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
