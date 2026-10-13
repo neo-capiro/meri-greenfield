@@ -20,7 +20,7 @@ const nativeServer=await listenRuntime({configuration,readiness:async()=>{},appl
  else if(route==='/v1/runner/checkpoint/capture')return Response.json({error:'synthetic native capture unavailable'},{status:403});
  else if(route==='/v1/runner/runtime')value={binding,versions,proxyUrl:'https://proxy.example.invalid',proxyCredential:'synthetic-proxy-cap',model:'synthetic-test-model',deadlineMs:at+3000,maxTurns:2,maxCostMicroUSD:1,maxOutputBytes:1024};
  else return Response.json({}, {status:404});return Response.json(value);
-}}});configuration.native.origin='http://127.0.0.1:'+nativeServer.address.port;const config=validateConfiguration(configuration,'control'),f=storeFixture(),client={workflow:{async start(){starts++;},getHandle(){return {async cancel(){}};}}},native=createNativeCapabilityClient({configuration:config.native,credential:'synthetic-service-cap'}),assembly=assembleControl({configuration:config,pool:f.pool,client,native});
+}}});configuration.native.origin='http://127.0.0.1:'+nativeServer.address.port;const config=validateConfiguration(configuration,'control'),f=storeFixture(),client={workflow:{async start(){starts++;},getHandle(){return {async cancel(){},async signal(){}};}}},native=createNativeCapabilityClient({configuration:config.native,credential:'synthetic-service-cap'}),assembly=assembleControl({configuration:config,pool:f.pool,client,native});
 const listener=await listenRuntime({configuration:config,application:assembly.application,readiness:async({signal})=>native.readiness({signal})});
 controlOrigin='http://127.0.0.1:'+listener.address.port;
 process.send({type:'ready',port:listener.address.port,binding,versions});
