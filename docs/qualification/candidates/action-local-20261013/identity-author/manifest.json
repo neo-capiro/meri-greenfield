@@ -1,0 +1,142 @@
+{
+  "source": "351b23190e61b459e94c910da013d1a0ea0a4518",
+  "base": "d68615c9861315ac1c6ee616697f7ad0093d9192",
+  "scope": "SOURCE_ONLY_SYNTHETIC_NO_NATIVE_ENGINE",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/audit.py",
+      "bytes": 2225,
+      "sha256": "3f9b3351a9fb7af97850ce9db8b1fdca6915839dc042d3ae6504e521a716e2ae"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/cleanup.json",
+      "bytes": 1006,
+      "sha256": "f424843d8f7e2bfd1abdd8bd06cf1683a0d2fe26d4e9f429aab586ba10eabeca"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/denial-repaired.json",
+      "bytes": 1274,
+      "sha256": "eaa5813c8fbfa2c11582ec73e3aee2b941046c95ee7fdcc6b541d71b7fd7347f"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/denial-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/denial-repaired.stdout.bin",
+      "bytes": 1863,
+      "sha256": "948f4519ba3d913723548d704de4389db887515a7738a964b7c55144eed60d9d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/final-audit.json",
+      "bytes": 1277,
+      "sha256": "e474138f327f42663961e4de747fb54052f3b50372b5718cc2a1f143ad1b904b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/final-audit.stdout.bin",
+      "bytes": 97,
+      "sha256": "cf96cf55ad3168c0aa875418e4c4c9d5c07bc00f827f8643bfec90e384a58b9a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/initial.json",
+      "bytes": 1255,
+      "sha256": "1c284766ee21a5c12cdd396e46690d04d9dc04dd5474f3cd39a5183c1c98c90a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/initial.stdout.bin",
+      "bytes": 1520,
+      "sha256": "35b2976af344904f76c68928fd9eb93b7e36601af61980e628ec207fa755f5eb"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/setup-diagnostics.json",
+      "bytes": 670,
+      "sha256": "6fe92bdf146b32dc6c50c258547f833ed4f8c6bcd1d30fcb0578983dc67627e9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/setup-repaired.json",
+      "bytes": 1269,
+      "sha256": "691af51a48b6decf856f79d807cec3e68a8be42738172db4f22df37e78c041d8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/setup-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/setup-repaired.stdout.bin",
+      "bytes": 4247,
+      "sha256": "88c724b646e351dd4b78d9b9fdbda9259411cb2c0bb2f3ea5d548c445193ed97"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/source-audit.json",
+      "bytes": 1279,
+      "sha256": "09c82373883f368f7b4b869817515c4f2016110eb55b6cce7d22d0c66613f8f8"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/source-audit.stdout.bin",
+      "bytes": 97,
+      "sha256": "cf96cf55ad3168c0aa875418e4c4c9d5c07bc00f827f8643bfec90e384a58b9a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-local-20261013/identity-author/source-identities.json",
+      "bytes": 1853,
+      "sha256": "b061f3f8985d5374937171ee80e387fb4ffcf732752fc677d66b722f3a4f684d"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-LOCAL-IDENTITY-20261013.md",
+      "bytes": 5693,
+      "sha256": "a4b5565800f5ef34a3e11e238fc8e0a530d2cc68437baabd64f73cceb4be9ffc"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-LOCAL-IDENTITY-20261013.md",
+      "bytes": 2613,
+      "sha256": "26a28ea321786280ce8d6fa8e11657b2772333d44cb264aeafe11dc15b098326"
+    },
+    {
+      "path": "apps/gateway/local-action/case.mjs",
+      "bytes": 8047,
+      "sha256": "e800ce697982cc035044348f106d51fccf1b792e6128dae471d56e059786f0c6"
+    },
+    {
+      "path": "apps/gateway/local-action/control-authorizer.mjs",
+      "bytes": 4003,
+      "sha256": "5c79923c56fd6999e82fdb2e633cc7478498490a7395acd1c82cb42f80ad3c98"
+    },
+    {
+      "path": "apps/gateway/local-action/gateway.mjs",
+      "bytes": 3851,
+      "sha256": "a1c1c69b279ad4a2d7f72488e96c986bae9b536c96fd92fcb49661dac5fd34a6"
+    },
+    {
+      "path": "apps/gateway/local-action/identity.mjs",
+      "bytes": 8799,
+      "sha256": "e66fd348e51b01dc76c7c9dfbdc7ea2ae6e7fb33800eba4bb4c64e45b0a06566"
+    },
+    {
+      "path": "apps/gateway/local-action/test/identity.test.mjs",
+      "bytes": 14358,
+      "sha256": "4d51a7de7b5d4a2eefad8b7381636459101f6a5c98579ea25df6e81850db0562"
+    }
+  ]
+}
