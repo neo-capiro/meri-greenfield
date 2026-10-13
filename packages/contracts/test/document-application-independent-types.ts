@@ -10,7 +10,9 @@ const revise:DocumentReviseRequest=receiveDocumentRequest('revise',encoded);
 async function consume(response:Response){
  const out=await receiveDocumentResponse('create',response.status,new Uint8Array(await response.arrayBuffer()),request);
  if('error' in out){const denied:DocumentErrorResponse=out;const code:string=denied.error.code;void code;}
- else {const created:DocumentCreatedResponse=out;const version:AdmittedDocumentVersion=created.version;const file:DocumentDownload=await receiveDocumentDownload(response,version,{maxBytes:1024,timeoutMs:1000,signal:new AbortController().signal});const bytes:Uint8Array=file.bytes;void bytes;
+ else {const created:DocumentCreatedResponse=out;const version:AdmittedDocumentVersion=out.version;const file:DocumentDownload=await receiveDocumentDownload(response,version,{maxBytes:1024,timeoutMs:1000,signal:new AbortController().signal});const bytes:Uint8Array=file.bytes;void bytes;
+ // @ts-expect-error raw shape annotation cannot preserve receiver integrity brand
+ const forged:AdmittedDocumentVersion=created.version;
  // @ts-expect-error receiving shape is not a grant
  const authorized:true=created.authorized;
  // @ts-expect-error draft is not a completed generation claim
