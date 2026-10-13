@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "scope": "Proposal/metadata only; no executable provider admission",
+  "base": "f3127d742b6b4ec556b00dba939d35e5622a9ad1",
+  "exclusions": [
+    "manifest.json: self reference"
+  ],
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/frontend-reference-identities.json",
+      "bytes": 6166,
+      "sha256": "3eade72e4327af60da5ea0692a85512abe1b863cbfda80ea2df44deef81af676"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/local-reference-identities.json",
+      "bytes": 3770,
+      "sha256": "e9f5cf12134335bbcdf673a916a6cf0d17bc4714c4b97d1e5bbc518476b68bf7"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/official-reference-evidence.json",
+      "bytes": 2623,
+      "sha256": "0b792ef1d97766dbff538efb62a6ca18d460b1fab2ce52a7c190786e7da746bc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/outline.md",
+      "bytes": 826,
+      "sha256": "05d6d50d63db6833cad413531c25d581e5527444b86bff06e710daaad20ede44"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/pilot-proposal.json",
+      "bytes": 10435,
+      "sha256": "620a578f5b464a6dfdd726a3ec0151c2e7205d98bff32563a1a0452756a538e2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/superseded-preliminary-proposal.json",
+      "bytes": 464,
+      "sha256": "009be5a8d10dca7617e9711d852cff12ceec0e53551c60daa814d5c30ddbe2fa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/verification.json",
+      "bytes": 2537,
+      "sha256": "e38055299a2300faf16c7652fc94c3dd4bb2ac134b8a5663dc7af45bd1fdda4d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/eval-proposal/verify.py",
+      "bytes": 4479,
+      "sha256": "c07f84690caf3b506de76fa045bee9574afdf55ce16c978456a599f9f6f0a05a"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-EVAL-PROPOSAL-20261013.md",
+      "bytes": 12267,
+      "sha256": "e550432b1fa2b2c01a0f737e25cb0171af6b28f6f873df41c6b03fef88f88971"
+    }
+  ]
+}
