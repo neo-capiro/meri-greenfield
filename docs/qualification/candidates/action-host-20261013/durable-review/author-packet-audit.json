@@ -1,0 +1,128 @@
+{
+  "authorPacket": "2549eca01ae567bb931a685b5d52ae42d2f92c74",
+  "checks": 30,
+  "passed": 30,
+  "failed": [],
+  "checksDetail": [
+    {
+      "name": "manifest-pin",
+      "pass": true
+    },
+    {
+      "name": "member:apps/control/action-host/durable/README.md",
+      "pass": true
+    },
+    {
+      "name": "member:apps/control/action-host/durable/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "member:apps/control/action-host/durable/test/durable.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "member:apps/control/action-host/durable/test/fixture.mjs",
+      "pass": true
+    },
+    {
+      "name": "member:docs/coordination/reports/CODEX-ACTION-HOST-DURABLE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "member:docs/coordination/tasks/CODEX-ACTION-HOST-DURABLE-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/audit.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/audit.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "comment-only-source-change",
+      "pass": true
+    },
+    {
+      "name": "owned-exit:initial",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/action-host-20261013/durable-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/action-host-20261013/durable-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned-exit:read-clock-repair",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/action-host-20261013/durable-author/read-clock-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "initial-author-failure-retained",
+      "pass": true
+    },
+    {
+      "name": "corrected-author-pass",
+      "pass": true
+    },
+    {
+      "name": "own-final-pass",
+      "pass": true
+    },
+    {
+      "name": "final-capture-source:apps/control/action-host/durable/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "final-capture-source:apps/control/action-host/durable/test/durable.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "final-capture-source:apps/control/action-host/durable/test/fixture.mjs",
+      "pass": true
+    }
+  ]
+}
