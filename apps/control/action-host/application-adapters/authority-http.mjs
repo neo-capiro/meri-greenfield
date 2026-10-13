@@ -1,4 +1,4 @@
-/** Concrete fixed-route transport for the proposed Capiro authority bridge. Import is inert. */
+/** Concrete fixed-route transport for the Capiro authority bridge. Import is inert. */
 import {applicationAuthorityRoutes,assertAuthorityIdentityRequest,assertAuthorityContextRequest,assertAuthorityIdentityReceipt,assertAuthorityContextReceipt} from '../../../../packages/contracts/action-authority-0.2/validate.mjs';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
