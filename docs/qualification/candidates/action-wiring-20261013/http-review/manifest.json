@@ -1,0 +1,108 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "source": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+  "authorPacket": "8d6f537dda38463346abde490df721006137f51e",
+  "runtime": "Real loopback HTTP only; production/SQL/provider HOLD",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/.gitattributes",
+      "bytes": 38,
+      "sha256": "4e807f83f2ab8870d0344a90d4305f24a638ba0a58db50d0c4a3b497998fdbda"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/audit.json",
+      "bytes": 6550,
+      "sha256": "d878385f41ae0a17f8f04507e467b8c025a0659c5a3437eb0c0d0e4fde6fe18d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/audit.py",
+      "bytes": 3733,
+      "sha256": "e2145c946e31e45bafa5951a579485bb2785d5141cbc4396620c546d853163d4"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/cleanup.json",
+      "bytes": 776,
+      "sha256": "60e4daed0651a20293d0e6e2de029d529248123d1bcc90ac10c6b467554d45d1"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/cli.json",
+      "bytes": 1300,
+      "sha256": "7e5cbefaeda9b51734b513bfd05a16114bdcc88da46b2a828f9ba395a02799e2"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/cli.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/cli.stdout.bin",
+      "bytes": 231,
+      "sha256": "d6e4d0ca555b62e7067b16373403f9aef2b9aded69f12c1d101fc30e1f2d7c1b"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/final.json",
+      "bytes": 1258,
+      "sha256": "327aa3e577660852e8bb90f2cfab9ee5ecaf9f05a6458cef247059effdd5c486"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/final.stdout.bin",
+      "bytes": 1163,
+      "sha256": "1c8296523fdb9e76afa373df19d8a8cbb4aab3588e8cad680f119019ec572a2d"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/header-count-before.json",
+      "bytes": 1325,
+      "sha256": "1e2a178211be279cebdbf3ad0f997f70ea6965ac8afa7fd308fe4580dc07cec5"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/header-count-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/header-count-before.stdout.bin",
+      "bytes": 225,
+      "sha256": "47552a864e396cc4ae6fd994690d0da2d8e918be4b96b2ba957de0822a77e12a"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/initial.json",
+      "bytes": 1262,
+      "sha256": "cd3514510910a93b281aa6e4b1ba6d0fb9869d2c2a25e56900153871f85a3383"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/action-wiring-20261013/http-review/initial.stdout.bin",
+      "bytes": 2160,
+      "sha256": "9e6e668097ed9f18923910ce36afcb094d4a8f7a7747c7a460a37cd5d9883060"
+    },
+    {
+      "path": "apps/control/action-application/http-independent.test.mjs",
+      "bytes": 9818,
+      "sha256": "6307ec07d24935fe73954c3e81eedbc9dbf5909ae30433b5f2d99a465dffdaea"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-WIRING-HTTP-REVIEW-20261013.md",
+      "bytes": 1724,
+      "sha256": "2cb92f3d3cf27f4308702aa19b876e652ba5a1a2cff68ccc4f3425efcec7f5f1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-WIRING-HTTP-REVIEW-20261013.md",
+      "bytes": 3694,
+      "sha256": "4b852e1746b292a82d88a4ac09bc80ddbed2086f5da9496a65b5f73fb23ef7a7"
+    }
+  ]
+}

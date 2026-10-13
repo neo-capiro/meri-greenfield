@@ -1,0 +1,43 @@
+{
+  "ownedDependenciesRemoved": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "ownedNodeModulesAbsent": true,
+  "donorUntouched": true,
+  "groups": [
+    {
+      "label": "initial",
+      "passed": 8,
+      "failed": 2,
+      "pgid": 449789,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "header-count-before",
+      "passed": 1,
+      "failed": 0,
+      "pgid": 450143,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "final",
+      "passed": 11,
+      "failed": 0,
+      "pgid": 450250,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "cli",
+      "passed": 1,
+      "failed": 0,
+      "pgid": 450453,
+      "freshlyAbsent": true
+    }
+  ]
+}

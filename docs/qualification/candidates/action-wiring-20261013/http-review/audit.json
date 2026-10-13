@@ -1,0 +1,232 @@
+{
+  "decision": "PASS",
+  "base": "f1a075e2eb6c63ee8b1785ad9a94f552a98f45f8",
+  "source": "2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+  "authorPacket": "8d6f537dda38463346abde490df721006137f51e",
+  "originalEntries": 10498,
+  "production": [
+    {
+      "path": "apps/control/action-application/node-http.mjs",
+      "bytes": 4820,
+      "sha256": "5483d08f8092c06e3a28784501bc0be0ff94898b613567cb9c6d865452daf5f0"
+    },
+    {
+      "path": "scripts/local-followthrough/http-run.mjs",
+      "bytes": 2130,
+      "sha256": "721b40dba0cb7ae6cbeddd3b3bb33f9d0a63c9211a7065b73d47868e047003d2"
+    }
+  ],
+  "authorManifestMembers": 16,
+  "authorManifestSha256": "d1b4e5360aae6d2b03f99c8e5e0ab30dd7117bcfbf44a36c6c955e9734063fe0",
+  "captures": [
+    {
+      "label": "initial",
+      "passed": 8,
+      "failed": 2,
+      "pgid": 449789,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "header-count-before",
+      "passed": 1,
+      "failed": 0,
+      "pgid": 450143,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "final",
+      "passed": 11,
+      "failed": 0,
+      "pgid": 450250,
+      "freshlyAbsent": true
+    },
+    {
+      "label": "cli",
+      "passed": 1,
+      "failed": 0,
+      "pgid": 450453,
+      "freshlyAbsent": true
+    }
+  ],
+  "passed": 44,
+  "total": 44,
+  "checks": [
+    {
+      "name": "all original entries identical at 2c8b793569c9a4b19db5a939909fbefdb8ac3ca8",
+      "pass": true
+    },
+    {
+      "name": "all original entries identical at 8d6f537dda38463346abde490df721006137f51e",
+      "pass": true
+    },
+    {
+      "name": "all original entries identical at HEAD",
+      "pass": true
+    },
+    {
+      "name": "exact tested/author source apps/control/action-application/node-http.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact tested/author source scripts/local-followthrough/http-run.mjs",
+      "pass": true
+    },
+    {
+      "name": "only allocated bridge/CLI production and author test added",
+      "pass": true
+    },
+    {
+      "name": "all97 remain unavailable",
+      "pass": true
+    },
+    {
+      "name": "scope139/96/43 preserved",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/node-http.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member apps/control/action-application/http.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member scripts/local-followthrough/http-run.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-ACTION-WIRING-HTTP-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-ACTION-WIRING-HTTP-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/http-cli.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/initial.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/action-wiring-20261013/http-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts initial",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup initial",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence initial",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/header-count-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/header-count-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts header-count-before",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup header-count-before",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence header-count-before",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts final",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup final",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence final",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/cli.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact raw stream docs/qualification/candidates/action-wiring-20261013/http-review/cli.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "counts cli",
+      "pass": true
+    },
+    {
+      "name": "capture bounds/cleanup cli",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence cli",
+      "pass": true
+    }
+  ],
+  "runtime": "Real ephemeral loopback HTTP only; SQL/native/provider/deployment UNRUN / HOLD"
+}
