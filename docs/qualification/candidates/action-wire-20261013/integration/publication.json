@@ -1,0 +1,36 @@
+{
+  "readAt": "2026-10-13T02:45:00Z",
+  "repository": "neo-capiro/meri-greenfield",
+  "pr": 43,
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/43",
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "base": "f1df1bc20b8f5ef06495c50d885b18ce2af73eb1",
+  "head": "08ba900965f54d4f0cd3776a9bb2158877e76dfd",
+  "tree": "da93ddbe688047da1bc3d5b40f68a4ccf865e3af",
+  "sourceAccepted": true,
+  "runtimeAccepted": false,
+  "frontendHandoff": {
+    "url": "https://github.com/neo-capiro/capiro-frontend/pull/16#issuecomment-6137056397",
+    "id": 6137056397,
+    "body": "Canonical Meri action receiving boundary is ready for integration: [Meri draft PR43](https://github.com/neo-capiro/meri-greenfield/pull/43), frozen source/artifact commit `08ba900965f54d4f0cd3776a9bb2158877e76dfd` (based on PR42).\n\nPackage `@capiro/meri-contracts` **0.1.1** adds `@capiro/meri-contracts/action-application` and `/action-application/schema`; existing public0.1 root/browser/schema bytes remain unchanged. [Exact public tarball](https://github.com/neo-capiro/meri-greenfield/blob/08ba900965f54d4f0cd3776a9bb2158877e76dfd/docs/qualification/candidates/action-wire-20261013/integration/capiro-meri-contracts-0.1.1.tgz) is175627bytes, SHA256 `0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651`; it can also be reproduced with `npm pack ./packages/contracts --ignore-scripts` at that commit. No npm-registry publication.\n\n```ts\nimport { receiveActionResponse } from '@capiro/meri-contracts/action-application';\nconst value = await receiveActionResponse('query', response.status, await response.text());\n```\n\nRoutes: query/draft/prepare/execute. Valid canonical non200 responses return typed `ActionErrorResponse`; invalid shape/status/hash/correlation throws `ActionResponseError`. Four route types plus `ActionResponse<R>` are exported. Primitive JSON text only; detached deep-frozen output; browser secure-context WebCrypto required. Validate receiving data; retain/correlate the originating proposal separately for execute, because the response omits it. Recommendations remain `acceptedTasks:false`, preparation remains `approval_required`; this exports no approval/credential/execution/retry authority.\n\nIndependent44/44 and root integrated80/80 controls passed, plus deterministic generation, strict types and isolated public-package install. Event sequence gaps and original-A/current-B recovery are covered. [Acceptance and usage report](https://github.com/neo-capiro/meri-greenfield/blob/08ba900965f54d4f0cd3776a9bb2158877e76dfd/docs/coordination/reports/CODEX-ACTION-WIRE-20261013.md). Frontend head read before this handoff: `7c87678730538958ace9762f824dc3e588bf445b`. Please consume through your isolated package/integration ownership; I made no frontend source changes. G1/runtime/source activation remains gated.",
+    "readbackExact": true,
+    "frontendHeadBeforePost": "7c87678730538958ace9762f824dc3e588bf445b"
+  },
+  "tarballSha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651",
+  "laterObservedPRHead": "4b23c8e414270aa9466148207d00f0e78fd57238",
+  "authorCleanup": {
+    "sealedHead": "fcd5595e2b3fef94996ed8ae00353fd762725662",
+    "ownedDependencyLayoutRemoved": true,
+    "recordedGroupsFreshlyAbsent": [
+      462000,
+      462285,
+      462297,
+      462309,
+      462320
+    ],
+    "historicalGeneratorGroupsRecorded": false,
+    "limitation": "No retrospective group-proof claim for unrecorded historical generator groups; author reports no current owned node/npm/esbuild processes."
+  }
+}

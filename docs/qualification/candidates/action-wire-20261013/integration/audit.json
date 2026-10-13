@@ -1,0 +1,390 @@
+{
+  "source": "3a6e3391b8fb3bb8113496c897f997683a27da2d",
+  "testedIntegratedHead": "2077d0177a81caae213a6bb7a434cc00008a5c77",
+  "base": "f1df1bc20b8f5ef06495c50d885b18ce2af73eb1",
+  "originalEntries": 10563,
+  "unchangedOriginalEntries": 10560,
+  "authorizedExistingChanges": [
+    "packages/contracts/README.md",
+    "packages/contracts/package-lock.json",
+    "packages/contracts/package.json"
+  ],
+  "tarball": {
+    "path": "docs/qualification/candidates/action-wire-20261013/integration/capiro-meri-contracts-0.1.1.tgz",
+    "bytes": 175627,
+    "sha256": "0ca8d0552a2960157ebdf7b8cecf6cacdcda48ef91c475060a54f15192535651",
+    "files": [
+      "package/dist/action-application.metadata.json",
+      "package/dist/action-application.schema.json",
+      "package/meri.schema.json",
+      "package/package.json",
+      "package/README.md",
+      "package/THIRD-PARTY-NOTICES.md",
+      "package/dist/action-application.mjs",
+      "package/dist/browser.mjs",
+      "package/dist/metadata.mjs",
+      "package/validate.mjs",
+      "package/dist/action-application.d.ts",
+      "package/dist/browser.d.ts",
+      "package/dist/contracts.d.ts",
+      "package/dist/index.d.ts",
+      "package/dist/metadata.d.ts"
+    ]
+  },
+  "ownedGroupsAbsent": [
+    464704,
+    465114
+  ],
+  "passed": 87,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "only three approved existing package files changed",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-WIRE-AUTHOR-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/first-install-verification.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/first-pack.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/first-pack.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/focused-stable.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/focused-stable.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/focused.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/focused.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/frozen-public.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/frozen-public.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-final.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-final.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-second.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-second.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-stable.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-stable.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-third.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/generate-third.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/handoff.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/initial-readback.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/install-verification.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/install.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/install.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/installed-smoke.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/installed-types.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/installed-types.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/outline.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/pack.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/pack.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/package-check.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/package-check.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/receiver-before-sequence-repair.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/types.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/types.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/verify-install.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/reports/CODEX-ACTION-WIRE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/coordination/tasks/CODEX-ACTION-WIRE-REVIEW-20261013.md",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/.gitattributes",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/artifact.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/audit.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/check-artifact.py",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-artifact.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-artifact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-artifact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-generation.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-generation.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-generation.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-types.json",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-types.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/independent-types.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "retained docs/qualification/candidates/action-wire-20261013/review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "retained packages/contracts/test/action-application-independent-types.ts",
+      "pass": true
+    },
+    {
+      "name": "retained packages/contracts/test/action-application-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/README.md",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/action-application/receive.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/action-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/dist/action-application.d.ts",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/dist/action-application.metadata.json",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/dist/action-application.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/dist/action-application.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/generate-actions.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/package-lock.json",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/package.json",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/test/action-application-public-types.ts",
+      "pass": true
+    },
+    {
+      "name": "exact reviewed package packages/contracts/test/action-application-public.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "bounded success integrated-check",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-wire-20261013/integration/integrated-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-wire-20261013/integration/integrated-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh process group absence integrated-check",
+      "pass": true
+    },
+    {
+      "name": "bounded success public-pack",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-wire-20261013/integration/public-pack.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw docs/qualification/candidates/action-wire-20261013/integration/public-pack.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh process group absence public-pack",
+      "pass": true
+    },
+    {
+      "name": "exact independently installed tarball",
+      "pass": true
+    },
+    {
+      "name": "15 public files only",
+      "pass": true
+    }
+  ]
+}

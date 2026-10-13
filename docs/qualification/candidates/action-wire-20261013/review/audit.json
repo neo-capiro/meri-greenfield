@@ -1,0 +1,222 @@
+{
+  "base": "afcdd9312f3ccdf60a9b7fdb0fa0a42509224707",
+  "source": "3a6e3391b8fb3bb8113496c897f997683a27da2d",
+  "originalEntries": 10564,
+  "unchangedOriginalEntries": 10561,
+  "authorizedChangedOriginals": [
+    "packages/contracts/README.md",
+    "packages/contracts/package-lock.json",
+    "packages/contracts/package.json"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/action-application/receive.mjs",
+      "bytes": 4337,
+      "sha256": "d4404440530e71bb56bb21d07729b1aab46b8c22e4d06e700fe10da792d81c43"
+    },
+    {
+      "path": "packages/contracts/action-application/schema.mjs",
+      "bytes": 2132,
+      "sha256": "4103c45c77707e244a45d82624c1873a5f3e6d3e42989bfbee4f1b141f2736d9"
+    },
+    {
+      "path": "packages/contracts/generate-actions.mjs",
+      "bytes": 6751,
+      "sha256": "72f605755587cad3f445d4324e815c4008ccb47b787333842ac8fc044dffb73e"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.mjs",
+      "bytes": 1480808,
+      "sha256": "9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.d.ts",
+      "bytes": 17721,
+      "sha256": "007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.schema.json",
+      "bytes": 67726,
+      "sha256": "a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"
+    },
+    {
+      "path": "packages/contracts/dist/action-application.metadata.json",
+      "bytes": 1980,
+      "sha256": "9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"
+    }
+  ],
+  "ownedGroupsFreshlyAbsent": [
+    461937,
+    462144,
+    462173,
+    462566
+  ],
+  "passed": 41,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "exact three authorized original files changed",
+      "pass": true
+    },
+    {
+      "name": "version0.1.1",
+      "pass": true
+    },
+    {
+      "name": "all old exports unchanged",
+      "pass": true
+    },
+    {
+      "name": "exact additive exports",
+      "pass": true
+    },
+    {
+      "name": "other package fields unchanged",
+      "pass": true
+    },
+    {
+      "name": "original checks retained additively",
+      "pass": true
+    },
+    {
+      "name": "lock only root package version changes",
+      "pass": true
+    },
+    {
+      "name": "README preserved and appended",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/action-application/receive.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/action-application/schema.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/generate-actions.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/dist/action-application.mjs",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/dist/action-application.d.ts",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/dist/action-application.schema.json",
+      "pass": true
+    },
+    {
+      "name": "tested source exact packages/contracts/dist/action-application.metadata.json",
+      "pass": true
+    },
+    {
+      "name": "receiving schema hash",
+      "pass": true
+    },
+    {
+      "name": "canonical source ../../apps/control/action-application/http.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical source ../../apps/control/action-application/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical source ../../apps/control/action-application/session.mjs",
+      "pass": true
+    },
+    {
+      "name": "canonical source commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical source meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical source retrieval-0.2/common.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical source retrieval-0.2/operational-reads.schema.json",
+      "pass": true
+    },
+    {
+      "name": "canonical source retrieval-0.2/retrieval.schema.json",
+      "pass": true
+    },
+    {
+      "name": "browser graph only generated/runtime dependencies",
+      "pass": true
+    },
+    {
+      "name": "bounded check independent-first",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence independent-first",
+      "pass": true
+    },
+    {
+      "name": "bounded check independent-types",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-types.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-types.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence independent-types",
+      "pass": true
+    },
+    {
+      "name": "bounded check independent-generation",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-generation.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-generation.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence independent-generation",
+      "pass": true
+    },
+    {
+      "name": "bounded check independent-artifact",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-artifact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw stream docs/qualification/candidates/action-wire-20261013/review/independent-artifact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "fresh owned group absence independent-artifact",
+      "pass": true
+    }
+  ]
+}
