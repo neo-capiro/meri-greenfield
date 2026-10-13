@@ -79,7 +79,10 @@ class _CheckedStore:
         def bounded(cursor):
             self.check(); result = operation(_CheckedCursor(cursor, self.check)); self.check(); return result
         result = self.store.transact(bounded); self.check(); return result
-    def budget(self, cursor): return self.store.budget(cursor)
+    def budget(self, cursor):
+        value = self.store.budget(cursor)
+        if value['quarantined']: raise StateDenied('BUDGET_QUARANTINED')
+        return value
 
 
 class QualificationLifecycle:
