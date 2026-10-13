@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/workspace/meri-whole-plan-source-review/docs/qualification/candidates/whole-plan-next-20261013/source-audit/build-audit.py", line 222, in <module>
+    raise ValueError('Missing referenced audit path: ' + path)
+ValueError: Missing referenced audit path: apps/control/task-lookup/store.mjs

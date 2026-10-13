@@ -1,0 +1,77 @@
+{
+  "schema": "meri-independent-source-audit-packet/1",
+  "reviewedSource": "18adda2c5461b8d346277135aafd3972b4768802",
+  "reviewedTree": "eaec635b6b1c6cdc353ad48a5fda1f7a3dc10b21",
+  "scope": "W00-W11/G0-G7 only",
+  "verdict": "ACCEPT_BOUNDED_SOURCE_RECONCILIATION",
+  "runtimeQualified": false,
+  "productTestsRerun": 0,
+  "entries": [
+    {
+      "path": "build-audit.py",
+      "bytes": 34751,
+      "sha256": "8020b02a532a6b1e07899c77ebc6a7dcfc4d82835918647ddebdc281102ea5d1"
+    },
+    {
+      "path": "final-inventory-v2.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "final-inventory-v2.stdout.txt",
+      "bytes": 168,
+      "sha256": "8d27c8b905e32798fd0b3259ff6fe5afaf827c78c4da3fd274150e08c5f4e680"
+    },
+    {
+      "path": "final-inventory-v3.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "final-inventory-v3.stdout.txt",
+      "bytes": 168,
+      "sha256": "8d27c8b905e32798fd0b3259ff6fe5afaf827c78c4da3fd274150e08c5f4e680"
+    },
+    {
+      "path": "final-inventory.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "final-inventory.stdout.txt",
+      "bytes": 168,
+      "sha256": "8d27c8b905e32798fd0b3259ff6fe5afaf827c78c4da3fd274150e08c5f4e680"
+    },
+    {
+      "path": "initial-inventory.stderr.txt",
+      "bytes": 332,
+      "sha256": "cd98bd271e1c1f389b3cb698d12a1b0c423c7050dde055fae1f80dae4ba2559b"
+    },
+    {
+      "path": "initial-inventory.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "report.md",
+      "bytes": 6214,
+      "sha256": "13f121147551b8787c68f21bac58311082ca381e03c22ae5c25b6f08177cb780"
+    },
+    {
+      "path": "requirements-audit.json",
+      "bytes": 113982,
+      "sha256": "8966aaa71e36eb99a0b90d587be93c715d15794cafaebf44c592e03370e34eba"
+    },
+    {
+      "path": "source-bindings.json",
+      "bytes": 36464,
+      "sha256": "495f278215c3d9a456b9cb5ac36dfe30e479ffe3b2ca125b0ed9b02244697050"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 18448,
+      "sha256": "78116ea73a84ad3768103f8ba3aa1658a22d045ab1030a8061abb65ada7aa832"
+    }
+  ],
+  "retainedInitialFailure": "initial-inventory.stderr.txt records reviewer source-path resolution failure; actual canonical path corrected without product edits."
+}
