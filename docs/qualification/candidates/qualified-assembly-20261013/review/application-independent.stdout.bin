@@ -1,0 +1,53 @@
+✔ complete constructor defers all schema/child/source work and rejects pre-activation HTTP (56.619444ms)
+✔ configuration data is immutable across delayed schema and activation (292.666111ms)
+✔ host configuration getters cannot run during assembly preflight (25.267389ms)
+✖ complete activation read HTTP uses retained canonical state and revoked grant blocks fresh session without another effect (330.979214ms)
+✔ complete reconstruction reobserves worker but never creates new grants/allocation/proposal (412.433454ms)
+✔ stopped worker during reconstruction never resets retained ledger or grants (350.234848ms)
+✖ schema commit acknowledgement loss cannot reach child or retry initialization (275.024339ms)
+✔ close during parked worker read aborts activation and preserves pending grants without source effects (97.840359ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 6
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4494.313049
+
+✖ failing tests:
+
+test at apps/control/qualified-application/independent/application-independent.test.mjs:33:1
+✖ complete activation read HTTP uses retained canonical state and revoked grant blocks fresh session without another effect (330.979214ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  502 !== 200
+  
+      at TestContext.<anonymous> (file:///tmp/meri-qualified-assembly-review-20261013/apps/control/qualified-application/independent/application-independent.test.mjs:35:92)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 502,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/qualified-application/independent/application-independent.test.mjs:46:1
+✖ schema commit acknowledgement loss cannot reach child or retry initialization (275.024339ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: COMMIT_ACKNOWLEDGEMENT_UNKNOWN
+      at async TestContext.<anonymous> (file:///tmp/meri-qualified-assembly-review-20261013/apps/control/qualified-application/independent/application-independent.test.mjs:50:33)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: COMMIT_ACKNOWLEDGEMENT_UNKNOWN
+        at PostgresBudgetStore.transact (file:///tmp/meri-qualified-assembly-review-20261013/apps/gateway/budget/postgres-budget-store.mjs:22:33),
+    operator: 'rejects',
+    diff: 'simple'
+  }
