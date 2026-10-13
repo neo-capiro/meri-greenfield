@@ -1,0 +1,14 @@
+{
+  "source": "bd3de7dd9f522ef1da8bc055b9f9147e3c9d8dda",
+  "raw": "final-behavior.json",
+  "result": {
+    "pass": 72,
+    "fail": 1
+  },
+  "classification": "reviewer harness failure, not producer defect",
+  "cause": "VM-local JSON.parse creates different prototypes; Node deepStrictEqual rejects structurally equal cross-realm data.",
+  "change": "Use newly exported original pure assertion in module realm; no runner or SQL invocation.",
+  "beforeSha256": "5048a1c1fa7b3f7ff66d2b941f8b8cec9278031a79112883a53ba411d3adde14",
+  "afterSha256": "05bdda5f0301d9a403d702ec6b2b8317a4fe3c475f8f664f4e5c947614683c82",
+  "allFixtureAndAssertionBytesUnchanged": true
+}
