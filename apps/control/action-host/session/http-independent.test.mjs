@@ -24,3 +24,16 @@ test('independent actual HTTP opaque issuance reaches same accepted graph/propos
  let traps=0;await graph.app.handle(new Proxy(req(),{get(){traps++;throw Error('SECRET');}})).catch(()=>{});assert.equal(traps,0,'mounted routing must retain Request inertness');
  }finally{await server?.close();if(server)assert.deepEqual(server.status(),{closed:true,listening:false,activeSockets:0});c.close();assert.equal(owner.status().closed,true);}
 });
+
+test('independent issuance HTTP never reflects extra owner fields or response accessors',async()=>{
+ for(const hostile of [false,true]){let effects=0;const result={credential:'opaque',expiresAtMs:Date.now()+1000,context:{},privateSecret:'PRIVATE_SECRET'};if(hostile)Object.defineProperty(result,'credential',{enumerable:true,get(){effects++;return 'PRIVATE_SECRET';}});
+ let app;try{app=createActionSessionApplication({owner:{issue:async()=>result}});}catch{assert.equal(effects,0);continue;}
+ const response=await app.handle(req());assert.notEqual(response.status,200);assert.doesNotMatch(await response.text(),/PRIVATE_SECRET/);assert.equal(effects,0);
+ }
+});
+test('independent short HTTP cutoff reaches both real session-owner authorization ports',async()=>{
+ const now=()=>1791840000000,deadline=now()+50,calls=[],binding={tenantId:'tenant',actorId:'actor',conversationId:'00000001-1111-4111-8111-111111111111',runId:'00000002-1111-4111-8111-111111111111',attemptId:'00000003-1111-4111-8111-111111111111',workerId:'00000004-1111-4111-8111-111111111111',writerFence:1},clientId='00000005-1111-4111-8111-111111111111';
+ const {canonicalSha256}=await import('../../../../packages/contracts/validate.mjs');
+ const owner=createActionSessionOwner({mode:'process-local',now,limits:{maxSessions:2,maxRequestMs:3000,maxTtlMs:1000,maxFactBytes:65536},verifyIdentity:async call=>{calls.push(call);return{principal:{tenantId:'tenant',actorId:'actor'},identityRevision:'i',checkedAtMs:now(),expiresAtMs:now()+5000};},resolveContext:async call=>{calls.push(call);return{identitySha256:canonicalSha256(call.identity),binding,scopes:[{tenantId:'tenant',kind:'client',resourceId:clientId,policyRevision:'r'}],selectedClientId:clientId,contextRevision:'c',checkedAtMs:now(),expiresAtMs:now()+5000};}});
+ try{const app=createActionSessionApplication({owner,now,maxRequestMs:50});const response=await app.handle(req());assert.equal(response.status,200);assert.equal(calls.length,2);assert.ok(calls.every(x=>x.deadlineMs<=deadline),'native owner deadline exceeds original HTTP cutoff');}finally{owner.close();}
+});

@@ -1,0 +1,82 @@
+✔ independent session HTTP refuses method before owner (4.188405ms)
+✔ independent session HTTP refuses query before owner (0.564228ms)
+✖ independent session HTTP refuses fragment before owner (3.197867ms)
+✔ independent session HTTP refuses extra authority before owner (1.056378ms)
+✔ independent session HTTP refuses duplicate auth before owner (0.659691ms)
+✔ independent session HTTP refuses length mismatch before owner (0.876698ms)
+✔ independent session HTTP refuses oversized stream before owner (0.668225ms)
+✔ independent session HTTP refuses invalid utf8 before owner (0.767203ms)
+✖ independent session HTTP must not execute own Request accessors (1.155807ms)
+✔ independent session HTTP rejects Proxy Request without traps (0.441413ms)
+✔ independent session HTTP parked body is cancelled before issuance at finite deadline (82.268691ms)
+✖ independent session constructor rejects borrowed issue getter without executing it (0.476426ms)
+✖ independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute (317.651239ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 9
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3020.954099
+
+✖ failing tests:
+
+test at apps/control/action-host/session/http-independent.test.mjs:12:713
+✖ independent session HTTP refuses fragment before owner (3.197867ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" to be strictly unequal to: 200
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:12:846)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 200,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/session/http-independent.test.mjs:13:1
+✖ independent session HTTP must not execute own Request accessors (1.155807ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:13:223)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/session/http-independent.test.mjs:16:1
+✖ independent session constructor rejects borrowed issue getter without executing it (0.476426ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:16:117)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/session/http-independent.test.mjs:18:1
+✖ independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute (317.651239ms)
+  Error: SECRET
+      at Object.get (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:24:74)
+      at Object.handle (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/local-integration/case.mjs:42:571)
+      at TestContext.<anonymous> (file:///tmp/meri-action-session-review-20261013/apps/control/action-host/session/http-independent.test.mjs:24:30)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
