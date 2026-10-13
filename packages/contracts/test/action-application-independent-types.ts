@@ -12,7 +12,8 @@ const e = await receiveActionResponse('execute',200,body);
 if (!('error' in e) && e.status === 'observed') { const digest: string = e.outcome.receipt.commandSha256; const title: string = e.outcome.result.title; void digest; void title; }
 const r: ActionRoute = 'prepare'; void r;
 const types: [ActionQueryResponse?,ActionDraftResponse?,ActionPrepareResponse?,ActionExecuteResponse?,ActionErrorResponse?] = []; void types;
-const code: string = new ActionResponseError().code; void code;
+declare const failure: ActionResponseError;
+const code: string = failure.code; void code;
 // @ts-expect-error Unknown must be received before property access.
 body.status;
 // @ts-expect-error No arbitrary routes or callable operations.

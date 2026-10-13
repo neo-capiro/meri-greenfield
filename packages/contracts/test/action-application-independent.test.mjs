@@ -45,3 +45,23 @@ test('independent generated browser receiver has no external/private/Node import
  const script=`import{readFileSync}from'node:fs';import{SourceTextModule,createContext}from'node:vm';import{webcrypto}from'node:crypto';const m=new SourceTextModule(readFileSync(${JSON.stringify(fileURLToPath(url))},'utf8'),{context:createContext({crypto:webcrypto,TextEncoder})});await m.link(()=>{throw Error('external import')});await m.evaluate({timeout:2000});const r=await m.namespace.receiveActionResponse('prepare',200,${JSON.stringify(encode(sample))});if(r.status!=='approval_required')throw Error('invalid browser receiver');`;
  const result=spawnSync(process.execPath,['--experimental-vm-modules','--input-type=module','-e',script],{timeout:10000,maxBuffer:65536});assert.equal(result.error,undefined);assert.equal(result.status,0,result.stderr.toString());
 });
+// Exact accepted producer permits interleaved event slots, and A -> B attempt recovery.
+import {prepare as prepareLookup,event as lookupEvent} from '../../../apps/control/task-lookup/binding.mjs';
+import {setup as followthroughSetup,id as fixtureId} from '../../../apps/control/action-followthrough/test/fixture.mjs';
+import {createActionFollowthrough} from '../../../apps/control/action-followthrough/index.mjs';
+import {createTaskLookupDelivery,assertTaskLookupStoredBinding} from '../../../apps/control/task-lookup/index.mjs';
+import {createLocalLookupAuthorizer} from '../../../apps/gateway/local-action/control-authorizer.mjs';
+test('independent receiving accepts canonical nonconsecutive reserved event sequence',async()=>{
+ const value=structuredClone((await wire()).read),[a,b]=value.events,at=Date.parse(a.createdAt),binding=value.observation.binding;
+ const context={lookupId:value.lookupId,resultReference:value.resultReference,requestId:a.data.requestId,binding,scopes:a.scopes,selectedClientId:value.observation.result.clientId,deliveryJson:JSON.stringify({context:{binding},producer:{namespace:'receiver-test',executionId:'gap'},deliveryId:'gap'}),slots:{started:{eventId:a.eventId,sequence:a.sequence},terminal:{eventId:b.eventId,sequence:a.sequence+5}},deadlineMs:at+1000};
+ const canonical=prepareLookup({limit:20},context,at);value.events=[lookupEvent(canonical,'tool.started',at),lookupEvent(canonical,'tool.completed',at+1,value.resultReference)];
+ assert.deepEqual(await receiveActionResponse('query',200,encode(value)),value);
+});
+test('independent receiving accepts actual original A recommendation prepared under current B',async()=>{
+ const f=await followthroughSetup(),a=structuredClone(f.f.binding),b={...a,attemptId:fixtureId(990),workerId:fixtureId(991),writerFence:2};
+ f.identity.replaceRun({expectedBinding:a,binding:b,policyRevision:'a'.repeat(64),deadlineMs:f.clock()+45000});const issued=f.identity.issueCredential({ttlMs:40000});Object.assign(f.f.binding,b);
+ const lookup=createTaskLookupDelivery({store:f.store,authorize:createLocalLookupAuthorizer({identity:f.identity,credential:issued.credential,assertStoredBinding:assertTaskLookupStoredBinding,now:f.clock}),gateway:{executeOwned:async()=>{throw Error('No redispatch');}},clock:f.clock});
+ const flow=createActionFollowthrough({...f.config,lookup,readContext:{...f.readContext,currentBinding:b}}),draft=await flow.draft(f.wanted),prepared=await flow.prepare(draft);
+ assert.deepEqual(prepared.proposal.command.binding,b);assert.deepEqual(prepared.draft.source.originalBinding,a);assert.equal(f.f.state.fetches,0);
+ assert.deepEqual(await receiveActionResponse('prepare',200,encode(prepared)),prepared);
+});
