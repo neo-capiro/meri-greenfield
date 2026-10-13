@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: resume: complete supported options retain original intent and exact source preimage
+ok 1 - resume: complete supported options retain original intent and exact source preimage
+  ---
+  duration_ms: 16.789373
+  type: 'test'
+  ...
+# Subtest: fork: complete supported options retain original intent and exact source preimage
+ok 2 - fork: complete supported options retain original intent and exact source preimage
+  ---
+  duration_ms: 0.752277
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses changed original prompt even when checkpoint digest is recomputed
+ok 3 - Exact continuation refuses changed original prompt even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.844005
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses new hidden target source request field even when checkpoint digest is recomputed
+ok 4 - Exact continuation refuses new hidden target source request field even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.800329
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses correlated foreign source actor even when checkpoint digest is recomputed
+ok 5 - Exact continuation refuses correlated foreign source actor even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.862172
+  type: 'test'
+  ...
+# Subtest: Exact continuation refuses foreign opaque-session scope even when checkpoint digest is recomputed
+ok 6 - Exact continuation refuses foreign opaque-session scope even when checkpoint digest is recomputed
+  ---
+  duration_ms: 0.598416
+  type: 'test'
+  ...
+# Subtest: SDK input is literal, detached and single-consumer; close discards unread steering
+ok 7 - SDK input is literal, detached and single-consumer; close discards unread steering
+  ---
+  duration_ms: 1.887758
+  type: 'test'
+  ...
+# Subtest: Concurrent exact controls enqueue one steering UUID, altered replay refuses
+ok 8 - Concurrent exact controls enqueue one steering UUID, altered replay refuses
+  ---
+  duration_ms: 1.413939
+  type: 'test'
+  ...
+# Subtest: Hostile command data refuses without property effects or Query calls
+ok 9 - Hostile command data refuses without property effects or Query calls
+  ---
+  duration_ms: 2.167928
+  type: 'test'
+  ...
+# Subtest: Attempted steering with synchronous input failure remains locally UNKNOWN and never retries
+ok 10 - Attempted steering with synchronous input failure remains locally UNKNOWN and never retries
+  ---
+  duration_ms: 0.696183
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1774.614362

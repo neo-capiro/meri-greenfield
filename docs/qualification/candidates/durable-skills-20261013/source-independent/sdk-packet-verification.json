@@ -1,0 +1,31 @@
+{
+  "decision": "ACCEPT_SOURCE_CONTINUATION_ONLY",
+  "sourceCommit": "ae2ccd7385f6f8ba367e3a8678087a5dbc5c8744",
+  "testsPassed": 53,
+  "counts": {
+    "sdk-independent10": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sdk-author43": {
+      "tests": 43,
+      "pass": 43,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "upstreamTypecheckPassed": true,
+  "sourceWhitespacePassed": true,
+  "allBaseEntriesPreserved": 13812,
+  "borrowedLinksRemoved": true,
+  "ownedProcessesReapedAndGroupsAbsent": true,
+  "pendingLifecycleComposition": true,
+  "preparedJournalSemanticTestsNotExecuted": true,
+  "nativeOrFullBatchAcceptance": false
+}

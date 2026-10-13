@@ -1,0 +1,46 @@
+{
+  "decision": "ACCEPT_SOURCE_CONTINUATION_ONLY",
+  "sourceCommit": "ae2ccd7385f6f8ba367e3a8678087a5dbc5c8744",
+  "sourceTree": "0c4d83b0769c9144c9ed4bd8bf8e6743ed079979",
+  "base": "a337ef93e386f5eb646e85f89f26b425546b1222",
+  "allRetainedBaseEntriesExact": 13812,
+  "addedPaths": [
+    "apps/worker/conversation/continuation/HANDOFF.md",
+    "apps/worker/conversation/continuation/IMPLEMENTATION.md",
+    "apps/worker/conversation/continuation/README.md",
+    "apps/worker/conversation/continuation/commands.mjs",
+    "apps/worker/conversation/continuation/input.mjs",
+    "apps/worker/conversation/continuation/options.mjs",
+    "apps/worker/conversation/continuation/test/author-checkpoint.tap",
+    "apps/worker/conversation/continuation/test/author-final.tap",
+    "apps/worker/conversation/continuation/test/author-initial.tap",
+    "apps/worker/conversation/continuation/test/author-intent-repaired.tap",
+    "apps/worker/conversation/continuation/test/author-literal-checkpoint.tap",
+    "apps/worker/conversation/continuation/test/author-sealed.tap",
+    "apps/worker/conversation/continuation/test/continuation.test.mjs",
+    "apps/worker/conversation/continuation/test/exploratory-checkpoint-failure.txt",
+    "apps/worker/conversation/continuation/test/fixtures.mjs",
+    "apps/worker/conversation/continuation/test/sdk-types-checkpoint.stdout.txt",
+    "apps/worker/conversation/continuation/test/sdk-types-final.stdout.txt",
+    "apps/worker/conversation/continuation/test/sdk-types-initial.stdout.txt",
+    "apps/worker/conversation/continuation/test/sdk-types-intent-repaired.stdout.txt",
+    "apps/worker/conversation/continuation/test/sdk-types-interop.stdout.txt",
+    "apps/worker/conversation/continuation/test/sdk-types.ts",
+    "packages/contracts/conversation-lifecycle/validate.mjs"
+  ],
+  "privateBoundaryExactE87": true,
+  "oldPublicServiceHttpEventsAndPublicPackageExact": true,
+  "originalSkillsCatalogSchemasAndNativePinsExact": true,
+  "reviewerExecutableDiffEmpty": true,
+  "upstreamPackage": {
+    "version": "0.3.295",
+    "cli": "2.1.295",
+    "files": {
+      "package.json": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211",
+      "sdk.d.ts": "e4d91d71404ce4ffc918aa590f545c7a67df6a1dfe5de8cd28a05db0a7fe872b",
+      "sdk.mjs": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0"
+    }
+  },
+  "durableCompositionPending": true,
+  "nativeRuntimeAcceptance": false
+}

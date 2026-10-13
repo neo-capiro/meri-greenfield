@@ -1,0 +1,90 @@
+{
+  "sourceCommit": "ae2ccd7385f6f8ba367e3a8678087a5dbc5c8744",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/SDK-COMPONENT-REVIEW.md",
+      "bytes": 3686,
+      "sha256": "fbad92e6ead1c6099c1e19902095e6c7508152cc657c5e7bab67719ba3304961"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/capture-sdk.py",
+      "bytes": 1717,
+      "sha256": "d91b161d40eb1b065059a3758b47c1536336e423fae19377f84a26bdcfc023d7"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-author43.json",
+      "bytes": 798,
+      "sha256": "e836947c0ca33f816cdf3103e54bc5a6dea4f473bbb624278e58595b8f98e893"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-author43.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-author43.stdout.txt",
+      "bytes": 8614,
+      "sha256": "9bb87d2ea0676d773f1a132d8b20a4ad900a17a058471207145211912c71ebaf"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-independent.test.mjs",
+      "bytes": 5452,
+      "sha256": "e4a3d2a4fbd167e5242507e79e63c7fcb2dea07f3d89a031b454683b722c8629"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-independent10.json",
+      "bytes": 831,
+      "sha256": "e124d6afb952e0e560ed1fcc94343c94bc2eedcae5d463ca39cac18d07b97830"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-independent10.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-independent10.stdout.txt",
+      "bytes": 2587,
+      "sha256": "3ebee30ecd6186741eb76dda452987dc0761eff7305658c9402855a1abfe3be2"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-packet-verification.json",
+      "bytes": 754,
+      "sha256": "dd7b9f0f7be5e245c21b3359fac691c9afd92e169a80ef17ae7955f501b98785"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-preservation-details.json",
+      "bytes": 2437,
+      "sha256": "465bdc9aa953a75c84182f4d65fbd48d4476fb3e2ae7284bff2dd4f61844c0fd"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-source-whitespace.json",
+      "bytes": 865,
+      "sha256": "98765f06b01322217a8335c29297fa454f8f2d38839af388476ef46f73248755"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-source-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-source-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-upstream-types.json",
+      "bytes": 1228,
+      "sha256": "21b4ed85daaa5c2bdbec43788e9d8c0bc6a64e1290af2aeb6978ef7a0c2af961"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-upstream-types.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/durable-skills-20261013/source-independent/sdk-upstream-types.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
