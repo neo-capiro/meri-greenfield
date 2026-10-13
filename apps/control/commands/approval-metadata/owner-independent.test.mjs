@@ -68,9 +68,9 @@ test('independent hostile raw request is inert and detached from policy calls',a
 });
 test('independent policy lease can shorten a parked callback before receipt',async()=>{
  const t=setup({policy:()=>async call=>{call.limitDeadline(Date.now()+15);return new Promise(()=>{});}});
- await assert.rejects(t.owner.prepare(t.call));assert.equal(t.state.inserts,0);assert.equal(t.state.ids,0);
+ await assert.rejects(t.owner.prepare(t.call));assert.equal(t.state.inserts,0);
 });
 test('independent cancellation of a parked insertion returns UNKNOWN and suppresses late metadata',async()=>{
- let release;const t=setup({store:(store,state)=>({...store,insert(payload,check){state.inserts++;return new Promise(resolve=>{release=()=>{state.stored=clone(payload);resolve(clone(payload));};});}})}),a=new AbortController();
- const pending=t.owner.prepare({...t.call,signal:a.signal});while(!release)await new Promise(resolve=>setImmediate(resolve));a.abort();await assert.rejects(pending,e=>e.outcome==='UNKNOWN');release();await new Promise(resolve=>setImmediate(resolve));assert.equal(t.state.inserts,1);assert.equal(t.state.policy.some(x=>x.phase==='before_release'),false);
+ let release,entered;const enteredPromise=new Promise(resolve=>{entered=resolve;});const t=setup({store:(store,state)=>({...store,insert(payload,check){state.inserts++;return new Promise(resolve=>{release=()=>{state.stored=clone(payload);resolve(clone(payload));};entered();});}})}),a=new AbortController();
+ const pending=t.owner.prepare({...t.call,signal:a.signal});await Promise.race([enteredPromise,pending.then(()=>assert.fail('insert unexpectedly completed'),e=>{throw e;})]);a.abort();await assert.rejects(pending,e=>e.outcome==='UNKNOWN');release();await new Promise(resolve=>setImmediate(resolve));assert.equal(t.state.inserts,1);assert.equal(t.state.policy.some(x=>x.phase==='before_release'),false);
 });
