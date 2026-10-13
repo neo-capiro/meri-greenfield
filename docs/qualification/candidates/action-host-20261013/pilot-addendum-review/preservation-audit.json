@@ -1,0 +1,22 @@
+{
+  "base": "61ffc8f2487a010c9baba0c8e18088b42569d90a",
+  "candidate": "cd88c8dec7035da9fb6019f98572da4814af3411",
+  "originalEntries": 10667,
+  "originalChanged": 0,
+  "addedPaths": [
+    "docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+    "docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-20261013.md",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/capture-public-docs.py",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/decision.json",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/documentation-findings.json",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/manifest.json",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/public-retrievals.json",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/rendered-observations.json",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/verification.json",
+    "docs/qualification/candidates/action-host-20261013/pilot-addendum/verify.py"
+  ],
+  "checks": 10693,
+  "passed": 10693,
+  "failed": [],
+  "providerApiActions": 0
+}

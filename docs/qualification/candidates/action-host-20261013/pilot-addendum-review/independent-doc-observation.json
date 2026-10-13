@@ -1,0 +1,36 @@
+{
+  "observedDateUtc": "2026-10-13",
+  "method": "web tool reads of official public documentation; no provider API",
+  "sources": [
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/count-tokens.html",
+      "locators": [
+        "Note before Supported models and Regions",
+        "Count tokens using bedrock-runtime",
+        "Count tokens using bedrock-mantle"
+      ],
+      "findings": [
+        "CountTokens use carries no API charge according to this AWS page.",
+        "Counting depends on model; some CRIS-only models do not support runtime token counting. This general warning does not itself establish that Sonnet4.6 lacks support."
+      ]
+    },
+    {
+      "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-anthropic-claude-sonnet-4-6.html",
+      "locators": [
+        "Endpoints and APIs supported",
+        "Capabilities and Features / Features supported using bedrock-runtime",
+        "Programmatic Access"
+      ],
+      "findings": [
+        "Sonnet4.6 model card marks bedrock-runtime supported and bedrock-mantle unsupported.",
+        "Count tokens appears in the runtime supported-features column.",
+        "The programmatic table lists model anthropic.claude-sonnet-4-6 and us.anthropic.claude-sonnet-4-6 geography identifier; its in-region endpoint is N/A. No live account or profile request was verified."
+      ]
+    }
+  ],
+  "rawHtmlDownloadedByReviewer": false,
+  "sourceHashBinding": "Author public HTML capture hashes will be independently checked against immutable packet; these rendered observations are not a separate byte-identical HTML capture.",
+  "providerApiActions": 0,
+  "accountPricesVerified": false,
+  "spendAuthorized": false
+}

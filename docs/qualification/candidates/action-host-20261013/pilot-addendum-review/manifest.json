@@ -1,0 +1,65 @@
+{
+  "candidate": "cd88c8dec7035da9fb6019f98572da4814af3411",
+  "reviewHead": "7c2ac1acf027dbf3bfbb94b66eca48a5e4f3a0bb",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-HOST-PILOT-ADDENDUM-REVIEW-20261013.md",
+      "bytes": 3401,
+      "sha256": "f744882c1874aab0d823e388700a812508122a0347d7bb14b8f766237294c2d6"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ACTION-HOST-PILOT-ADDENDUM-REVIEW-20261013.md",
+      "bytes": 1029,
+      "sha256": "14e2cf881e7d5e9a860702a8b9b6dee7c909732eff3b132646472a917cea19dc"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/audit.py",
+      "bytes": 2037,
+      "sha256": "239c7eb8d2ee3103b2b7236595eea9d9658e9455a64f0f15d742970f9b4eaee3"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/criteria.json",
+      "bytes": 304,
+      "sha256": "be2c6561f0c99acc929c95cb608f9ea846dfd5e9ca41345fd4242c575b311f30"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/final-review.json",
+      "bytes": 410,
+      "sha256": "62f723dc85001f4d52e0411d722c40b6db1635ef023ce4e7e4a02b6083beb110"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/independent-doc-observation.json",
+      "bytes": 1722,
+      "sha256": "4d3c7682a682667fc8052a15c422f52c8c2837e8a6e1898f4d8ed0792df94679"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/packet-audit.json",
+      "bytes": 2329,
+      "sha256": "6967a98ea6f9e87cba65c0fad1f735b2f109d94cbda9e58e650a441c34c85f4c"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/preservation-audit.json",
+      "bytes": 1166,
+      "sha256": "3e18efe1f7b0177b388f699b8d92d968a1e7ee68233898058dd2acb2188328e9"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/verify-packet.py",
+      "bytes": 2855,
+      "sha256": "0141250b4c27147b2a140539075bfb9ba03d99055f9a3804ab89f26da5c3fe02"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/whitespace.exit",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "docs/qualification/candidates/action-host-20261013/pilot-addendum-review/whitespace.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "excluded": [
+    "manifest.json",
+    "manifest-verification.json"
+  ]
+}

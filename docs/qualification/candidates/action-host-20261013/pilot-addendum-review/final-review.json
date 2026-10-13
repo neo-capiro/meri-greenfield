@@ -1,0 +1,14 @@
+{
+  "verdict": "ACCEPT_DOCUMENTATION",
+  "candidate": "cd88c8dec7035da9fb6019f98572da4814af3411",
+  "preservationChecks": 10693,
+  "packetChecks": 22,
+  "originalEntriesPreserved": 10667,
+  "publicDocsIndependentlyRead": true,
+  "rawHtmlIdentityAccepted": false,
+  "providerApiActions": 0,
+  "spendAuthorized": false,
+  "runtimeAccepted": false,
+  "dependenciesCreated": 0,
+  "persistentProcessesCreated": 0
+}
