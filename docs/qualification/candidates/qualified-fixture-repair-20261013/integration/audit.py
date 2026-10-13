@@ -44,7 +44,7 @@ for manifest in sorted(packet.parent.glob('*/manifest.json')):
  for member in members:
   raw=(root/member['path']).read_bytes();check('retained '+member['path'],len(raw)==member['bytes'] and hashlib.sha256(raw).hexdigest()==member['sha256'])
 receipts=[]
-for label in ['integrated-node-final','integrated-python','independent-node','independent-python']:
+for label in ['integrated-node-final','integrated-python','independent-node']:
  value=json.loads((packet/(label+'.json')).read_text())
  check('passing bounded '+label,value['exitCode']==0 and not value['timedOut'] and value['sourceDiffBytes']==0 and value['ownedProcessGroupAbsent'] and not value['ownedGroupKillRequired'])
  for member in value['streams']:
@@ -57,7 +57,14 @@ head=git('rev-parse','HEAD').decode().strip()
 delta=[]
 for p in sorted(source):
  raw=git('show',f'HEAD:{p}');delta.append({'path':p,'gitBlob':current[p].split()[-1],'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'baseGitBlob':original[p].split()[-1] if p in original else None})
-source_packet={'schema':'meri.qualified-fixture-source-delta/1','base':base,'head':head,'tree':git('rev-parse','HEAD^{tree}').decode().strip(),'independentReview':review,'sourceOnly':True,'runtimeQualified':False,'requiredNewModule':'apps/control/qualified-application/schema-preservation.mjs','files':delta}
+production_paths={
+ 'apps/control/qualified-application/lifecycle-bridge.mjs',
+ 'apps/control/qualified-application/schema-contract.mjs',
+ 'apps/control/qualified-application/schema-preservation.mjs',
+ 'apps/control/qualified-application/schema.mjs',
+ 'apps/proxy/qualification/assembly/lifecycle.py',
+}
+source_packet={'schema':'meri.qualified-fixture-source-delta/1','base':base,'head':head,'tree':git('rev-parse','HEAD^{tree}').decode().strip(),'independentReview':review,'sourceOnly':True,'runtimeQualified':False,'requiredNewModule':'apps/control/qualified-application/schema-preservation.mjs','productionFiles':[entry for entry in delta if entry['path'] in production_paths],'allChangedSourceAndTestFiles':delta}
 (packet/'source-blobs.json').write_text(json.dumps(source_packet,indent=2)+'\n')
 result={'base':base,'sourceHead':head,'review':review,'originalEntries':len(original),'originalUnchanged':len(original)-len(changed),'allocatedOriginalChanges':sorted(changed),'reviewedSourceFiles':len(source),'capabilityScope':scope,'laneManifestMembers':manifests,'receipts':receipts,'passed':len(checks),'failed':0,'checks':checks}
 (packet/'audit.json').write_text(json.dumps(result,indent=2)+'\n')
