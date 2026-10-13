@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/conversation/skills/test/selected-runtime.test.mjs",
+    "apps/worker/conversation/skills/test/mcp.test.mjs",
+    "apps/runtime/selected/test/selected.test.mjs",
+    "apps/runtime/selected/test/process.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-selected-runtime",
+  "sourceHead": "3732b1d9e73c1f245ef8210955678d5dd729a54f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "9a547c95e5941078f4f47499dd2da26536d57cad7e322e572ff9402fbdf0c3c5",
+  "startedAt": "2026-10-13T21:00:40.009794+00:00",
+  "durationSeconds": 6.126,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 375443,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "apps/runtime/selected/evidence/final-frozen-source.stdout.bin",
+      "bytes": 5220,
+      "sha256": "5cea458188c2be9925498795125fad9b3df18c77776bb5a9a7c01c6f5f3195af"
+    },
+    {
+      "path": "apps/runtime/selected/evidence/final-frozen-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
