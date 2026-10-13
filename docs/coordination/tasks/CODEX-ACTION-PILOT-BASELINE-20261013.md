@@ -1,0 +1,7 @@
+# Unpaid local six-case baseline
+
+Base PR45 `658bb5c0f8c47b80904cbc5c7453b3f8c3dba79c`. Own new evals/action-followthrough/local-baseline (excluding independent tests), task/report and action-session-20261013/pilot-baseline-author evidence. No existing product/public/frontend changes.
+
+Run exact accepted local-application pilot cases P01–P06 through fresh createLocalActionDemo instances and actual Fetch Request/Response paths, with public receiveActionResponse validation. Deterministic host-only routes/preludes; six-case denominator retains failure/cleanup failures. P01 stored facts, P02 coverage, P03 editable draft only, P04 pending proposal only, P05 unapproved409, P06 revoked401. No approve call, accepted task or task effect permitted. Cases remain synthetic authored templates; no model/NL routing or human-request-quality inference.
+
+runLocalPilotBaseline({mode:'synthetic-local',createDemo?}) returns bounded scrubbed six-case checks, exact semantic observations, route/status/hash traces, actual effect counters and cleanup. Test factory injection wraps actual demos; no replacement source/SQL engine. Existing canonical lifetime bounds each case; late acquired demo is closed. CLI cli.mjs has inert import/help/invalid arguments and explicit --run only. Borrow existing dependency link, no installation. Use existing owned subreaper capture<=240s; preserve every failure and remove only own dependency link. Independent memory_reviewer audits exact source/denominator/semantic gold. Parent owns paid/native/provider work; none occurs here.
