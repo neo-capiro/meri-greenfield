@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualified-application/schema.test.mjs",
+    "apps/control/qualified-application/schema-compatibility.test.mjs",
+    "apps/control/qualified-application/schema-independent/schema-independent.test.mjs"
+  ],
+  "cwd": "/tmp/meri-qualified-fixture-author-20261013",
+  "sourceHead": "b5243ae164f68c7591b039e8365d9897390543d2",
+  "sourceDiffSha256": "64f685fa627be8beb3638228a95a0121dee2bfcab3162ef0f5517513a44fb9b9",
+  "sourceDiffBytes": 28278,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-13T06:11:03.324736+00:00",
+  "durationSeconds": 0.62,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 510271,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stdout.bin",
+      "bytes": 11383,
+      "sha256": "d6b8eceb8b9e622c0b61233ca8feb2864d4455b78d49f51e96527be123b6e7ec"
+    },
+    {
+      "path": "docs/qualification/candidates/qualified-fixture-repair-20261013/author/focused-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
