@@ -5,6 +5,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {artifactValidators as v} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createDocumentApplication} from '../../control/document-application/index.mjs';
+import {documentLimits} from '../../control/document-application/current.mjs';
 import {requestInfo,jsonBody,errorResponse} from '../../control/document-application/http.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 function method(port,name){if(!port||typeof port!=='object'||types.isProxy(port))fail('ARTIFACT_RUNTIME_CONFIGURATION');const d=Object.getOwnPropertyDescriptor(port,name);
@@ -18,7 +19,7 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const rawResolved=await life.run(signal=>resolve({credential:info.credential,intent:info.intent,body,requestSha256,deadlineMs,signal}));if(rawResolved===null||rawResolved===undefined)fail('UNAVAILABLE');
   const resolved=own(rawResolved,['documentOptions','recheck']),recheck=method(rawResolved,'recheck');
   const options=own(resolved.documentOptions,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);if(options.sessions!==c.sessions||options.now!==c.now)fail('ACCESS_DENIED');
-  const innerLimits=data(own(options.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']));
+  const innerLimits=documentLimits(options.limits);
   const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const o=own(options.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
   o.context=v.context(o.context);
