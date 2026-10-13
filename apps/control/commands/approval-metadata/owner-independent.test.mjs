@@ -92,3 +92,10 @@ test('independent hostile trusted-port rejection message accessor stays inert',a
  const {CommandError}=await import('../protocol.mjs');let hits=0;const error=new CommandError('unused');Object.defineProperty(error,'message',{get(){hits++;return 'private-error-canary';}});
  const t=setup({policy:()=>async()=>{throw error;}});await assert.rejects(t.owner.prepare(t.call),e=>!e.message.includes('canary'));assert.equal(hits,0);assert.equal(t.state.inserts,0);
 });
+test('independent actual command interface, metadata owner and concrete PG store compose immutable proposal/read',async()=>{
+ const {createPostgresApprovalMetadataStore}=await import('./index.mjs');let retained,queries=[],releases=0,ends=0;
+ const pool={options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){return {async query(q){queries.push(q);assert.equal(q.query_timeout,1000);if(q.text.startsWith('INSERT'))retained=JSON.parse(q.values[7]);else assert.ok(q.text.startsWith('SELECT'));return {rows:[{payload:clone(retained),payload_sha256:canonicalSha256(retained)}]};},release(){releases++;}};},end(){ends++;}};
+ const t=setup({store:()=>createPostgresApprovalMetadataStore({pool})}),result=await t.tool.prepare(t.call.request);
+ const record=await t.owner.read({operation:t.call.operation,action:'task.create',binding:t.binding,proposalId:result.proposal.proposalId,commandSha256:result.proposal.commandSha256,deadlineMs:t.now()+500,signal:undefined});
+ assert.equal(record.proposalId,result.proposal.proposalId);assert.equal(retained.commandSha256,result.proposal.commandSha256);assert.deepEqual(retained.commandContext,t.commandContext);assert.equal(queries.length,2);assert.equal(releases,2);assert.equal(ends,0);assert.equal(t.state.executor,0);assert.deepEqual(queries[1].values,[t.binding.tenantId,t.binding.actorId,result.proposal.proposalId]);
+});

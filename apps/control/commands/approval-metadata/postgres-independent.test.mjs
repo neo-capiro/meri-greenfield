@@ -49,3 +49,11 @@ test('independent actual empty read is nullable storage data with parameterized 
 test('independent canonical admitted native pool query timeout6000 is compatible with bounded store',()=>{
  let calls=0;assert.doesNotThrow(()=>createPostgresApprovalMetadataStore({pool:{options:{connectionTimeoutMillis:5000,query_timeout:6000},connect(){calls++;}}}));assert.equal(calls,0);
 });
+test('independent late returned insert acknowledgment cannot publish metadata',async()=>{
+ let active=true;const p=payload(),t=fixture({query:async()=>{active=false;return {rows:[{payload:p,payload_sha256:canonicalSha256(p)}]};}});
+ await assert.rejects(t.store.insert(p,()=>{if(!active)throw Error('expired');}),e=>e.outcome==='UNKNOWN');assert.equal(t.calls.length,1);assert.equal(t.releases.length,1);assert.ok(t.releases[0]);
+});
+test('independent post-insert release failure preserves UNKNOWN without retry or pool closure',async()=>{
+ const p=payload(),t=fixture({query:async()=>({rows:[{payload:p,payload_sha256:canonicalSha256(p)}]})});let releaseCalls=0;t.client.release=()=>{releaseCalls++;throw Error('private-release');};
+ await assert.rejects(t.store.insert(p,()=>{}),e=>e.outcome==='UNKNOWN'&&!e.message.includes('private'));assert.equal(t.calls.length,1);assert.equal(releaseCalls,1);assert.equal(t.state.ends,0);
+});
