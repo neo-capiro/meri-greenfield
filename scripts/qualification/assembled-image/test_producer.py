@@ -34,5 +34,21 @@ class ProducerTests(unittest.TestCase):
         source=(HERE/'meri_image_build.py').read_text()
         for name in ['image_probe.mjs','native-cli.mjs','temporal-binding.mjs','source-manifest.json']:
             self.assertIn(hashlib.sha256((HERE/name).read_bytes()).hexdigest(),source,name)
+        for name,expected in producer.BUILD_HELPER_HASHES.items():
+            self.assertEqual(hashlib.sha256((HERE.parents[2]/name).read_bytes()).hexdigest(),expected,name)
+
+    def test_unsealed_qualification_holds_before_any_packet_preparation(self):
+        self.assertIsNone(producer.QUALIFICATION_SOURCE)
+        with self.assertRaisesRegex(RuntimeError,'Qualification source UNSEALED'):
+            producer.prepare()
+
+    def test_wrong_or_stale_hex_commit_never_unlocks_packet_preparation(self):
+        original=producer.QUALIFICATION_SOURCE
+        try:
+            for value in ['a'*40,producer.SOURCE]:
+                producer.QUALIFICATION_SOURCE=value
+                with self.assertRaisesRegex(RuntimeError,'source mismatch or stale'):
+                    producer.prepare()
+        finally:producer.QUALIFICATION_SOURCE=original
 
 if __name__=='__main__':unittest.main()

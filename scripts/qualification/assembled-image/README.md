@@ -1,57 +1,51 @@
 # Assembled runtime image qualification
 
-This repairs qualification tooling for frozen PR84 runtime source
-`d741792b1672d6eac4c1c37835c3c3d1931e66a8` (qualified code
-`0898fadd077c61245fdb5c42365efacdb727d7c0`). It changes no runtime dependencies,
-Dockerfile, source archive or deployment placement. No paid attempt is authorized by this PR.
+The approved PR85 Linux diagnostic established the SWC cache failure and proved the
+exact promoted build helpers. The integrated new source/image remains unqualified.
+This PR starts no paid attempt and admits or deploys no image.
 
-The SDK owner's real public entry anchors resolution of its exact optional native
-package. The pinned Bookworm image must positively report glibc. The probe verifies
-the package's version, OS, architecture and libc, confines its real regular executable
-to the package and image, rejects unsafe modes/links, and directly executes only
-`--version` with bounded output/time and a credential-free environment. The same
-executable is hashed before/after execution and reported. No PATH or optional-package
-fallback is used. Node and native CLI receipt fields remain separate.
+`apps/runtime/build/materialize-swc.mjs` uses the pinned upstream loader, observes its
+exact loaded raw addon, validates target/format/containment, atomically installs the
+same hashed bytes, removes its private build cache and requires a fresh independent
+load. Docker runs it with network disabled after source COPY, before USER node.
+Readonly/noexec/runtime/user/capability restrictions and dependency versions are unchanged.
 
-The runtime owner anchors the public Temporal entry and exact 1.24.0 dependency.
-Prefix, npm hoisted and image-contained linked layouts are accepted; external
-workspace fallback is refused. Actual `bundleWorkflowCode` uses canonical
-`workerOptions` and upstream `DefaultLogger` with bounded error output. The earlier
-`{log(){}}` logger did not satisfy the upstream interface. Bundle errors remain failures;
-the probe never starts a Temporal worker, application, model request or service.
+`apps/runtime/build/swc-diagnostic.mjs` is the canonical diagnostic module, shared by
+the build helper, image probe and tests. Known native causes have bounded scrubbed
+messages; package/libc/ELF and mount observations omit credentials, environment dumps,
+mount sources and raw source. Symptom classes alone do not establish root cause.
 
-## Staging and commands
+All 45 proof-source paths remain mandatory. Dockerignore now allows only the 16 exact
+previously excluded test-source files (118,586 bytes), while excluding their siblings.
+They are hashed as provenance and never executed by application startup. All 44
+non-Dockerfile hashes remain unchanged; the Dockerfile row binds the new recipe.
+Actual Docker COPY verification checks all 45 hashes plus both exact build helpers.
+Native CLI resolution and actual upstream Temporal bundling remain mandatory gates.
 
-Create a new task-owned staging directory, preserving all failed artifacts. Copy
-`meri_image_build.py`, `image_probe.mjs`, `native-cli.mjs`, `temporal-binding.mjs` and
-`source-manifest.json` from this directory. Supply the existing, verified frozen
-`runtime-source-d741792b1672.tar.gz` and `BUILD-INPUT-MANIFEST.json` there. The producer
-validates their exact historical hashes and all 2,389 Git-bound files. The 45-file
-runtime source manifest is unchanged. Do not copy prior start/upload intents or receipts.
+## Fresh source packet
 
-`python -I -B -S meri_image_build.py --help` describes options. With no option it
-prepares and seals the packet/buildspec locally. `--producer` is Linux-only and runs
-inside the existing approved builder. **`--start` uploads and starts a paid attempt;
-it requires separate explicit attempt approval and must not be used for this repair.**
-Exit 0 means the requested operation completed; exit 1 is HOLD/failure. Fresh attempt
-IDs are unique; existing intent receipts block repeated submission. No deployment is
-performed by any mode. Docker network-none/read-only, capability drop, no-new-privileges,
-non-root identity, memory/PID/tempfs bounds and mandatory native bundling remain gates.
+Use a new task-owned staging directory; preserve all failed packets/intents. Copy the
+producer/probe, native-cli, temporal-binding and source manifest from this directory.
+Canonical SWC helpers come from the Git-bound archive, not a second implementation.
 
-## Verification
+SOURCE, CODE and QUALIFICATION_SOURCE must bind the same new reviewed commit. CODE
+and qualification pin intentionally remain None here. Wrong, stale PR84/85 or unsealed
+pins hold before packet creation/AWS requests. Generate that exact commit's archive
+and Git-bound input manifest; refreeze archive/manifest SHA, file-count and byte-total
+pins. Rebind proof sourceHead/publicationSource without dropping rows, then seal its
+new external-packet hash. Canonical helper hashes must match the archive manifest.
+Historical pins record history and do not qualify the new build recipe.
 
-From the repository root:
+`python -I -B -S meri_image_build.py --help` describes options. No option prepares a
+packet locally after all guards pass. `--producer` is Linux-only in the approved
+builder. `--start` uploads and starts a paid attempt: separate attempt approval is
+required. Exit 0 means the requested operation completed; exit 1 means HOLD. Fresh
+IDs and existing-intent guards prevent duplicate submissions. No mode deploys.
 
-```sh
-node --test scripts/qualification/assembled-image/native-cli.test.mjs
-python -I -B scripts/qualification/assembled-image/test_producer.py
-node --test scripts/qualification/assembled-image/temporal-bundle.test.mjs
-```
+## Checks
 
-The Temporal test requires the Dockerfile's locked dependency installations plus the
-same local `@capiro/meri-contracts` link. Use the project-supported install route and
-preserve all lockfile bytes. It executes the actual upstream bundler under network and
-listener tripwires. Windows local evidence is separate from Linux image admission.
-The POSIX executable integration fixture is explicitly skipped on Windows; all native
-image probes remain mandatory. Do not start a replacement Docker daemon or alter ACLs
-to compensate for a blocked host check.
+Run the Node tests in this directory and test_producer.py. The real Temporal test
+requires frozen lock installations plus the canonical contracts link. The actual
+apps/runtime/test/image-closure.test.mjs requires an approved Docker engine. Windows
+supporting evidence does not qualify Linux. Never change ACLs/global cache settings
+or weaken isolation to compensate for a blocked host check.
