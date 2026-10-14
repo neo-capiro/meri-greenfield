@@ -1,0 +1,59 @@
+{
+  "sourceCommit": "e408622ac8af9bbe027f971495a1ee29bfd1959e",
+  "sourceTree": "24413d6d02a8d416f20f2dbfda5884072e6a6782",
+  "files": [
+    {
+      "path": "apps/runtime/control.mjs",
+      "sha256": "c800bd1650d7548df956057ffa34f6bf2ad96c36d0b4385b13e29a10afade67e",
+      "bytes": 7959
+    },
+    {
+      "path": "apps/runtime/native-authority/first-run-mount.mjs",
+      "sha256": "0be051c9ec8630b03d6d9373a2f52a7ed3d9caccc1f582d1c275ee725c8bb828",
+      "bytes": 2585
+    },
+    {
+      "path": "apps/runtime/native-authority/index.mjs",
+      "sha256": "85ee9b75a3ebe96131cde6cc84fccbdeca91ec058f98417d9e9ee2631cc7d334",
+      "bytes": 498
+    },
+    {
+      "path": "apps/runtime/test/first-run-mount.test.mjs",
+      "sha256": "3a52eccc659c267079b9bfec5fa016dc45ab8771b681c43dcb8bca26c825fee3",
+      "bytes": 12760
+    }
+  ],
+  "checks": [
+    {
+      "capture": "first-mount-controls.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "capture": "explicit-root-controls.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "capture": "canonical-mount-controls.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "capture": "resolved-mount-controls.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "capture": "frozen-mount-controls.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "finalTests": {
+    "pass": 9,
+    "fail": 0,
+    "scope": "SOURCE_SYNTHETIC_NO_RUNTIME_ACCEPTANCE"
+  },
+  "externalActions": []
+}
