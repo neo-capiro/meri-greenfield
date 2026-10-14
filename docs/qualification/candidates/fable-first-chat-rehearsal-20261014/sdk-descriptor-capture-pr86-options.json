@@ -1,8 +1,8 @@
 {
  "schema": "meri.sdk-descriptor-capture.v1",
- "capturedAt": "2026-10-14T20:55:33.694Z",
+ "capturedAt": "2026-10-14T21:12:44.244Z",
  "optionsModule": {
-  "path": "/home/user/meri-first-chat/apps/worker/conversation/options.pr86-capture.mjs",
+  "path": "/home/user/meri-first-chat/apps/worker/conversation/options.mjs (exact copy of c6053e2 revision)",
   "sha256": "08ce2d6e6598bcd4b62ab5bc8dde93e614046467a0bfd27b8d3137ea119c5e65"
  },
  "sdkVersion": "0.3.295",
@@ -19,8 +19,9 @@
   "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
   "packageVersion": "0.3.295"
  },
+ "proposedDirectoriesSupplied": false,
  "productOptions": {
-  "projectionSha256": "111ea17d69d7797b82fcc41c9e927c386d7582e7624dbc545af5f9e4ea6dbfe7",
+  "projectionSha256": "7302a31840c278cdff7d209145bb54901d77684368e0772c6d362217e4cbd44d",
   "model": "meri-local-no-provider",
   "maxTurns": 1,
   "maxBudgetUsd": 0.000001,
@@ -53,7 +54,7 @@
    "--settings",
    "{\"autoMemoryEnabled\":false}"
   ],
-  "cwd": "/tmp/meri-descriptor-capture-XrbyuY/00000001-0000-4000-8000-000000000000",
+  "cwd": "/tmp/meri-descriptor-capture-VP4GPJ/00000001-0000-4000-8000-000000000000",
   "env": {
    "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
    "ANTHROPIC_AUTH_TOKEN": {

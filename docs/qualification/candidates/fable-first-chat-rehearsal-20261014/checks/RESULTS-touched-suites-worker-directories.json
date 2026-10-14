@@ -1,0 +1,333 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-14T21:13:13.169Z",
+ "finishedAt": "2026-10-14T21:14:09.180Z",
+ "repository": {
+  "root": "/home/user/meri-first-chat",
+  "head": "4adfc4191944ccb5d035336de3708dbd9d6e5400",
+  "tree": "12524ba2b7525035cb426436da3fc92958dfff3e",
+  "branch": "fable/meri-first-chat",
+  "uncommittedPaths": 7
+ },
+ "environment": {
+  "node": "v22.22.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/baseline-out-slice3d/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-first-chat",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/baseline-out-slice3d/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/baseline-out-slice3d/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 6,
+  "passedSuites": 5,
+  "tests": 313,
+  "pass": 312,
+  "fail": 1
+ },
+ "suites": [
+  {
+   "name": "source-proof",
+   "purpose": "45-row runtime proof hashes and recipe promotion",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/qualification/assembled-image/source-proof.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 203,
+   "counts": {
+    "tests": 3,
+    "suites": 0,
+    "pass": 3,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 425,
+    "sha256": "e7bb28393cdf2db68f31b64f86cafc955f49d45e3506cdd96a5978c64e7a712e"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "runtime-typecheck",
+   "purpose": "assembled runtime TypeScript check",
+   "kind": "npm",
+   "cwd": ".",
+   "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/runtime",
+    "--silent"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 2638,
+   "counts": {},
+   "failures": [],
+   "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "runtime-tests",
+   "purpose": "assembled runtime: listener, CLI process, prepared candidate, first-run mount, image closure",
+   "kind": "node-test",
+   "cwd": "apps/runtime",
+   "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-concurrency=1",
+    "test/bundle.test.mjs",
+    "test/checkpoint-session-factory.test.mjs",
+    "test/first-run-mount.test.mjs",
+    "test/first-session.test.mjs",
+    "test/image-closure.test.mjs",
+    "test/lifecycle.test.mjs",
+    "test/native-runner-gateway.test.mjs",
+    "test/prepared-candidate-bootstrap.test.mjs",
+    "test/prepared-candidate-config.test.mjs",
+    "test/prepared-candidate-control-lifetime.test.mjs",
+    "test/prepared-candidate.test.mjs",
+    "test/prepared-temporal.test.mjs",
+    "test/process.test.mjs",
+    "test/product-mount.test.mjs",
+    "test/remote-conversation-runner.test.mjs",
+    "test/runtime.test.mjs",
+    "test/snapshot-mount.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 45372,
+   "counts": {
+    "tests": 112,
+    "suites": 0,
+    "pass": 111,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "actual Docker-filtered COPY contains every role dependency and all three roles import with no workspace fallback",
+     "detail": "Error: Command failed: docker --config /tmp/meri-image-closure-4e6U6O/docker-client build --network none --progress plain -t meri-local-copy-closure:3658-1792012405115 -f /tmp/meri-image-closure-4e6U6O/Dockerfile /home/user/meri-first-chat"
+    }
+   ],
+   "stdout": {
+    "bytes": 15503,
+    "sha256": "5d2d9a5f8e5c7c333af6869a58463319cc2ea9e52388a22ff81fcfcb633b4009"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "non-root UID for runner workspace ownership checks",
+    "Docker daemon for the image-closure build control"
+   ]
+  },
+  {
+   "name": "worker-conversation",
+   "purpose": "Claude Agent SDK conversation activity, skills and continuation",
+   "kind": "node-test",
+   "cwd": "apps/worker/conversation",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "continuation/test/continuation.test.mjs",
+    "skills/test/mcp.test.mjs",
+    "skills/test/selected-runtime.test.mjs",
+    "test/activity.test.mjs",
+    "test/control-application.test.mjs",
+    "test/lifecycle-activity.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 4359,
+   "counts": {
+    "tests": 135,
+    "suites": 0,
+    "pass": 135,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 12203,
+    "sha256": "37ac9ccf669ad459a3ea8cc288a5bdbe6402d6bed372baa94ce50782f4885bfc"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "gateway-selected-skills",
+   "purpose": "selected skills gateway",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/gateway/selected-skills/mount.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 2207,
+   "counts": {
+    "tests": 36,
+    "suites": 0,
+    "pass": 36,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 3400,
+    "sha256": "a8da2f9e781ddbf64dc83a018aab3f786918fddf14a64f172e361fbaff67ab66"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "scripts-local",
+   "purpose": "local script checks outside the sdk-evidence set",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/local-action/admission-independent.test.mjs",
+    "scripts/local-action/admission.test.mjs",
+    "scripts/local-research-brief/cli.test.mjs",
+    "scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.test.mjs",
+    "scripts/qualification/local-baseline/run-suites.test.mjs",
+    "scripts/qualification/r2-reconciliation/reconcile.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 1209,
+   "counts": {
+    "tests": 27,
+    "suites": 0,
+    "pass": 27,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 2641,
+    "sha256": "0676e0f57ea4afe2768ec582c2c4f8b0c539e6fb778a73d9622a25bc4eefa155"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  }
+ ]
+}

@@ -8,7 +8,7 @@ import {join,resolve,dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'../../..');
-const usage='Usage: node scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.mjs --out FILE [--options-module PATH]\nExit: 0 receipt written (gate outcomes inside); 2 usage/configuration; 3 the SDK produced no descriptor.\n--options-module points at an alternative copy of apps/worker/conversation/options.mjs (for example an exact historical revision) to compare option builders.\n';
+const usage='Usage: node scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.mjs --out FILE [--options-module PATH]\nExit: 0 receipt written (gate outcomes inside); 2 usage/configuration; 3 the SDK produced no descriptor.\n--options-module points at an alternative copy of apps/worker/conversation/options.mjs (for example an exact historical revision) to compare option builders; --with-proposed-directories supplies the per-run SDK directories in the shape the proposed (unapplied) runner change would derive from the admitted preparation intent.\n';
 const secretKeys=new Set(['ANTHROPIC_AUTH_TOKEN','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN']);
 export function redactEnvironment(env){return Object.fromEntries(Object.entries(env).map(([k,v])=>[k,v===undefined?{absentValue:'undefined'}:secretKeys.has(k)?{redacted:true,sha256:createHash('sha256').update(String(v)).digest('hex')}:v]));}
 export function gateOutcomes({descriptor,data,compileNativeLaunch,binding,versions,workspace,executableSha256}){
@@ -22,7 +22,7 @@ export function gateOutcomes({descriptor,data,compileNativeLaunch,binding,versio
  return outcomes;
 }
 async function main(argv){
- let out=null,optionsModule=join(root,'apps/worker/conversation/options.mjs');for(let i=0;i<argv.length;i++){if(argv[i]==='--help')return process.stdout.write(usage),0;if(argv[i]==='--out')out=resolve(argv[++i]??'');else if(argv[i]==='--options-module')optionsModule=resolve(argv[++i]??'');else return process.stderr.write('unknown argument\n'+usage),2;}
+ let out=null,optionsModule=join(root,'apps/worker/conversation/options.mjs'),withDirectories=false;for(let i=0;i<argv.length;i++){if(argv[i]==='--help')return process.stdout.write(usage),0;if(argv[i]==='--out')out=resolve(argv[++i]??'');else if(argv[i]==='--options-module')optionsModule=resolve(argv[++i]??'');else if(argv[i]==='--with-proposed-directories')withDirectories=true;else return process.stderr.write('unknown argument\n'+usage),2;}
  if(!out)return process.stderr.write(usage),2;
  for(const name of Object.keys(process.env))if(/^(CLAUDE|ANTHROPIC_|AWS_|GOOGLE_|GCP_|AZURE_|OPENAI_)/u.test(name))delete process.env[name];
  const {buildConversationOptions}=await import(pathToFileURL(optionsModule).href);
@@ -34,15 +34,17 @@ async function main(argv){
  const sdkDir=join(root,'apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk'),sdkVersion=JSON.parse(readFileSync(join(sdkDir,'package.json'),'utf8')).version;
  const {query}=await import(pathToFileURL(join(sdkDir,'sdk.mjs')).href);
  const taskRoot=mkdtempSync(join(tmpdir(),'meri-descriptor-capture-')),workspace=join(taskRoot,binding.conversationId);mkdirSync(workspace);
+ // Shape of the proposed runner derivation (config parent + 'sdk-' + runId, and the intent's secure storage directory); no committed runner supplies these yet.
+ const sdkConfigDirectory=join(taskRoot,'config','sdk-'+binding.runId),sdkSecureStorageDirectory=join(taskRoot,'secure');mkdirSync(join(taskRoot,'config'));
  const v={...versions,sdk:'0.3.295',cli:'2.1.295'},abort=new AbortController();
- const options=buildConversationOptions({binding,versions:v,cwd:workspace,proxyUrl:'https://proxy.synthetic.invalid',proxyCredential:'synthetic-task-proxy-credential',model:'meri-local-no-provider',sessionStore:{async load(){throw Error('FRESH_LOAD_REFUSED');},async append(){}},deadlineMs:Date.now()+60000,maxTurns:1,maxCostMicroUSD:1,maxOutputBytes:4096},abort);
+ const options=buildConversationOptions({binding,versions:v,cwd:workspace,proxyUrl:'https://proxy.synthetic.invalid',proxyCredential:'synthetic-task-proxy-credential',model:'meri-local-no-provider',sessionStore:{async load(){throw Error('FRESH_LOAD_REFUSED');},async append(){}},deadlineMs:Date.now()+60000,maxTurns:1,maxCostMicroUSD:1,maxOutputBytes:4096,...(withDirectories?{sdkConfigDirectory,sdkSecureStorageDirectory}:{})},abort);
  let descriptor=null;
  try{query({prompt:'/status',options:{...options,spawnClaudeCodeProcess(request){descriptor={command:request.command,args:[...request.args],cwd:request.cwd,env:{...request.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});}catch{}
  try{
   if(!descriptor){process.stderr.write('the SDK did not call the spawn hook\n');return 3;}
   const cli=realpathSync(descriptor.command),executableSha256=createHash('sha256').update(readFileSync(cli)).digest('hex');
   const receipt={schema:'meri.sdk-descriptor-capture.v1',capturedAt:new Date().toISOString(),optionsModule:{path:optionsModule,sha256:createHash('sha256').update(readFileSync(optionsModule)).digest('hex')},sdkVersion,sdkDeclaredPins:v,cli:{path:cli,sha256:executableSha256,packageVersion:JSON.parse(readFileSync(join(dirname(cli),'package.json'),'utf8')).version},
-   productOptions:{projectionSha256:hash(projectNativeSdkOptions(options)),model:options.model,maxTurns:options.maxTurns,maxBudgetUsd:options.maxBudgetUsd,permissionMode:options.permissionMode,settingSources:options.settingSources,envKeys:Object.keys(options.env)},
+   proposedDirectoriesSupplied:withDirectories,productOptions:{projectionSha256:hash(projectNativeSdkOptions(options)),model:options.model,maxTurns:options.maxTurns,maxBudgetUsd:options.maxBudgetUsd,permissionMode:options.permissionMode,settingSources:options.settingSources,envKeys:Object.keys(options.env)},
    descriptor:{command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:redactEnvironment(descriptor.env)},
    gates:gateOutcomes({descriptor,data,compileNativeLaunch,binding,versions:v,workspace,executableSha256}),
    scope:'No process was spawned, no provider or network request was made, no credential value is recorded; the proxy credential is a synthetic string hashed above.'};

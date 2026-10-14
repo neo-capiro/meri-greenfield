@@ -1,9 +1,9 @@
 {
  "schema": "meri.sdk-descriptor-capture.v1",
- "capturedAt": "2026-10-14T20:55:35.363Z",
+ "capturedAt": "2026-10-14T21:12:40.805Z",
  "optionsModule": {
   "path": "/home/user/meri-first-chat/apps/worker/conversation/options.mjs",
-  "sha256": "028c57ca6244a42e360336a8c4d2b5933a4de1b085ce29da755572167c16b674"
+  "sha256": "9de678265197fde71478ea2bba1480b474b92baae321dd9a61cd5e4522361130"
  },
  "sdkVersion": "0.3.295",
  "sdkDeclaredPins": {
@@ -19,8 +19,9 @@
   "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
   "packageVersion": "0.3.295"
  },
+ "proposedDirectoriesSupplied": false,
  "productOptions": {
-  "projectionSha256": "5e0dffef99ede4bb523f2419ee4ec748452fc6e1298cd928ec2027493ecdfa9b",
+  "projectionSha256": "d0cac1dfb481dcb454abc5da4499e3f2cfff04dac3a47baa5a81bc5e06c03271",
   "model": "meri-local-no-provider",
   "maxTurns": 1,
   "maxBudgetUsd": 0.000001,
@@ -51,7 +52,7 @@
    "--settings",
    "{\"autoMemoryEnabled\":false}"
   ],
-  "cwd": "/tmp/meri-descriptor-capture-eKosp8/00000001-0000-4000-8000-000000000000",
+  "cwd": "/tmp/meri-descriptor-capture-f8s829/00000001-0000-4000-8000-000000000000",
   "env": {
    "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
    "ANTHROPIC_AUTH_TOKEN": {
