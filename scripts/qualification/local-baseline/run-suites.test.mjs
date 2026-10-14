@@ -18,7 +18,7 @@ test('file-level failures without timing and crashes without a summary are retai
  assert.deepEqual(parseSpecOutput('node:internal/modules ... ERR_MODULE_NOT_FOUND'),{counts:{},failures:[]});
 });
 test('ambient credentials and host overrides are scrubbed; canonical fixture selectors are supplied, never overridden',()=>{
- const env=scrubbedEnvironment({PATH:'/bin',AWS_ACCESS_KEY_ID:'x',ANTHROPIC_BASE_URL:'y',CLAUDE_CODE_SESSION_ID:'z',NODE_EXTRA_CA_CERTS:'/c',NODE_OPTIONS:'--x',DATABASE_URL:'d',PGPASSWORD:'p',HTTPS_PROXY:'h',MERI_INSPECTION_TEST_DATABASE:'custom',HOME:'/home/u'},'/repo');
+ const env=scrubbedEnvironment({PATH:'/bin',AWS_ACCESS_KEY_ID:'x',ANTHROPIC_BASE_URL:'y',CLAUDE_CODE_SESSION_ID:'z',CLAUDE_PID:'1',CCR_SESSION_PROFILE:'s',NODE_EXTRA_CA_CERTS:'/c',NODE_OPTIONS:'--x',DATABASE_URL:'d',PGPASSWORD:'p',HTTPS_PROXY:'h',GH_TOKEN:'t',GITHUB_TOKEN:'t',CLOUDSDK_AUTH_ACCESS_TOKEN:'t',GIT_CONFIG_KEY_0:'k',SOME_SERVICE_TOKEN:'t',MY_API_KEY:'k',MERI_INSPECTION_TEST_DATABASE:'custom',HOME:'/home/u'},'/repo');
  assert.deepEqual(Object.keys(env).sort(),['HOME','MERI_INSPECTION_TEST_DATABASE','MERI_INSPECTION_TEST_SOCKET','MERI_PREPARED_LAUNCH_DATABASE','MERI_REVIEW_SOURCE_ROOT','PATH']);
  assert.equal(env.MERI_REVIEW_SOURCE_ROOT,'/repo');assert.equal(env.MERI_INSPECTION_TEST_DATABASE,'custom');assert.equal(env.MERI_INSPECTION_TEST_SOCKET,'/tmp/meri-prepared-kickoff-pg-20261014/socket');
  const scratch=scrubbedEnvironment({MERI_PIPELINE_ARTIFACT_ROOT:'/keep',MERI_SOFFICE:'/my/soffice'},'/repo',{scratchRoot:'/out/scratch',python3:'/usr/bin/python3',soffice:'/usr/bin/soffice'});

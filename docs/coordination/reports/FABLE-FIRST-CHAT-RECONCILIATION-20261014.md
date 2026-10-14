@@ -46,7 +46,53 @@ Purpose: establish, at the exact PR86 head, which existing checks pass on a host
 
 Host: Ubuntu 24.04.5, kernel 6.18.44, Node 24.21.0 (nvm), npm 11.19.0, PostgreSQL 16.15 (local Unix-socket clusters, canonical migrations 0001–0008, product-budget 0001, artifacts 0001), LibreOffice 24.2.7, Python 3.13 with python-docx/openpyxl/xlsxwriter, Docker client without a daemon, no Temporal server, no AWS/provider/backend access. Dependencies installed from every package lock with scripts disabled. Suites run as a non-root user under a child subreaper, with ambient `AWS_*`/`ANTHROPIC_*`/`NODE_EXTRA_CA_CERTS` scrubbed.
 
-RESULTS_PLACEHOLDER
+Three attempts are retained in the candidate directory (initial run at the clean base; final complete run at `bc8ac02`; office rerun of four suites after pinning PyMuPDF to 1.24.14). Final complete run:
+
+Totals: 28/37 suites exit 0; 8640/8756 Node tests pass, 116 fail (npm-script suites report exit code only). Head `bc8ac02e3b5597ff097ee7e35f740b9b7ffc7c3d`, tree `66e94ac6b8bffdba03dc0b9e88383669c082dbcf`, uncommitted paths 1; uid 30033, Node v24.21.0, subreaper True.
+
+| Suite | Result | Pass/Tests | Fail | Retained failure cause on this host |
+| --- | --- | --- | --- | --- |
+| `source-proof` | PASS | 3/3 | 0 |  |
+| `contracts-package-check` | PASS | — | — |  |
+| `root-check` | PASS | 4241/4241 | 0 |  |
+| `sdk-evidence` | PASS | — | — |  |
+| `runtime-typecheck` | PASS | — | — |  |
+| `runtime-tests` | FAIL | 111/112 | 1 | 1: image-closure build control needs a Docker daemon (client present, no daemon) |
+| `conversations-typecheck` | PASS | — | — |  |
+| `conversations-tests` | PASS | 133/133 | 0 |  |
+| `conversations-skills` | FAIL | 28/33 | 5 | 4: PyMuPDF 1.28 `import fitz` wrote a deprecation warning to stdout ahead of the bridge JSON; 1: LibreOffice process-group cleanup on this host. With PyMuPDF pinned to 1.24.14 the suite passes 33/33 (final-office-rerun). |
+| `worker-conversation` | PASS | 135/135 | 0 |  |
+| `native-authority` | PASS | 305/305 | 0 |  |
+| `runtime-selected` | PASS | 18/18 | 0 |  |
+| `runtime-artifacts` | FAIL | 5/6 | 1 | 1: one-shot evidence receipt already tracked (EEXIST); the control is not rerunnable without discarding committed evidence |
+| `gateway` | FAIL | 801/802 | 1 | 1: PyMuPDF stdout warning; passes 802/802 with PyMuPDF 1.24.14 (final-office-rerun). |
+| `gateway-budget` | PASS | 27/27 | 0 |  |
+| `gateway-sources` | PASS | 315/315 | 0 |  |
+| `gateway-local-action` | PASS | 44/44 | 0 |  |
+| `gateway-selected-skills` | PASS | 36/36 | 0 |  |
+| `artifacts` | FAIL | 295/301 | 6 | 3: PyMuPDF stdout warning (gone after the pin); 2 file-level: `/opt/codex/.../node/node_modules/pptxgenjs` hard-coded host module path absent; 4 (after the pin): LibreOffice leaves a process-group member alive on this host (`groupAbsent:false`), ARTIFACT_CLEANUP_FAILED. Final-office-rerun: 295/301. |
+| `control-core` | PASS | 260/260 | 0 |  |
+| `control-action-host` | FAIL | 209/267 | 58 | 57: private backend source mirror `/tmp/capiro-endpoint-integration-source-20261013.git` at pin 60cf2e51 is not available here (private repository; no access was created); 1: `local/recovery-independent.test.mjs` stalled inside the 18-file batch on a ~2^31 ms referenced timer and was terminated by the operator after 6 minutes (diagnostic report retained); the same file passes 7/7 alone with the same environment |
+| `control-action-application` | PASS | 124/124 | 0 |  |
+| `control-action-followthrough` | PASS | 55/55 | 0 |  |
+| `control-admitted-runs` | PASS | 85/85 | 0 |  |
+| `control-commands` | PASS | 76/76 | 0 |  |
+| `control-document-application` | FAIL | 252/259 | 7 | 6: PyMuPDF stdout warning (gone after the pin); 1: local loopback Word draft control returns 502 ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN, reproduced alone on this host with no process receipt; root cause not isolated here (UNVERIFIED). Final-office-rerun: 258/259. |
+| `control-schedules` | PASS | 134/134 | 0 |  |
+| `control-task-lookup` | PASS | 158/158 | 0 |  |
+| `control-qualified-application` | FAIL | 362/393 | 31 | 31: host-prepared dependency directory `/tmp/meri-qualified-lifecycle-deps` (jsonata.cjs) absent |
+| `control-staging-e2e` | PASS | 13/13 | 0 |  |
+| `control-qualification-sdk-fixture` | FAIL | 65/71 | 6 | 6 file-level: the protected isolated qualification TCP database (`MERI_FIXTURE_TEST_PORT/DATABASE/USER`) is intentionally not imitated here |
+| `control-qualification-temporal` | PASS | — | — |  |
+| `proxy-qualification` | PASS | 29/29 | 0 |  |
+| `window-resolution` | PASS | 35/35 | 0 |  |
+| `skills` | PASS | 61/61 | 0 |  |
+| `evals` | PASS | 204/204 | 0 |  |
+| `scripts-local` | PASS | 21/21 | 0 |  |
+
+Office rerun deltas with PyMuPDF 1.24.14: `gateway` 802/802, `conversations-skills` 33/33, `artifacts` 295/301, `control-document-application` 258/259. One operator intervention occurred in the final run: a single test file stalled inside the `control-action-host` batch on a ~2^31 ms referenced timer and was terminated after six minutes with its Node diagnostic report retained; it passed 7/7 alone afterwards. See the candidate README for the full classification and what the run does and does not establish.
+
+Suites that matter most for the first-chat path pass completely on this host: `source-proof`, `contracts-package-check`, `root-check` (4241), `conversations-tests` (133, actual PostgreSQL), `native-authority` (305, actual PostgreSQL and real supervisor processes), `worker-conversation` (135), `runtime-tests` 111/112 (only the Docker image-closure control fails), `control-admitted-runs` (85), `gateway-budget` (27), `sdk-evidence`.
 
 Host facts discovered while reproducing (each is now encoded in the runner or its README):
 
@@ -58,6 +104,9 @@ Host facts discovered while reproducing (each is now encoded in the runner or it
 - `apps/runtime/artifacts/test` writes one-shot evidence receipts into the tracked evidence directory and refuses reruns (`EEXIST`).
 - `apps/control/schedules/test/temporal-inspection-independent.test.mjs` "authority expiresAtMs substitution refuses" failed once under full-host load and passed in three isolated reruns; the control compares `Date.now()-1` receipts against the harness clock and is timing-sensitive.
 - LibreOffice headless conversions leave a member of the spawned process group alive on this host after the leader exits, so `groupAbsent` cleanup proofs fail here even under a subreaper; this is a host difference, not evidence about the renderer owner.
+- PyMuPDF 1.28's `fitz` alias prints a deprecation warning to stdout, which the Python bridge callers parse as JSON; 14 controls across four suites fail with that version and pass with 1.24.14. The repository pins no PyMuPDF version; the Codex host evidently carries an older one.
+- 57 `control-action-host` controls read the private backend source mirror `/tmp/capiro-endpoint-integration-source-20261013.git` at pin `60cf2e51`; it is private and no access was created here. 31 `control-qualified-application` controls read a host-prepared `/tmp/meri-qualified-lifecycle-deps` directory. Six `control-qualification-sdk-fixture` files require the protected isolated qualification TCP database, which this slice deliberately does not imitate.
+- A credential-shaped host variable reached test processes in the final run (`GH_TOKEN`, `GITHUB_TOKEN`, `CLOUDSDK_AUTH_ACCESS_TOKEN`, `GIT_CONFIG_*`): the scrub list recorded in that run's `RESULTS.json` did not cover them. No test uses them and no receipt contains them (the one diagnostic report was redacted before publication); the runner now also removes any `*TOKEN`/`*SECRET`/`*PASSWORD`/`*CREDENTIALS`/`*API_KEY`/`*ACCESS_KEY` key and the `CLAUDE*`, `CCR_`, `GH_`, `GITHUB_`, `CLOUDSDK_`, `GIT_CONFIG_` prefixes.
 
 ## 4. Source observations and the two reconciliations made
 

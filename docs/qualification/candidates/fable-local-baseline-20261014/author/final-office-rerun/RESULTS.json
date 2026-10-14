@@ -1,0 +1,344 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-14T20:35:04.960Z",
+ "finishedAt": "2026-10-14T20:36:31.254Z",
+ "repository": {
+  "root": "/home/user/meri-first-chat",
+  "head": "bc8ac02e3b5597ff097ee7e35f740b9b7ffc7c3d",
+  "tree": "66e94ac6b8bffdba03dc0b9e88383669c082dbcf",
+  "branch": "fable/meri-first-chat",
+  "uncommittedPaths": 4
+ },
+ "environment": {
+  "node": "v24.21.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/baseline-out-office/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-first-chat",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/baseline-out-office/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/baseline-out-office/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 4,
+  "passedSuites": 2,
+  "tests": 1395,
+  "pass": 1388,
+  "fail": 7
+ },
+ "suites": [
+  {
+   "name": "conversations-skills",
+   "purpose": "selected-skill admission, execution and retention",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/conversations/skills/service-admission.test.mjs",
+    "apps/control/conversations/skills/test/pipeline.test.mjs",
+    "apps/control/conversations/skills/test/read-association.test.mjs",
+    "apps/control/conversations/skills/test/retention.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 15695,
+   "counts": {
+    "tests": 33,
+    "suites": 0,
+    "pass": 33,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 3738,
+    "sha256": "7f0b2c3dddbfde61c1b76ad6b054bbcd587947d8a077226e2a80b642f4233bd8"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "gateway",
+   "purpose": "gateway authorization, catalog, dispatch, budget composition",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/action-item-context.test.mjs",
+    "apps/gateway/test/action-items-source-independent.test.mjs",
+    "apps/gateway/test/action-items-source.test.mjs",
+    "apps/gateway/test/action-lookup-dispatch.test.mjs",
+    "apps/gateway/test/action-lookup-eval.test.mjs",
+    "apps/gateway/test/action-lookup-slice-independent.test.mjs",
+    "apps/gateway/test/action-lookup-slice.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/command-authority-independent.test.mjs",
+    "apps/gateway/test/command-authority.test.mjs",
+    "apps/gateway/test/dataset-metadata-handler-independent.test.mjs",
+    "apps/gateway/test/dataset-metadata-handler.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/mail-context.test.mjs",
+    "apps/gateway/test/mail-continuation-regression.test.mjs",
+    "apps/gateway/test/mail-history-gateway-flow.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/memory-proposal-source-independent.test.mjs",
+    "apps/gateway/test/memory-proposal-source.test.mjs",
+    "apps/gateway/test/next-read-adapters-integration.test.mjs",
+    "apps/gateway/test/original-tracking-mounted.test.mjs",
+    "apps/gateway/test/passive-projections-integration.test.mjs",
+    "apps/gateway/test/postgres-budget-admission.test.mjs",
+    "apps/gateway/test/postgres-budget-host-address.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs",
+    "apps/gateway/test/projection-context.test.mjs",
+    "apps/gateway/test/research-evidence-independent.test.mjs",
+    "apps/gateway/test/research-evidence-source.test.mjs",
+    "apps/gateway/test/tool-budget-outcome.test.mjs",
+    "apps/gateway/test/tool-invocation-owner.test.mjs",
+    "apps/gateway/test/tool-invocation-transaction.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 14986,
+   "counts": {
+    "tests": 802,
+    "suites": 0,
+    "pass": 802,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 74298,
+    "sha256": "7cb89dfc15bc624c582806e0a4fc868822498c70f8edd39a3a631731e1d1fd21"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "LibreOffice process-group cleanup for one editable-original control"
+   ]
+  },
+  {
+   "name": "artifacts",
+   "purpose": "artifact generation, verification, storage adapters and independent controls",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/artifacts/independent/document-replay-independent.test.mjs",
+    "apps/artifacts/storage/test/constructor-ports.test.mjs",
+    "apps/artifacts/storage/test/pg-wire.test.mjs",
+    "apps/artifacts/storage/test/postgres.test.mjs",
+    "apps/artifacts/storage/test/s3.test.mjs",
+    "apps/artifacts/storage/test/service.test.mjs",
+    "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+    "apps/artifacts/test/artifact-execution.test.mjs",
+    "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs",
+    "apps/artifacts/test/artifact-process-independent.test.mjs",
+    "apps/artifacts/test/artifact-service-independent.test.mjs",
+    "apps/artifacts/test/document-replay.test.mjs",
+    "apps/artifacts/test/office-columns.test.mjs",
+    "apps/artifacts/test/office-recalc-independent.test.mjs",
+    "apps/artifacts/test/office-recalc.test.mjs",
+    "apps/artifacts/test/postgres-analysis-independent.test.mjs",
+    "apps/artifacts/test/postgres-service-independent.test.mjs",
+    "apps/artifacts/test/workbook-columns-independent.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 22392,
+   "counts": {
+    "tests": 301,
+    "suites": 0,
+    "pass": 295,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/artifacts/test/artifact-execution.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "revise: actual canonical XLSX and PDF retain full labels, currency, formulas and literals",
+     "detail": "Error: ARTIFACT_CLEANUP_FAILED"
+    },
+    {
+     "name": "independent workbook preserves styled literals and formulas while computing arithmetic",
+     "detail": "Error: ARTIFACT_CLEANUP_FAILED"
+    },
+    {
+     "name": "actual LibreOffice recalculates original XLSX while preserving formulas and literal cells",
+     "detail": "Error: ARTIFACT_CLEANUP_FAILED"
+    },
+    {
+     "name": "canonical creation and typed revision render complete labels while retaining formulas and literal text",
+     "detail": "Error: ARTIFACT_CLEANUP_FAILED"
+    }
+   ],
+   "stdout": {
+    "bytes": 38689,
+    "sha256": "06242b04e978c2d9532534df791189383a3ae0dc7b2c2205476e88cf7b54c65b"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "LibreOffice headless with reapable process groups",
+    "python-docx/openpyxl/xlsxwriter",
+    "root node_modules/jszip test link"
+   ]
+  },
+  {
+   "name": "control-document-application",
+   "purpose": "document application, local flow, selected output and skill-specific controls",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/document-application/commitments-audit/test/collection.test.mjs",
+    "apps/control/document-application/commitments-audit/test/compiler.test.mjs",
+    "apps/control/document-application/commitments-audit/test/document.test.mjs",
+    "apps/control/document-application/commitments-audit/test/tracking-native.test.mjs",
+    "apps/control/document-application/independent/application-independent.test.mjs",
+    "apps/control/document-application/independent/research-brief-independent.test.mjs",
+    "apps/control/document-application/independent/workbook-independent.test.mjs",
+    "apps/control/document-application/local/local.test.mjs",
+    "apps/control/document-application/local/workbook/local.test.mjs",
+    "apps/control/document-application/mail-history/test/compiler.test.mjs",
+    "apps/control/document-application/mail-history/test/document.test.mjs",
+    "apps/control/document-application/mail-history/test/retained-base.test.mjs",
+    "apps/control/document-application/relationship-brief/test/binding.test.mjs",
+    "apps/control/document-application/relationship-brief/test/compiler.test.mjs",
+    "apps/control/document-application/relationship-brief/test/document.test.mjs",
+    "apps/control/document-application/selected-output/test/bridge.test.mjs",
+    "apps/control/document-application/selected-output/test/lifecycle.test.mjs",
+    "apps/control/document-application/test/application.test.mjs",
+    "apps/control/document-application/test/research-brief.test.mjs",
+    "apps/control/document-application/test/workbook-application.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 33204,
+   "counts": {
+    "tests": 259,
+    "suites": 0,
+    "pass": 258,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "actual HTTP Word draft and revision preserve originals, budgets and revoked download denial",
+     "detail": "AssertionError [ERR_ASSERTION]: {\"status\":\"FAIL\",\"mode\":\"synthetic-local\",\"transport\":\"loopback-http\",\"nativeDatabase\":false,\"nativeQualified\":false,\"productionActivated\":false,\"failure\":{\"name\":\"AssertionError\",\"code\":\"ERR_ASSERTION\",\"message\":\"{\\\"error\\\":{\\\"code\\\":\\\"ARTIFACT_BUDGET_SETTLEMENT_UNKN"
+    }
+   ],
+   "stdout": {
+    "bytes": 25608,
+    "sha256": "ec5e9f8275cfaed641b8daed15803bdefd16adfe7307a09aaa3dcff4331d91f3"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "python3 with python-docx at the Codex-host path",
+    "LibreOffice"
+   ]
+  }
+ ]
+}

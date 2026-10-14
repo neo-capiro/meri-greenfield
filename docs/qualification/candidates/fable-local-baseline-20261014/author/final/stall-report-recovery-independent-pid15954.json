@@ -1,0 +1,176 @@
+{
+ "header": {
+  "reportVersion": 5,
+  "event": "SIGUSR2",
+  "trigger": "Signal",
+  "filename": "report.20261014.202904.15954.0.001.json",
+  "dumpEventTime": "2026-10-14T20:29:04Z",
+  "processId": 15954,
+  "threadId": 0,
+  "cwd": "/home/user/meri-first-chat",
+  "commandLine": [
+   "/opt/nvm/versions/node/v24.21.0/bin/node",
+   "--test-coverage-functions=0",
+   "--test-concurrency=0",
+   "--inspect-publish-uid=stderr,http",
+   "--inspect-port=127.0.0.1:9229",
+   "--stack-trace-limit=10",
+   "--report-signal=SIGUSR2",
+   "--test-coverage-lines=0",
+   "--test-isolation=process",
+   "--heap-prof-interval=524288",
+   "--cpu-prof-interval=1000",
+   "--v8-pool-size=4",
+   "--trace-event-file-pattern=node_trace.${rotation}.log",
+   "--secure-heap-min=2",
+   "--test-coverage-branches=0",
+   "--watch-kill-signal=SIGTERM",
+   "--tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA",
+   "--experimental-addon-modules",
+   "--use-largepages=off",
+   "--max-http-header-size=16384",
+   "--test-timeout=0",
+   "--node-snapshot",
+   "--secure-heap=0",
+   "--network-family-autoselection-attempt-timeout=250",
+   "--heapsnapshot-near-heap-limit=0",
+   "apps/control/action-host/local/recovery-independent.test.mjs"
+  ],
+  "nodejsVersion": "v24.21.0",
+  "osName": "Linux",
+  "osRelease": "6.18.44-fc-v114",
+  "osMachine": "x86_64"
+ },
+ "javascriptStack": {
+  "message": "",
+  "errorProperties": {}
+ },
+ "libuv": [
+  {
+   "type": "async",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x0000000019940830"
+  },
+  {
+   "type": "async",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x0000000006b81c60"
+  },
+  {
+   "type": "timer",
+   "is_active": true,
+   "is_referenced": true,
+   "address": "0x00000000199c4ee8",
+   "repeat": 0,
+   "firesInMsFromNow": 2147160973,
+   "expired": false
+  },
+  {
+   "type": "check",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x00000000199c4f80"
+  },
+  {
+   "type": "idle",
+   "is_active": false,
+   "is_referenced": true,
+   "address": "0x00000000199c4ff8"
+  },
+  {
+   "type": "prepare",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x00000000199c5070"
+  },
+  {
+   "type": "check",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x00000000199c50e8"
+  },
+  {
+   "type": "async",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x00000000199c5160"
+  },
+  {
+   "type": "signal",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x00000000199f18d8",
+   "signum": 12,
+   "signal": "SIGUSR2"
+  },
+  {
+   "type": "pipe",
+   "is_active": false,
+   "is_referenced": true,
+   "address": "0x00000000199b7810",
+   "localEndpoint": null,
+   "remoteEndpoint": null,
+   "sendBufferSize": 131072,
+   "recvBufferSize": 131072,
+   "fd": 2,
+   "stdio": "stderr",
+   "writeQueueSize": 0,
+   "readable": true,
+   "writable": true
+  },
+  {
+   "type": "pipe",
+   "is_active": false,
+   "is_referenced": true,
+   "address": "0x00000000199b79d0",
+   "localEndpoint": null,
+   "remoteEndpoint": null,
+   "sendBufferSize": 131072,
+   "recvBufferSize": 131072,
+   "fd": 1,
+   "stdio": "stdout",
+   "writeQueueSize": 0,
+   "readable": true,
+   "writable": true
+  },
+  {
+   "type": "timer",
+   "is_active": true,
+   "is_referenced": false,
+   "address": "0x0000000019b4efc0",
+   "repeat": 0,
+   "firesInMsFromNow": 1548,
+   "expired": false
+  },
+  {
+   "type": "loop",
+   "is_active": true,
+   "address": "0x0000000006b94aa0",
+   "loopIdleTimeSeconds": 316.117
+  }
+ ],
+ "resourceUsage": {
+  "free_memory": 15985000448,
+  "total_memory": 16874930176,
+  "rss": 85803008,
+  "constrained_memory": 14343688192,
+  "available_memory": 13776011264,
+  "userCpuSeconds": 0.209794,
+  "kernelCpuSeconds": 0.046072,
+  "cpuConsumptionPercent": 0.0794615,
+  "userCpuConsumptionPercent": 0.0651534,
+  "kernelCpuConsumptionPercent": 0.0143081,
+  "maxRss": 95686656,
+  "pageFaults": {
+   "IORequired": 15,
+   "IONotRequired": 13288
+  },
+  "fsActivity": {
+   "reads": 1400,
+   "writes": 24
+  }
+ },
+ "redaction": "environmentVariables, nativeStack, javascriptHeap, uvthreadResourceUsage, workers, userLimits and sharedObjects removed before publication; the retained sections show the empty JavaScript stack and the referenced ~2^31 ms timer that kept the file alive."
+}

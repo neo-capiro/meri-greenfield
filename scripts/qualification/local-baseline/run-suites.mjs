@@ -18,12 +18,14 @@ export function parseArguments(argv){
  return options;
 }
 /** Ambient credentials and host overrides are removed; the runtime refuses several of them outright. */
-const scrubbedPrefixes=['AWS_','ANTHROPIC_','CLAUDE_CODE_','TEMPORAL_','PG','NPM_CONFIG_'];
-const scrubbedKeys=new Set(['DATABASE_URL','NODE_OPTIONS','NODE_PATH','NODE_EXTRA_CA_CERTS','CLAUDE_CODE_OAUTH_TOKEN','MERI_NATIVE_ADMIN_TOKEN','HTTP_PROXY','HTTPS_PROXY','http_proxy','https_proxy']);
+const scrubbedPrefixes=['AWS_','ANTHROPIC_','CLAUDE','CCR_','TEMPORAL_','PG','NPM_CONFIG_','GH_','GITHUB_','CLOUDSDK_','GIT_CONFIG_','GIT_ASKPASS','GLOBAL_AGENT_'];
+const scrubbedKeys=new Set(['DATABASE_URL','NODE_OPTIONS','NODE_PATH','NODE_EXTRA_CA_CERTS','MERI_NATIVE_ADMIN_TOKEN','HTTP_PROXY','HTTPS_PROXY','http_proxy','https_proxy','ALL_PROXY','all_proxy','NO_PROXY','no_proxy']);
+// Any credential-shaped key is removed regardless of prefix; test processes receive no host tokens.
+const scrubbedSuffix=/(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$/iu;
 /** Writable artifact roots the existing skill pipeline tests require without a default. */
 const scratchSelectors=['MERI_PIPELINE_ARTIFACT_ROOT','MERI_ASSOCIATION_ARTIFACT_ROOT'];
 export function scrubbedEnvironment(source,root,{scratchRoot,python3,soffice}={}){
- const env={};for(const [key,value] of Object.entries(source)){if(scrubbedKeys.has(key)||scrubbedPrefixes.some(p=>key.startsWith(p)))continue;env[key]=value;}
+ const env={};for(const [key,value] of Object.entries(source)){if(scrubbedKeys.has(key)||scrubbedSuffix.test(key)||scrubbedPrefixes.some(p=>key.startsWith(p)))continue;env[key]=value;}
  env.MERI_REVIEW_SOURCE_ROOT=root;
  // Canonical local fixture selectors used by the existing PostgreSQL-backed tests (see provision-postgres.sh).
  env.MERI_INSPECTION_TEST_SOCKET??='/tmp/meri-prepared-kickoff-pg-20261014/socket';env.MERI_INSPECTION_TEST_DATABASE??='meri_inspection_final';env.MERI_PREPARED_LAUNCH_DATABASE??='meri_prepared_launch';
@@ -74,7 +76,7 @@ export function run(options){
  }
  const totals=results.reduce((t,s)=>({suites:t.suites+1,passedSuites:t.passedSuites+(s.exitCode===0?1:0),tests:t.tests+(s.counts.tests??0),pass:t.pass+(s.counts.pass??0),fail:t.fail+(s.counts.fail??0)}),{suites:0,passedSuites:0,tests:0,pass:0,fail:0});
  const report={schema:'meri.local-baseline-results.v1',startedAt,finishedAt:new Date().toISOString(),repository:{root,head:git(root,['rev-parse','HEAD']),tree:git(root,['rev-parse','HEAD^{tree}']),branch:git(root,['branch','--show-current']),uncommittedPaths:(git(root,['status','--porcelain'])??'').split('\n').filter(Boolean).length},
-  environment:{node:process.version,platform:process.platform,kernel:version(['uname','-r']),uid,user:(()=>{try{return userInfo().username;}catch{return null;}})(),postgres:version(['/usr/lib/postgresql/16/bin/postgres','--version']),soffice:version(['soffice','--version']),python3:version(['python3','--version']),docker:version(['docker','--version']),subreaper:Boolean(python),tools,scratchRoot,scrubbed:{prefixes:scrubbedPrefixes,keys:[...scrubbedKeys]},supplied:Object.fromEntries(['MERI_REVIEW_SOURCE_ROOT','MERI_INSPECTION_TEST_SOCKET','MERI_INSPECTION_TEST_DATABASE','MERI_PREPARED_LAUNCH_DATABASE',...scratchSelectors,'MERI_DOCUMENT_PYTHON','MERI_PYTHON','MERI_SOFFICE'].map(k=>[k,env[k]??null]))},totals,suites:results};
+  environment:{node:process.version,platform:process.platform,kernel:version(['uname','-r']),uid,user:(()=>{try{return userInfo().username;}catch{return null;}})(),postgres:version(['/usr/lib/postgresql/16/bin/postgres','--version']),soffice:version(['soffice','--version']),python3:version(['python3','--version']),docker:version(['docker','--version']),subreaper:Boolean(python),tools,scratchRoot,scrubbed:{prefixes:scrubbedPrefixes,keys:[...scrubbedKeys],suffixPattern:scrubbedSuffix.source},supplied:Object.fromEntries(['MERI_REVIEW_SOURCE_ROOT','MERI_INSPECTION_TEST_SOCKET','MERI_INSPECTION_TEST_DATABASE','MERI_PREPARED_LAUNCH_DATABASE',...scratchSelectors,'MERI_DOCUMENT_PYTHON','MERI_PYTHON','MERI_SOFFICE'].map(k=>[k,env[k]??null]))},totals,suites:results};
  writeFileSync(join(options.out,'RESULTS.json'),JSON.stringify(report,null,1)+'\n');
  return report;
 }
