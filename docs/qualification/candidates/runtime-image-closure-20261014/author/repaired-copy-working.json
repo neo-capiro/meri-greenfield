@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/image-closure.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-image-closure",
+  "sourceHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T12:36:09.299385+00:00",
+  "durationSeconds": 55.416,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 195306,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/repaired-copy-working.stdout.bin",
+      "bytes": 6192,
+      "sha256": "a2cf0ac60e3f8cd2fc40a4fc5095455cf65c2dfc249b2adfe7af8b564c8dc41a"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/repaired-copy-working.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

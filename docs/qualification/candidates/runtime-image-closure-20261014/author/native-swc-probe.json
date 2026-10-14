@@ -1,0 +1,17 @@
+{
+  "codeHead": "0898fadd077c61245fdb5c42365efacdb727d7c0",
+  "exitCode": 1,
+  "scope": "Direct native binding load only; no workflow success claim, permissions change, runtime or network start",
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/native-swc-probe.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/native-swc-probe.stderr.bin",
+      "bytes": 596,
+      "sha256": "27c119cfca9cdff8d77ae5f21b5e07630167c10e783db6943f222b6a8eeb2268"
+    }
+  ]
+}

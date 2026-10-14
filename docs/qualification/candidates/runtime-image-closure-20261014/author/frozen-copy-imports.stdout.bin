@@ -1,0 +1,60 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 131B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 977B done
+#2 DONE 0.0s
+
+#3 [internal] load build context
+#3 transferring context: 14.07MB 1.9s done
+#3 DONE 2.0s
+
+#4 [2/3] COPY apps ./apps
+#4 CACHED
+
+#5 [1/3] COPY package.json package-lock.json ./
+#5 CACHED
+
+#6 [3/3] COPY packages ./packages
+#6 CACHED
+
+#7 exporting to image
+#7 exporting layers done
+#7 writing image sha256:86a8677066a3a965e2cca2afabf3e6ff1652a7cec2ff4ef2559da7fc4cb63539 done
+#7 naming to docker.io/library/meri-local-copy-closure:197410-1791981829004 done
+#7 DONE 0.0s
+{"phase":"actual-docker-copy","roles":["apps/runtime/cli.mjs","apps/runtime/control.mjs","apps/runtime/temporal-worker.mjs","apps/runtime/conversation-runner.mjs"],"files":287,"missing":[]}
+{"phase":"cleanup","kind":"container","target":"meri-local-copy-closure-197410-1791981829004","absent":true}
+{"phase":"cleanup","kind":"image","target":"meri-local-copy-closure:197410-1791981829004","absent":true}
+✖ actual Docker-filtered COPY contains every role dependency and all three roles import with no workspace fallback (62262.424608ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64236.746238
+
+✖ failing tests:
+
+test at apps/runtime/test/image-closure.test.mjs:41:1
+✖ actual Docker-filtered COPY contains every role dependency and all three roles import with no workspace fallback (62262.424608ms)
+  AssertionError [ERR_ASSERTION]: Dependency/source symlink escapes image tree: /tmp/meri-image-closure-DxYwVR/tree/etc/mtab
+      at contained (file:///workspace/meri-runtime-image-closure/apps/runtime/test/image-closure.test.mjs:76:24)
+      at contained (file:///workspace/meri-runtime-image-closure/apps/runtime/test/image-closure.test.mjs:79:17)
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-image-closure/apps/runtime/test/image-closure.test.mjs:81:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

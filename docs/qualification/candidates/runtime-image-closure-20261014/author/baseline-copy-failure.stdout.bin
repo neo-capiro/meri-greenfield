@@ -1,0 +1,35 @@
+ERROR: mkdir /home/agent/.docker/buildx: read-only file system
+✖ actual Docker-filtered COPY contains every role dependency and all three roles import/bundle (908.451704ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2277.365302
+
+✖ failing tests:
+
+test at apps/runtime/test/image-closure.test.mjs:5:1
+✖ actual Docker-filtered COPY contains every role dependency and all three roles import/bundle (908.451704ms)
+  Error: Command failed: docker build --network none --progress plain -t meri-local-copy-closure:194495-1791981224596 -f /tmp/meri-image-closure-CXzkGb/Dockerfile /workspace/meri-runtime-image-closure
+  ERROR: mkdir /home/agent/.docker/buildx: read-only file system
+  
+      at genericNodeError (node:internal/errors:985:15)
+      at wrappedFn (node:internal/errors:539:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at run (file:///workspace/meri-runtime-image-closure/apps/runtime/test/image-closure.test.mjs:5:353)
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-image-closure/apps/runtime/test/image-closure.test.mjs:6:448)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    status: 1,
+    signal: null,
+    output: [ null, '', 'ERROR: mkdir /home/agent/.docker/buildx: read-only file system\n' ],
+    pid: 194502,
+    stdout: '',
+    stderr: 'ERROR: mkdir /home/agent/.docker/buildx: read-only file system\n'
+  }

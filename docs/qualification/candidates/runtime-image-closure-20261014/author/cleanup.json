@@ -1,0 +1,53 @@
+{
+  "scope": "Exact task-owned installations and fixture names; shared builder cache, prior worktrees and init-owned zombies preserved",
+  "results": [
+    {
+      "path": "/workspace/meri-runtime-image-closure/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/workspace/meri-runtime-image-closure/apps/runtime/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/workspace/meri-runtime-image-closure/apps/worker/conversation/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/workspace/meri-runtime-image-closure/packages/ui-stream/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/workspace/meri-runtime-image-closure/packages/window-resolution/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/workspace/meri-runtime-image-closure/apps/control/conversations/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/workspace/meri-runtime-image-closure/apps/artifacts/storage/node_modules",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-image-closure-npm-cache-20261014",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-image-closure-swc-probe-20261014",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-docker-readback-config",
+      "absent": true
+    },
+    {
+      "kind": "images",
+      "matchingOwnedNames": []
+    },
+    {
+      "kind": "containers",
+      "matchingOwnedNames": []
+    }
+  ]
+}

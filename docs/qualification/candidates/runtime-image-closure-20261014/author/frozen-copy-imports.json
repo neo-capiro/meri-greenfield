@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/image-closure.test.mjs"
+  ],
+  "cwd": "/workspace/meri-runtime-image-closure",
+  "sourceHead": "42ce000cbef6b3668a821bd964a8eb76601ea2fe",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T12:43:46.832648+00:00",
+  "durationSeconds": 64.692,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 197384,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/frozen-copy-imports.stdout.bin",
+      "bytes": 2445,
+      "sha256": "f3b8a03652f085aedb498c41e4f8a51c30ef6ee7baad7319533a3b2dff8fcd0d"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/frozen-copy-imports.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}
