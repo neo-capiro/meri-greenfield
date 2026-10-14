@@ -1,9 +1,10 @@
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
-import {assertRun,bounded,hash,same,fail,nextState,validateShape,uuid} from './boundary.mjs';
+import {assertRun,bounded,hash,same,fail,nextState,terminal,validateShape,uuid} from './boundary.mjs';
 import {createLifecycleJournal} from './lifecycle/journal.mjs';
 import {createSelectedOutputJournal} from './skills/retention.mjs';
 import {createExecutionJournal} from './execution-journal.mjs';
 import {createNativePreparationJournals} from './native-preparation-journal.mjs';
+import {createCompletionJournal} from './completion-journal.mjs';
 import {createNextRunJournal} from './next-run-journal.mjs';
 export function createPostgresConversationStore({pool}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
@@ -24,6 +25,7 @@ export function createPostgresConversationStore({pool}){
    else{await c.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5)',[b.tenantId,b.conversationId,b.actorId,conversation,hash(conversation)]);check();}
    const existing=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND (request_id=$3 OR run_id=$4) FOR UPDATE',[b.tenantId,b.conversationId,request.requestId,b.runId])).rows;check();
    if(existing.length){const r=rowRun(existing[0]);if(existing.length!==1||r.request_id!==request.requestId||!same({...r.request,window:request.window},request)||!same(r.projection.binding,b)||!same(r.projection.versions,run.versions))fail('REQUEST_REPLAY_REFUSED');return {run:r.projection,request:r.request,lastSequence:Number(r.last_sequence),replayed:true};}
+   const prior=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();if(prior.length)fail('NEXT_RUN_NOT_RESERVED');
    validateShape('UIEvent',event);if(!same(event.binding,b)||!same(event.scopes,run.scopes)||event.sequence!==1||event.type!=='run.status'||event.data.state!=='queued')fail('EVENT_BINDING_REFUSED');
    await c.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1)',[b.tenantId,b.conversationId,b.runId,run,hash(run),request.requestId,request,hash(request)]);check();
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,1,event.eventId,event,hash(event)]);check();return {run,request,lastSequence:1,replayed:false};
@@ -36,6 +38,9 @@ export function createPostgresConversationStore({pool}){
    const event={contractVersion:'0.1.0',eventId:i.eventId,binding:b,sequence:Number(r.last_sequence)+1,createdAt:i.createdAt,scopes:r.projection.scopes,type:i.type,data:i.data};validateShape('UIEvent',event);
    const old=(await c.query('SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event_id=$4',[b.tenantId,b.conversationId,b.runId,i.eventId])).rows[0];check();
    if(old){if(hash(old.event)!==old.event_sha256||old.event_id!==old.event.eventId||Number(old.sequence)!==old.event.sequence||!same({...event,sequence:old.event.sequence},old.event))fail('EVENT_REPLAY_REFUSED');return old.event;}
+   if(r.sequence_end!=null)fail('RUN_RANGE_CLOSED');
+   if(terminal(r.projection.state))nextState(r.projection.state,event);
+   if(r.hold_completion_id&&!(i.type==='run.status'&&['failed','cancelled'].includes(i.data?.state)))fail('RUN_HELD');
    const projection={...r.projection,state:nextState(r.projection.state,event)};if(!Number.isSafeInteger(event.sequence))fail('EVENT_LIMIT');
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,event.sequence,event.eventId,event,hash(event)]);check();
    await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),event.sequence]);check();return event;});
@@ -49,5 +54,5 @@ export function createPostgresConversationStore({pool}){
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
  const preparation=createNativePreparationJournals({tx,rowRun});
- return Object.freeze({accept,append,read,readOptional,findRequest,nextRuns:createNextRunJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
+ return Object.freeze({accept,append,read,readOptional,findRequest,nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
 }

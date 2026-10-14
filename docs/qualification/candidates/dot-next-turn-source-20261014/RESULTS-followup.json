@@ -1,0 +1,21 @@
+{
+  "schema": "meri.source-local-checks/1",
+  "sourceHead": "9f2c04b9f566760677befbd4d2de3b1752d15bda",
+  "sourceTree": "2305035807ace1f9e29fcfdbcd46bb1474ec3c2a",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/test/completion.test.mjs",
+    "apps/control/conversations/test/next-run-owner.test.mjs",
+    "scripts/qualification/assembled-image/source-proof.test.mjs"
+  ],
+  "exitCode": 0,
+  "tests": 25,
+  "pass": 25,
+  "fail": 0,
+  "level": "scripted-source-only; includes passing fail-closed resume characterization, not successful resume",
+  "gitBlobProofAudit": "all45 candidate row hashes checked against exact committed blobs; see publication review",
+  "logRedaction": "Three existing platform/control logs preserve errors, assertions, line numbers and counts; local workstation path prefixes replaced; raw originals preserved outside Git. Historical raw blobs still exist in ancestry and block publication pending root decision."
+}

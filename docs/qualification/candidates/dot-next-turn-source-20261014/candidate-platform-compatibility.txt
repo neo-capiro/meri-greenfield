@@ -1,0 +1,136 @@
+✖ standard task bootstrap polls only existing capability route and returns validated original gated binding (6.0426ms)
+✖ foreign bootstrap proof refuses before returning executable configuration (0.4656ms)
+✖ cancelled bootstrap invokes no transport or execution (0.3118ms)
+✖ gated standard runner starts one Query after HTTP release and retains listener through final control stop (138.6819ms)
+✖ gated SDK failure and parent cancellation retain callback HTTP until positive original control stop (0.8599ms)
+(node:780) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:780) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✖ parent cancellation retains actual control HTTP through ordered original candidate cleanup (5.8566ms)
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (10.4817ms)
+✔ current canonical run identity remains usable after original task expiry (1.3915ms)
+✔ present canonical mismatch never falls back binding (1.0723ms)
+✔ present canonical mismatch never falls back scopes (0.6729ms)
+✔ present canonical mismatch never falls back policyRevision (0.5686ms)
+✔ canonical storage STORE_CORRUPT never falls back (0.6367ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (0.7352ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (0.7541ms)
+✔ native wrong principal and revoked identity cannot issue initial context (1.0395ms)
+✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (340.179ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 9
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1217.2904
+
+✖ failing tests:
+
+test at apps\runtime\test\prepared-candidate-bootstrap.test.mjs:6:1
+✖ standard task bootstrap polls only existing capability route and returns validated original gated binding (6.0426ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at fixture (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:5:90)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:6:132)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }
+
+test at apps\runtime\test\prepared-candidate-bootstrap.test.mjs:7:1
+✖ foreign bootstrap proof refuses before returning executable configuration (0.4656ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at fixture (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:5:90)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:7:100)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }
+
+test at apps\runtime\test\prepared-candidate-bootstrap.test.mjs:8:1
+✖ cancelled bootstrap invokes no transport or execution (0.3118ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at fixture (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:5:90)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:8:80)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }
+
+test at apps\runtime\test\prepared-candidate-bootstrap.test.mjs:10:1
+✖ gated standard runner starts one Query after HTTP release and retains listener through final control stop (138.6819ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at fixture (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:5:90)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:12:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }
+
+test at apps\runtime\test\prepared-candidate-bootstrap.test.mjs:19:1
+✖ gated SDK failure and parent cancellation retain callback HTTP until positive original control stop (0.8599ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at fixture (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:5:90)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:21:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }
+
+test at apps\runtime\test\prepared-candidate-control-lifetime.test.mjs:14:1
+✖ parent cancellation retains actual control HTTP through ordered original candidate cleanup (5.8566ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at compilePreparedCandidateConfiguration (file:///<SOURCE>/apps/runtime/prepared-candidate-config.mjs:18:17)
+      at startControl (file:///<SOURCE>/apps/runtime/control.mjs:53:48)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate-control-lifetime.test.mjs:14:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }
+
+test at apps\runtime\test\prepared-candidate.test.mjs:13:1
+✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (340.179ms)
+  Error: NATIVE_EXECUTION_PREPARATION_REFUSED
+      at executionFault (file:///<SOURCE>/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at refuse (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:7:25)
+      at compileNativePreparationIntent (file:///<SOURCE>/apps/runtime/native-authority/preparation-intent.mjs:12:713)
+      at compileNativeBrokerPlan (file:///<SOURCE>/apps/runtime/native-authority/broker-stack.mjs:22:27)
+      at compilePreparedCandidateConfiguration (file:///<SOURCE>/apps/runtime/prepared-candidate-config.mjs:18:17)
+      at assemblePreparedCandidate (file:///<SOURCE>/apps/runtime/prepared-candidate.mjs:38:169)
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/prepared-candidate.test.mjs:16:18)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_EXECUTION_PREPARATION_REFUSED'
+  }

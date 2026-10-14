@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/selected/test/next-turn.test.mjs",
+    "apps/runtime/test/next-turn-wiring.test.mjs",
+    "apps/runtime/test/prepared-run-registry.test.mjs"
+  ],
+  "exitCode": 0,
+  "note": "Selected next-turn source controls and readiness/mirror wiring; registry cap matches canonical checkpoint HTTP owner."
+}

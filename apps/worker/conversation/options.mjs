@@ -6,6 +6,7 @@
 import {isAbsolute} from 'node:path';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {buildContinuationOptions} from './continuation/options.mjs';
+import {buildNextTurnOptions} from './continuation/next-turn-options.mjs';
 import {assertRestoreReceipt} from './continuation/native-receipts.mjs';
 /** @returns {never} */
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
@@ -17,9 +18,9 @@ export function buildConversationOptions(value,abortController,continuationConte
  if(r.versions.sdk!=='0.3.295'||r.versions.cli!=='2.1.295')fail();
  if(!isAbsolute(r.cwd)||!r.cwd.endsWith(`/${r.binding.conversationId}`)||r.cwd.includes('/../')||typeof r.proxyCredential!=='string'||!r.proxyCredential||r.proxyCredential.length>8192||typeof r.model!=='string'||!r.model||['maxTurns','maxCostMicroUSD','maxOutputBytes','deadlineMs'].some(k=>!Number.isSafeInteger(r[k])||r[k]<1)||r.maxTurns>100||r.maxOutputBytes>1048576||typeof r.sessionStore?.load!=='function'||typeof r.sessionStore?.append!=='function')fail();
  let url;try{url=new URL(r.proxyUrl);}catch{fail();}if(url.protocol!=='https:'||url.username||url.password||url.search||url.hash)fail();
- let continuation={};if(continuationContext!==undefined){const c=own(continuationContext,['continuation','request','sourceRequest','scopes','started','now']);
-  continuation=buildContinuationOptions(c.continuation,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest});
-  assertRestoreReceipt(r.restoreReceipt,{continuation:c.continuation,binding:r.binding,request:c.request,scopes:c.scopes,started:c.started,now:c.now});}
+ let continuation={};if(continuationContext!==undefined){const c=own(continuationContext,['request','sourceRequest','scopes','started','now'],['continuation','nextTurn']);if((c.continuation===undefined)===(c.nextTurn===undefined))fail();
+  continuation=c.nextTurn===undefined?buildContinuationOptions(c.continuation,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest}):buildNextTurnOptions(c.nextTurn,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest});
+  assertRestoreReceipt(r.restoreReceipt,{continuation:c.nextTurn??c.continuation,binding:r.binding,request:c.request,scopes:c.scopes,started:c.started,now:c.now});}
  let mounted={};if(skillOptions!==undefined){const s=own(skillOptions,['mcpServers','allowedTools','canUseTool'],['outputFormat','hooks']);own(s.mcpServers,['meri_original_reads']);
   if(s.mcpServers.meri_original_reads.type!=='sdk'||s.mcpServers.meri_original_reads.name!=='meri_original_reads'||typeof s.mcpServers.meri_original_reads.instance?.close!=='function'||typeof s.canUseTool!=='function'||!Array.isArray(s.allowedTools)||s.allowedTools.length>11||!s.allowedTools.length||new Set(s.allowedTools).size!==s.allowedTools.length||s.allowedTools.some(t=>typeof t!=='string'||!/^mcp__meri_original_reads__[a-z_]+$/u.test(t)))fail();
   if(s.hooks!==undefined){own(s.hooks,['PreToolUse']);if(!Array.isArray(s.hooks.PreToolUse)||s.hooks.PreToolUse.length!==1||s.hooks.PreToolUse[0].matcher!=='mcp__meri_original_reads__.*'||s.hooks.PreToolUse[0].hooks.length!==1||typeof s.hooks.PreToolUse[0].hooks[0]!=='function')fail();}

@@ -11,6 +11,12 @@ import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/sess
 const limits={maxRequestMs:1000,maxRequestBytes:9437184,maxResponseBytes:35651584};
 const request=(path,body='{}',token='presented-task',options={})=>{const {headers,...rest}=options;return new Request('https://native.synthetic.invalid'+path,{method:'POST',body,...rest,headers:{authorization:'Bearer '+token,'content-type':'application/json',...headers}});};
 const make=(fetchImpl,options={})=>createNativeRunnerGateway({controlOrigin:'https://control.synthetic.invalid',fetchImpl,limits,enabled:true,...options});
+
+test('completion checkpoint relay preserves exact task bearer/body and delegates all proof ownership upstream',async()=>{
+ const body='{ "binding": {"opaque":"preserved"}, "request":{"prompt":"second prompt"} }\n';let calls=0;
+ const gateway=make(async(url,init)=>{calls++;assert.equal(url,'https://control.synthetic.invalid/v1/runner/checkpoint/complete');assert.equal(init.headers.authorization,'Bearer presented-completion-task');assert.equal(Buffer.from(init.body).toString(),body);return Response.json({error:{code:'CURRENT_TASK_REVOKED'}},{status:403});});
+ const response=await gateway.handle(request('/v1/runner/checkpoint/complete',body,'presented-completion-task'));assert.equal(response.status,403);assert.deepEqual(await response.json(),{error:{code:'CURRENT_TASK_REVOKED'}});assert.equal(calls,1);assert.equal(await gateway.handle(request('/v1/runner/checkpoint/complete/extra',body)),null);
+});
 test('all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through',async()=>{
  const calls=[],body='{ "opaque": {"duplicates":[1,1]} }\n',gateway=make(async(url,init)=>{calls.push({url,init});return new Response(' { "ok" : true }\n',{headers:{'content-type':'application/json'}});});
  for(const op of Object.keys(runOwnerOperations)){const r=await gateway.handle(request('/v1/runner/'+op,body,'actual-presented-'+op));assert.equal(r.status,200);assert.equal(await r.text(),' { "ok" : true }\n');const c=calls.at(-1);assert.equal(c.url,'https://control.synthetic.invalid/internal/conversations/'+op);assert.equal(c.init.headers.authorization,'Bearer actual-presented-'+op);assert.equal(Buffer.from(c.init.body).toString(),body);assert.equal(c.init.redirect,'error');assert.equal(c.init.credentials,'omit');}

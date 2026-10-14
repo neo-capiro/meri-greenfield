@@ -11,10 +11,11 @@ export function createRuntimeSdkSessionFactory(configuration){
  const {origin,credential,binding,fetchImpl=fetch,now=Date.now}=own(configuration,['origin','credential','binding'],['fetchImpl','now']);
  const pinnedBinding=data(binding),client=createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now});
  return async value=>{
-  const {binding:currentBinding,sessionKey,signal,runtimeSignal,continuation}=own(value,['binding'],['sessionKey','signal','runtimeSignal','continuation']);
+  const {binding:currentBinding,sessionKey,signal,runtimeSignal,continuation,nextTurn}=own(value,['binding'],['sessionKey','signal','runtimeSignal','continuation','nextTurn']);
+  if(continuation!==undefined&&nextTurn!==undefined)throw fault('RUNNER_SDK_RESTORE_REFUSED');
   if(canonicalSha256(data(currentBinding))!==canonicalSha256(pinnedBinding)||sessionKey===undefined)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');
-  if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');return createFirstRuntimeSdkSession({client,binding:pinnedBinding,signal:runtimeSignal});}
-  if(continuation!==undefined)return createContinuationRuntimeSdkSession({client,binding:pinnedBinding,sessionKey,continuation,signal,runtimeSignal});
+  if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||nextTurn!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');return createFirstRuntimeSdkSession({client,binding:pinnedBinding,signal:runtimeSignal});}
+  if(continuation!==undefined||nextTurn!==undefined)return createContinuationRuntimeSdkSession({client,binding:pinnedBinding,sessionKey,...(nextTurn===undefined?{continuation}:{nextTurn}),signal,runtimeSignal});
   const bound=createNativeBoundSdkSessionStore({client,binding:pinnedBinding,sessionKey});
   const settle=async()=>{const result=await bound.settleObservedCalls();if(result.uncertain)throw fault('RUNNER_SDK_SESSION_UNKNOWN');};
   const close=async()=>{bound.closeMirror();await settle();};
@@ -31,7 +32,7 @@ export function createOwnedRuntimeSdkSession(configuration){
  function capture(value){let r=records.get(value);if(r)return r;const v=own(value,['store','settle','close']);r={store:v.store,settle:storageMethod(value,'settle'),close:storageMethod(value,'close'),retirement:null};records.set(value,r);return r;}
  async function bounded(method,signal){const deadlineMs=now()+cleanupMs,life=createOperationLifetime({now,deadlineMs,signal,errorFactory:()=>fault('RUNNER_CLEANUP_UNKNOWN')});try{return await life.run(signal=>method({signal,deadlineMs}));}finally{life.close();}}
  function retire(record){return record.retirement??=(async()=>{try{await bounded(record.close);}catch(error){failures.push('RUNNER_CLEANUP_UNKNOWN');throw error;}})();}
- return Object.freeze({async prepare(value){const input=own(value,['binding','sessionKey'],['signal','runtimeSignal','continuation']);nativeSignal(input.signal);nativeSignal(input.runtimeSignal);if(closed||current||pending>0)throw fault('RUNNER_SESSION_CONFIGURATION');let abandoned=false;
+ return Object.freeze({async prepare(value){const input=own(value,['binding','sessionKey'],['signal','runtimeSignal','continuation','nextTurn']);nativeSignal(input.signal);nativeSignal(input.runtimeSignal);if(input.nextTurn!==undefined&&input.continuation!==undefined||closed||current||pending>0)throw fault('RUNNER_SESSION_CONFIGURATION');let abandoned=false;
   const abort=()=>{abandoned=true;};input.signal?.addEventListener('abort',abort,{once:true});pending++;
   const work=Promise.resolve().then(()=>{if(closed||input.signal?.aborted)throw fault('RUNNER_SESSION_STOPPED');return factory(input);});
   work.then(value=>{if(abandoned||closed)try{void retire(capture(value)).catch(()=>{});}catch{failures.push('RUNNER_CLEANUP_UNKNOWN');}},()=>{});

@@ -8,7 +8,12 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const proof=JSON.parse(fs.readFileSync(new URL('./source-manifest.json',import.meta.url),'utf8'));
-const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261014.json',import.meta.url),'utf8'));
+const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-dot-20261014.json',import.meta.url),'utf8'));
+
+test('the preceding Fable candidate is preserved byte-exact and the new candidate carries no image acceptance',()=>{
+ const previous=hash(fs.readFileSync(new URL('./candidate-manifest-fable-20261014.json',import.meta.url)));
+ assert.equal(previous,'dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627');assert.equal(candidate.previousCandidate.sha256,previous);assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+});
 
 test('all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest',()=>{
   assert.equal(proof.files.length,45);

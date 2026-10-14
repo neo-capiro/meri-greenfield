@@ -37,3 +37,13 @@ test('snapshot transport rejects worker checkpoint/key hints and preserves deep 
  const owner={async register(){throw Error('target-witness-not-yet-observed');},async load(){throw Error('target-not-yet-observed');},async append(){throw Error('target-not-yet-observed');},async listSubkeys(){throw Error('target-not-yet-observed');}},snapshot={async readSnapshot({credential,request}){assert.equal(credential,'synthetic-task');assert.deepEqual(request,{binding:x.f.target.binding});return snapshotRaw;}},app=createNativeSdkSessionApplication({owner,snapshot});
  const factory=createRuntimeSdkSessionFactory({origin:'https://synthetic-native.invalid',credential:'synthetic-task',binding:x.f.target.binding,fetchImpl:(url,options)=>app.handle(new Request(url,options))}),mirror=await factory({binding:x.f.target.binding,sessionKey:x.target,continuation:x.f.continuation});assert.deepEqual(await mirror.store.load(x.source),snapshotRaw.transcripts[0].entries);await mirror.close();
 });
+
+test('next prompt seeds exact old snapshot into independently registered target namespace without a lifecycle envelope',async()=>{
+ const x=fixture(),n={checkpoint:x.f.continuation.checkpoint,checkpointSha256:x.f.continuation.checkpointSha256,sourceRequestSha256:x.f.continuation.sourceRequestSha256,contextSha256:x.f.continuation.contextSha256,sourceRequest:x.f.target.sourceRequest,targetBinding:x.f.target.binding,resumeSessionAt:x.f.continuation.resumeSessionAt};
+ const mirror=await createContinuationRuntimeSdkSession({client:x.client,binding:x.f.target.binding,sessionKey:x.target,nextTurn:n});assert.deepEqual(await mirror.store.load(x.source),x.history);assert.equal(x.state().registers,0);
+ const prompt={type:'user',uuid:id(92),message:{role:'user',content:'A different second prompt'}},writing=mirror.store.append(x.target,[prompt]);await new Promise(resolve=>setImmediate(resolve));assert.equal(x.state().writes,0);x.gate.resolve();await writing;await mirror.settle();assert.deepEqual(await x.native.load(x.target),[...x.history,prompt]);assert.deepEqual(await x.native.load({...x.target,subpath:'subagents/original'}),x.child);await mirror.close();
+});
+test('direct factory rejects ambiguous lifecycle and next-prompt hints before native requests',async()=>{
+ const x=fixture();let calls=0;const factory=createRuntimeSdkSessionFactory({origin:'https://synthetic-native.invalid',credential:'synthetic-task',binding:x.f.target.binding,fetchImpl(){calls++;throw Error('not reached');}});
+ await assert.rejects(factory({binding:x.f.target.binding,sessionKey:x.target,continuation:x.f.continuation,nextTurn:{}}),/RUNNER_SDK_RESTORE_REFUSED/);assert.equal(calls,0);
+});

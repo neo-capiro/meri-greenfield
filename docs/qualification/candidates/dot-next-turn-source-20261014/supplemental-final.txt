@@ -1,0 +1,24 @@
+✔ selected task accepts separately pinned next-prompt lineage while preserving the current request admission (42.7252ms)
+✔ selected next-prompt snapshot/context substitution refuses before source RPC (1.499ms)
+✔ pre-admission task readiness forwards canonical next-prompt lineage without calling it lifecycle resume (14.6448ms)
+✔ remote checkpoint mirror preserves distinct next-prompt initialization and refuses ambiguous hints (5.258ms)
+✔ accepted run prepares one cached entry concurrently without allocating until canonical kickoff (23.2332ms)
+✔ pending reservation refuses issuance; later accepted prompt can prepare (3.8543ms)
+✔ UNKNOWN issuance entry is sticky and never reissued by same registry (0.9503ms)
+✔ retired source and active canonical target are required before issuance (1.2566ms)
+✔ bootstrap stays unavailable before allocation and isolates credentials, versions and binding (8.4457ms)
+✔ cancellation or changed accepted prompt before kickoff refuses allocation (7.4146ms)
+✔ close is idempotent, prevents new entries and does not allocate unstarted runs (2.9819ms)
+✔ explicit trusted expiry cannot exceed configured ceiling or renew itself (0.8547ms)
+✔ allocation UNKNOWN remains one attempted dispatch through repeated kickoff and ensure (9.6435ms)
+✔ late owned controller settlement after close is contained exactly once (33.3783ms)
+✔ HTTP kickoff authenticates and validates closed request before any issuance (9.2227ms)
+✔ HTTP status/bootstrap never prepare and unowned bindings fall through (5.2575ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1230.3447

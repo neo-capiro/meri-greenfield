@@ -1,0 +1,22 @@
+✔ completion checkpoint relay preserves exact task bearer/body and delegates all proof ownership upstream (4.6303ms)
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (3.274ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (72.1517ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (16.2778ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (1.3536ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (3.4011ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (65.0221ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (1.4613ms)
+✔ private immutable snapshot read relays exact bearer and bytes to canonical session receiver (0.7065ms)
+✔ the preceding Fable candidate is preserved byte-exact and the new candidate carries no image acceptance (1.1324ms)
+✔ all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest (7.4191ms)
+✔ the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged (9.6212ms)
+✔ exact16 proof-test files are allowlisted with parent reopening and sibling denial (0.9757ms)
+✔ exact observed Linux helper bytes and network-isolated build recipe are promoted (0.9451ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1091.2638

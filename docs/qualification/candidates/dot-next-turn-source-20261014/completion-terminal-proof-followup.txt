@@ -1,0 +1,33 @@
+✔ capture identity is durable before physical capture and only its first caller can capture (70.7036ms)
+✔ lost begin COMMIT acknowledgment reconciles identity without authorizing another capture (8.4846ms)
+✔ genuine canonical checkpoint plus verified and completed events publish atomically; lost COMMIT acknowledgment reconciles one publication (23.9918ms)
+✔ completion rejects binding proof substitution and leaves no completed event (10.5859ms)
+✔ completion rejects versions proof substitution and leaves no completed event (14.5748ms)
+✔ completion rejects scopes proof substitution and leaves no completed event (8.9671ms)
+✔ completion rejects sequence proof substitution and leaves no completed event (8.4061ms)
+✔ completion rejects request proof substitution and leaves no completed event (8.0037ms)
+✔ completion rejects context proof substitution and leaves no completed event (9.7555ms)
+✔ completion rejects workspace proof substitution and leaves no completed event (9.4583ms)
+✔ completion rejects readback proof substitution and leaves no completed event (7.9345ms)
+✔ completed runs preserve terminal write refusals after completion hold and exact publication replay (15.0309ms)
+✔ failed before completion publication wins and cannot be converted to completed (7.5115ms)
+✔ cancelled before completion publication wins and cannot be converted to completed (6.748ms)
+✔ a pause capture cannot be substituted for a genuine completion capture (28.3727ms)
+✔ a claimed completion blocks late text and new controls; a refused second publication event rolls back the first (15.9232ms)
+✔ three turns reject an accepted historical target and preserve sealed ranges and explicit new-prompt lineage (97.6014ms)
+✔ concurrent selection recovers one reservation and competing prompts cannot replace its accepted request (13.9967ms)
+✔ same-conversation resume seals pause range; late cancellation is refused, fork keeps an independent zero base (133.0987ms)
+✔ known integration HOLD: source session becomes stale after resume commit, so existing postcommit fresh cannot dispatch (67.4134ms)
+✔ the preceding Fable candidate is preserved byte-exact and the new candidate carries no image acceptance (1.2125ms)
+✔ all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest (8.3511ms)
+✔ the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged (11.6445ms)
+✔ exact16 proof-test files are allowlisted with parent reopening and sibling denial (1.5625ms)
+✔ exact observed Linux helper bytes and network-isolated build recipe are promoted (1.3503ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1156.6566

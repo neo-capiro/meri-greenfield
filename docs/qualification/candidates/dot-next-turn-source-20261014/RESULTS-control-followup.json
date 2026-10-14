@@ -1,0 +1,23 @@
+{
+  "schema": "meri.source-local-checks/1",
+  "sourceHead": "9f2c04b9f566760677befbd4d2de3b1752d15bda",
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/application.test.mjs",
+    "apps/control/conversations/test/completion.test.mjs",
+    "apps/control/conversations/test/conversation-public-integration.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/control/conversations/test/lifecycle-workflow.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/native-prepared-launch.test.mjs",
+    "apps/control/conversations/test/next-run-owner.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/stream.test.mjs"
+  ],
+  "node": "v24.19.0",
+  "platform": "win32",
+  "exitCode": 0,
+  "level": "scripted canonical control owners, excludes unavailable real-PG test file; resume characterization is fail-closed HOLD"
+}

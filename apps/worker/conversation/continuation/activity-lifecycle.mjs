@@ -9,13 +9,13 @@ import {assertCaptureReceipt} from './native-receipts.mjs';
 const fault=code=>Object.assign(new Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 export function assertLifecycleConfiguration(config,runOwner) {
- const {captureCheckpoint,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['pollMs','captureOwnsClose']);
- if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
+ const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
+ if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||captureCompletion!==undefined&&typeof captureCompletion!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
  ['nextControls','claimControl','ackControl','recordCheckpoint'].some(k=>typeof runOwner[k]!=='function'))throw fault('LIFECYCLE_CONFIGURATION');
- return {captureCheckpoint,pollMs,captureOwnsClose};
+ return {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose};
 }
 export function createActivityLifecycle({config,runOwner,binding,saved,runtime,input,query,life,now}) {
- const {captureCheckpoint,pollMs,captureOwnsClose}=assertLifecycleConfiguration(config,runOwner);
+ const {captureCheckpoint,captureCompletion,pollMs,captureOwnsClose}=assertLifecycleConfiguration(config,runOwner);
  const contextSha256=continuationContextSha256(saved.request,saved.run.scopes),abort=new AbortController();
  const poll=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal:AbortSignal.any([life.signal,abort.signal]),errorFactory:fault});
  const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll,captureOwnsClose}),pending=new Map();
@@ -56,7 +56,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  async function observe(message){if(stopped)return;
   if(message?.type==='system'&&message.subtype==='init'){
    if(typeof message.session_id!=='string'||!uuid.test(message.session_id)||sessionId&&sessionId!==message.session_id)throw fault('SDK_SESSION_REFUSED');
-   const expected=saved.continuation?(saved.continuation.mode==='resume'?saved.continuation.checkpoint.sessionId:saved.continuation.targetSessionId):null;
+   const expected=saved.nextTurn?saved.nextTurn.checkpoint.sessionId:saved.continuation?(saved.continuation.mode==='resume'?saved.continuation.checkpoint.sessionId:saved.continuation.targetSessionId):null;
    if(expected!==null&&expected!==message.session_id)throw fault('SDK_SESSION_REFUSED');sessionId=message.session_id;initialized.resolve();
   }
   if(held)return;
@@ -69,8 +69,8 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   }
  }
  let finishing;
- function finish(){return finishing??=finishOnce();}
- async function finishOnce(){stopped=true;wakeIdle?.();if(!sessionId)abort.abort();
+ function finish({keepInputOpen=false}={}){return finishing??=finishOnce(keepInputOpen);}
+ async function finishOnce(keepInputOpen){stopped=true;wakeIdle?.();if(!sessionId)abort.abort();
   // Stop new claims immediately, then drain the already bounded current-authority
   // read. Cancelling that read on a successful result can invalidate the opaque
   // session needed by the activity's final publication. Deadline/caller abort
@@ -80,8 +80,12 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   for(const entry of pending.values()){const cleanup=createOperationLifetime({deadlineMs:now()+100,now,errorFactory:fault});
    try{await cleanup.run(signal=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256,outcome:'UNKNOWN'},signal}));}
    catch{}finally{cleanup.close();pending.delete(entry.command.controlId);}}
-  poll.close();input.close();
+  poll.close();if(!keepInputOpen)input.close();
  }
- return Object.freeze({observe,finish,isHeld:()=>held,heldResult:()=>heldResult.promise,
+ async function complete(){if(!captureCompletion||held||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');await finish({keepInputOpen:true});if(error||held)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
+  const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,signal}));
+  const verified=assertCaptureReceipt(captured,{binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,contextSha256,sessionId,started,now});life.limitDeadline(verified.expiresAtMs);return verified.receipt;
+ }
+ return Object.freeze({observe,finish,captureCompletion:complete,canCaptureCompletion:()=>captureCompletion!==undefined,isHeld:()=>held,heldResult:()=>heldResult.promise,
   failure:failed.promise,check(){if(error)throw error;},close(){stopped=true;abort.abort();poll.close();input.close();}});
 }

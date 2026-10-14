@@ -1,0 +1,194 @@
+{
+  "schema": "meri.source-local-checks/1",
+  "pickupHead": "700f203e7b97b64207489d29e17e00014f7ff43b",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "level": "scripted-source-and-local-bytes-only",
+  "runtimeTypecheckScope": "test/types.ts only; does not fully check new mjs modules",
+  "results": [
+    {
+      "name": "source-proof-final",
+      "command": [
+        "node",
+        "--test",
+        "scripts/qualification/assembled-image/source-proof.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 5",
+        "ℹ pass 5",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "worker-full-final",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/worker/conversation/test/activity.test.mjs",
+        "apps/worker/conversation/test/completion-activity.test.mjs",
+        "apps/worker/conversation/test/control-application.test.mjs",
+        "apps/worker/conversation/test/lifecycle-activity.test.mjs",
+        "apps/worker/conversation/skills/test/mcp.test.mjs",
+        "apps/worker/conversation/skills/test/selected-runtime.test.mjs",
+        "apps/worker/conversation/continuation/test/continuation.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 138",
+        "ℹ pass 138",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "runtime-final",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/completion-capture.test.mjs",
+        "apps/runtime/native-authority/test/next-turn-restore.test.mjs",
+        "apps/runtime/native-authority/test/continuation-runtime.test.mjs",
+        "apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs",
+        "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+        "apps/runtime/test/prepared-run-issuance.test.mjs",
+        "apps/runtime/test/prepared-run-registry.test.mjs",
+        "apps/runtime/test/lifecycle.test.mjs",
+        "apps/runtime/test/checkpoint-session-factory.test.mjs",
+        "apps/runtime/test/first-session.test.mjs",
+        "apps/runtime/test/next-turn-wiring.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 137",
+        "ℹ pass 137",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "context-final",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/action-host/application-adapters/adapters.test.mjs",
+        "apps/control/action-host/application-adapters/context-independent.test.mjs",
+        "apps/runtime/native-authority/test/identity-context.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 75",
+        "ℹ pass 75",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "capture-posix-compatibility",
+      "command": [
+        "node",
+        "--test",
+        "apps/runtime/native-authority/test/checkpoint-capture.test.mjs",
+        "apps/runtime/native-authority/test/task-checkpoint-source.test.mjs"
+      ],
+      "exitCode": 1,
+      "summary": [
+        "✖ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (174.1886ms)",
+        "✖ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (111.034ms)",
+        "ℹ tests 27",
+        "ℹ pass 25",
+        "ℹ fail 2",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "✖ failing tests:",
+        "✖ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (174.1886ms)",
+        "✖ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (111.034ms)"
+      ]
+    },
+    {
+      "name": "selected-platform-compatibility",
+      "command": [
+        "node",
+        "--test",
+        "apps/runtime/selected/test/selected.test.mjs"
+      ],
+      "exitCode": 1,
+      "summary": [
+        "✖ apps\\runtime\\selected\\test\\selected.test.mjs (696.4008ms)",
+        "ℹ tests 1",
+        "ℹ pass 0",
+        "ℹ fail 1",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "✖ failing tests:",
+        "✖ apps\\runtime\\selected\\test\\selected.test.mjs (696.4008ms)"
+      ]
+    },
+    {
+      "name": "candidate-platform-compatibility",
+      "command": [
+        "node",
+        "--test",
+        "--experimental-test-module-mocks",
+        "apps/runtime/test/prepared-candidate.test.mjs",
+        "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
+        "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs"
+      ],
+      "exitCode": 1,
+      "summary": [
+        "✖ standard task bootstrap polls only existing capability route and returns validated original gated binding (6.0426ms)",
+        "✖ foreign bootstrap proof refuses before returning executable configuration (0.4656ms)",
+        "✖ cancelled bootstrap invokes no transport or execution (0.3118ms)",
+        "✖ gated standard runner starts one Query after HTTP release and retains listener through final control stop (138.6819ms)",
+        "✖ gated SDK failure and parent cancellation retain callback HTTP until positive original control stop (0.8599ms)",
+        "✖ parent cancellation retains actual control HTTP through ordered original candidate cleanup (5.8566ms)",
+        "✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (340.179ms)",
+        "ℹ tests 16",
+        "ℹ pass 9",
+        "ℹ fail 7",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "✖ failing tests:",
+        "✖ standard task bootstrap polls only existing capability route and returns validated original gated binding (6.0426ms)",
+        "✖ foreign bootstrap proof refuses before returning executable configuration (0.4656ms)",
+        "✖ cancelled bootstrap invokes no transport or execution (0.3118ms)",
+        "✖ gated standard runner starts one Query after HTTP release and retains listener through final control stop (138.6819ms)",
+        "✖ gated SDK failure and parent cancellation retain callback HTTP until positive original control stop (0.8599ms)",
+        "✖ parent cancellation retains actual control HTTP through ordered original candidate cleanup (5.8566ms)",
+        "✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (340.179ms)"
+      ]
+    },
+    {
+      "name": "conversations-typecheck",
+      "command": [
+        "node",
+        "apps/control/conversations/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "apps/control/conversations/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "summary": []
+    },
+    {
+      "name": "runtime-typecheck",
+      "command": [
+        "node",
+        "apps/runtime/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "apps/runtime/tsconfig.json"
+      ],
+      "exitCode": 0,
+      "summary": []
+    }
+  ]
+}

@@ -4,16 +4,19 @@ import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {assertSdkSessionKey} from '../../packages/contracts/runtime-0.2/session.mjs';
 import {assertContinuationEnvelope} from '../../packages/contracts/conversation-lifecycle/validate.mjs';
+import {assertNextTurnLineage} from '../worker/conversation/continuation/next-turn-options.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {copySessionEntries,scopedSessionKey} from '../worker/qualification/checkpoint/bound-session-store.mjs';
 import {createNativeBoundSdkSessionStore} from './native-authority/session-client.mjs';
 import {createCheckpointSdkSnapshot} from './native-authority/checkpoint-snapshot.mjs';
 import {fault} from './config.mjs';
 export async function createContinuationRuntimeSdkSession(configuration){
- const c=own(configuration,['client','binding','sessionKey','continuation'],['signal','runtimeSignal']);nativeSignal(c.signal);nativeSignal(c.runtimeSignal);
- const continuation=assertContinuationEnvelope(c.continuation),target=assertSdkSessionKey(c.sessionKey,{main:true}),methods=Object.fromEntries(['snapshot','register','load','append','listSubkeys'].map(k=>[k,storageMethod(c.client,k)])),abort=new AbortController(),signal=AbortSignal.any([abort.signal,...[c.runtimeSignal].filter(Boolean)]);
+ const c=own(configuration,['client','binding','sessionKey'],['continuation','nextTurn','signal','runtimeSignal']);nativeSignal(c.signal);nativeSignal(c.runtimeSignal);
+ if((c.continuation===undefined)===(c.nextTurn===undefined))throw fault('RUNNER_SDK_RESTORE_REFUSED');
+ const continuation=c.nextTurn!==undefined?assertNextTurnLineage(c.nextTurn,c.binding):assertContinuationEnvelope(c.continuation);
+ const target=assertSdkSessionKey(c.sessionKey,{main:true}),methods=Object.fromEntries(['snapshot','register','load','append','listSubkeys'].map(k=>[k,storageMethod(c.client,k)])),abort=new AbortController(),signal=AbortSignal.any([abort.signal,...[c.runtimeSignal].filter(Boolean)]);
  const raw=own(await methods.snapshot({},{signal:AbortSignal.any([signal,...[c.signal].filter(Boolean)])}),['binding','key','checkpointSha256','opaqueSessionSha256','transcripts']);
- if(hash(raw.binding)!==hash(c.binding)||raw.key.sessionId!==continuation.checkpoint.sessionId||raw.key.projectKey!==target.projectKey||raw.checkpointSha256!==continuation.checkpointSha256||raw.opaqueSessionSha256!==continuation.checkpoint.opaqueSession.sha256||target.sessionId!==(continuation.mode==='resume'?raw.key.sessionId:continuation.targetSessionId))throw fault('RUNNER_SDK_RESTORE_REFUSED');
+ if(hash(raw.binding)!==hash(c.binding)||raw.key.sessionId!==continuation.checkpoint.sessionId||raw.key.projectKey!==target.projectKey||raw.checkpointSha256!==continuation.checkpointSha256||raw.opaqueSessionSha256!==continuation.checkpoint.opaqueSession.sha256||target.sessionId!==(c.nextTurn!==undefined||continuation.mode==='resume'?raw.key.sessionId:continuation.targetSessionId))throw fault('RUNNER_SDK_RESTORE_REFUSED');
  const source=await createCheckpointSdkSnapshot({key:raw.key,transcripts:raw.transcripts}),batches=[];
  for(const row of source.transcripts()){
   const key={...target,...(row.subpath===undefined?{}:{subpath:row.subpath})};let part=[],bytes=2,offset=0;

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/native-runner-gateway.test.mjs",
+    "scripts/qualification/assembled-image/source-proof.test.mjs"
+  ],
+  "exitCode": 0,
+  "proofRows": {
+    "changed": 10,
+    "unchanged": 35
+  },
+  "normalization": "Text evidence trims trailing line whitespace only; failure messages/counts preserved."
+}

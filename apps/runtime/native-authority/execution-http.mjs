@@ -21,7 +21,7 @@ export function createNativeExecutionApplication(configuration){
   if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(h('content-type')??'')||h('content-encoding'))throw executionFault('REQUEST');
   const length=h('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))))throw executionFault('REQUEST');
   life=createOperationLifetime({now,signal:input.signal,deadlineMs:now()+maxRequestMs,errorFactory:()=>executionFault('UNAVAILABLE')});
-  const body=own(await jsonBody({body:input.body,length:length===null?null:Number(length)},url.pathname==='/v1/runner/runtime'?2097152:131072,life,life.check),route.fields,url.pathname==='/v1/runner/runtime'?['continuation','sourceRequest','request','scopes']:[]);
+  const body=own(await jsonBody({body:input.body,length:length===null?null:Number(length)},url.pathname==='/v1/runner/runtime'?2097152:131072,life,life.check),route.fields,url.pathname==='/v1/runner/runtime'?['continuation','nextTurn','sourceRequest','request','scopes']:[]);
   const result=await life.run(signal=>route.call({...body,signal}));life.check();return reply(result);
  }catch(error){return reply({error:{code:error?.code==='NATIVE_EXECUTION_REFUSED'?'NATIVE_EXECUTION_REFUSED':'NATIVE_EXECUTION_UNAVAILABLE'}},error?.code==='NATIVE_EXECUTION_REFUSED'?403:503);}finally{life?.close();}}});
 }

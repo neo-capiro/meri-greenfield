@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createTaskSelectedSkills} from '../task.mjs';
+import {runtimeFixture} from '../../../worker/conversation/skills/test/runtime-fixture.mjs';
+import {continuationFixture,id} from '../../../worker/conversation/continuation/test/fixtures.mjs';
+import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
+function fixture(){const f=runtimeFixture(),c=f.configuration,p=continuationFixture().continuation.checkpoint,sourceRequest={...c.request,windowRequest:{basis:'unbounded'}},binding={...c.binding,runId:id(911),attemptId:id(912),workerId:id(913),writerFence:c.binding.writerFence+1},request={...sourceRequest,requestId:id(914),prompt:'A different second prompt'};
+ p.binding=c.binding;p.workspace.binding=c.binding;p.scopes=c.scopes;p.workspace.scopes=c.scopes;p.opaqueSession.scopes=c.scopes;p.versions=c.versions;p.workspaceSha256=hash(p.workspace);
+ const nextTurn={checkpoint:p,checkpointSha256:hash(p),sourceRequestSha256:hash(sourceRequest),contextSha256:hash({window:sourceRequest.window,skill:sourceRequest.skill,scopes:c.scopes}),sourceRequest,targetBinding:binding,resumeSessionAt:null},calls=[];
+ const task=createTaskSelectedSkills({sourceEnabled:true,now:c.now,native:{async call(operation,input){calls.push({operation,input});assert.equal(operation,'selected/prepare');return {sessionId:id(915),binding,requestSha256:hash(request),selection:f.selection,checkedAtMs:c.now(),expiresAtMs:c.now()+5000};}}});
+ return {task,calls,args:{binding,versions:c.versions,request,scopes:c.scopes,nextTurn,sourceRequest},nextTurn};}
+test('selected task accepts separately pinned next-prompt lineage while preserving the current request admission',async()=>{const x=fixture();try{const runtime=await x.task.prepare(x.args);assert.equal(x.calls.length,1);assert.deepEqual(x.calls[0].input,{binding:x.args.binding,requestSha256:hash(x.args.request)});assert.equal(runtime.sdkOptions.mcpServers.meri_original_reads.name,'meri_original_reads');await runtime.close();}finally{await x.task.close();}});
+test('selected next-prompt snapshot/context substitution refuses before source RPC',async()=>{const x=fixture();try{await assert.rejects(x.task.prepare({...x.args,nextTurn:{...x.nextTurn,contextSha256:'0'.repeat(64)}}),/NEXT_TURN_REFUSED/);assert.equal(x.calls.length,0);}finally{await x.task.close();}});

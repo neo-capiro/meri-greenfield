@@ -34,3 +34,42 @@ test('context independent changed policy around native context denies release',a
 test('context independent a later longer run deadline cannot widen original context expiry',async()=>{const f=await setup();let n=0;f.state.runHook=v=>({...v,deadlineMs:f.now()+(++n===1?80:4000)});const out=await f.resolve();assert.equal(out.expiresAtMs,f.now()+80);});
 test('context independent principal mismatch with coherent hash echo still refuses',async()=>{const f=await setup();f.state.contextHook=v=>({...v,principal:{...v.principal,actorId:'forged'}});await assert.rejects(f.resolve());});
 test('mount independent close owns session only and leaves borrowed client callable',async()=>{const f=await setup(),host=f.mount();host.close();assert.deepEqual(host.status(),{enabled:true,closed:true,sessions:0});assert.equal((await send(host,'session',{},'native-private')).status,503);const out=await f.client.readIdentity({credential:'native-private',deadlineMs:f.now()+100});assert.equal(out.principal.actorId,f.binding.actorId);});
+
+// Trusted selection is intentionally independent of browser run hints and of the native receipt.
+async function selectedSetup(){
+ const f=await setup(),selected={...f.binding,runId:id(950),attemptId:id(951),workerId:id(952),writerFence:f.binding.writerFence+1},selectionCalls=[];
+ const state={selectHook:null};
+ f.state.runHook=v=>({...v,binding:copy(selected)});
+ const selectRun=async call=>{selectionCalls.push(call);let v={binding:copy(selected),policyRevision:f.h.t.scopes[0].policyRevision,deadlineMs:f.now()+3000,checkedAtMs:f.now()};if(state.selectHook)v=await state.selectHook(v,call);return typeof v==='string'?v:JSON.stringify(v);};
+ const adapters=createApplicationContextAdapters({...f.config,selectRun});
+ const resolve=async(hints={},signal,identity)=>{const deadlineMs=f.now()+450;identity??=await adapters.verifyIdentity({credential:'native-private',signal,deadlineMs});return adapters.resolveContext({identity,identitySha256:canonicalSha256(identity),identityCredential:'native-private',hints,signal,deadlineMs});};
+ return{...f,selected,selectionCalls,selectionState:state,adapters,resolve};
+}
+test('trusted selector pins one verified binding for both current-run reads',async()=>{
+ const f=await selectedSetup(),out=await f.resolve({conversationId:f.binding.conversationId,clientId:f.h.t.clientId,runId:f.selected.runId});
+ assert.deepEqual(out.binding,f.selected);assert.equal(f.selectionCalls.length,1);assert.equal(f.state.runCalls.length,2);
+ assert.deepEqual(f.state.runCalls.map(v=>v.binding),[f.selected,f.selected]);
+ const call=f.selectionCalls[0];assert.deepEqual(Object.keys(call).sort(),['conversationId','deadlineMs','principal','signal']);
+ assert.deepEqual(call.principal,{tenantId:f.binding.tenantId,actorId:f.binding.actorId});assert.equal(call.conversationId,f.binding.conversationId);assert.ok(Object.isFrozen(call.principal));assert.equal(call.deadlineMs,f.now()+450);
+ assert.equal(out.contextRevision,canonicalSha256({identityRevision:'identity-1',nativeContextRevision:'context-1',binding:f.selected,policyRevision:f.h.t.scopes[0].policyRevision}));
+});
+test('trusted selector can select latest without any browser run hint',async()=>{const f=await selectedSetup();assert.deepEqual((await f.resolve()).binding,f.selected);});
+for(const [key,value]of [['conversationId',id(960)],['clientId',id(961)],['tenantId','evil'],['actorId','evil']])test(`trusted selector refuses browser ${key} substitution before selection`,async()=>{const f=await selectedSetup();await assert.rejects(f.resolve({[key]:value}));assert.equal(f.selectionCalls.length,0);assert.equal(f.state.runCalls.length,0);});
+test('historical browser run hint cannot revive the configured old run',async()=>{const f=await selectedSetup();await assert.rejects(f.resolve({runId:f.binding.runId}));assert.equal(f.selectionCalls.length,1);assert.equal(f.state.runCalls.length,0);assert.equal(f.state.nativeCalls.length,1);});
+for(const [label,mutate]of [['tenant',v=>v.binding.tenantId='other'],['actor',v=>v.binding.actorId='other'],['conversation',v=>v.binding.conversationId=id(962)],['expired',v=>v.deadlineMs=0],['stale',v=>v.checkedAtMs--],['future',v=>v.checkedAtMs++],['policy',v=>v.policyRevision=''],['extra authority',v=>v.clientId=id(963)]])test(`trusted selector ${label} fact refuses before current-run checks`,async()=>{const f=await selectedSetup();f.selectionState.selectHook=v=>{mutate(v);return v;};await assert.rejects(f.resolve());assert.equal(f.state.runCalls.length,0);assert.equal(f.state.nativeCalls.length,1);});
+test('trusted selection cannot bypass current-run rejection of historical target',async()=>{const f=await selectedSetup();f.selectionState.selectHook=v=>({...v,binding:f.binding});await assert.rejects(f.resolve());assert.equal(f.state.runCalls.length,1);assert.equal(f.state.nativeCalls.length,1);});
+test('trusted selection cannot change policy before first current-run check',async()=>{const f=await selectedSetup();f.selectionState.selectHook=v=>({...v,policyRevision:'changed'});await assert.rejects(f.resolve());assert.equal(f.state.runCalls.length,1);assert.equal(f.state.nativeCalls.length,1);});
+test('trusted selected policy revocation during native read refuses context release',async()=>{const f=await selectedSetup();f.state.contextHook=v=>{f.state.runHook=r=>({...r,binding:f.selected,policyRevision:'revoked'});return v;};await assert.rejects(f.resolve());assert.equal(f.state.runCalls.length,2);});
+test('trusted selection requires verified principal before entering selector',async()=>{const f=await selectedSetup(),identity={principal:{tenantId:f.binding.tenantId,actorId:'forged'},identityRevision:'identity-1',checkedAtMs:f.now(),expiresAtMs:f.now()+4000};await assert.rejects(f.resolve({},undefined,identity));assert.equal(f.selectionCalls.length,0);assert.equal(f.state.nativeCalls.length,0);});
+test('trusted selection cannot silently reselect when current run changes during native read',async()=>{const f=await selectedSetup();f.state.contextHook=v=>{f.state.runHook=r=>({...r,binding:f.binding});return v;};await assert.rejects(f.resolve());assert.equal(f.selectionCalls.length,1);assert.equal(f.state.runCalls.length,2);assert.deepEqual(f.state.runCalls.map(v=>v.binding),[f.selected,f.selected]);});
+test('trusted selected context still refuses native revocation and client substitution',async()=>{for(const kind of ['revoked','client']){const f=await selectedSetup();if(kind==='revoked')f.selectionState.selectHook=v=>{f.state.revoked=true;return v;};else f.state.contextHook=v=>({...v,selectedClientId:id(964)});await assert.rejects(f.resolve());assert.equal(f.selectionCalls.length,1);}});
+test('trusted selector cancellation prevents parked selection from releasing context',async()=>{const f=await selectedSetup(),g=gate(),ac=new AbortController();f.selectionState.selectHook=async(v,call)=>{assert.ok(call.signal instanceof AbortSignal);g.enter();await g.blocked;return v;};const work=f.resolve({},ac.signal);await g.entered;ac.abort();await assert.rejects(work);g.release();await turn();assert.equal(f.state.runCalls.length,0);});
+test('trusted selector deadline bounds parked selection even when port ignores signal',async()=>{const f=await selectedSetup();let signal;f.selectionState.selectHook=async(v,call)=>{signal=call.signal;return new Promise(()=>{});};await assert.rejects(f.resolve());assert.equal(signal.aborted,true);assert.equal(f.state.runCalls.length,0);});
+for(const owner of ['identity','selector','before','native','after'])test(`trusted selected receipt preserves shortest original ${owner} deadline`,async()=>{
+ const f=await selectedSetup(),short=f.now()+80;
+ if(owner==='identity')f.state.identityHook=v=>({...v,expiresAtMs:short});
+ if(owner==='selector')f.selectionState.selectHook=v=>({...v,deadlineMs:short});
+ if(owner==='native')f.state.contextHook=v=>({...v,expiresAtMs:short});
+ let n=0;f.state.runHook=v=>{n++;return {...v,binding:copy(f.selected),deadlineMs:(owner==='before'&&n===1)||(owner==='after'&&n===2)?short:f.now()+4000};};
+ const out=await f.resolve();assert.equal(out.expiresAtMs,short);assert.ok(f.selectionCalls[0].deadlineMs<=f.now()+450);assert.equal(f.state.nativeCalls[1].body.conversationId,f.binding.conversationId);
+});

@@ -1,0 +1,122 @@
+{
+  "schema": "meri.source-local-checks/1",
+  "pickupHead": "700f203e7b97b64207489d29e17e00014f7ff43b",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "level": "scripted-source-and-local-bytes-only",
+  "results": [
+    {
+      "name": "source-proof",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "scripts/qualification/assembled-image/source-proof.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "ℹ tests 5",
+        "ℹ pass 5",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "control-local",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/control/conversations/test/application.test.mjs",
+        "apps/control/conversations/test/completion.test.mjs",
+        "apps/control/conversations/test/conversation-public-integration.test.mjs",
+        "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+        "apps/control/conversations/test/lifecycle-workflow.test.mjs",
+        "apps/control/conversations/test/lifecycle.test.mjs",
+        "apps/control/conversations/test/native-preparation.test.mjs",
+        "apps/control/conversations/test/native-prepared-launch.test.mjs",
+        "apps/control/conversations/test/next-run-owner.test.mjs",
+        "apps/control/conversations/test/store.test.mjs",
+        "apps/control/conversations/test/stream.test.mjs"
+      ],
+      "exitCode": 1,
+      "summary": [
+        "✔ cancelled before completion publication wins and cannot be converted to completed (6.5796ms)",
+        "✖ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (4.365ms)",
+        "✖ real PG acknowledged-commit loss requires exact admission readback (1.3738ms)",
+        "✖ real PG original revocation proves absence then retires exact authority even after quarantine (0.9548ms)",
+        "✖ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (0.9266ms)",
+        "✖ restoration receipt exactness and uncertain byte-write state stay immutable in real PG (0.866ms)",
+        "✖ coherently rehashed malformed resource remains corrupt at canonical read boundary (0.7349ms)",
+        "✔ cancelled run refuses late text and completion but original events remain inspectable (1.7322ms)",
+        "ℹ tests 137",
+        "ℹ pass 131",
+        "ℹ fail 6",
+        "ℹ cancelled 0",
+        "ℹ skipped 0",
+        "✖ failing tests:",
+        "✖ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (4.365ms)",
+        "✖ real PG acknowledged-commit loss requires exact admission readback (1.3738ms)",
+        "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {",
+        "✖ real PG original revocation proves absence then retires exact authority even after quarantine (0.9548ms)",
+        "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {",
+        "✖ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (0.9266ms)",
+        "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {",
+        "✖ restoration receipt exactness and uncertain byte-write state stay immutable in real PG (0.866ms)",
+        "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {",
+        "✖ coherently rehashed malformed resource remains corrupt at canonical read boundary (0.7349ms)",
+        "      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {"
+      ]
+    },
+    {
+      "name": "worker-conversation",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/worker/conversation/test/activity.test.mjs",
+        "apps/worker/conversation/test/completion-activity.test.mjs",
+        "apps/worker/conversation/test/control-application.test.mjs",
+        "apps/worker/conversation/test/lifecycle-activity.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "✔ invalid lifecycle ports fail before invoking SDK (0.2239ms)",
+        "ℹ tests 56",
+        "ℹ pass 56",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    },
+    {
+      "name": "runtime-targeted",
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "apps/runtime/native-authority/test/completion-capture.test.mjs",
+        "apps/runtime/native-authority/test/next-turn-restore.test.mjs",
+        "apps/runtime/native-authority/test/continuation-runtime.test.mjs",
+        "apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs",
+        "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+        "apps/runtime/test/prepared-run-issuance.test.mjs",
+        "apps/runtime/test/prepared-run-registry.test.mjs",
+        "apps/runtime/test/lifecycle.test.mjs",
+        "apps/runtime/test/checkpoint-session-factory.test.mjs",
+        "apps/runtime/test/first-session.test.mjs"
+      ],
+      "exitCode": 0,
+      "summary": [
+        "✔ cancelled races capture and wins before completion commit (32.0535ms)",
+        "✔ issuer capability, binding and grant substitutions fail closed (1.3544ms)",
+        "ℹ tests 135",
+        "ℹ pass 135",
+        "ℹ fail 0",
+        "ℹ cancelled 0",
+        "ℹ skipped 0"
+      ]
+    }
+  ]
+}
