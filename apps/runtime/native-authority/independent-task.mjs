@@ -44,7 +44,7 @@ export function createIndependentNativeTask(configuration){
   const cancel=()=>{void close().catch(()=>{});};signal?.addEventListener('abort',cancel,{once:true});completion.promise.finally(()=>signal?.removeEventListener('abort',cancel));send({type:'launch'});
   const stdout=Readable.from(supervisor.stdio[4],{objectMode:false});return Object.freeze({stdin:supervisor.stdio[5],stdout,get killed(){return retiring;},get exitCode(){return exitCode;},get signalCode(){return signalCode;},kill(){void close().catch(()=>{});return true;},on:(event,fn)=>events.on(event,fn),once:(event,fn)=>events.once(event,fn),off:(event,fn)=>events.off(event,fn)});
  }
- async function close(){if(!supervisor)return;if(!retiring){retiring=true;try{send({type:'stop'});}catch{}supervisor.stdio[4].resume();supervisor.stdio[5].end();}
+ async function close(){if(!supervisor){closed=true;retiring=true;ready.reject(executionFault('TASK_STOPPED'));completion.resolve(true);return;}if(!retiring){retiring=true;try{send({type:'stop'});}catch{}supervisor.stdio[4].resume();supervisor.stdio[5].end();}
   const graceful=await bounded(undefined,()=>completion.promise).catch(()=>false);if(!graceful){
    // Only a kernel-pinned original native leader may receive fallback containment.
    if(nativeBirth)try{const actual=birth(nativeBirth.pid);if(actual.started===nativeBirth.started&&actual.group===nativeBirth.group&&actual.executable===nativeBirth.executable)process.kill(-nativeBirth.pid,'SIGKILL');}catch{}
