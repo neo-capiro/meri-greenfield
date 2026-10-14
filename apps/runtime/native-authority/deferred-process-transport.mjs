@@ -1,5 +1,5 @@
 /** Bounded byte streams held until the original admitted process is attached once. */
-import {PassThrough,Transform} from 'node:stream';
+import {PassThrough,Transform,Readable} from 'node:stream';
 import {executionFault} from './execution-broker.mjs';
 export function createDeferredProcessTransport({maxBytes,onError}){
  if(!Number.isSafeInteger(maxBytes)||maxBytes<1||typeof onError!=='function')throw executionFault('TASK_CONFIGURATION');
@@ -13,9 +13,9 @@ export function createDeferredProcessTransport({maxBytes,onError}){
   write(chunk,encoding,callback){if(typeof encoding==='function'){callback=encoding;encoding=undefined;}if(!admit(chunk,encoding,callback))return false;return super.write(chunk,encoding,callback);}
   end(chunk,encoding,callback){if(typeof chunk==='function'){callback=chunk;chunk=undefined;encoding=undefined;}else if(typeof encoding==='function'){callback=encoding;encoding=undefined;}if(!admit(chunk,encoding,callback))return this;return super.end(chunk,encoding,callback);}
  }
- const stdin=new Input(),stdout=new PassThrough({highWaterMark:65536});
- stdin.on('error',onError);stdout.on('error',onError);
- function close(){if(closed)return;closed=true;stdin.destroy();stdout.destroy();}
- function attach(value){if(attached||closed||stdin.destroyed)throw executionFault('TASK_REFUSED');attached=true;stdin.pipe(value.stdin);value.stdout.pipe(stdout);value.stdin.on('error',onError);value.stdout.on('error',onError);}
+ const stdin=new Input(),output=new PassThrough({highWaterMark:65536}),stdout=Readable.from(output,{objectMode:false});
+ stdin.on('error',onError);output.on('error',onError);stdout.on('error',onError);
+ function close(){if(closed)return;closed=true;stdin.destroy();output.destroy();stdout.destroy();}
+ function attach(value){if(attached||closed||stdin.destroyed)throw executionFault('TASK_REFUSED');attached=true;stdin.pipe(value.stdin);value.stdout.pipe(output);value.stdin.on('error',onError);value.stdout.on('error',onError);}
  return Object.freeze({stdin,stdout,attach,close});
 }
