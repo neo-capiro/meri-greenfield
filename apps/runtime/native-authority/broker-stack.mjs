@@ -39,7 +39,7 @@ export function createNativeBrokerStack(configuration){
  const registration={read:taskRegistration};
  const sdkSessionOwner=createDurableSdkSessionOwner({admission:c.supervisor.admission,authority:c.supervisor.taskVerifier,registration,enabled,now,maxRequestMs});
  const sessions=createNativeSdkSessionApplication({owner:sdkSessionOwner,snapshot:continuation,now,maxRequestMs:Math.min(maxRequestMs,30000)});
- return Object.freeze({store,broker,tasks,plan,original,continuation,restorer,runtime:provider,productPorts:Object.freeze({identityContext:c.supervisor.identityContext,sdkSessionOwner}),
+ return Object.freeze({store,broker,tasks,plan,original,continuation,restorer,runtime:provider,productPorts:Object.freeze({identityContext:c.supervisor.identityContext,sdkSessionOwner,sdkSessionSnapshot:continuation}),
   application:Object.freeze({async handle(request){const reply=await execution.handle(request);if(reply!==null)return reply;if(new URL(requestUrl.call(request)).pathname.startsWith('/v1/runner/session/'))return sessions.handle(request);return c.supervisor.application.handle(request);}}),
   async close(){try{await broker.stop();}catch{}await closeTasks();await c.supervisor.close();}});
 }
