@@ -1,0 +1,15 @@
+[
+  "python",
+  "docs/qualification/candidates/native-remote-composition-20261014/author/capture-reaped.py",
+  "changed-surfaces-final",
+  "node",
+  "--test",
+  "--test-concurrency=1",
+  "apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs",
+  "apps/runtime/native-authority/test/remote-task.test.mjs",
+  "apps/runtime/native-authority/test/runner-query.test.mjs",
+  "apps/runtime/native-authority/test/task-checkpoint-source.test.mjs",
+  "apps/runtime/test/runtime.test.mjs",
+  "apps/runtime/test/checkpoint-session-factory.test.mjs",
+  "apps/runtime/test/remote-conversation-runner.test.mjs"
+]

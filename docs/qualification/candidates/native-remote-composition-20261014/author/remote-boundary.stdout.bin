@@ -1,0 +1,49 @@
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (1399.608254ms)
+✔ controller launch boots original once; worker start uses booted original without duplicate launch (1596.163009ms)
+✔ exact stream sequence/digest and changed original reject; lost acknowledgment replay writes once (260.876959ms)
+✔ actual separate supervisor/native child crosses remote byte facade and canonical registration (1716.890965ms)
+✔ prepared latch precedes factory and canonical broker boot; physical start records STARTED once (279.730596ms)
+✖ consumed launch false refuses physical release and parked workspace requires admission both sides (355.896049ms)
+✔ raw bytes, empty directories and modes survive exact fresh installation without parsing (14.817005ms)
+✔ links, hash tampering, duplicate paths and overlapping roots refuse (7.272914ms)
+✔ mutation of earlier nested file during later scan is detected (1.850367ms)
+✔ advertised aggregate accepts opaque data above the generic16MiB JSON ceiling (2578.0287ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7838.362815
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/remote-task.test.mjs:16:1
+✖ consumed launch false refuses physical release and parked workspace requires admission both sides (355.896049ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      binding: {
+        actorId: 'synthetic-actor',
+        attemptId: '00000003-0000-4000-8000-000000000000',
+        conversationId: '00000001-0000-4000-8000-000000000000',
+  ...
+      restoreKey: 'synthetic',
+  +   signal: {},
+      workspaceSha256: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/remote-task.test.mjs:16:291)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { binding: { tenantId: 'synthetic-tenant', actorId: 'synthetic-actor', conversationId: '00000001-0000-4000-8000-000000000000', runId: '00000002-0000-4000-8000-000000000000', attemptId: '00000003-0000-4000-8000-000000000000', workerId: '00000004-0000-4000-8000-000000000000', writerFence: 10 }, restoreKey: 'synthetic', workspaceSha256: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', manifest: {}, files: [], signal: {} },
+    expected: { binding: { tenantId: 'synthetic-tenant', actorId: 'synthetic-actor', conversationId: '00000001-0000-4000-8000-000000000000', runId: '00000002-0000-4000-8000-000000000000', attemptId: '00000003-0000-4000-8000-000000000000', workerId: '00000004-0000-4000-8000-000000000000', writerFence: 10 }, restoreKey: 'synthetic', workspaceSha256: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', manifest: {}, files: [] },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

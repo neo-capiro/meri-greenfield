@@ -24,7 +24,7 @@ export function createRunnableNativeRuntime(configuration){
  const allocator=createNativeTaskAllocator({journal:store.allocations,authority,admission,client:c.client,original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:intents,allocationSha256:hash(JSON.parse(c.allocationJson)),containerName:c.containerName,enabled,now,maxRequestMs:limits.maxRequestMs});
  const assembled=createAllocatedNativeRuntime({allocator,original,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:taskDigest,enabled,now,maxRequestMs:limits.maxRequestMs,
   assemble(admitted){
-   const {grantFactsJsons,...metadata}=admitted.resource;
+   const {grantFactsJsons,launchBinding:ignoredLaunchBinding,...metadata}=admitted.resource;
    const supervisor=createAdmittedSessionSupervisor({pool:c.pool,allocationJson:c.allocationJson,grantFactsJsons,grantId:c.grantId,identity,operations,callerCapabilitySha256:c.controlCapabilitySha256,launchConfiguration:compiled.launchConfiguration,limits,enabled,now});
    let native,closeNative;
    try{native=c.nativeFactory({original,launchConfiguration:compiled.launchConfiguration,metadata});if(types.isPromise(native)){void Promise.prototype.then.call(native,late=>{try{return storageMethod(late,'close')();}catch{}},()=>{}).catch(()=>{});throw executionFault('STACK_CONFIGURATION');}closeNative=storageMethod(native,'close');

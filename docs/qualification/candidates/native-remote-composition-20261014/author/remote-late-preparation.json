@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/remote-task.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 13.854140029998234,
+  "sourceSha256": {
+    "apps/runtime/native-authority/remote-task-http.mjs": "d553927e414b8b3d1b62e171ce394dc18f4283a1fe758001a7a7e9e814fbcede",
+    "apps/runtime/native-authority/remote-task-client.mjs": "13f348ae45ca5a135c29a3f9f4917baf6079d9c249b3fe22cef74f0163db9dce",
+    "apps/runtime/native-authority/test/remote-task.test.mjs": "d00e0db77df86a99b1664f135df8dc90e779e196054ef9786b2976242bb6a787"
+  },
+  "scope": "late prepare/close barriers and byte transport; zero SDK/AWS/provider requests"
+}

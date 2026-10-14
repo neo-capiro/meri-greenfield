@@ -1,0 +1,16 @@
+✔ actual stable files preserve literal bytes, relative names and executable flag (20.05697ms)
+✔ symlink source refuses without changing source bytes (2.745802ms)
+✔ hardlink source refuses without changing source bytes (3.32502ms)
+✔ empty directory source refuses without changing source bytes (2.420227ms)
+✔ case alias source refuses without changing source bytes (4.409484ms)
+✔ oversized file source refuses without changing source bytes (1.978668ms)
+✔ real source mutation during read refuses; descriptor is closed (7.134561ms)
+✔ lease, abort, request path substitution and constructor getters refuse (3.357693ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 425.838293

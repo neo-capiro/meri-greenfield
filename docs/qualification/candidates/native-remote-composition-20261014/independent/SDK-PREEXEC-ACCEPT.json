@@ -1,0 +1,77 @@
+{
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "command": [
+    "python",
+    "docs/qualification/candidates/native-remote-composition-20261014/author/capture-reaped.py",
+    "sdk-source-fork-final",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5",
+    "60",
+    "node",
+    "docs/qualification/candidates/native-remote-composition-20261014/author/sdk-single-query-probe.mjs"
+  ],
+  "probeSha256": "a27685aae2a34be6f007ec86d4fe51dedbdbf317989be22a9c90c952d234fab8",
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "sources": [
+    {
+      "path": "apps/runtime/native-authority/sdk-query-preparation.mjs",
+      "sha256": "49af86752c667afc9e06b086b3a1af1cabe96d589206a0d3c34412b1baa16e00"
+    },
+    {
+      "path": "apps/runtime/native-authority/independent-task.mjs",
+      "sha256": "d013e0b80c0dafff412a7601c54151856f1d5810184ad57c0de157b23307e627"
+    },
+    {
+      "path": "apps/runtime/native-authority/supervisor-process.mjs",
+      "sha256": "dd016b068448318b06ad8f5fda2e01bcedcc460ba7f45e84ed0876fab642941f"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-launcher.mjs",
+      "sha256": "16ca1e5c67023951922da17fdd0a3ac412159428a1ac648f0016392e52c12825"
+    },
+    {
+      "path": "apps/runtime/native-authority/launch-configuration.mjs",
+      "sha256": "2a6754011fe7fdc01b2eac072f1769342a6523d9e17ab0b979fdedb9c7a40fcd"
+    },
+    {
+      "path": "apps/runtime/native-authority/deferred-process-transport.mjs",
+      "sha256": "113e2a09ddaefb3caa1a156b96f4d221ff3768fce4be4b1f8c68cc54a2d85125"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "sha256": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605"
+    },
+    {
+      "path": "packages/contracts/runtime-0.2/validate.mjs",
+      "sha256": "24cce30d93b6d76084ffe841d65837d1cedd8b83213ba0b4c20a90cde814f2ae"
+    },
+    {
+      "path": "apps/runtime/native-authority/runner-query.mjs",
+      "sha256": "bbdba9edef0b56b97a9cebacfea68d9eac2b6552fc62f9b08c978fe6e384ba23"
+    },
+    {
+      "path": "apps/runtime/native-authority/preparation-intent.mjs",
+      "sha256": "dff7deaeb35b2a8a25be9342ebdafba8152ef7f6a3ed3b5dc8db6b68e5445996"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-composition.mjs",
+      "sha256": "83eba61f8cf43a43daf2ff565abebe18d9ccbeb219b7f226cdcea1e271791c82"
+    },
+    {
+      "path": "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs",
+      "sha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0"
+    },
+    {
+      "path": "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+      "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+    }
+  ],
+  "scope": "Actual installed SDK source/fork unchanged local InMemory single-Query component; not remote deployment acceptance",
+  "calls": "Two /status CLI sessions; refusing local sink; assert zero turns/cost/provider requests; no AWS/identity/PG/real document",
+  "sourceManifestSha256": "0bf118553ccc2bd5a937be88d1db18f88b0635e1d48b5f1afc29dc9dc81c1f45",
+  "verdict": "ACCEPT_BOUNDED_LOCAL_SDK_COMPONENT_PREEXEC_ONLY",
+  "reviewerScope": "No SDK execution. Exact recorded twoCLI /status source/fork zero turns/cost/no upstream; 50s internal/60s TERM+kill5. No remote/Fargate/PG/end-to-end acceptance.",
+  "sourceDiffBytes": 0,
+  "all46SourceFilesVerified": true
+}

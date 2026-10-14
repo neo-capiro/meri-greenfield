@@ -1,0 +1,14 @@
+✔ real ECS command fixtures bracket exact original running task and immutable declared code pins (20.623943ms)
+✔ false image, provisioning, unrelated ARN, no tags and missing stopped exit refuse without cleanup mutation (14.433061ms)
+✔ mutable task definition image, false or duplicate runner declarations and conflicting overrides refuse (10.813659ms)
+✔ expiry, canceled request and changed original/resource fail before borrowed client call (2.577364ms)
+✔ task stopped during definition lookup or denied read cannot produce authority or cleanup proof (4.374819ms)
+✔ deadline/lease expires during definition read and cannot yield a fresh receipt (2.021069ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1017.374735

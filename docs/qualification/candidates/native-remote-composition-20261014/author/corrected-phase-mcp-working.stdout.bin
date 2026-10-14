@@ -1,0 +1,14 @@
+✔ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (3743.251294ms)
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (4.629037ms)
+✔ close before first iteration retires transport without preparing a Query (0.64921ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (2.696065ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (1.065355ms)
+✔ actual adopted SDK MCP server prototype close is admitted effect-free (198.639045ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6852.399275

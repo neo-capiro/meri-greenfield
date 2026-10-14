@@ -1,0 +1,190 @@
+{
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "base": "47c28805fbfc560c0b556875f673c3211e4e6a96",
+  "files": [
+    {
+      "path": "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "sha256": "8a257cf9513572ca0efbe2430ea40fd38e859ae484668a6a90fa4b84b6e142ec"
+    },
+    {
+      "path": "apps/control/conversations/native-preparation-journal.mjs",
+      "sha256": "5f4c13dff8ecc7d7cf0e0d53a7b9e0b7a05925902ec92fd6c2ba3ce49702d63a"
+    },
+    {
+      "path": "apps/control/conversations/test/native-prepared-launch-pg.test.mjs",
+      "sha256": "4cb67ca041e3902bd82a7daf40e85078e1a44216605ec08b23f61f144fbbdbdb"
+    },
+    {
+      "path": "apps/control/conversations/test/native-prepared-launch.test.mjs",
+      "sha256": "d24f3f0ddc0bc9ae661ec0bfaa8a3f6d6eac8e4867caf33ef8e74281f8536fd0"
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "sha256": "0e1f6e02559e00ae9a2044cc6cb4cedce05a2de1e5530fc874b1175402574785"
+    },
+    {
+      "path": "apps/runtime/checkpoint-session-factory.mjs",
+      "sha256": "7d726a270be865fda6df6b28812a72a218386688805ac27d5040df69518cb85c"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "sha256": "7d92f4e3aa7c1679e51e4fc8fc6baa0eebae34166bad1a8e8d622331564f12bf"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "sha256": "57d72de8064d1b6888b95c20c692757f411f7fb96c9c7ceea2b3074d24c43259"
+    },
+    {
+      "path": "apps/runtime/native-authority/admitted-supervisor.mjs",
+      "sha256": "abd0e48f4fcfad5e6eb56e9010623aaeab823c8dd07ebc30eca421963a64bcf1"
+    },
+    {
+      "path": "apps/runtime/native-authority/admitted-task-authority.mjs",
+      "sha256": "fd036be295cb423a254e89e84dbcc1d4e666ecf297847db4ce5202e2021ab309"
+    },
+    {
+      "path": "apps/runtime/native-authority/broker-stack.mjs",
+      "sha256": "7b1588d2539759bc7c568a619e3331cb28ca286730f77549b7ac1ec2acf7a860"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-capture.mjs",
+      "sha256": "4a376b7b134fa81973ec5b0ef62ccb800eac74938dafa862ccd2b3232655a3c7"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+      "sha256": "04962c23cda7aaec20223e8b4c0d6f2957eb7207125eacd8fbeb8e86ba38b370"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-prepared-task-proof.mjs",
+      "sha256": "58ebb245d115e48d6517992e89c7663630ca8ec87e16f8b72079137ae56455bf"
+    },
+    {
+      "path": "apps/runtime/native-authority/preparation-http.mjs",
+      "sha256": "aebb7d299616269661d85e135ec2657daf395352b9a9197cf7714fb8cedc435a"
+    },
+    {
+      "path": "apps/runtime/native-authority/preparation-intent.mjs",
+      "sha256": "dff7deaeb35b2a8a25be9342ebdafba8152ef7f6a3ed3b5dc8db6b68e5445996"
+    },
+    {
+      "path": "apps/runtime/native-authority/prepared-runtime.mjs",
+      "sha256": "45ac1ca4012dbd8cfd8a3c971028c0533859887385b8b6d39d23a88b5fc9cde3"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-composition.mjs",
+      "sha256": "83eba61f8cf43a43daf2ff565abebe18d9ccbeb219b7f226cdcea1e271791c82"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-task-boundary.mjs",
+      "sha256": "d00e85741f522af21faf37c1a5034b709bdf0a1458e41f453028ef40bc435942"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-task-client.mjs",
+      "sha256": "b7d19bb48c0c3b79727bbabce2e9a370a13d2b1207ffe99be0be19adc9a92c71"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-task-http.mjs",
+      "sha256": "d553927e414b8b3d1b62e171ce394dc18f4283a1fe758001a7a7e9e814fbcede"
+    },
+    {
+      "path": "apps/runtime/native-authority/runnable-runtime.mjs",
+      "sha256": "33a6b94adf9a01bafacc21e8aa68c79d737b9d1d6cf9de0138273c08e6cad5ad"
+    },
+    {
+      "path": "apps/runtime/native-authority/runner-query.mjs",
+      "sha256": "bbdba9edef0b56b97a9cebacfea68d9eac2b6552fc62f9b08c978fe6e384ba23"
+    },
+    {
+      "path": "apps/runtime/native-authority/sdk-config-transfer.mjs",
+      "sha256": "1931a38f5ca9a83afa6b33148afbb1df45d9189613fdfa84b52ab77a3cc5a9e2"
+    },
+    {
+      "path": "apps/runtime/native-authority/sdk-option-projection.mjs",
+      "sha256": "90192280719431d870b7d73f932d394c0249f673a214cf42e8a961df613c97ba"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-allocator.mjs",
+      "sha256": "4dddf4b2e5ca812c6e06390f259a4ab92060b07ee0ef09079329a545774336a1"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-checkpoint-source.mjs",
+      "sha256": "cff7ba9d57523d5b597c444d51a250df838806ac83c798fa153c9e82e20170ce"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/checkpoint-capture.test.mjs",
+      "sha256": "e5bbde54d6c97c448e214719fe792130c4e596500f60e3d793388e85606fe7ea"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/ecs-prepared-task-proof.test.mjs",
+      "sha256": "15277d1b2a38d399354ffb6a995ef2eae2d580b1c130f364a2c2991ea4fd6927"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs",
+      "sha256": "ddfb9c29d9932e72245f9981d354da409ee3fd72bc289bf351d6cdc58d9a8c20"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/remote-allocation-preflight.test.mjs",
+      "sha256": "b8e232f1b6639fc7dc08641d5f6740814834de4e60b2a6160fcfcf2182ef8254"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/remote-task.test.mjs",
+      "sha256": "dfe533dd2ea737ad39e9db1bfce2ed68daad3c6a22916671e649845c2d9a3b1a"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/runner-query.test.mjs",
+      "sha256": "80fdfa4a636dcdd7eb15eb7f28584efe2b927d98a52c846ffb343b71162ec928"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/sdk-config-transfer.test.mjs",
+      "sha256": "3b364785472cdf07575b3f20c29d61a74cebbfeb830b26fc9227795c3413b190"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/task-checkpoint-source.test.mjs",
+      "sha256": "6dc878008e1e92e99e36962d8cc7c10b2740333426ae5cbe5e390099cd78132e"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/workspace-capture.test.mjs",
+      "sha256": "6f41b85ead8d4978afdb0b3acf32f26d0abd070bb3e74192a51bd76b21c26cb9"
+    },
+    {
+      "path": "apps/runtime/native-authority/workspace-capture.mjs",
+      "sha256": "f400c14854b51c94d21eebcef2563b192eb5e3095ebef136e977df823defaab3"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "sha256": "be428b9bfe48381c1b1d320bf7052660eab771b52a29e65d2837e7f053b18af5"
+    },
+    {
+      "path": "apps/runtime/remote-conversation-runner.mjs",
+      "sha256": "09cc164963510436f13c02c9dbf181e072ee38db144dbfe1d84d1faf32ff39b5"
+    },
+    {
+      "path": "apps/runtime/test/checkpoint-session-factory.test.mjs",
+      "sha256": "66469c2a0e5ca946acf6b785a8e5fc265a5c4517b494237fc908ef3c5720fe46"
+    },
+    {
+      "path": "apps/runtime/test/native-runner-gateway.test.mjs",
+      "sha256": "d550abb01c7ac77d92f0a7cc883c9cc7f256bbabf4b966f5234ff9ac85fdce24"
+    },
+    {
+      "path": "apps/runtime/test/remote-conversation-runner.test.mjs",
+      "sha256": "2b97875b240645c4c1840126450f33c0417f2ff64f2e303bc10d81274c97e1da"
+    },
+    {
+      "path": "apps/runtime/test/runtime.test.mjs",
+      "sha256": "a362e5f2be2776681df86031de228588a3dfcb98ee2afc3a19d0b122726fa065"
+    },
+    {
+      "path": "apps/worker/conversation/activity.mjs",
+      "sha256": "cf3a4d990df2b435848b44124d57bbf0b1b590ba611143617da6035b88cb9b96"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/activity-lifecycle.mjs",
+      "sha256": "a8ae019ac5a2d7119e01869e17f5981a6698df1472f9350ec5305ac8fe2d08a5"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/commands.mjs",
+      "sha256": "0e3c63bc9fd59ead03f94a1aba08018f20fb92b6a98feaa13347ed2b5faaa760"
+    }
+  ]
+}

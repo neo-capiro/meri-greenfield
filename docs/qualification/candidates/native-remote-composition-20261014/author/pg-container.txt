@@ -1,0 +1,263 @@
+Unable to find image 'postgres:16' locally
+16: Pulling from library/postgres
+ecc510c1e359: Pulling fs layer
+79faf13a8736: Pulling fs layer
+6456bfbf35e7: Pulling fs layer
+b353db459ed1: Pulling fs layer
+99f49de4fe2b: Pulling fs layer
+83d1a2a3917c: Pulling fs layer
+715ea0948cb1: Pulling fs layer
+486e8305f56f: Pulling fs layer
+e7d675f11ded: Pulling fs layer
+c49864c27f35: Pulling fs layer
+770ef8b308ea: Pulling fs layer
+50c25daa0302: Pulling fs layer
+8309db3ae5b6: Pulling fs layer
+9731e27f2541: Pulling fs layer
+99f49de4fe2b: Waiting
+83d1a2a3917c: Waiting
+715ea0948cb1: Waiting
+486e8305f56f: Waiting
+e7d675f11ded: Waiting
+c49864c27f35: Waiting
+b353db459ed1: Waiting
+770ef8b308ea: Waiting
+50c25daa0302: Waiting
+8309db3ae5b6: Waiting
+9731e27f2541: Waiting
+79faf13a8736: Verifying Checksum
+79faf13a8736: Download complete
+6456bfbf35e7: Download complete
+b353db459ed1: Verifying Checksum
+b353db459ed1: Download complete
+99f49de4fe2b: Verifying Checksum
+99f49de4fe2b: Download complete
+ecc510c1e359: Download complete
+83d1a2a3917c: Verifying Checksum
+83d1a2a3917c: Download complete
+715ea0948cb1: Verifying Checksum
+715ea0948cb1: Download complete
+486e8305f56f: Download complete
+770ef8b308ea: Verifying Checksum
+770ef8b308ea: Download complete
+c49864c27f35: Verifying Checksum
+c49864c27f35: Download complete
+50c25daa0302: Verifying Checksum
+50c25daa0302: Download complete
+8309db3ae5b6: Verifying Checksum
+8309db3ae5b6: Download complete
+9731e27f2541: Download complete
+ecc510c1e359: Pull complete
+79faf13a8736: Pull complete
+6456bfbf35e7: Pull complete
+b353db459ed1: Pull complete
+99f49de4fe2b: Pull complete
+83d1a2a3917c: Pull complete
+715ea0948cb1: Pull complete
+e7d675f11ded: Verifying Checksum
+e7d675f11ded: Download complete
+486e8305f56f: Pull complete
+e7d675f11ded: Pull complete
+c49864c27f35: Pull complete
+770ef8b308ea: Pull complete
+50c25daa0302: Pull complete
+8309db3ae5b6: Pull complete
+9731e27f2541: Pull complete
+Digest: sha256:ca0bd484cb98bf4b24eb1010e73fb3fcbd6714d240fbc1a10eea5b7dbecb641d
+Status: Downloaded newer image for postgres:16
+********************************************************************************
+WARNING: POSTGRES_HOST_AUTH_METHOD has been set to "trust". This will allow
+         anyone with access to the Postgres port to access your database without
+         a password, even if POSTGRES_PASSWORD is set. See PostgreSQL
+         documentation about "trust":
+         https://www.postgresql.org/docs/current/auth-trust.html
+         In Docker's default configuration, this is effectively any other
+         container on the same system.
+
+         It is not recommended to use POSTGRES_HOST_AUTH_METHOD=trust. Replace
+         it with "-e POSTGRES_PASSWORD=password" instead to set a password in
+         "docker run".
+********************************************************************************
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.utf8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /var/lib/postgresql/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default time zone ... Etc/UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+ok
+
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /var/lib/postgresql/data -l logfile start
+
+waiting for server to start....2026-10-14 08:38:14.594 UTC [50] LOG:  starting PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-14 08:38:14.594 UTC [50] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-14 08:38:14.601 UTC [53] LOG:  database system was shut down at 2026-10-14 08:38:13 UTC
+2026-10-14 08:38:14.610 UTC [50] LOG:  database system is ready to accept connections
+ done
+server started
+
+/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+
+waiting for server to shut down....2026-10-14 08:38:14.803 UTC [50] LOG:  received fast shutdown request
+2026-10-14 08:38:14.804 UTC [50] LOG:  aborting any active transactions
+2026-10-14 08:38:14.806 UTC [50] LOG:  background worker "logical replication launcher" (PID 56) exited with exit code 1
+2026-10-14 08:38:14.808 UTC [51] LOG:  shutting down
+2026-10-14 08:38:14.810 UTC [51] LOG:  checkpoint starting: shutdown immediate
+2026-10-14 08:38:14.820 UTC [51] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.003 s, total=0.012 s; sync files=2, longest=0.002 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/14F2A58, redo lsn=0/14F2A58
+2026-10-14 08:38:14.826 UTC [50] LOG:  database system is shut down
+ done
+server stopped
+
+PostgreSQL init process complete; ready for start up.
+
+2026-10-14 08:38:14.943 UTC [1] LOG:  starting PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-14 08:38:14.943 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-10-14 08:38:14.948 UTC [64] LOG:  database system was shut down at 2026-10-14 08:38:14 UTC
+2026-10-14 08:38:14.961 UTC [1] LOG:  database system is ready to accept connections
+2026-10-14 08:41:25.077 UTC [78] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.077 UTC [78] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.077 UTC [78] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.090 UTC [79] ERROR:  native resource identity is immutable
+2026-10-14 08:41:25.090 UTC [79] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 20 at RAISE
+2026-10-14 08:41:25.090 UTC [79] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.109 UTC [80] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.109 UTC [80] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.109 UTC [80] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.120 UTC [81] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.120 UTC [81] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.120 UTC [81] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.131 UTC [82] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.131 UTC [82] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.131 UTC [82] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.141 UTC [83] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.141 UTC [83] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.141 UTC [83] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.152 UTC [84] ERROR:  native prepared launch shape refused
+2026-10-14 08:41:25.152 UTC [84] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 35 at RAISE
+2026-10-14 08:41:25.152 UTC [84] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.160 UTC [85] ERROR:  native prepared launch shape refused
+2026-10-14 08:41:25.160 UTC [85] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 35 at RAISE
+2026-10-14 08:41:25.160 UTC [85] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.331 UTC [87] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.331 UTC [87] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.331 UTC [87] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:41:25.358 UTC [88] ERROR:  native prepared launch identity or transition refused
+2026-10-14 08:41:25.358 UTC [88] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 08:41:25.358 UTC [88] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 08:43:15.055 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 08:47:01.275 UTC [62] LOG:  checkpoint complete: wrote 2151 buffers (13.1%); 1 WAL file(s) added, 0 removed, 0 recycled; write=225.534 s, sync=0.534 s, total=226.222 s; sync files=941, longest=0.008 s, average=0.001 s; distance=10561 kB, estimate=10561 kB; lsn=0/1F7AB88, redo lsn=0/1F43158
+2026-10-14 08:48:15.353 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 08:48:23.144 UTC [62] LOG:  checkpoint complete: wrote 77 buffers (0.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=7.679 s, sync=0.080 s, total=7.790 s; sync files=114, longest=0.005 s, average=0.001 s; distance=318 kB, estimate=9537 kB; lsn=0/1F929E8, redo lsn=0/1F929B0
+2026-10-14 08:53:15.245 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 08:53:24.017 UTC [62] LOG:  checkpoint complete: wrote 86 buffers (0.5%); 0 WAL file(s) added, 0 removed, 1 recycled; write=8.575 s, sync=0.179 s, total=8.772 s; sync files=345, longest=0.016 s, average=0.001 s; distance=497 kB, estimate=8633 kB; lsn=0/200EF70, redo lsn=0/200EF38
+2026-10-14 08:58:11.448 UTC [165] ERROR:  native execution identity is immutable
+2026-10-14 08:58:11.448 UTC [165] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_execution_identity() line 5 at RAISE
+2026-10-14 08:58:11.448 UTC [165] STATEMENT:  UPDATE meri_conversations.native_executions SET record=jsonb_set(record,'{expiresAtMs}','1')
+2026-10-14 08:58:15.116 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 08:58:24.584 UTC [62] LOG:  checkpoint complete: wrote 54 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=9.058 s, sync=0.355 s, total=9.468 s; sync files=1247, longest=0.005 s, average=0.001 s; distance=954 kB, estimate=7865 kB; lsn=0/2149470, redo lsn=0/20FD888
+2026-10-14 09:03:15.720 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 09:03:29.785 UTC [62] LOG:  checkpoint complete: wrote 93 buffers (0.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=13.230 s, sync=0.187 s, total=14.050 s; sync files=248, longest=0.021 s, average=0.001 s; distance=628 kB, estimate=7141 kB; lsn=0/219AA20, redo lsn=0/219A9E8
+2026-10-14 09:05:31.320 UTC [199] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.320 UTC [199] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.320 UTC [199] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.335 UTC [200] ERROR:  native resource identity is immutable
+2026-10-14 09:05:31.335 UTC [200] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 20 at RAISE
+2026-10-14 09:05:31.335 UTC [200] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.355 UTC [201] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.355 UTC [201] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.355 UTC [201] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.370 UTC [202] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.370 UTC [202] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.370 UTC [202] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.386 UTC [203] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.386 UTC [203] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.386 UTC [203] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.397 UTC [204] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.397 UTC [204] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.397 UTC [204] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.423 UTC [205] ERROR:  native prepared launch shape refused
+2026-10-14 09:05:31.423 UTC [205] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 35 at RAISE
+2026-10-14 09:05:31.423 UTC [205] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.433 UTC [206] ERROR:  native prepared launch shape refused
+2026-10-14 09:05:31.433 UTC [206] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 35 at RAISE
+2026-10-14 09:05:31.433 UTC [206] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.625 UTC [208] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.625 UTC [208] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.625 UTC [208] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:05:31.661 UTC [209] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:05:31.661 UTC [209] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:05:31.661 UTC [209] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:49.138 UTC [222] ERROR:  native preparation identity is immutable
+2026-10-14 09:06:49.138 UTC [222] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 5 at RAISE
+2026-10-14 09:06:49.138 UTC [222] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$1,record_sha256=$2
+2026-10-14 09:06:49.149 UTC [223] ERROR:  native retirement requires stop proof
+2026-10-14 09:06:49.149 UTC [223] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 59 at RAISE
+2026-10-14 09:06:49.149 UTC [223] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$1,record_sha256=$2
+2026-10-14 09:06:49.158 UTC [224] ERROR:  native resource identity is immutable
+2026-10-14 09:06:49.158 UTC [224] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 20 at RAISE
+2026-10-14 09:06:49.158 UTC [224] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$1,record_sha256=$2
+2026-10-14 09:06:49.738 UTC [226] ERROR:  native restoration transition refused
+2026-10-14 09:06:49.738 UTC [226] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 66 at RAISE
+2026-10-14 09:06:49.738 UTC [226] STATEMENT:  UPDATE meri_conversations.native_restorations SET record=$1,record_sha256=$2
+2026-10-14 09:06:51.958 UTC [230] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:51.958 UTC [230] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:51.958 UTC [230] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:51.970 UTC [231] ERROR:  native resource identity is immutable
+2026-10-14 09:06:51.970 UTC [231] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 20 at RAISE
+2026-10-14 09:06:51.970 UTC [231] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:51.987 UTC [232] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:51.987 UTC [232] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:51.987 UTC [232] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.000 UTC [233] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:52.000 UTC [233] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:52.000 UTC [233] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.012 UTC [234] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:52.012 UTC [234] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:52.012 UTC [234] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.024 UTC [235] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:52.024 UTC [235] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:52.024 UTC [235] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.038 UTC [236] ERROR:  native prepared launch shape refused
+2026-10-14 09:06:52.038 UTC [236] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 35 at RAISE
+2026-10-14 09:06:52.038 UTC [236] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.057 UTC [237] ERROR:  native prepared launch shape refused
+2026-10-14 09:06:52.057 UTC [237] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 35 at RAISE
+2026-10-14 09:06:52.057 UTC [237] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.227 UTC [239] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:52.227 UTC [239] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:52.227 UTC [239] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:06:52.267 UTC [240] ERROR:  native prepared launch identity or transition refused
+2026-10-14 09:06:52.267 UTC [240] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 49 at RAISE
+2026-10-14 09:06:52.267 UTC [240] STATEMENT:  UPDATE meri_conversations.native_allocations SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3
+2026-10-14 09:07:54.561 UTC [259] ERROR:  native execution identity is immutable
+2026-10-14 09:07:54.561 UTC [259] CONTEXT:  PL/pgSQL function meri_conversations.preserve_native_execution_identity() line 5 at RAISE
+2026-10-14 09:07:54.561 UTC [259] STATEMENT:  UPDATE meri_conversations.native_executions SET record=jsonb_set(record,'{expiresAtMs}','1')
+2026-10-14 09:08:16.121 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 09:08:37.795 UTC [62] LOG:  checkpoint complete: wrote 112 buffers (0.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=18.623 s, sync=1.302 s, total=21.675 s; sync files=1830, longest=0.186 s, average=0.001 s; distance=1637 kB, estimate=6591 kB; lsn=0/2334228, redo lsn=0/23341B8
+2026-10-14 09:13:16.846 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 09:13:25.337 UTC [62] LOG:  checkpoint complete: wrote 84 buffers (0.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=8.425 s, sync=0.048 s, total=8.491 s; sync files=246, longest=0.002 s, average=0.001 s; distance=419 kB, estimate=5974 kB; lsn=0/239CF58, redo lsn=0/239CF20
+2026-10-14 09:18:16.375 UTC [62] LOG:  checkpoint starting: time
+2026-10-14 09:18:24.702 UTC [62] LOG:  checkpoint complete: wrote 72 buffers (0.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=8.216 s, sync=0.072 s, total=8.329 s; sync files=111, longest=0.007 s, average=0.001 s; distance=233 kB, estimate=5400 kB; lsn=0/23D73E8, redo lsn=0/23D73B0
+2026-10-14 10:07:05.266 UTC [1] LOG:  received fast shutdown request
+2026-10-14 10:07:05.273 UTC [1] LOG:  aborting any active transactions
+2026-10-14 10:07:05.315 UTC [1] LOG:  background worker "logical replication launcher" (PID 67) exited with exit code 1
+2026-10-14 10:07:05.320 UTC [62] LOG:  shutting down
+2026-10-14 10:07:05.324 UTC [62] LOG:  checkpoint starting: shutdown immediate
+2026-10-14 10:07:05.589 UTC [62] LOG:  checkpoint complete: wrote 57 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.045 s, sync=0.195 s, total=0.268 s; sync files=107, longest=0.127 s, average=0.002 s; distance=158 kB, estimate=4875 kB; lsn=0/23FEEC0, redo lsn=0/23FEEC0
+2026-10-14 10:07:05.614 UTC [1] LOG:  database system is shut down

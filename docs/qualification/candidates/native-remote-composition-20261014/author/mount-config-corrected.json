@@ -1,0 +1,9 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/native-remote-composition-20261014/author/mount-config-probe.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 17.273840423000365,
+  "scope": "nonroot networknone rawSDKconfig filesystem mount only"
+}

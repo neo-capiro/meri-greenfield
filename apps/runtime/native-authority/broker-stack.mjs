@@ -13,10 +13,20 @@ import {compileNativeLaunch} from './launch-configuration.mjs';
 import {createNativeContinuationRuntime} from './continuation-runtime.mjs';
 import {createNativeCheckpointRestorer} from './native-restorer.mjs';
 import {createNativeSdkSessionApplication} from './session-http.mjs';
+import {compileNativePreparationIntent,matchPreparedDescriptor} from './preparation-intent.mjs';
 const requestUrl=Object.getOwnPropertyDescriptor(Request.prototype,'url').get;
 /** Inert shared original-plan compiler; allocator and broker must use the same identity. */
 export function compileNativeBrokerPlan(configuration){
- const c=own(configuration,['runtime','plan','launchConfiguration']),runtime=compileNativeRuntimePlan(c.runtime),p=compileNativeLaunch(c.launchConfiguration);
+ const c=own(configuration,['runtime','plan'],['launchConfiguration','preparationIntent']),runtime=compileNativeRuntimePlan(c.runtime);
+ if(c.preparationIntent!==undefined){
+  const preparationIntent=compileNativePreparationIntent(c.preparationIntent);if(runtime.versions.imageDigest!=='sha256:'+preparationIntent.imageSha256)throw executionFault('STACK_CONFIGURATION');
+  if(c.launchConfiguration!==undefined){const p=compileNativeLaunch(c.launchConfiguration);if(hash(p.binding)!==hash(runtime.binding)||p.expiresAtMs!==runtime.deadlineMs)throw executionFault('STACK_CONFIGURATION');}
+  if(c.launchConfiguration!==undefined)matchPreparedDescriptor({command:c.launchConfiguration.launch.command,args:c.launchConfiguration.launch.args,env:c.launchConfiguration.launch.env,cwd:c.launchConfiguration.workspace},preparationIntent);
+  const plan=data({ownerPlan:data(c.plan),runtimeSha256:hash(runtime),preparationSha256:hash(preparationIntent)});
+  const original=createExecutionBinding({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs});
+  return Object.freeze({runtime,preparationIntent,plan,original,...(c.launchConfiguration===undefined?{}:{launchConfiguration:data(c.launchConfiguration)})});
+ }
+ const p=compileNativeLaunch(c.launchConfiguration);
  const launchConfiguration={binding:p.binding,workspace:p.workspace,configDirectory:p.configDirectory,...(p.secureStorageDirectory!==p.configDirectory?{secureStorageDirectory:p.secureStorageDirectory}:{}),versions:p.versions,expiresAtMs:p.expiresAtMs,executableSha256:p.executableSha256,launch:p.launch,enabled:p.enabled,shutdownMs:p.shutdownMs,...(p.limits?{limits:p.limits}:{})};
  const plan=data({ownerPlan:data(c.plan),runtimeSha256:hash(runtime),launchSha256:hash(launchConfiguration)});
  if(hash(p.binding)!==hash(runtime.binding)||p.expiresAtMs!==runtime.deadlineMs)throw executionFault('STACK_CONFIGURATION');
@@ -24,8 +34,8 @@ export function compileNativeBrokerPlan(configuration){
  return Object.freeze({runtime,launchConfiguration:data(launchConfiguration),plan,original});
 }
 export function createNativeBrokerStack(configuration){
- const c=own(configuration,['pool','supervisor','runtime','plan','launchConfiguration','taskCapability','controlCapabilitySha256','tasksFactory'],['enabled','now','maxRequestMs','continuationObjects']);
- const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,{runtime,launchConfiguration,plan,original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,launchConfiguration:c.launchConfiguration});
+ const c=own(configuration,['pool','supervisor','runtime','plan','launchConfiguration','taskCapability','controlCapabilitySha256','tasksFactory'],['enabled','now','maxRequestMs','continuationObjects','preparationIntent']);
+ const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,{runtime,launchConfiguration,plan,original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,launchConfiguration:c.launchConfiguration,...(c.preparationIntent?{preparationIntent:c.preparationIntent}:{})});
  if(typeof c.tasksFactory!=='function')throw executionFault('STACK_CONFIGURATION');
  const store=createPostgresConversationStore({pool:c.pool}),objects=c.continuationObjects?{get:storageMethod(c.continuationObjects,'get')}:undefined;
  const tasks=c.tasksFactory({original,launchConfiguration}),closeTasks=storageMethod(tasks,'close'),readyTasks=storageMethod(tasks,'readiness'),taskDigest=capabilityDigest(c.taskCapability);

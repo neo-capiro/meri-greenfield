@@ -1,0 +1,17 @@
+{
+  "scope": "Raw configuration transfer across network-none nonroot container bind mount, exact unchanged absolute SDK paths; no HTTP/process/provider/Fargate acceptance",
+  "container": "meri-config-mount-121701",
+  "uid": 1000,
+  "network": "none",
+  "sourcePath": "/tmp/meri-mounted-config-oyhyiM/controller/sdk-generated",
+  "targetBackingPath": "/tmp/meri-mounted-config-oyhyiM/physical/sdk-generated",
+  "sameCompiledPath": "/tmp/meri-mounted-config-oyhyiM/controller/sdk-generated",
+  "sourceInode": 41335,
+  "targetInode": 41358,
+  "sha256": "2103de8f954fc4aaa56c902d62d5f298e0db67ee5aecd31453cf07bef4f46e74",
+  "receipt": {
+    "sha256": "2103de8f954fc4aaa56c902d62d5f298e0db67ee5aecd31453cf07bef4f46e74",
+    "verified": true
+  },
+  "cleanup": true
+}

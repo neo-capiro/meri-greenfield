@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/sdk-config-transfer.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 10.660952526999608,
+  "sourceSha256": {
+    "remote-task-boundary.mjs": "d00e85741f522af21faf37c1a5034b709bdf0a1458e41f453028ef40bc435942",
+    "remote-task-client.mjs": "dc0befd78c74583cb78af231fe6bbb1065e4851c57426da984edd2896126a1f5",
+    "remote-task-http.mjs": "3de6408adf4d1d5f0b591b56a9eee4bcca42eb7e40d5ec962cd3f23113ee6789",
+    "sdk-config-transfer.mjs": "c021a7ef375dcc6e14c953b4772405e81906921d9fff7434c224a4c4b8a49cbe",
+    "test/remote-task.test.mjs": "1ace5ae75b75d572f5bd8024038a9af66793d01278a9bdbb9bea117f9ea0ebe7",
+    "test/sdk-config-transfer.test.mjs": "3b364785472cdf07575b3f20c29d61a74cebbfeb830b26fc9227795c3413b190"
+  },
+  "scope": "local Fetch HTTP boundary; synthetic admitted/preparation ACKs; actual Node supervisor/native process canonical registration; no Fargate/TLS/provider/wholeproject acceptance"
+}

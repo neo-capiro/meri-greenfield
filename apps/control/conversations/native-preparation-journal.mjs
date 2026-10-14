@@ -5,6 +5,10 @@ const digest=v=>{if(typeof v!=='string'||!/^[a-f0-9]{64}$/u.test(v))denied();};
 const positive=v=>{if(!Number.isSafeInteger(v)||v<1)denied();};
 const allocationFields=['original','allocationSha256','qualification','grantIntents','taskRequestSha256'];
 const restoreFields=['checkpointSha256','contextSha256','sourceRequestSha256','workspaceSha256','opaqueSessionSha256'];
+const launchFields=['preparationId','descriptorSha256','configTreeSha256'];
+const launchTransitions={PREPARED:['CLAIMED'],CLAIMED:['STARTED','UNKNOWN'],STARTED:['STARTED'],UNKNOWN:['UNKNOWN']};
+function launchPins(value){const v=own(value,launchFields);uuid(v.preparationId);digest(v.descriptorSha256);digest(v.configTreeSha256);return v;}
+function launchBinding(value){const v=own(value,[...launchFields,'state']);launchPins(Object.fromEntries(launchFields.map(k=>[k,v[k]])));if(!Object.hasOwn(launchTransitions,v.state))denied();return v;}
 function allocationIntent(i){
  const o=own(i.original,['binding','executionKey','executionId','planSha256','expiresAtMs','versions']);
  validateShape('RuntimeVersions',o.versions);digest(o.planSha256);
@@ -16,11 +20,12 @@ function allocationIntent(i){
 }
 function resource(value,i,state){
  if(value===null){if(['ALLOCATED','ADMITTED','RETIRED'].includes(state))denied();return;}
- const v=own(value,['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'],['grantFactsJsons','physicalStopProven']);
+ const v=own(value,['taskArn','createdAtMs','clusterArn','taskDefinitionArn','containerName'],['grantFactsJsons','physicalStopProven','launchBinding']);
  const prefix='arn:aws:ecs:us-east-1:967807252336:',cluster=typeof v.clusterArn==='string'&&v.clusterArn.slice((prefix+'cluster/').length);
  if(typeof cluster!=='string'||!v.clusterArn.startsWith(prefix+'cluster/')||!/^[A-Za-z0-9_-]{1,255}$/u.test(cluster)||typeof v.taskArn!=='string'||!v.taskArn.startsWith(prefix+'task/'+cluster+'/')||!/^[a-f0-9]{32}$/u.test(v.taskArn.slice((prefix+'task/'+cluster+'/').length))||typeof v.taskDefinitionArn!=='string'||!v.taskDefinitionArn.startsWith(prefix+'task-definition/')||!/^[A-Za-z0-9_-]+:[1-9][0-9]*$/u.test(v.taskDefinitionArn.slice((prefix+'task-definition/').length))||typeof v.containerName!=='string'||!/^[A-Za-z0-9_-]{1,255}$/u.test(v.containerName))denied();
  positive(v.createdAtMs);if(v.createdAtMs>=i.expiresAtMs||state==='CLAIMED'||state==='RETIRED'&&v.physicalStopProven!==true||state!=='RETIRED'&&v.physicalStopProven!==undefined)denied();
  if(state==='ADMITTED'&&v.grantFactsJsons===undefined)denied();
+ if(v.launchBinding!==undefined){launchBinding(v.launchBinding);if(!['ADMITTED','UNKNOWN','RETIRED'].includes(state))denied();}
  if(v.grantFactsJsons!==undefined){
   if(!Array.isArray(v.grantFactsJsons)||v.grantFactsJsons.length!==i.grantIntents.length)denied();
   const seen=new Set();for(const raw of v.grantFactsJsons){if(typeof raw!=='string'||Buffer.byteLength(raw)>65536)denied();let fact;try{fact=JSON.parse(raw);}catch{denied();}
@@ -51,7 +56,31 @@ export function createNativePreparationJournals({tx,rowRun}){
    const rows=(await c.query('SELECT * FROM '+table+' WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',tuple(b))).rows;check();if(rows.length>1)fail('NATIVE_PREPARATION_CORRUPT');
    return {run:run.projection,record:rows.length?decode(rows[0],b,k):null};
   }
+  async function launch(value,check,operation){
+   const v=data(value);own(v,['binding',key,...launchFields],operation==='record'?['state']:[]);lookup({binding:v.binding,[key]:v[key]});const pins=launchPins(Object.fromEntries(launchFields.map(k=>[k,v[k]])));
+   if(operation==='record'&&!['STARTED','UNKNOWN'].includes(v.state))denied();
+   return tx(v.binding,check,async c=>{
+    const saved=await load(c,v.binding,v[key],check),old=saved.record;
+    if(!old||old.state!=='ADMITTED'||operation!=='record'&&!['queued','starting','running'].includes(saved.run.state))denied();
+    const previous=old.resource.launchBinding;
+    if(previous&&!same(Object.fromEntries(launchFields.map(k=>[k,previous[k]])),pins))fail('NATIVE_PREPARATION_REPLAY_REFUSED');
+    let state;
+    if(operation==='prepare'){
+     if(previous)return saved;state='PREPARED';
+    }else{
+     if(!previous)denied();
+     if(operation==='consume'){
+      if(previous.state!=='PREPARED')return {...saved,dispatch:false};state='CLAIMED';
+     }else{
+      if(!launchTransitions[previous.state].includes(v.state))denied();if(previous.state===v.state)return saved;state=v.state;
+     }
+    }
+    const record=recordValue({...old,resource:{...old.resource,launchBinding:{...pins,state}}});
+    await c.query('UPDATE '+table+' SET record=$4,record_sha256=$5 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[...tuple(v.binding),record,hash(record)]);check();return {...saved,record,...(operation==='consume'?{dispatch:true}:{})};
+   });
+  }
   return Object.freeze({
+   ...(proofKey==='resource'?{prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
    async claim(value,check){const i=intent(value);return tx(i.binding,check,async c=>{
     const saved=await load(c,i.binding,i[key],check);if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
     if(saved.run.state!=='queued')fail('NATIVE_PREPARATION_STATE_REFUSED');const record=recordValue({...i,state:'CLAIMED',[proofKey]:null});
@@ -62,6 +91,7 @@ export function createNativePreparationJournals({tx,rowRun}){
     if(!Object.hasOwn(transitions,v.state))denied();return tx(v.binding,check,async c=>{
      const saved=await load(c,v.binding,v[key],check),old=saved.record;if(!old||!transitions[old.state].includes(v.state))denied();
      const proof=v[proofKey]??(v.state==='UNKNOWN'?old[proofKey]:null),record=recordValue({...old,state:v.state,[proofKey]:proof});
+     if(proofKey==='resource'&&(old.resource?.launchBinding!==undefined||proof?.launchBinding!==undefined)&&!same(old.resource?.launchBinding??null,proof?.launchBinding??null))denied();
      if(old.state===completed&&!same(old,record))denied();
      if(proofKey==='resource'&&old.resource!==null){
       const metadata=x=>Object.fromEntries(Object.entries(x).filter(([k])=>!['grantFactsJsons','physicalStopProven'].includes(k)));

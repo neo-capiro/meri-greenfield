@@ -18,7 +18,7 @@ COPY apps/artifacts/storage/package.json apps/artifacts/storage/package-lock.jso
 RUN npm ci --prefix apps/artifacts/storage --omit=dev --ignore-scripts --no-audit --no-fund
 COPY apps ./apps
 COPY packages ./packages
-RUN mkdir -p node_modules/@capiro && ln -s ../../packages/contracts node_modules/@capiro/meri-contracts
+RUN mkdir -p node_modules/@capiro node_modules/@anthropic-ai && ln -s ../../packages/contracts node_modules/@capiro/meri-contracts && ln -s ../../apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk node_modules/@anthropic-ai/claude-agent-sdk
 USER node
 ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
 CMD ["--help"]

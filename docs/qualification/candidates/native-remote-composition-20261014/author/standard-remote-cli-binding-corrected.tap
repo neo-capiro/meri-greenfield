@@ -1,0 +1,30 @@
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (63.053012ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (1.579291ms)
+✔ failed or in-flight append cannot produce a snapshot (1.391154ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (1.176093ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (1.471156ms)
+✔ initialization abandoned by close retires the late actual mirror (0.988276ms)
+✔ malformed returned mirror surface closes its captured actual owner before refusal (1.22665ms)
+✔ mirror close rejection marks failed and cannot be ignored to release frozen snapshot (1.504479ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (99.727644ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (13.539417ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (3.419764ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (185.291135ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (29.13362ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (26.544155ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (31.931777ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.76243ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (1.826716ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (1.089659ms)
+✔ broker refuses a response from another writer fence (0.645405ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (165.675789ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (17.294263ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (6.234497ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7057.0715

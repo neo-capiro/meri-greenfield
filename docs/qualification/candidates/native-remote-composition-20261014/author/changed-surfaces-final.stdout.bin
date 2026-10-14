@@ -1,0 +1,93 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs (1577.056472ms)
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (516.216168ms)
+✔ controller launch boots original once; worker start uses booted original without duplicate launch (891.514623ms)
+✔ exact stream sequence/digest and changed original reject; lost acknowledgment replay writes once (420.635325ms)
+✔ actual separate supervisor/native child crosses remote byte facade and canonical registration (2082.873179ms)
+✔ prepared latch precedes factory and canonical broker boot; physical start records STARTED once (311.33324ms)
+✔ consumed launch false refuses physical release and parked workspace requires admission both sides (325.759151ms)
+✔ close before deferred start settles queued bytes and preserves unknown native exit (724.028919ms)
+✔ timed out fetch retires a late response body without extending deadline (388.181465ms)
+✔ controller snapshots inert nested payloads without executing caller hooks (437.038635ms)
+✔ encoded pending bytes use actual encoding and unallocated close makes no physical proof (315.358278ms)
+✔ invalid output before SDK consumption is contained without an unowned stream error (971.419757ms)
+✔ pending writer refuses overlap; failed callback cannot mint a replay ACK (332.212233ms)
+✔ concurrent long polls retain one fixed stdout cursor and consume one frame (510.48427ms)
+✔ lost authority after physical callback leaves write UNKNOWN and identical replay refuses (336.009826ms)
+✔ stopped receiver refuses actual parked workspace restoration without filesystem effects (309.586093ms)
+✔ close during awaited admission refuses actual synchronous filesystem write (429.521614ms)
+✔ actual parked workspace accepts original prelaunch bytes but refuses restoration after CLI start (426.963413ms)
+✔ stop does not publish stdout end while original physical closure remains pending (471.095592ms)
+✔ client ignores late stdout exit until its close receipt proves closure (373.613819ms)
+✔ close while preparation authority is pending prevents factory or process release (493.797036ms)
+✔ client close during prepare prevents a late start RPC (1083.534066ms)
+✔ stdout refusal during close cannot emit SDK error before positive closure (585.875772ms)
+✔ stdin refusal withholds write callback and SDK error until original stop is proven (478.203714ms)
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (3.051313ms)
+✔ close before first iteration retires transport without preparing a Query (1.115997ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (3.884906ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (1.158775ms)
+✔ actual adopted SDK MCP server prototype close is admitted effect-free (206.134813ms)
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (460.104854ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (8.49074ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (3.161669ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (6.341463ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (15.522082ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (10.557817ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (46.928885ms)
+✔ foreign request, lease and getters refuse before owner effects (5.076655ms)
+✔ actual SDK command adapter delegates pause close to capture after interrupt/input closure (115.880019ms)
+✔ late mirror refusal discovered after native stop invalidates checkpoint without post-exit RPC (12.243503ms)
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (92.54266ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (1.296321ms)
+✔ failed or in-flight append cannot produce a snapshot (2.23805ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (1.637223ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (1.944545ms)
+✔ initialization abandoned by close retires the late actual mirror (1.317887ms)
+✔ malformed returned mirror surface closes its captured actual owner before refusal (1.063038ms)
+✔ mirror close rejection marks failed and cannot be ignored to release frozen snapshot (1.473906ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (82.594706ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (19.342054ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (2.728522ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (151.332911ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (29.250425ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (21.846492ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (18.69254ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.893529ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (3.140932ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (1.466117ms)
+✔ broker refuses a response from another writer fence (2.53417ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (293.920128ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (20.191433ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (8.307845ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 60
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32748.975736
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs:1:1
+✖ apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs (1577.056472ms)
+  'test failed'

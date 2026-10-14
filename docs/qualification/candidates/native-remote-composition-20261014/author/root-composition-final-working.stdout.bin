@@ -1,0 +1,36 @@
+✔ shared inert compiler preserves exact original plan/runtime/launch hashing and binding (981.906574ms)
+✔ concrete stack constructs native restorer with canonical journal and original plan before any IO (741.072702ms)
+✔ invalid immutable original or object accessor refuses before task factory effects (310.285968ms)
+✔ canonical runtime validation refuses proxy, budgets, model and hostile data before allocation (1073.817277ms)
+✔ session snapshot and all session paths are owned by canonical receiver, never supervisor fallback (982.51798ms)
+✔ continuation refuses a missing task workspace port without falling back to control filesystem (1471.259361ms)
+✔ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (7395.883046ms)
+✔ invalid task access and declared async transport refuse before borrowed database or RunTask (42.884438ms)
+✔ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (2982.214411ms)
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (4.091209ms)
+✔ close before first iteration retires transport without preparing a Query (0.457906ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (1.676561ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (1.103196ms)
+✔ task adapter delegates exact opaque capability/operation/hash to existing native owner with preserved receiver (24.213987ms)
+✔ default disabled or absent verifier makes zero native effects (1.386182ms)
+✔ malformed input and caller-added authority refuse before native effects (3.680657ms)
+✔ foreign operation/hash/binding/client/scope and expired/future/boolean receipts confer no authority (8.15086ms)
+✔ native refusal is not retried or exposed, even with active error fields (1.023045ms)
+✔ parked native verifier is bounded and aborts its supplied signal (21.821802ms)
+✔ already cancelled verification never dispatches a capability (0.541489ms)
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (32.076907ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (226.217095ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (52.61494ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (4.803878ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (10.007459ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (64.599101ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (3.870977ms)
+✔ private immutable snapshot read relays exact bearer and bytes to canonical session receiver (1.476585ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28422.500939

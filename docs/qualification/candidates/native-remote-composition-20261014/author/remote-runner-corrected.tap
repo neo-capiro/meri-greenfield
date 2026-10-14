@@ -1,0 +1,26 @@
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (553.29652ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (9.333729ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (5.126215ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (15.863588ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (12.955419ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (6.657907ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (46.364207ms)
+✔ foreign request, lease and getters refuse before owner effects (7.173665ms)
+✔ actual SDK command adapter delegates pause close to capture after interrupt/input closure (284.68193ms)
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (189.588257ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (1.33627ms)
+✔ failed or in-flight append cannot produce a snapshot (1.879004ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (2.493649ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (1.288899ms)
+✔ initialization abandoned by close retires the late actual mirror (2.564366ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (77.692494ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (9.185528ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (2.108814ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2541.223657

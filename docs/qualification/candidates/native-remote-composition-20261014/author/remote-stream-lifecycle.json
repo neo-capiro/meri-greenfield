@@ -1,0 +1,19 @@
+{
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/remote-task.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 14.461202675000095,
+  "sourceSha256": {
+    "apps/runtime/native-authority/remote-task-http.mjs": "a0adc6d1027ba0712ed083534477a8f02009b16a42c4e260a5e8558468b3b181",
+    "apps/runtime/native-authority/remote-task-client.mjs": "11ee407085b2b1b6051048b667045c4048b1ea810557e0b9027b179cd28bed08",
+    "apps/runtime/native-authority/test/remote-task.test.mjs": "d6f9b4f2d9b8d8e22fc713419763bac01ccc29bafaa8513bd8b6178fbf81f858"
+  },
+  "scope": "HTTP byte cursor and original physical workspace lifecycle; synthetic authority/facade ACK; retained genuine Node native child control; no SDK/AWS/provider requests"
+}

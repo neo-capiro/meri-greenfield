@@ -1,0 +1,21 @@
+{
+  "initialConfigSuite": {
+    "pass": 1,
+    "fail": 3,
+    "reason": "test fixture passed unsupported root field to closed configuration; initial mutation test passed for this wrong reason",
+    "correction": "closed configuration fixture corrected; mutation test now changes an earlier nested file during later scan and is rejected by final observed-node readback"
+  },
+  "initialRemoteSuite": {
+    "pass": 3,
+    "fail": 1,
+    "reason": "registration control was unnecessarily gated on SDK preparation pins",
+    "correction": "borrowed original task registration and parked workspace control ports are available independently of SDK descriptor latch; prepared parked workspace requires admitted proof both sides"
+  },
+  "firstDurableCombinedCapture": {
+    "pass": 9,
+    "fail": 1,
+    "evidence": "remote-boundary.stdout.bin",
+    "reason": "synthetic fixture workspace port echoed AbortSignal into reply",
+    "correction": "fixture removes signal and returns inert canonical data; production assertions unchanged"
+  }
+}

@@ -1,0 +1,19 @@
+✖ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (4591.122251ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6837.800544
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs:6:1
+✖ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (4591.122251ms)
+  TypeError: Cannot read properties of null (reading 'port')
+      at Object.fetchImpl (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs:5:623)
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/remote-task-client.mjs:11:63
+      at file:///workspace/meri-native-runtime-recovery/packages/runtime/operation-lifetime.mjs:38:65
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

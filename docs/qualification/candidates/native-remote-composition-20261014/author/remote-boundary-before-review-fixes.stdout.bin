@@ -1,0 +1,21 @@
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (2103.925916ms)
+✔ controller launch boots original once; worker start uses booted original without duplicate launch (1138.919342ms)
+✔ exact stream sequence/digest and changed original reject; lost acknowledgment replay writes once (420.890751ms)
+✔ actual separate supervisor/native child crosses remote byte facade and canonical registration (1878.396584ms)
+✔ prepared latch precedes factory and canonical broker boot; physical start records STARTED once (337.774991ms)
+✔ consumed launch false refuses physical release and parked workspace requires admission both sides (353.146424ms)
+✔ close before deferred start settles queued bytes and preserves unknown native exit (559.651175ms)
+✔ timed out fetch retires a late response body without extending deadline (840.887287ms)
+✔ controller snapshots inert nested payloads without executing caller hooks (439.695879ms)
+✔ raw bytes, empty directories and modes survive exact fresh installation without parsing (116.069314ms)
+✔ links, hash tampering, duplicate paths and overlapping roots refuse (14.376153ms)
+✔ mutation of earlier nested file during later scan is detected (8.317818ms)
+✔ advertised aggregate accepts opaque data above the generic16MiB JSON ceiling (4687.451281ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10415.726828

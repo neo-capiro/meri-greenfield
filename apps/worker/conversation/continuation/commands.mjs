@@ -5,9 +5,9 @@ import {assertWorkerControl} from '../../../../packages/contracts/conversation-l
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fail=code=>{throw new Error(code);};
 export function createSdkCommandAdapter(options) {
-  const {binding:rawBinding,contextSha256,input,query,lifetime}=own(options,['binding','contextSha256','input','query','lifetime']);
+  const {binding:rawBinding,contextSha256,input,query,lifetime,captureOwnsClose=false}=own(options,['binding','contextSha256','input','query','lifetime'],['captureOwnsClose']);
   const binding=data(rawBinding);validateShape('RunBinding',binding);
-  if(typeof contextSha256!=='string'||!/^[a-f0-9]{64}$/.test(contextSha256)||
+  if(typeof captureOwnsClose!=='boolean'||typeof contextSha256!=='string'||!/^[a-f0-9]{64}$/.test(contextSha256)||
       ['enqueue','close'].some(k=>typeof input?.[k]!=='function')||['interrupt','close'].some(k=>typeof query?.[k]!=='function')||
       ['run','check'].some(k=>typeof lifetime?.[k]!=='function'))fail('SDK_CONTROL_CONFIGURATION');
   const submitted=new Map();let stopped=false,queryClosed=false;
@@ -37,7 +37,7 @@ export function createSdkCommandAdapter(options) {
             receipt.cancelled!==undefined&&(!Array.isArray(receipt.cancelled)||receipt.cancelled.some(uuid=>typeof uuid!=='string')))fail('SDK_INTERRUPT_REFUSED');}
       return {controlId:command.controlId,outcome:'UNKNOWN',dispatched:true,interruptReceipt:receipt,physicalStopProven:false};
     }catch {lifetime.check();fail('SDK_CONTROL_UNKNOWN');}
-    finally {close();}
+    finally {if(captureOwnsClose)input.close();else close();}
   }
   return Object.freeze({apply,close});
 }

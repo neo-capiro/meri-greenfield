@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T10:05:23.435230+00:00",
+  "durationSeconds": 5.271,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 146231,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/author/prepared-pg-final-corrected.stdout.bin",
+      "bytes": 235,
+      "sha256": "e9bcfcd3ab002189a0ef6f32bbb5d224c3c67272ef81470141f020fd06fbc51a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/author/prepared-pg-final-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final fixture failed before execution: missing explicit source-root setting; rerun unchanged source with required setting.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

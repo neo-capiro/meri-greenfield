@@ -1,0 +1,33 @@
+✔ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (1377.063628ms)
+✔ caller scope refuses without object writes or checkpoint publication (13.007909ms)
+✔ control not claimed refuses without object writes or checkpoint publication (113.552038ms)
+✔ native stop not proved refuses without object writes or checkpoint publication (15.419628ms)
+✔ native original plan refuses without object writes or checkpoint publication (11.889896ms)
+✔ native-file bundle refuses without object writes or checkpoint publication (10.364199ms)
+✔ workspace traversal refuses without object writes or checkpoint publication (14.06403ms)
+✔ revocation after create-only object write leaves no canonical checkpoint authority (27.974587ms)
+✔ immutable readback mismatch refuses publication and exposes no fabricated receipt (29.268467ms)
+✔ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (132.631666ms)
+✔ published object tamper denies replay and native checkpoint/read (139.027623ms)
+✔ caller getters and task result getters never execute (23.487504ms)
+✔ lost immutable object ACK retains uncertainty and never publishes checkpoint metadata (44.604858ms)
+✔ authority scope drift during immutable write refuses publication (90.934337ms)
+✔ canonical control mutation during immutable write cannot change pinned capture sequence (31.579101ms)
+✔ revocation after durable checkpoint publication refuses success; later authorized retry only reads (52.880333ms)
+✔ borrowed canonical S3 adapter executes exact immutable-version commands through checkpoint composition (571.852007ms)
+✔ actual stable files preserve literal bytes, relative names and executable flag (18.042511ms)
+✔ symlink source refuses without changing source bytes (2.739564ms)
+✔ hardlink source refuses without changing source bytes (1.639828ms)
+✔ empty directory source refuses without changing source bytes (2.97695ms)
+✔ case alias source refuses without changing source bytes (2.023992ms)
+✔ oversized file source refuses without changing source bytes (1.241755ms)
+✔ real source mutation during read refuses; descriptor is closed (4.691886ms)
+✔ lease, abort, request path substitution and constructor getters refuse (3.616856ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5136.33531

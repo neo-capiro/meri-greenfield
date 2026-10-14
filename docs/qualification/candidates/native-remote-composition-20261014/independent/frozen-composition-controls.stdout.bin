@@ -1,0 +1,43 @@
+✔ real ECS command fixtures bracket exact original running task and immutable declared code pins (22.550195ms)
+✔ false image, provisioning, unrelated ARN, no tags and missing stopped exit refuse without cleanup mutation (9.178317ms)
+✔ mutable task definition image, false or duplicate runner declarations and conflicting overrides refuse (8.148882ms)
+✔ expiry, canceled request and changed original/resource fail before borrowed client call (2.299499ms)
+✔ task stopped during definition lookup or denied read cannot produce authority or cleanup proof (2.509979ms)
+✔ deadline/lease expires during definition read and cannot yield a fresh receipt (2.512678ms)
+✔ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (6077.0801ms)
+✔ invalid task access and declared async transport refuse before borrowed database or RunTask (155.002907ms)
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (7368.349261ms)
+✔ controller launch boots original once; worker start uses booted original without duplicate launch (7117.460961ms)
+✔ exact stream sequence/digest and changed original reject; lost acknowledgment replay writes once (860.070706ms)
+✔ actual separate supervisor/native child crosses remote byte facade and canonical registration (1650.62059ms)
+✔ prepared latch precedes factory and canonical broker boot; physical start records STARTED once (713.166399ms)
+✔ consumed launch false refuses physical release and parked workspace requires admission both sides (870.639247ms)
+✔ close before deferred start settles queued bytes and preserves unknown native exit (424.081647ms)
+✔ timed out fetch retires a late response body without extending deadline (348.466626ms)
+✔ controller snapshots inert nested payloads without executing caller hooks (337.74993ms)
+✔ encoded pending bytes use actual encoding and unallocated close makes no physical proof (801.727578ms)
+✔ invalid output before SDK consumption is contained without an unowned stream error (840.768822ms)
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (5.328052ms)
+✔ close before first iteration retires transport without preparing a Query (3.410052ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (3.163113ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (1.031243ms)
+✔ raw bytes, empty directories and modes survive exact fresh installation without parsing (28.22893ms)
+✔ links, hash tampering, duplicate paths and overlapping roots refuse (6.837171ms)
+✔ mutation of earlier nested file during later scan is detected (4.486127ms)
+✔ advertised aggregate accepts opaque data above the generic16MiB JSON ceiling (3093.969527ms)
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (79.343552ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (446.391271ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (88.145ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (6.086662ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (20.311683ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (64.427851ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (4.194745ms)
+✔ private immutable snapshot read relays exact bearer and bytes to canonical session receiver (2.34586ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45324.694176

@@ -1,0 +1,68 @@
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (547.092336ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (33.770701ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (6.307821ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (8.994874ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (15.994672ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (10.043642ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (44.125421ms)
+✔ foreign request, lease and getters refuse before owner effects (6.136431ms)
+✔ actual SDK command adapter delegates pause close to capture after interrupt/input closure (170.547985ms)
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (96.822395ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (1.329347ms)
+✔ failed or in-flight append cannot produce a snapshot (1.925102ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (1.625586ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (1.144521ms)
+✔ initialization abandoned by close retires the late actual mirror (1.651162ms)
+✖ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (52.982897ms)
+✖ execute failure still retires original worker/mirror before listener; no source/provider call (10.370862ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (3.729695ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 16
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2487.742077
+
+✖ failing tests:
+
+test at apps/runtime/test/remote-conversation-runner.test.mjs:4:1
+✖ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (52.982897ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at compileNativePreparationIntent (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/preparation-intent.mjs:9:15)
+      at runRemoteConversation (file:///workspace/meri-native-runtime-recovery/apps/runtime/remote-conversation-runner.mjs:17:185)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/remote-conversation-runner.test.mjs:4:270)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at apps/runtime/test/remote-conversation-runner.test.mjs:5:1
+✖ execute failure still retires original worker/mirror before listener; no source/provider call (10.370862ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted execution failed/. Input:
+  
+  'CommandError: INVALID_COMMAND'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/remote-conversation-runner.test.mjs:5:154)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: CommandError: INVALID_COMMAND
+        at deny (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+        at own (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+        at compileNativePreparationIntent (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/preparation-intent.mjs:9:15)
+        at runRemoteConversation (file:///workspace/meri-native-runtime-recovery/apps/runtime/remote-conversation-runner.mjs:17:185)
+        at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/remote-conversation-runner.test.mjs:5:175)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12),
+    expected: /scripted execution failed/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -9,16 +9,16 @@ import {assertCaptureReceipt} from './native-receipts.mjs';
 const fault=code=>Object.assign(new Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 export function assertLifecycleConfiguration(config,runOwner) {
- const {captureCheckpoint,pollMs=100}=own(config,['captureCheckpoint'],['pollMs']);
- if(typeof captureCheckpoint!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
+ const {captureCheckpoint,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['pollMs','captureOwnsClose']);
+ if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
  ['nextControls','claimControl','ackControl','recordCheckpoint'].some(k=>typeof runOwner[k]!=='function'))throw fault('LIFECYCLE_CONFIGURATION');
- return {captureCheckpoint,pollMs};
+ return {captureCheckpoint,pollMs,captureOwnsClose};
 }
 export function createActivityLifecycle({config,runOwner,binding,saved,runtime,input,query,life,now}) {
- const {captureCheckpoint,pollMs}=assertLifecycleConfiguration(config,runOwner);
+ const {captureCheckpoint,pollMs,captureOwnsClose}=assertLifecycleConfiguration(config,runOwner);
  const contextSha256=continuationContextSha256(saved.request,saved.run.scopes),abort=new AbortController();
  const poll=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal:AbortSignal.any([life.signal,abort.signal]),errorFactory:fault});
- const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll}),pending=new Map();
+ const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll,captureOwnsClose}),pending=new Map();
  let stopped=false,held=false,after=0,sessionId=null,error,wakeIdle;const failed=Promise.withResolvers(),heldResult=Promise.withResolvers(),initialized=Promise.withResolvers();
  const ack=(entry,outcome,sdkUserMessageId)=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,
  commandSha256:entry.commandSha256,outcome,...(sdkUserMessageId===undefined?{}:{sdkUserMessageId})},signal:poll.signal});

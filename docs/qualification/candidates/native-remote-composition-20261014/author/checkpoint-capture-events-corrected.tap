@@ -1,0 +1,20 @@
+✔ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (1157.756749ms)
+✔ caller scope refuses without object writes or checkpoint publication (7.706358ms)
+✔ control not claimed refuses without object writes or checkpoint publication (19.687384ms)
+✔ native stop not proved refuses without object writes or checkpoint publication (55.420036ms)
+✔ native original plan refuses without object writes or checkpoint publication (12.325977ms)
+✔ native-file bundle refuses without object writes or checkpoint publication (14.208138ms)
+✔ workspace traversal refuses without object writes or checkpoint publication (10.128895ms)
+✔ revocation after create-only object write leaves no canonical checkpoint authority (20.248062ms)
+✔ immutable readback mismatch refuses publication and exposes no fabricated receipt (21.333441ms)
+✔ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (93.710384ms)
+✔ published object tamper denies replay and native checkpoint/read (131.607277ms)
+✔ caller getters and task result getters never execute (25.322748ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3899.94655

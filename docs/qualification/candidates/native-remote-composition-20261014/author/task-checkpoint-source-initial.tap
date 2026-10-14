@@ -1,0 +1,16 @@
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (340.096729ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (6.257461ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (2.770128ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (5.799632ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (5.814784ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (2.405587ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (45.043628ms)
+✔ foreign request, lease and getters refuse before owner effects (5.435101ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1897.811718

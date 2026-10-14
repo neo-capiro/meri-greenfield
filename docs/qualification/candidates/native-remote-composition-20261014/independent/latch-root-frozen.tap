@@ -1,0 +1,20 @@
+✔ real PG serializes exact launch consumption once across reconstructed owners (435.55604ms)
+✔ real SQL trigger refuses shape/rebinding/skipped transition and preserves task metadata (220.010964ms)
+✔ UNKNOWN launch cannot dispatch/rebind or reset through direct SQL; original retirement remains owned (254.356893ms)
+✔ lost real COMMIT acknowledgement leaves consumed claim durable and never redispatches (138.193459ms)
+✔ prepare requires exact admitted allocation and preserves immutable original facts (45.446915ms)
+✔ concurrent exact consumption dispatches once and survives canonical owner reconstruction (16.324519ms)
+✔ changed preparation UUID, descriptor or config digest refuses before and after consumption (21.411667ms)
+✔ malformed launch facts refuse before any scripted transaction or getter (0.988957ms)
+✔ STARTED and UNKNOWN outcomes are terminal for dispatch with no retry (40.396007ms)
+✔ generic resource updates cannot add, remove or rewrite launch; original retirement preserves facts (19.133571ms)
+✔ terminal run or replaced fence refuses preparation and external dispatch (17.916448ms)
+✔ caller authority check failure rolls back consumed state and never reports dispatch (21.678307ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3748.806367
