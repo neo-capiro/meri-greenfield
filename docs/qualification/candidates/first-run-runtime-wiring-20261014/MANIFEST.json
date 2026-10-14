@@ -1,0 +1,228 @@
+{
+  "scope": "ACCEPT_SOURCE_RUNTIME_WIRING_HOLD_AUTHENTICATED_FIRST_SESSION_AND_OUTPUT",
+  "base": "a8655da564233e5a7b5ba4e53838ba923fb7f69d",
+  "productionFreeze": "727e1a87d87bae1d5ff166a8ddbe779b1ef96ea1",
+  "sourceHead": "5d671a8cc91f513f0e1cb23f5cd7453e02e5274e",
+  "nodeVersion": "24.19.0",
+  "sameProductionAsAcceptedFreeze": true,
+  "production": [
+    {
+      "path": "apps/runtime/control.mjs",
+      "sha256": "c800bd1650d7548df956057ffa34f6bf2ad96c36d0b4385b13e29a10afade67e"
+    },
+    {
+      "path": "apps/runtime/native-authority/first-run-mount.mjs",
+      "sha256": "0be051c9ec8630b03d6d9373a2f52a7ed3d9caccc1f582d1c275ee725c8bb828"
+    },
+    {
+      "path": "apps/runtime/native-authority/index.mjs",
+      "sha256": "85ee9b75a3ebe96131cde6cc84fccbdeca91ec058f98417d9e9ee2631cc7d334"
+    },
+    {
+      "path": "apps/runtime/test/first-run-mount.test.mjs",
+      "sha256": "3a52eccc659c267079b9bfec5fa016dc45ab8771b681c43dcb8bca26c825fee3"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/.gitattributes",
+      "bytes": 13,
+      "sha256": "c7c6541111ee53947140bac154f1275c6b1b244c40c045b190662f23226509c9"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/HANDOFF.md",
+      "bytes": 3577,
+      "sha256": "91f9cd6c6b742d0a1a5d05828bc3c28877b58b5fca1542d336e9a213ceaa7384"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/OUTLINE.md",
+      "bytes": 1382,
+      "sha256": "71ec81ef7504281135382787a3c27f17eec70bd16af6e117f6fc9f2a4b7d15cd"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/SOURCE-MANIFEST.json",
+      "bytes": 1586,
+      "sha256": "09ca84d3f13423825406bd7fb7e500289cae0c2cd4659e3203eb21d50ae3cf09"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/canonical-mount-controls.json",
+      "bytes": 1423,
+      "sha256": "e35cfeedfe431defc2e9661130dea81aa12d6ca33c9c9ad46bfbf509094413be"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/canonical-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/canonical-mount-controls.stdout.bin",
+      "bytes": 1387,
+      "sha256": "64f388311bd4966c7d35a175f3ad70ac4e8a64bda0890ca2df7d7e70dae6d865"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/explicit-root-controls.json",
+      "bytes": 1400,
+      "sha256": "8708cadfae52c6042219c28fb84ad74eaf3dfbbe4bba8aa5e7b37a06a1712d7b"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/explicit-root-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/explicit-root-controls.stdout.bin",
+      "bytes": 1378,
+      "sha256": "5085dddd968eb8216b16b9f85114cbe4e1b89ff650d53dd0f08c611b87487886"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/first-mount-controls.json",
+      "bytes": 1314,
+      "sha256": "a511e2ea0eb9e5ae7f6b09185bb80182d557adabd64432046498b7347375e7e2"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/first-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/first-mount-controls.stdout.bin",
+      "bytes": 958,
+      "sha256": "ba1e50cc85d99cab76863bca4aa380001d5ab5eb893cd36ab9e3eaba972bb4af"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/frozen-mount-controls.json",
+      "bytes": 1421,
+      "sha256": "ccaffc0fd17a86e0cfcb99d6ca10990ce819cc3c267a58b1afbb62c8ff723206"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/frozen-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/frozen-mount-controls.stdout.bin",
+      "bytes": 1433,
+      "sha256": "4e364dc36394909fe33de2b8c4502180cf8c01b0c2541b8c0775ed3172ce92c7"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/resolved-mount-controls.json",
+      "bytes": 1411,
+      "sha256": "204e55d137275ab0df4f97cf0935ff1ce2057dc4e9a415435fe6d5d00e7a6bd5"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/resolved-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/resolved-mount-controls.stdout.bin",
+      "bytes": 1317,
+      "sha256": "79f58ae061c583d72caf4b35de10e5d9d4fe18750c85d82b4c08861fa86ec319"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/bindings/AUDIT.json",
+      "bytes": 9083,
+      "sha256": "1ebe8206381420857052c5083f07de3c18f014eb67b0d48c005fecfcbdc23a42"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/bindings/MANIFEST.json",
+      "bytes": 773,
+      "sha256": "ba54601d998bd9ce4e2a26fc11221a4ec5a6d5a292f228682c933ab5ae086cc9"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/bindings/OUTLINE.md",
+      "bytes": 777,
+      "sha256": "497684bb4ffea4db37040f156dae5312161a196f7d48c6617ef2eba5b62bc803"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/ACCEPTANCE.md",
+      "bytes": 4329,
+      "sha256": "b845f7609a90802f2fa09464717e871d296b5373eb1a693e01991a360857e486"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/cleanup-owned-links.py",
+      "bytes": 1828,
+      "sha256": "dc412d202e3dbb4138d94b5c2da821a3589dc14461638efa37374ea7680b633d"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/exact-mount-controls.json",
+      "bytes": 1431,
+      "sha256": "750c6d71682d7a1f1f48f6ce194eab3bd2149a88ce0a2d6b20054016f76e473f"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/exact-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/exact-mount-controls.stdout.bin",
+      "bytes": 2897,
+      "sha256": "9fcae07e7e42a23f3dd045e1dc81c62341afd11a9d81ecc667a5e9222fa932b5"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/existing-listener-compatibility.json",
+      "bytes": 1375,
+      "sha256": "d91d708e1b59b8d361dadcfa6e9892b8c6dd4cc19e1a350461a48b1512676e59"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/existing-listener-compatibility.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/existing-listener-compatibility.stdout.bin",
+      "bytes": 310,
+      "sha256": "d430e1c48ad7ea5975172304080acceab81ed640ebbec6ed03f694eb6007c0a1"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/independent-boundaries-repaired.json",
+      "bytes": 1518,
+      "sha256": "0ffdfc8491a4d99fe14de224a3cce73515e0ba8a5af3c9ec8c33a2db5a4a8944"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/independent-boundaries-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/independent-boundaries-repaired.stdout.bin",
+      "bytes": 464,
+      "sha256": "f93b192acc139999baa9327b850c1d4665d0ee57a9a5d5be833f9322389c5b6a"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/mount-boundaries.test.mjs",
+      "bytes": 3139,
+      "sha256": "ccab645ffc7371acd1b6693600c17019922ff07f65080160d855f7763b2130fa"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/owned-dependency-cleanup.json",
+      "bytes": 1334,
+      "sha256": "d3f21514bc29b83bc34d654a52dd0b5b6ef948b8233685fb0781c909263bed40"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/owned-dependency-cleanup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/owned-dependency-cleanup.stdout.bin",
+      "bytes": 200,
+      "sha256": "164aba94f695b1eb278fc339f7ea5c74e4dc021d60c2812b336503f0161e59c7"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-RUN-BINDINGS-20261014.md",
+      "bytes": 21397,
+      "sha256": "ab5854b0c6d6fe0872b0c9f41ea6b6a9ba4612e4efc7db835a8754d7fc2f558f"
+    }
+  ]
+}
