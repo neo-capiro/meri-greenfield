@@ -1,0 +1,172 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-14T21:54:14.193Z",
+ "finishedAt": "2026-10-14T21:54:31.604Z",
+ "repository": {
+  "root": "/home/user/meri-first-chat",
+  "head": "f270f233c6f268dcb308da3591a24c497ae47249",
+  "tree": "4ea1c9e36c112efe62b41b282a72ec21fab45012",
+  "branch": "fable/meri-first-chat",
+  "uncommittedPaths": 1
+ },
+ "environment": {
+  "node": "v24.21.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/baseline-out-store-pg/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-first-chat",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/baseline-out-store-pg/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/baseline-out-store-pg/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 2,
+  "passedSuites": 2,
+  "tests": 150,
+  "pass": 150,
+  "fail": 0
+ },
+ "suites": [
+  {
+   "name": "source-proof",
+   "purpose": "45-row runtime proof hashes and recipe promotion",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/qualification/assembled-image/source-proof.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 214,
+   "counts": {
+    "tests": 3,
+    "suites": 0,
+    "pass": 3,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 426,
+    "sha256": "2be6265ae51df64eae3ecae204a79303fe41a135ce685b1b0dd5dc34a385220f"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "conversations-tests",
+   "purpose": "conversation requests, durable events, lifecycle, native preparation journals over local PostgreSQL",
+   "kind": "node-test",
+   "cwd": "apps/control/conversations",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-concurrency=1",
+    "test/application.test.mjs",
+    "test/conversation-public-integration.test.mjs",
+    "test/lifecycle-inspection.test.mjs",
+    "test/lifecycle-workflow.test.mjs",
+    "test/lifecycle.test.mjs",
+    "test/native-preparation.test.mjs",
+    "test/native-prepared-launch-pg.test.mjs",
+    "test/native-prepared-launch.test.mjs",
+    "test/prepared-execution-claim-pg.test.mjs",
+    "test/read-optional-pg.test.mjs",
+    "test/store-pg.test.mjs",
+    "test/store.test.mjs",
+    "test/stream.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 17189,
+   "counts": {
+    "tests": 147,
+    "suites": 0,
+    "pass": 147,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 13892,
+    "sha256": "c5555309c94115fc4191299923729468082fdc8fa97b1cb1a1c6ad3011787c68"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "local PostgreSQL 16 clusters from provision-postgres.sh",
+    "root node_modules/pg test link from link-dependencies.sh"
+   ]
+  }
+ ]
+}
