@@ -1,0 +1,6945 @@
+{
+ "schema": "meri.r2-reconciliation.v1",
+ "catalog": {
+  "catalogId": "meri.retrieval",
+  "catalogVersion": "0.2.15",
+  "contractVersion": "0.2.0",
+  "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1"
+ },
+ "counts": {
+  "capabilities": {
+   "total": 139,
+   "selected": 96,
+   "deferred": 43,
+   "withReplacement": 96,
+   "replacementBound": 96,
+   "selectedWithReplacement": 96,
+   "selectedWithoutReplacement": 0,
+   "runtimeParityNotQualified": 139
+  },
+  "operations": {
+   "total": 97,
+   "handlerBound": 0,
+   "discoverable": 0,
+   "byAvailability": {
+    "unimplemented": 97
+   },
+   "byQualification": {
+    "pending": 97
+   },
+   "withAdapterFamily": 18,
+   "referencedBySkills": 54,
+   "referencedByCapabilityReplacement": 96
+  },
+  "skills": {
+   "manifests": 14,
+   "ledgerRows": 14,
+   "selectable": 14,
+   "allowedOperationReferences": 143,
+   "allowedOperationsInCatalog": 143,
+   "allowedOperationsHandlerBound": 0
+  },
+  "adapterFamilies": {
+   "action-items": [
+    "query_action_items",
+    "actions.query"
+   ],
+   "client-evidence": [
+    "read_client_documents",
+    "get_client_context"
+   ],
+   "client-knowledge": [
+    "read_monday_client_boards",
+    "search_memory"
+   ],
+   "dataset-metadata": [
+    "list_global_datasets"
+   ],
+   "identity-contacts": [
+    "find_contacts",
+    "resolve_entity"
+   ],
+   "mail": [
+    "mail.read_thread",
+    "mail.list_messages",
+    "mail.search_messages"
+   ],
+   "meetings": [
+    "meeting.list_upcoming_meetings",
+    "meeting.read_client_meetings",
+    "meeting.query_debriefs"
+   ],
+   "memory-proposals": [
+    "memory.list_own_proposals"
+   ],
+   "original-tracking": [
+    "query_tasks",
+    "query_action_items"
+   ],
+   "research-portfolio-evidence": [
+    "get_research_evidence"
+   ]
+  },
+  "ledgers": {
+   "requirements": {
+    "records": 12,
+    "byState": {
+     "PENDING; proposed input is not a measure": 10,
+     "DISABLED_OPTIONAL": 2
+    }
+   },
+   "gates": {
+    "records": 12,
+    "byState": {
+     "PENDING; proposed input is not a measure": 10,
+     "DISABLED_OPTIONAL": 2
+    }
+   },
+   "tickets": {
+    "records": 9,
+    "byState": {
+     "PENDING; proposed input is not a measure": 7,
+     "DISABLED_OPTIONAL": 2
+    }
+   },
+   "findings": {
+    "records": 10,
+    "byState": {
+     "PENDING; proposed input is not a measure": 10
+    }
+   },
+   "skills": {
+    "records": 14,
+    "byState": {
+     "R2 selected intent; original manifest/al": 14
+    }
+   }
+  },
+  "drift": 0
+ },
+ "drift": [],
+ "capabilities": [
+  {
+   "id": "manage_research_portfolio",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "get_research_portfolio",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_research_portfolio@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred."
+  },
+  {
+   "id": "get_research_portfolio_analytics",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio analytics has domain scoring and aggregation semantics beyond source reads; fixture and scope not agreed."
+  },
+  {
+   "id": "get_research_portfolio_changes",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_research_portfolio_changes@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred."
+  },
+  {
+   "id": "create_research_portfolio_snapshot",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "request_research_portfolio_output",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "save_research_portfolio_output_to_client",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio-specific filing workflow is not selected; narrow verified-artifact filing is a separate proposed command."
+  },
+  {
+   "id": "watch_research_portfolio",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "update_research_portfolio_change_state",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "get_research_portfolio_bookmarks",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio bookmark workflow is not required by defined v1; private-source access still needs an inventory decision."
+  },
+  {
+   "id": "create_research_portfolio_bookmark",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "get_research_portfolio_fit",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio fit scoring is a specialized business workflow; no agreed behavior or benchmark."
+  },
+  {
+   "id": "get_research_portfolio_reviews",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio review workflow parity is not agreed; relevant records may be inventoried separately."
+  },
+  {
+   "id": "add_research_portfolio_review_note",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "get_research_portfolio_rules",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio rule-management surface is not part of the initial workspace or command set."
+  },
+  {
+   "id": "get_research_portfolio_imports",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio import administration is separate scope; no import workflow selected."
+  },
+  {
+   "id": "get_research_portfolio_operations",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Portfolio operations diagnostics is a specialized workflow with unqualified permissions."
+  },
+  {
+   "id": "prepare_research_portfolio_brief",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "prepare_research_portfolio_meeting",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Research Portfolio workflows",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "get_research_evidence",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_research_evidence@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "D011/R2 selected projected evidence: exact authorized review and retained snapshot plus current annual continuity. Raw member and unrestricted older-history exposure unavailable; no Portfolio management workflow parity."
+  },
+  {
+   "id": "read_chat_attachments",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "read_chat_attachments@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "read_monday_client_boards",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "read_monday_client_boards@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_capiro_data",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_capiro_data@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Unified and public source retrieval",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_client_context",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_client_context@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_research_sources",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_research_sources@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Unified and public source retrieval",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "run_analysis",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "run_analysis@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "New reproducible analysis over authorized inputs; verify referenced values and outputs using adopted Python libraries; no source mutations."
+  },
+  {
+   "id": "search_client_knowledge",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_client_knowledge@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_intelligence",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_intelligence@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_knowledge_graph",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_knowledge_graph@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Relationship graph",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "find_path_to",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Relationship graph",
+   "boundary": "Relationship-path recommendation behavior and policy fixture are not sufficiently defined; graph record reads remain proposed."
+  },
+  {
+   "id": "search_memory",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_memory@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Memory lifecycle",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "list_memory_proposals",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "memory.list_own_proposals@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Memory lifecycle",
+   "boundary": "Current-authority read of canonical proposal status and provenance; candidate visibility cannot grant publish/review authority."
+  },
+  {
+   "id": "search_congress_bills",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_congress_bills@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_bill_status",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_bill_status@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "read_bill_text",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "read_bill_text@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_certification_status",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_certification_status@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_floor_votes",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_floor_votes@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_cbo_cost_estimates",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_cbo_cost_estimates@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "resolve_entity",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "resolve_entity@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_lda_filings",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_lda_filings@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "list_global_datasets",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "list_global_datasets@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_global_data",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_global_data@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_sec_filings",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_sec_filings@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_fara_registrations",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_fara_registrations@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_federal_grants",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_federal_grants@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_federal_awards",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_federal_awards@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_gao_reports",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_gao_reports@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_state_bills",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_state_bills@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_state_bill_status",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_state_bill_status@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_state_floor_votes",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_state_floor_votes@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_state_legislator",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_state_legislator@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_committee_roster",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_committee_roster@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_representation",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_representation@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "list_members",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "list_members@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_state_rule_status",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_state_rule_status@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_intel_articles",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_intel_articles@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_committee_hearings",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_committee_hearings@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_legiwatch_review",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Saved LegiWatch review workflow and its state semantics require separate acceptance."
+  },
+  {
+   "id": "search_legiwatch_news",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_legiwatch_news@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_florida_budget_project",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_florida_budget_project@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "compare_florida_budget_amounts",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Florida-specific budget comparison workflow needs explicit units, provenance and expected-value fixtures."
+  },
+  {
+   "id": "prepare_legiwatch_briefing",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "search_legislative_research",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_legislative_research@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_legal_reference",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_legal_reference@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "compare_legislative_versions",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Legislative version comparison behavior and legal-reference fidelity need separate qualification."
+  },
+  {
+   "id": "save_legislative_research",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "preview_legiwatch_relevance",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "LegiWatch relevance scoring is a specialized proposal workflow outside the initial commands."
+  },
+  {
+   "id": "save_legiwatch_relevance",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "apply_legiwatch_suggestion",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "LegiWatch and exact legislative research",
+   "boundary": "Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance."
+  },
+  {
+   "id": "search_crs_reports",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_crs_reports@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_economic_data",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_economic_data@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_district_nexus_context",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_district_nexus_context@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_district_nexus_changes",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_district_nexus_changes@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Government intelligence and public aggregates",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_public_web",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_public_web@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Unified and public source retrieval",
+   "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance."
+  },
+  {
+   "id": "scrape_web_page",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "scrape_web_page@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Unified and public source retrieval",
+   "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance."
+  },
+  {
+   "id": "create_meeting_brief",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Existing stored meeting-brief workflow is deferred; new local native brief generation is required separately."
+  },
+  {
+   "id": "draft_policy_memo",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "Existing policy-memo workflow is deferred; new local artifact drafting is required separately."
+  },
+  {
+   "id": "save_note",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "Source note mutation is not selected; local drafting and native artifacts remain required."
+  },
+  {
+   "id": "save_chat_attachments",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "save_chat_attachments@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "Initial artifact filing only; verified exact version and source scopes preserved; no arbitrary attachment or folder access expansion."
+  },
+  {
+   "id": "send_email",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "External send is outside the initial source command set; mailbox identity, immutable approval and delivery idempotency unqualified."
+  },
+  {
+   "id": "list_emails",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "mail.list_messages@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_emails",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "mail.search_messages@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_email_thread",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "mail.read_thread@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "list_upcoming_meetings",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "meeting.list_upcoming_meetings@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "reply_email",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "External reply is outside initial commands; thread ownership and provider outcome reconciliation unqualified."
+  },
+  {
+   "id": "save_memory",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "save_memory@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Memory lifecycle",
+   "boundary": "Candidate proposal only through new memory.propose; no direct publication, confirmation, correction or deletion parity is accepted."
+  },
+  {
+   "id": "confirm_memory",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Memory lifecycle",
+   "boundary": "Direct canonical memory confirmation is beyond initial sourced proposals; review/lifecycle policy must be separately qualified."
+  },
+  {
+   "id": "correct_memory",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Memory lifecycle",
+   "boundary": "Direct canonical memory correction is deferred; v1 can propose a sourced correction without editing active memory."
+  },
+  {
+   "id": "forget_memory",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Memory lifecycle",
+   "boundary": "Canonical revocation/deletion and legal-hold workflow is deferred; application retention/deletion remains mandatory."
+  },
+  {
+   "id": "search_program_elements",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_program_elements@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_program_element",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_program_element@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_pe_budget_timeline",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_pe_budget_timeline@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_pe_buyer_workspace",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Buyer-workspace composition and specialized analysis are not defined as initial parity."
+  },
+  {
+   "id": "get_pe_contractors",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_pe_contractors@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_pe_bills",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_pe_bills@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_pe_report_language",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_pe_report_language@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_acquisition_personnel",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_acquisition_personnel@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_acquisition_person",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_acquisition_person@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Defense budget and acquisition",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "create_word",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "create_word@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "New local native Word artifact generation and revisions with byte and render validation; Capiro source writes require separate filing approval."
+  },
+  {
+   "id": "create_excel",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "create_excel@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "New native spreadsheet generation and supported revisions; originals, formulas, recalculation limits and reference totals verified."
+  },
+  {
+   "id": "create_powerpoint",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "create_powerpoint@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "New editable slide generation and revisions with per-slide render validation and immutable versions."
+  },
+  {
+   "id": "schedule_task",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "schedule_task@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Schedules",
+   "boundary": "New application Temporal Schedule only, bound to initiating actor, scope, timezone and budget; existing Capiro schedule parity is not accepted."
+  },
+  {
+   "id": "list_scheduled_tasks",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "list_scheduled_tasks@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Schedules",
+   "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted."
+  },
+  {
+   "id": "cancel_scheduled_task",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "cancel_scheduled_task@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Schedules",
+   "boundary": "New application Temporal Schedule cancellation; cancellation and run-history fixtures required."
+  },
+  {
+   "id": "update_scheduled_task",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "update_scheduled_task@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Schedules",
+   "boundary": "New application schedule update and pause controls; recheck authority; no arbitrary external action expansion."
+  },
+  {
+   "id": "query_tasks",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_tasks@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_action_items",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "actions.query@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_tracked_bills",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_tracked_bills@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_regulatory_dockets",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_regulatory_dockets@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Legislation, status and representation truth",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_sam_opportunities",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_sam_opportunities@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_debriefs",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "meeting.query_debriefs@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "read_client_meetings",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "meeting.read_client_meetings@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Mail, calendars and meetings",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "query_outreach",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "query_outreach@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "read_client_documents",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "read_client_documents@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Artifacts, files and computation",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "lookup_client_registry",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "lookup_client_registry@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "create_client",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Client creation is outside initial commands; source transaction and audit invariants not qualified."
+  },
+  {
+   "id": "create_task",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "create_task@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Initial task command; immutable approval, current authority, source invariants, idempotency and receipt required after G3-G5."
+  },
+  {
+   "id": "update_task",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "update_task@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Initial task command; existing task ownership and field invariants require fixtures; repeated delivery must produce one outcome."
+  },
+  {
+   "id": "update_client_profile",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Client profile mutation is outside initial commands; field/lifecycle policy not qualified."
+  },
+  {
+   "id": "find_contacts",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "find_contacts@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Operational client context and tasks",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_funding_opportunities",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_funding_opportunities@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_funding_opportunity_requirements",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_funding_opportunity_requirements@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_funding_opportunity",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_funding_opportunity@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "explain_opportunity_match",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Opportunity match scoring/explanation parity has no accepted rubric or independent expected values."
+  },
+  {
+   "id": "get_opportunity_client_context",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_opportunity_client_context@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_opportunity_government_landscape",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_opportunity_government_landscape@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "compare_funding_opportunities",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Funding comparison workflow has unagreed scoring and explanation requirements."
+  },
+  {
+   "id": "build_opportunity_action_plan",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Funding opportunity decision workflows",
+   "boundary": "Funding action-plan workflow parity is not established by opportunity source access."
+  },
+  {
+   "id": "search_federal_contract_awards",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_federal_contract_awards@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_federal_subawards",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_federal_subawards@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_contract_vehicles",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_contract_vehicles@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "search_procurement_forecasts",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "search_procurement_forecasts@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  },
+  {
+   "id": "get_business_development_context",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_business_development_context@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Prospect business development",
+   "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity."
+  },
+  {
+   "id": "get_business_development_evidence",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_business_development_evidence@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Prospect business development",
+   "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity."
+  },
+  {
+   "id": "get_business_development_brief",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Prospect business development",
+   "boundary": "BizDev brief composition and persisted-versus-generated behavior need explicit scope and fixtures."
+  },
+  {
+   "id": "resolve_business_development_source",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Prospect business development",
+   "boundary": "BizDev source resolution behavior may involve provider actions; precise boundary is unqualified."
+  },
+  {
+   "id": "save_business_development_brief",
+   "disposition": "deferred",
+   "state": "deferred",
+   "replacement": null,
+   "replacementBound": false,
+   "ledgerDisposition": "deferred",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Prospect business development",
+   "boundary": "BizDev-specific saved brief workflow is outside initial commands."
+  },
+  {
+   "id": "get_business_development_recent_changes",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_business_development_recent_changes@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Prospect business development",
+   "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity."
+  },
+  {
+   "id": "get_district_federal_market",
+   "disposition": "selected",
+   "state": "mapped",
+   "replacement": "get_district_federal_market@0.2.0",
+   "replacementBound": true,
+   "ledgerDisposition": "selected",
+   "ledgerReplacementState": "REL-02_REQUIRED; no invented alias or handler",
+   "ledgerRuntimeParity": "NOT_QUALIFIED",
+   "category": "Federal market awarded and future rails",
+   "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
+  }
+ ],
+ "operations": [
+  {
+   "operation": {
+    "id": "mail.read_thread",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-05"
+   ],
+   "fixtureIds": [
+    "mail.thread.transport"
+   ],
+   "sources": [
+    "mail"
+   ],
+   "aliases": [
+    "get_email_thread"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "mail"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.mail_history",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "mail.list_messages",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-05"
+   ],
+   "fixtureIds": [
+    "mail.list.candidates"
+   ],
+   "sources": [
+    "mail"
+   ],
+   "aliases": [
+    "list_emails"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "mail"
+   ],
+   "skills": [
+    "quick_skill.mail_history"
+   ]
+  },
+  {
+   "operation": {
+    "id": "mail.search_messages",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-05"
+   ],
+   "fixtureIds": [
+    "mail.search.candidates"
+   ],
+   "sources": [
+    "mail"
+   ],
+   "aliases": [
+    "search_emails"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "mail"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.mail_history",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "meeting.list_upcoming_meetings",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.list_upcoming_meetings"
+   ],
+   "sources": [
+    "meetings"
+   ],
+   "aliases": [
+    "list_upcoming_meetings"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "meetings"
+   ],
+   "skills": [
+    "quick_skill.meeting_prep"
+   ]
+  },
+  {
+   "operation": {
+    "id": "meeting.read_client_meetings",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.read_client_meetings"
+   ],
+   "sources": [
+    "meetings"
+   ],
+   "aliases": [
+    "read_client_meetings"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "meetings"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "meeting.query_debriefs",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_debriefs"
+   ],
+   "sources": [
+    "meetings"
+   ],
+   "aliases": [
+    "query_debriefs"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "meetings"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "query_tasks",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_tasks"
+   ],
+   "sources": [
+    "tasks"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "original-tracking"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_capiro_data",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_capiro_data"
+   ],
+   "sources": [
+    "clients",
+    "contacts",
+    "mail",
+    "meetings",
+    "tasks",
+    "monday",
+    "action_recommendations",
+    "outreach",
+    "strategies_work",
+    "program_elements",
+    "legiwatch_bills",
+    "hearings",
+    "grants",
+    "contracts_opportunities",
+    "federal_awards",
+    "directory",
+    "district_nexus",
+    "institutional_knowledge"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.portfolio_changes",
+    "quick_skill.portfolio_overlap"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_federal_contract_awards",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_federal_contract_awards"
+   ],
+   "sources": [
+    "federal_market"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.portfolio_overlap",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_federal_subawards",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_federal_subawards"
+   ],
+   "sources": [
+    "federal_market"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.portfolio_overlap",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_contract_vehicles",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_contract_vehicles"
+   ],
+   "sources": [
+    "federal_market"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_procurement_forecasts",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_procurement_forecasts"
+   ],
+   "sources": [
+    "federal_market"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_district_federal_market",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_district_federal_market"
+   ],
+   "sources": [
+    "federal_market"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "memory.list_own_proposals",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-02",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.memory.list_own_proposals"
+   ],
+   "sources": [
+    "memory_proposals"
+   ],
+   "aliases": [
+    "list_memory_proposals"
+   ],
+   "replacement": null,
+   "adapterFamilies": [
+    "memory-proposals"
+   ],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "query_action_items",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-02",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_action_items.client_scoped"
+   ],
+   "sources": [
+    "action_recommendation"
+   ],
+   "aliases": [],
+   "replacement": {
+    "id": "actions.query",
+    "version": "0.2.0"
+   },
+   "adapterFamilies": [
+    "action-items",
+    "original-tracking"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "lookup_client_registry",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.lookup_client_registry"
+   ],
+   "sources": [
+    "clients",
+    "lda_registry"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_research_portfolio",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_research_portfolio"
+   ],
+   "sources": [
+    "research_portfolios"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_research_portfolio_changes",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_research_portfolio_changes"
+   ],
+   "sources": [
+    "research_portfolios"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_business_development_context",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_business_development_context"
+   ],
+   "sources": [
+    "business_development"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_business_development_evidence",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_business_development_evidence"
+   ],
+   "sources": [
+    "business_development"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_business_development_recent_changes",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_business_development_recent_changes"
+   ],
+   "sources": [
+    "business_development"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.portfolio_changes"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_funding_opportunities",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_funding_opportunities"
+   ],
+   "sources": [
+    "funding_opportunities"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_funding_opportunity_requirements",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_funding_opportunity_requirements"
+   ],
+   "sources": [
+    "funding_opportunities"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_funding_opportunity",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_funding_opportunity"
+   ],
+   "sources": [
+    "funding_opportunities"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_opportunity_client_context",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_opportunity_client_context"
+   ],
+   "sources": [
+    "funding_opportunities"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_opportunity_government_landscape",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_opportunity_government_landscape"
+   ],
+   "sources": [
+    "funding_opportunities"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match"
+   ]
+  },
+  {
+   "operation": {
+    "id": "read_client_documents",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.read_client_documents"
+   ],
+   "sources": [
+    "client_documents"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "client-evidence"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "query_economic_data",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_economic_data"
+   ],
+   "sources": [
+    "stored_public_data"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_federal_grants",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_federal_grants"
+   ],
+   "sources": [
+    "stored_public_data"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_federal_awards",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_federal_awards"
+   ],
+   "sources": [
+    "stored_public_data"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_district_nexus_context",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_district_nexus_context"
+   ],
+   "sources": [
+    "district_nexus"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.portfolio_overlap",
+    "quick_skill.representation_lookup"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_district_nexus_changes",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_district_nexus_changes"
+   ],
+   "sources": [
+    "district_nexus"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.portfolio_changes"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_state_bills",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_state_bills"
+   ],
+   "sources": [
+    "state_legislation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_state_legislator",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_state_legislator"
+   ],
+   "sources": [
+    "state_legislation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.representation_lookup"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_cbo_cost_estimates",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_cbo_cost_estimates"
+   ],
+   "sources": [
+    "stored_public_reports"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_gao_reports",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_gao_reports"
+   ],
+   "sources": [
+    "stored_public_reports"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_crs_reports",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_crs_reports"
+   ],
+   "sources": [
+    "stored_public_reports"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_sec_filings",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_sec_filings"
+   ],
+   "sources": [
+    "disclosures"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_fara_registrations",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_fara_registrations"
+   ],
+   "sources": [
+    "disclosures"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_lda_filings",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_lda_filings"
+   ],
+   "sources": [
+    "disclosures"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_acquisition_personnel",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_acquisition_personnel"
+   ],
+   "sources": [
+    "acquisition_personnel"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_acquisition_person",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_acquisition_person"
+   ],
+   "sources": [
+    "acquisition_personnel"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_bill_status",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_bill_status"
+   ],
+   "sources": [
+    "federal_legislation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.bill_watch",
+    "quick_skill.client_changes",
+    "quick_skill.hearing_watch",
+    "quick_skill.meeting_prep",
+    "quick_skill.pe_deep_dive",
+    "quick_skill.portfolio_changes",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_floor_votes",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_floor_votes"
+   ],
+   "sources": [
+    "federal_legislation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_congress_bills",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_congress_bills"
+   ],
+   "sources": [
+    "bill_text"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "read_bill_text",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.read_bill_text"
+   ],
+   "sources": [
+    "bill_text"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.bill_watch",
+    "quick_skill.hearing_watch",
+    "quick_skill.pe_deep_dive",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_committee_roster",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_committee_roster"
+   ],
+   "sources": [
+    "legislative_directory"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.hearing_watch",
+    "quick_skill.representation_lookup"
+   ]
+  },
+  {
+   "operation": {
+    "id": "list_members",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.list_members"
+   ],
+   "sources": [
+    "legislative_directory"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.hearing_watch",
+    "quick_skill.representation_lookup"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_pe_contractors",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_pe_contractors"
+   ],
+   "sources": [
+    "pe_references"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_pe_bills",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_pe_bills"
+   ],
+   "sources": [
+    "pe_references"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_pe_report_language",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_pe_report_language"
+   ],
+   "sources": [
+    "pe_references"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_state_rule_status",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_state_rule_status"
+   ],
+   "sources": [
+    "rule_status"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.regulatory_docket_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_certification_status",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_certification_status"
+   ],
+   "sources": [
+    "certification_status"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_intel_articles",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_intel_articles"
+   ],
+   "sources": [
+    "stored_intelligence"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "list_global_datasets",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.list_global_datasets"
+   ],
+   "sources": [
+    "dataset_metadata"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "dataset-metadata"
+   ],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_representation",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_representation"
+   ],
+   "sources": [
+    "facility_representation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.representation_lookup"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_state_bill_status",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_state_bill_status"
+   ],
+   "sources": [
+    "state_status_votes"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_state_floor_votes",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_state_floor_votes"
+   ],
+   "sources": [
+    "state_status_votes"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "query_regulatory_dockets",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_regulatory_dockets"
+   ],
+   "sources": [
+    "regulatory_dockets"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.regulatory_docket_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "find_contacts",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.find_contacts"
+   ],
+   "sources": [
+    "tenant_contacts"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "identity-contacts"
+   ],
+   "skills": [
+    "quick_skill.mail_history",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.relationship_brief",
+    "quick_skill.representation_lookup",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "resolve_entity",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.resolve_entity"
+   ],
+   "sources": [
+    "entity_candidates"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "identity-contacts"
+   ],
+   "skills": [
+    "quick_skill.mail_history",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.regulatory_docket_brief",
+    "quick_skill.relationship_brief",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_tracked_bills",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_tracked_bills"
+   ],
+   "sources": [
+    "tracked_bills"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.hearing_watch",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "query_intelligence",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_intelligence"
+   ],
+   "sources": [
+    "intelligence_summary"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_public_web",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_public_web"
+   ],
+   "sources": [
+    "public_web"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.portfolio_overlap",
+    "quick_skill.regulatory_docket_brief",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "scrape_web_page",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.scrape_web_page"
+   ],
+   "sources": [
+    "public_web"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.portfolio_overlap",
+    "quick_skill.regulatory_docket_brief",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_sam_opportunities",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_sam_opportunities"
+   ],
+   "sources": [
+    "sam_opportunities"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_florida_budget_project",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_florida_budget_project"
+   ],
+   "sources": [
+    "florida_budget"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "query_outreach",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_outreach"
+   ],
+   "sources": [
+    "outreach_query"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_program_elements",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_program_elements"
+   ],
+   "sources": [
+    "program_elements"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_program_element",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_program_element"
+   ],
+   "sources": [
+    "program_elements"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.pe_deep_dive",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_pe_budget_timeline",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_pe_budget_timeline"
+   ],
+   "sources": [
+    "program_elements"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.bill_watch",
+    "quick_skill.pe_deep_dive",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_client_knowledge",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_client_knowledge"
+   ],
+   "sources": [
+    "client_knowledge_search"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "query_knowledge_graph",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_knowledge_graph"
+   ],
+   "sources": [
+    "client_knowledge_search"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "read_monday_client_boards",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.read_monday_client_boards"
+   ],
+   "sources": [
+    "client_knowledge_monday"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "client-knowledge"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.commitments_audit",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "read_chat_attachments",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.read_chat_attachments"
+   ],
+   "sources": [
+    "client_knowledge_attachments"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_memory",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_memory"
+   ],
+   "sources": [
+    "client_knowledge_memory"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "client-knowledge"
+   ],
+   "skills": [
+    "quick_skill.meeting_prep",
+    "quick_skill.relationship_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_client_context",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_client_context"
+   ],
+   "sources": [
+    "client_knowledge_profile"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "client-evidence"
+   ],
+   "skills": [
+    "quick_skill.client_changes",
+    "quick_skill.funding_opportunity_match",
+    "quick_skill.hearing_watch",
+    "quick_skill.meeting_prep",
+    "quick_skill.portfolio_changes",
+    "quick_skill.portfolio_overlap",
+    "quick_skill.regulatory_docket_brief",
+    "quick_skill.representation_lookup",
+    "quick_skill.research_company"
+   ]
+  },
+  {
+   "operation": {
+    "id": "search_research_sources",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_research_sources"
+   ],
+   "sources": [
+    "research_legal_candidates"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "query_global_data",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.query_global_data"
+   ],
+   "sources": [
+    "public_domain_query"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_legislative_research",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_legislative_research"
+   ],
+   "sources": [
+    "research_legal_legislation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "get_legal_reference",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_legal_reference"
+   ],
+   "sources": [
+    "research_legal_legislation"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.regulatory_docket_brief"
+   ]
+  },
+  {
+   "operation": {
+    "id": "actions.query",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.actions.query"
+   ],
+   "sources": [
+    "action_items_complete"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "action-items"
+   ],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_legiwatch_news",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_legiwatch_news"
+   ],
+   "sources": [
+    "research_legal_news"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "search_committee_hearings",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.search_committee_hearings"
+   ],
+   "sources": [
+    "public_domain_hearings"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.hearing_watch",
+    "quick_skill.meeting_prep"
+   ]
+  },
+  {
+   "operation": {
+    "id": "get_research_evidence",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.get_research_evidence"
+   ],
+   "sources": [
+    "research_portfolios"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [
+    "research-portfolio-evidence"
+   ],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "create_word",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "local-artifact",
+   "approvalBoundary": "qualified-source-review",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.create_word"
+   ],
+   "sources": [
+    "artifact_versions"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": [
+    "quick_skill.bill_watch"
+   ]
+  },
+  {
+   "operation": {
+    "id": "create_excel",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "local-artifact",
+   "approvalBoundary": "qualified-source-review",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.create_excel"
+   ],
+   "sources": [
+    "artifact_versions"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "create_powerpoint",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "local-artifact",
+   "approvalBoundary": "qualified-source-review",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.create_powerpoint"
+   ],
+   "sources": [
+    "artifact_versions"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "run_analysis",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "local-artifact",
+   "approvalBoundary": "qualified-source-review",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.run_analysis"
+   ],
+   "sources": [
+    "artifact_versions"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "create_task",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "source-command",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.create_task"
+   ],
+   "sources": [
+    "capiro_commands"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "update_task",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "source-command",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.update_task"
+   ],
+   "sources": [
+    "capiro_commands"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "save_memory",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "proposal",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.save_memory"
+   ],
+   "sources": [
+    "capiro_commands"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "save_chat_attachments",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "source-command",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.save_chat_attachments"
+   ],
+   "sources": [
+    "capiro_commands"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "schedule_task",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "schedule",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.schedule_task"
+   ],
+   "sources": [
+    "application_schedules"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "list_scheduled_tasks",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "none",
+   "approvalBoundary": "none",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.list_scheduled_tasks"
+   ],
+   "sources": [
+    "application_schedules"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "cancel_scheduled_task",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "schedule",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.cancel_scheduled_task"
+   ],
+   "sources": [
+    "application_schedules"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  },
+  {
+   "operation": {
+    "id": "update_scheduled_task",
+    "version": "0.2.0"
+   },
+   "availability": "unimplemented",
+   "qualification": "pending",
+   "handlerBound": false,
+   "sideEffect": "schedule",
+   "approvalBoundary": "immutable-proposal",
+   "discoverable": false,
+   "requirementIds": [
+    "R-01",
+    "R-04",
+    "R-05"
+   ],
+   "ticketIds": [
+    "REL-02"
+   ],
+   "gateIds": [
+    "RG-02",
+    "RG-05",
+    "RG-07"
+   ],
+   "fixtureIds": [
+    "catalog.binding.update_scheduled_task"
+   ],
+   "sources": [
+    "application_schedules"
+   ],
+   "aliases": [],
+   "replacement": null,
+   "adapterFamilies": [],
+   "skills": []
+  }
+ ],
+ "skills": [
+  {
+   "skillId": "quick_skill.bill_watch",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "15eb005afa184bc3773b76d97acdc4605da126a1fc73fd7f7609683a7be48065",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "read_bill_text@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_pe_budget_timeline@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "create_word@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "bill_text",
+    "federal_legislation",
+    "program_elements",
+    "artifact_versions"
+   ]
+  },
+  {
+   "skillId": "quick_skill.client_changes",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "9980a0e23a484e02438d636dc017ff9cd43098b41c9628bd3eb57c84114ba53f",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.search_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.read_thread@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.read_client_meetings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.query_debriefs@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_client_documents@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_tasks@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_action_items@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_monday_client_boards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_tracked_bills@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_district_nexus_changes@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_business_development_recent_changes@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "client_knowledge_profile",
+    "mail",
+    "meetings",
+    "client_documents",
+    "tasks",
+    "action_recommendation",
+    "client_knowledge_monday",
+    "tracked_bills",
+    "federal_legislation",
+    "district_nexus",
+    "business_development"
+   ]
+  },
+  {
+   "skillId": "quick_skill.commitments_audit",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "30a5b805056de2961a00da0de65152e4d7e918993f05adfbc7bbe456731bef2d",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "mail.search_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.read_thread@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.read_client_meetings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.query_debriefs@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_client_documents@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_tasks@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_action_items@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_monday_client_boards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "mail",
+    "meetings",
+    "client_documents",
+    "tasks",
+    "action_recommendation",
+    "client_knowledge_monday"
+   ]
+  },
+  {
+   "skillId": "quick_skill.funding_opportunity_match",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "6de1b91a9481951d5ff016c5640b7c617f78de29705292a946698eacd846dcfd",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_funding_opportunities@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_funding_opportunity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_funding_opportunity_requirements@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_opportunity_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_opportunity_government_landscape@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_grants@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_awards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_sam_opportunities@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "client_knowledge_profile",
+    "funding_opportunities",
+    "stored_public_data",
+    "sam_opportunities"
+   ]
+  },
+  {
+   "skillId": "quick_skill.hearing_watch",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "d1bc18bcd07991c9e9a8ce06d9c7f75495d92f4b44c0dad09078abf1a71151ba",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_committee_hearings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_committee_roster@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "list_members@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_tracked_bills@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_bill_text@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "client_knowledge_profile",
+    "public_domain_hearings",
+    "legislative_directory",
+    "tracked_bills",
+    "federal_legislation",
+    "bill_text"
+   ]
+  },
+  {
+   "skillId": "quick_skill.mail_history",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "b8ac89b3cf04716a62f8a41f70382987b8a76426c4825a2dd7aeb6fb690903d1",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "resolve_entity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "find_contacts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.list_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.search_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.read_thread@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "entity_candidates",
+    "tenant_contacts",
+    "mail"
+   ]
+  },
+  {
+   "skillId": "quick_skill.meeting_prep",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "ba783cb9e955a2e797f6c103b95984ca2d09e3e68f14d640f100fe049150455d",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "resolve_entity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "find_contacts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.search_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.read_thread@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.list_upcoming_meetings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.read_client_meetings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.query_debriefs@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_client_documents@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_memory@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_tasks@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_action_items@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_monday_client_boards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_tracked_bills@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_committee_hearings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "entity_candidates",
+    "tenant_contacts",
+    "client_knowledge_profile",
+    "mail",
+    "meetings",
+    "client_documents",
+    "client_knowledge_memory",
+    "tasks",
+    "action_recommendation",
+    "client_knowledge_monday",
+    "tracked_bills",
+    "federal_legislation",
+    "public_domain_hearings"
+   ]
+  },
+  {
+   "skillId": "quick_skill.pe_deep_dive",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "6c39f93daeb9c824cbbd37d0ced433dfa0a14d0454e41bd2ba4d3b0e5f4379d9",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "search_program_elements@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_program_element@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_pe_budget_timeline@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_pe_report_language@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_pe_contractors@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_pe_bills@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_bill_text@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_cbo_cost_estimates@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_gao_reports@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_crs_reports@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "program_elements",
+    "pe_references",
+    "bill_text",
+    "federal_legislation",
+    "stored_public_reports"
+   ]
+  },
+  {
+   "skillId": "quick_skill.portfolio_changes",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "ccee9962b1ce75e1ab64b8c356d36164305f947f9d9c9a6ff2a9b446ef8a0915",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "search_capiro_data@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.search_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.read_thread@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.read_client_meetings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.query_debriefs@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_client_documents@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_tasks@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_action_items@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_monday_client_boards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_tracked_bills@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_district_nexus_changes@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_business_development_recent_changes@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "clients",
+    "contacts",
+    "mail",
+    "meetings",
+    "tasks",
+    "monday",
+    "action_recommendations",
+    "outreach",
+    "strategies_work",
+    "program_elements",
+    "legiwatch_bills",
+    "hearings",
+    "grants",
+    "contracts_opportunities",
+    "federal_awards",
+    "directory",
+    "district_nexus",
+    "institutional_knowledge",
+    "client_knowledge_profile",
+    "client_documents",
+    "tasks",
+    "action_recommendation",
+    "client_knowledge_monday",
+    "tracked_bills",
+    "federal_legislation",
+    "business_development"
+   ]
+  },
+  {
+   "skillId": "quick_skill.portfolio_overlap",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "7f859973a4371e37c4010cd2f27bab4f534020660ae06dbd34c60411861a92aa",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "search_capiro_data@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "resolve_entity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_public_web@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "scrape_web_page@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_program_elements@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_program_element@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_contract_awards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_subawards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "find_contacts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_district_nexus_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "clients",
+    "contacts",
+    "mail",
+    "meetings",
+    "tasks",
+    "monday",
+    "action_recommendations",
+    "outreach",
+    "strategies_work",
+    "program_elements",
+    "legiwatch_bills",
+    "hearings",
+    "grants",
+    "contracts_opportunities",
+    "federal_awards",
+    "directory",
+    "district_nexus",
+    "institutional_knowledge",
+    "client_knowledge_profile",
+    "entity_candidates",
+    "public_web",
+    "federal_market",
+    "tenant_contacts"
+   ]
+  },
+  {
+   "skillId": "quick_skill.regulatory_docket_brief",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "638b10d2a7c04389836a286a7cb61fd6f0eed31f39e601f49ab78de7d75c9151",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "resolve_entity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_regulatory_dockets@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_state_rule_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_legal_reference@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_public_web@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "scrape_web_page@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "entity_candidates",
+    "regulatory_dockets",
+    "rule_status",
+    "research_legal_legislation",
+    "public_web",
+    "client_knowledge_profile"
+   ]
+  },
+  {
+   "skillId": "quick_skill.relationship_brief",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "dc7f9358bd9d646d6d6ca88c9528ad16edbc7552d6765b0d97d945c31d1bc7ed",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "resolve_entity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "find_contacts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.search_messages@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "mail.read_thread@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.read_client_meetings@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "meeting.query_debriefs@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_client_documents@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_memory@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_tasks@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "query_action_items@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_monday_client_boards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "entity_candidates",
+    "tenant_contacts",
+    "mail",
+    "meetings",
+    "client_documents",
+    "client_knowledge_memory",
+    "tasks",
+    "action_recommendation",
+    "client_knowledge_monday"
+   ]
+  },
+  {
+   "skillId": "quick_skill.representation_lookup",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "56c59dc649c5160d55dff2094bb1f07cff90c918fdee8bdf54c95f8ce446894e",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_representation@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_state_legislator@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "list_members@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_committee_roster@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_district_nexus_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "find_contacts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "client_knowledge_profile",
+    "facility_representation",
+    "state_legislation",
+    "legislative_directory",
+    "district_nexus",
+    "tenant_contacts"
+   ]
+  },
+  {
+   "skillId": "quick_skill.research_company",
+   "skillVersion": "1.0.0",
+   "manifestSha256": "93344aee6750efe2a9d99d9571bee8e6dfaaa500d4d13285501d67e36b988602",
+   "ledgerRow": true,
+   "selectable": true,
+   "ledgerDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+   "allowedOperations": [
+    {
+     "id": "resolve_entity@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_client_context@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_public_web@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "scrape_web_page@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_program_elements@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_program_element@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_pe_budget_timeline@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_contract_awards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_subawards@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_contract_vehicles@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_procurement_forecasts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_federal_grants@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_funding_opportunities@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_funding_opportunity_requirements@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_sam_opportunities@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "search_tracked_bills@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_bill_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "read_bill_text@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "get_certification_status@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    },
+    {
+     "id": "find_contacts@0.2.0",
+     "inCatalog": true,
+     "handlerBound": false,
+     "availability": "unimplemented"
+    }
+   ],
+   "requiredSources": [
+    "entity_candidates",
+    "client_knowledge_profile",
+    "public_web",
+    "program_elements",
+    "federal_market",
+    "stored_public_data",
+    "funding_opportunities",
+    "sam_opportunities",
+    "tracked_bills",
+    "federal_legislation",
+    "bill_text",
+    "certification_status",
+    "tenant_contacts"
+   ]
+  }
+ ],
+ "ledgers": {
+  "requirements": {
+   "sheet": "Tool contracts",
+   "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+   "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+   "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+   "records": [
+    {
+     "id": "R-01",
+     "title": "Canonical catalog and typed operations",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-02",
+     "title": "Server-bound scope and entity",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-03",
+     "title": "Calendar, fiscal year and version",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-04",
+     "title": "Search, exact query and source read",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-05",
+     "title": "Evidence, coverage and freshness",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-06",
+     "title": "Native discovery through proxy",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-07",
+     "title": "Skill identity and manifest",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-08",
+     "title": "Original scoped skills and Commitments",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-09",
+     "title": "Complexity and bounded recovery",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-10",
+     "title": "Traces, benchmark and oracle",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "R-11",
+     "title": "Optional Decisions routing evaluation",
+     "state": "DISABLED_OPTIONAL"
+    },
+    {
+     "id": "R-12",
+     "title": "Optional calibrated JEV evidence",
+     "state": "DISABLED_OPTIONAL"
+    }
+   ]
+  },
+  "gates": {
+   "sheet": "Qualification",
+   "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+   "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+   "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+   "records": [
+    {
+     "id": "RG-01",
+     "title": "Accepted tool/source route",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-02",
+     "title": "Subject, window, FY and version",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-03",
+     "title": "Answer-bearing Recall@10",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-04",
+     "title": "Exact counts/status/comparisons",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-05",
+     "title": "False absence claims",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-06",
+     "title": "Explicit skill contract execution",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-07",
+     "title": "Unauthorized disclosure/mutation",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-08",
+     "title": "Native discovery and proxy",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-09",
+     "title": "Simple lookup warm p95",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "RG-10",
+     "title": "Optional router error reduction",
+     "state": "DISABLED_OPTIONAL"
+    },
+    {
+     "id": "RG-11",
+     "title": "JEV evidence calibration",
+     "state": "DISABLED_OPTIONAL"
+    },
+    {
+     "id": "RG-12",
+     "title": "Lifecycle and evidence contracts",
+     "state": "PENDING; proposed input is not a measured result"
+    }
+   ]
+  },
+  "tickets": {
+   "sheet": "Deployment work",
+   "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+   "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+   "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+   "records": [
+    {
+     "id": "REL-01",
+     "title": "Baseline",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "REL-02",
+     "title": "Contracts",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "REL-03",
+     "title": "Retrieval",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "REL-04",
+     "title": "Skills/UI",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "REL-05",
+     "title": "SDK runtime",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "REL-06",
+     "title": "Qualification",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "REL-07",
+     "title": "Optional Decisions",
+     "state": "DISABLED_OPTIONAL"
+    },
+    {
+     "id": "REL-08",
+     "title": "Optional JEV",
+     "state": "DISABLED_OPTIONAL"
+    },
+    {
+     "id": "REL-09",
+     "title": "Integration/release",
+     "state": "PENDING; proposed input is not a measured result"
+    }
+   ]
+  },
+  "findings": {
+   "sheet": "Routing audit",
+   "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+   "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+   "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+   "records": [
+    {
+     "id": "A-01",
+     "title": "Calendar window mismatch",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-02",
+     "title": "Memory first-match precedence",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-03",
+     "title": "Portfolio scope loses requirements",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-04",
+     "title": "Selected skill identity is lost",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-05",
+     "title": "Semantic gateway is lexical routing",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-06",
+     "title": "Discovery matching is brittle",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-07",
+     "title": "Search contracts materially differ",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-08",
+     "title": "Required recipes unavailable",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-09",
+     "title": "Skill metadata has different consumers",
+     "state": "PENDING; proposed input is not a measured result"
+    },
+    {
+     "id": "A-10",
+     "title": "JEV calibration is provisional",
+     "state": "PENDING; proposed input is not a measured result"
+    }
+   ]
+  },
+  "skills": {
+   "sheet": "Current workflows",
+   "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+   "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+   "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+   "records": [
+    {
+     "id": "quick_skill.research_company",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.relationship_brief",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.client_changes",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.portfolio_changes",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.portfolio_overlap",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.mail_history",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.meeting_prep",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.commitments_audit",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.funding_opportunity_match",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.pe_deep_dive",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.bill_watch",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.hearing_watch",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.representation_lookup",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    },
+    {
+     "id": "quick_skill.regulatory_docket_brief",
+     "title": "Current Meri quick-action recipes",
+     "state": "R2 selected intent; original manifest/allowed sources and runtime qualification pending"
+    }
+   ]
+  }
+ },
+ "repository": {
+  "head": "740cc43706287bf50feda1a7f71cb99711aca30d",
+  "tree": "bac75f005cb6bdeb5cea8cbe127a298bdddb6f40",
+  "generatedAt": "2026-10-14T20:46:59.098Z"
+ }
+}

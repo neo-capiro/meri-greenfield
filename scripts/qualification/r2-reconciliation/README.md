@@ -1,0 +1,7 @@
+# R2 ledger reconciliation checker
+
+`node scripts/qualification/r2-reconciliation/reconcile.mjs --out DIR [--repo DIR]` joins, read-only, the recorded R2 ledgers under `docs/coordination/r2`, the typed retrieval catalog, the skill manifests exposed by `packages/skills` and the source adapter families under `apps/gateway/sources`, and writes `RECONCILIATION.json` plus `REPORT.md`. Exit 0 when every identifier resolves and dispositions agree; exit 1 when drift was recorded (outputs are still written, with every drift entry listed); exit 2 for usage or configuration errors.
+
+Drift classes: capability present in one ledger but not another; disposition disagreement between the catalog originals and the R2 capability ledger; replacement target absent from the catalog or disagreeing with the ledger; skill manifest without ledger row or not selectable, and the reverse; skill allowed operation absent from the catalog; operation or finding referencing an unknown requirement/gate/ticket identifier.
+
+Adapter-family references are textual (an operation id quoted inside the family's non-test modules); they record source presence only. Handler binding comes solely from the catalog's `handler` field, availability and qualification from the catalog, states from the ledgers. The checker invents no alias or handler, performs no network, database or provider access, and changes no file outside `--out`. Tests: `node --test scripts/qualification/r2-reconciliation/reconcile.test.mjs`.

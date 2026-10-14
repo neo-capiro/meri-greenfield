@@ -124,12 +124,17 @@ Host facts discovered while reproducing (each is now encoded in the runner or it
 - Slice 4 (W00–W01, REL-02): machine-checked reconciliation of the 139 capability IDs, 14 skill intents and 12 requirements against `packages/contracts/retrieval-0.2/catalog.json`, `packages/skills` manifests and current handlers at PR86, replacing reliance on the dated PR59 audit.
 - Slice 5 (W02/G1 input): after shipping supplies the private finding table, a dependency-traced base/package candidate for the scan, preserving all 45 proof bytes where a base-argument change suffices.
 
+### Delivered after slice 1 on the same branch
+
+- Slice 2 proposal (approval gate, no code): [FABLE-FOLLOWUP-TURNS-PROPOSAL-20261014.md](FABLE-FOLLOWUP-TURNS-PROPOSAL-20261014.md).
+- Slice 4 delivered: `scripts/qualification/r2-reconciliation/` and [the reconciliation candidate](../../qualification/candidates/fable-r2-reconciliation-20261014/README.md). At this head the ledgers and source agree with zero drift; all 96 selected capabilities map to catalog operations; no operation has a bound handler and all 97 are pending; 18 operations have an adapter family in source without a catalog binding.
+
 ## 6. Requirement-to-evidence matrix for this slice
 
 | Item | ACCEPT_SOURCE | local-artifact | image-qualified | live |
 | --- | --- | --- | --- | --- |
 | HANDOFF §5 items 1–7 (first chat) | unchanged from PR86 | this slice adds: local PostgreSQL 16 baseline receipts for conversations, native-authority, admitted-runs, gateway budget at `c6053e2` | unchanged (scan-blocked PR86 image) | UNRUN |
-| W00–W01 reconciliation | partial: first-chat path reconciled (§1); capability/skill/requirement ledger reconciliation remains (slice 4) | — | — | — |
+| W00–W01 reconciliation | first-chat path reconciled (§1); ledger reconciliation delivered with zero drift at this head (slice 4 candidate) | — | — | — |
 | W05 durability | unchanged | unchanged | — | UNRUN |
 | W09 independent verification tooling | `scripts/qualification/local-baseline/*` (new, Fable-owned) | receipts in the candidate directory | — | — |
 | R-07/R-08, REL-04 selected-skill admission (drift fix) | candidate: selected-skills 36/36 and admitted-runs 85/85 locally after the change | — | — | — |
