@@ -1,0 +1,14 @@
+/** Actual HTTP lifetime; infrastructure/authority remain explicit scripted owners. */
+import test,{mock} from 'node:test';import assert from 'node:assert/strict';
+import * as configurationModule from '../config.mjs';
+import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
+import {candidateFixture} from './prepared-candidate-fixture.mjs';
+import {capabilityDigest} from '../native-authority/task-verifier.mjs';
+const f=candidateFixture(),order=[];let origin,seenSignal;
+f.configuration.http={...f.configuration.http,hostname:'127.0.0.1',port:0};
+mock.module('pg',{namedExports:{Pool:class{async query(){return {rows:[{runs:'runs',events:'events',controls:'controls',selected_outputs:'selected_outputs'}]};}connect(){throw Error('No SQL effects');}async end(){order.push('pool-close');}}}});
+mock.module('@temporalio/client',{namedExports:{WorkflowIdReusePolicy,WorkflowIdConflictPolicy,Connection:{async connect(){return {withDeadline(_at,method){return method();},withAbortSignal(_signal,method){return method();},workflowService:{async getSystemInfo(){}},async close(){order.push('temporal-close');}};}},Client:class{workflow={start:async()=>{},getHandle:()=>({})};}}});
+mock.module('../config.mjs',{namedExports:{...configurationModule,async readSecret(path){return Buffer.from(path===f.configuration.database.connectionFile?'postgres://synthetic.invalid/meri?sslmode=verify-full':f.secret.control);}}});
+mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandidate(){return {controlCapabilitySha256:capabilityDigest(f.secret.control),native:{async readiness(){},async call(){throw Error('No authority effects');}},identityContext:{async verifyIdentity(){throw Error('No user issuance');},async resolveContext(){throw Error('No user issuance');}},application:{async handle(request){if(new URL(request.url).pathname!=='/private/original-stop-proof')return null;seenSignal=request.signal;assert.equal(request.signal.aborted,false);return Response.json({originalStopProven:true});}},bindApplication(){},async close(){order.push('candidate-close');const response=await fetch(origin+'/private/original-stop-proof');assert.equal(response.status,200);assert.deepEqual(await response.json(),{originalStopProven:true});order.push('candidate-proven');}};}}});
+const {startControl}=await import('../control.mjs');
+test('parent cancellation retains actual control HTTP through ordered original candidate cleanup',async()=>{const abort=new AbortController(),runtime=await startControl(f.configuration,{signal:abort.signal});origin='http://127.0.0.1:'+runtime.address.port;try{abort.abort();await runtime.close();assert.ok(seenSignal);assert.deepEqual(order,['candidate-close','candidate-proven','temporal-close','pool-close']);await assert.rejects(fetch(origin+'/private/original-stop-proof'));}finally{await runtime.close();}});

@@ -41,6 +41,7 @@ export function createRemoteNativeTaskApplication(configuration){
   if(name==='stop')return stop();if(name==='retire'){if(!task)throw remoteFault();return {original,receipt:await task.retire({...original,signal})};}if(name==='readiness'){if(!task)throw remoteFault();await task.readiness({signal});return {original};}if(name==='launch'){if(!task||!['prepared','starting'].includes(state))throw remoteFault();await fresh(signal);return {original,receipt:await task.launch({...original,...(request.plan?{plan:request.plan}:{}),signal})};}if(name==='inspect'){if(!task)throw remoteFault();return {original,receipt:await task.inspect(original)};}
   await fresh(signal);
   if(name==='configuration'){if(!legacy||state!=='pristine'||!c.configurationSha256||request.tree.sha256!==c.configurationSha256)throw remoteFault();return {original,...installSdkConfiguration(request.tree,configs(),{check:()=>{if(signal.aborted||now()>=original.expiresAtMs)throw remoteFault();}})};}
+  if(name==='binding-read'){if(legacy||!task||!p||!ack||!['running','stopped'].includes(state))throw remoteFault();const native=assertNativeExecution(await task.inspect(original),original);await fresh(signal);if(!native.physicalStopProven)verifySdkConfiguration(configurationTree,configs());return {original,taskArn:c.taskArn,configDirectory:p.configDirectory,descriptorSha256:pins.descriptorSha256,configTreeSha256:pins.configTreeSha256,preparationId:ack.preparationId,native,configurationReadback:!native.physicalStopProven};}
   if(name==='prepare')return prepare(request,signal);
   if(name==='start'){
    if(state!=='prepared'||request.descriptorSha256!==pins.descriptorSha256)throw remoteFault();state='starting';try{
@@ -65,7 +66,7 @@ export function createRemoteNativeTaskApplication(configuration){
   if(name==='capture'){if(!c.capture)throw remoteFault();return {original,capture:await storageMethod(c.capture,'capture')({...request.request,signal})};}
   throw remoteFault();
  }
- const fields={prepare:['descriptor'],start:['descriptorSha256'],stdin:['sequence','frame','end'],stdout:['sequence'],stop:[],inspect:[],retire:[],readiness:[],launch:['plan'],configuration:['tree'],registration:['request'],'workspace-restore':['request'],'workspace-verify':['request'],capture:['request']};
+ const fields={prepare:['descriptor'],start:['descriptorSha256'],stdin:['sequence','frame','end'],stdout:['sequence'],stop:[],inspect:[],retire:[],readiness:[],launch:['plan'],configuration:['tree'],registration:['request'],'workspace-restore':['request'],'workspace-verify':['request'],capture:['request'],'binding-read':[]};
  const worker=new Set(['prepare','start','stdin','stdout','stop']);
  return Object.freeze({async handle(request){let life;try{
   const info=Object.fromEntries(Object.entries(get).map(([k,g])=>[k,g.call(request)])),url=new URL(info.url);if(!url.pathname.startsWith('/v1/native-task/'))return null;const name=url.pathname.slice('/v1/native-task/'.length);if(!Object.hasOwn(fields,name)||url.search||info.method!=='POST')throw remoteFault();if(!enabled)return reply({error:{code:'REMOTE_TASK_UNAVAILABLE'}},503);

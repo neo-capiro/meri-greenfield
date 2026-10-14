@@ -10,6 +10,7 @@ import {assertCaptureReceipt} from '../../worker/conversation/continuation/nativ
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {assertNativeExecution} from './execution-broker.mjs';
 import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
+import {verifyCheckpointReadback} from './checkpoint-readback.mjs';
 const fail=()=>{throw Error('NATIVE_CHECKPOINT_CAPTURE_REFUSED');},sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const id=value=>{const h=hash(value);return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-a${h.slice(17,20)}-${h.slice(20,32)}`;};
 export function createNativeCheckpointCapture(configuration){
@@ -24,11 +25,8 @@ export function createNativeCheckpointCapture(configuration){
  }
  async function bytes(ref,life,fresh){validateShape('ObjectReference',ref);if(ref.bytes>8*1024*1024||ref.versionId==='null')fail();await fresh();const raw=await life.run(signal=>get(ref,signal));life.check();if(!Buffer.isBuffer(raw)||raw.length!==ref.bytes||sha(raw)!==ref.sha256)fail();await fresh();return Buffer.from(raw);}
  async function storeBytes(raw,objectId,scopes,requestSha256,life,fresh){if(!Buffer.isBuffer(raw)||raw.length>8*1024*1024)fail();await fresh();const ref=data(await life.run(signal=>put({objectId,bytes:raw,scopes,requestSha256},signal)));validateShape('ObjectReference',ref);if(ref.objectId!==objectId||hash(ref.scopes)!==hash(scopes)||ref.bytes!==raw.length||ref.sha256!==sha(raw))fail();const reread=await bytes(ref,life,fresh);if(!reread.equals(raw))fail();return ref;}
- async function readback(proof,life,fresh){const cp=proof.checkpoint;validateShape('Checkpoint',cp);assertWorkspacePaths(cp.workspace);if(hash(cp)!==proof.checkpointSha256||hash(cp.workspace)!==cp.workspaceSha256||hash(cp.binding)!==hash(original.binding)||hash(cp.versions)!==hash(original.versions)||cp.workspace.entries.length>256||cp.workspace.entries.reduce((n,e)=>n+e.object.bytes,0)>32*1024*1024)fail();
-  const raw=await bytes(cp.opaqueSession,life,fresh);let transcripts;try{transcripts=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(raw));}catch{fail();}
-  // Adopt the existing supported SessionStore array validator; never reinterpret JSONL.
-  await createCheckpointSdkSnapshot({key:{projectKey:cp.workspace.logicalCwd.replace(/[^a-zA-Z0-9]/gu,'-'),sessionId:cp.sessionId},transcripts});life.check();for(const entry of cp.workspace.entries)await bytes(entry.object,life,fresh);
- }
+ const readback=(proof,life,fresh)=>verifyCheckpointReadback({proof,binding:original.binding,versions:original.versions,objects:c.objects,life,revalidate:fresh});
+
  function receipt(proof,checkedAtMs){const cp=proof.checkpoint;return data({checkpoint:cp,checkpointSha256:proof.checkpointSha256,sourceRequestSha256:proof.sourceRequestSha256,contextSha256:proof.contextSha256,sessionId:cp.sessionId,resumeSessionAt:proof.resumeSessionAt,verificationId:randomUUID(),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs,expiresAtMs:original.expiresAtMs});}
  async function captureCheckpoint(value){const v=own(value,['binding','request','versions','scopes','controlId','sessionId','contextSha256'],['signal']),{signal,...raw}=v,input=data(raw);if(hash(input.binding)!==hash(original.binding)||hash(input.versions)!==hash(original.versions))fail();
   return operation(signal,async(life,fresh)=>{const auth=await fresh();if(hash(input.scopes)!==hash(auth.scopes))fail();const pins={binding:original.binding,scopes:auth.scopes,selectedClientId:auth.selectedClientId};
