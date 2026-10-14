@@ -1,0 +1,223 @@
+{
+  "verdict": "ACCEPT_LOCAL_IMPLEMENTED_SOURCE_NOT_LIVE_ACCEPTANCE",
+  "sourceHead": "a8f6563328e74139ee9c58c70b2a43b02ecb61f3",
+  "baseHead": "f855af6e1096894909b201603b2f77e5e6230f5f",
+  "acceptedCaptures": [
+    {
+      "receipt": "final-corrected-controls.json",
+      "sourceHead": "74c5fe56c38d940481602441824cdae6525fd07c",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "receipt": "corrected-size-boundary-controls.json",
+      "sourceHead": "013e6d56a8631acfedceb2a8761bad08248c0127",
+      "passed": 3,
+      "failed": 0
+    }
+  ],
+  "finalDelta": "Optional ECS Container.taskArn reviewed statically at final source; parent author narrow control, no independent rerun.",
+  "retainedFailedCaptures": [
+    "final-controls.json",
+    "dependency-corrected-controls.json",
+    "size-boundary-controls.json"
+  ],
+  "scope": "Local independent PostgreSQL actual; ECS/native restoration scripted. No live AWS/SDK/provider/deployment acceptance.",
+  "files": [
+    {
+      "path": "apps/gateway/budget/product-scripted-fixture.mjs",
+      "bytes": 5378,
+      "sha256": "9291570483392aab3daf4ab6b387edd3fcc0c9b70e90a02ccd0e3742aa3b9ee8"
+    },
+    {
+      "path": "apps/runtime/native-authority/broker-stack.mjs",
+      "bytes": 4534,
+      "sha256": "b7317cb6e3fcbd86273032d333ff43078a12cbe96d430367a484aa654fb39e55"
+    },
+    {
+      "path": "apps/runtime/native-authority/continuation-runtime.mjs",
+      "bytes": 5465,
+      "sha256": "39e06131fc816468c318eef1da2fe8f822e75247ad2ceda3e9db6b7abaaa1ab4"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-task-binding.mjs",
+      "bytes": 4495,
+      "sha256": "877059c43048323d4ee1b720750fbd44b92ff54e2973efbc6da3c137724f5a66"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-task-factory.mjs",
+      "bytes": 2646,
+      "sha256": "46ecb326866b88448e568f3e21983cf47d347e9ecb57d6f206b596668f543bae"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-task-owner.mjs",
+      "bytes": 6777,
+      "sha256": "d9f3325d11bee419179364abb83e45e3943adb45402a41f7c142238f37be0f10"
+    },
+    {
+      "path": "apps/runtime/native-authority/execution-broker.mjs",
+      "bytes": 6278,
+      "sha256": "46f3a57a4c949e233d42c12c49706e25a3c94d1f5dec69c3602f8d13342e4a86"
+    },
+    {
+      "path": "apps/runtime/native-authority/execution-http.mjs",
+      "bytes": 3617,
+      "sha256": "b25b932af2b0817e99cecbc2f16b0d8641d12232419db11c38eb8a704b7a1e81"
+    },
+    {
+      "path": "apps/runtime/native-authority/independent-task.mjs",
+      "bytes": 9512,
+      "sha256": "03690305fb3adb421f43ea6f2441899541a0793bde59981a823e93c7c8b85352"
+    },
+    {
+      "path": "apps/runtime/native-authority/runtime-provider.mjs",
+      "bytes": 3277,
+      "sha256": "b8b8c632d4f97b87050e38b5dc2597970725445e2da9ecd6594142d2f14b8bbd"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs",
+      "bytes": 6961,
+      "sha256": "6ad8421dbe5136f16be02b5899470fd2b8a2e725bec3a53b8314d8453a3ec24b"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/continuation-runtime.test.mjs",
+      "bytes": 12160,
+      "sha256": "334262b692accd03365ac065f0bc329b3f912c04b5c369370775d30fcb184081"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/ecs-recovery-pg.test.mjs",
+      "bytes": 3872,
+      "sha256": "4c94627fc5397228cd41a046f5a611b28f23b3da43a92048cba938e91bf50511"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/ecs-task-owner.test.mjs",
+      "bytes": 11862,
+      "sha256": "d0b80527aff2383caeb55e144a47184dd3e8037d98dbc499d67a8e0c1112dd92"
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "bytes": 99365,
+      "sha256": "5ce134fa205f5c18c7dc2f880c0de45908614d3e9e92416e7017978d379e1fd8"
+    },
+    {
+      "path": "apps/runtime/package.json",
+      "bytes": 700,
+      "sha256": "90639e384b530b52f74af78bee3756f0bed85186195200b6b061306b3af2e441"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/native-receipts.mjs",
+      "bytes": 2734,
+      "sha256": "92a111a06d9cd6e2eab1b16ba9209915ef059ff26ac9a2e3fde456256cebcd59"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/options.mjs",
+      "bytes": 5147,
+      "sha256": "60b7baff995b3b6316ed32551c4371b4d8f6d076fb43b9ebb2944493d582f5d0"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/test/fixtures.mjs",
+      "bytes": 2157,
+      "sha256": "92abc96768b30dcd5de64d8128d310c4b4d5b9cf7eaaac49a5c6ba30b14a246e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/REVIEW.md",
+      "bytes": 3819,
+      "sha256": "81a137839bbe894998dd24aff3e32a16628e8e6b51933c489ad08e4b8ebff40a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/controls.test.mjs",
+      "bytes": 13890,
+      "sha256": "2bd1826216891de34c7d6e6a1eaea1af697f519475cd9b6b230f367136fafd8c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/corrected-size-boundary-controls.json",
+      "bytes": 1462,
+      "sha256": "b3f60b2235241847605a6372cf4a059eea5500017b60615528c3f5b03fa05ed0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/corrected-size-boundary-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/corrected-size-boundary-controls.stdout.bin",
+      "bytes": 378,
+      "sha256": "f41858fd663167d8e673e242d11d94e18fc7dc20e784913fb8b0c6416ee24961"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/dependency-corrected-controls.json",
+      "bytes": 1355,
+      "sha256": "7976428c428498f345966e92cd8593e1ebf1204d18df6a3ed3ab5a1b48b9ed91"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/dependency-corrected-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/dependency-corrected-controls.stdout.bin",
+      "bytes": 1807,
+      "sha256": "6068e95c853baffca1af7e9f5b1ad1414ebea37d14afcb2647fb3c5adadee823"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/final-controls.json",
+      "bytes": 1325,
+      "sha256": "293220f7a49f8c11b9018d93d8895ed543d9038f99e169855b4ef87ebe9edb55"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/final-controls.stdout.bin",
+      "bytes": 1603,
+      "sha256": "a7d0f709f8ceb74587a8bb946b2c7a4650b7d170711a69e1cfce1ed5c0205407"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/final-corrected-controls.json",
+      "bytes": 1345,
+      "sha256": "863939d221104190e1b1ecd053f1b779b43b767f07b67a65cbcea71c76053236"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/final-corrected-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/final-corrected-controls.stdout.bin",
+      "bytes": 1023,
+      "sha256": "10bade4a8f239d6442660ee54acea1fa0c0fe7e517815a6c0daeddc3e59a9266"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/initial-size-boundary.test.txt",
+      "bytes": 5590,
+      "sha256": "9171e49fb2006d789a4b7f418d01f53c96cbaeb83c350016ce1f07529e1778ad"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/size-boundary-controls.json",
+      "bytes": 1394,
+      "sha256": "fa857436c9164accf64fdc2c133a635c64113db82f36e63bfb19375390dabaa1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/size-boundary-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/size-boundary-controls.stdout.bin",
+      "bytes": 1182,
+      "sha256": "6817afb9e18b5eeab27c904f218005800a016fd60e9b60b3a32db69d73c8a4c2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/independent/size-boundary.test.mjs",
+      "bytes": 5590,
+      "sha256": "c8b36a255f6c4c1d32b0292e84878b6318d791dc520ff596e8e1035824b18b25"
+    }
+  ]
+}

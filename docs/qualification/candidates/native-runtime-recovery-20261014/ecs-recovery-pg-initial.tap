@@ -1,0 +1,9 @@
+✔ reconstructed broker consumes persisted original ARN and contains real local owner after expired lease (2443.225499ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12437.99325

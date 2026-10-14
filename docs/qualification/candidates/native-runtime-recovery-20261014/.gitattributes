@@ -1,0 +1,3 @@
+# Preserve raw process bytes; do not normalize captured streams.
+*.bin binary
+author/typecheck.stdout.txt binary

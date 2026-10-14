@@ -1,0 +1,11 @@
+✔ coherent canonical continuation above 128KiB reaches restore through runtime route (75.677146ms)
+✔ runtime body above 2MiB refuses before any broker read or restoration (80.129641ms)
+✔ control poll still rejects above 128KiB before dispatch (4.440568ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6492.557267

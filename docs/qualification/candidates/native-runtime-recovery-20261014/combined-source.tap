@@ -1,0 +1,42 @@
+✔ resume: persisted lifecycle join supplies exact native restore request and correlated key (54.073079ms)
+✔ fork: persisted lifecycle join supplies exact native restore request and correlated key (13.209934ms)
+✔ worker continuation substitution refuses before native restore (2.654299ms)
+✔ worker sourceRequest substitution refuses before native restore (2.262954ms)
+✔ worker request substitution refuses before native restore (2.383793ms)
+✔ worker scopes substitution refuses before native restore (1.887261ms)
+✔ omitted continuation and absent native restore both refuse a persisted target (6.159066ms)
+✔ fresh persisted run returns null and cannot accept continuation hints or restoration witness (1.577293ms)
+✔ canonical scope changes during restore refuse returned runtime (3.506547ms)
+✔ canonical client changes during restore refuse returned runtime (5.883521ms)
+✔ canonical cancel changes during restore refuse returned runtime (2.669042ms)
+✔ native checkpointSha256 mismatch refuses (2.559028ms)
+✔ native opaqueSessionSha256 mismatch refuses (3.325176ms)
+✔ native expiresAtMs mismatch refuses (4.570535ms)
+✔ native sdkSessionKey mismatch refuses (2.059661ms)
+✔ foreign registration session is refused without native read; worker receipt fields are inert (2.610775ms)
+✔ native registration observation cannot survive admission revocation during owner read (3.097481ms)
+✔ missing native continuation observation refuses rather than selecting a fresh witness (2.491919ms)
+✔ native restore configuration accessors refuse without invocation (0.740632ms)
+✔ actual runtime HTTP accepts canonical continuation hints only under task role and returns validated restore (20.4042ms)
+✔ controller reconstruction rediscovers exact admitted task; SDK commands never allocate replacement (12.667978ms)
+✔ stop acknowledgement cannot prove termination, original scope is retained for next read (1.737671ms)
+✔ missing or aged out resource remains UNKNOWN and is never treated as stopped (1.023041ms)
+✔ contradictory definition refuses before any stop effect (0.986686ms)
+✔ contradictory plan refuses before any stop effect (1.141552ms)
+✔ contradictory image refuses before any stop effect (0.982393ms)
+✔ contradictory container ownership refuses before any stop effect (1.194083ms)
+✔ contradictory created time refuses before any stop effect (0.88866ms)
+✔ contradictory duplicate tags refuses before any stop effect (1.528424ms)
+✔ contradictory execute command refuses before any stop effect (0.977215ms)
+✔ startedBy uses sole filter and separate stopped inventory; pagination cycles refuse (3.07056ms)
+✔ a second resource claiming original startedBy refuses native release (1.383618ms)
+✔ caller cannot substitute persisted ARN hint (0.642398ms)
+✔ expired reconstructed broker denies start but retires original persisted task after expiry (3.747944ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6985.956257

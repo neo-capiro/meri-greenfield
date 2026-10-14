@@ -1,0 +1,32 @@
+✔ factory refuses alternate admitted ARN and hostile original without SDK command effects (15.554685ms)
+✔ changed original/persisted hint refuses before service access; no replacement command exists (6.743298ms)
+✔ stop acknowledgement and missing metadata preserve cleanup UNKNOWN; later fresh terminal read proves original retirement (9.332837ms)
+✔ native registration cannot survive original resource stopping during private owner read (5.270172ms)
+✔ runtime qualification failure refuses readiness but preserves original resource containment (6.073982ms)
+✔ real independent PG retains original ARN hint through expired reconstruction and uncertain retirement (1178.111238ms)
+✔ continuation HTTP joins canonical fork target while worker replay/body authority is refused (38.839495ms)
+✖ restore failure still rechecks native broker and fresh run keeps existing runtime behavior (5.463609ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6666.98976
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-runtime-recovery-20261014/independent/controls.test.mjs:77:1
+✖ restore failure still rechecks native broker and fresh run keeps existing runtime behavior (5.463609ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-runtime-recovery-20261014/independent/controls.test.mjs:78:99)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

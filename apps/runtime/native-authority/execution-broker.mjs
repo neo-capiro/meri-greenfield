@@ -11,7 +11,7 @@ export function createNativeExecutionBroker(configuration){
  const c=own(configuration,['binding','versions','plan','expiresAtMs','journal','tasks','verifier','taskCapability'],['enabled','now','maxRequestMs']);
  const binding=data(c.binding),versions=data(c.versions),plan=data(c.plan);validateShape('RunBinding',binding);validateShape('RuntimeVersions',versions);
  const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000;
- if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=now()||typeof c.taskCapability!=='string')throw executionFault('CONFIGURATION');
+ if(typeof enabled!=='boolean'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<1||typeof c.taskCapability!=='string')throw executionFault('CONFIGURATION');
  const claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record'),launch=storageMethod(c.tasks,'launch'),inspect=storageMethod(c.tasks,'inspect'),retire=storageMethod(c.tasks,'retire'),verify=storageMethod(c.verifier,'verify');
  const nativeOriginal=createExecutionBinding({binding,versions,plan,expiresAtMs:c.expiresAtMs}),{versions:ignored,...original}=nativeOriginal,executionKey=original.executionKey;
  function request(value,fields){const v=own(value,['binding',...fields],['signal']);nativeSignal(v.signal);if(!enabled||hash(data(v.binding))!==executionKey)throw executionFault('REFUSED');return v;}
@@ -20,7 +20,7 @@ export function createNativeExecutionBroker(configuration){
   if(hash(receipt.binding)!==executionKey||receipt.expiresAtMs<c.expiresAtMs||now()>=c.expiresAtMs)throw executionFault('ADMISSION_REFUSED');life.check();}
  async function observe(life,saved,{stop=false}={}){if(!saved.record)throw executionFault('NOT_STARTED');
   // Inspect/retire remain possible with original ownership after revocation/expiry.
-  const fact=assertNativeExecution(await life.run(signal=>(stop?retire:inspect)({...nativeOriginal,signal})),nativeOriginal);life.check();
+  const fact=assertNativeExecution(await life.run(signal=>(stop?retire:inspect)({...nativeOriginal,...(saved.record.native?{taskId:saved.record.native.taskId}:{}),signal})),nativeOriginal);life.check();
   if(saved.record.native&&saved.record.native.taskId!==fact.taskId)throw executionFault('NATIVE_REFUSED');
   return life.run(()=>record({binding,executionId:original.executionId,phase:fact.physicalStopProven?'retired':'started',native:fact},life.check));}
  async function start(value){const input=request(value,['executionKey']);if(input.executionKey!==executionKey)throw executionFault('REFUSED');return operation(input.signal,async life=>{

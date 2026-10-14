@@ -1,0 +1,39 @@
+✔ controller reconstruction rediscovers exact admitted task; SDK commands never allocate replacement (16.013718ms)
+✔ stop acknowledgement cannot prove termination, original scope is retained for next read (3.330901ms)
+✔ missing or aged out resource remains UNKNOWN and is never treated as stopped (1.009874ms)
+✔ contradictory definition refuses before any stop effect (1.825939ms)
+✔ contradictory plan refuses before any stop effect (1.560788ms)
+✔ contradictory image refuses before any stop effect (0.815367ms)
+✔ contradictory container ownership refuses before any stop effect (1.593394ms)
+✔ contradictory created time refuses before any stop effect (0.980732ms)
+✔ contradictory duplicate tags refuses before any stop effect (1.814605ms)
+✔ contradictory execute command refuses before any stop effect (1.032195ms)
+✔ startedBy uses sole filter and separate stopped inventory; pagination cycles refuse (3.505632ms)
+✔ a second resource claiming original startedBy refuses native release (1.117782ms)
+✔ caller cannot substitute persisted ARN hint (0.875659ms)
+✔ expired reconstructed broker denies start but retires original persisted task after expiry (3.546527ms)
+✖ task factory joins actual admitted worker ARN before construction, never fabricates allocation (10.072507ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6948.215273
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/ecs-task-owner.test.mjs:39:1
+✖ task factory joins actual admitted worker ARN before construction, never fabricates allocation (10.072507ms)
+  Error: INVALID_QUALIFICATION_MAPPING
+      at refuse (file:///workspace/meri-native-runtime-recovery/apps/gateway/budget/postgres-budget-store.mjs:5:39)
+      at validateGrantBinding (file:///workspace/meri-native-runtime-recovery/apps/gateway/budget/tool-budget-binding.mjs:42:142)
+      at parseToolGrantFacts (file:///workspace/meri-native-runtime-recovery/apps/gateway/budget/tool-budget-binding.mjs:51:10)
+      at file:///workspace/meri-native-runtime-recovery/apps/gateway/budget/admitted-run-binding.mjs:19:28
+      at Array.map (<anonymous>)
+      at parseAdmittedGrantSet (file:///workspace/meri-native-runtime-recovery/apps/gateway/budget/admitted-run-binding.mjs:19:18)
+      at createAdmittedEcsTaskFactory (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/ecs-task-factory.mjs:11:133)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/ecs-task-owner.test.mjs:39:730)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)

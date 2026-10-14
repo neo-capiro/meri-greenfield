@@ -1,0 +1,31 @@
+✔ resume: persisted lifecycle join supplies exact native restore request and correlated key (44.215381ms)
+✔ fork: persisted lifecycle join supplies exact native restore request and correlated key (8.936916ms)
+✔ worker continuation substitution refuses before native restore (2.959573ms)
+✔ worker sourceRequest substitution refuses before native restore (2.420137ms)
+✔ worker request substitution refuses before native restore (2.080211ms)
+✔ worker scopes substitution refuses before native restore (2.176037ms)
+✔ omitted continuation and absent native restore both refuse a persisted target (5.124882ms)
+✔ fresh persisted run returns null and cannot accept continuation hints or restoration witness (1.94486ms)
+✔ canonical scope changes during restore refuse returned runtime (2.813976ms)
+✔ canonical client changes during restore refuse returned runtime (2.763233ms)
+✔ canonical cancel changes during restore refuse returned runtime (2.849716ms)
+✔ native checkpointSha256 mismatch refuses (3.659571ms)
+✔ native opaqueSessionSha256 mismatch refuses (2.083118ms)
+✔ native expiresAtMs mismatch refuses (4.274074ms)
+✔ native sdkSessionKey mismatch refuses (2.754359ms)
+✔ foreign registration session is refused without native read; worker receipt fields are inert (2.732777ms)
+✔ native registration observation cannot survive admission revocation during owner read (3.149299ms)
+✔ missing native continuation observation refuses rather than selecting a fresh witness (1.747973ms)
+✔ native restore configuration accessors refuse without invocation (0.674067ms)
+✔ actual runtime HTTP accepts canonical continuation hints only under task role and returns validated restore (21.01568ms)
+✔ runtime native-error still rechecks broker for revocation containment (3.065818ms)
+✔ runtime canonical-drift still rechecks broker for revocation containment (3.430939ms)
+✔ bounded native HTTP transports valid repeated continuation requests above fresh-only size limit (17.879031ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6406.267336
