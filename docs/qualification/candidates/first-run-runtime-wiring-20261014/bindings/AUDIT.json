@@ -1,0 +1,234 @@
+{
+  "scope": "READ_ONLY_SOURCE_CONFIG_RETAINED_METADATA_AUDIT_NO_LIVE_ACCEPTANCE",
+  "taskBase": "f008efc97619c7ed2e8119ad8ebc0e0a733a5970",
+  "sourceAtAudit": "b70ab7d0fa41c333fec85189908b29988fda237c",
+  "recordedAt": "2026-10-14T01:17:06.458826+00:00",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-FIRST-RUN-RUNTIME-WIRING-20261014.md",
+      "bytes": 2984,
+      "sha256": "18ea3833fc081863de6773eb7887ec55a2269f56512642035eca39e8607c10af"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "bytes": 7959,
+      "sha256": "c800bd1650d7548df956057ffa34f6bf2ad96c36d0b4385b13e29a10afade67e"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "bytes": 4138,
+      "sha256": "6a80a4b69560a8dede438402f80580e5f5774dcc55ffc0791e60f0d5b9ab8185"
+    },
+    {
+      "path": "apps/runtime/cli.mjs",
+      "bytes": 2343,
+      "sha256": "09648a25d4a91f045336131982d6c25905b2a98569871aba426f5cb5676c6bb2"
+    },
+    {
+      "path": "apps/runtime/native-client.mjs",
+      "bytes": 2667,
+      "sha256": "6f6853d9319484a61bcc6a4d6f26d6a8d5af50798b2ac3a71c822cb8d7f1f6b7"
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "bytes": 4013,
+      "sha256": "2440787902a13ffa2aedc868f4e64ccfff6ebb5f18fb6f6676ab6a27b987e4e0"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 6286,
+      "sha256": "f9ffeed06769309f8ed4ac69755805f43dd4a48b4f17f7e84f8450d6c19844a3"
+    },
+    {
+      "path": "apps/runtime/product-applications.mjs",
+      "bytes": 3063,
+      "sha256": "b5ed5497de8a8c2a3304479bdf607d8bf0a045db1ad3078fdbadcb9885a8c506"
+    },
+    {
+      "path": "apps/runtime/native-authority/first-run-mount.mjs",
+      "bytes": 2585,
+      "sha256": "0be051c9ec8630b03d6d9373a2f52a7ed3d9caccc1f582d1c275ee725c8bb828"
+    },
+    {
+      "path": "apps/runtime/native-authority/first-run-ports.mjs",
+      "bytes": 1587,
+      "sha256": "cd4e1ca51c5e9b64f938c9d79e9d1146753731208ad2e721bd8cd5e3d9a9ec5e"
+    },
+    {
+      "path": "apps/runtime/native-authority/identity-context.mjs",
+      "bytes": 1519,
+      "sha256": "df18bd9caaa0d1b4a4dbbe65dddf167c3d0c57874a7bcdcd56fe2e96c12a44ad"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-authority.mjs",
+      "bytes": 2541,
+      "sha256": "31bc405505d6e4a1c525a96850d5cc826a21e5ced84e0fa549f64679d673bca1"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-owner.mjs",
+      "bytes": 13942,
+      "sha256": "266017f3f517c9f4b626be77068fd1028b7448270ee0b69eae5663826738e7a9"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-client.mjs",
+      "bytes": 7668,
+      "sha256": "ad3ceb3567bfe2a56d620d0139f7bedbddbd2b3b9266e1d99480db3fb7994abb"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-binding.mjs",
+      "bytes": 3055,
+      "sha256": "f28bd9a8b3523993511ac76a9ad1850ebb82e762e79d3218273fff20a11e0531"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-current.mjs",
+      "bytes": 2803,
+      "sha256": "9e59fe893db5b63e671869d56700b97e9598677a114103e39b949dcd127f0ac2"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-owner.mjs",
+      "bytes": 3883,
+      "sha256": "8ac35a7b976877639ccfa73836f91016236f95f7a9076861e5b72629006c7c8b"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-binding.mjs",
+      "bytes": 4591,
+      "sha256": "e43a8f953d2f37f75514c10c416fc2129a2e7224b4e9ff056087bbf6e664bbed"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 14289,
+      "sha256": "16e3e716049ea4e8ffbae44d3c930b4e20cf758323b576a55ec89fe7a5b9186b"
+    },
+    {
+      "path": "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "bytes": 5730,
+      "sha256": "0beb498dbac8d6e092c207b46f8167fb161361e7ad869aea6e33f0d1d8c4a511"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0001_conversations.sql",
+      "bytes": 1353,
+      "sha256": "97d4e7058696b8ded1ad7dc0730ab271e75137968831ed34c0b73a7dadc16b26"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "bytes": 1160,
+      "sha256": "87c27a01a2f36ceb0a4faf6c5242d8e061240037b6775aef777f292323170b69"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "bytes": 636,
+      "sha256": "25d9fc720e0f4a0345e017d5a20285b27d04af55e3cc953d261664ce31db2245"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "bytes": 3600,
+      "sha256": "0370baa18aff134ca75287b468fc00b75e616f63fbb440c02069bccd31dd582a"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "bytes": 903,
+      "sha256": "8ffb0b725098aaed8bdd48591b3da9a04c2d751d9098a5b35f8c528ac9ec8cde"
+    },
+    {
+      "path": "apps/control/conversations/temporal-dispatch.mjs",
+      "bytes": 2247,
+      "sha256": "496efe7f50a0f87c4ab2270d295c702e1a6881c092c80241d964ab564d959fdd"
+    },
+    {
+      "path": "apps/control/conversations/workflow.ts",
+      "bytes": 879,
+      "sha256": "2fd2c49ef41b88467643c14ffe92a4f367ffc7756d5dba02ce0da0ff4ff4f9e5"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/authority-http.mjs",
+      "bytes": 4664,
+      "sha256": "ba9af89c706dc6bbb27f55e06c9e6331e5c655edabb3a22d2cc13269750ef993"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/context-adapter.mjs",
+      "bytes": 6198,
+      "sha256": "766dfedd4277ec855d8e92c4e8e33c1fc48c2ca8a5be41249499833b43f88afb"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+      "bytes": 4101,
+      "sha256": "3132dfe886d1b893602c48c63629471663156671d6093975e5a06130c207944f"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+      "bytes": 5132,
+      "sha256": "ad7eaa94dc2a2747a23301cd66eb5d6662120ef3b22e18381ff6ff59eb2504e4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-docx-flow-20261013/root/BACKEND-CONTEXT-MAPPING.md",
+      "bytes": 2713,
+      "sha256": "bc10d63ecd01d4c4864a31af864130c6a7e5d003253daa96b3f3cdd34e7b9a37"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-DOCX-FLOW-20261013.md",
+      "bytes": 10141,
+      "sha256": "f79ff38cfd15a6ec7ec020bff2783b9e934d1cff797829fe568626855f9e4b89"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPIRO-ENDPOINT-INTEGRATION-REVIEW-20261013.md",
+      "bytes": 3572,
+      "sha256": "399c20c162c51353a8f0c3b66fe4e54a78ec68dbc4035e600479c4876e9e297a"
+    },
+    {
+      "path": "docs/coordination/DECISIONS.md",
+      "bytes": 24662,
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae"
+    },
+    {
+      "path": "infra/native-enforcement/lib/binding.mjs",
+      "bytes": 17314,
+      "sha256": "985519195dec59763d120ab8b1847eb71c023a782fa652e4d32e35528f5484e7"
+    },
+    {
+      "path": "infra/native-qualification/component-pins.json",
+      "bytes": 6765,
+      "sha256": "9df61d151078ac085aed51279ed246ccfb2fb8b0412464a3b6621c05a6fb7cbc"
+    },
+    {
+      "path": "apps/control/qualification-temporal/component-pins.json",
+      "bytes": 5399,
+      "sha256": "68898b4e6727062405b351465656927bdabe50e6e78ec68cc3e505a470f4aacb"
+    },
+    {
+      "path": "docs/qualification/PROXY-TEMPORAL-DECISIONS.md",
+      "bytes": 33581,
+      "sha256": "1cc90351e0c9ddfe5887b0fb9ba875cdf11ab4f06af1ccedcd2ee72823ab57a6"
+    }
+  ],
+  "liveConnections": 0,
+  "secretValuesRead": false,
+  "testsRun": [],
+  "externalSource": {
+    "checkout": "/workspace/capirov2",
+    "head": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+    "status": "stale clean checkout; bridge absence here does not describe newer backend",
+    "carrierObjectAvailableLocally": false,
+    "implementedBridgeEvidence": "cross-repo pins/readme and backend context mapping; PR2449 source60cf2e51129f8358e6afe5fc600ffcdb6de01759; saved carrierPR2482 preserves authority files",
+    "deploymentOriginAndLiveAuthority": "not supplied/qualified by this audit"
+  },
+  "readLimitations": [
+    "No current GitHub, backend API or cloud inventory call.",
+    "No engine.json, connection string, capability, certificate private key or account credential value was read.",
+    "Missing glob/path discoveries were source locator misses, not failed runtime calls."
+  ],
+  "canonicalResourceStatus": {
+    "qualificationFixture": "retained stopped loopback fixture; product DB namespaces absent per PR69 snapshots; no start/read in this audit",
+    "nativeAndTemporalInfra": "preparation-only metadata, not current production resource admission",
+    "budgetInitializer": "source supplies no cap/run/grant activation; canonical bindTrustedGrant only binds preexisting admitted grant"
+  }
+}

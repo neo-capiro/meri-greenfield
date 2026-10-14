@@ -1,0 +1,3 @@
+# Binding audit outline
+
+Pinned task base f008efc97619c7ed2e8119ad8ebc0e0a733a5970, inherited PR69 a8655da564233e5a7b5ba4e53838ba923fb7f69d. Read-only audit of canonical authority/current-admission/native session ownership, control/Temporal/runner startup routing and retained qualification-only resource metadata. Coordinate executable wiring with the runtime author's compiled mount interface. Produce exact source/constructor/protocol/resource/owner-action map, distinguishing implementation present from configuration missing and external implementation absent. Do not read secret values or call services/DB/providers/cloud, install dependencies, change schemas, rerun qualification or generate documents. Exclusive writes: binding report and this evidence directory only.
