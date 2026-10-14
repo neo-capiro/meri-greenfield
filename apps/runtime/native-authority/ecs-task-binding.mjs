@@ -13,12 +13,18 @@ export function compileEcsTaskBinding(value){
  if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxPages)||maxPages<1||maxPages>10||!Number.isSafeInteger(maxTasks)||maxTasks<1||maxTasks>100)refused();
  return Object.freeze({...c,original,now,enabled,maxRequestMs,maxPages,maxTasks,prefix,cluster,tags:Object.freeze({'meri:execution-id':original.executionId,'meri:binding-sha256':hash(original.binding),'meri:plan-sha256':original.planSha256,'meri:expires-at-ms':String(original.expiresAtMs)})});
 }
+function workerIdentity(task,c){
+ if(!Array.isArray(task.containers)||task.containers.length!==1)refused();
+ const worker=task.containers[0],containerPrefix=c.prefix+'container/'+c.cluster+'/'+task.taskArn.split('/').at(-1)+'/';
+ if(worker.name!==c.containerName||worker.taskArn!==task.taskArn||typeof worker.containerArn!=='string'||!worker.containerArn.startsWith(containerPrefix)||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(worker.containerArn.slice(containerPrefix.length)))refused();return worker;
+}
 export function assertEcsOwnedTask(task,c){
- if(!task||task.taskArn!==c.taskArn||task.clusterArn!==c.clusterArn||task.taskDefinitionArn!==c.taskDefinitionArn||task.startedBy!==c.original.executionKey||task.group!=='meri:'+c.original.executionId||task.launchType!=='FARGATE'||task.platformFamily!=='Linux'||task.platformVersion!=='1.4.0'||task.enableExecuteCommand!==false||!(task.createdAt instanceof Date)||task.createdAt.getTime()!==c.createdAtMs||!Array.isArray(task.tags)||!Array.isArray(task.containers)||task.containers.length!==1)refused();
+ if(!task||task.taskArn!==c.taskArn||task.clusterArn!==c.clusterArn||task.taskDefinitionArn!==c.taskDefinitionArn||task.startedBy!==c.original.executionKey||task.group!=='meri:'+c.original.executionId||!(task.createdAt instanceof Date)||task.createdAt.getTime()!==c.createdAtMs||!Array.isArray(task.tags))refused();
  const tags=new Map();for(const row of task.tags){if(typeof row.key!=='string'||typeof row.value!=='string'||tags.has(row.key))refused();tags.set(row.key,row.value);}for(const[k,v]of Object.entries(c.tags))if(tags.get(k)!==v)refused();
- const worker=task.containers[0],id=task.taskArn.split('/').at(-1),containerPrefix=c.prefix+'container/'+c.cluster+'/'+id+'/';
- if(worker.name!==c.containerName||worker.taskArn!==task.taskArn||worker.imageDigest!==c.original.versions.imageDigest||typeof worker.image!=='string'||!worker.image.endsWith('@'+c.original.versions.imageDigest)||typeof worker.containerArn!=='string'||!worker.containerArn.startsWith(containerPrefix)||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(worker.containerArn.slice(containerPrefix.length)))refused();
- const stopped=task.lastStatus==='STOPPED';if(stopped&&(worker.lastStatus!=='STOPPED'||!Number.isSafeInteger(worker.exitCode)))refused();
- if(!stopped&&(task.lastStatus!=='RUNNING'||worker.lastStatus!=='RUNNING'||task.desiredStatus!=='RUNNING'))throw executionFault('ECS_NOT_READY');
+ const stopped=task.lastStatus==='STOPPED';if(stopped){const worker=workerIdentity(task,c);if(worker.lastStatus!=='STOPPED'||!Number.isSafeInteger(worker.exitCode))throw executionFault('ECS_CLEANUP_UNKNOWN');}
  return Object.freeze({taskId:task.taskArn,stopped});
+}
+export function assertEcsRunningTask(task,c){
+ const worker=workerIdentity(task,c);
+ if(task.launchType!=='FARGATE'||task.platformFamily!=='Linux'||task.platformVersion!=='1.4.0'||task.enableExecuteCommand!==false||worker.imageDigest!==c.original.versions.imageDigest||typeof worker.image!=='string'||!worker.image.endsWith('@'+c.original.versions.imageDigest)||task.lastStatus!=='RUNNING'||worker.lastStatus!=='RUNNING'||task.desiredStatus!=='RUNNING')throw executionFault('ECS_NOT_READY');
 }

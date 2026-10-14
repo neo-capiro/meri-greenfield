@@ -11,9 +11,9 @@ export function createAdmittedEcsTaskFactory(value){
  const metadata=data(own(c.metadata,['clusterArn','taskDefinitionArn','taskArn','containerName','createdAtMs'])),{allocation,facts}=parseAdmittedGrantSet(c),grant=facts.find(f=>f.grantId===c.grantId);
  if(!grant||facts.some(f=>f.qualificationBinding.workerArn!==metadata.taskArn))throw executionFault('ECS_ADMITTED_TASK_REFUSED');
  return value=>{
-  const input=own(value,['original','launchConfiguration']);
-  if(hash(input.original.binding)!==hash(grant.binding)||input.original.expiresAtMs>Date.parse(allocation.schedule.expiresAt))throw executionFault('ECS_ADMITTED_TASK_REFUSED');
-  return createEcsNativeTaskOwner({client:c.client,native:c.native,binding:{...metadata,original:input.original,enabled:c.enabled??false,now:c.now??Date.now,...Object.fromEntries(['maxRequestMs','maxPages','maxTasks'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]]))}});
+  const input=own(value,['original','launchConfiguration']),original=data(input.original);
+  if(hash(original.binding)!==hash(grant.binding)||original.expiresAtMs>Date.parse(allocation.schedule.expiresAt))throw executionFault('ECS_ADMITTED_TASK_REFUSED');
+  return createEcsNativeTaskOwner({client:c.client,native:c.native,binding:{...metadata,original,enabled:c.enabled??false,now:c.now??Date.now,...Object.fromEntries(['maxRequestMs','maxPages','maxTasks'].filter(k=>c[k]!==undefined).map(k=>[k,c[k]]))}});
  };
 }
 
