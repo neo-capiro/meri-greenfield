@@ -1,0 +1,1 @@
+{"scope": "OWNED_EXISTING_FIXTURE_LIFECYCLE_ONLY", "snapshotsEqual": true, "otherClientSessionsBeforeStop": 0, "priorState": "stopped", "restoredState": "stopped", "container": "meri-native-postgres", "image": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd", "purpose": "meri-native-tests"}

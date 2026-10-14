@@ -1,0 +1,17 @@
+# Independent pre-execution static review
+
+Reviewed frozen qualification source `3df21591d5a5dd2bee45306f5d6afa5c03e08093` in `/workspace/meri-first-session-local`. No SDK process, database connection, provider/network call, credential lookup, fixture mutation or new test was executed by this reviewer.
+
+Read-only database refusal probe: within the parent-admitted local scope. It verifies the exact loopback qualification engine tuple, configures pg default_transaction_read_only=on, checks that only the original qualification namespace exists, invokes the genuine canonical admitted owner against absent product state and expects refusal before the supplied effect. It performs no seed, grant, migration, reset or product initialization and closes its owned Pool. Synthetic productFixture values are only negative request inputs; they cannot establish product authority. Parent must compare existing qualification schema/data snapshots and restore the previously stopped fixture only if still exclusively owned.
+
+SDK no-paid boundary: explicit env prevents normal process environment inheritance in the inspected SDK0.3.295 query source. The child uses a fresh workspace/CLAUDE_CONFIG_DIR, empty settings sources/tool/plugin/MCP admission and an explicit loopback base URL. The local sink refuses requests with403 and has no upstream/provider transport; it stores no headers/body. Actual init/mirror callbacks may provide a local mechanical witness only. This does not prove physical isolation, native task verification, production observation or model qualification.
+
+Before SDK witness acceptance, repair or explicitly refuse these cases:
+
+1. The success gate currently checks correlation and childClose only. It does not check the existing stdout observer's stdoutReadError/stdoutOverflow/end/close fields. Earlier correlated frames followed by a failed/truncated stream can therefore still exit0 and the receipt omits those failure facts. Require complete/error-free stdout or retain HOLD, independently of expected /status/provider refusal.
+2. After the20s abort,4s close wait andSIGTERM/1s wait, a surviving CLI gets no force-close escalation or confirmed wait before temporary files are removed. The enclosing capture has180s timeout. Use bounded owned force-close/await and keep closure uncertainty explicit; process-group absence must be verified by the enclosing child-subreaper capture. A bounded promise alone is not physical exit proof.
+3. HOME is unset in the child env; platform homedir can still resolve the real account home. Bind HOME and supported XDG/secure-storage config locations to task-owned temporary paths, and assert them at spawn, to strengthen the stated absence of ambient account credential/state access. Fresh CLAUDE_CONFIG_DIR already isolates normal Claude state; do not infer physical isolation from it.
+
+The capture wrapper establishes subreaper before process allocation and tracks only its owned process group, preserving raw bytes and timeout/kill facts. Bind the executed qualification scripts themselves to the frozen commit/hash, since the production-diff field excludes docs. Preserve every failed result. Existing production source and qualification fixture schemas/data remain unchanged.
+
+Decision on frozen3df21591: database refusal probe permitted within parent's admitted read-only fixture scope; SDK probe/witness preparation HOLD pending the bounded lifecycle/stream repairs above. No live native/task/output/deployment acceptance is implied.

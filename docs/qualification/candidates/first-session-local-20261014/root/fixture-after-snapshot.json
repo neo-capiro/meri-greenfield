@@ -1,0 +1,37 @@
+{
+  "scope": "ACTUAL_LOCAL_FIXTURE_READ_ONLY_NOT_PRODUCT_AUTHORITY",
+  "schemas": [
+    [
+      "meri_qualification"
+    ]
+  ],
+  "schemaSha256": "85c8d8b260c01f111edaf408c2b5b3552d79f21808d28c9a4a70b9f79542173a",
+  "data": [
+    {
+      "table": "budget",
+      "rows": 1,
+      "sha256": "1a8b23c94afd9b4af70bc6306c328275a0e5130fc271232cdfc55a358cda54d9"
+    },
+    {
+      "table": "grants",
+      "rows": 1,
+      "sha256": "1080d3928a510b1e692f54a3ab51b40ff2bb881cf8112522c02f7c915eeef3e4"
+    },
+    {
+      "table": "requests",
+      "rows": 1,
+      "sha256": "c56f7da70e84178cbc29215b9ad85563f13e3208e6a79c9728a2e39dc47d7105"
+    },
+    {
+      "table": "runs",
+      "rows": 1,
+      "sha256": "b92f7d4757c3918bc71e82d89d919a8f028176faa53c72a5215d06f7bad49f3a"
+    }
+  ],
+  "otherClientSessions": 0,
+  "engine": [
+    "PostgreSQL 16.15 (Debian 16.15-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "meri_qualification_test",
+    "qualification_owner"
+  ]
+}

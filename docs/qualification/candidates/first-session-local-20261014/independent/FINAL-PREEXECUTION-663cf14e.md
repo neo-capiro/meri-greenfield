@@ -1,0 +1,15 @@
+# Final independent static pre-execution review
+
+Reviewed frozen source `663cf14ed99a7ba4f9f61094ae9ddcd3f678b3cd`. SDK probe SHA256: `739afb9640aaceef4727c110602ddf7d874982e886709103967697718ea41602`. Production apps/packages/scripts/manifests/locks have zero diff against base23707a62. No SDK process, database connection, provider call, fixture mutation or test was executed by this reviewer.
+
+Decision: **PERMIT_BOUNDED_LOCAL_MECHANICAL_PROBE** within the parent-admitted local scope. No remaining blocking concern was identified for this bounded probe. Actual execution outcome is still pending; this review does not accept native task authority, production SDK observation, physical isolation, model/provider qualification, document output or deployment.
+
+The final repair resolves the remaining second-parser concern: it uses fatal UTF8 decoding, records nativeFrameError on frame-bound/JSON/decoder failures, flushes the decoder and rejects any unfinished trailing frame, reports that flag and includes it in streamComplete/success refusal. Correlation requires the actual init session ID to match the single actual main SessionStore callback and the native mirror path, plus CLI2.1.295. SDK package0.3.295 remains asserted before invocation.
+
+The previously reviewed first stdout observer still requires EOF and close with no error/overflow. Child closure must be observed; forcedSIGKILL cannot qualify success. The probe owns only its spawned child, bounds normal cleanup and force-close wait, and removes its temporary tree only after closure. The enclosing Linux child-subreaper capture must verify absence of the owned process group and preserve failures/unknown outcomes.
+
+Ambient SDK/provider prefixes are removed only in the owned probe process before SDK import. Supported CLAUDE_CONFIG_DIR/CLAUDE_SECURESTORAGE_CONFIG_DIR routes and task-owned XDG paths are supplied identically to parent and child. The installed SDK's global-config/secure-storage resolvers support those paths. HOME and persistent account configuration remain unchanged. The earlier HOME override recommendation is withdrawn as inconsistent with the developer environment rule.
+
+Explicit child env, fresh workspace/config, empty settings sources/tools/plugins/MCP and a loopback403 sink with no upstream transport preserve the no-paid-provider boundary. ProviderCalls:0 describes this configured probe boundary, not independent proof of global network isolation. Any init/mirror witness remains local mechanics and supplies neither a genuine task verifier nor independent production registration reader.
+
+The separate genuine pg read-only refusal probe remains within the parent-admitted fixture scope and must preserve original qualification schema/data. It must not seed grants, initialize product namespaces, migrate/reset/alter the fixture or transform fixture facts into product authority. Its actual1/1 execution result and preservation snapshots belong to the parent; no independent DB execution occurred here. Keep separate explicit output approval and all native/resource/isolation gates HOLD.
