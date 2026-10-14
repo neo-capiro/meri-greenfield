@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "apps/runtime/test/first-run-mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-wiring",
+  "sourceHead": "f008efc97619c7ed2e8119ad8ebc0e0a733a5970",
+  "sourceDiffSha256": "7dd276f87642fba981792268c5def65e4c49a020d40530d182d42180541e1ade",
+  "sourceDiffBytes": 7585,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:11:51.198996+00:00",
+  "durationSeconds": 4.781,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 42163,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/first-mount-controls.stdout.bin",
+      "bytes": 958,
+      "sha256": "ba1e50cc85d99cab76863bca4aa380001d5ab5eb893cd36ab9e3eaba972bb4af"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/first-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

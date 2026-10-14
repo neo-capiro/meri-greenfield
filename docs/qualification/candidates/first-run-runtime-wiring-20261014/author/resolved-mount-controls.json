@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "apps/runtime/test/first-run-mount.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-wiring",
+  "sourceHead": "f008efc97619c7ed2e8119ad8ebc0e0a733a5970",
+  "sourceDiffSha256": "11dff9f1cb3fd916c393476d51e20f7b89657a6cf9dbab50d906f7fcb1436bae",
+  "sourceDiffBytes": 7656,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:14:15.925961+00:00",
+  "durationSeconds": 5.787,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 43193,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/resolved-mount-controls.stdout.bin",
+      "bytes": 1317,
+      "sha256": "79f58ae061c583d72caf4b35de10e5d9d4fe18750c85d82b4c08861fa86ec319"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/author/resolved-mount-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root repaired exact Temporal dependency resolution; test mocks now preserve actual Temporal enum exports and valid canonical workflow methods/versions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
