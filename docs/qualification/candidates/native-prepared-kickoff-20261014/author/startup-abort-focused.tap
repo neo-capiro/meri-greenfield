@@ -1,0 +1,17 @@
+✔ standard task bootstrap polls only existing capability route and returns validated original gated binding (37.20259ms)
+✔ foreign bootstrap proof refuses before returning executable configuration (4.132062ms)
+✔ cancelled bootstrap invokes no transport or execution (1.311469ms)
+✔ gated standard runner starts one Query after HTTP release and retains listener through final control stop (678.663024ms)
+✔ gated SDK failure and parent cancellation retain callback HTTP until positive original control stop (40.130931ms)
+(node:161959) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:161959) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ parent cancellation retains actual control HTTP through ordered original candidate cleanup (169.167208ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5138.497624

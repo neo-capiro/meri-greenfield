@@ -1,0 +1,39 @@
+(node:161526) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:161526) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✖ parent cancellation retains actual control HTTP through ordered original candidate cleanup (42.766849ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2383.41463
+
+✖ failing tests:
+
+test at apps/runtime/test/prepared-candidate-control-lifetime.test.mjs:14:1
+✖ parent cancellation retains actual control HTTP through ordered original candidate cleanup (42.766849ms)
+  Error [AggregateError]: CONTROL_CLEANUP_UNKNOWN
+      at file:///workspace/meri-prepared-kickoff/apps/runtime/control.mjs:55:316
+      at async startControl (file:///workspace/meri-prepared-kickoff/apps/runtime/control.mjs:69:9)
+      at async TestContext.<anonymous> (file:///workspace/meri-prepared-kickoff/apps/runtime/test/prepared-candidate-control-lifetime.test.mjs:14:151)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    [errors]: [
+      [TypeError: Failed to parse URL from undefined/private/original-stop-proof] {
+        [cause]: TypeError: Invalid URL
+            at new URL (node:internal/url:840:25)
+            at new Request (node:internal/deps/undici/undici:12072:25)
+            at fetch (node:internal/deps/undici/undici:12997:25)
+            at fetch (node:internal/deps/undici/undici:17708:10)
+            at fetch (node:internal/bootstrap/web/exposed-window-or-worker:83:12)
+            at Object.close (file:///workspace/meri-prepared-kickoff/apps/runtime/test/prepared-candidate-control-lifetime.test.mjs:12:633)
+            at file:///workspace/meri-prepared-kickoff/apps/runtime/control.mjs:55:147
+            at file:///workspace/meri-prepared-kickoff/apps/runtime/control.mjs:55:250
+            at close (file:///workspace/meri-prepared-kickoff/apps/runtime/control.mjs:55:371)
+            at startControl (file:///workspace/meri-prepared-kickoff/apps/runtime/control.mjs:69:15)
+      }
+    ]
+  }

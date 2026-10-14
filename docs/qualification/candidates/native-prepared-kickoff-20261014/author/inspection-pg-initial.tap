@@ -1,0 +1,20 @@
+✔ retained canonical SQL proof is inspected after source task expiry using only fresh control identity (1516.426414ms)
+✔ revoked current identity refuses without releasing proof or reading object bytes (76.700978ms)
+✔ foreign principal refuses without releasing proof or reading object bytes (56.905036ms)
+✔ foreign selected client refuses without releasing proof or reading object bytes (66.928184ms)
+✔ foreign writer fence refuses without releasing proof or reading object bytes (51.481703ms)
+✔ foreign current scope refuses without releasing proof or reading object bytes (79.584721ms)
+✔ checkpoint selector hash refuses without releasing proof or reading object bytes (75.584945ms)
+✔ immutable object bytes changed after source expiry refuse without journal mutation (114.949131ms)
+✔ current identity revoked during immutable reads cannot release a checkpoint receipt (129.375253ms)
+✔ current context revision drift during immutable reads cannot reuse prior authority (128.331419ms)
+✔ canonical proof corruption during readback is detected by final SQL journal reread (177.026979ms)
+✔ canonical source writer fence change during readback refuses current-source mismatch (101.855681ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3971.129507

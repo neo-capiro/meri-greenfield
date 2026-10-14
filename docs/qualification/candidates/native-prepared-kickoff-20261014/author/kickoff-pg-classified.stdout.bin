@@ -1,0 +1,12 @@
+{"diagnostic":"reconcile","code":"REMOTE_TASK_REFUSED","receiver":{"state":"stopped","inputSequence":2,"outputSequence":4,"queuedBytes":0}}
+{"diagnostic":"verify","code":"NATIVE_TASK_REFUSED"}
+{"qualification":"local-pg-http-native-node-only","actualOwnedGroups":[164519,164535],"canonicalStarted":true,"durableRegisteredSessions":1,"gateReleases":1,"syntheticResourceCreations":1,"syntheticEcsRetirements":1,"actualAwsCalls":0,"actualSdkQueries":0,"providerRequests":0,"finalControlStop":true}
+✔ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (6158.308393ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8743.457253

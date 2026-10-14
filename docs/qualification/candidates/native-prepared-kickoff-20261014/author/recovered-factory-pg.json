@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "0990e87c13538f4d4427411d1803106ab78cfec4",
+  "sourceDiffSha256": "eb0c30923d225ce86e559638d191600170e0f69938e141e7b46ba9670de81777",
+  "sourceDiffBytes": 5092,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T11:05:08.922551+00:00",
+  "durationSeconds": 3.99,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 166162,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/recovered-factory-pg.stdout.bin",
+      "bytes": 350,
+      "sha256": "d51f09958e28a6aad449a0d8bad8aefc63298e22831356241ac231ccd7d682d7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/recovered-factory-pg.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

@@ -1,5 +1,13 @@
 # Meri kickoff status
 
+## 14 October 2026: prepared candidate source closure
+
+Prepared Temporal kickoff, original controller recovery, current-control checkpoint inspection after source-task expiry, and standard CLI first-run composition are implemented in the stacked PR80 continuation. Exact source/checks and the minimal dedicated deployment bundle are in [the implementation report](reports/CODEX-PREPARED-KICKOFF-CONTROL-INSPECTION-20261014.md) and [deployment handoff](reports/CODEX-PREPARED-CANDIDATE-DEPLOYMENT-20261014.md). Local PostgreSQL/process/HTTP checks do not establish deployed acceptance.
+
+**G0 remains historically accepted; G1 remains OPEN; G2–G7 remain unentered/unaccepted by this slice.** Full R2 capability scope is preserved. The current preview is unconnected; first authenticated end-to-end conversation, all337 frontend acceptance rows, genuine deployed SDK checkpoint/restore/resume/fork, and later editable DOCX remain OPEN/UNRUN. Wider continuation admission/retirement and approval read/decision owners still need composition beyond the fixed first-run pilot. No model turns, provider requests, cloud mutation, live documents or cutover occurred.
+
+The dated status below is historical evidence, not a current shipping claim.
+
 Current continuation, 11 October 2026 11:30 UTC: **G0 accepted / G1 OPEN.
 Eight gates total; G2-G7 remain unentered.** Substantial runtime, capability,
 measurement and security work remains. No reliable completion estimate is

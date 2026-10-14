@@ -1,0 +1,61 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
+    "apps/control/conversations/test/read-optional-pg.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+    "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
+    "apps/runtime/test/prepared-candidate-config.test.mjs",
+    "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+    "apps/runtime/test/prepared-candidate.test.mjs",
+    "apps/runtime/test/prepared-temporal.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-capture.test.mjs",
+    "apps/runtime/native-authority/test/native-restorer.test.mjs",
+    "apps/runtime/native-authority/test/remote-allocation-preflight.test.mjs",
+    "apps/runtime/native-authority/test/execution-broker.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/checkpoint-session-factory.test.mjs",
+    "apps/runtime/test/remote-conversation-runner.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "ce2c71a3510098249a29862a8d550afee9e87762",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T11:17:21.904009+00:00",
+  "durationSeconds": 81.9,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 170197,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-corrected.stdout.bin",
+      "bytes": 25366,
+      "sha256": "85aacfcd8ca4c08166f3fa1d8f531c6213ecdb80bcbdfad0fe24d3c5a6ed21c0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial236/238 frozen run required Node experimental-module-mocks flag and late stdout terminal guard. This corrected frozen run238/239 exposed additional pending stdin terminal-state race, retained for fbb25 correction.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

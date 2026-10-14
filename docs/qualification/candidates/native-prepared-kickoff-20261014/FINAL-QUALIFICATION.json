@@ -1,0 +1,125 @@
+{
+  "schema": "meri.source-qualification.v1",
+  "sourceHead": "fbb25c374c835e907c500da27c555ca628368a41",
+  "baseHead": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "sourceManifest": {
+    "path": "SOURCE-MANIFEST.json",
+    "sha256": "8b4d6bd5cf9cfcd5c10bef89b134841b270b74a7d0153391a7736c9ce26b1fd2",
+    "files": 39
+  },
+  "status": "ACCEPT_LOCAL_PREPARED_FIRST_RUN_SOURCE",
+  "scope": {
+    "actual": [
+      "isolated PostgreSQL16 Unix-only canonical migrations",
+      "two local HTTP listeners",
+      "separate supervisor and genuine Node process stream",
+      "canonical allocation/launch/execution/session journals",
+      "original running and terminal controller recovery",
+      "post-task-expiry checkpoint inspection current-control checks"
+    ],
+    "scripted": [
+      "ECS allocation/image/resource admission",
+      "Capiro authority/credential facts",
+      "object service in-memory immutable versions",
+      "SDK Query/model protocol where exercised"
+    ],
+    "actualSdkQueries": 0,
+    "providerRequests": 0,
+    "modelTurns": 0,
+    "awsMutations": 0,
+    "newCredentials": 0,
+    "liveDocuments": 0,
+    "liveAcceptance": false
+  },
+  "retainedFailures": [
+    {
+      "receipt": "author/frozen-integrated.json",
+      "result": "236/238 PASS; terminal recovery late-state race and missing Node module-mock setup flag",
+      "rerunReason": "correct terminal states and use --experimental-test-module-mocks"
+    },
+    {
+      "receipt": "author/frozen-corrected.json",
+      "result": "238/239 PASS; pending stdin overwrote proven stopped state",
+      "rerunReason": "terminal guards preserve closing/stopped across pending preparation/start/stdin; active failure remains UNKNOWN, failed physical close remains UNKNOWN"
+    },
+    {
+      "receipt": "author/terminal-stdin-corrected.json",
+      "result": "28 passed, PG test-file failed setup explicit source root required",
+      "rerunReason": "restore MERI_REVIEW_SOURCE_ROOT environment; moving-source preliminary capture not final provenance"
+    }
+  ],
+  "priorEvidence": "All earlier author failure/success captures retained. Prior PR80 zero-turn SDK probe is separate evidence and was not rerun or combined into this local receipt.",
+  "remainingCode": [
+    "wider continuation admission/retirement and approval read/decision composition beyond fixed first-run candidate",
+    "genuine deployed SDK checkpoint publication and fresh restore/resume/fork qualification",
+    "full product capabilities and all337 frontend acceptance"
+  ],
+  "remainingBindings": [
+    "approved immutable NODE_IMAGE and built runtime digest/actual measured runner",
+    "dedicated runtime PostgreSQL and canonical budget/admission rows",
+    "dedicated private Temporal persistence/namespace/queue/TLS",
+    "dedicated provider proxy/model/credential reference",
+    "live Capiro identity/context origin and identity credential reference",
+    "public Meri and private task HTTPS/TLS/bootstrap routing",
+    "exact admitted binding/grants/role/task-definition/network/object prefix/KMS bindings"
+  ],
+  "deployment": "Source handoff only; no legacy dependencies forced, no resources deployed or retired. Current preview unconnected; authenticated E2E conversation mandatory release gate.",
+  "overallPlan": {
+    "G0": "HISTORICAL_ACCEPT",
+    "G1": "OPEN",
+    "G2-G7": "UNENTERED_UNACCEPTED_BY_THIS_SLICE",
+    "firstRealConversation": "UNRUN",
+    "frontendAcceptance337": "OPEN",
+    "editableDOCX": "UNRUN"
+  },
+  "author": {
+    "receipt": "author/frozen-final.json",
+    "tests": 241,
+    "passed": 241,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "durationSeconds": 87.74,
+    "sourceDiffBytes": 0,
+    "ownedProcessGroupAbsent": true,
+    "ownedAdoptedChildrenAbsent": true,
+    "ownedGroupKillRequired": false,
+    "receiptSha256": "433df5c075a5841652c03ecd68610d80d5ee4f2ce883c2d400df6b6188e55d1d"
+  },
+  "typecheck": {
+    "receipt": "author/typecheck-frozen.txt",
+    "result": "PASS",
+    "sourceHead": "e2f6df42aad2cc9072120e9d5df491f24984f711",
+    "scope": "Full runtime typecheck before narrow later JS stream-state guards; final guards covered by final241 source tests."
+  },
+  "independent": {
+    "verdict": "ACCEPT_LOCAL_PREPARED_FIRST_RUN_SOURCE",
+    "review": "independent/FINAL-REVIEW.md",
+    "sourceHead": "fbb25c374c835e907c500da27c555ca628368a41",
+    "controls": 77,
+    "passed": 77,
+    "failed": 0,
+    "receipts": [
+      {
+        "path": "independent/focused-final.json",
+        "controls": 69,
+        "sha256": "afeb7199fdd2a50a0aec9f9653f99f08a37085d7563589665117d1b3f8545ee6"
+      },
+      {
+        "path": "independent/remote-final.json",
+        "controls": 8,
+        "sha256": "3e8dbb24e7ebbc4dd1a15d976a897607e71b8aff9ff625567215dbd9b82be5ed"
+      }
+    ],
+    "manifest": {
+      "path": "independent/MANIFEST.json",
+      "sha256": "c083184849c1e66e06e2daa0d213190f17fcd7a280fd6f18b03aef9913189704"
+    }
+  },
+  "cleanup": {
+    "receipt": "author/CLEANUP.json",
+    "sha256": "95b645270185d675154867481a55b6f67ec44b3941ba347b76bc28c0e966267c",
+    "ownedContainerVolumeDependenciesSocketCacheAbsent": true,
+    "historicalUnknownUntouched": true
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
+    "apps/control/conversations/test/read-optional-pg.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+    "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
+    "apps/runtime/test/prepared-candidate-config.test.mjs",
+    "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+    "apps/runtime/test/prepared-candidate.test.mjs",
+    "apps/runtime/test/prepared-temporal.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-capture.test.mjs",
+    "apps/runtime/native-authority/test/native-restorer.test.mjs",
+    "apps/runtime/native-authority/test/remote-allocation-preflight.test.mjs",
+    "apps/runtime/native-authority/test/execution-broker.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/checkpoint-session-factory.test.mjs",
+    "apps/runtime/test/remote-conversation-runner.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "e2f6df42aad2cc9072120e9d5df491f24984f711",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T11:06:59.007732+00:00",
+  "durationSeconds": 86.232,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 166795,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-integrated.stdout.bin",
+      "bytes": 25875,
+      "sha256": "193a79508dd83e7ae52e155944458d8a37a373f382ff3a876924bc3d031937c8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

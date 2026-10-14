@@ -1,0 +1,33 @@
+✔ actual loopback release client waits for current admission and preserves control-only original identity (118.18713ms)
+✔ kickoff HTTP task role and malformed body cannot dispatch control startup (2.818572ms)
+✔ release cannot escape pinned task or origin and accepts no unrelated receipt (5.050003ms)
+✔ concurrent kickoff allocates/releases once and canonical STARTED precedes terminal broker proof (24.154018ms)
+✔ preparing status never invokes execution start/poll before canonical STARTED (11.971263ms)
+✔ uncertain release refuses retry and closes the original owner (11.581971ms)
+✔ stop during allocation waits and compensates the original late allocation without release (2.007912ms)
+✔ gate waits once, verifies current admission and releases only exact original task (2.57697ms)
+✔ gate close during awaited admission cannot release a late runner (1.611135ms)
+✔ changed binding, expired lease and canceled gate allocate no authority (1.170188ms)
+✔ immediate status before held allocation claim reports only preparing for the queued original (1.144961ms)
+✔ prepared Temporal activity heartbeats preparing, then actual ready precedes existing poll (26.75746ms)
+✔ already finished STARTED run accepts canonical terminal proof and closes original allocation (21.175564ms)
+✔ unknown startup is not retried and cleanup uses independent original scope (1.814477ms)
+✔ configured Temporal registration opts prepared kickoff in and preserves legacy default (1.030143ms)
+✔ cancel during preparation closes original kickoff with an independent live signal (1.596887ms)
+✔ unknown original cleanup prevents successful terminal activity receipt (1.292709ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (15.033014ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.768721ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (1.508859ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (2.402ms)
+✔ broker refuses a response from another writer fence (1.007478ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (202.279939ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (14.281801ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (10.051904ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7930.047577

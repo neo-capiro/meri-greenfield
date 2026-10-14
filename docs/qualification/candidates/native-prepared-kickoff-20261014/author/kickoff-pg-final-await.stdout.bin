@@ -1,0 +1,24 @@
+✖ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (5540.515344ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7450.018946
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:7:1
+✖ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (5540.515344ms)
+  Error: REMOTE_TASK_REFUSED
+      at remoteFault (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/remote-task-boundary.mjs:4:44)
+      at Object.call (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/remote-task-client.mjs:13:242)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.reconcile (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/remote-composition.mjs:44:56)
+      at async TestContext.<anonymous> (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:28:181)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'REMOTE_TASK_REFUSED'
+  }

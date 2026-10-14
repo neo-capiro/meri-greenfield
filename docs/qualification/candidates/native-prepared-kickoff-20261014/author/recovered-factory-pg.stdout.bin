@@ -1,0 +1,10 @@
+✔ default recovered factory reads actual same admission after terminal state without RunTask/remote effects (1242.232484ms)
+✔ changed task intent refuses without stopping or revoking the original admitted resource (1240.799441ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3898.924187

@@ -80,7 +80,7 @@ export function createNativePreparationJournals({tx,rowRun}){
    });
   }
   return Object.freeze({
-   ...(proofKey==='resource'?{prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
+   ...(proofKey==='resource'?{async verifyExecutionClaim(c,original,versions,check){const saved=await load(c,original.binding,original.executionKey,check),r=saved.record;if(!r||r.state!=='ADMITTED'||r.resource.launchBinding?.state!=='CLAIMED'||!same(r.original,{...original,versions}))denied();return true;},prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
    async claim(value,check){const i=intent(value);return tx(i.binding,check,async c=>{
     const saved=await load(c,i.binding,i[key],check);if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
     if(saved.run.state!=='queued')fail('NATIVE_PREPARATION_STATE_REFUSED');const record=recordValue({...i,state:'CLAIMED',[proofKey]:null});

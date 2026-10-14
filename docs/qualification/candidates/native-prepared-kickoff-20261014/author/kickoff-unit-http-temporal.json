@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs",
+    "apps/runtime/test/prepared-temporal.test.mjs",
+    "apps/runtime/test/runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "sourceDiffSha256": "a819d356386f8706bdd3f17adcc490d6dcb0e0a58ba34ad0517f198adfd66547",
+  "sourceDiffBytes": 86207,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T10:49:37.387589+00:00",
+  "durationSeconds": 8.064,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 161408,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/kickoff-unit-http-temporal.stdout.bin",
+      "bytes": 2645,
+      "sha256": "fe31b07f4cfe50dac828a07d2b205f692fed7b14db3c4262ca1e24bab9adfa8a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/kickoff-unit-http-temporal.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

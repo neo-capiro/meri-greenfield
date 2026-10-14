@@ -4,9 +4,9 @@ import {productFixture} from '../../../gateway/budget/product-scripted-fixture.m
 import {createPostgresToolBudget} from '../../../gateway/budget/postgres-tool-budget.mjs';
 import {createAdmittedSessionSupervisor} from '../admitted-supervisor.mjs';import {createNativeBrokerStack} from '../broker-stack.mjs';import {createIndependentNativeTask} from '../independent-task.mjs';
 import {versions} from '../../../control/conversations/test/store-fixture.mjs';import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
-export const socket='/tmp/meri-broker-pg-socket-20261014',control='synthetic-existing-control';export const sha=b=>createHash('sha256').update(b).digest('hex');
+export const socket=process.env.MERI_BROKER_TEST_SOCKET??'/tmp/meri-broker-pg-socket-20261014',control='synthetic-existing-control';export const sha=b=>createHash('sha256').update(b).digest('hex');
 export async function fixture(t,{tasksFactory=createIndependentNativeTask,leaseMs=30000,launchOverride}={}){
- const database=process.env.MERI_BROKER_TEST_DATABASE??'postgres';if(!['postgres','meri_broker_independent'].includes(database))throw Error('TASK_TEST_DATABASE_REQUIRED');
+ const database=process.env.MERI_BROKER_TEST_DATABASE??'postgres';if(!['postgres','meri_broker_independent','meri_kickoff_final'].includes(database)||!['/tmp/meri-broker-pg-socket-20261014','/tmp/meri-prepared-kickoff-pg-20261014/socket'].includes(socket))throw Error('TASK_TEST_DATABASE_REQUIRED');
  const pool=new pg.Pool({host:socket,user:'postgres',database,max:12});
  let stack,root;t.after(async()=>{try{await stack?.close();}finally{await pool.end();if(root)await rm(root,{recursive:true,force:true});}});
  assertOwnDatabase(await pool.query("SELECT current_setting('listen_addresses') AS listen, version() AS version"));

@@ -1,0 +1,10 @@
+{"qualification":"local-pg-http-native-node-only","actualOwnedGroups":[163442,163449],"canonicalStarted":true,"durableRegisteredSessions":1,"gateReleases":1,"resourceCreations":1,"syntheticEcsRetirements":1,"actualAwsCalls":0,"actualSdkQueries":0,"providerRequests":0,"finalControlStop":true}
+✔ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (4776.468624ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6576.874008

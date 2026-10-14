@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "profile": "isolated-preview",
+  "sourceEnabled": false,
+  "limits": {
+    "startupMs": 3000,
+    "shutdownMs": 1000,
+    "requestMs": 1000,
+    "requestBytes": 131072
+  },
+  "native": {
+    "origin": "https://control.synthetic.invalid",
+    "capabilityFile": "/run/secrets/task",
+    "loopback": false,
+    "maxResponseBytes": 2097152
+  },
+  "binding": {
+    "tenantId": "tenant-a",
+    "actorId": "actor-a",
+    "conversationId": "00000001-0000-4000-8000-000000000000",
+    "runId": "00000002-0000-4000-8000-000000000000",
+    "attemptId": "00000003-0000-4000-8000-000000000000",
+    "workerId": "00000004-0000-4000-8000-000000000000",
+    "writerFence": 1
+  },
+  "versions": {
+    "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "contracts": "0.1.0",
+    "skillsDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "checkpointFormat": "0.1.0"
+  },
+  "workspace": "/workspace/00000001-0000-4000-8000-000000000000",
+  "proxyOrigin": "https://proxy.synthetic.invalid",
+  "captureOwnsClose": true,
+  "bootstrap": {
+    "expiresAtMs": 1791975237509,
+    "remote": true
+  }
+}

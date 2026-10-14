@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/checkpoint-capture.test.mjs",
+    "apps/runtime/native-authority/test/native-restorer.test.mjs",
+    "apps/runtime/native-authority/test/task-checkpoint-source.test.mjs",
+    "apps/runtime/test/checkpoint-session-factory.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "sourceDiffSha256": "bfab0d4e6d147edec939136fef7c9b4981c4f11f55552d426c593aef4f33e412",
+  "sourceDiffBytes": 27036,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T10:22:40.884696+00:00",
+  "durationSeconds": 7.349,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 152059,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/shared-readback-working.stdout.bin",
+      "bytes": 4583,
+      "sha256": "561d5e6225a99426cd6c35f6baa2b85573a1348e397dbc55bd36129e07daee18"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/shared-readback-working.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

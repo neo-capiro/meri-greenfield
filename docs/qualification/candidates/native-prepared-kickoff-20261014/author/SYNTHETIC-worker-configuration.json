@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "profile": "isolated-preview",
+  "sourceEnabled": false,
+  "limits": {
+    "startupMs": 3000,
+    "shutdownMs": 1000,
+    "requestMs": 1000,
+    "requestBytes": 131072
+  },
+  "native": {
+    "origin": "https://control.synthetic.invalid",
+    "capabilityFile": "/run/secrets/control",
+    "loopback": false,
+    "maxResponseBytes": 2097152,
+    "preparedKickoff": true
+  },
+  "http": {
+    "hostname": "0.0.0.0",
+    "port": 8081,
+    "frontendOrigin": "https://frontend.synthetic.invalid"
+  },
+  "temporal": {
+    "address": "temporal.synthetic.invalid:7233",
+    "namespace": "meri-first",
+    "taskQueue": "meri-v1",
+    "tls": {
+      "caFile": "/run/secrets/ca",
+      "certFile": "/run/secrets/cert",
+      "keyFile": "/run/secrets/key"
+    }
+  }
+}

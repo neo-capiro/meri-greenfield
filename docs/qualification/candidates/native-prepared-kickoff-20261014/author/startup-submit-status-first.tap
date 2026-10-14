@@ -1,0 +1,51 @@
+✔ standard task bootstrap polls only existing capability route and returns validated original gated binding (49.582883ms)
+✔ foreign bootstrap proof refuses before returning executable configuration (3.179588ms)
+✔ cancelled bootstrap invokes no transport or execution (1.303715ms)
+✔ closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO (61.313733ms)
+✔ bad legacy cluster refuses before pool/client/effect access (5.55306ms)
+✔ bad ambient credentials refuses before pool/client/effect access (1.57123ms)
+✔ bad new issuer refuses before pool/client/effect access (0.431713ms)
+✔ bad caller module refuses before pool/client/effect access (1.046405ms)
+✔ bad inline proxy credential refuses before pool/client/effect access (0.935336ms)
+✔ bad public networking refuses before pool/client/effect access (4.112518ms)
+✔ bad unknown launch flag refuses before pool/client/effect access (2.028858ms)
+✔ bad foreign binding refuses before pool/client/effect access (2.353951ms)
+✔ control and task capabilities stay distinct and native control file is the same explicit binding (4.292627ms)
+✔ only temporal role accepts explicitly enabled prepared kickoff flag (1.64687ms)
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (71.775923ms)
+✔ current canonical run identity remains usable after original task expiry (8.708711ms)
+✔ present canonical mismatch never falls back binding (9.377094ms)
+✔ present canonical mismatch never falls back scopes (1.675939ms)
+✔ present canonical mismatch never falls back policyRevision (4.948537ms)
+✔ canonical storage STORE_CORRUPT never falls back (6.088477ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (4.003172ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (4.886989ms)
+✔ native wrong principal and revoked identity cannot issue initial context (7.520889ms)
+✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (1106.448156ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7411.331012
+
+✖ failing tests:
+
+test at apps/runtime/test/prepared-candidate.test.mjs:13:1
+✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (1106.448156ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  200 !== 202
+  
+      at TestContext.<anonymous> (file:///workspace/meri-prepared-kickoff/apps/runtime/test/prepared-candidate.test.mjs:18:368)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 202,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

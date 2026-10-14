@@ -1,0 +1,47 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///workspace/meri-prepared-kickoff/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/test/first-run-mount.test.mjs (6232.217345ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (70.921823ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (8.908591ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (1.663121ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (157.544208ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (24.307861ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (16.274198ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (27.122653ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (3.542649ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (2.45533ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (3.24922ms)
+✔ broker refuses a response from another writer fence (0.987397ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (326.137721ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (27.140089ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (11.932579ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9015.805935
+
+✖ failing tests:
+
+test at apps/runtime/test/first-run-mount.test.mjs:1:1
+✖ apps/runtime/test/first-run-mount.test.mjs (6232.217345ms)
+  'test failed'

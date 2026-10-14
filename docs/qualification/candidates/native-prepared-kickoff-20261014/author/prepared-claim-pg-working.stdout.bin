@@ -1,0 +1,15 @@
+✔ starting may claim once only after exact admitted preparation was consumed (376.044257ms)
+✔ running may claim once only after exact admitted preparation was consumed (134.313378ms)
+✔ running without consumed original null refuses before native execution journal insert (57.485772ms)
+✔ running without consumed original PREPARED refuses before native execution journal insert (74.155713ms)
+✔ running without consumed original UNKNOWN refuses before native execution journal insert (115.451467ms)
+✔ changed plan cannot borrow a consumed launch for another original (72.110757ms)
+✔ corrupt admitted allocation checksum refuses prepared execution rather than bypassing canonical decoder (88.899237ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2234.194109

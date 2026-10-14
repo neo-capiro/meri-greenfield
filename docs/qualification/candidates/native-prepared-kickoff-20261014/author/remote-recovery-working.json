@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/remote-allocation-preflight.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "sourceDiffSha256": "26c7c693be3393530b85ef7dcb0c9d2eb793c3cbdf58cbf86c1cd1319987e595",
+  "sourceDiffBytes": 73933,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T10:35:41.747370+00:00",
+  "durationSeconds": 29.676,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 156925,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/remote-recovery-working.stdout.bin",
+      "bytes": 2597,
+      "sha256": "a386033c60b945cd3196bf7b5e56c514ee02aac15bd5a41b3dbe9e13ad198db8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/remote-recovery-working.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}
