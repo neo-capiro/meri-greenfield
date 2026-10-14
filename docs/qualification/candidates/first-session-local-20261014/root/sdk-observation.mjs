@@ -1,6 +1,6 @@
 /** Actual pinned SDK/CLI observation only; no provider transport, credentials or product authority. */
 import assert from 'node:assert/strict';import {createServer} from 'node:http';
-import {spawn} from 'node:child_process';import {Transform} from 'node:stream';import {StringDecoder} from 'node:string_decoder';
+import {spawn} from 'node:child_process';import {Transform} from 'node:stream';
 import {mkdtemp,mkdir,rm} from 'node:fs/promises';import {readFileSync,realpathSync} from 'node:fs';
 import {tmpdir} from 'node:os';import {join,dirname} from 'node:path';import {pathToFileURL} from 'node:url';import {createHash} from 'node:crypto';
 import {observeNativeStdout} from '../../../../../apps/worker/qualification/probes/native-stream-observer.mjs';
@@ -20,7 +20,7 @@ const env={PATH:process.env.PATH,CLAUDE_CONFIG_DIR:configDir,CLAUDE_SECURESTORAG
 for(const name of Object.keys(process.env))if(/^(CLAUDE_|ANTHROPIC_|AWS_|GOOGLE_|GCP_|AZURE_|OPENAI_|LITELLM_)/u.test(name))delete process.env[name];
 Object.assign(process.env,env);
 ({query}=await import(pathToFileURL(join(sdkDir,'sdk.mjs')).href));
-let failure=false,closeObserved=false,forcedKill=false;
+let failure=false,closeObserved=false,forcedKill=false,nativeFrameError=false;
 try{
  timer=setTimeout(()=>abort.abort(),20000);
  q=query({prompt:'/status',options:{cwd:workspace,env,abortController:abort,pathToClaudeCodeExecutable:cli,settingSources:[],settings:{autoMemoryEnabled:false},skills:[],plugins:[],mcpServers:{},hooks:{},tools:[],allowedTools:[],permissionMode:'default',canUseTool:async()=>({behavior:'deny',message:'No tool admitted'}),model:'meri-local-no-provider',maxTurns:1,maxBudgetUsd:0.000001,persistSession:true,sessionStoreFlush:'eager',sessionStore:{async append(key,entries){const k=scopedSessionKey(key,key);copySessionEntries(entries);mirrorBatches++;if(!keys.some(v=>JSON.stringify(v)===JSON.stringify(k)))keys.push(k);},async load(){throw Error('FRESH_LOAD_REFUSED');},async listSubkeys(){throw Error('FRESH_LOAD_REFUSED');}},spawnClaudeCodeProcess(options){
@@ -30,8 +30,8 @@ try{
   child=spawn(options.command,options.args,{cwd:options.cwd,env:options.env,signal:options.signal,stdio:['pipe','pipe','pipe']});
   childClose=new Promise(resolve=>child.once('close',(code,signal)=>{closeObserved=true;resolve({code,signal});}));
   observeNativeStdout(child,record,()=>abort.abort());
-  const decoder=new StringDecoder('utf8');let pending='';
-  const tap=new Transform({transform(chunk,_encoding,callback){try{pending+=decoder.write(chunk);if(Buffer.byteLength(pending)>1048576)throw Error('FRAME_BOUND');let at;while((at=pending.indexOf('\n'))>=0){const line=pending.slice(0,at);pending=pending.slice(at+1);if(!line)continue;const frame=JSON.parse(line);if(frame.type==='system'&&frame.subtype==='init')nativeInit.push({sessionId:frame.session_id,cliVersion:frame.claude_code_version,sha256:sha(line)});if(frame.type==='transcript_mirror')nativeMirrors.push({filePath:frame.filePath,entriesSha256:sha(JSON.stringify(frame.entries))});}callback(null,chunk);}catch{abort.abort();callback(Error('NATIVE_FRAME_REFUSED'));}}});
+  const decoder=new TextDecoder('utf-8',{fatal:true});let pending='';
+  const tap=new Transform({transform(chunk,_encoding,callback){try{pending+=decoder.decode(chunk,{stream:true});if(Buffer.byteLength(pending)>1048576)throw Error('FRAME_BOUND');let at;while((at=pending.indexOf('\n'))>=0){const line=pending.slice(0,at);pending=pending.slice(at+1);if(!line)continue;const frame=JSON.parse(line);if(frame.type==='system'&&frame.subtype==='init')nativeInit.push({sessionId:frame.session_id,cliVersion:frame.claude_code_version,sha256:sha(line)});if(frame.type==='transcript_mirror')nativeMirrors.push({filePath:frame.filePath,entriesSha256:sha(JSON.stringify(frame.entries))});}callback(null,chunk);}catch{nativeFrameError=true;abort.abort();callback(Error('NATIVE_FRAME_REFUSED'));}},flush(callback){try{pending+=decoder.decode();if(pending.length)throw Error('NATIVE_FRAME_TAIL');callback();}catch{nativeFrameError=true;abort.abort();callback(Error('NATIVE_FRAME_REFUSED'));}}});
   child.stdout=child.stdout.pipe(tap);child.stdio[1]=child.stdout;
   let stderrBytes=0;child.stderr.on('data',chunk=>{stderrBytes+=chunk.byteLength;if(stderrBytes>65536)abort.abort();});
   return child;
@@ -42,8 +42,8 @@ try{
  if(childClose){const status=await Promise.race([childClose,new Promise(resolve=>setTimeout(()=>resolve(null),4000))]);if(status===null&&child.exitCode===null&&child.signalCode===null){forcedKill=true;child.kill('SIGKILL');await Promise.race([childClose,new Promise(resolve=>setTimeout(resolve,1000))]);}}
  server.closeAllConnections();await new Promise(resolve=>server.close(resolve));
 }
-const streamComplete=record.stdoutEnded===true&&record.stdoutClosed===true&&!record.stdoutReadError&&!record.stdoutOverflow;
-const main=keys.filter(key=>key.subpath===undefined),correlated=main.length===1&&nativeInit.some(m=>m.sessionId===main[0].sessionId)&&nativeMirrors.some(m=>m.filePath===join(configDir,'projects',main[0].projectKey,main[0].sessionId+'.jsonl'));
-const receipt={scope:'ACTUAL_LOCAL_SDK_CLI_MECHANICS_NOT_TASK_AUTHORITY',sdkVersion:'0.3.295',cliPackageVersion:JSON.parse(readFileSync(join(dirname(cli),'package.json'),'utf8')).version,cliPath:cli,spawns,childPid:child?.pid,closeObserved,forcedKill,streamComplete,stdoutError:record.stdoutReadError===true||record.stdoutOverflow===true,localRefusedRequests:localRequests,providerCalls:0,providerTransportInstalled:false,mirrorBatches,mainKeys:main,nativeInit,nativeMirrorFrameCount:nativeMirrors.length,actualInitMainKeyCorrelated:correlated,results,queryFailed:failure,stdoutBytes:record.stdoutTotalBytes,stdoutSha256:record.stdoutSha256,physicalIsolationQualified:false,productTaskVerifierInstalled:false,productRegistrationReaderInstalled:false};
+const streamComplete=record.stdoutEnded===true&&record.stdoutClosed===true&&!record.stdoutReadError&&!record.stdoutOverflow&&!nativeFrameError;
+const main=keys.filter(key=>key.subpath===undefined),correlated=main.length===1&&nativeInit.some(m=>m.sessionId===main[0].sessionId&&m.cliVersion==='2.1.295')&&nativeMirrors.some(m=>m.filePath===join(configDir,'projects',main[0].projectKey,main[0].sessionId+'.jsonl'));
+const receipt={scope:'ACTUAL_LOCAL_SDK_CLI_MECHANICS_NOT_TASK_AUTHORITY',sdkVersion:'0.3.295',cliPackageVersion:JSON.parse(readFileSync(join(dirname(cli),'package.json'),'utf8')).version,cliPath:cli,spawns,childPid:child?.pid,closeObserved,forcedKill,streamComplete,nativeFrameError,stdoutError:record.stdoutReadError===true||record.stdoutOverflow===true,localRefusedRequests:localRequests,providerCalls:0,providerTransportInstalled:false,mirrorBatches,mainKeys:main,nativeInit,nativeMirrorFrameCount:nativeMirrors.length,actualInitMainKeyCorrelated:correlated,results,queryFailed:failure,stdoutBytes:record.stdoutTotalBytes,stdoutSha256:record.stdoutSha256,physicalIsolationQualified:false,productTaskVerifierInstalled:false,productRegistrationReaderInstalled:false};
 console.log(JSON.stringify(receipt));if(closeObserved)await rm(taskRoot,{recursive:true,force:true});
 if(!correlated||!closeObserved||!streamComplete||forcedKill)process.exitCode=1;
