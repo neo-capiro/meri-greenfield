@@ -1,0 +1,115 @@
+{
+  "sourceFreeze": "280c804dd0dcd114ec1a0b8803764f6187ad2049",
+  "records": [
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/OUTLINE.md",
+      "bytes": 2366,
+      "sha256": "361d55f6d686669799b70c2f16f74553c6e7671d45e6bf7f93f69b3939468065"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/CLEANUP.json",
+      "bytes": 265,
+      "sha256": "921a088bd41c0ba468ed67002d7582fdbaa633e0741a21c17166c63da7b6e569"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/budget-regression.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/budget-regression.stdout.txt",
+      "bytes": 2665,
+      "sha256": "3e39da9b68ddf0a865a89bef3ef9192550faddf35bdc39aa20a0ab8f19f9629c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/composed.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/composed.stdout.txt",
+      "bytes": 1229,
+      "sha256": "fd9ad3fc8fd7c03f0f64dc66dae7c42f6d68ad5f3e5826e6b68e31232f7a182a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/configured.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/configured.stdout.txt",
+      "bytes": 999,
+      "sha256": "a99231dc2ad3182974d69e486442e069e466a73e2b203ab7c036c8330b1ca82b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/final-integrated.json",
+      "bytes": 1326,
+      "sha256": "f8f3d7a284d151e12289da9795a3509549688c5a45258162321fb624d9a21b07"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/final-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/final-integrated.stdout.bin",
+      "bytes": 2807,
+      "sha256": "ef98aaa22800e9d6df6bbf8d9b31054f35944e0cf68b0cff388ec90fc5d44851"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/initial.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/author/initial.stdout.txt",
+      "bytes": 1011,
+      "sha256": "8679b6e2a07f7619b113838dc365a7551aa51172bfa53d23cd683f8f9230f555"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/REVIEW.md",
+      "bytes": 5372,
+      "sha256": "d581aae41ca2ad502861cc453ef750186b00510c4d00f1cfa76013ba72d8ff37"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/controls.test.mjs",
+      "bytes": 8319,
+      "sha256": "9a853d681007ddefc8ff92cc9b6a60fe55e5e74bccabedc3e5a2add42c8349aa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.json",
+      "bytes": 1312,
+      "sha256": "b15fab3db5f4e9b99e64129eb379907bd256700804302c023fc167855a95f225"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.stdout.bin",
+      "bytes": 926,
+      "sha256": "afbf36c5c065cdb603340f53bbb719bb405ecc09607aa5085a874d15e7f133aa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/manifest.json",
+      "bytes": 3468,
+      "sha256": "de0eef91286ca9fa4bb639ffe33f8d420257f26688c0e0e03152038f2b373c2c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/native-child.mjs",
+      "bytes": 554,
+      "sha256": "d6208ffef5e10184e1e4a00f7a1e37ed123b370f3eacd1b65759cff57f452778"
+    }
+  ]
+}

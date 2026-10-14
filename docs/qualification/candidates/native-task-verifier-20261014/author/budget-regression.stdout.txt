@@ -1,0 +1,49 @@
+✔ explicit product namespace runs canonical bind/reserve/settle/completion with one ledger (105.375651ms)
+✖ atomic leased callback sees immutable exact allocation and closed SQL port after commit (15.440152ms)
+✔ changed grant during compiled effect refuses result and rolls back under same lease (11.934391ms)
+✔ changed fence during compiled effect refuses result and rolls back under same lease (9.847764ms)
+✔ immutable allocation deadline cannot be refreshed by a later current call (13.820038ms)
+✔ lost leased COMMIT acknowledgement releases no result and does not retry effect (10.503974ms)
+✔ serialized effects share budget lock and second callback cannot overtake first (27.771617ms)
+✔ hostile binding/input and noncompiled callback refuse before SQL effects (8.641726ms)
+✔ only two fixed server namespace choices are accepted before connection (1.008107ms)
+✔ readCompletion refuses revoked without preparation, reconciliation or redispatch (28.758328ms)
+✔ readCompletion refuses fence without preparation, reconciliation or redispatch (19.521256ms)
+✔ readCompletion refuses quarantine without preparation, reconciliation or redispatch (26.271624ms)
+✔ readCompletion refuses unprepared without preparation, reconciliation or redispatch (10.922862ms)
+✔ readCompletion refuses unknown without preparation, reconciliation or redispatch (17.293216ms)
+✔ readCompletion wrong delivery/raw request and lost read COMMIT never yield marker (30.955606ms)
+✔ product migration is empty canonical structure, no seed/role/grant or fixed allowance (7.065519ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 15
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6968.259936
+
+✖ failing tests:
+
+test at apps/gateway/budget/product-runtime.test.mjs:26:1
+✖ atomic leased callback sees immutable exact allocation and closed SQL port after commit (15.440152ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'currentRun',
+  +   'currentTaskRun',
+      'currentAllocation',
+      'withCurrentAllocation'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-task-verifier/apps/gateway/budget/product-runtime.test.mjs:31:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'currentRun', 'currentTaskRun', 'currentAllocation', 'withCurrentAllocation' ],
+    expected: [ 'currentRun', 'currentAllocation', 'withCurrentAllocation' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

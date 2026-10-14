@@ -1,0 +1,11 @@
+# Current task verifier and admitted supervisor composition
+
+Base PR74 `7481ba29973d853327c7975dbda30bf3a96ad6a7`; root dedicated worktree `/workspace/meri-native-task-verifier`, branch `codex/native-task-verifier-20261014`.
+
+Root exclusively owns canonical budget store/current/admitted-owner changes, new native task verifier/receiving application/supervisor composition, author tests and report. Independent Codex owns only candidate independent evidence; no recursive delegation. No contracts, migrations, locks, backend or credential issuance changes.
+
+Reuse existing canonical product grant hash/full binding/fence/policy/allocation/expiry predicates. Add read-only repeatable-read currentTaskRun to that same admission owner, because session persistence refreshes task authority while holding the budget lock: reacquiring that lock would deadlock. Existing currentRun and withCurrentAllocation locking semantics remain unchanged. Verifier compares the presented opaque capability's raw SHA256 to one configured existing grant, checks a trusted compiled operation allowlist, and obtains fresh canonical identity/context against the read-only owner before/after. Preserve original lease and minimum authority expiry; emit the existing WorkerAuthorization receipt only to trusted control callers. Never mint, activate or renew a capability or accept worker scopes/identity.
+
+Receiving /v1/worker/authorize uses the existing wire and requires a separately pre-existing trusted-control caller capability hash. Task capabilities cannot call it to obtain native identity credentials. One supervisor composition owns one admission owner/identity adapter/verifier, then gates PR74 launcher preparation on current task authority and shortens the original launch lease. It does not implement a broker registry, execution issuance, proxy or cloud launch API.
+
+Verification: canonical product SQL logic over explicitly synthetic current SQL state; canonical authority HTTP client; receiving/client/authority/session-owner execution, including verification inside held session transaction without a nested write lock. Independent refusal/expiry/currentness/role separation and launcher gating. Real local HTTP/process paths where feasible. No new credentials/security activation, paid SDK/provider calls, AWS/resource mutations, product database/Temporal access or output.

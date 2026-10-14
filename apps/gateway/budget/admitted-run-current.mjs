@@ -2,9 +2,10 @@
 import {refuse} from './postgres-budget-store.mjs';
 import {same} from './tool-budget-binding.mjs';
 import {integer,dbTime,assertRun} from './admitted-run-binding.mjs';
-export async function readCurrentAdmission({c,store,client,life,check,locked=false}){
+export async function readCurrentAdmission({c,store,client,life,check,locked=false,readOnly=false}){
+ if(readOnly&&locked)refuse('ADMITTED_RUN_CONFIGURATION');
  const suffix=locked?' FOR UPDATE':'',t=store.tables;
- const budget=await store.lock(client);check();if(budget.quarantined!==false)refuse('ADMITTED_RUN_REFUSED');
+ const budget=await (readOnly?store.read(client):store.lock(client));check();if(budget.quarantined!==false)refuse('ADMITTED_RUN_REFUSED');
  const run=(await client.query(`SELECT * FROM ${t.runs} WHERE run_id=$1${suffix}`,[c.binding.runId])).rows;
  if(run.length!==1)refuse('ADMITTED_RUN_REFUSED');assertRun(run[0],c.facts[0]);
  const allocations=(await client.query(`SELECT * FROM ${t.tool_run_allocations} WHERE run_id=$1${suffix}`,[c.binding.runId])).rows;

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-task-verifier-20261014/independent/controls.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-task-verifier",
+  "sourceHead": "280c804dd0dcd114ec1a0b8803764f6187ad2049",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T03:00:47.073685+00:00",
+  "durationSeconds": 13.521,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 9912,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.stdout.bin",
+      "bytes": 926,
+      "sha256": "afbf36c5c065cdb603340f53bbb719bb405ecc09607aa5085a874d15e7f133aa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -17,14 +17,18 @@ export function createPostgresAdmittedRunOwner(configuration){
  }
  const checked=(raw,check)=>{const query=raw.query;return Object.freeze({async query(...args){check();const result=await query.call(raw,...args);check();return result;}});};
  const observation=(deadlineMs,checkedAtMs)=>({binding:c.binding,policyRevision:c.policyRevision,deadlineMs,checkedAtMs});
- async function currentRun(value,options){
+ async function currentObservation(value,options,readOnly=false){
   const input=currentInput(value,options),{life,check,started}=lifetime(input);
   try{
-   const deadline=await life.run(()=>store.transact(raw=>readCurrentAdmission({c,store,client:checked(raw,check),life,check}),check));
+   const deadline=await life.run(()=>store.transact(raw=>readCurrentAdmission({c,store,client:checked(raw,check),life,check,readOnly}),check,undefined,readOnly));
    const at=c.now();check();if(!Number.isSafeInteger(at)||at<started||at>=deadline)refuse('ADMITTED_RUN_REFUSED');
    return JSON.stringify(observation(deadline,at));
   }finally{life.close();}
  }
+ const currentRun=(value,options)=>currentObservation(value,options);
+ // Fresh committed snapshot for verifier refresh inside a separate owned lease.
+ // No row lock, mutation or effect callback; same admission predicate/SQL owner.
+ const currentTaskRun=(value,options)=>currentObservation(value,options,true);
  async function currentAllocation(binding,options){
   const observed=JSON.parse(await currentRun(binding,options));
   return JSON.stringify({...observed,allocation:c.a,allocationSha256:c.allocationSha256});
@@ -49,5 +53,5 @@ export function createPostgresAdmittedRunOwner(configuration){
   catch(error){if(committing)throw new BudgetCommitUncertain('COMMIT_ACKNOWLEDGEMENT_UNKNOWN');throw error;}
   finally{life.close();}
  }
- return Object.freeze({currentRun,currentAllocation,withCurrentAllocation});
+ return Object.freeze({currentRun,currentTaskRun,currentAllocation,withCurrentAllocation});
 }

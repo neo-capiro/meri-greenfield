@@ -1,0 +1,11 @@
+{
+  "sourceAndRawHashesVerified": true,
+  "removedTaskLinks": [
+    "node_modules/ajv",
+    "node_modules/ajv-formats",
+    "node_modules/canonicalize",
+    "node_modules/@capiro/meri-contracts"
+  ],
+  "originalTargetsPresent": true,
+  "remainingAuthorTemps": []
+}

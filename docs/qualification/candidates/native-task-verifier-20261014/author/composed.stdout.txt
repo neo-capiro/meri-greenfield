@@ -1,0 +1,18 @@
+✔ actual native authorization HTTP/client returns canonical task receipt with original authority expiry (775.941775ms)
+✔ foreign capability/binding, unsupported operation and hostile input refuse before SQL/native reads (351.413622ms)
+✔ committed grant revocation/fence/quarantine/expiry prevents receipt and launch preparation (1325.185854ms)
+✔ revocation committed during native context await is caught by a fresh later snapshot (307.107352ms)
+✔ held canonical allocation can refresh verifier without reacquiring budget row lock (300.142304ms)
+✔ canonical durable session owner uses native HTTP verifier inside locked SQL effect (689.760838ms)
+✔ admitted preparation preserves immutable launch plan and narrows original lease before real spawn (688.738263ms)
+✔ disabled composition, canceled preparation and shared task/control hash cannot allocate (575.27575ms)
+✔ compiled production ports bind admitted real child registration to canonical persistence owner (674.412842ms)
+✔ supervisor close aborts parked launch preparation before any native context or process dispatch (270.447047ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13840.793781
