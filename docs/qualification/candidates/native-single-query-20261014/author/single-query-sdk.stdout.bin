@@ -1,0 +1,49 @@
+{
+  "completed": false,
+  "phase": "fork",
+  "spawns": 2,
+  "results": [
+    {
+      "phase": "source",
+      "subtype": "success",
+      "is_error": false,
+      "num_turns": 0,
+      "total_cost_usd": 0
+    },
+    {
+      "phase": "fork",
+      "subtype": "success",
+      "is_error": false,
+      "num_turns": 0,
+      "total_cost_usd": 0
+    }
+  ],
+  "witnesses": [
+    {
+      "phase": "source",
+      "observationId": "6f07e76edd4566317214400844c5f429d13a4560b95266feb6f2a1fd2fd28948"
+    },
+    {
+      "phase": "fork",
+      "observationId": "f2c3cfde9e83a3960502cfd1c4aa31e0daa022ea0cc9d6fb613071360139cf2b"
+    }
+  ],
+  "states": [
+    {
+      "phase": "source",
+      "supervisorPid": 89047,
+      "nativePid": 89068,
+      "booted": true,
+      "launched": true,
+      "closed": true,
+      "physicalStopProven": true
+    }
+  ],
+  "sinkMetadata": [],
+  "providerRequests": 0,
+  "cleanupProven": false,
+  "retainedWorkspace": "/tmp/meri-single-query-sdk-zlU9zY",
+  "sdkSha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+  "cliSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE"
+}

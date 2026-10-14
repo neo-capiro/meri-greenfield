@@ -1,0 +1,14 @@
+✔ canonical claim precedes real supervisor RPC byte write; replay/snapshot use task readback before CLI spawn (2775.64114ms)
+✔ foreign binding and caller path overrides cannot reach task workspace (4249.986602ms)
+✔ nested caller getters and corrupt encoded bytes refuse without executing getters or writing files (3246.711307ms)
+✔ ambiguous supervisor write acknowledgement records canonical UNKNOWN and never repeats bytes (2577.813169ms)
+✔ task-side mutation blocks snapshot/readback and direct physical restoration cannot be repeated (1329.785917ms)
+✔ worker stdin byte JSON cannot invoke trusted workspace RPC after actual fixture child launches (2312.199604ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19466.465323

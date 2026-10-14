@@ -1,0 +1,69 @@
+✔ accepts portable manifests and immutable proposals (97.45486ms)
+✔ rejects unsafe workspace paths before restoration (5.442526ms)
+✔ rejects duplicate paths and unsupported symlinks (1.62091ms)
+✔ rejects changed approved arguments, input versions and tenant approvers (2.711214ms)
+✔ rejects unknown protocol versions, loose identity fields and unsafe integers (11.417125ms)
+✔ canonical hashes are key-order independent and bind every command input (0.469813ms)
+✔ event envelope requires typed payload, scopes and positive durable sequence (427.596216ms)
+✔ rejects file ancestors regardless of manifest insertion order (1.099572ms)
+✔ truncated scans cannot claim complete coverage (7.862969ms)
+✔ approval survives executor replacement while approved intent stays immutable (14.916479ms)
+✔ canonical private/public steer command and exact receipt agree (170.979301ms)
+✔ canonical private/public pause command and exact receipt agree (19.7602ms)
+✔ canonical private/public approval.wait command and exact receipt agree (14.269419ms)
+✔ canonical private/public resume command and exact receipt agree (25.464867ms)
+✔ canonical private/public fork command and exact receipt agree (13.739646ms)
+✔ inspection selector/response preserve ID/hash and current source binding only (53.318008ms)
+✔ control receipt refuses tenant substitution (4.97348ms)
+✔ control receipt refuses worker substitution (7.579603ms)
+✔ control receipt refuses fence substitution (8.234882ms)
+✔ control receipt refuses controlId substitution (7.04194ms)
+✔ control receipt refuses intent substitution (0.569219ms)
+✔ control receipt refuses input hash substitution (19.12927ms)
+✔ resume exact checkpoint and fresh target receipt semantics (31.039887ms)
+✔ fork exact checkpoint and fresh target receipt semantics (75.90924ms)
+✔ request/view provenance cannot be recreated or caller-controlled; bytes stay inert (6.618283ms)
+✔ closed status/error disposition preserves UNKNOWN and rejects false success/status (5.267034ms)
+✔ inspection refuses ID/sequence/binding mismatch against admitted current history (4.602275ms)
+✔ browser module loads only the preserved public sibling and uses its actual view provenance (174.627918ms)
+✔ installed offline package exposes additive lifecycle/schema without private source (1051.094541ms)
+✔ metadata and generator help/invalid options remain inert and finite (509.332075ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (557.182079ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (25.451986ms)
+✔ structural validation deliberately grants no tenant authorization (1.732586ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (10.613692ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (360.349386ms)
+✔ generator help and invalid arguments exit before generation (653.221052ms)
+✖ generated distribution check is independent of caller working directory (445.472494ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 36
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9054.372441
+
+✖ failing tests:
+
+test at packages/contracts/test/public-package.test.mjs:77:1
+✖ generated distribution check is independent of caller working directory (445.472494ms)
+  AssertionError [ERR_ASSERTION]: Cannot find package 'esbuild' imported from /workspace/meri-native-runtime-recovery/packages/contracts/generate.mjs
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/packages/contracts/test/public-package.test.mjs:81:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

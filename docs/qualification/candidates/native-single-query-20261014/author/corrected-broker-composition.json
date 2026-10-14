@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/broker-stack.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "d17eb537372056910fdde3deca583f29d15173da",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T07:37:31.881249+00:00",
+  "durationSeconds": 6.673,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 99067,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-broker-composition.stdout.bin",
+      "bytes": 781,
+      "sha256": "b00a7569c568b3b50d39f4783c2510110a7cfabebec625dab9f97d418c984088"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-broker-composition.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

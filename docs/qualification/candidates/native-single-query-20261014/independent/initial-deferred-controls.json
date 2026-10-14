@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/deferred-process-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "a0f4cabdfecd4850e0ed62ffcfa5508c5a466453",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T07:18:01.981687+00:00",
+  "durationSeconds": 9.472,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 92160,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/independent/initial-deferred-controls.stdout.bin",
+      "bytes": 1007,
+      "sha256": "5620aa1cf9d33def0153cd1bcf03a5dfb4e59b8d0e18acf6fbe66969eebe3bdb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/independent/initial-deferred-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root requested focused independent10deferred/workspace/sourceguards on unfrozen candidate; separatebefore/afterinputhashes; noDB/provider/AWS/SDKquery.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

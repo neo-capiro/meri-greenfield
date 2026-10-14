@@ -1,0 +1,30 @@
+✔ real Fetch receiving/client preserves deep opaque bytes, original key and SDK adapter subagent markers (160.104008ms)
+✔ HTTP malformed JSON/UTF8/closed body/header and routes refuse without SQL or disclosure (8.240162ms)
+✔ missing actual native task authority yields503 before registration/admission (3.10792ms)
+✔ client refuses foreign response binding/request hash before opaque entries are consumed (5.046441ms)
+✔ inert client input and parked Fetch are bounded and retire a late response body (24.878151ms)
+✔ SDK append ambiguity closes subsequent dispatch despite upstream retry calls (39.19705ms)
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (75.94728ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (250.185188ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (190.390641ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (11.981007ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (30.606924ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (89.529832ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (12.272948ms)
+✔ private immutable snapshot read relays exact bearer and bytes to canonical session receiver (4.464559ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (29.512929ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (4.164092ms)
+✔ runner refuses missing observed registration before the single SDK query (96.221848ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (162.462467ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (56.401808ms)
+✔ actual control mount and fixed loopback relay deliver snapshot to captured canonical port (373.833877ms)
+✔ snapshot remains 404 when no borrowed snapshot port is supplied (3.717851ms)
+✔ snapshot port getters and proxies refuse without invocation or transport (1.595806ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8047.759257

@@ -1,0 +1,41 @@
+{
+  "phase": "Unfrozen candidate before focused run",
+  "files": [
+    {
+      "path": "apps/runtime/native-authority/test/deferred-process-independent.test.mjs",
+      "sha256": "0ce80bf8b73cb9b0d59ff83611fe4ade58b5f4034036eb060dc8c0cd25cc8181"
+    },
+    {
+      "path": "apps/runtime/native-authority/deferred-process-transport.mjs",
+      "sha256": "1bc7de013a2bc8c6cdc9900e01d4f55f601e85406694d818a506a344742c34f1"
+    },
+    {
+      "path": "apps/runtime/native-authority/independent-task.mjs",
+      "sha256": "d013e0b80c0dafff412a7601c54151856f1d5810184ad57c0de157b23307e627"
+    },
+    {
+      "path": "apps/runtime/native-authority/launch-configuration.mjs",
+      "sha256": "2a6754011fe7fdc01b2eac072f1769342a6523d9e17ab0b979fdedb9c7a40fcd"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-launcher.mjs",
+      "sha256": "16ca1e5c67023951922da17fdd0a3ac412159428a1ac648f0016392e52c12825"
+    },
+    {
+      "path": "apps/runtime/native-authority/supervisor-process.mjs",
+      "sha256": "dd016b068448318b06ad8f5fda2e01bcedcc460ba7f45e84ed0876fab642941f"
+    },
+    {
+      "path": "apps/runtime/native-authority/supervisor-workspace.mjs",
+      "sha256": "a6733b793e86e562a63990e15bbdfaced38006cbf19e16a8d7be03e6659da393"
+    },
+    {
+      "path": "apps/runtime/native-authority/sdk-query-preparation.mjs",
+      "sha256": "2d8d46992168950e0a0879ea1dcc90ed501a822f64e704b6a1795107693b7152"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "sha256": "612ff22b743d39ba21071cd82ef2109fb5703aef4d00686790c600c2729577fe"
+    }
+  ]
+}

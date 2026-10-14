@@ -1,0 +1,14 @@
+✔ shared inert compiler preserves exact original plan/runtime/launch hashing and binding (934.496194ms)
+✔ concrete stack constructs native restorer with canonical journal and original plan before any IO (871.733723ms)
+✔ invalid immutable original or object accessor refuses before task factory effects (324.265081ms)
+✔ canonical runtime validation refuses proxy, budgets, model and hostile data before allocation (984.193905ms)
+✔ session snapshot and all session paths are owned by canonical receiver, never supervisor fallback (447.651992ms)
+✔ continuation refuses a missing task workspace port without falling back to control filesystem (435.47494ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6501.836438

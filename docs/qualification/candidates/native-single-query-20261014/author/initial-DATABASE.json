@@ -1,0 +1,17 @@
+{
+  "container": "meri-single-query-postgres-20261014",
+  "network": "none",
+  "listenAddresses": "",
+  "socket": "/tmp/meri-broker-pg-socket-20261014",
+  "exit": 1,
+  "files": {
+    "apps/gateway/budget/migrations/0001_product_budget.sql": "0beb498dbac8d6e092c207b46f8167fb161361e7ad869aea6e33f0d1d8c4a511",
+    "apps/control/conversations/migrations/0001_conversations.sql": "97d4e7058696b8ded1ad7dc0730ab271e75137968831ed34c0b73a7dadc16b26",
+    "apps/control/conversations/migrations/0002_lifecycle.sql": "87c27a01a2f36ceb0a4faf6c5242d8e061240037b6775aef777f292323170b69",
+    "apps/control/conversations/migrations/0003_selected_outputs.sql": "25d9fc720e0f4a0345e017d5a20285b27d04af55e3cc953d261664ce31db2245",
+    "apps/control/conversations/migrations/0004_sdk_sessions.sql": "0370baa18aff134ca75287b468fc00b75e616f63fbb440c02069bccd31dd582a",
+    "apps/control/conversations/migrations/0005_selected_reads.sql": "8ffb0b725098aaed8bdd48591b3da9a04c2d751d9098a5b35f8c528ac9ec8cde",
+    "apps/control/conversations/migrations/0006_native_executions.sql": "9537daf4f3611cfce8aae0ee148bf4da3bcfc53116faaec6eb1c57cf05b4d714",
+    "apps/control/conversations/migrations/0007_native_preparation.sql": "76da1fa221bb463ce116d3ca794566321f219177b2055193c2c7f609f5e6ba19"
+  }
+}

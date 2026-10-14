@@ -1,0 +1,9 @@
+{
+  "base": "d17eb537372056910fdde3deca583f29d15173da",
+  "owner": "canonicalpublicpackages/contracts/validate.mjs",
+  "problem": "everypublic$defs eagerlycompiled atimport causingruntime/CLI coldstart work forunusedshapes",
+  "change": "indexsame$defsrefs, registersamemetaschema+schema and cacheAjv.compile onfirstvalidateShape call",
+  "preserved": "publicschema,names,wire,exports,contractVersion,known/unknown/errorsemantics; noaliasreplacement or publicSDKversionchurn",
+  "verification": "quietsequentialexactbaseline/currentcanonicalimporttiming; existingnegativepubliccontractscontrols; sixexistingruntimeprocesscontrols unchanged10secguards/1secRPC/3secleases",
+  "review": "proposal sent independentlauncher_review beforeedit"
+}

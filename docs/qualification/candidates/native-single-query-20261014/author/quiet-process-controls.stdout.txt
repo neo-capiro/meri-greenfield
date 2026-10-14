@@ -1,0 +1,71 @@
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (32960.74278ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (5655.399164ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (1697.116132ms)
+✖ actual process exits on SIGTERM after listener shutdown (3916.879796ms)
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (6209.161765ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (6004.949223ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 3
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 56653.209368
+
+✖ failing tests:
+
+test at apps/runtime/test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (32960.74278ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 0
+  
+      at Object.close (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:787)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:14:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/process.test.mjs:17:1
+✖ actual process exits on SIGTERM after listener shutdown (3916.879796ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:17:176)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/process.test.mjs:18:1
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (6209.161765ms)
+  AssertionError [ERR_ASSERTION]: {"error":{"code":"DEADLINE","outcome":"NOT_DISPATCHED"}}
+  
+  408 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:18:721)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 408,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,32 @@
+✔ pending writable queue is counted even after readable high-water saturation (34.11661ms)
+✔ pending end callback overload flushes exact bytes after one attachment (10.420703ms)
+✔ pending limit accounts encoded string bytes and end(chunk,callback) (3.630782ms)
+✔ closed deferred streams never attach or deliver held bytes (0.512605ms)
+✖ one exact deferred request queues before admitted launch; genuine child bytes register only after release (10068.223627ms)
+✔ cancelled pre-admission deferred request has no kernel process and refuses late release (6150.75301ms)
+✔ separate SDK and secure config paths remain independently pinned and symlink refused (1144.422843ms)
+✔ SDK preparation rejects proxy options and declared async bind before any trap/call/import (2.906244ms)
+✔ private supervisor IPC restores and verifies literal workspace before native release (5462.924704ms)
+✔ ordinary Promise-returning binding closes its late handle and remains UNKNOWN with zero CLI release (2103.07421ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 28454.291836
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/deferred-process-independent.test.mjs:13:1
+✖ one exact deferred request queues before admitted launch; genuine child bytes register only after release (10068.223627ms)
+  Error: NATIVE_EXECUTION_TASK_UNAVAILABLE
+      at executionFault (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at Object.startPreparedProcess (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/independent-task.mjs:53:255)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/deferred-process-independent.test.mjs:13:577)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_EXECUTION_TASK_UNAVAILABLE'
+  }

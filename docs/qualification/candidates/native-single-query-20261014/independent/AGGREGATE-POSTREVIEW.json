@@ -1,0 +1,26 @@
+{
+  "verdict": "ACCEPT_INTEGRATED_LOCAL_SOURCE_AND_SDK_COMPONENT",
+  "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "method": "Read-only receipt/raw/setup/digest verification, no test or SDK execution",
+  "cases": 319,
+  "passed": 319,
+  "failed": 0,
+  "testFiles": 32,
+  "captureReceiptSha256": "4f96a201e9d41f35a73244107f8177761ec14ba237cc743410c7b2c024fd0cd7",
+  "captureScriptSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "setupSha256": "89a9cb5605f9683b1775037f16fe15bef1f1b11d099680246e04a505e2daf12a",
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-aggregate.stdout.bin",
+      "bytes": 33021,
+      "sha256": "f4ac639fbf8686e9609fb7a7109730e86cd3333728f7fdab66687075ad8b5001"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-aggregate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceDiffBytes": 0,
+  "limitations": "Local parent-owned network-none PostgreSQL/process controls and final actual SDK component. Earlier failed captures retained; not remote Fargate/authority/Temporal/security qualification or project completion."
+}

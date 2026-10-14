@@ -1,0 +1,84 @@
+{
+  "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "removedOwnedPaths": [
+    "/workspace/meri-native-runtime-recovery/node_modules",
+    "/workspace/meri-native-runtime-recovery/apps/runtime/node_modules",
+    "/workspace/meri-native-runtime-recovery/apps/worker/conversation/node_modules",
+    "/workspace/meri-native-runtime-recovery/packages/contracts/node_modules",
+    "/workspace/meri-native-runtime-recovery/packages/window-resolution/node_modules",
+    "/workspace/meri-native-runtime-recovery/packages/ui-stream/node_modules",
+    "/tmp/meri-single-query-npm-cache",
+    "/tmp/meri-broker-pg-socket-20261014"
+  ],
+  "ownedContainer": "meri-single-query-postgres-20261014",
+  "ownedContainerRemoved": true,
+  "ownedPostgresStoppedExitCode": 0,
+  "ownedAnonymousVolumeRemoved": true,
+  "borrowedAliasTargetsPreserved": {
+    "ajv": true,
+    "ajv-formats": true,
+    "canonicalize": true
+  },
+  "preservedOriginalResources": [
+    "capiro-postgres healthy running",
+    "meri-native-postgres stopped"
+  ],
+  "preservedOriginalWorktrees": [
+    "/workspace/meri-greenfield",
+    "/workspace/meri-native-execution-broker",
+    "/workspace/meri-native-session-launcher",
+    "/workspace/meri-native-task-verifier"
+  ],
+  "freshSdkGroups": [
+    104453,
+    104479,
+    104512,
+    104539
+  ],
+  "freshSdkGroupsProvenAbsent": true,
+  "aggregateOwnedGroup": 105186,
+  "aggregateOwnedGroupAndAdoptedChildrenProvenAbsent": true,
+  "retainedInitialWorkspace": "/tmp/meri-single-query-sdk-zlU9zY",
+  "retainedInitialWorkspaceExists": true,
+  "oldUnreapableOrUncertainOrphans": [
+    {
+      "pid": 89147,
+      "state": "Z",
+      "parent": 1,
+      "group": 89126,
+      "status": "EXITED_PID1_OWNED_UNREAPABLE_OLD_GROUP_ABSENCE_UNKNOWN",
+      "ownership": "verified initial SDK child"
+    },
+    {
+      "pid": 90756,
+      "state": "Z",
+      "parent": 1,
+      "group": 90756,
+      "status": "EXITED_PID1_OWNED_UNREAPABLE_OLD_GROUP_ABSENCE_UNKNOWN",
+      "ownership": "likely earlier failed qualification control; not verified"
+    },
+    {
+      "pid": 90757,
+      "state": "Z",
+      "parent": 1,
+      "group": 90757,
+      "status": "EXITED_PID1_OWNED_UNREAPABLE_OLD_GROUP_ABSENCE_UNKNOWN",
+      "ownership": "likely earlier failed qualification control; not verified"
+    },
+    {
+      "pid": 90787,
+      "state": "Z",
+      "parent": 1,
+      "group": 90787,
+      "status": "EXITED_PID1_OWNED_UNREAPABLE_OLD_GROUP_ABSENCE_UNKNOWN",
+      "ownership": "likely earlier failed qualification control; not verified"
+    }
+  ],
+  "blocker": {
+    "action": "Reap old exited descendants and prove older native group89126 absent before deleting its workspace",
+    "target": "PID89147 parentPID1/group89126 and retained initial workspace",
+    "reason": "Only the kernel parent can waitpid this zombie; this process cannot reap PID1 children. No active CLI remains. Other listed controls have uncertain ownership.",
+    "outcome": "UNCERTAIN_OLD_GROUP_CLEANUP_NO_RETRY_NO_HOST_SECURITY_CHANGE"
+  },
+  "originalScopesPreserved": true
+}

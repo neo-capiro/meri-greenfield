@@ -1,0 +1,9 @@
+file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-single-query-20261014/author/sdk-single-query-probe.mjs:66
+ if(cleanupFailed)throw Error('OWNED_CLEANUP_UNKNOWN');
+                        ^
+
+Error: OWNED_CLEANUP_UNKNOWN
+    at file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-single-query-20261014/author/sdk-single-query-probe.mjs:66:25
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+Node.js v24.19.0

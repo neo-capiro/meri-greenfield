@@ -1,0 +1,72 @@
+{
+  "scope": "kernelmetadataonly; no otherprocessmutation",
+  "rows": [
+    {
+      "pid": 89147,
+      "present": true,
+      "comm": "claude",
+      "state": "Z",
+      "parentPid": 1,
+      "processGroup": 89126,
+      "birthTicks": "1649618",
+      "reapability": "not a child of current process; no wait/kill attempted",
+      "ownership": "nativeprobe-related group observed after initialSDKfailure"
+    },
+    {
+      "pid": 90756,
+      "present": true,
+      "comm": "python3",
+      "state": "Z",
+      "parentPid": 1,
+      "processGroup": 90756,
+      "birthTicks": "1683715",
+      "reapability": "not a child of current process; no wait/kill attempted",
+      "ownership": "likely initialfailedreapercontrols; exact PopenPID was not captured before procchildren failure, ownership uncertain"
+    },
+    {
+      "pid": 90757,
+      "present": true,
+      "comm": "python3",
+      "state": "Z",
+      "parentPid": 1,
+      "processGroup": 90757,
+      "birthTicks": "1683721",
+      "reapability": "not a child of current process; no wait/kill attempted",
+      "ownership": "likely initialfailedreapercontrols; exact PopenPID was not captured before procchildren failure, ownership uncertain"
+    },
+    {
+      "pid": 90787,
+      "present": true,
+      "comm": "python3",
+      "state": "Z",
+      "parentPid": 1,
+      "processGroup": 90787,
+      "birthTicks": "1683769",
+      "reapability": "not a child of current process; no wait/kill attempted",
+      "ownership": "likely initialfailedreapercontrols; exact PopenPID was not captured before procchildren failure, ownership uncertain"
+    }
+  ],
+  "failedControlEvidence": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/reaper-detached-control.stdout.bin",
+      "bytes": 0,
+      "mtimeUTC": "2026-10-14T07:14:34.225241+00:00"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/reaper-detached-control.stderr.bin",
+      "bytes": 0,
+      "mtimeUTC": "2026-10-14T07:14:34.225241+00:00"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/reaper-primary-failure-control.stdout.bin",
+      "bytes": 0,
+      "mtimeUTC": "2026-10-14T07:14:34.761215+00:00"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/reaper-primary-failure-control.stderr.bin",
+      "bytes": 0,
+      "mtimeUTC": "2026-10-14T07:14:34.761215+00:00"
+    }
+  ],
+  "blocker": "PID1 owns already-exitedzombies; caller cannot reap them. Oldgroupabsence remainsunknown; preservation/hostcleanup prerequisite remainsexplicit."
+}

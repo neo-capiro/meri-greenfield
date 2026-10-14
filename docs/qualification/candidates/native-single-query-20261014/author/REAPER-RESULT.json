@@ -1,0 +1,39 @@
+{
+  "failedSetupControls": [
+    {
+      "labels": [
+        "reaper-detached-control",
+        "reaper-primary-failure-control"
+      ],
+      "exitCode": 1,
+      "reason": "FileNotFoundError /proc/self/task/<ownerPID>/children (kernel does not expose children entry); capture threw before receipt, exact PopenPIDs not recorded",
+      "correction": "kernel waitid(P_ALL,WEXITED|WNOHANG|WNOWAIT) exposes only owner exitedchild then waitpid(-1,WNOHANG)"
+    },
+    {
+      "label": "corrected-reaper-detached-control",
+      "commandExitCode": 0,
+      "captureAccepted": false,
+      "reason": "ownedAdoptedChildrenAbsent flag reset and notupdated in postexitloop; childreaped but falseflag",
+      "correction": "assign finalabsence from kernel ECHILD proof eachcleanupiteration"
+    }
+  ],
+  "finalControls": [
+    {
+      "label": "final-reaper-detached-control",
+      "expectedCaptureExit": 0,
+      "commandExit": 0,
+      "ownedMainAndAdoptedChildrenAbsent": true,
+      "detachedGroupPid": 91534,
+      "ownershipKernelWaitpidChildOf": 91508
+    },
+    {
+      "label": "final-reaper-primary-failure-control",
+      "expectedCaptureExit": 1,
+      "commandExit": 7,
+      "ownedMainAndAdoptedChildrenAbsent": true,
+      "meaning": "preserved real nonzero primary result, no false success"
+    }
+  ],
+  "scope": "qualification ancestor reaping only, not production init/isolation proof",
+  "olderOrphans": "RETAINED-ORPHAN-STATUS.json; no false oldergroupcleanupclaim"
+}

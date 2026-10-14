@@ -1,0 +1,55 @@
+{
+  "verdict": "ACCEPT_ACTUAL_LOCAL_SDK_SOURCE_FORK_COMPONENT_ONLY",
+  "sourceHead": "a4872a2b8dc685454e126db53b90e78ce4dad3c1",
+  "verifiedPinCount": 11,
+  "captureScriptSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "captureReceiptSha256": "2ee4054fe2dc9b1ed01b63399f755370e7859a13b27a7b394af648ac95a01dd9",
+  "rawStreams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-single-query-sdk.stdout.bin",
+      "bytes": 1477,
+      "sha256": "63485aa6c9aee228ed49a70a31826e3b21bf99f1cb763bde05cacf722bffd1d6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-single-query-sdk.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "spawns": 2,
+  "zeroTurnsAndCost": true,
+  "sinkRequests": 0,
+  "distinctGenuineWitnesses": true,
+  "freshOwnedGroups": [
+    {
+      "phase": "source",
+      "kind": "supervisorPid",
+      "pidAndGroup": 96525,
+      "absent": true
+    },
+    {
+      "phase": "source",
+      "kind": "nativePid",
+      "pidAndGroup": 96541,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "kind": "supervisorPid",
+      "pidAndGroup": 96601,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "kind": "nativePid",
+      "pidAndGroup": 96608,
+      "absent": true
+    }
+  ],
+  "old89147StateParentGroup": [
+    "Z",
+    "1",
+    "89126"
+  ],
+  "scope": "Reviewer read-only verification, no rerun. InMemory sessions/synthetic bindings/no PG/broker/deployed isolation or Fargate acceptance. New capture cannot qualify old UNKNOWN cleanup."
+}

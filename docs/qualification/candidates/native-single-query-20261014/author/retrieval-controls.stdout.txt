@@ -1,0 +1,43 @@
+✔ preserves the ten typed additions plus memory read within all139/96/43 boundaries (26.039659ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (42.321125ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (6580.493496ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (49.607585ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (230.005466ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (1455.45522ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (2.437387ms)
+✔ family default materialization and argument digest happen before dispatch (35.817211ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (24.372432ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (266.087739ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (16.978754ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (109.888927ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (1.580285ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (29.087432ms)
+✔ preserves all139 native IDs and exact accepted96/43 selections (56.110471ms)
+✔ rejects missing/contradictory mappings and unavailable handlers (55.126727ms)
+✔ rejects ambiguous aliases, canonical shadowing and replacement cycles (14.593328ms)
+✔ distinguishes client/portfolio/personal identity and server lineage (2343.426836ms)
+✔ accepts DST calendar week and explicit Monday/Sunday policy (47.793969ms)
+✔ keeps calendar periods, fixed relative durations and FY/stage/revision distinct (3001.021138ms)
+✔ permits complete authoritative zero count and denies incomplete false absence (1571.349446ms)
+✔ candidate search cannot invent a total or certify absence (4.252401ms)
+✔ complete exact history binds every returned record and its zero total (23.221732ms)
+✔ snippets require follow-up; source reads contain full decisive content (12.01852ms)
+✔ enforces coverage/source/freshness/count and failure consistency (17.17747ms)
+✔ domain comparisons require compatible revision/stage/units (11.083224ms)
+✔ all14 skill IDs are retained without adding historical built-ins (28.50492ms)
+✔ skill requirements cannot reference absent, disabled or insufficient operations (20.25406ms)
+✔ manifest/catalog pins and lifecycle versions survive reconnect/resume/fork (13672.793559ms)
+✔ closed selected invocation carries identity/version plus typed scope/window (5872.234927ms)
+✔ strict0.1 readers remain strict and0.2 never silently upgrades them (628.233691ms)
+✔ immutable record-version identity cannot be inflated by citations or substituted content (62.468361ms)
+✔ record-version tuple identity separates delimiter collisions, versions and sources (57.661324ms)
+✔ denied or unavailable source state cannot contribute returned candidate evidence (18.773861ms)
+✔ mixed checked or partial and denied sources retain legitimate disclosed partial records (5873.768558ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57858.150303

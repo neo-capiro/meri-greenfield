@@ -1,0 +1,37 @@
+{
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "node",
+    "docs/qualification/candidates/native-single-query-20261014/author/sdk-single-query-probe.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "ab0d7a2ac302f95869063a223d79a991662303a3",
+  "sourceDiffSha256": "f960c974cde387a7eb96cc9cdbd7652bc098540ebf2ea6e33e46ac26d7a3d9c3",
+  "sourceDiffBytes": 43935,
+  "captureSha256": "fbda7eb452c4882542c88a25142d00e98df7b3d513dc33a9bbd93e60d83ad15c",
+  "startedAt": "2026-10-14T07:08:43.105545+00:00",
+  "durationSeconds": 11.452,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 89014,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/single-query-sdk.stdout.bin",
+      "bytes": 1289,
+      "sha256": "64d60f7ef190fed5b0ea1837abc7ef04cdf271d0fc0ee4a1d26965d8e58df44d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/single-query-sdk.stderr.bin",
+      "bytes": 509,
+      "sha256": "535db1bcabc7ce126b36de01e452022a87d478022e8d720f504f18dc625aacc0"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
