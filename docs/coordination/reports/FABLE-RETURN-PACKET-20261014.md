@@ -16,7 +16,8 @@ Repository `neo-capiro/meri-greenfield`. Base PR86 `c6053e24b465be677cc598053300
 | `190acd7e25d4dcf6ad02a69bd315ee14490e14f6` | `16ec9e1f145fd36305ea963c61e7f346d0e8b46b` | 8 | RG-01 to RG-09 and RG-12 freeze draft; W03/G2 bindings and rollback packet draft |
 | `f270f233c6f268dcb308da3591a24c497ae47249` | `4ea1c9e36c112efe62b41b282a72ec21fab45012` | 9 | this return packet and the final-head check receipt |
 | `2d7e429eaeff381c5e95f6a558f518f86115a01b` | `bee399b97753e0a65c14088e8a5d530ad515fd29` | 6b | real-PostgreSQL store controls (`store-pg.test.mjs`) and their receipt; §6 map gap 6 closed |
-| (this commit) | (recorded in `git log`) | 5 prep | runtime image dependency trace and base-variant candidates (`FABLE-IMAGE-DEPENDENCY-TRACE-20261014.md`) |
+| `6a004b1` (see `git log`) | — | 5 prep | runtime image dependency trace and base-variant candidates (`FABLE-IMAGE-DEPENDENCY-TRACE-20261014.md`) |
+| (this commit) | (recorded in `git log`) | 7b | retention and deletion design proposal, approval gate (`FABLE-RETENTION-DELETION-PROPOSAL-20261014.md`) |
 
 Complete diff: `git diff c6053e2..<this commit>`; at `190acd7` it is 93 files, 16259 insertions, 6 deletions. Product source changes are exactly five files (four edits and one new test file); everything else is under `scripts/qualification/**` and `docs/**`:
 
@@ -75,7 +76,7 @@ Reruns and their reasons are recorded in the candidate READMEs: the baseline had
 
 ## 6. Decisions and inputs that block the remaining plan
 
-From dot: (a) ACCEPT or HOLD on the follow-up turns design; (b) the gap 2 proof-row decision (apply the patch with a fresh candidate manifest and a new 44-row pin, or name a non-proof injection point); (c) the gap 3 matcher shape; (d) review of the independent-control edit; (e) the RG freeze table; (f) the retention/deletion and signed-URL design questions; (g) whether the replacement-admission ordering of §6 map gap 5 is the intended invariant (the store sequence controls against real PostgreSQL, gap 6, are done).
+From dot: (a) ACCEPT or HOLD on the follow-up turns design; (b) the gap 2 proof-row decision (apply the patch with a fresh candidate manifest and a new 44-row pin, or name a non-proof injection point); (c) the gap 3 matcher shape; (d) review of the independent-control edit; (e) the RG freeze table; (f) the retention and deletion design proposal (`FABLE-RETENTION-DELETION-PROPOSAL-20261014.md`) and the signed-URL question; (g) whether the replacement-admission ordering of §6 map gap 5 is the intended invariant (the store sequence controls against real PostgreSQL, gap 6, are done).
 
 From the shipping owner: the private scan finding table for the PR86 image, confirmation of the base variant behind the pinned digest, and the base-image digest policy (the dependency trace and the candidate shapes are already in `FABLE-IMAGE-DEPENDENCY-TRACE-20261014.md`; the trace also records that zero High/Critical is unreachable on any glibc Debian base until Debian fixes zlib and gcc-12 libstdc++), and every binding in `FABLE-W03-BINDINGS-PACKET-DRAFT-20261014.md` (product database and migration execution, Temporal, control/runner origins, authority bridge, native capability provider, proxy/model/budget pin, ECS task request, preparation intent values, artifact bucket and KMS, browser and renderer hosts).
 
