@@ -4,6 +4,7 @@ import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {resolveNativeCli, probeNativeCli} from './native-cli.mjs';
 import {resolveTemporal} from './temporal-binding.mjs';
+import {swcDiagnostic} from '/opt/meri/apps/runtime/build/swc-diagnostic.mjs';
 const sha = p => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 const root = '/opt/meri';
 const sdkEntry = fs.realpathSync(createRequire(root + '/apps/worker/conversation/package.json').resolve('@anthropic-ai/claude-agent-sdk'));
@@ -25,7 +26,15 @@ const temporalEntry = temporal.entry;
 const {bundleWorkflowCode,DefaultLogger}=await import(pathToFileURL(temporalEntry).href);
 const {workerOptions}=await import(root+'/apps/runtime/temporal-worker.mjs');
 const options=workerOptions({configuration:{temporal:{namespace:'synthetic-image-only',taskQueue:'synthetic-image-only'},limits:{shutdownMs:1000}},connection:{},native:{}});
-const bundle=await bundleWorkflowCode({workflowsPath:options.workflowsPath,logger:new DefaultLogger('ERROR',entry=>console.error(String(entry.message).slice(0,8000)))});
+let bundle;
+try {bundle=await bundleWorkflowCode({workflowsPath:options.workflowsPath,logger:new DefaultLogger('ERROR',()=>{})});}
+catch(error){
+  // Webpack may discard Error.cause. Probe the same runtime-owned native loader for structured causes.
+  let nativeError=error;
+  try{createRequire(root+'/apps/runtime/package.json')('@swc/core');}catch(cause){nativeError=cause;}
+  console.error('MERI_SWC_DIAGNOSTIC '+JSON.stringify(swcDiagnostic(root,nativeError)));
+  throw Error('NATIVE_WORKFLOW_BUNDLE_NOT_ADMISSIBLE');
+}
 if(typeof bundle.code!=='string'||!bundle.code.includes('meriConversationLifecycleWorkflow')||Buffer.byteLength(bundle.code)>16*1024*1024||networkAttempts!==0)throw Error('NATIVE_WORKFLOW_BUNDLE_NOT_ADMISSIBLE');
 const workflowBundle={sha256:crypto.createHash('sha256').update(bundle.code).digest('hex'),bytes:Buffer.byteLength(bundle.code),nativeTemporalBundling:true,networkAttempts,temporalVersion:temporal.version,temporalPackage:temporal.name,temporalPackageRoot:temporal.packageRoot,temporalEntry,temporalEntrySha256:sha(temporalEntry)};
 

@@ -1,0 +1,2 @@
+# Preserve the exact helper bytes observed in the approved Linux diagnostic.
+*.mjs -text whitespace=cr-at-eol

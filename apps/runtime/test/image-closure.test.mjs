@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { resolve, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync, spawnSync } from 'node:child_process';
+import {createHash} from 'node:crypto';
 import ts from '../node_modules/typescript/lib/typescript.js';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..'), roles = ['apps/runtime/cli.mjs', 'apps/runtime/control.mjs', 'apps/runtime/temporal-worker.mjs', 'apps/runtime/conversation-runner.mjs'];
 function closure() { const seen = new Set(), dynamic = new Set(), queue = [...roles]; while (queue.length) {
@@ -58,6 +59,14 @@ test('actual Docker-filtered COPY contains every role dependency and all three r
         const graph = closure(), missing = graph.files.filter(path => !existsSync(join(tree, path)));
         console.log(JSON.stringify({ phase: 'actual-docker-copy', roles, files: graph.files.length, missing }));
         assert.deepEqual(missing, [], 'Production closure excluded by actual .dockerignore');
+        const proof=JSON.parse(readFileSync(join(root,'scripts/qualification/assembled-image/source-manifest.json'),'utf8'));
+        assert.equal(proof.files.length,45,'All original proof-source paths remain mandatory');
+        for(const row of proof.files){
+            const copied=join(tree,row.path);
+            assert.ok(existsSync(copied),'Proof source excluded by actual Docker COPY: '+row.path);
+            assert.equal(createHash('sha256').update(readFileSync(copied)).digest('hex'),row.sha256,'Proof source COPY hash: '+row.path);
+        }
+        for(const file of ['apps/runtime/build/materialize-swc.mjs','apps/runtime/build/swc-diagnostic.mjs'])assert.deepEqual(readFileSync(join(tree,file)),readFileSync(join(root,file)),'Exact reviewed build helper COPY: '+file);
         // Reproduce every exact Docker npm-ci prefix. Context node_modules are ignored,
         // just as Docker installs these dependencies before COPY; no workspace fallback.
         const prefixes = [...docker.matchAll(/RUN npm ci(?: --prefix (\S+))?/gu)].map(match => match[1] ?? '.');

@@ -61,5 +61,7 @@ test('POSIX exact executable is resolved, directly executed and hashed; symlink/
   assert.match(result.version,/^2\.1\.295/);
   fs.appendFileSync(f.binary,'# changed\n');assert.throws(()=>probeNativeCli(binding,{}),/changed before/);
   fs.renameSync(f.binary,f.binary+'.original');fs.symlinkSync(f.binary+'.original',f.binary);
-  assert.throws(()=>resolveNativeCli(f.args),/link refused/);
+  // Node normally realpaths require.resolve results before this resolver sees them.
+  // Both a preserved link and its noncanonical resolved target must be rejected.
+  assert.throws(()=>resolveNativeCli(f.args),/Native executable link refused|Unexpected native executable/);
 });
