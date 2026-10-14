@@ -16,6 +16,16 @@ apps/worker/qualification/*
 apps/worker/qualification/checkpoint/*
 !apps/worker/qualification/checkpoint/bound-session-store.mjs
 !apps/worker/qualification/checkpoint/session-store-data.mjs
+!apps/worker/qualification/checkpoint/verify-session-store.mjs
+!apps/worker/qualification/sdk-options.mjs
+!apps/gateway/qualification/
+apps/gateway/qualification/*
+!apps/gateway/qualification/action-gateway.mjs
+!packages/skills/evidence/
+packages/skills/evidence/*
+!packages/skills/evidence/typed-reads.mjs
+!packages/skills/evidence/material-records.mjs
+!packages/skills/evidence/record-pages.mjs
 docs
 evals
 infra
