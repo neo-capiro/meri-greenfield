@@ -14,7 +14,7 @@ export function createNativeTaskAuthority(configuration){
   if(!enabled||!call){unavailable=true;throw fault('WORKER_AUTHORITY_UNAVAILABLE');}
   const {capability,binding,operation,inputSha256,signal,deadlineMs}=own(value,['capability','binding','operation','inputSha256'],['signal','deadlineMs']);nativeSignal(signal);
   const pinned=data(binding);validateShape('RunBinding',pinned);
-  if(typeof capability!=='string'||!/^\S{1,8192}$/u.test(capability)||typeof operation!=='string'||!(Object.hasOwn(runOwnerOperations,operation)||sdkSessionOperations.some(name=>operation==='runner/session/'+name))||!/^[a-f0-9]{64}$/u.test(inputSha256)||deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))throw fault('WORKER_AUTHORITY_REFUSED');
+  if(typeof capability!=='string'||!/^\S{1,8192}$/u.test(capability)||typeof operation!=='string'||!(Object.hasOwn(runOwnerOperations,operation)||sdkSessionOperations.some(name=>operation==='runner/session/'+name))||typeof inputSha256!=='string'||!/^[a-f0-9]{64}$/u.test(inputSha256)||deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))throw fault('WORKER_AUTHORITY_REFUSED');
   const started=now(),cutoff=Math.min(deadlineMs??started+maxRequestMs,started+maxRequestMs);
   life=createOperationLifetime({now,deadlineMs:cutoff,signal,errorFactory:()=>fault('WORKER_AUTHORITY_REFUSED')});
   const result=await life.run(signal=>call('worker/authorize',{capability,binding:pinned,operation,inputSha256},{signal,deadlineMs:cutoff}));
