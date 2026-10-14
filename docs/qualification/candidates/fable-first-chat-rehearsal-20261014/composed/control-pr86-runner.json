@@ -1,0 +1,151 @@
+{
+ "schema": "meri.composed-first-chat-rehearsal.v1",
+ "startedAt": "2026-10-14T21:31:24.097Z",
+ "repository": {
+  "root": "/home/user/meri-first-chat",
+  "head": "7f7ee020f3ce3580cd506bf44bbbe174aa024aef",
+  "tree": "3976b0ed962bcb7b1d09022816e2e1fc7bc5e2cb",
+  "uncommittedPaths": 1
+ },
+ "runnerModule": {
+  "path": "apps/runtime/conversation-runner.mjs",
+  "sha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+  "pr86Sha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+  "gap2PatchApplied": false,
+  "proposalPatchSha256": "d7ed593fcf69e0fdc2df0a336651ed52a4632c1f91a715f426b03459616e1eff"
+ },
+ "outcome": "FAILED",
+ "steps": [
+  {
+   "name": "fixture",
+   "atMs": 669,
+   "database": "postgres"
+  },
+  {
+   "name": "descriptor-captured",
+   "atMs": 1483
+  },
+  {
+   "name": "allocation-admitted",
+   "atMs": 1530
+  },
+  {
+   "name": "controller-allocated",
+   "atMs": 1541,
+   "allocations": 1
+  },
+  {
+   "name": "runner-assembled",
+   "atMs": 1543
+  }
+ ],
+ "descriptor": {
+  "command": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "args": [
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--input-format",
+   "stream-json",
+   "--max-turns=1",
+   "--max-budget-usd=0.000001",
+   "--model=meri-local-no-provider",
+   "--permission-prompt-tool=stdio",
+   "--tools=",
+   "--setting-sources=",
+   "--permission-mode=default",
+   "--include-partial-messages",
+   "--session-mirror",
+   "--settings",
+   "{\"autoMemoryEnabled\":false}"
+  ],
+  "cwd": "/tmp/meri-broker-author-7IuLbQ/11111111-1111-4111-8111-111111111111",
+  "env": {
+   "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
+   "ANTHROPIC_AUTH_TOKEN": {
+    "redacted": true,
+    "sha256": "4d3c2a9251e22fb8ed930db307730012cf67d56ebb294bb82b92f9686d25800b"
+   },
+   "CLAUDE_CONFIG_DIR": "/tmp/meri-broker-author-7IuLbQ/config/sdk-22222222-2222-4222-8222-222222222222",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/tmp/meri-broker-author-7IuLbQ/secure",
+   "CLAUDE_CODE_ENTRYPOINT": "sdk-ts",
+   "CLAUDE_AGENT_SDK_VERSION": "0.3.295",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE": "1"
+  }
+ },
+ "cli": {
+  "path": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+ },
+ "launchTemplate": {
+  "command": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "argsSha256": "5bb894da2938dcbb93e59341677f1bd17413a87c3f92764a2685cf821a7a71a2",
+  "envKeys": [
+   "ANTHROPIC_BASE_URL",
+   "ANTHROPIC_AUTH_TOKEN",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR",
+   "CLAUDE_CODE_ENTRYPOINT",
+   "CLAUDE_AGENT_SDK_VERSION",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE"
+  ],
+  "carriesProxyCredential": true
+ },
+ "sdkOptionsSha256": "f9c2872c80639f01f8dd8661b4394052b5ba0917391bad1830b945e68d6d8833",
+ "routes": {
+  "/v1/runner/load": 1,
+  "/v1/runner/publish": 3,
+  "/v1/runner/runtime": 1
+ },
+ "queryRefusal": {
+  "code": "NATIVE_EXECUTION_SDK_OPTIONS_REFUSED",
+  "message": "NATIVE_EXECUTION_SDK_OPTIONS_REFUSED"
+ },
+ "error": {
+  "code": "EXECUTION_FAILED",
+  "message": "EXECUTION_FAILED"
+ },
+ "counters": {
+  "allocations": 1,
+  "retirements": 0
+ },
+ "conversation": {
+  "runState": "failed",
+  "events": [
+   {
+    "sequence": 1,
+    "type": "run.status",
+    "data": {
+     "state": "queued",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 2,
+    "type": "run.status",
+    "data": {
+     "state": "starting",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 3,
+    "type": "run.status",
+    "data": {
+     "state": "running",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 4,
+    "type": "run.status",
+    "data": {
+     "state": "failed",
+     "reasonCode": "EXECUTION_FAILED"
+    }
+   }
+  ]
+ },
+ "finishedAt": "2026-10-14T21:31:25.781Z",
+ "durationMs": 1683,
+ "scope": "Local rehearsal only: synthetic ECS/identity/authority/proxy facts, synthetic proxy credential hashed where recorded, no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance."
+}

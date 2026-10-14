@@ -1,0 +1,25 @@
+receipt written: /home/meri/rehearsal/control-pr86-runner.json
+✖ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (1698.768144ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3146.668158
+
+✖ failing tests:
+
+test at scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:33:1
+✖ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (1698.768144ms)
+  Error: EXECUTION_FAILED
+      at fault (file:///home/user/meri-first-chat/apps/worker/conversation/activity.mjs:14:33)
+      at executeConversation (file:///home/user/meri-first-chat/apps/worker/conversation/activity.mjs:53:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async execute (file:///home/user/meri-first-chat/apps/runtime/conversation-runner.mjs:35:41)
+      at async TestContext.<anonymous> (file:///home/user/meri-first-chat/scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:76:16)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'EXECUTION_FAILED'
+  }

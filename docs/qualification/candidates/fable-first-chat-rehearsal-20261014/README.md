@@ -9,6 +9,16 @@ Three receipts written by `scripts/qualification/first-chat-rehearsal/capture-sd
 
 Reading: see [the finding report](../../../coordination/reports/FABLE-REMOTE-LAUNCH-DESCRIPTOR-FINDING-20261014.md). No process, network, provider, database or credential was involved; the proxy credential in the receipts is a synthetic string recorded only as a hash. The composed end-to-end rehearsal with the real CLI was not run; it is blocked on the runner-side directory injection and the launch-template credential decision.
 
+## Step 2: composed rehearsal with the real CLI (`composed/`)
+
+`scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs`, run as the non-root baseline user with Node 24.21.0 and the local broker cluster, at head `7f7ee02`. Two receipts, both from the same script revision:
+
+- `composed/with-proposal.json` (PASSED, about 4 seconds): the gap 2 patch applied to the working tree only (runner module sha `9e3e53a1…`, patch sha `d7ed593f…`), then reverted; the committed runner stays at its PR86 bytes and `source-proof` is 3/3 after the revert. The product runner loaded the queued run, published `starting`, obtained the parked runtime from the controller, built the product SDK options with the runner-derived directories, and the real SDK handed its descriptor to the remote task: `prepare` (descriptor matched the configured launch template, config tree captured), controller `prepare`/`start`/`started`, supervisor launch of the real CLI (executable hash `4503bfe1…`), stdin/stdout relay, session registration from the CLI's init and mirror frames, durable session `register`/`load`/`append` (one `meri_conversations.sdk_sessions` row, six entries), the CLI's local answer published as `message.delta`, run `completed`, launch binding `STARTED`, and the native receipt `physicalStopProven: true` after the single query and again after worker close. No process remained.
+- `composed/control-pr86-runner.json` (FAILED, retained): the same script with the committed PR86 runner. The runner's option set carries no directories, so the worker's SDK options pin refuses (`NATIVE_EXECUTION_SDK_OPTIONS_REFUSED`) before any native-task route; the run is durably `failed` with `EXECUTION_FAILED`. This is the PR86 control for gap 2.
+- `composed/*.stdout.txt`: the Node test reporter output of both runs. `composed/attempts/`: the retained earlier attempts of the script (a missing review-source-root refusal, the first passing run and the first control run of script revision 1, which lacked the inner refusal facts).
+
+The launch template of both runs carries the synthetic proxy credential (`carriesProxyCredential: true` in the receipt), which is exactly the gap 3 shape dot must decide on; the receipts record it as a hash only.
+
 ## Checks
 
 `checks/RESULTS-touched-suites-worker-directories.json` (local baseline runner, non-root, local PostgreSQL 16 running, head `4adfc41` plus the uncommitted worker/tool changes of this step): `source-proof` 3/3, `runtime-typecheck` pass, `runtime-tests` 111/112 (only the Docker image-closure control), `worker-conversation` 135/135, `gateway-selected-skills` 36/36, `scripts-local` 27/27.

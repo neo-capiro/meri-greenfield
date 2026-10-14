@@ -1,0 +1,33 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: explicit source root required
+    at file:///home/user/meri-first-chat/docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs:6:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async file:///home/user/meri-first-chat/scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:18:29 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.21.0
+✖ scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs (1161.973121ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1176.9143
+
+✖ failing tests:
+
+test at scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:1:1
+✖ scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs (1161.973121ms)
+  'test failed'
