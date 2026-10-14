@@ -1,0 +1,20 @@
+(node:43619) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43619) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ mount captures original preadmitted data and issues an actual action session through canonical product SQL (41.865362ms)
+✔ compiled startup factory receives the same owned pool/native before readiness and listener (7.156651ms)
+✔ mounted SDK registration joins current product allocation with the borrowed verifier and registration reader (55.075302ms)
+✔ precompiled borrowed owner is captured before asynchronous startup and retains its receiver (5.630658ms)
+✔ invalid/accessor/proxy/async/generator and ambiguous factories refuse before startup IO (0.761038ms)
+✔ factory failures and invalid Promise/thenable/results preserve owned cleanup and never listen (54.315949ms)
+✔ startup cancellation after Temporal allocation closes owners without invoking the factory (8.210477ms)
+✔ readiness failure or cancellation during mounting closes owned resources without disposing borrowed ports (25.464638ms)
+✔ mount rejects statically incompatible identity/grants and registration accessors without IO (10.577223ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5642.002334

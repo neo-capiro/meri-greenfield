@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/mount-boundaries.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-wiring",
+  "sourceHead": "e408622ac8af9bbe027f971495a1ee29bfd1959e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:16:09.619899+00:00",
+  "durationSeconds": 5.295,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 44203,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/independent-boundaries-repaired.stdout.bin",
+      "bytes": 464,
+      "sha256": "f93b192acc139999baa9327b850c1d4665d0ee57a9a5d5be833f9322389c5b6a"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/independent-boundaries-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Prior combined independent check11/12 failed only because added fixture omitted canonical workflow.start/getHandle; fix fixture only, run three independent assertions without repeating passed author or listener tests.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

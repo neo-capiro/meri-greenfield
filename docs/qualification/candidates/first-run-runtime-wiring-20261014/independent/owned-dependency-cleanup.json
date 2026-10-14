@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/cleanup-owned-links.py"
+  ],
+  "cwd": "/workspace/meri-first-run-wiring",
+  "sourceHead": "5d671a8cc91f513f0e1cb23f5cd7453e02e5274e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:18:42.484480+00:00",
+  "durationSeconds": 0.065,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 45251,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/owned-dependency-cleanup.stdout.bin",
+      "bytes": 200,
+      "sha256": "164aba94f695b1eb278fc339f7ea5c74e4dc021d60c2812b336503f0161e59c7"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/owned-dependency-cleanup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,21 @@
+{
+  "scope": "BINDING_AUDIT_ONLY_NO_RUNTIME_ACCEPTANCE",
+  "sourceInterface": "727e1a87d87bae1d5ff166a8ddbe779b1ef96ea1",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/bindings/OUTLINE.md",
+      "bytes": 777,
+      "sha256": "497684bb4ffea4db37040f156dae5312161a196f7d48c6617ef2eba5b62bc803"
+    },
+    {
+      "path": "docs/qualification/candidates/first-run-runtime-wiring-20261014/bindings/AUDIT.json",
+      "bytes": 9083,
+      "sha256": "1ebe8206381420857052c5083f07de3c18f014eb67b0d48c005fecfcbdc23a42"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-RUN-BINDINGS-20261014.md",
+      "bytes": 21397,
+      "sha256": "ab5854b0c6d6fe0872b0c9f41ea6b6a9ba4612e4efc7db835a8754d7fc2f558f"
+    }
+  ]
+}

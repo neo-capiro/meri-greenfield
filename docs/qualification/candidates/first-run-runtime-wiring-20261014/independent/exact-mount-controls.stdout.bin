@@ -1,0 +1,39 @@
+(node:43785) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43785) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ mount captures original preadmitted data and issues an actual action session through canonical product SQL (45.253682ms)
+✔ compiled startup factory receives the same owned pool/native before readiness and listener (9.809328ms)
+✔ mounted SDK registration joins current product allocation with the borrowed verifier and registration reader (20.932345ms)
+✔ precompiled borrowed owner is captured before asynchronous startup and retains its receiver (17.857576ms)
+✔ invalid/accessor/proxy/async/generator and ambiguous factories refuse before startup IO (0.885562ms)
+✔ factory failures and invalid Promise/thenable/results preserve owned cleanup and never listen (29.198331ms)
+✔ startup cancellation after Temporal allocation closes owners without invoking the factory (4.47465ms)
+✔ readiness failure or cancellation during mounting closes owned resources without disposing borrowed ports (20.568458ms)
+✔ mount rejects statically incompatible identity/grants and registration accessors without IO (4.93519ms)
+✖ factory product ports retain original prototype receivers and methods after capture, without borrowing cleanup (2.272478ms)
+✔ proxy factory results are refused without reflective caller traps or SQL effects (0.474417ms)
+✔ a first-run mounting factory that accidentally returns nothing cannot silently select unavailable ports (0.634057ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8916.202503
+
+✖ failing tests:
+
+test at docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/mount-boundaries.test.mjs:14:1
+✖ factory product ports retain original prototype receivers and methods after capture, without borrowing cleanup (2.272478ms)
+  Error: TEMPORAL_CONFIGURATION
+      at fail (file:///workspace/meri-first-run-wiring/apps/control/conversations/boundary.mjs:6:48)
+      at createTemporalConversationDispatcher (file:///workspace/meri-first-run-wiring/apps/control/conversations/temporal-dispatch.mjs:7:191)
+      at assembleControl (file:///workspace/meri-first-run-wiring/apps/runtime/control.mjs:40:65)
+      at TestContext.<anonymous> (file:///workspace/meri-first-run-wiring/docs/qualification/candidates/first-run-runtime-wiring-20261014/independent/mount-boundaries.test.mjs:16:17)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    code: 'TEMPORAL_CONFIGURATION'
+  }
