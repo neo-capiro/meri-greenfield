@@ -1,0 +1,69 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 131B 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 580B done
+#2 DONE 0.0s
+
+#3 [internal] load build context
+#3 transferring context: 14.05MB 1.5s done
+#3 DONE 1.5s
+
+#4 [1/3] COPY package.json package-lock.json ./
+#4 DONE 0.0s
+
+#5 [2/3] COPY apps ./apps
+#5 DONE 0.4s
+
+#6 [3/3] COPY packages ./packages
+#6 DONE 0.7s
+
+#7 exporting to image
+#7 exporting layers
+#7 exporting layers 0.5s done
+#7 writing image sha256:3f142f6f6a192c587c924554baf88d2aa5918a6d79c41f63028237abc20cf740 0.0s done
+#7 naming to docker.io/library/meri-local-copy-closure:194836-1791981291609 0.0s done
+#7 DONE 0.6s
+{"phase":"actual-docker-copy","roles":["apps/runtime/cli.mjs","apps/runtime/control.mjs","apps/runtime/temporal-worker.mjs","apps/runtime/conversation-runner.mjs"],"files":287,"missing":["apps/gateway/qualification/action-gateway.mjs","apps/worker/qualification/checkpoint/verify-session-store.mjs","apps/worker/qualification/sdk-options.mjs","packages/skills/evidence/material-records.mjs","packages/skills/evidence/record-pages.mjs","packages/skills/evidence/typed-reads.mjs"]}
+✖ actual Docker-filtered COPY contains every role dependency and all three roles import/bundle (9321.651627ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11554.113232
+
+✖ failing tests:
+
+test at apps/runtime/test/image-closure.test.mjs:5:1
+✖ actual Docker-filtered COPY contains every role dependency and all three roles import/bundle (9321.651627ms)
+  AssertionError [ERR_ASSERTION]: Production closure excluded by actual .dockerignore
+  + actual - expected
+  
+  + [
+  +   'apps/gateway/qualification/action-gateway.mjs',
+  +   'apps/worker/qualification/checkpoint/verify-session-store.mjs',
+  +   'apps/worker/qualification/sdk-options.mjs',
+  +   'packages/skills/evidence/material-records.mjs',
+  +   'packages/skills/evidence/record-pages.mjs',
+  +   'packages/skills/evidence/typed-reads.mjs'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-runtime-image-closure/apps/runtime/test/image-closure.test.mjs:6:980)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'apps/gateway/qualification/action-gateway.mjs', 'apps/worker/qualification/checkpoint/verify-session-store.mjs', 'apps/worker/qualification/sdk-options.mjs', 'packages/skills/evidence/material-records.mjs', 'packages/skills/evidence/record-pages.mjs', 'packages/skills/evidence/typed-reads.mjs' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

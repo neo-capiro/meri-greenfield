@@ -1,0 +1,81 @@
+{
+  "verdict": "ACCEPT_DOCKER_COPY_AND_ROLE_IMPORT_CLOSURE",
+  "sourceHead": "0898fadd077c61245fdb5c42365efacdb727d7c0",
+  "base": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "sourceInputs": [
+    {
+      "path": ".dockerignore",
+      "sha256": "e0caee4cf2f8fb8cccdd8381a1a66661af42ef607ac7df2026f6cea65c0aa4a0"
+    },
+    {
+      "path": "apps/runtime/test/image-closure.test.mjs",
+      "sha256": "5ff371e5ca0f464aa60b813782760e84a2383340b8a0600851717798afdcd06e"
+    }
+  ],
+  "sourceManifestSha256": "315512114dcd139bddcbdcd0753826a9781db79426f965cb4f82c530e8bd8374",
+  "explicitSourceDiffBytes": 0,
+  "explicitSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "independentTestsPassed": 1,
+  "requiredPathsPresent": 287,
+  "networkAttempts": 0,
+  "optionalWorkflowBundle": "NOT_RETRIED_HOST_SWC_NATIVE_CACHE_BLOCKED",
+  "independentReceipt": {
+    "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/copy-imports-final.json",
+    "sha256": "5461cd48669b54aa62f28f261f9948ca243b386d87a567a85b63d2fc8bd9e622",
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/copy-imports-final.stdout.bin",
+        "bytes": 1813,
+        "sha256": "563f935f11f233ed546cf1fc5a788791fed217299e15606077205b88e0e4172a"
+      },
+      {
+        "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/copy-imports-final.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "authorReceipt": {
+    "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/corrected-copy-imports.json",
+    "sha256": "79ae74e9ed26f2a01624f3026e74c09ed5a27a3cf700f31e8427a423e0fbc960",
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/corrected-copy-imports.stdout.bin",
+        "bytes": 1758,
+        "sha256": "14c7044d36bcc4c8c985223d118acdb7d09f7e5cd6cca22dfe9ef6c429c726c6"
+      },
+      {
+        "path": "docs/qualification/candidates/runtime-image-closure-20261014/author/corrected-copy-imports.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/FINAL-REVIEW.md",
+      "bytes": 4035,
+      "sha256": "5cdddfedc967c97480227329dd3d41a74857678281c4175e0a9788adb12856da"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/capture-reaped.py",
+      "bytes": 5330,
+      "sha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/copy-imports-final.json",
+      "bytes": 1364,
+      "sha256": "5461cd48669b54aa62f28f261f9948ca243b386d87a567a85b63d2fc8bd9e622"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/copy-imports-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/runtime-image-closure-20261014/independent/copy-imports-final.stdout.bin",
+      "bytes": 1813,
+      "sha256": "563f935f11f233ed546cf1fc5a788791fed217299e15606077205b88e0e4172a"
+    }
+  ]
+}
