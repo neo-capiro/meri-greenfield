@@ -1,0 +1,31 @@
+✔ owned genuine process bytes establish immutable receipt through readable SDK transport (1880.648403ms)
+✔ altered SDK inputs and second spawn refuse, original compiled data survives caller mutation (565.127723ms)
+✔ hostile descriptors/proxies and bad pins fail before child allocation (660.666425ms)
+✔ launch uses explicit environment without ambient inheritance (811.187588ms)
+✔ cancelled SDK request and disabled launcher allocate no child (835.887614ms)
+✖ expiry with no stdout reads physically retires owned group and refuses registration (265.646479ms)
+✔ supervisor cancellation retires pending registration and closes exactly owned group (552.632615ms)
+✔ malformed native stream retires owned child rather than merely refusing receipts (856.873423ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7282.334881
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/session-launcher.test.mjs:52:1
+✖ expiry with no stdout reads physically retires owned group and refuses registration (265.646479ms)
+  Error: NATIVE_LAUNCH_LEASE
+      at launchFault (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/launch-configuration.mjs:5:46)
+      at compileNativeLaunch (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/launch-configuration.mjs:25:144)
+      at createNativeSessionLauncher (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/session-launcher.mjs:20:10)
+      at fixture (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/test/session-launcher.test.mjs:16:17)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/test/session-launcher.test.mjs:53:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_LAUNCH_LEASE'
+  }

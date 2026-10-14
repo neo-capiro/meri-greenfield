@@ -1,0 +1,16 @@
+✔ owned genuine process bytes establish immutable receipt through readable SDK transport (1666.983726ms)
+✔ altered SDK inputs and second spawn refuse, original compiled data survives caller mutation (514.103335ms)
+✔ hostile descriptors/proxies and bad pins fail before child allocation (466.018041ms)
+✔ launch uses explicit environment without ambient inheritance (664.741767ms)
+✔ cancelled SDK request and disabled launcher allocate no child (491.063314ms)
+✔ expiry with no stdout reads physically retires owned group and refuses registration (1772.471847ms)
+✔ supervisor cancellation retires pending registration and closes exactly owned group (660.967776ms)
+✔ malformed native stream retires owned child rather than merely refusing receipts (726.706742ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7710.144777

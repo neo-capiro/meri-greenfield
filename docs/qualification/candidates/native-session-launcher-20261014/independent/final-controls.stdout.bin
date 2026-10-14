@@ -1,0 +1,18 @@
+✔ trusted immutable plan rejects changed argv and permits one actual spawn (883.158231ms)
+✔ live real stream produces original lease witness and rejects changed binding (805.985465ms)
+✔ expired lease physically retires child even without reads (1851.784525ms)
+✔ SDK signal cancellation retires group and registration (890.076731ms)
+✔ bad bytes invalidate read and cause physical retirement (780.425756ms)
+✔ disabled and wrong executable pin allocate no child (998.744222ms)
+✔ lease expiring during executable readback refuses before process allocation (746.964246ms)
+✔ provider account bearer environment is refused before allocation (324.936422ms)
+✔ stubborn child escalates SIGTERM to SIGKILL and proves group absence (1378.305564ms)
+✔ natural child completion preserves stdout buffered for slow SDK reader (750.386756ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10331.298906
