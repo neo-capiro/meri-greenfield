@@ -1,6 +1,6 @@
 # Proposal to dot: follow-up turns in one Meri conversation (slice 2, approval required before code)
 
-Base `c6053e24b465be677cc5980533009b4aab03beab` (PR86). Author: Fable. Status: PROPOSAL. Under AGENTS.md this widens the fixed first-run pilot's admission ("genuine missing canonical row permits only the already-approved fixed first-run input"), so it is recorded for approval before any source change. It proposes no new orchestration loop, authority system, API family, provider, placement or component.
+Base `c6053e24b465be677cc5980533009b4aab03beab` (PR86). Author: Fable. Status: HELD as written by dot (source review at `7f7ee02`, 14 October); the corrected design dot set is recorded in section "Corrected design" below and is being delivered in bounded slices (slice A delivered, see `docs/qualification/candidates/fable-next-turn-20261014/`). The original proposal text is kept unchanged under "Why" and "Proposed shape" for the record. Under AGENTS.md this widens the fixed first-run pilot's admission ("genuine missing canonical row permits only the already-approved fixed first-run input"), so it is recorded for approval before any source change. It proposes no new orchestration loop, authority system, API family, provider, placement or component.
 
 ## Why
 
@@ -27,3 +27,20 @@ Claude Agent SDK remains the only model loop; AI SDK transport is unchanged; no 
 - Acceptance (local, then live): two consecutive prompts in one conversation over actual PostgreSQL with the real supervisor and zero-turn CLI; exact request replay and concurrent-submit refusal across runs; stale session on the previous run refuses writes; completion checkpoint readback hash equality; restore of run 2 from run 1's immutable snapshot; cancellation during admission leaves no target; Temporal workflow ID uniqueness per run; no duplicate allocation under lost COMMIT acknowledgement. Live: one two-turn authenticated conversation through the frontend.
 
 Decision requested from dot: (a) approve the shape or redirect; (b) allocate the allocation-issuer owner and any migration ID; (c) confirm the run-listing contract addition goes through the usual freeze.
+
+## Corrected design (dot's decision, 14 October) and delivery status
+
+Dot's decision at `7f7ee02`: HOLD the proposal as written; implement a corrected design in which (1) a new prompt is distinct from recovery of an old prompt, because the existing `resume` requires the original prompt and only a paused or approval-wait checkpoint; (2) the completed turn's checkpoint is captured before disposal, and that checkpoint cannot replace verified task retirement and grant revocation; (3) the latest owned run is selected under the conversation lock, exactly one immutable next-run mapping is reserved, and the same target is recovered after a lost acknowledgement; (4) a fresh target-bound session is issued; (5) conversation-wide event ordering and reconnect across runs are preserved, per-run sequences restarting at 1 being insufficient on their own; (6) issuance stays within the existing admission, allocation and budget owners. Fable may implement the source without waiting for infrastructure; source approval does not authorize provisioning.
+
+| Item | Slice | State |
+| --- | --- | --- |
+| New prompt distinct from recovery; old prompt refused on the next run | A | delivered: `next-run-journal.mjs`, `service.mjs` submit, real-PG control |
+| Checkpoint before disposal, verified retirement and revocation as separate facts | A (verification), B (capture through the lifecycle owner) | journal and owner verify a checkpoint row, a `RETIRED` allocation with `physicalStopProven` and the revocation receipt; automatic capture at completion remains |
+| Selection under the lock, one immutable mapping, lost-ack recovery | A | delivered: `next_runs` table with trigger (migration 0009 source, ID allocation to confirm), `reserve`/`readTarget`, concurrency control |
+| Fresh target-bound session | A (owner), B (join in the prepared candidate) | `createNextRunOwner.selectRun`/`currentRun` delivered; `createPreparedCandidateIdentity` still joins its single configured binding |
+| Conversation-wide ordering and reconnect | A (durable `runs.sequence_base`), Codex (public cursor) | delivered in the store; see the contract proposal below |
+| Issuance within existing owners | B | not started: per-run `original`, allocation, grants and task capability through `createNativeAllocationAdmission` and the prepared runtime |
+
+### Contract proposal for Codex: conversation-wide event cursor
+
+The frozen public receiver (`packages/contracts/conversation-application/receive.mjs`, package 0.1.3) verifies that a run's events arrive as `after + 1, after + 2, …` up to the run's `lastSequence`, so every run's wire sequence must start at 1 and `history`/`events` stay per run. With `runs.sequence_base` durable, the control plane can serve a conversation-wide cursor without renumbering: the proposed additive operation lists the conversation's runs in fence order with `sequenceBase` and `lastSequence` per run, and a conversation cursor `{conversationId, after}` resolves to `(run, after - sequenceBase)` for the run whose range contains it, reconnecting across runs with the same gap and hole detection the per-run receiver performs. No existing operation, DTO or byte changes; the addition is the W06 "multi-run conversation listing" already noted above plus the cursor resolution rule. It is proposed for Codex's freeze and is not made in this branch.

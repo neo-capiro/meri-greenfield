@@ -4,6 +4,7 @@ import {createLifecycleJournal} from './lifecycle/journal.mjs';
 import {createSelectedOutputJournal} from './skills/retention.mjs';
 import {createExecutionJournal} from './execution-journal.mjs';
 import {createNativePreparationJournals} from './native-preparation-journal.mjs';
+import {createNextRunJournal} from './next-run-journal.mjs';
 export function createPostgresConversationStore({pool}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body){let c,begun=false,committing=false,reusable=false,failure,result;
@@ -48,5 +49,5 @@ export function createPostgresConversationStore({pool}){
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
  const preparation=createNativePreparationJournals({tx,rowRun});
- return Object.freeze({accept,append,read,readOptional,findRequest,...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
+ return Object.freeze({accept,append,read,readOptional,findRequest,nextRuns:createNextRunJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
 }

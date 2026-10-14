@@ -15,8 +15,8 @@
   "historicalPublicationSource": "d741792b1672d6eac4c1c37835c3c3d1931e66a8"
  },
  "rule": "The historical manifest and its pins are preserved unchanged. Every row whose current bytes differ from the historical hash is enumerated in changedRows with both hashes, a reason and the recorded decision; every other row must equal its historical hash. No aggregate hash is replaced and no image acceptance transfers to the changed bytes: this candidate is unqualified until it is built, scanned and admitted by its owners.",
- "changedRowCount": 4,
- "unchangedRowCount": 41,
+ "changedRowCount": 5,
+ "unchangedRowCount": 40,
  "files": [
   {
    "path": "apps/control/conversations/execution-journal.mjs",
@@ -28,7 +28,7 @@
   },
   {
    "path": "apps/control/conversations/postgres-store.mjs",
-   "sha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f"
+   "sha256": "d2ebb9007338161fff530a641add40718996781425c6fad62c30770decd24578"
   },
   {
    "path": "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
@@ -200,6 +200,13 @@
   }
  ],
  "changedRows": [
+  {
+   "path": "apps/control/conversations/postgres-store.mjs",
+   "historicalSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
+   "sha256": "d2ebb9007338161fff530a641add40718996781425c6fad62c30770decd24578",
+   "reason": "follow-up turns (corrected design): the next-run journal is composed on the store's own transaction and conversation advisory lock (one `nextRuns` member exported; accept, append, read and the other journals unchanged)",
+   "decision": "dot 2026-10-14 source review at 7f7ee02: follow-up turns HELD as written, corrected design to implement; Fable may implement the source work without waiting for infrastructure"
+  },
   {
    "path": "apps/runtime/conversation-runner.mjs",
    "historicalSha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",

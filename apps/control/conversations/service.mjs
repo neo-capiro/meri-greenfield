@@ -35,7 +35,9 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    const request={requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null};const run={binding:b,state:'queued',scopes:context.scopes,createdAt,policyRevision:context.scopes[0].policyRevision,versions};
    const conversation={conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes:context.scopes,createdAt,policyRevision:run.policyRevision};
    await admit(request);
-   const saved=await life.run(()=>store.accept({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null})},life.check));
+   // A session bound to a reserved next run accepts its new prompt through the next-run journal: same conversation, continued sequence base, never the old prompt.
+   const reservation=typeof store.nextRuns?.readTarget==='function'?await life.run(()=>store.nextRuns.readTarget(b,life.check)):null;
+   const saved=await life.run(()=>(reservation?store.nextRuns.accept:store.accept)({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null})},life.check));
    // Durable request precedes Temporal start. A repeated submission recovers a lost start acknowledgement using the exact workflow ID.
    return release(saved);});
  }

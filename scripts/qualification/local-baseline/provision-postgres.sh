@@ -23,6 +23,7 @@ MIGRATIONS=(
  apps/control/conversations/migrations/0006_native_executions.sql
  apps/control/conversations/migrations/0007_native_preparation.sql
  apps/control/conversations/migrations/0008_native_prepared_launch.sql
+ apps/control/conversations/migrations/0009_next_runs.sql
  apps/gateway/budget/migrations/0001_product_budget.sql
  apps/artifacts/migrations/0001_versions.sql
 )
