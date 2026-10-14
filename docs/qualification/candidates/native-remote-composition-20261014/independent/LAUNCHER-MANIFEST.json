@@ -1,0 +1,27 @@
+{
+  "verdict": "ACCEPT_LOCAL_REVIEWED_SOURCE_AND_SDK_COMPONENT",
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "sourceManifestSha256": "0bf118553ccc2bd5a937be88d1db18f88b0635e1d48b5f1afc29dc9dc81c1f45",
+  "independentFinalPass": 50,
+  "earlierIndependentPass": 35,
+  "rootPgReadOnlyVerified": 1,
+  "selfAuthoredLatchAcceptanceExcluded": true,
+  "sourceDiffBytes": 0,
+  "files": {
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/FINAL-OWNER-ROOT-REVIEW.md": "d028d7c5f7b20e36e2b23ad68763599bc396df72fdec5066a1070026a5e4e11a",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/LATCH-ROOT-REVIEW.md": "46b1e3806d1052adce908035e35df7f0e88aafac194a5e0fcedd01e902bf7f40",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/LAUNCHER-FINAL-REVIEW.md": "423f0db8cec01c360bc7e993793667765759605adcec676534eaca40d3382984",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/PREPARED-RUNTIME-REVIEW.md": "65d68f4dafc2cece21139e0e1fb1e7d5d710601044a06405dfb9c347dc68b067",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/REMOTE-TRANSPORT-REVIEW.md": "87e02f6ef55d6fa7a6e9257e0250c1d99f279f1febc9f1c8654d61ef9bd84111",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/SDK-POSTEXEC-ACCEPT.json": "37b2447081f582ab828b1f5729a89bcba8e14c69dd89d5f26ed02ec3c163b33a",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/SDK-PREEXEC-ACCEPT.json": "962c93a1eb0cca5760464ec04c3b9df589d0387f2adbb5df0bbacbb31e9686e5",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/capture-reaped.py": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/final-changed-controls.json": "6450ab9c9cc0a5b2c3dd700165a5345812665972cf044c91e60ecbcdcad73fc4",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/final-changed-controls.stderr.bin": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/final-changed-controls.stdout.bin": "6cb38bad522df9977d1d1b193b3d400625bd564d4652e29e28f7629e647800f8",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/frozen-composition-controls.json": "10ce3664bfd06fd7243182cb965d9768728dc3e55d2f35f7b2f79e9c1f01c193",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/frozen-composition-controls.stderr.bin": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/frozen-composition-controls.stdout.bin": "501c26774570abb7ffd4348a53f247256511bc9980a1b29224c4a8db55410792",
+    "docs/qualification/candidates/native-remote-composition-20261014/independent/latch-root-frozen.tap": "0484702945a9d106ab2807e41ee52d5fc92ef88950eb5b2493414ee3cd85df9b"
+  }
+}

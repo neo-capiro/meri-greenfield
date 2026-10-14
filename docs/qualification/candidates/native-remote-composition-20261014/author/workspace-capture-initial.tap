@@ -1,0 +1,29 @@
+✔ actual stable files preserve literal bytes, relative names and executable flag (23.959345ms)
+✔ symlink source refuses without changing source bytes (2.859167ms)
+✔ hardlink source refuses without changing source bytes (2.233471ms)
+✔ empty directory source refuses without changing source bytes (1.494877ms)
+✔ case alias source refuses without changing source bytes (3.320747ms)
+✔ oversized file source refuses without changing source bytes (2.425988ms)
+✖ real source mutation during read refuses; descriptor is closed (2.630805ms)
+✔ lease, abort, request path substitution and constructor getters refuse (1.974283ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 396.329931
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/workspace-capture.test.mjs:6:1
+✖ real source mutation during read refuses; descriptor is closed (2.630805ms)
+  TypeError: Cannot assign to read only property 'readSync' of object '[object Module]'
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/workspace-capture.test.mjs:6:230)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

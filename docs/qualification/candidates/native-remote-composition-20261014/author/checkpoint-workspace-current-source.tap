@@ -1,0 +1,51 @@
+✔ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (1257.462662ms)
+✔ caller scope refuses without object writes or checkpoint publication (15.871505ms)
+✔ control not claimed refuses without object writes or checkpoint publication (31.478138ms)
+✔ native stop not proved refuses without object writes or checkpoint publication (68.004492ms)
+✔ native original plan refuses without object writes or checkpoint publication (16.73797ms)
+✔ native-file bundle refuses without object writes or checkpoint publication (10.851368ms)
+✔ workspace traversal refuses without object writes or checkpoint publication (10.766876ms)
+✔ revocation after create-only object write leaves no canonical checkpoint authority (15.072267ms)
+✔ immutable readback mismatch refuses publication and exposes no fabricated receipt (14.509553ms)
+✔ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (83.066769ms)
+✔ published object tamper denies replay and native checkpoint/read (103.694942ms)
+✔ caller getters and task result getters never execute (12.578476ms)
+✔ lost immutable object ACK retains uncertainty and never publishes checkpoint metadata (37.480986ms)
+✔ authority scope drift during immutable write refuses publication (38.677186ms)
+✔ canonical control mutation during immutable write cannot change pinned capture sequence (46.553316ms)
+✔ revocation after durable checkpoint publication refuses success; later authorized retry only reads (34.911205ms)
+✖ borrowed canonical S3 adapter executes exact immutable-version commands through checkpoint composition (7.794026ms)
+✔ actual stable files preserve literal bytes, relative names and executable flag (21.906431ms)
+✔ symlink source refuses without changing source bytes (3.335392ms)
+✔ hardlink source refuses without changing source bytes (1.12321ms)
+✔ empty directory source refuses without changing source bytes (1.088333ms)
+✔ case alias source refuses without changing source bytes (2.1679ms)
+✔ oversized file source refuses without changing source bytes (1.674307ms)
+✔ real source mutation during read refuses; descriptor is closed (4.930115ms)
+✔ lease, abort, request path substitution and constructor getters refuse (1.417141ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4502.974777
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/checkpoint-capture.test.mjs:37:1
+✖ borrowed canonical S3 adapter executes exact immutable-version commands through checkpoint composition (7.794026ms)
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@aws-sdk/client-s3' imported from /workspace/meri-native-runtime-recovery/apps/artifacts/storage/s3-objects.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }

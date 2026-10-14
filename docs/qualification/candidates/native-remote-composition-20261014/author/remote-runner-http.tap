@@ -1,0 +1,56 @@
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (435.780441ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (16.883098ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (10.961371ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (12.744709ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (47.668809ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (9.433551ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (57.565928ms)
+✔ foreign request, lease and getters refuse before owner effects (6.235263ms)
+✔ actual SDK command adapter delegates pause close to capture after interrupt/input closure (326.693344ms)
+✔ late mirror refusal discovered after native stop invalidates checkpoint without post-exit RPC (7.926064ms)
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (147.620538ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (6.169139ms)
+✔ failed or in-flight append cannot produce a snapshot (1.652881ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (2.410877ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (1.638606ms)
+✔ initialization abandoned by close retires the late actual mirror (2.238895ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (90.350882ms)
+✖ execute failure still retires original worker/mirror before listener; no source/provider call (7.652726ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (3.52387ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (132.392972ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (36.760947ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 20
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2761.721237
+
+✖ failing tests:
+
+test at apps/runtime/test/remote-conversation-runner.test.mjs:5:1
+✖ execute failure still retires original worker/mirror before listener; no source/provider call (7.652726ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /scripted execution failed/. Input:
+  
+  'Error: ARTIFACT_STORAGE_CONFIGURATION'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/remote-conversation-runner.test.mjs:5:154)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_STORAGE_CONFIGURATION
+        at fail (file:///workspace/meri-native-runtime-recovery/apps/artifacts/storage/boundary.mjs:9:46)
+        at storageMethod (file:///workspace/meri-native-runtime-recovery/apps/artifacts/storage/boundary.mjs:29:2)
+        at runRemoteConversation (file:///workspace/meri-native-runtime-recovery/apps/runtime/remote-conversation-runner.mjs:26:16)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/remote-conversation-runner.test.mjs:5:154)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /scripted execution failed/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

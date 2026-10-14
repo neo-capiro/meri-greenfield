@@ -1,0 +1,46 @@
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (66.608084ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (2.106124ms)
+✔ failed or in-flight append cannot produce a snapshot (2.013812ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (1.627506ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (1.56955ms)
+✔ initialization abandoned by close retires the late actual mirror (1.519134ms)
+✔ malformed returned mirror surface closes its captured actual owner before refusal (1.895921ms)
+✔ mirror close rejection marks failed and cannot be ignored to release frozen snapshot (4.9966ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (51.094832ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (8.205903ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (2.257207ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (131.763202ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (24.966533ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (11.964097ms)
+file:///workspace/meri-native-runtime-recovery/apps/runtime/test/runtime.test.mjs:10
+test('isolated runner invokes canonical activity and one scripted SDK query, preserving durable events',async()=>{const f=await applicationFixture();await f.service.submit({credential:f.credential,input:f.input});let queries=0,closes=0;import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+                                                                                                                                                                                                                                                   ^
+
+SyntaxError: Unexpected token '{'
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)
+    at #translate (node:internal/modules/esm/loader:434:20)
+    at afterLoad (node:internal/modules/esm/loader:502:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)
+    at afterResolve (node:internal/modules/esm/loader:607:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)
+    at node:internal/modules/esm/loader:632:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+
+Node.js v24.19.0
+✖ apps/runtime/test/runtime.test.mjs (70.173047ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3061.013482
+
+✖ failing tests:
+
+test at apps/runtime/test/runtime.test.mjs:1:1
+✖ apps/runtime/test/runtime.test.mjs (70.173047ms)
+  'test failed'

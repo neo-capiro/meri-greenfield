@@ -1,0 +1,32 @@
+✔ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (1363.0594ms)
+✔ caller scope refuses without object writes or checkpoint publication (9.56955ms)
+✔ control not claimed refuses without object writes or checkpoint publication (21.041928ms)
+✔ native stop not proved refuses without object writes or checkpoint publication (21.594791ms)
+✔ native original plan refuses without object writes or checkpoint publication (18.787941ms)
+✔ native-file bundle refuses without object writes or checkpoint publication (17.519249ms)
+✔ workspace traversal refuses without object writes or checkpoint publication (29.585898ms)
+✔ revocation after create-only object write leaves no canonical checkpoint authority (32.076502ms)
+✔ immutable readback mismatch refuses publication and exposes no fabricated receipt (31.065365ms)
+✔ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (159.982155ms)
+✔ published object tamper denies replay and native checkpoint/read (61.812583ms)
+✔ caller getters and task result getters never execute (15.804905ms)
+✔ lost immutable object ACK retains uncertainty and never publishes checkpoint metadata (18.752736ms)
+✔ authority scope drift during immutable write refuses publication (14.227566ms)
+✔ canonical control mutation during immutable write cannot change pinned capture sequence (24.997438ms)
+✔ revocation after durable checkpoint publication refuses success; later authorized retry only reads (29.123882ms)
+✔ actual stable files preserve literal bytes, relative names and executable flag (21.508691ms)
+✔ symlink source refuses without changing source bytes (8.749557ms)
+✔ hardlink source refuses without changing source bytes (3.669236ms)
+✔ empty directory source refuses without changing source bytes (2.406265ms)
+✔ case alias source refuses without changing source bytes (4.069601ms)
+✔ oversized file source refuses without changing source bytes (1.470164ms)
+✔ real source mutation during read refuses; descriptor is closed (5.512417ms)
+✔ lease, abort, request path substitution and constructor getters refuse (3.173749ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3931.01297

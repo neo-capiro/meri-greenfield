@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs",
+    "apps/runtime/test/process.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "2678ffd8abb793f21a352b0b6d5f0e2970b2e1e1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T09:10:35.471963+00:00",
+  "durationSeconds": 26.088,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 130621,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/author/inherited-failures-isolated.stdout.bin",
+      "bytes": 1402,
+      "sha256": "1adf8915cccc38e7da09318ebfe513efaf6ccdcbd5c1d9138a96109d9e6b28a1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/author/inherited-failures-isolated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

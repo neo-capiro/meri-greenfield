@@ -1,0 +1,84 @@
+✖ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (378.490516ms)
+✔ caller scope refuses without object writes or checkpoint publication (8.928054ms)
+✔ control not claimed refuses without object writes or checkpoint publication (13.848354ms)
+✔ native stop not proved refuses without object writes or checkpoint publication (10.565793ms)
+✔ native original plan refuses without object writes or checkpoint publication (11.70911ms)
+✔ native-file bundle refuses without object writes or checkpoint publication (9.40476ms)
+✔ workspace traversal refuses without object writes or checkpoint publication (8.916979ms)
+✖ revocation after create-only object write leaves no canonical checkpoint authority (70.761465ms)
+✔ immutable readback mismatch refuses publication and exposes no fabricated receipt (9.297622ms)
+✖ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (10.805933ms)
+✖ published object tamper denies replay and native checkpoint/read (10.160025ms)
+✔ caller getters and task result getters never execute (5.506664ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 8
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2715.017778
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/checkpoint-capture.test.mjs:24:1
+✖ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (378.490516ms)
+  Error: NATIVE_CHECKPOINT_CAPTURE_REFUSED
+      at fail (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/checkpoint-capture.mjs:13:23)
+      at Object.close (file:///workspace/meri-native-runtime-recovery/packages/runtime/operation-lifetime.mjs:47:24)
+      at operation (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/checkpoint-capture.mjs:23:51)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/checkpoint-capture.test.mjs:24:147)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/runtime/native-authority/test/checkpoint-capture.test.mjs:26:1
+✖ revocation after create-only object write leaves no canonical checkpoint authority (70.761465ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/checkpoint-capture.test.mjs:26:208)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/native-authority/test/checkpoint-capture.test.mjs:28:1
+✖ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (10.805933ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /STORE_COMMIT_UNKNOWN/. Input:
+  
+  'Error: NATIVE_CHECKPOINT_CAPTURE_REFUSED'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/checkpoint-capture.test.mjs:28:153)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: NATIVE_CHECKPOINT_CAPTURE_REFUSED
+        at fail (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/checkpoint-capture.mjs:13:23)
+        at Object.close (file:///workspace/meri-native-runtime-recovery/packages/runtime/operation-lifetime.mjs:47:24)
+        at operation (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/checkpoint-capture.mjs:23:51)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/checkpoint-capture.test.mjs:28:153)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: /STORE_COMMIT_UNKNOWN/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/runtime/native-authority/test/checkpoint-capture.test.mjs:29:1
+✖ published object tamper denies replay and native checkpoint/read (10.160025ms)
+  Error: NATIVE_CHECKPOINT_CAPTURE_REFUSED
+      at fail (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/checkpoint-capture.mjs:13:23)
+      at Object.close (file:///workspace/meri-native-runtime-recovery/packages/runtime/operation-lifetime.mjs:47:24)
+      at operation (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/checkpoint-capture.mjs:23:51)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/checkpoint-capture.test.mjs:29:104)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

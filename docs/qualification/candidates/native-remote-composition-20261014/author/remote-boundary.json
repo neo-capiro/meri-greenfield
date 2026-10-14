@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/sdk-config-transfer.test.mjs"
+  ],
+  "exitCode": 1,
+  "elapsedSeconds": 7.9809380779988714,
+  "scope": "Local HTTP Fetch boundary; genuine Node native child; synthetic authority ACK; no AWS/SDK/provider/database acceptance"
+}

@@ -1,0 +1,30 @@
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (1610.158691ms)
+✔ controller launch boots original once; worker start uses booted original without duplicate launch (1042.466228ms)
+✔ exact stream sequence/digest and changed original reject; lost acknowledgment replay writes once (610.042999ms)
+✔ actual separate supervisor/native child crosses remote byte facade and canonical registration (1346.451693ms)
+✔ prepared latch precedes factory and canonical broker boot; physical start records STARTED once (929.375454ms)
+✔ consumed launch false refuses physical release and parked workspace requires admission both sides (383.423536ms)
+✔ close before deferred start settles queued bytes and preserves unknown native exit (333.786173ms)
+✔ timed out fetch retires a late response body without extending deadline (370.690576ms)
+✔ controller snapshots inert nested payloads without executing caller hooks (316.419386ms)
+✔ encoded pending bytes use actual encoding and unallocated close makes no physical proof (392.63781ms)
+✔ invalid output before SDK consumption is contained without an unowned stream error (346.159096ms)
+✔ pending writer refuses overlap; failed callback cannot mint a replay ACK (312.354716ms)
+✔ concurrent long polls retain one fixed stdout cursor and consume one frame (657.214717ms)
+✔ lost authority after physical callback leaves write UNKNOWN and identical replay refuses (302.841102ms)
+✔ stopped receiver refuses actual parked workspace restoration without filesystem effects (407.384011ms)
+✔ close during awaited admission refuses actual synchronous filesystem write (487.868706ms)
+✔ actual parked workspace accepts original prelaunch bytes but refuses restoration after CLI start (361.155566ms)
+✔ stop does not publish stdout end while original physical closure remains pending (423.579319ms)
+✔ client ignores late stdout exit until its close receipt proves closure (345.063145ms)
+✔ close while preparation authority is pending prevents factory or process release (467.621044ms)
+✔ client close during prepare prevents a late start RPC (295.866582ms)
+✔ stdout refusal during close cannot emit SDK error before positive closure (332.861084ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13681.868918

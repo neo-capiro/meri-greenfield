@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs",
+    "apps/runtime/native-authority/test/runner-query.test.mjs",
+    "apps/runtime/native-authority/test/remote-allocation-preflight.test.mjs",
+    "apps/runtime/native-authority/test/ecs-prepared-task-proof.test.mjs",
+    "apps/runtime/test/native-runner-gateway.test.mjs",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/sdk-config-transfer.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "2678ffd8abb793f21a352b0b6d5f0e2970b2e1e1",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T09:07:04.335505+00:00",
+  "durationSeconds": 45.439,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 128733,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/independent/frozen-composition-controls.stdout.bin",
+      "bytes": 3942,
+      "sha256": "501c26774570abb7ffd4348a53f247256511bc9980a1b29224c4a8db55410792"
+    },
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/independent/frozen-composition-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

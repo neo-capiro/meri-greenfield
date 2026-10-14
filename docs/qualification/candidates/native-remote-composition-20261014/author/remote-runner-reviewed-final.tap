@@ -1,0 +1,32 @@
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (824.566013ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (15.108706ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (6.933166ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (29.957544ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (17.879498ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (11.317186ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (59.919663ms)
+✔ foreign request, lease and getters refuse before owner effects (9.820463ms)
+✔ actual SDK command adapter delegates pause close to capture after interrupt/input closure (305.832927ms)
+✔ late mirror refusal discovered after native stop invalidates checkpoint without post-exit RPC (18.946056ms)
+✔ same delegate mirror main ACK enables frozen canonical snapshot, never new registration (257.761907ms)
+✔ SDK reads delegate unchanged and subpath ACK cannot establish a main registration key (9.821018ms)
+✔ failed or in-flight append cannot produce a snapshot (1.213526ms)
+✔ late rejected write after freeze or during native close invalidates inert frozen check (2.224075ms)
+✔ observed key is copied before append ACK; caller mutation never changes retained native key (6.174657ms)
+✔ initialization abandoned by close retires the late actual mirror (1.987865ms)
+✔ malformed returned mirror surface closes its captured actual owner before refusal (7.292445ms)
+✔ mirror close rejection marks failed and cannot be ignored to release frozen snapshot (4.048529ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (88.060872ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (18.798814ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (3.903837ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (246.887576ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (29.149964ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (22.817431ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3105.897092

@@ -1,0 +1,24 @@
+✖ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (8441.80795ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10049.413741
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs:6:1
+✖ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (8441.80795ms)
+  Error: REMOTE_TASK_REFUSED
+      at remoteFault (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/remote-task-boundary.mjs:4:44)
+      at Object.call (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/remote-task-client.mjs:12:242)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async receipt (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/remote-task-client.mjs:21:191)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs:17:16)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'REMOTE_TASK_REFUSED'
+  }

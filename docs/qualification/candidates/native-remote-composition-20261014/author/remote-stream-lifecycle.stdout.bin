@@ -1,0 +1,27 @@
+✔ control task ports unwrap canonical receipts; control cannot prepare/start/bytes and task cannot launch (1529.385366ms)
+✔ controller launch boots original once; worker start uses booted original without duplicate launch (3683.699228ms)
+✔ exact stream sequence/digest and changed original reject; lost acknowledgment replay writes once (1148.155049ms)
+✔ actual separate supervisor/native child crosses remote byte facade and canonical registration (1475.850354ms)
+✔ prepared latch precedes factory and canonical broker boot; physical start records STARTED once (696.22376ms)
+✔ consumed launch false refuses physical release and parked workspace requires admission both sides (741.847872ms)
+✔ close before deferred start settles queued bytes and preserves unknown native exit (426.66291ms)
+✔ timed out fetch retires a late response body without extending deadline (318.705898ms)
+✔ controller snapshots inert nested payloads without executing caller hooks (239.099209ms)
+✔ encoded pending bytes use actual encoding and unallocated close makes no physical proof (271.306506ms)
+✔ invalid output before SDK consumption is contained without an unowned stream error (264.389368ms)
+✔ pending writer refuses overlap; failed callback cannot mint a replay ACK (253.000792ms)
+✔ concurrent long polls retain one fixed stdout cursor and consume one frame (248.170536ms)
+✔ lost authority after physical callback leaves write UNKNOWN and identical replay refuses (268.174303ms)
+✔ stopped receiver refuses actual parked workspace restoration without filesystem effects (334.085379ms)
+✔ close during awaited admission refuses actual synchronous filesystem write (237.840748ms)
+✔ actual parked workspace accepts original prelaunch bytes but refuses restoration after CLI start (263.482611ms)
+✔ stop does not publish stdout end while original physical closure remains pending (264.255585ms)
+✔ client ignores late stdout exit until its close receipt proves closure (262.49356ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14273.47203

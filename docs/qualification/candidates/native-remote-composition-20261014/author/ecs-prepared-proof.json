@@ -1,0 +1,18 @@
+{
+  "command": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/ecs-prepared-task-proof.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 1.2143897409987403,
+  "sourceSha256": {
+    "apps/runtime/native-authority/ecs-prepared-task-proof.mjs": "58ebb245d115e48d6517992e89c7663630ca8ec87e16f8b72079137ae56455bf",
+    "apps/runtime/native-authority/test/ecs-prepared-task-proof.test.mjs": "15277d1b2a38d399354ffb6a995ef2eae2d580b1c130f364a2c2991ea4fd6927"
+  },
+  "scope": "actual AWS SDK command fixtures via borrowed synthetic client; zero AWS/provider requests; deployment-code trust assumption is explicit"
+}

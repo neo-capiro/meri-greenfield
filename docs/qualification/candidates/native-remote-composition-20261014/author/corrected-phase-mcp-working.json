@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs",
+    "apps/runtime/native-authority/test/runner-query.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "e8ee9bbde55b824faac1ec3b6b8dc1ef0f4182b9",
+  "sourceDiffSha256": "e11d7f0afc3ea0a3bfa5ae67af8339273a4603f237873ea06490dbf3fdb5222e",
+  "sourceDiffBytes": 12096,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T09:15:08.850220+00:00",
+  "durationSeconds": 6.972,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 132178,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/author/corrected-phase-mcp-working.stdout.bin",
+      "bytes": 726,
+      "sha256": "3a9727f628a60df208215e6c4884c5d03705c284daf743c4f5d07324f1fa753a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/author/corrected-phase-mcp-working.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,13 @@
+{
+  "verdict": "ACCEPT_LOCAL_SDK_COMPONENT_ONLY",
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "pinsVerified": 13,
+  "all46SourceFilesVerified": true,
+  "freshKernelGroupsAbsent": [
+    146056,
+    146084,
+    146112,
+    146119
+  ],
+  "scope": "Read-only verification; no reviewer SDK execution. Two real CLI sessions, zero turns/cost/provider requests; InMemory/synthetic bindings, not remote SDK deployment acceptance."
+}

@@ -1,0 +1,40 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/runner-query.test.mjs",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/test/remote-conversation-runner.test.mjs",
+    "apps/runtime/test/checkpoint-session-factory.test.mjs",
+    "apps/runtime/test/runtime.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T10:06:08.499976+00:00",
+  "durationSeconds": 23.621,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 146498,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/independent/final-changed-controls.stdout.bin",
+      "bytes": 5300,
+      "sha256": "6cb38bad522df9977d1d1b193b3d400625bd564d4652e29e28f7629e647800f8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/independent/final-changed-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,42 @@
+✔ actual filesystem bytes publish through canonical SQL journal; replay only rereads immutable versions (1886.647385ms)
+✔ caller scope refuses without object writes or checkpoint publication (16.707753ms)
+✔ control not claimed refuses without object writes or checkpoint publication (27.20872ms)
+✔ native stop not proved refuses without object writes or checkpoint publication (31.65783ms)
+✔ native original plan refuses without object writes or checkpoint publication (25.422373ms)
+✔ native-file bundle refuses without object writes or checkpoint publication (23.678359ms)
+✔ workspace traversal refuses without object writes or checkpoint publication (30.646312ms)
+✔ revocation after create-only object write leaves no canonical checkpoint authority (51.794402ms)
+✔ immutable readback mismatch refuses publication and exposes no fabricated receipt (103.332853ms)
+✔ lost canonical commit ACK is uncertain; retry reads published journal proof without recapture/writes (245.929744ms)
+✔ published object tamper denies replay and native checkpoint/read (339.497249ms)
+✔ caller getters and task result getters never execute (46.322958ms)
+✔ lost immutable object ACK retains uncertainty and never publishes checkpoint metadata (118.4068ms)
+✔ authority scope drift during immutable write refuses publication (73.645883ms)
+✔ canonical control mutation during immutable write cannot change pinned capture sequence (146.08812ms)
+✔ revocation after durable checkpoint publication refuses success; later authorized retry only reads (145.448214ms)
+✔ borrowed canonical S3 adapter executes exact immutable-version commands through checkpoint composition (664.907813ms)
+✔ freeze/drain and verify supported snapshot before native exit, then capture actual workspace bytes (1130.376317ms)
+✔ snapshot drift after mirror closure refuses checkpoint and contains original native owner (12.68875ms)
+✔ already exited native process cannot claim snapshot-before-exit qualification (7.132545ms)
+✔ native close ACK without physical absence proof cannot release checkpoint bytes (8.023797ms)
+✔ foreign snapshot key or native original correlation refuses and still closes original process (14.344109ms)
+✔ cancelled preparation still closes original Query, mirror and native owner (13.871387ms)
+✔ snapshot or cleanup parked callback is bounded and never produces success (53.222004ms)
+✔ foreign request, lease and getters refuse before owner effects (7.824248ms)
+✔ actual SDK command adapter delegates pause close to capture after interrupt/input closure (246.765784ms)
+✔ actual stable files preserve literal bytes, relative names and executable flag (76.673883ms)
+✔ symlink source refuses without changing source bytes (5.229202ms)
+✔ hardlink source refuses without changing source bytes (4.735592ms)
+✔ empty directory source refuses without changing source bytes (4.860296ms)
+✔ case alias source refuses without changing source bytes (7.584433ms)
+✔ oversized file source refuses without changing source bytes (4.675894ms)
+✔ real source mutation during read refuses; descriptor is closed (10.830547ms)
+✔ lease, abort, request path substitution and constructor getters refuse (23.277887ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10210.744071

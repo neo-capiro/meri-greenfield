@@ -1,0 +1,26 @@
+✔ shared inert compiler preserves exact original plan/runtime/launch hashing and binding (433.627619ms)
+✔ concrete stack constructs native restorer with canonical journal and original plan before any IO (710.186906ms)
+✔ invalid immutable original or object accessor refuses before task factory effects (349.4771ms)
+✔ canonical runtime validation refuses proxy, budgets, model and hostile data before allocation (254.207015ms)
+✔ session snapshot and all session paths are owned by canonical receiver, never supervisor fallback (291.963396ms)
+✔ continuation refuses a missing task workspace port without falling back to control filesystem (221.60782ms)
+✔ parked runtime composes canonical allocation latch, broker dispatch and genuine remote stdout once (2910.578014ms)
+✔ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (3617.229046ms)
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (3.389744ms)
+✔ close before first iteration retires transport without preparing a Query (0.565492ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (1.787381ms)
+✔ task adapter delegates exact opaque capability/operation/hash to existing native owner with preserved receiver (16.941642ms)
+✔ default disabled or absent verifier makes zero native effects (0.903489ms)
+✔ malformed input and caller-added authority refuse before native effects (2.293759ms)
+✔ foreign operation/hash/binding/client/scope and expired/future/boolean receipts confer no authority (7.219002ms)
+✔ native refusal is not retried or exposed, even with active error fields (0.540602ms)
+✔ parked native verifier is bounded and aborts its supplied signal (21.365416ms)
+✔ already cancelled verification never dispatches a capability (0.770586ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15949.582292

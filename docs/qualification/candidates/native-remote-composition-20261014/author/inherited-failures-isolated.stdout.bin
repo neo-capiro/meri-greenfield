@@ -1,0 +1,20 @@
+✔ real Fetch inspection and public receiving expose only exact authorized checkpoint selector/hash (837.420799ms)
+✔ inspection refuses foreign/missing selector and injected authority with zero native reads (165.944596ms)
+✔ inspection fresh revoke before or during trusted read prevents release (269.252371ms)
+✔ inspection rejects changed trusted immutable proof and unsafe HTTP/body shapes (129.348257ms)
+✔ checkpoint inspection refuses another opaque session and changed current binding before native read (103.604171ms)
+✔ trusted checkpoint read is bounded by original operation lifetime and never releases a late hash (203.378587ms)
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (4806.457185ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2892.97325ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (577.802888ms)
+✔ actual process exits on SIGTERM after listener shutdown (2542.565974ms)
+✔ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (6971.543826ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (4582.470754ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25964.634773

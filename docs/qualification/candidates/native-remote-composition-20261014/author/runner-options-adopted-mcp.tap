@@ -1,0 +1,13 @@
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (3.247042ms)
+✔ close before first iteration retires transport without preparing a Query (1.067669ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (2.862803ms)
+✔ projection rejects hostile nested proxy and callback getter without evaluating either (3.399352ms)
+✔ actual adopted SDK MCP server prototype close is admitted effect-free (296.132459ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1411.25594

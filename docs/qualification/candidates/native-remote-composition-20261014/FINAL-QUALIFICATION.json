@@ -1,0 +1,95 @@
+{
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "base": "47c28805fbfc560c0b556875f673c3211e4e6a96",
+  "sourceManifestSha256": "0bf118553ccc2bd5a937be88d1db18f88b0635e1d48b5f1afc29dc9dc81c1f45",
+  "sourceFiles": 46,
+  "checks": {
+    "finalTargeted": {
+      "passed": 60,
+      "failed": 1,
+      "failure": "PG fixture before execution: missing MERI_REVIEW_SOURCE_ROOT",
+      "receipt": "author/changed-surfaces-final.json"
+    },
+    "unchangedPgRerun": {
+      "passed": 1,
+      "failed": 0,
+      "receipt": "author/prepared-pg-final-corrected.json"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "receipt": "author/typecheck-final.json"
+    },
+    "earlierFrozenAggregate": {
+      "sourceHead": "2678ffd8abb793f21a352b0b6d5f0e2970b2e1e1",
+      "passed": 398,
+      "failed": 2,
+      "isolatedUnchangedFilesPassed": 12,
+      "receipt": "author/aggregate-frozen.json"
+    },
+    "independentLatch": {
+      "passed": 12,
+      "realPg": 4,
+      "receipt": "independent/LATCH-ROOT-REVIEW.md"
+    },
+    "finalIndependent": {
+      "passed": 50,
+      "failed": 0,
+      "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+      "receipt": "independent/final-changed-controls.json"
+    }
+  },
+  "sdkComponent": {
+    "receipt": "author/sdk-source-fork-final.json",
+    "preexec": "independent/SDK-PREEXEC-ACCEPT.json",
+    "completed": true,
+    "spawns": 2,
+    "modelTurns": 0,
+    "costUsd": 0,
+    "providerRequests": 0,
+    "cleanupProven": true,
+    "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE"
+  },
+  "cleanup": {
+    "status": "pending owned resource teardown after independent checks",
+    "preservedUnknown": [
+      {
+        "pid": 89147,
+        "parent": 1,
+        "pgid": 89126,
+        "state": "Z",
+        "workspace": "/tmp/meri-single-query-sdk-zlU9zY",
+        "origin": "prior PR79 qualification"
+      },
+      {
+        "pid": 145484,
+        "parent": 1,
+        "pgid": 145484,
+        "state": "Z",
+        "origin": "this slice initial detached Python capture launcher; capture-owned child group and all adopted descendants absent; init must reap launcher"
+      }
+    ],
+    "ownedDatabase": {
+      "container": "meri-remote-composition-pg-20261014",
+      "anonymousVolume": "00b2950220253a1a2f88fc55be3467428809b45e113dbcaca11baf11a857ca79",
+      "stopExitCode": 0,
+      "removedAndReadbackAbsent": true
+    }
+  },
+  "remainingCode": [
+    "per-run controller/prepared-task Temporal kickoff ordering",
+    "current-control checkpoint inspection after original task lease expiry"
+  ],
+  "remainingBindings": [
+    "approved public/private origins",
+    "actual backend identity/context authority, database grants/fences/schema",
+    "immutable image/entrypoint, measured runner/command qualification",
+    "Temporal workflow/namespace resources",
+    "private routing/TLS and production init/reaping",
+    "versioned object and provider bindings"
+  ],
+  "unrunAcceptance": [
+    "genuine SDK through remote task and canonical SQL checkpoint into fresh restore/resume/fork",
+    "public frontend PR39 receiving integration; all337native rows remain open"
+  ],
+  "restrictions": "No AWS mutations, paid provider requests, credentials, security changes or live documents"
+}

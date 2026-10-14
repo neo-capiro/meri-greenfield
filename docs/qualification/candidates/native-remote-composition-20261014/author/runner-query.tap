@@ -1,0 +1,11 @@
+✔ synchronous facade retains one preparation and iterator; interrupt and close use same Query (8.95116ms)
+✔ close before first iteration retires transport without preparing a Query (1.096975ms)
+✔ data options pin rejects drift before transport construction and invokes no getters (5.295314ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5662.064117

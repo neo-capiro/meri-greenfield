@@ -1,0 +1,10 @@
+{
+  "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
+  "command": [
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "cwd": "apps/runtime",
+  "exitCode": 0
+}

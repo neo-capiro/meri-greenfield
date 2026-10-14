@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "author/mount-config-probe.mjs"
+  ],
+  "failedAction": "docker create meri-config-mount-120743",
+  "result": "ETIMEDOUT at15000ms guard; no container started",
+  "readback": "docker inspect exactname afterwards: No such object",
+  "diagnostic": "bounded baselinecreate20s succeeded; exactowned diagnostic container81e3ef9... was created, never started, then removed",
+  "scope": "No deployment/provider/remoteprocess acceptance"
+}

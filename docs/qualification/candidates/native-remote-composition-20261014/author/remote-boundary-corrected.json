@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/sdk-config-transfer.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 9.98179602899836,
+  "scope": "local Fetch HTTP boundary with synthetic ACKs; actual Node supervisor/native process registration; not AWS/deployment/provider acceptance"
+}
