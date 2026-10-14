@@ -29,6 +29,8 @@ Raw receipts are in [the candidate directory](../../qualification/candidates/run
 - `native-swc-probe`: explicit failed direct binding load, `ERR_SWC_NATIVE_CACHE`; raw stderr retained. The native addon rejects cache ancestors on this host. No chmod/chown, trusted-cache bypass or fake workflow compiler used. Optional `MERI_IMAGE_CHECK_WORKFLOW_BUNDLE=1` retains the real bundle check for a compatible environment.
 - Independent exact-source actual Docker COPY/import/CLI rerun **PASS 1/1**: 287/287, zero network attempts, help0, owned resource/group/children absent, no timeout/kill (89.443 seconds). Bounded verdict and source hashes are recorded in the independent candidate directory.
 
+Source/report/manifest whitespace checks pass. An all-evidence `git diff --check` reports original trailing spaces in retained raw `.stdout.bin` failure receipts; those bytes are preserved with their recorded hashes rather than edited into a passing receipt.
+
 This local check runs host Node24.19 on x86_64 and frozen npm dependencies. It is not a build of the approved NODE_IMAGE/platform, native ABI qualification, non-root/Fargate isolation, approved deployment, live authorization/database/Temporal acceptance or first chat. Native Temporal workflow bundling remains failed/unqualified here; the authorized shipping owner must qualify it in the approved image environment before advancement. Actual application/worker start and live acceptance remain open. PR81 remains the staged immutable pin until parent explicitly selects a repair candidate; PR82 and PR83 pins are unchanged.
 
 ## Resource ownership
