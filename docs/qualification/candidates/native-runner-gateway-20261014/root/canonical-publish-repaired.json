@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=relay executes canonical task-authorized",
+    "apps/runtime/test/native-runner-gateway.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "70dc8840f12a96d9fb60240fbef50b9466877888",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:35:11.802858+00:00",
+  "durationSeconds": 4.538,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 50430,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/canonical-publish-repaired.stdout.bin",
+      "bytes": 252,
+      "sha256": "66a2d5a7cdf31fa17fa29944405ca91e0413f7b9d91e6978feb138b7985e7d7f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/canonical-publish-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Second6/7 retained: fixture jumped queued directly to running. Existing canonical activity publishes starting first; fixture only now follows queued-to-starting. Rerun one changed positive assertion, not six passing controls.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/native-runner-gateway-20261014/root/sdk-gateway-observation.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "7df7a9e00b72f097de66acb1a467c51eac026e2c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:44:36.700329+00:00",
+  "durationSeconds": 9.46,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 53473,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/actual-sdk-gateway.stdout.bin",
+      "bytes": 1277,
+      "sha256": "de99ddc2c222f10f64e93d7631731c745a7f76da24a759776f74a59ef7067067"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/actual-sdk-gateway.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
