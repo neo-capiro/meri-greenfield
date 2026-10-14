@@ -1,0 +1,97 @@
+{
+  "type": "documentation-publication-validation",
+  "verdict": "PASS_DOCUMENTATION_ONLY",
+  "runtimeBase": "c6053e24b465be677cc5980533009b4aab03beab",
+  "runtimeBaseTree": "ca60051cc73c12d777c825abdd7b5c5e56c7f0de",
+  "branch": "docs/meri-fable-handoff-20261014",
+  "scope": [
+    "AGENTS.md",
+    "docs/handover/20261014-fable/"
+  ],
+  "checks": {
+    "contextCurrentHashesAndBytes": {
+      "passed": 91,
+      "failed": 0
+    },
+    "contextExactBaseHashes": {
+      "passed": 91,
+      "failed": 0,
+      "exception": "AGENTS has separately recorded baseSha256 and current worker-policy delta"
+    },
+    "runtimeProofHashes": {
+      "passed": 45,
+      "failed": 0,
+      "sourceCodeChanged": false
+    },
+    "relativeMarkdownLinks": {
+      "passed": 100,
+      "failed": 0
+    },
+    "privateDisclosurePatterns": {
+      "matches": 0,
+      "scope": "New handoff plus AGENTS; not a retrospective historical-repository audit"
+    },
+    "privateIntakeChecksum": "PASS: byte-exact retained outside public Git",
+    "preservedUnstartedRemediationBranch": "PASS: still runtimeBase",
+    "preCommitTrackedDiff": "AGENTS.md only; untracked files confined to the handoff",
+    "gitDiffCheck": "PASS"
+  },
+  "independentReview": {
+    "verdict": "ACCEPT_DOCUMENTATION_ONLY",
+    "path": "INDEPENDENT-REVIEW.md",
+    "sha256": "adfda5b42ad35c5dcd11f8830f939bd0b1a9cba9526915af64464d3f1b0c6ed1",
+    "scope": "Nine authored payloads and boundaries; this root publication receipt is added afterward"
+  },
+  "earlierSourceTests": {
+    "author": {
+      "pass": 3,
+      "fail": 0
+    },
+    "independent": {
+      "pass": 3,
+      "fail": 0
+    },
+    "interpretation": "Static source-proof suite only; not repeated solely for documentation, no native/PostgreSQL/RLS acceptance inferred"
+  },
+  "retainedFailedOrUnavailableEvidence": [
+    {
+      "check": "Default sandbox startup",
+      "result": "Blocked by full /tmp filesystem before command; bounded approved escalated commands used"
+    },
+    {
+      "check": "Shipping thread reader",
+      "result": "No callable reader available; public-safe owner relay used, no reconstructed AWS access"
+    },
+    {
+      "check": "Backend default main ref read",
+      "result": "404; corrected from actual default backend-import, not treated as authorization denial"
+    },
+    {
+      "check": "Earlier frontend Git path read",
+      "result": "HTTP503; not source/runtime failure or product acceptance"
+    },
+    {
+      "check": "Two read-only Python inventory attempts",
+      "result": "SyntaxError from shell newline encoding before any mutation; corrected with actual newlines"
+    },
+    {
+      "check": "Independent schema/path/receipt-write discovery attempts",
+      "result": "Preserved with corrected checks in INDEPENDENT-REVIEW.md"
+    },
+    {
+      "check": "Stopped initial AWS SDK receipt read",
+      "result": "CredentialsProviderError; no private receipt verification by this executor, no new credential/discovery attempt"
+    }
+  ],
+  "claimsExcluded": [
+    "Runtime implementation acceptance",
+    "Native image admission",
+    "Fresh AWS inventory",
+    "Database/migration execution",
+    "Live Meri chat",
+    "Full R2/G1-G7 acceptance",
+    "Deployment"
+  ],
+  "runtimeFactsProvenance": "Shipping/parent reported; approved public-safe appendix attributes source/native/scan and preview facts",
+  "privateEvidenceDisposition": "No raw private receipts, private resource IDs, secrets or customer contents published"
+}
