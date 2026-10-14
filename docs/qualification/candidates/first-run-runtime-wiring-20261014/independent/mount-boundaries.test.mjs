@@ -5,7 +5,7 @@ import {binding,scopes,versions,storeFixture} from '../../../../../apps/control/
 import {canonicalSha256 as hash} from '../../../../../packages/contracts/validate.mjs';
 const now=()=>100000;
 const configuration={sourceEnabled:false,limits:{requestMs:100,requestBytes:65536},native:{maxResponseBytes:65536},sessions:{maxSessions:3,maxTtlMs:1000},temporal:{taskQueue:'source-only'},versions};
-function input(factory){const f=storeFixture();return {...f,options:{configuration,pool:f.pool,client:{workflow:{}},native:{call(){throw Error('No native service admitted');}},now,productPortsFactory:factory}};}
+function input(factory){const f=storeFixture();return {...f,options:{configuration,pool:f.pool,client:{workflow:{async start(){throw Error('No workflow dispatch admitted');},getHandle(){throw Error('No workflow dispatch admitted');}}},native:{call(){throw Error('No native service admitted');}},now,productPortsFactory:factory}};}
 class IdentityOwner{
  calls=[];
  async verifyIdentity(){this.calls.push('identity');return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'source-only',checkedAtMs:now(),expiresAtMs:now()+1000};}
