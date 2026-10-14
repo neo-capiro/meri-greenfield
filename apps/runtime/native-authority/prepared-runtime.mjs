@@ -45,7 +45,10 @@ export function createPreparedNativeRuntime(configuration){
  async function started(value){const v=request(value);return operation(v.signal,async life=>{await current(life);await life.run(signal=>stack.broker.current({binding:original.binding,executionId:original.executionId,signal}));await life.run(()=>recordLaunch({...pins(v),state:'STARTED'},life.check));await current(life);return ack(v,v.preparationId);});}
  async function prepareAllocation({signal}={}){if(allocating||closed)throw executionFault('PREPARATION_REFUSED');if(admitted)return admitted;allocating=true;try{admitted=await allocate({signal});return admitted;}finally{allocating=false;}}
  async function parkedRuntime(value){const v=own(value,['binding','versions'],['signal','continuation','sourceRequest','request','scopes']);if(!same(v.binding,original.binding)||!same(v.versions,runtime.versions))throw executionFault('PREPARATION_REFUSED');return operation(v.signal,async life=>{
-  await current(life);const row=data(JSON.parse(await life.run(signal=>allocation(original.binding,{signal})))),budgets=row.allocation.budgets;
+  const {saved}=await current(life),phase=saved.record.resource.launchBinding?.state;
+  if(phase==='CLAIMED'||phase==='UNKNOWN')throw executionFault('PREPARATION_REFUSED');
+  if(phase==='STARTED'){if(!stack)throw executionFault('PREPARATION_REFUSED');const active=await life.run(signal=>stack.runtime.runtime({...v,signal}));await current(life);return active;}
+  const row=data(JSON.parse(await life.run(signal=>allocation(original.binding,{signal})))),budgets=row.allocation.budgets;
   if(!same(row.binding,original.binding)||row.deadlineMs<runtime.deadlineMs||['maxTurns','maxCostMicroUSD','maxOutputBytes'].some(k=>runtime[k]>budgets[k]))throw executionFault('RUNTIME_BUDGET_REFUSED');
   const hints=['continuation','sourceRequest','request','scopes'];if(!c.continuation&&hints.some(k=>Object.hasOwn(v,k)))throw executionFault('CONTINUATION_REFUSED');const restored=c.continuation?await life.run(signal=>c.continuation.prepare({...v,signal})):null;
   await current(life);return data({...runtime,...(restored??{sdkSessionKey:runtime.sdkSessionKey??null})});
