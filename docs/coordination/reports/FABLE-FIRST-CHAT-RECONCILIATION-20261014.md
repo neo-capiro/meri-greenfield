@@ -127,6 +127,7 @@ Host facts discovered while reproducing (each is now encoded in the runner or it
 ### Delivered after slice 1 on the same branch
 
 - Slice 2 proposal (approval gate, no code): [FABLE-FOLLOWUP-TURNS-PROPOSAL-20261014.md](FABLE-FOLLOWUP-TURNS-PROPOSAL-20261014.md).
+- Slice 3 outcome: the composed real-CLI rehearsal was blocked at its first gate and the blocker is recorded with receipts in [FABLE-REMOTE-LAUNCH-DESCRIPTOR-FINDING-20261014.md](FABLE-REMOTE-LAUNCH-DESCRIPTOR-FINDING-20261014.md): the real SDK launch descriptor for the product option set fails the remote launch gates at PR86 (undefined env entries, no per-task config directories, proxy credential inside the env). The first cause is reconciled here (`apps/worker/conversation/options.mjs`); the second is a bounded Fable task once paths are allocated; the third needs dot's decision on the launch-template matcher.
 - Slice 4 delivered: `scripts/qualification/r2-reconciliation/` and [the reconciliation candidate](../../qualification/candidates/fable-r2-reconciliation-20261014/README.md). At this head the ledgers and source agree with zero drift; all 96 selected capabilities map to catalog operations; no operation has a bound handler and all 97 are pending; 18 operations have an adapter family in source without a catalog binding.
 
 ## 6. Requirement-to-evidence matrix for this slice
@@ -156,5 +157,6 @@ Rollback/compatibility: reverting this commit removes the new scripts, receipts 
 - `docs/qualification/candidates/fable-local-baseline-20261014/**`
 - `docs/coordination/reports/FABLE-FIRST-CHAT-RECONCILIATION-20261014.md`
 - `apps/control/conversations/skills/admission.mjs` (one line) and `apps/control/admitted-runs/independent/owner-independent.test.mjs` (one line)
+- `apps/worker/conversation/options.mjs` (env entries) and `apps/worker/conversation/test/activity.test.mjs` (one assertion); `scripts/qualification/first-chat-rehearsal/**`; `docs/qualification/candidates/fable-first-chat-rehearsal-20261014/**`; `docs/coordination/reports/FABLE-REMOTE-LAUNCH-DESCRIPTOR-FINDING-20261014.md`
 
 Dot reviews and records ACCEPT or HOLD; nothing here is integrated, deployed or promoted by this report.

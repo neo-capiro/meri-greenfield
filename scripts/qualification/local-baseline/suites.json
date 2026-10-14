@@ -42,6 +42,6 @@
   {"name": "window-resolution", "purpose": "calendar and fiscal window resolution", "cwd": ".", "files": ["packages/window-resolution/test/*.test.mjs"]},
   {"name": "skills", "purpose": "skill manifests, assets and commitments", "cwd": ".", "files": ["packages/skills/test/*.test.mjs", "packages/skills/commitments/*.test.mjs"]},
   {"name": "evals", "purpose": "task-lookup and action follow-through evaluation fixtures", "cwd": ".", "files": ["evals/task-lookup/**/*.test.mjs", "evals/action-followthrough/**/*.test.mjs"]},
-  {"name": "scripts-local", "purpose": "local script checks outside the sdk-evidence set", "cwd": ".", "files": ["scripts/*.test.mjs", "scripts/local-action/*.test.mjs", "scripts/local-research-brief/*.test.mjs", "scripts/qualification/local-baseline/*.test.mjs", "scripts/qualification/r2-reconciliation/*.test.mjs"]}
+  {"name": "scripts-local", "purpose": "local script checks outside the sdk-evidence set", "cwd": ".", "files": ["scripts/*.test.mjs", "scripts/local-action/*.test.mjs", "scripts/local-research-brief/*.test.mjs", "scripts/qualification/local-baseline/*.test.mjs", "scripts/qualification/r2-reconciliation/*.test.mjs", "scripts/qualification/first-chat-rehearsal/*.test.mjs"]}
  ]
 }

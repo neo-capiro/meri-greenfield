@@ -1,0 +1,74 @@
+{
+ "schema": "meri.sdk-descriptor-capture.v1",
+ "capturedAt": "2026-10-14T20:55:35.363Z",
+ "optionsModule": {
+  "path": "/home/user/meri-first-chat/apps/worker/conversation/options.mjs",
+  "sha256": "028c57ca6244a42e360336a8c4d2b5933a4de1b085ce29da755572167c16b674"
+ },
+ "sdkVersion": "0.3.295",
+ "sdkDeclaredPins": {
+  "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "sdk": "0.3.295",
+  "cli": "2.1.295",
+  "contracts": "0.1.0",
+  "skillsDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "checkpointFormat": "0.1.0"
+ },
+ "cli": {
+  "path": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "packageVersion": "0.3.295"
+ },
+ "productOptions": {
+  "projectionSha256": "5e0dffef99ede4bb523f2419ee4ec748452fc6e1298cd928ec2027493ecdfa9b",
+  "model": "meri-local-no-provider",
+  "maxTurns": 1,
+  "maxBudgetUsd": 0.000001,
+  "permissionMode": "default",
+  "settingSources": [],
+  "envKeys": [
+   "ANTHROPIC_BASE_URL",
+   "ANTHROPIC_AUTH_TOKEN"
+  ]
+ },
+ "descriptor": {
+  "command": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "args": [
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--input-format",
+   "stream-json",
+   "--max-turns=1",
+   "--max-budget-usd=0.000001",
+   "--model=meri-local-no-provider",
+   "--permission-prompt-tool=stdio",
+   "--tools=",
+   "--setting-sources=",
+   "--permission-mode=default",
+   "--include-partial-messages",
+   "--session-mirror",
+   "--settings",
+   "{\"autoMemoryEnabled\":false}"
+  ],
+  "cwd": "/tmp/meri-descriptor-capture-eKosp8/00000001-0000-4000-8000-000000000000",
+  "env": {
+   "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
+   "ANTHROPIC_AUTH_TOKEN": {
+    "redacted": true,
+    "sha256": "14e63d5ccfa09a16878074b7eef5ea8f7bce2484607a5e6eb7b40e9e21138414"
+   },
+   "CLAUDE_CODE_ENTRYPOINT": "sdk-ts",
+   "CLAUDE_AGENT_SDK_VERSION": "0.3.295",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE": "1"
+  }
+ },
+ "gates": {
+  "inertJsonDescriptor": "PASS",
+  "hasClaudeConfigDir": "FAIL: descriptor env carries no CLAUDE_CONFIG_DIR; the task-side admission requires it under the approved config parent",
+  "hasSecureStorageDir": "FAIL: descriptor env carries no CLAUDE_SECURESTORAGE_CONFIG_DIR",
+  "secretInsideDescriptorEnv": "OBSERVED: the proxy credential is part of the descriptor env, so a static launch template would have to contain it",
+  "compileNativeLaunchWithInjectedDirectories": "PASS"
+ },
+ "scope": "No process was spawned, no provider or network request was made, no credential value is recorded; the proxy credential is a synthetic string hashed above."
+}

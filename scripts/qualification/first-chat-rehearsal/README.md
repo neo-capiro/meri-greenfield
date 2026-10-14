@@ -1,0 +1,5 @@
+# First-chat rehearsal tools
+
+`capture-sdk-descriptor.mjs --out FILE [--options-module PATH]` captures the launch descriptor the pinned Claude Agent SDK produces for the product option set (`apps/worker/conversation/options.mjs`, or an alternative copy of it) by interrupting the SDK at its spawn hook, and reports each remote launch gate's outcome on that descriptor: inert JSON, per-task config directories, secret-in-env observation, and `compileNativeLaunch` with directories injected. It spawns no process, performs no network or provider access, and hashes secret-shaped env values before writing. Exit 0 with the receipt written (gate outcomes are inside, not an exit code), 2 usage, 3 if the SDK produced no descriptor. Tests: `node --test scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.test.mjs`.
+
+The composed rehearsal (real PostgreSQL, real supervisor, real CLI, zero model turns) is the next step once the config-directory injection and the launch-template credential decision are in place; see the finding report under `docs/coordination/reports`.
