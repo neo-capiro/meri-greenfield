@@ -11,6 +11,7 @@ test('real PostgreSQL concurrent/replayed start retains one actual independent s
 test('actual protected HTTP broker/runtime path correlates current native task and original runtime',async t=>{
  const x=await fixture(t),listener=await listenFetch(x.stack.application);t.after(()=>listener.close());
  const native=credential=>createNativeCapabilityClient({configuration:{origin:listener.origin,maxResponseBytes:131072},credential});
+ await native(control).readiness();await assert.rejects(native(x.f.credential).readiness());
  const started=await native(control).call('execution/start',{binding:x.binding,executionKey:hash(x.binding)});assert.equal(started.expiresAtMs,x.expiry);
  assert.equal((await native(x.f.credential).call('runner/runtime',{binding:x.binding,versions:x.runtime.versions})).sdkSessionKey,null);
  await assert.rejects(native(x.f.credential).call('execution/poll',{binding:x.binding,executionId:hash(x.binding)}));await assert.rejects(native(control).call('runner/runtime',{binding:x.binding,versions:x.runtime.versions}));

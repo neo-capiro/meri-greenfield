@@ -4,6 +4,7 @@ import {readFileSync,readlinkSync} from 'node:fs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {compileNativeLaunch,matchNativeLaunch} from './launch-configuration.mjs';
+import {verifyNativeLaunchPaths} from './session-launcher.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {executionFault} from './execution-broker.mjs';
 export function createIndependentNativeTask(configuration){
@@ -54,6 +55,7 @@ export function createIndependentNativeTask(configuration){
   if(launched){if(!nativeBirth||observed.pid!==nativeBirth.pid)throw executionFault('TASK_UNAVAILABLE');const actual=birth(nativeBirth.pid);if(actual.started!==nativeBirth.started||actual.group!==nativeBirth.group||actual.executable!==nativeBirth.executable)throw executionFault('TASK_UNAVAILABLE');}
   if(!supervisor.pid||absent())throw executionFault('TASK_UNAVAILABLE');return receipt();}
  async function retire(value){tuple(value);await close();if(!supervisor)throw executionFault('TASK_NOT_FOUND');return receipt();}
- return Object.freeze({launch,inspect,retire,spawnClaudeCodeProcess,registration:Object.freeze({read:value=>{const v=own(value,['binding','key'],['signal','deadlineMs']);return rpc('read',{binding:v.binding,key:v.key,...(v.deadlineMs?{deadlineMs:v.deadlineMs}:{})},v.signal);}}),close,
+ async function readiness({signal}={}){nativeSignal(signal);if(signal?.aborted||closed||retiring||!p.enabled||now()>=p.expiresAtMs)throw executionFault('TASK_UNAVAILABLE');verifyNativeLaunchPaths(p);if(signal?.aborted||now()>=p.expiresAtMs)throw executionFault('TASK_UNAVAILABLE');}
+ return Object.freeze({launch,inspect,retire,readiness,spawnClaudeCodeProcess,registration:Object.freeze({read:value=>{const v=own(value,['binding','key'],['signal','deadlineMs']);return rpc('read',{binding:v.binding,key:v.key,...(v.deadlineMs?{deadlineMs:v.deadlineMs}:{})},v.signal);}}),close,
   status:()=>Object.freeze({supervisorPid:supervisor?.pid??null,nativePid:nativeBirth?.pid??null,booted,launched,closed,physicalStopProven:stopped&&closed&&absent()&&nativeAbsent()})});
 }
