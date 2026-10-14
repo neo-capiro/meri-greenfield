@@ -1,0 +1,202 @@
+{
+  "reviewedSourceHead": "16ca642725d492083cdbe8e4290c05222261ca62",
+  "base": "23707a621d960e6492f1deb963ecddaa22b3004b",
+  "scope": "ACCEPT_LOCAL_MECHANICS_HOLD_AUTHENTICATED_FIRST_SESSION_AND_OUTPUT",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/.gitattributes",
+      "bytes": 13,
+      "sha256": "c7c6541111ee53947140bac154f1275c6b1b244c40c045b190662f23226509c9"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/MANIFEST.json",
+      "bytes": 8035,
+      "sha256": "b29bf13c2266d48caf8da6d430a592e9cf4632777cbee4244222c34539018434"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/independent/FINAL-PREEXECUTION-663cf14e.md",
+      "bytes": 3090,
+      "sha256": "7e6122ae1b812ad1a32f944e20fc0b98aa3e2447ffc63aff278dbafacc054e4e"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/independent/POSTEXECUTION.md",
+      "bytes": 6853,
+      "sha256": "2cbd8dc08c17f2467e5ce9ef4816d9265e52deeaec9da37abe1c8b9955b0fdde"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/independent/PREEXECUTION.md",
+      "bytes": 3498,
+      "sha256": "dd3d7c2698e42232728e2ea2b2d2e224acfea801360230753fe16f720e657e1d"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/independent/RECHECK-b2c7f542.md",
+      "bytes": 2124,
+      "sha256": "f0e6f1e2002a08c225dbf2264086fffeca792a5d49ddb5b8a6bb68e5b323e119"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-pool-refusal.json",
+      "bytes": 1303,
+      "sha256": "080539d4fe39bd34af21f55bea7037c1bb2ebb4d60bcd1eb1e1a1fe22b10652e"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-pool-refusal.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-pool-refusal.stdout.bin",
+      "bytes": 258,
+      "sha256": "95e265d6af420b415b1c65719578a7592f8fe52fc79b9d628cbabb1b90d2a583"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-sdk-observation.json",
+      "bytes": 1292,
+      "sha256": "df69d76321c1330a298678ebd209088162c51c95d079192a7c0388f15d4b209b"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-sdk-observation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-sdk-observation.stdout.bin",
+      "bytes": 1146,
+      "sha256": "7e9281cc03b493b11146e8e78495367bb0c0906cdce047a068f518e5e5eace36"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/admitted-owner.test.mjs",
+      "bytes": 2091,
+      "sha256": "6a38f7ea08359e0887580e0f35e8bf03766db6569bbf33195c57233b21e82ace"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-repaired.json",
+      "bytes": 1503,
+      "sha256": "33e931b93e74cd11e9ff17ccf48a932b1027df988434d13072eb1197bc6c1edb"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-repaired.stdout.bin",
+      "bytes": 178,
+      "sha256": "59798d49e908406d3b3d3eecfb26d643c00c6606bcf8956a86121a2ebf645c33"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-snapshot.json",
+      "bytes": 1019,
+      "sha256": "0c74d86368ec2e063f387c6af6265dea8a0136a104347ff7a302f56c2fa76a9a"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after.json",
+      "bytes": 1371,
+      "sha256": "b5fda29198c1607c0ba0f4ba15625b99d1f57d95e699759d9b2e6e6d1208e58c"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after.stderr.bin",
+      "bytes": 247,
+      "sha256": "8c67fec62ce49c55fe8f23de585bfefd60f440ff3e57e24e65b2a2ea726feb7d"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-before-snapshot.json",
+      "bytes": 1019,
+      "sha256": "0c74d86368ec2e063f387c6af6265dea8a0136a104347ff7a302f56c2fa76a9a"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-before.json",
+      "bytes": 1422,
+      "sha256": "2ba8e7eab6a00a3b72f7f41413d754895e441304d0a4fb48bb3c2a6e387541ee"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-before.stdout.bin",
+      "bytes": 178,
+      "sha256": "59798d49e908406d3b3d3eecfb26d643c00c6606bcf8956a86121a2ebf645c33"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-read.py",
+      "bytes": 2537,
+      "sha256": "2df567e8ace8d307547a16671ec5261d1d8b5d18b617ff89451f08924f777bdd"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-restore.json",
+      "bytes": 1333,
+      "sha256": "2524610ebf12e2a634dd83b78b75564f6f4eacc85e68edd317ac3ab744a1e8ee"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-restore.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-restore.stdout.bin",
+      "bytes": 317,
+      "sha256": "329a5a81dddb38d020afb5fe2d261ee4c560f27f58ef7723ad7c54ff8807cf76"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-start.json",
+      "bytes": 1226,
+      "sha256": "aefdcce8c0c4e090040c2d7f55aad584c2e7a7ed612810a5487640c29b4621de"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-start.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-start.stdout.bin",
+      "bytes": 137,
+      "sha256": "fbd485809c14c8260a005f1a17fd9bd64bbc280e67ef777ed595f3ca130d434c"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/installed-input-readback.json",
+      "bytes": 1482,
+      "sha256": "7010629527899ea5f6b32d1be01870e046191ed142557ea0cc2ce61b34f73421"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/owned-dependency-cleanup.json",
+      "bytes": 1818,
+      "sha256": "aa1a905743c7ca3a3d14318278c3e481c23e63e5b68b06ff8564a24a32139a5a"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/owned-dependency-cleanup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/owned-dependency-cleanup.stdout.bin",
+      "bytes": 118,
+      "sha256": "8549f78a5f03d8a5fae960a785691ea561098c3dcbf50d5e2401e3b1c51911a8"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/restore-owned-fixture.py",
+      "bytes": 1887,
+      "sha256": "ac177099f79572d8418e6258f1b643c9f6ba0cecc7a9371d4eacdf86f161c746"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/sdk-observation.mjs",
+      "bytes": 7801,
+      "sha256": "739afb9640aaceef4727c110602ddf7d874982e886709103967697718ea41602"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-SESSION-LOCAL-20261014.md",
+      "bytes": 8851,
+      "sha256": "b5a156ac1406e7ac8e4f7deb7ed01cb439269bf1c3e3b086b6172f5537ad37e6"
+    }
+  ]
+}

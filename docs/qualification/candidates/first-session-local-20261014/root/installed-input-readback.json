@@ -1,0 +1,34 @@
+{
+  "scope": "POSTEXECUTION_INSTALLED_INPUT_READBACK_NOT_PRESPAWN_HASH_ATTESTATION",
+  "sourceHead": "16ca642725d492083cdbe8e4290c05222261ca62",
+  "sdkVersion": "0.3.295",
+  "nativePackageVersion": "0.3.295",
+  "nativeObservedCliVersion": "2.1.295",
+  "files": [
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "bytes": 2546,
+      "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211"
+    },
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs",
+      "bytes": 1235617,
+      "sha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0"
+    },
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/package.json",
+      "bytes": 282,
+      "sha256": "8cb928d63aa51ed7117257d2f162bc00ba85d335d54baf659e4097f3ec0b907c"
+    },
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+      "bytes": 256113848,
+      "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+    },
+    {
+      "path": "/workspace/meri-first-session-local/apps/worker/conversation/package-lock.json",
+      "bytes": 52825,
+      "sha256": "b1459716b93afbf92800956b26b6c7c52b74ef38ed3314d27d8453ab76eacc26"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "/workspace/cloud-onboarding/meri-native/venv/bin/python",
+    "docs/qualification/candidates/first-session-local-20261014/root/fixture-read.py",
+    "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-snapshot.json"
+  ],
+  "cwd": "/workspace/meri-first-session-local",
+  "sourceHead": "663cf14ed99a7ba4f9f61094ae9ddcd3f678b3cd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:00:06.838332+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 37055,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-repaired.stdout.bin",
+      "bytes": 178,
+      "sha256": "59798d49e908406d3b3d3eecfb26d643c00c6606bcf8956a86121a2ebf645c33"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-after-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Previous after-check failed before connection: system Python has no psycopg. Reuse unchanged approved fixture venv interpreter.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

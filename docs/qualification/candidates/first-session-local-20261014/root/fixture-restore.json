@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/workspace/cloud-onboarding/meri-native/venv/bin/python",
+    "docs/qualification/candidates/first-session-local-20261014/root/restore-owned-fixture.py"
+  ],
+  "cwd": "/workspace/meri-first-session-local",
+  "sourceHead": "34acbc0d3ebac48534fbd8ad1074024efa933409",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:00:29.899656+00:00",
+  "durationSeconds": 0.465,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 37501,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-restore.stdout.bin",
+      "bytes": 317,
+      "sha256": "329a5a81dddb38d020afb5fe2d261ee4c560f27f58ef7723ad7c54ff8807cf76"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/fixture-restore.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

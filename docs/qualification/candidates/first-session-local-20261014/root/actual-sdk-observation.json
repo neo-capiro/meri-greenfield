@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/first-session-local-20261014/root/sdk-observation.mjs"
+  ],
+  "cwd": "/workspace/meri-first-session-local",
+  "sourceHead": "663cf14ed99a7ba4f9f61094ae9ddcd3f678b3cd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T00:59:44.296840+00:00",
+  "durationSeconds": 6.192,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 36588,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-sdk-observation.stdout.bin",
+      "bytes": 1146,
+      "sha256": "7e9281cc03b493b11146e8e78495367bb0c0906cdce047a068f518e5e5eace36"
+    },
+    {
+      "path": "docs/qualification/candidates/first-session-local-20261014/root/actual-sdk-observation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
