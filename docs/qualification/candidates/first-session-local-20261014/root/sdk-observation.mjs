@@ -17,7 +17,7 @@ const origin='http://127.0.0.1:'+server.address().port;
 const env={PATH:process.env.PATH,CLAUDE_CONFIG_DIR:configDir,CLAUDE_SECURESTORAGE_CONFIG_DIR:configDir,XDG_CONFIG_HOME:join(taskRoot,'xdg-config'),XDG_CACHE_HOME:join(taskRoot,'xdg-cache'),XDG_STATE_HOME:join(taskRoot,'xdg-state'),XDG_DATA_HOME:join(taskRoot,'xdg-data'),ANTHROPIC_BASE_URL:origin,ANTHROPIC_AUTH_TOKEN:'synthetic-local-uncredentialed',CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:'1',DISABLE_TELEMETRY:'1',DISABLE_ERROR_REPORTING:'1',CLAUDE_CODE_DISABLE_AUTO_UPDATE:'1'};
 // Use the SDK's supported config resolvers in both parent and subprocess.
 // This is this probe process only; HOME and persistent configuration remain unchanged.
-for(const name of ['ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY','ANTHROPIC_AWS_BEARER_TOKEN','ANTHROPIC_AWS_REGION'])delete process.env[name];
+for(const name of Object.keys(process.env))if(/^(CLAUDE_|ANTHROPIC_|AWS_|GOOGLE_|GCP_|AZURE_|OPENAI_|LITELLM_)/u.test(name))delete process.env[name];
 Object.assign(process.env,env);
 ({query}=await import(pathToFileURL(join(sdkDir,'sdk.mjs')).href));
 let failure=false,closeObserved=false,forcedKill=false;
