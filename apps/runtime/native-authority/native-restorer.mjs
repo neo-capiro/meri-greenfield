@@ -29,7 +29,7 @@ export function createNativeCheckpointRestorer(configuration){
    await record({binding:v.binding,restoreKey:v.restoreKey,state:'RESTORED',receipt:{workspaceSha256:wanted.workspaceSha256,opaqueSessionSha256:wanted.opaqueSessionSha256}},v.check);v.check();return response(v);
   }catch(error){try{await record({binding:v.binding,restoreKey:v.restoreKey,state:'UNKNOWN',receipt:null},()=>{});}catch{}throw executionFault('RESTORE_UNKNOWN');}
  }
- async function snapshot(value){const v=context(value),saved=(await read({binding:v.binding,restoreKey:v.restoreKey},v.check)).record;if(saved?.state!=='RESTORED')throw executionFault('RESTORE_UNKNOWN');matches(saved,intent(v));const source=await opaque(v);await v.revalidate();v.check();
+ async function snapshot(value){const v=context(value),saved=(await read({binding:v.binding,restoreKey:v.restoreKey},v.check)).record;if(saved?.state!=='RESTORED')throw executionFault('RESTORE_UNKNOWN');matches(saved,intent(v));const source=await opaque(v);verifyWorkspaceBytes({workspace:c.workspace,manifest:v.continuation.checkpoint.workspace,check:v.check});await v.revalidate();v.check();
   return {binding:v.binding,key:source.key,checkpointSha256:v.continuation.checkpointSha256,opaqueSessionSha256:v.continuation.checkpoint.opaqueSession.sha256,transcripts:source.snapshot.transcripts()};}
  return Object.freeze({restore,snapshot});
 }

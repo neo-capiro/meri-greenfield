@@ -38,6 +38,9 @@ test('admission revoked after object reads refuses before workspace effects',asy
 test('replay detects modified workspace and additional directory without rewriting them',async t=>{
  const x=await setup(t),owner=createNativeCheckpointRestorer(x.config);await owner.restore(x.input);await writeFile(join(x.workspace,'folder/note.txt'),'changed');await assert.rejects(owner.restore(x.input));assert.equal(await readFile(join(x.workspace,'folder/note.txt'),'utf8'),'changed');assert.equal(x.state().claims,1);
 });
+test('snapshot read detects actual workspace byte changes without rewriting caller changes',async t=>{
+ const x=await setup(t),owner=createNativeCheckpointRestorer(x.config);await owner.restore(x.input);await writeFile(join(x.workspace,'folder/note.txt'),'changed before snapshot');await assert.rejects(owner.snapshot(x.input));assert.equal(await readFile(join(x.workspace,'folder/note.txt'),'utf8'),'changed before snapshot');assert.equal(x.state().saved.state,'RESTORED');assert.equal(x.state().claims,1);assert.equal(x.state().effects,1);
+});
 test('workspace alias cannot receive restoration and borrowed sibling remains intact',async t=>{
  const x=await setup(t),sibling=join(x.root,'sibling');await mkdir(sibling);await symlink(sibling,join(x.root,'alias'));x.f.continuation.checkpointSha256=hash(x.cp);x.input.restoreKey=hash({...x.f.target,continuation:x.f.continuation});await assert.rejects(createNativeCheckpointRestorer({...x.config,workspace:join(x.root,'alias')}).restore(x.input));assert.deepEqual(await readdir(sibling),[]);assert.equal(x.state().saved.state,'UNKNOWN');
 });
