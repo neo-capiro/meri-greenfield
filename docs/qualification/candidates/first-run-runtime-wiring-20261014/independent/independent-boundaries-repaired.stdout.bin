@@ -1,0 +1,11 @@
+✔ factory product ports retain original prototype receivers and methods after capture, without borrowing cleanup (15.748955ms)
+✔ proxy factory results are refused without reflective caller traps or SQL effects (0.493381ms)
+✔ a first-run mounting factory that accidentally returns nothing cannot silently select unavailable ports (0.515932ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5215.180381
