@@ -17,6 +17,16 @@ This runbook is ready for the shipping/runtime owner after approved deployment/c
 
 Use [PR81's deployment/configuration/startup handoff](../reports/CODEX-PREPARED-CANDIDATE-DEPLOYMENT-20261014.md). [The exact authority-input report](https://github.com/neo-capiro/meri-greenfield/blob/5a87ffd7f0a5441919c1b4a869295824f1a32d08/docs/coordination/reports/CODEX-CURRENT-CONVERSATION-AUTHORITY-INPUTS-20261014.md) supplies backend identity/context and separately owned Meri grant/resource inputs; reading it does not stage PR82. First chat requires **no continuation/approval owner, target recipe or independent decision issuer**.
 
+## Canonical bootstrap gate: existing mapping before Connect
+
+The backend owner is identifying the **existing mapping owner**. Before live execution, obtain that owner's current authoritative read/reference for an active, unarchived conversation whose exact `{id,tenantId,userId,clientId}` matches the verified native actor and permitted client. `userId` must be the current native `user.id`, not a Clerk subject. Record the mapping ID/reference and current-check receipt without credentials. Missing or mismatched mapping means first chat is **NOT READY**; an arbitrary newly generated conversation UUID is insufficient.
+
+Bind that exact mapping id to `nativeCandidate.identity.commandContext.binding.conversationId`, with its tenantId/native actorId and selected client resolution. The approved original runtime binding, allocation run identity and action session context must match those same identities; scopes/policy/grants remain the existing Meri/control owner's inputs. Verify using the canonical candidate validator plus actual backend identity/context receipts, not a fixture or echoed selector. The frontend's first selection sends only `{clientId}`; it does not create conversationId/runId, an authorization record or a task grant. The existing server context selects the approved prebound run. Subsequent observed conversation/run hints constrain that same binding and must refuse mismatches.
+
+Use the backend's existing owned-conversation/domain authorization lookup and current client-wall/session checks. Do not invent a new authority store/API, copy backend implementation, seed a replacement row or relax owner/current-actor checks. The exact mapping owner/reference is still a necessary input until the backend owner supplies it; this runbook does not claim it has been verified live.
+
+First submit persists the source's canonical queued run **before** Temporal kickoff/allocation. The later resume/fork path's admission-before-target-row versus allocation-needs-queued-row issue is separate deferred work. It is not a reason to precreate a fake first-chat target, add continuation authority or bypass this existing mapping gate.
+
 ## Executable offline source check
 
 Run from the staged PR81 source checkout. It uses no dependencies, credentials or network:

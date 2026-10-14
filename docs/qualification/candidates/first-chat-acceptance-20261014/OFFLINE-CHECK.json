@@ -2,7 +2,7 @@
   "scope": "OFFLINE_SOURCE_CHECK_ONLY_NO_NETWORK_CREDENTIALS_OR_MODEL",
   "runtimeHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
   "runbookPath": "docs/coordination/runbooks/FIRST-CHAT-PR39-PR81-20261014.md",
-  "runbookSha256": "a6fdbd0a56a5a8120521e4b4cb4c712f1c9a5d9d929a1b4e3bb2276a26e0187d",
+  "runbookSha256": "315a11d545d35075e75af69f64d035b99a1c0399b0a703efffa94a04d09207fa",
   "scriptSha256": "c9217634e3ba3568067f052fc285a1fbafe5df23c29131fa9cb948e02b0fbd19",
   "command": [
     "python",
@@ -14,6 +14,7 @@
   "stderr": "",
   "liveAcceptance": "UNRUN",
   "fixturesReexecuted": false,
-  "draftingFailure": "Initial nested heredoc delimiter collided before file creation; corrected quoted unique delimiter. No live/fixture test attempt occurred.",
-  "rerunReason": "Independent review corrected Observe-before-history order; offline script/source unchanged, current document pin refreshed."
+  "draftingFailure": "Two heredoc drafting delimiter mistakes failed before file writes; corrected with apply_patch. Neither was a runtime/fixture/live test failure.",
+  "rerunReason": "Parent clarified existing active conversation mapping bootstrap gate. Script unchanged; reverified staged PR81 checkout and final document hash.",
+  "executionCwd": "/workspace/meri-prepared-kickoff"
 }

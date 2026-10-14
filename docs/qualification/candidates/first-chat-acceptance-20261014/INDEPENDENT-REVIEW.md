@@ -1,6 +1,6 @@
 # Independent first-chat runbook review
 
-**ACCEPT_RUNBOOK** for `docs/coordination/runbooks/FIRST-CHAT-PR39-PR81-20261014.md`, SHA256 `a6fdbd0a56a5a8120521e4b4cb4c712f1c9a5d9d929a1b4e3bb2276a26e0187d`. Staged runtime remains PR81 `480944bae488932ab5dea5452d2d3dbdcb04a755`; no runtime implementation or PR82 staging occurred.
+**ACCEPT_RUNBOOK** for `docs/coordination/runbooks/FIRST-CHAT-PR39-PR81-20261014.md`, SHA256 `315a11d545d35075e75af69f64d035b99a1c0399b0a703efffa94a04d09207fa`. Staged runtime remains PR81 `480944bae488932ab5dea5452d2d3dbdcb04a755`; no runtime implementation or PR82 staging occurred. The earlier document hash `a6fdbd0a56a5a8120521e4b4cb4c712f1c9a5d9d929a1b4e3bb2276a26e0187d` was accepted before the parent clarified the mapping bootstrap gate; that historical review is not live mapping evidence.
 
 Exact frontend PR39 SDK/client/chat/observation and view/bootstrap were read independently. The runbook matches the actual labels, public routes, issuance/submit/cancel receipt shapes, workflow ID, observation cursor, 30-second subscription bound and retained-input retry behavior. Private frontend source was not archived. Staged Meri public service, wire cursor, producer and dispatcher were checked read-only.
 
@@ -10,6 +10,8 @@ One completed prompt and active cancellation are mutually exclusive scenarios. T
 
 Configuration is limited to necessary existing bindings and approval references. Broader product acceptance and live deployment/provider/runtime qualification remain open. Existing fixture artifacts retain their original source scope. Init-owned zombies and unrelated resources must remain untouched.
 
-The author's offline receipt matches this document hash and its extracted Python `-c` script SHA256 `c9217634e3ba3568067f052fc285a1fbafe5df23c29131fa9cb948e02b0fbd19` (code text without the closing-delimiter newline). It records 39 matched PR81 source files and live acceptance UNRUN. The initial nested-heredoc failure occurred before file creation; it is a drafting failure, not a runtime/test/live failure.
+The added canonical bootstrap gate correctly requires the existing active, unarchived backend conversation mapping `{id,tenantId,userId,clientId}` before Connect. Its owner/reference is still being identified. Native `user.id`, permitted client and the exact mapping ID must join candidate commandContext, original runtime/allocation and session context under genuine fresh backend authority. ClientId-only frontend selection creates no mapping, arbitrary UUID or grant. Missing/mismatched mapping is NOT READY, with no new store/API/rowseed or weakened actor checks. The first source queued row before Temporal is correctly distinguished from deferred continuation target-admission ordering. No live mapping verification is claimed.
+
+The author's offline receipt matches this document hash and its extracted Python `-c` script SHA256 `c9217634e3ba3568067f052fc285a1fbafe5df23c29131fa9cb948e02b0fbd19` (code text without the closing-delimiter newline). It records 39 matched PR81 source files in unchanged `/workspace/meri-prepared-kickoff` and live acceptance UNRUN. The reported heredoc delimiter failures occurred before file writes; they are drafting failures, not runtime/test/live failures.
 
 This review executed no live call, SDK Query, provider request, install, fixture test, credential action, cleanup or escalation. No blocking runbook finding remains. **ACCEPT_RUNBOOK does not constitute native or completed-conversation acceptance.**
