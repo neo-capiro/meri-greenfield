@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import {resolveTemporal} from './temporal-binding.mjs';
+test('runtime resolution accepts image-owned hoisting but rejects mismatched package/owner pins',t=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'meri-temporal-owner-'));
+  t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+  const runtime=path.join(root,'apps/runtime'),pkg=path.join(root,'node_modules/@temporalio/worker');
+  fs.mkdirSync(runtime,{recursive:true});fs.mkdirSync(pkg,{recursive:true});
+  const owner={name:'@meri/assembled-runtime',dependencies:{'@temporalio/worker':'1.24.0'}};
+  fs.writeFileSync(path.join(runtime,'package.json'),JSON.stringify(owner));fs.writeFileSync(path.join(runtime,'temporal-worker.mjs'),'');
+  const metadata={name:'@temporalio/worker',version:'1.24.0',main:'index.cjs'};
+  fs.writeFileSync(path.join(pkg,'package.json'),JSON.stringify(metadata));fs.writeFileSync(path.join(pkg,'index.cjs'),'module.exports={};');
+  assert.equal(resolveTemporal(root).entry,fs.realpathSync(path.join(pkg,'index.cjs')));
+  fs.writeFileSync(path.join(pkg,'package.json'),JSON.stringify({...metadata,version:'1.23.0'}));
+  assert.throws(()=>resolveTemporal(root),/package binding differs/);
+  fs.writeFileSync(path.join(runtime,'package.json'),JSON.stringify({...owner,dependencies:{'@temporalio/worker':'1.23.0'}}));
+  assert.throws(()=>resolveTemporal(root),/runtime owner pin differs/);
+});
