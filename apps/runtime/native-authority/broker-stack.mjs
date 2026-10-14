@@ -27,9 +27,9 @@ export function createNativeBrokerStack(configuration){
  const c=own(configuration,['pool','supervisor','runtime','plan','launchConfiguration','taskCapability','controlCapabilitySha256','tasksFactory'],['enabled','now','maxRequestMs','continuationObjects']);
  const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,{runtime,launchConfiguration,plan,original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,launchConfiguration:c.launchConfiguration});
  if(typeof c.tasksFactory!=='function')throw executionFault('STACK_CONFIGURATION');
- const store=createPostgresConversationStore({pool:c.pool});
+ const store=createPostgresConversationStore({pool:c.pool}),objects=c.continuationObjects?{get:storageMethod(c.continuationObjects,'get')}:undefined;
  const tasks=c.tasksFactory({original,launchConfiguration}),closeTasks=storageMethod(tasks,'close'),readyTasks=storageMethod(tasks,'readiness'),taskDigest=capabilityDigest(c.taskCapability);
- const restorer=c.continuationObjects?createNativeCheckpointRestorer({journal:store.restorations,objects:c.continuationObjects,workspace:launchConfiguration.workspace,workspaceOwner:own(tasks.workspace,['restore','verify']),expiresAtMs:original.expiresAtMs,now}):undefined;
+ const restorer=objects?createNativeCheckpointRestorer({journal:store.restorations,objects,workspace:launchConfiguration.workspace,workspaceOwner:own(tasks.workspace,['restore','verify']),expiresAtMs:original.expiresAtMs,now}):undefined;
  const broker=createNativeExecutionBroker({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs,journal:store.executions,tasks,verifier:c.supervisor.taskVerifier,taskCapability:c.taskCapability,enabled,now,maxRequestMs});
  const continuation=createNativeContinuationRuntime({store,verifier:c.supervisor.taskVerifier,taskCapability:c.taskCapability,restorer,now});
  const provider=createNativeRuntimeProvider({broker,runtime,admission:c.supervisor.admission,taskCapabilitySha256:taskDigest,continuation,enabled});
