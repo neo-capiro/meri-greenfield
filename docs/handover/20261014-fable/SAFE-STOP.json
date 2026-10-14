@@ -1,0 +1,62 @@
+{
+  "runtimeBase": "c6053e24b465be677cc5980533009b4aab03beab",
+  "runtimeBaseTree": "ca60051cc73c12d777c825abdd7b5c5e56c7f0de",
+  "documentationBranch": "docs/meri-fable-handoff-20261014",
+  "preservedUnstartedBranch": "repair/meri-image-scan-remediation-20261014",
+  "originalCheckout": {
+    "head": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "branch": "work",
+    "changed": false
+  },
+  "preHandoffGitStatus": [
+    "?? docs/qualification/candidates/image-scan-remediation-20261014/"
+  ],
+  "preHandoffIntake": {
+    "path": "docs/qualification/candidates/image-scan-remediation-20261014/HANDOFF.md",
+    "sha256": "6828bb840c96449dd3c89477655a8c27d30c368f883b354986b8656fa99102ec"
+  },
+  "implementationChanges": [],
+  "dependencyChanges": [],
+  "migrationsExecuted": false,
+  "paidBuilds": 0,
+  "deployments": 0,
+  "postStopAwsActions": 0,
+  "sourceProofRowsVerified": 45,
+  "sourceProofTests": {
+    "authorPass": 3,
+    "independentPass": 3,
+    "nativeAcceptance": false
+  },
+  "stoppedIndependentSession": {
+    "noProductFilesEdited": true,
+    "advisoryDocumentCreated": false,
+    "noFurtherAdvisoryRetrieval": true
+  },
+  "documentationScope": [
+    "AGENTS.md",
+    "docs/handover/20261014-fable/"
+  ],
+  "repositoryVisibility": {
+    "meri-greenfield": "public",
+    "capiro-frontend": "public",
+    "capiro-backend": "private",
+    "capirov2": "private"
+  },
+  "privateEvidencePolicy": "References/scrubbed approved summaries only; no raw private receipt or inventory bodies in this public repository.",
+  "firstChat": "UNACCEPTED_LIVE",
+  "G0": "HISTORICAL_ACCEPT",
+  "G1": "OPEN",
+  "G2-G7": "UNACCEPTED",
+  "privateIntakeDisposition": "Retained byte-exact locally outside public Git; no private AWS identifiers/body published.",
+  "privateIntakeSHA256": "6828bb840c96449dd3c89477655a8c27d30c368f883b354986b8656fa99102ec",
+  "pendingProductBindings": [
+    "product PostgreSQL",
+    "Temporal",
+    "authority/independent registration",
+    "provider proxy",
+    "routing",
+    "checkpoint grants",
+    "browser/renderer hosting"
+  ],
+  "shippingInventory": "Historical only; not refreshed here; private IDs/receipts stay with shipping."
+}

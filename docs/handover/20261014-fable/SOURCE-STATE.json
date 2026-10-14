@@ -1,0 +1,85 @@
+{
+  "runtimeBase": {
+    "repository": "neo-capiro/meri-greenfield",
+    "head": "c6053e24b465be677cc5980533009b4aab03beab",
+    "tree": "ca60051cc73c12d777c825abdd7b5c5e56c7f0de",
+    "branch": "codex/qualification-swc-materialization-repair",
+    "pr": 86,
+    "draft": true
+  },
+  "repositories": [
+    {
+      "url": "https://github.com/neo-capiro/meri-greenfield.git",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "defaultHead": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "implementationOwner": "Fable; dot independent acceptance"
+    },
+    {
+      "url": "https://github.com/neo-capiro/capiro-frontend.git",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "defaultHead": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "implementationOwner": "dot/frontend owner",
+      "functionalPreview": {
+        "url": "https://portfolio-preview.app.capiro.ai/",
+        "pr": 48,
+        "head": "038ee79e93e9b4d1a371a5d38e17dd339b1af859",
+        "branch": "repair/capiro-strategy-proposal-compatibility-20261014",
+        "basePR": 46,
+        "baseHead": "462e7b554200f9b4a96c1589d55b6df7ce4a7df5",
+        "taskRevision": 7,
+        "status": "Parent-reported LIVE; proposals GET200; current identity/tenant checks passed; not Meri chat acceptance"
+      },
+      "separateDesktopCandidates": [
+        {
+          "pr": 47,
+          "head": "882c7b51d79c6d20ace685fb32b5c76a1ef312bf",
+          "branch": "repair/capiro-desktop-content-20261014",
+          "basePR": 46
+        },
+        {
+          "pr": 49,
+          "head": "7d7bf4c550e8d906c6ef3498ff79327820519daa",
+          "branch": "repair/capiro-desktop-detail-content-20261014",
+          "basePR": 47
+        }
+      ]
+    },
+    {
+      "url": "https://github.com/neo-capiro/capiro-backend.git",
+      "visibility": "private",
+      "defaultBranch": "backend-import",
+      "defaultHead": "c76f5fc0df6688743afeec274211afd2e67fe8f1",
+      "implementationOwner": "dot/backend and sole shipping owner",
+      "candidates": [
+        {
+          "pr": 18,
+          "sourceHead": "91399fe1a205e37073cbeed2d7eb66a1fafd7fa2",
+          "publicationHead": "f4f9e1361d92ac0afadd67c1cae3f5faefa829ec",
+          "branch": "codex/backend-runtime-candidate-20261014"
+        },
+        {
+          "pr": 20,
+          "head": "45aa8059f1a0e6451e5d0b9518b7543ed3e9254e",
+          "branch": "qualify/core-node22-alpine324"
+        },
+        {
+          "pr": 21,
+          "head": "91a8890e6fb4d577cdaf08e9db1c9735e82a6d4a",
+          "branch": "codex/qualification-dumb-init-version-probe"
+        }
+      ]
+    },
+    {
+      "url": "https://github.com/neo-capiro/capirov2.git",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "defaultHead": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "scope": "Legacy/live reference only; no wholesale imports or deletions"
+    }
+  ],
+  "remoteReadback": "GitHub metadata independently read for refs/visibility; runtime/preview facts separately parent-reported, no AWS refresh.",
+  "shipping": "Sole existing owner; no private receipt IDs or body publication.",
+  "implementationStopped": true
+}

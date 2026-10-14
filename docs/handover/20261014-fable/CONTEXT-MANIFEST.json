@@ -1,0 +1,554 @@
+{
+  "sourceBase": "c6053e24b465be677cc5980533009b4aab03beab",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "6033225f22b0a8683d220eef59af549e7a05f64b4febcbe9870a24a690fe4bf1",
+      "bytes": 6599,
+      "group": "Governing scope and provenance",
+      "baseSha256": "395d56113bc366679edcfa933bc53747b705394851b2fa3d55710c0f9428cc25",
+      "policyDelta": "Latest human Fable assignment; runtime/product architecture unchanged."
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959",
+      "bytes": 11082,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "bytes": 86848,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7",
+      "bytes": 57656,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/plans/revisions/20261010-R2/Meri_Codex_Hermes_Deployment_Plan-R2.md",
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "bytes": 86848,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+      "bytes": 127877,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/plans/revisions/20261010-R2/manifest.json",
+      "sha256": "3af1bd511c4eff3bbb43c728808046c872768cf47da7ea6a83262bd95211cbe5",
+      "bytes": 2312,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/plans/revisions/20261010-R2/inventory-stored-cells.json",
+      "sha256": "15b706f14aeef9b5a142d35ffdf2f7ee03b946ab665ff789de6da84202e89191",
+      "bytes": 927872,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/r2/requirements.json",
+      "sha256": "d04848106740cec3c5f8fc45aa3477ce4cc9e4c26af7e19ba163d1ccc5445beb",
+      "bytes": 9960,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/r2/gates.json",
+      "sha256": "edb425d2bb70e346bf2006ad62748f93f1bc8cfc63b16d3ffba7ce5b6159f887",
+      "bytes": 8743,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/r2/tickets.json",
+      "sha256": "88fdf415d837c493fbec4b04ad3c33a0c329ed64dac3041990e8f2a11ade86d7",
+      "bytes": 8332,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/r2/capabilities.json",
+      "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1",
+      "bytes": 307002,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/r2/skills.json",
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6",
+      "bytes": 25018,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/r2/audit-findings.json",
+      "sha256": "001342c23aac5da0a89917ac89f1f1b7788249d5d9ef59fcd747e367af32ac06",
+      "bytes": 11060,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5",
+      "bytes": 5774,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
+      "bytes": 43968,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/CAPABILITY-CATALOG.md",
+      "sha256": "553f8bfd226f870ae72ac62856874799c59054cb8d7c2ab801917e459d562f98",
+      "bytes": 34766,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/COMPONENTS.md",
+      "sha256": "73f16e1dd473ae8762386eade4c0cb682c39577680bd227493557507540298ad",
+      "bytes": 9192,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/DECISIONS.md",
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae",
+      "bytes": 24662,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "docs/coordination/STATUS.md",
+      "sha256": "5660617b49f1727e0382afe4df4473f4194e7e8482c0140a82fc408cbe7efd2d",
+      "bytes": 52492,
+      "group": "Governing scope and provenance"
+    },
+    {
+      "path": "apps/runtime/README.md",
+      "sha256": "e4bee03f900ca66f345c0f13b4341fdf964b6971e0150cdf0b5340d752557173",
+      "bytes": 16625,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "apps/runtime/native-authority/README.md",
+      "sha256": "89773976337667b8a17825945b10c0f5d974fd053061aed2b6d974a2b7ae1460",
+      "bytes": 8433,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "apps/control/admitted-runs/README.md",
+      "sha256": "0844ec4d9d33f7603b65a7d88c49de0b1a09ff0d2209dde8339b0ed77616a928",
+      "bytes": 6808,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "apps/control/conversations/README.md",
+      "sha256": "88b599d176ed45cbede6d0d8f7bd278a86879cf9108274c69d1cc6ffd35fe077",
+      "bytes": 6073,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "apps/control/conversations/lifecycle/README.md",
+      "sha256": "7a8b44a9da8a2d6ab6e96e87148aa680d4c52c4528102b920e0c6702c9e5da12",
+      "bytes": 6618,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "apps/worker/conversation/README.md",
+      "sha256": "5357c5b4b1df1150db5886a7c30f82b3bcfa289d143445add35a8b1d6c1cf3d9",
+      "bytes": 2794,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "apps/gateway/budget/README.md",
+      "sha256": "d8ebbc8aa426c790d1f5c3ce306f7f786864ae2ef2ec576f7c9807c83e00f384",
+      "bytes": 20495,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-RUN-BINDINGS-20261014.md",
+      "sha256": "ab5854b0c6d6fe0872b0c9f41ea6b6a9ba4612e4efc7db835a8754d7fc2f558f",
+      "bytes": 21397,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-SESSION-LOCAL-20261014.md",
+      "sha256": "b5a156ac1406e7ac8e4f7deb7ed01cb439269bf1c3e3b086b6172f5537ad37e6",
+      "bytes": 8851,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-RUNNER-GATEWAY-20261014.md",
+      "sha256": "d3e1f3e2e9c65ef9e34808dac5c5ed6fd0643b7b3465e3d0b0c19845e6912e38",
+      "bytes": 8801,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-SESSION-SUPERVISOR-20261014.md",
+      "sha256": "88d3f1daf98eeef937a50d29932c0797dc5d6e0679a12c31cfe2aa3f78a3f183",
+      "bytes": 9372,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-SESSION-LAUNCHER-20261014.md",
+      "sha256": "aab29193f76b8fbbb526717c9b76f820785c0ddf04ae134b20e0fcf272c1f456",
+      "bytes": 6135,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-TASK-VERIFIER-20261014.md",
+      "sha256": "9f7a76eaccd3b7cd2c54655b0f0a73157eb14d967461d6d53436a12a7d3ddd3b",
+      "bytes": 8021,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-EXECUTION-BROKER-20261014.md",
+      "sha256": "0f29310c3886e401d78e558c27be5c71e3366baed04dc0da396c09a422268ec0",
+      "bytes": 6895,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-RUNTIME-RECOVERY-20261014.md",
+      "sha256": "698cc7a98d98adb6398d4df8b3b762c9c68b3a625265e4eb9056fde7247ad732",
+      "bytes": 9377,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-SINGLE-QUERY-20261014.md",
+      "sha256": "ee616d28617b82a91daa7e721fe2c517262072fca74075d3f621c4b03fef3983",
+      "bytes": 7678,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-REMOTE-COMPOSITION-20261014.md",
+      "sha256": "d386d8f6a3a1649f093d24292fc44553f505e243db5ee581b980aa4ccf4cdf0a",
+      "bytes": 13705,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PREPARED-KICKOFF-CONTROL-INSPECTION-20261014.md",
+      "sha256": "50d9506c4251ea90ef282d38d995ce843fc09910d21fb4e8293cc73da7bcfb17",
+      "bytes": 6974,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PREPARED-CANDIDATE-DEPLOYMENT-20261014.md",
+      "sha256": "8856f7f939b1ddb5cf1c9735590fddca3dcb160f0843fd03acf856723a205002",
+      "bytes": 10782,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/FINAL-QUALIFICATION.json",
+      "sha256": "d0cee5c8a083c04b32959005353ed1a000de128cf8d282b05d08d7439bbd2930",
+      "bytes": 5192,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/qualification/candidates/native-remote-composition-20261014/FINAL-QUALIFICATION.json",
+      "sha256": "fc5aaf78a45be305ffe79ab592c6a147cd148cc8095f6f455e6e20c2d7411db1",
+      "bytes": 4299,
+      "group": "Current native and first-chat source"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FRONTEND-CONVERSATION-BINDING-20261014.md",
+      "sha256": "2b60cfaf07cea10345c7e82d8243d517af136bd58d61a1dfcd335a655e767886",
+      "bytes": 8117,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPIRO-BACKEND-INTEGRATION-BOUNDARY-20261014.md",
+      "sha256": "0fa68b5b0454855f209c9103d1944dd701d45d6fb1dc946d4f12f3967281ab6e",
+      "bytes": 8861,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/README.md",
+      "sha256": "604cf7c255c9a6dcc0f44fff7d6a5f2a828c848a6d2bed7253c52f02f46d4608",
+      "bytes": 8043,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/README.md",
+      "sha256": "ad7eaa94dc2a2747a23301cd66eb5d6662120ef3b22e18381ff6ff59eb2504e4",
+      "bytes": 5132,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "apps/control/action-host/application-adapters/cross-repo/pins.json",
+      "sha256": "3132dfe886d1b893602c48c63629471663156671d6093975e5a06130c207944f",
+      "bytes": 4101,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "docs/INTEGRATION-BOUNDARY.md",
+      "sha256": "fc4eeb4bbc1faffbe9712f7ecf0687819b8389e0dab8af482a416cde981a46de",
+      "bytes": 15291,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "docs/UI-SPEC.md",
+      "sha256": "56cf670707cc99efc38c9edb671f5d2332f95b1a6b276017058f6dfc9d881e95",
+      "bytes": 39228,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "docs/UI-COVERAGE.md",
+      "sha256": "9c216a6b62c8fa95122475c489265839183c42ad02a1ecf5c3bbee73355e25d9",
+      "bytes": 44985,
+      "group": "Frontend, backend and external boundary"
+    },
+    {
+      "path": "apps/runtime/artifacts/README.md",
+      "sha256": "1e5d3e4419640c4b62eef49e59c3a6e728a70c232864a71a330f083c603ca1c2",
+      "bytes": 4667,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "apps/artifacts/storage/README.md",
+      "sha256": "f3d3907fe2f98ee6f77599b9923e398b60393ebec196d3c588ffa0305a6c8850",
+      "bytes": 8399,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "apps/control/action-application/README.md",
+      "sha256": "308b5e3b2d7392e4d2560fd18a50979385fa4268d8d2723aac25ea6213d123b2",
+      "bytes": 4009,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "apps/control/commands/README.md",
+      "sha256": "41dc69723b92c67b71aaf9719014453e4eec0b28203ed8c8e5b127f74c1e2295",
+      "bytes": 5059,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "apps/runtime/selected/README.md",
+      "sha256": "b5fcab28e20deabd2d42cb349181e2df7e039110a18455c4c6ef8f170da3abb1",
+      "bytes": 7146,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "apps/gateway/selected-skills/README.md",
+      "sha256": "f5a8b2595de218dbd946a6ca4d448de9a7fb465b32ca9cdd4cb116cbf5d0c795",
+      "bytes": 2917,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "packages/skills/README.md",
+      "sha256": "fb8bc61f789a06d6461963297692eaa47e594e3b2215fd415db16ead098e4246",
+      "bytes": 5102,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "packages/skills/IMPLEMENTATION.md",
+      "sha256": "95a59bddeabdd4d4ef1c926a4134bbd34f0c8fd2a8772ed795501a1f973a4d86",
+      "bytes": 2510,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "packages/skills/assets.json",
+      "sha256": "ebe456d0cc4b9dc34fbbc4467e2411ccccebeab424a45b1357007720342a56a5",
+      "bytes": 5995,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-DOCX-FLOW-20261013.md",
+      "sha256": "f79ff38cfd15a6ec7ec020bff2783b9e934d1cff797829fe568626855f9e4b89",
+      "bytes": 10141,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-DOCUMENT-DRAFTING-20261013.md",
+      "sha256": "4276551517490a95e53ccfa0cdd29b945b5d11cb78343aa0f263f8b37c38aa64",
+      "bytes": 6648,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-DOCUMENT-REPLAY-20261013.md",
+      "sha256": "5b94cfa803004e30cbb2d234fa31c4219ac6b9a118f6910da10490df323974cc",
+      "bytes": 12868,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-WORKBOOK-DRAFTING-INTEGRATION-20261013.md",
+      "sha256": "826dfafb39e95a057188231afa0484de6ee80ce32294ee811967b92eb0c2ecd3",
+      "bytes": 4638,
+      "group": "Documents, selected skills and action owners"
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "sha256": "8d4ac642bee442691b2857c58ae89cc84c16f52e054386c0ecb7ab9a0ead7e69",
+      "bytes": 2063,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "apps/runtime/build/materialize-swc.mjs",
+      "sha256": "cd34a83e28ebbd70ff6acdfaf636938d30d609d86a1f509d8c0d8a7abda897fe",
+      "bytes": 10415,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "apps/runtime/build/swc-diagnostic.mjs",
+      "sha256": "de82332711daf9af8a3475eb0f97305ee2b127696c08f78b04e2b9f72a2ad329",
+      "bytes": 5869,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/README.md",
+      "sha256": "f5f454b456695e050dbc38ca559d11bd056909a47d513e9dbaaaf4dd25b5cdff",
+      "bytes": 3220,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/VALIDATION.md",
+      "sha256": "b9f46818cf89b0e41feccbcc019ef91d9d2f98ccf3e19f7f4ae3cf3e8480e2ec",
+      "bytes": 2883,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/source-manifest.json",
+      "sha256": "d7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f",
+      "bytes": 7835,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/source-proof.test.mjs",
+      "sha256": "427bbed63204dc1734a68f6c04d23c1df789fffca542bf0ab7835c0b206d47ba",
+      "bytes": 2832,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/meri_image_build.py",
+      "sha256": "d053317436d2969070926f102a72c0ca974900e3deb1b7235a9f070767e4fb61",
+      "bytes": 17274,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/image_probe.mjs",
+      "sha256": "d86f1978bae8e7a544adc86ceb0b284b2bb750b8693c07116f2df800bad7239d",
+      "bytes": 4827,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/native-cli.mjs",
+      "sha256": "2626146c704b7ffc87a1dcfea4de7aa7be0e736e30aa02c328c6f794178d5e91",
+      "bytes": 3879,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/temporal-binding.mjs",
+      "sha256": "a0fbd5f94e93736c1b061a8e2ee9b23f18530f5c97ee123d580f736615f6a2dc",
+      "bytes": 1332,
+      "group": "Image source and qualification gates"
+    },
+    {
+      "path": "docs/handover/OPENAI-CODEX-CONTINUATION-20261014.md",
+      "sha256": "aff7f926b9fee14ea6e46733c828a536d2b68b541a2d600bdb149b0244773455",
+      "bytes": 6666,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "sha256": "c457027091b54a9373494feda828e0f1827ebc68c92bb4d686b7123a771fe516",
+      "bytes": 38565,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/qualification/candidates/whole-plan-next-20261013/REPORT.md",
+      "sha256": "5b063a9b17c616769fa3468f224024b24f748a4427b60d0ea3975d643f0d5bf3",
+      "bytes": 2979,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/qualification/candidates/whole-plan-next-20261013/reconciliation.json",
+      "sha256": "163bf76cfd4c150ddecf20051eeaea4d95c52e85a8202d8ce7c0d5fd105e9992",
+      "bytes": 114581,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/qualification/candidates/whole-plan-next-20261013/reliability-audit/REPORT.md",
+      "sha256": "618a134c88640bcb0b8d01ef026210ea042d4c21bb8e8721af3343facb0548ea",
+      "bytes": 6009,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/qualification/candidates/whole-plan-next-20261013/source-audit/requirements-audit.json",
+      "sha256": "8966aaa71e36eb99a0b90d587be93c715d15794cafaebf44c592e03370e34eba",
+      "bytes": 113982,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/handover/20261012/CONTEXT-INDEX.json",
+      "sha256": "64491730fb678c688ffa295d175e8123193cb932dc9a6a9178fbdbca11196bf0",
+      "bytes": 8487,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "docs/handover/20261011/REFERENCE-INDEX.md",
+      "sha256": "d622785b6c1152abdf46addded4d7e175eac6a227761bd04b417e227a4e1066c",
+      "bytes": 24125,
+      "group": "Historical context; never a current baseline"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0001_conversations.sql",
+      "sha256": "97d4e7058696b8ded1ad7dc0730ab271e75137968831ed34c0b73a7dadc16b26",
+      "bytes": 1353,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0002_lifecycle.sql",
+      "sha256": "87c27a01a2f36ceb0a4faf6c5242d8e061240037b6775aef777f292323170b69",
+      "bytes": 1160,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0003_selected_outputs.sql",
+      "sha256": "25d9fc720e0f4a0345e017d5a20285b27d04af55e3cc953d261664ce31db2245",
+      "bytes": 636,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+      "sha256": "0370baa18aff134ca75287b468fc00b75e616f63fbb440c02069bccd31dd582a",
+      "bytes": 3600,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0005_selected_reads.sql",
+      "sha256": "8ffb0b725098aaed8bdd48591b3da9a04c2d751d9098a5b35f8c528ac9ec8cde",
+      "bytes": 903,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0006_native_executions.sql",
+      "sha256": "9537daf4f3611cfce8aae0ee148bf4da3bcfc53116faaec6eb1c57cf05b4d714",
+      "bytes": 1315,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "sha256": "76da1fa221bb463ce116d3ca794566321f219177b2055193c2c7f609f5e6ba19",
+      "bytes": 3435,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+      "sha256": "8a257cf9513572ca0efbe2430ea40fd38e859ae484668a6a90fa4b84b6e142ec",
+      "bytes": 5088,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/gateway/budget/migrations/0001_product_budget.sql",
+      "sha256": "0beb498dbac8d6e092c207b46f8167fb161361e7ad869aea6e33f0d1d8c4a511",
+      "bytes": 5730,
+      "group": "Existing migration source"
+    },
+    {
+      "path": "apps/artifacts/migrations/0001_versions.sql",
+      "sha256": "d654a24aa4f45c4b3c43d927263f96b8b2f406af509840819feda36c5f2dee19",
+      "bytes": 1242,
+      "group": "Existing migration source"
+    }
+  ],
+  "missingCandidatePaths": []
+}
