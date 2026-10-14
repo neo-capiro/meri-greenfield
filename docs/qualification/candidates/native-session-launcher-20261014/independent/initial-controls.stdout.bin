@@ -1,0 +1,29 @@
+✔ trusted immutable plan rejects changed argv and permits one actual spawn (1222.858291ms)
+✔ live real stream produces original lease witness and rejects changed binding (762.531862ms)
+✖ expired lease physically retires child even without reads (557.122881ms)
+✔ SDK signal cancellation retires group and registration (629.80715ms)
+✔ bad bytes invalidate read and cause physical retirement (690.453493ms)
+✔ disabled and wrong executable pin allocate no child (929.752379ms)
+✔ natural child completion preserves stdout buffered for slow SDK reader (953.776835ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6484.722927
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-session-launcher-20261014/independent/controls.test.mjs:26:1
+✖ expired lease physically retires child even without reads (557.122881ms)
+  Error: NATIVE_LAUNCH_INITIALIZATION
+      at launchFault (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/launch-configuration.mjs:5:46)
+      at Object.spawnClaudeCodeProcess (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/session-launcher.mjs:45:65)
+      at Object.spawn (file:///workspace/meri-native-session-launcher/docs/qualification/candidates/native-session-launcher-20261014/independent/controls.test.mjs:14:155)
+      at TestContext.<anonymous> (file:///workspace/meri-native-session-launcher/docs/qualification/candidates/native-session-launcher-20261014/independent/controls.test.mjs:27:41)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_LAUNCH_INITIALIZATION'
+  }

@@ -1,0 +1,23 @@
+# Independent launcher source and local process review
+
+**ACCEPT_SOURCE_LOCAL_PROCESS_INTEGRATION** at `685db92eca8fe94945baba9d558b8c1d2c99c834`. Genuine admitted/deployed supervisor authority, task verification, immutable deployed executable/image, physical tenant isolation, broker/runtime/proxy, product database and Temporal remain **HOLD**. This is source plus real local Node-child integration with explicitly synthetic launch authority; SDK/provider/cloud/database/document calls were zero.
+
+Reviewed canonical source ownership, PR73 observer/registration/durable-session contracts, the current instructions and linked PR73 qualification evidence. The new modules have cohesive boundaries: immutable launch configuration; owned Linux process-group lifetime; and one-use SDK-compatible launch/transparent process-stream integration. The PR73 observer remains byte-identical; no parallel storage, receipt vocabulary, route, registry or model loop was introduced. Only the retained registration read port crosses the existing control mount. The supervising caller retains the one-use launch hook, original compiled facts and process cleanup owner. A worker-owned hook installation alone cannot establish independent admission or authentic deployment provenance.
+
+Final command:
+
+```text
+python3 docs/qualification/candidates/native-session-launcher-20261014/independent/capture-reaped.py final-controls node --test docs/qualification/candidates/native-session-launcher-20261014/independent/controls.test.mjs
+```
+
+**10/10 PASS** at the exact reviewed commit; source diff 0 bytes, exit 0, no timeout, capture group absent, no capture fallback kill. Distinct controls use actual detached Node children and compiled Node executable realpath/hash, never a mocked spawn. They verify immutable argument match/one use; original lease/live witness/full binding; expiry retirement without reads; SDK cancellation; malformed bytes refusal/retirement; disabled/wrong executable preallocation refusal; expiry during executable readback with no allocation; forbidden AWS bearer aliases; stubborn child SIGTERM escalation to SIGKILL with confirmed close/group absence; and complete buffered native frames for a slow reader after natural child completion. All fixture directories are removed by test-owned cleanup, and launcher cleanup outcomes are explicitly asserted when a child was allocated. The SIGKILL is an intentional product-owned escalation control, distinct from capture fallback cleanup.
+
+Findings resolved before final acceptance:
+
+- Natural close initially called destructive observer/transport cleanup; the author corrected this before the initial independent execution. The slow-reader control passes.
+- Executable readback originally lacked a subsequent lease/cancellation check. A 150ms initial test lease elapsed during synchronous executable hashing and allocated a child whose observer then refused initialization. Reported to the author; the final source rechecks immediately before allocation, and an injected-clock control proves no allocation when the lease expires during preflight.
+- Compiled environment originally admitted `ANTHROPIC_AWS_BEARER_TOKEN` and `ANTHROPIC_AWS_REGION`, contrary to the existing runner policy. Both now refuse before allocation.
+
+Retained outcomes: `initial-controls` was 6/7 PASS, with the overly short expiry fixture refusing initialization; `corrected-expiry-controls` was 7/7 PASS after extending that fixture lease to 1500ms. Final controls add three meaningful cases against the committed fixes. Those two early captures ran untracked production additions at PR73 HEAD; Git's captured tracked diff was empty and does **not** bind the untracked source. The reviewed early file digests communicated during execution were configuration `2ef29d20be9566ec9ddbc38556e61b2e7a021f6826a3497a89cadd1a2f9d0220`, lifetime `87552a651538337f069efdaae68c361cf69a4f1a17a905ced49c17fe943a6120`, launcher `b041a035c17c83af71b398db6cb941db57058883ca61a56ae3cb6ab3f3d61cf4`. Final acceptance relies on the committed final run and manifest, not those earlier empty diff hashes.
+
+The local process group check establishes owned process cleanup on this Linux host, not deployed tenant isolation. Executable readback is a local file pin; deployment must guarantee immutability through spawn and provide genuine admitted binding/lease/configuration. The final run did not repeat the PR73 actual SDK probe, and does not establish fresh SDK integration or provider behavior. No blocker remains for this reviewed source slice; live acceptance still requires its separate owners and configuration.

@@ -1,0 +1,15 @@
+✔ trusted immutable plan rejects changed argv and permits one actual spawn (1418.5832ms)
+✔ live real stream produces original lease witness and rejects changed binding (654.567115ms)
+✔ expired lease physically retires child even without reads (1795.672208ms)
+✔ SDK signal cancellation retires group and registration (886.060039ms)
+✔ bad bytes invalidate read and cause physical retirement (881.518036ms)
+✔ disabled and wrong executable pin allocate no child (980.938041ms)
+✔ natural child completion preserves stdout buffered for slow SDK reader (969.919646ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8364.419713

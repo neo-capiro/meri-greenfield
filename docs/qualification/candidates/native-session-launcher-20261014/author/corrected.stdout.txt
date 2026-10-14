@@ -1,0 +1,29 @@
+✔ owned genuine process bytes establish immutable receipt through readable SDK transport (1381.573115ms)
+✔ altered SDK inputs and second spawn refuse, original compiled data survives caller mutation (964.022227ms)
+✔ hostile descriptors/proxies and bad pins fail before child allocation (535.754384ms)
+✔ launch uses explicit environment without ambient inheritance (616.052868ms)
+✔ cancelled SDK request and disabled launcher allocate no child (522.044349ms)
+✖ expiry with no stdout reads physically retires owned group and refuses registration (811.772467ms)
+✔ supervisor cancellation retires pending registration and closes exactly owned group (693.961953ms)
+✔ malformed native stream retires owned child rather than merely refusing receipts (2529.816311ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8743.711468
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/session-launcher.test.mjs:53:1
+✖ expiry with no stdout reads physically retires owned group and refuses registration (811.772467ms)
+  Error: NATIVE_LAUNCH_INITIALIZATION
+      at launchFault (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/launch-configuration.mjs:5:46)
+      at Object.spawnClaudeCodeProcess (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/session-launcher.mjs:45:65)
+      at TestContext.<anonymous> (file:///workspace/meri-native-session-launcher/apps/runtime/native-authority/test/session-launcher.test.mjs:54:52)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'NATIVE_LAUNCH_INITIALIZATION'
+  }
