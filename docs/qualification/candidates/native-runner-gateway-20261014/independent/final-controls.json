@@ -1,0 +1,57 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs",
+    "docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-reply.test.mjs",
+    "docs/qualification/candidates/native-runner-gateway-20261014/independent/relay-boundaries.test.mjs",
+    "apps/runtime/test/native-runner-gateway.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "7df7a9e00b72f097de66acb1a467c51eac026e2c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "testSources": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs",
+      "sha256": "be4cf7637659fca9169775b509ef3a9cae7ebcbab3ee7829ddda29c99986d9cf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-reply.test.mjs",
+      "sha256": "10e8d4f1738ab3f2f00aef05fe40a26c71c9342c137117cbc2f6e2d7fec51c95"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/relay-boundaries.test.mjs",
+      "sha256": "d51bafb05d1b87e57fa87e4a97daff211cb870ead66d4542c018b6835b0c603c"
+    },
+    {
+      "path": "apps/runtime/test/native-runner-gateway.test.mjs",
+      "sha256": "e84ade9fb3739d901751332088e094a2d95f269119a0578ad3a3a5cde2a45f1d"
+    }
+  ],
+  "postSourceHead": "7df7a9e00b72f097de66acb1a467c51eac026e2c",
+  "postSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "captureSha256": "f250b8b7bc1300ebbf71d3dff6446daa4b391807d91f846d5ced35e1a1bca64d",
+  "startedAt": "2026-10-14T01:41:34.967588+00:00",
+  "durationSeconds": 8.059,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 52566,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/final-controls.stdout.bin",
+      "bytes": 1554,
+      "sha256": "704b30df1a76f7521513b19a7082519af4458a0ebe96263b50584dd85677e56d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent exact-source check after preserved Proxy error and post-await response cleanup findings; same failed assertions plus meaningful bearer/byte/limit controls and canonical author controls.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

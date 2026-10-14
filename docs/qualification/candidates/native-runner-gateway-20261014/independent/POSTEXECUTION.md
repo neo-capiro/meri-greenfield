@@ -1,0 +1,15 @@
+# Independent actual SDK/gateway evidence review
+
+Decision: **ACCEPT_LOCAL_MECHANICAL_TRANSPORT_WITH_SCRIPTED_ACK; HOLD_NATIVE_AUTHORITY_DURABILITY_AND_OUTPUT**. Root executed one captured SDK probe at7df7a9e00b72f097de66acb1a467c51eac026e2c after the independently recorded preexecution permit. This reviewer inspected retained source/capture/receipt and temporary-path absence only; no SDK, provider, DB or fixture action was repeated.
+
+actual-sdk-gateway.json exits0 after9.46s, exact source head7df7 and zero production diff. Raw stdout/stderr sizes/SHA256 match the receipt; stderr is empty. Recorded capture-script SHA matches retained script, and sdk-gateway-observation.mjs is byte-identical to its named frozen Git version.
+
+Scrubbed actual receipt reports SDK0.3.295, native init CLI2.1.295, one spawn/child, one init/single main key, three native mirror frames, three actual SessionStore append callbacks, three fixed relay forwards and three validated scripted ACKs. transportAckMatches and actualInitMainKeyCorrelated are true. Result is actual CLI success with numTurns0/totalCostUSD0/queryFailed:false. The configured no-upstream403 sink received zero requests. This proves the reported local actualSDK/nativeCLI and two-loopback-hop transport mechanics, not a simulated SDK callback.
+
+Native stream EOF/close/error/tail gates passed: streamComplete:true, nativeFrameError:false, stdoutError:false. Child.close was observed with no forced kill. The enclosing subreaper recorded the owned process group absent, no timeout, no group kill and no reaped descendants. Because the owned Node probe exited after finally awaited both listeners and sink close, its listening processes did not remain alive. Static reinspection confirms named SDK temporary directory /tmp/meri-sdk-zero-provider-kM9Twq is absent. No claim of broader host/network isolation follows.
+
+The wire owner is explicitly scripted ACK-only. register/load/listSubkeys refuse; there is no actual task verifier, independent registration reader, current product admission or database. Receipt retains registrationQualified:false, durableStorageQualified:false, physicalIsolationQualified:false, productTaskVerifierInstalled:false and productRegistrationReaderInstalled:false. committed ACK validates protocol correlation but is not a durable commit qualification. providerCalls0 describes the configured no-upstream boundary; this review did not independently measure global network traffic or attest a prelaunch container/image digest.
+
+Original failed source assertions remain in independent raw evidence; root's two fixture-only failures remain its own retained captures. Source12/12 acceptance and localmechanics acceptance are separate. Native authenticated conversation, actual registration/admission/durable persistence, approved model/proxy/isolation, separately approved output run and editableDOCX delivery remain HOLD.
+
+Task-owned dependency-link cleanup is root-owned finalization and should be read back separately before publication. This note does not assert that cleanup before its receipt exists.
