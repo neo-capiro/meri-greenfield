@@ -1,0 +1,18 @@
+✔ raw live native stdout registers through canonical client/HTTP/durable owner and append/load retains data (85.597061ms)
+✔ missing init or main mirror cannot release registration, and read cancellation/deadline retires waiters (193.611071ms)
+✔ foreign caller binding/key cannot install observed authority before or after real frames (246.259632ms)
+✔ conflicting native init, CLI pin or main path permanently refuses receipts (137.49422ms)
+✔ malformed UTF8/JSON, frame overflow and total overflow refuse without killing borrowed process/source (176.339375ms)
+✔ stream exit after observation and original expiry prevent new or late receipt release (118.817347ms)
+✔ closed observer detaches listeners/refuses queued readers and preserves borrowed process (50.038294ms)
+✔ disabled or invalid launch configuration cannot promote worker-supplied observations (52.588841ms)
+✔ pending-read limit and constructor cancellation remain bounded without disposing borrowed source (101.375614ms)
+✔ truncated EOF and premature subagent mirrors cannot become a main-session registration (117.716906ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4775.79694

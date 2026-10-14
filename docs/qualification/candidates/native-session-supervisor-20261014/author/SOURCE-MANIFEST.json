@@ -1,0 +1,36 @@
+{
+  "testedSourceCommit": "a78fca398110c521e23bb4f34810bf58242fd841",
+  "productionOwner": "root",
+  "authorOwnedSource": [
+    "apps/runtime/native-authority/test/session-registration.test.mjs",
+    "docs/qualification/candidates/native-session-supervisor-20261014/author/native-stdout-fixture.mjs"
+  ],
+  "files": [
+    {
+      "path": "apps/runtime/native-authority/session-registration.mjs",
+      "sha256": "4c9ab92ff4bcd6ad86066da8242d46dbe8aaf48e5b2b241f3814ff763fc04066",
+      "bytes": 9397
+    },
+    {
+      "path": "apps/runtime/native-authority/test/session-registration.test.mjs",
+      "sha256": "1d6051cfc7b605e062727759d83998147b1ae42a6428d3a3b61d47354c5e1af1",
+      "bytes": 14562
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/native-stdout-fixture.mjs",
+      "sha256": "5bec0c25f59a8289b14340be06eca45924c1000dafbed2ae6c4528df24371933",
+      "bytes": 388
+    }
+  ],
+  "finalCapture": "physical-exit-controls.json",
+  "finalChecks": {
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "taskOwnedNodeChildrenGracefulCloseAssertions": 20,
+    "sourceDiffBytes": 0,
+    "ownedProcessGroupAbsent": true,
+    "ownedGroupKillRequired": false
+  },
+  "scope": "LOCAL_REAL_NODE_STDOUT_SYNTHETIC_API_AUTH_SQL_NOT_LIVE_TASK_ACCEPTANCE"
+}

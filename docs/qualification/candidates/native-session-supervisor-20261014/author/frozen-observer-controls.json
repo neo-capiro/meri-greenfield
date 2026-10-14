@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/session-registration.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-session-supervisor",
+  "sourceHead": "67406ce05bf9ad89ad9ddc7e23b04e41b9cb6d54",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T02:16:33.398542+00:00",
+  "durationSeconds": 4.834,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64566,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/frozen-observer-controls.stdout.bin",
+      "bytes": 1223,
+      "sha256": "9e971fb56cacfaaf90313e2215f5dd0125db4185c3e6710293aa7361b7d83a93"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/frozen-observer-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Frozen author source67406ce0 adds split multibyte UTF8 positive transport, current authority revocation before SQL, truncated EOF and premature subagent refusal; targeted verification required for new cases.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
