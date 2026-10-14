@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/session-registration.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-session-supervisor",
+  "sourceHead": "ca38a341a98b160c4ba8091bd651dce0a3a6d75a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T02:15:16.998658+00:00",
+  "durationSeconds": 5.266,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 63765,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/cleanup-owner-controls.stdout.bin",
+      "bytes": 1116,
+      "sha256": "df1e6c9d69b1fa9e3aeb825a3bed61c6e3f92604041c740dcb39bb145c579a3d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/cleanup-owner-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "First runtime suite8/9: disabled observer intentionally never drains borrowed stdout, so owner fixture cleanup must resume original source before waiting child close. Fixed fixture-only cleanup; production unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

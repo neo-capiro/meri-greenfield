@@ -1,0 +1,18 @@
+[
+  {
+    "link": "/workspace/meri-native-session-supervisor/node_modules/ajv",
+    "target": "/workspace/meri-first-session/node_modules/ajv"
+  },
+  {
+    "link": "/workspace/meri-native-session-supervisor/node_modules/ajv-formats",
+    "target": "/workspace/meri-first-session/node_modules/ajv-formats"
+  },
+  {
+    "link": "/workspace/meri-native-session-supervisor/node_modules/canonicalize",
+    "target": "/workspace/meri-first-session/node_modules/canonicalize"
+  },
+  {
+    "link": "/workspace/meri-native-session-supervisor/node_modules/@capiro",
+    "target": "/workspace/meri-first-session/node_modules/@capiro"
+  }
+]

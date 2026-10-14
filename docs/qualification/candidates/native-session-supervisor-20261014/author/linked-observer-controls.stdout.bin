@@ -1,0 +1,26 @@
+✔ raw live native stdout registers through canonical client/HTTP/durable owner and append/load retains data (150.035081ms)
+✔ missing init or main mirror cannot release registration, and read cancellation/deadline retires waiters (372.778091ms)
+✔ foreign caller binding/key cannot install observed authority before or after real frames (246.801715ms)
+✔ conflicting native init, CLI pin or main path permanently refuses receipts (231.321321ms)
+✔ malformed UTF8/JSON, frame overflow and total overflow refuse without killing borrowed process/source (395.914188ms)
+✔ stream exit after observation and original expiry prevent new or late receipt release (90.01525ms)
+✔ closed observer detaches listeners/refuses queued readers and preserves borrowed process (39.578305ms)
+✖ disabled or invalid launch configuration cannot promote worker-supplied observations (1542.993012ms)
+✔ pending-read limit and constructor cancellation remain bounded without disposing borrowed source (88.534914ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7890.645768
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/session-registration.test.mjs:55:1
+✖ disabled or invalid launch configuration cannot promote worker-supplied observations (1542.993012ms)
+  Error: TEST_WAIT_BOUNDED
+      at Timeout.<anonymous> (file:///workspace/meri-native-session-supervisor/apps/runtime/native-authority/test/session-registration.test.mjs:12:143)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)
