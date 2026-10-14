@@ -69,12 +69,17 @@ addFormats(ajv);
 ajv.addSchema(JSON.parse(readFileSync(new URL('../meri.schema.json', import.meta.url))));
 for (const path of executionSchemaDependencies) ajv.addSchema(JSON.parse(readFileSync(new URL(path, import.meta.url))));
 for (const schema of schemas) ajv.addSchema(schema);
-const validators = new Map(schemas.flatMap((schema,index) => (executionSchemaSources.find(source => source.group === groups[index])?.exposed ?? Object.keys(schema.$defs)).map(name =>
-  [name, ajv.compile({ $ref: `${schema.$id}#/$defs/${name}` })])));
+// Register the complete contract catalog eagerly, but compile only shapes used
+// by this process. Control startup must not compile every unrelated source/tool.
+const validatorRefs = new Map(schemas.flatMap((schema,index) => (executionSchemaSources.find(source => source.group === groups[index])?.exposed ?? Object.keys(schema.$defs)).map(name =>
+  [name, `${schema.$id}#/$defs/${name}`])));
+const validators = new Map();
 
 export function validateShape(name, value) {
-  const check = validators.get(name);
-  if (!check) throw new Error(`Unknown R2 contract ${name}`);
+  const ref = validatorRefs.get(name);
+  if (!ref) throw new Error(`Unknown R2 contract ${name}`);
+  let check = validators.get(name);
+  if (!check) { check = ajv.compile({ $ref: ref }); validators.set(name, check); }
   if (!check(value)) throw new Error(`${name}: ${ajv.errorsText(check.errors)}`);
   return value;
 }

@@ -8,7 +8,7 @@ import {ownNativeProcess} from './process-lifetime.mjs';
 import {createNativeSessionRegistration} from './session-registration.mjs';
 
 export function verifyNativeLaunchPaths(c){
- for(const name of [c.workspace,c.configDirectory]){const stat=lstatSync(name);if(!stat.isDirectory()||stat.isSymbolicLink()||realpathSync(name)!==name)throw launchFault('PATH');}
+ for(const name of [...new Set([c.workspace,c.configDirectory,c.secureStorageDirectory??c.configDirectory])]){const stat=lstatSync(name);if(!stat.isDirectory()||stat.isSymbolicLink()||realpathSync(name)!==name)throw launchFault('PATH');if(c.secureStorageDirectory!==c.configDirectory&&stat.uid!==process.getuid())throw launchFault('PATH');}
  if(realpathSync(c.launch.command)!==c.launch.command)throw launchFault('EXECUTABLE');
  let fd;try{fd=openSync(c.launch.command,'r');const stat=fstatSync(fd);
   if(!stat.isFile()||!(stat.mode&0o111)||stat.size<1||stat.size>268435456||createHash('sha256').update(readFileSync(fd)).digest('hex')!==c.executableSha256)throw launchFault('EXECUTABLE');

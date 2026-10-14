@@ -17,7 +17,7 @@ const requestUrl=Object.getOwnPropertyDescriptor(Request.prototype,'url').get;
 /** Inert shared original-plan compiler; allocator and broker must use the same identity. */
 export function compileNativeBrokerPlan(configuration){
  const c=own(configuration,['runtime','plan','launchConfiguration']),runtime=compileNativeRuntimePlan(c.runtime),p=compileNativeLaunch(c.launchConfiguration);
- const launchConfiguration={binding:p.binding,workspace:p.workspace,configDirectory:p.configDirectory,versions:p.versions,expiresAtMs:p.expiresAtMs,executableSha256:p.executableSha256,launch:p.launch,enabled:p.enabled,shutdownMs:p.shutdownMs,...(p.limits?{limits:p.limits}:{})};
+ const launchConfiguration={binding:p.binding,workspace:p.workspace,configDirectory:p.configDirectory,...(p.secureStorageDirectory!==p.configDirectory?{secureStorageDirectory:p.secureStorageDirectory}:{}),versions:p.versions,expiresAtMs:p.expiresAtMs,executableSha256:p.executableSha256,launch:p.launch,enabled:p.enabled,shutdownMs:p.shutdownMs,...(p.limits?{limits:p.limits}:{})};
  const plan=data({ownerPlan:data(c.plan),runtimeSha256:hash(runtime),launchSha256:hash(launchConfiguration)});
  if(hash(p.binding)!==hash(runtime.binding)||p.expiresAtMs!==runtime.deadlineMs)throw executionFault('STACK_CONFIGURATION');
  const original=createExecutionBinding({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs});
@@ -27,8 +27,9 @@ export function createNativeBrokerStack(configuration){
  const c=own(configuration,['pool','supervisor','runtime','plan','launchConfiguration','taskCapability','controlCapabilitySha256','tasksFactory'],['enabled','now','maxRequestMs','continuationObjects']);
  const enabled=c.enabled??false,now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,{runtime,launchConfiguration,plan,original}=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,launchConfiguration:c.launchConfiguration});
  if(typeof c.tasksFactory!=='function')throw executionFault('STACK_CONFIGURATION');
- const store=createPostgresConversationStore({pool:c.pool}),restorer=c.continuationObjects?createNativeCheckpointRestorer({journal:store.restorations,objects:c.continuationObjects,workspace:launchConfiguration.workspace,expiresAtMs:original.expiresAtMs,now}):undefined;
+ const store=createPostgresConversationStore({pool:c.pool});
  const tasks=c.tasksFactory({original,launchConfiguration}),closeTasks=storageMethod(tasks,'close'),readyTasks=storageMethod(tasks,'readiness'),taskDigest=capabilityDigest(c.taskCapability);
+ const restorer=c.continuationObjects?createNativeCheckpointRestorer({journal:store.restorations,objects:c.continuationObjects,workspace:launchConfiguration.workspace,workspaceOwner:own(tasks.workspace,['restore','verify']),expiresAtMs:original.expiresAtMs,now}):undefined;
  const broker=createNativeExecutionBroker({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs,journal:store.executions,tasks,verifier:c.supervisor.taskVerifier,taskCapability:c.taskCapability,enabled,now,maxRequestMs});
  const continuation=createNativeContinuationRuntime({store,verifier:c.supervisor.taskVerifier,taskCapability:c.taskCapability,restorer,now});
  const provider=createNativeRuntimeProvider({broker,runtime,admission:c.supervisor.admission,taskCapabilitySha256:taskDigest,continuation,enabled});

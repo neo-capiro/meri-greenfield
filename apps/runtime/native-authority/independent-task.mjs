@@ -1,5 +1,6 @@
 /** One original task, actual separate supervisor process, byte-only SDK worker transport. */
 import {fork} from 'node:child_process';import {EventEmitter} from 'node:events';import {Readable} from 'node:stream';
+import {createDeferredProcessTransport} from './deferred-process-transport.mjs';
 import {readFileSync,readlinkSync} from 'node:fs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
@@ -7,12 +8,14 @@ import {compileNativeLaunch,matchNativeLaunch} from './launch-configuration.mjs'
 import {verifyNativeLaunchPaths} from './session-launcher.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {executionFault} from './execution-broker.mjs';
+import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
 export function createIndependentNativeTask(configuration){
- const c=own(configuration,['original','launchConfiguration'],['now','maxRequestMs']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,original=data(c.original),p=compileNativeLaunch(c.launchConfiguration);
+ const c=own(configuration,['original','launchConfiguration'],['now','maxRequestMs','deferredSpawn']),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??3000,original=data(c.original),p=compileNativeLaunch(c.launchConfiguration);
  if(hash(original.binding)!==hash(p.binding)||original.expiresAtMs!==p.expiresAtMs||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)throw executionFault('TASK_CONFIGURATION');
- const compiled={binding:p.binding,workspace:p.workspace,configDirectory:p.configDirectory,versions:p.versions,expiresAtMs:p.expiresAtMs,executableSha256:p.executableSha256,launch:p.launch,enabled:p.enabled,shutdownMs:p.shutdownMs,limits:p.limits};
- let supervisor,nativeBirth,booted=false,launched=false,retiring=false,closed=false,stopped=false,nextId=0,exitCode=null,signalCode=null,timer;const events=new EventEmitter(),pending=new Map();events.on('error',()=>{});
- const completion=Promise.withResolvers(),ready=Promise.withResolvers();ready.promise.catch(()=>{});
+ if(c.deferredSpawn!==undefined&&typeof c.deferredSpawn!=='boolean')throw executionFault('TASK_CONFIGURATION');
+ const compiled={binding:p.binding,workspace:p.workspace,configDirectory:p.configDirectory,...(p.secureStorageDirectory!==p.configDirectory?{secureStorageDirectory:p.secureStorageDirectory}:{}),versions:p.versions,expiresAtMs:p.expiresAtMs,executableSha256:p.executableSha256,launch:p.launch,enabled:p.enabled,shutdownMs:p.shutdownMs,limits:p.limits};
+ let supervisor,nativeBirth,booted=false,launched=false,retiring=false,closed=false,stopped=false,nextId=0,exitCode=null,signalCode=null,timer,prepared;const events=new EventEmitter(),pending=new Map();events.on('error',()=>{});
+ const completion=Promise.withResolvers(),ready=Promise.withResolvers(),childReady=Promise.withResolvers();ready.promise.catch(()=>{});childReady.promise.catch(()=>{});
  function absent(){if(!supervisor?.pid)return false;try{process.kill(-supervisor.pid,0);return false;}catch(e){return e.code==='ESRCH';}}
  function nativeAbsent(){if(!nativeBirth)return true;try{process.kill(-nativeBirth.pid,0);return false;}catch(e){return e.code==='ESRCH';}}
  function birth(pid){if(!Number.isSafeInteger(pid)||pid<2)throw executionFault('TASK_REFUSED');const stat=readFileSync('/proc/'+pid+'/stat','utf8'),parts=stat.slice(stat.lastIndexOf(')')+2).split(' ');return {pid,parent:Number(parts[1]),group:Number(parts[2]),started:parts[19],executable:readlinkSync('/proc/'+pid+'/exe')};}
@@ -30,21 +33,25 @@ export function createIndependentNativeTask(configuration){
   supervisor.on('error',failed);supervisor.once('disconnect',()=>{if(!retiring)failed();});supervisor.stdio[4].on('error',failed);supervisor.stdio[5].on('error',failed);
   supervisor.on('message',message=>{
    if(message.type==='ready'){booted=true;ready.resolve();}
-   if(message.type==='launched'){try{pinNative(message.pid);}catch{events.emit('error',executionFault('TASK_REFUSED'));void close().catch(()=>{});}}
+   if(message.type==='launched'){try{pinNative(message.pid);childReady.resolve();}catch{events.emit('error',executionFault('TASK_REFUSED'));void close().catch(()=>{});}}
    if(message.type==='exit'){exitCode=message.code;signalCode=message.signal;events.emit('exit',exitCode,signalCode);}
    if(message.type==='stopped')stopped=message.status?.process===null||message.status?.process?.physicalStopProven===true;
    if(message.type==='reply')pending.get(message.id)?.resolve(message.value);
    if(message.type==='refused'){pending.get(message.id)?.reject(executionFault('TASK_REFUSED'));if(!booted)ready.reject(executionFault('TASK_REFUSED'));events.emit('error',executionFault('TASK_REFUSED'));}
   });
-  supervisor.once('close',()=>{closed=true;clearTimeout(timer);const clean=stopped&&absent()&&nativeAbsent();stopped=clean;ready.reject(executionFault('TASK_STOPPED'));for(const r of pending.values())r.reject(executionFault('TASK_STOPPED'));completion.resolve(clean);});
+  supervisor.once('close',()=>{closed=true;childReady.reject(executionFault('TASK_STOPPED'));prepared?.close();clearTimeout(timer);const clean=stopped&&absent()&&nativeAbsent();stopped=clean;ready.reject(executionFault('TASK_STOPPED'));for(const r of pending.values())r.reject(executionFault('TASK_STOPPED'));completion.resolve(clean);});
   send({type:'boot',configuration:compiled});timer=setTimeout(()=>{void close().catch(()=>{});},Math.max(1,p.expiresAtMs-now()));
   try{await bounded(input.signal,()=>ready.promise);return receipt();}catch{await close();throw executionFault('TASK_UNAVAILABLE');}
  }
- function spawnClaudeCodeProcess(value){if(!booted||closed||retiring||launched||now()>=p.expiresAtMs)throw executionFault('TASK_REFUSED');const signal=matchNativeLaunch(value,p);if(signal?.aborted)throw executionFault('TASK_REFUSED');launched=true;
-  const cancel=()=>{void close().catch(()=>{});};signal?.addEventListener('abort',cancel,{once:true});completion.promise.finally(()=>signal?.removeEventListener('abort',cancel));send({type:'launch'});
-  const stdout=Readable.from(supervisor.stdio[4],{objectMode:false});return Object.freeze({stdin:supervisor.stdio[5],stdout,get killed(){return retiring;},get exitCode(){return exitCode;},get signalCode(){return signalCode;},kill(){void close().catch(()=>{});return true;},on:(event,fn)=>events.on(event,fn),once:(event,fn)=>events.once(event,fn),off:(event,fn)=>events.off(event,fn)});
+ function processPort(stdin,stdout){return Object.freeze({stdin,stdout,get killed(){return retiring;},get exitCode(){return exitCode;},get signalCode(){return signalCode;},kill(){void close().catch(()=>{});return true;},on:(event,fn)=>events.on(event,fn),once:(event,fn)=>events.once(event,fn),off:(event,fn)=>events.off(event,fn)});}
+ function spawnClaudeCodeProcess(value){if((!booted&&!c.deferredSpawn)||closed||retiring||launched||prepared||now()>=p.expiresAtMs)throw executionFault('TASK_REFUSED');const signal=matchNativeLaunch(value,p);if(signal?.aborted)throw executionFault('TASK_REFUSED');
+  const cancel=()=>{void close().catch(()=>{});};signal?.addEventListener('abort',cancel,{once:true});completion.promise.finally(()=>signal?.removeEventListener('abort',cancel));
+  if(c.deferredSpawn){prepared=createDeferredProcessTransport({maxBytes:p.limits?.maxFrameBytes??9437184,onError:cancel});return processPort(prepared.stdin,prepared.stdout);}
+  launched=true;send({type:'launch'});return processPort(supervisor.stdio[5],Readable.from(supervisor.stdio[4],{objectMode:false}));
  }
- async function close(){if(!supervisor){closed=true;retiring=true;ready.reject(executionFault('TASK_STOPPED'));completion.resolve(true);return;}if(!retiring){retiring=true;try{send({type:'stop'});}catch{}supervisor.stdio[4].resume();supervisor.stdio[5].end();}
+ async function startPreparedProcess(){if(!c.deferredSpawn||!prepared||!booted||closed||retiring||launched||now()>=p.expiresAtMs)throw executionFault('TASK_REFUSED');launched=true;
+  prepared.attach({stdin:supervisor.stdio[5],stdout:supervisor.stdio[4]});send({type:'launch'});try{await bounded(undefined,()=>childReady.promise);if(closed||retiring||now()>=p.expiresAtMs)throw executionFault('TASK_STOPPED');}catch{await close();throw executionFault('TASK_UNAVAILABLE');}}
+ async function close(){if(!supervisor){const firstClose=!closed;closed=true;retiring=true;prepared?.close();if(firstClose&&prepared){exitCode=1;events.emit('error',executionFault('TASK_STOPPED'));events.emit('exit',exitCode,null);}childReady.reject(executionFault('TASK_STOPPED'));ready.reject(executionFault('TASK_STOPPED'));completion.resolve(true);return;}if(!retiring){retiring=true;try{send({type:'stop'});}catch{}supervisor.stdio[4].resume();supervisor.stdio[5].end();}
   const graceful=await bounded(undefined,()=>completion.promise).catch(()=>false);if(!graceful){
    // Only a kernel-pinned original native leader may receive fallback containment.
    if(nativeBirth)try{const actual=birth(nativeBirth.pid);if(actual.started===nativeBirth.started&&actual.group===nativeBirth.group&&actual.executable===nativeBirth.executable)process.kill(-nativeBirth.pid,'SIGKILL');}catch{}
@@ -56,6 +63,7 @@ export function createIndependentNativeTask(configuration){
   if(!supervisor.pid||absent())throw executionFault('TASK_UNAVAILABLE');return receipt();}
  async function retire(value){tuple(value);await close();if(!supervisor)throw executionFault('TASK_NOT_FOUND');return receipt();}
  async function readiness({signal}={}){nativeSignal(signal);if(signal?.aborted||closed||retiring||!p.enabled||now()>=p.expiresAtMs)throw executionFault('TASK_UNAVAILABLE');verifyNativeLaunchPaths(p);if(signal?.aborted||now()>=p.expiresAtMs)throw executionFault('TASK_UNAVAILABLE');}
- return Object.freeze({launch,inspect,retire,readiness,spawnClaudeCodeProcess,registration:Object.freeze({read:value=>{const v=own(value,['binding','key'],['signal','deadlineMs']);return rpc('read',{binding:v.binding,key:v.key,...(v.deadlineMs?{deadlineMs:v.deadlineMs}:{})},v.signal);}}),close,
+ return Object.freeze({launch,inspect,retire,readiness,spawnClaudeCodeProcess,startPreparedProcess,registration:Object.freeze({read:value=>{const v=own(value,['binding','key'],['signal','deadlineMs']);return rpc('read',{binding:v.binding,key:v.key,...(v.deadlineMs?{deadlineMs:v.deadlineMs}:{})},v.signal);}}),close,
+  workspace:Object.freeze({restore(value){const {signal,...raw}=own(value,['binding','restoreKey','workspaceSha256','manifest','files'],['signal']);nativeSignal(signal);return rpc('workspace-restore',copySessionJson(raw,48*1024*1024),signal);},verify(value){const {signal,...raw}=own(value,['binding','restoreKey','workspaceSha256','manifest'],['signal']);nativeSignal(signal);return rpc('workspace-verify',copySessionJson(raw,2*1024*1024),signal);}}),
   status:()=>Object.freeze({supervisorPid:supervisor?.pid??null,nativePid:nativeBirth?.pid??null,booted,launched,closed,physicalStopProven:stopped&&closed&&absent()&&nativeAbsent()})});
 }
