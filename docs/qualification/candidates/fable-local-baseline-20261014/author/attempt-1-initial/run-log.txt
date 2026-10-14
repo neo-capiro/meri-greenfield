@@ -1,0 +1,92 @@
+[local-baseline] source-proof
+[local-baseline] source-proof: exit 0 tests 3 pass 3 fail 0
+[local-baseline] contracts-package-check
+[local-baseline] contracts-package-check: exit 0
+[local-baseline] root-check
+[local-baseline] root-check: exit 0 tests 4241 pass 4241 fail 0
+[local-baseline] sdk-evidence
+[local-baseline] sdk-evidence: exit 0
+[local-baseline] runtime-typecheck
+[local-baseline] runtime-typecheck: exit 0
+[local-baseline] runtime-tests
+[local-baseline] runtime-tests: exit 1 tests 112 pass 111 fail 1
+[local-baseline] conversations-typecheck
+[local-baseline] conversations-typecheck: exit 0
+[local-baseline] conversations-tests
+[local-baseline] conversations-tests: exit 0 tests 133 pass 133 fail 0
+[local-baseline] conversations-skills
+[local-baseline] conversations-skills: exit 1 tests 33 pass 28 fail 5
+[local-baseline] worker-conversation
+[local-baseline] worker-conversation: exit 0 tests 135 pass 135 fail 0
+[local-baseline] native-authority
+[local-baseline] native-authority: exit 0 tests 305 pass 305 fail 0
+[local-baseline] runtime-selected
+[local-baseline] runtime-selected: exit 0 tests 18 pass 18 fail 0
+[local-baseline] runtime-artifacts
+[local-baseline] runtime-artifacts: exit 1 tests 6 pass 5 fail 1
+[local-baseline] gateway
+[local-baseline] gateway: exit 1 tests 802 pass 801 fail 1
+[local-baseline] gateway-budget
+[local-baseline] gateway-budget: exit 0 tests 27 pass 27 fail 0
+[local-baseline] gateway-sources
+[local-baseline] gateway-sources: exit 0 tests 315 pass 315 fail 0
+[local-baseline] gateway-local-action
+[local-baseline] gateway-local-action: exit 0 tests 44 pass 44 fail 0
+[local-baseline] gateway-selected-skills
+[local-baseline] gateway-selected-skills: exit 1 tests 36 pass 23 fail 13
+[local-baseline] artifacts
+[local-baseline] artifacts: exit 1 tests 301 pass 294 fail 7
+[local-baseline] control-core
+[local-baseline] control-core: exit 0 tests 260 pass 260 fail 0
+[local-baseline] control-action-host
+[local-baseline] control-action-host: exit 1 tests 273 pass 215 fail 58
+[local-baseline] control-action-application
+[local-baseline] control-action-application: exit 0 tests 124 pass 124 fail 0
+[local-baseline] control-action-followthrough
+[local-baseline] control-action-followthrough: exit 0 tests 55 pass 55 fail 0
+[local-baseline] control-admitted-runs
+[local-baseline] control-admitted-runs: exit 1 tests 85 pass 84 fail 1
+[local-baseline] control-commands
+[local-baseline] control-commands: exit 0 tests 76 pass 76 fail 0
+[local-baseline] control-document-application
+[local-baseline] control-document-application: exit 1 tests 259 pass 252 fail 7
+[local-baseline] control-schedules
+[local-baseline] control-schedules: exit 0 tests 134 pass 134 fail 0
+[local-baseline] control-task-lookup
+[local-baseline] control-task-lookup: exit 0 tests 158 pass 158 fail 0
+[local-baseline] control-qualified-application
+[local-baseline] control-qualified-application: exit 1 tests 393 pass 362 fail 31
+[local-baseline] control-staging-e2e
+[local-baseline] control-staging-e2e: exit 0 tests 13 pass 13 fail 0
+[local-baseline] control-qualification-sdk-fixture
+[local-baseline] control-qualification-sdk-fixture: exit 1 tests 71 pass 65 fail 6
+[local-baseline] control-qualification-temporal
+[local-baseline] control-qualification-temporal: exit 1
+[local-baseline] proxy-qualification
+[local-baseline] proxy-qualification: exit 0 tests 29 pass 29 fail 0
+[local-baseline] window-resolution
+[local-baseline] window-resolution: exit 0 tests 35 pass 35 fail 0
+[local-baseline] skills
+[local-baseline] skills: exit 0 tests 61 pass 61 fail 0
+[local-baseline] evals
+[local-baseline] evals: exit 0 tests 204 pass 204 fail 0
+[local-baseline] scripts-local
+[local-baseline] scripts-local: exit 0 tests 16 pass 16 fail 0
+fatal: detected dubious ownership in repository at '/home/user/meri-first-chat'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-first-chat
+fatal: detected dubious ownership in repository at '/home/user/meri-first-chat'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-first-chat
+fatal: detected dubious ownership in repository at '/home/user/meri-first-chat'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-first-chat
+fatal: detected dubious ownership in repository at '/home/user/meri-first-chat'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-first-chat
+{"results":"/home/meri/baseline-out/RESULTS.json","totals":{"suites":37,"passedSuites":25,"tests":8757,"pass":8626,"fail":131}}
+exit=1
