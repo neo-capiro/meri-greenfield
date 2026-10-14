@@ -1,0 +1,48 @@
+{
+  "base": "de599e4ac5021dae34476d5b2079e0d433791395",
+  "sourceSha256": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605",
+  "productionChange": "canonicalpublic$defs registered unchanged, exactindexedrefs, compilecache firstvalidate use",
+  "publicControls": {
+    "pass": 36,
+    "fail": 1,
+    "failureScope": "setup only missing esbuild for generateddistributioncheck; validator/boundary/lifecyclecontrols passed",
+    "missingSetupCheckRepaired": {
+      "pass": 1,
+      "fail": 0,
+      "capture": "public-generated-check.json",
+      "sourceDiffBytes": 0,
+      "devDependencies": {
+        "esbuild": "0.28.2",
+        "json-schema-to-typescript": "16.0.0"
+      },
+      "previousMissingDependencyFailurePreserved": true
+    }
+  },
+  "runtimeProcessControls": {
+    "pass": 6,
+    "fail": 0,
+    "timingsMs": [
+      8217.222494,
+      3650.764886,
+      1235.248157,
+      4793.141092,
+      8438.820592,
+      7433.270768
+    ],
+    "unchangedGuards": "10secfixture,1secRPC,3secpreparation/runtimelease; originalassertions unchanged"
+  },
+  "sequentialImportDiagnostics": {
+    "baselineMs": 1065.367192,
+    "lazyMs": 803.903613,
+    "limitation": "one coldimport observation per exactsource version; no throughput/release claim"
+  },
+  "remaining": "root aggregate integration/publication; no delegate checks/processes remain. No SDK rerun; actualSDKcomponenta487 remains separatelypinned evidence with reviewedsemantic-onlypublic delta.",
+  "scope": "publiccontractperformance only; no schema/version/export/alias change or SDK/provider/AWS/resource mutations",
+  "finalReviewedSource": "de599e4ac5021dae34476d5b2079e0d433791395",
+  "independentReview": {
+    "pass": 12,
+    "fail": 0,
+    "coverage": "28 publicdefs14inputsfirst/cache exacterror/namespace/export/versionequivalence plusboundaries",
+    "source": "de599e4ac5021dae34476d5b2079e0d433791395"
+  }
+}

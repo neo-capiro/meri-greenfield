@@ -1,0 +1,34 @@
+{
+  "verdict": "ACCEPT_BOUNDED_COMPONENT_PROBE_ONLY",
+  "productionSourceFreeze": "a4872a2b8dc685454e126db53b90e78ce4dad3c1",
+  "plannedCommand": [
+    "python3",
+    "docs/qualification/candidates/native-single-query-20261014/author/capture-reaped.py",
+    "corrected-single-query-sdk",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5s",
+    "60s",
+    "node",
+    "docs/qualification/candidates/native-single-query-20261014/author/sdk-single-query-probe.mjs"
+  ],
+  "verifiedPins": {
+    "docs/qualification/candidates/native-single-query-20261014/author/sdk-single-query-probe.mjs": "a27685aae2a34be6f007ec86d4fe51dedbdbf317989be22a9c90c952d234fab8",
+    "docs/qualification/candidates/native-single-query-20261014/author/capture-reaped.py": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+    "apps/runtime/native-authority/sdk-query-preparation.mjs": "49af86752c667afc9e06b086b3a1af1cabe96d589206a0d3c34412b1baa16e00",
+    "apps/runtime/native-authority/independent-task.mjs": "d013e0b80c0dafff412a7601c54151856f1d5810184ad57c0de157b23307e627",
+    "apps/runtime/native-authority/launch-configuration.mjs": "2a6754011fe7fdc01b2eac072f1769342a6523d9e17ab0b979fdedb9c7a40fcd",
+    "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+    "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+    "apps/runtime/native-authority/supervisor-process.mjs": "dd016b068448318b06ad8f5fda2e01bcedcc460ba7f45e84ed0876fab642941f",
+    "apps/runtime/native-authority/deferred-process-transport.mjs": "1bc7de013a2bc8c6cdc9900e01d4f55f601e85406694d818a506a344742c34f1",
+    "apps/runtime/native-authority/session-launcher.mjs": "16ca1e5c67023951922da17fdd0a3ac412159428a1ac648f0016392e52c12825",
+    "apps/runtime/native-authority/process-lifetime.mjs": "dc8baf08ab1c9611c75675172e9fe566256541ad91c63b2a051a9182697b69c3"
+  },
+  "sourceDiffBytes": 0,
+  "independentSourceControls": "10/10 PASS final-deferred-controls.json at exact freeze; no active reviewer resources",
+  "scope": "Actual twoCLI source/fork /status only; InMemory session store and synthetic bindings; zero turns/cost, denying local403 sink, no upstream/cloud/DB/deployedacceptance. Reviewer does not execute this actual probe.",
+  "captureScope": "Concurrent fresh Python subreaper reaps only its kernel-owned command/adopted children and preserves primary exit status; qualification host-init simulation, not production isolation.",
+  "remainingOldResource": "Prior PID89147 PGID89126 adopted byPID1 remains UNKNOWN with workspace retained; new probe/reaper cannot claim that cleanup.",
+  "quietReady": true
+}

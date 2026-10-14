@@ -1,0 +1,169 @@
+{
+  "verdict": "ACCEPT_INTEGRATED_LOCAL_SOURCE_AND_SDK_COMPONENT",
+  "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "sourceDiffBytes": 0,
+  "controls": [
+    {
+      "capture": "initial-deferred-controls.json",
+      "sourceHead": "a0f4cabdfecd4850e0ed62ffcfa5508c5a466453",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "capture": "final-deferred-controls.json",
+      "sourceHead": "a4872a2b8dc685454e126db53b90e78ce4dad3c1",
+      "passed": 10,
+      "failed": 0
+    },
+    {
+      "capture": "final-public-equivalence.json",
+      "sourceHead": "de599e4ac5021dae34476d5b2079e0d433791395",
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "capture": "final-readonly-deferred-controls.json",
+      "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+      "passed": 9,
+      "failed": 1,
+      "failure": "Unchanged 5000ms childReady bound; physical cleanup proved; suite failure retained."
+    },
+    {
+      "capture": "readonly-release-characterization.json",
+      "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+      "passed": 1,
+      "failed": 0,
+      "reason": "Exact affected control standalone, source/deadlines/assertions unchanged. Does not convert previous failed suite to PASS."
+    }
+  ],
+  "actualSdk": "Read-only PREEXEC/POSTEXEC verification of author probes a487 and final369895: each two actualCLI children, zero turns/cost/HTTP/provider requests; local InMemory synthetic-binding component only. Reviewer no SDK source/fork execution.",
+  "remainingBlockers": [
+    "Old PID89147/group89126 parent1 zombie cleanup UNKNOWN; old workspace retained",
+    "Exact SDK-generated config transfer/readback to separate Fargate filesystem remains code-owned",
+    "Deployed nativeFactory transport/discovery/entrypoint adapter and canonical checkpoint producer/object adapter remain code-owned",
+    "Real authority/database/Temporal deployment and Fargate isolation/egress/host-init qualification pending"
+  ],
+  "changedSourceSha256": {
+    "apps/runtime/README.md": "e4bee03f900ca66f345c0f13b4341fdf964b6971e0150cdf0b5340d752557173",
+    "apps/runtime/native-authority/admitted-supervisor.mjs": "4626bf98c2fcd8cb882105296b76bac6de2d0a09300fe1ef8f9e7af4b1230ef2",
+    "apps/runtime/native-authority/broker-stack.mjs": "39e335495c4847c3c6dc0e320378c3939c644dac2599198608bb9e7fce9028dd",
+    "apps/runtime/native-authority/deferred-process-transport.mjs": "113e2a09ddaefb3caa1a156b96f4d221ff3768fce4be4b1f8c68cc54a2d85125",
+    "apps/runtime/native-authority/ecs-task-owner.mjs": "a85b8d607be94146d353aa466eaaeaadd7bf05e75eb5a4c9df4764031d13df7a",
+    "apps/runtime/native-authority/independent-task.mjs": "d013e0b80c0dafff412a7601c54151856f1d5810184ad57c0de157b23307e627",
+    "apps/runtime/native-authority/launch-configuration.mjs": "2a6754011fe7fdc01b2eac072f1769342a6523d9e17ab0b979fdedb9c7a40fcd",
+    "apps/runtime/native-authority/native-restorer.mjs": "fc40ad49c2fc4e7a5072f0e34e7b61253f84b1d686a59a95c21027f544ca6f10",
+    "apps/runtime/native-authority/sdk-query-preparation.mjs": "49af86752c667afc9e06b086b3a1af1cabe96d589206a0d3c34412b1baa16e00",
+    "apps/runtime/native-authority/session-launcher.mjs": "16ca1e5c67023951922da17fdd0a3ac412159428a1ac648f0016392e52c12825",
+    "apps/runtime/native-authority/supervisor-process.mjs": "dd016b068448318b06ad8f5fda2e01bcedcc460ba7f45e84ed0876fab642941f",
+    "apps/runtime/native-authority/supervisor-workspace.mjs": "a6733b793e86e562a63990e15bbdfaced38006cbf19e16a8d7be03e6659da393",
+    "apps/runtime/native-authority/test/broker-stack.test.mjs": "6fbbb11bed19254c2931fb7b6d64890d9fa2130c0b3a19eb7129ca6e53c45572",
+    "apps/runtime/native-authority/test/deferred-process-independent.test.mjs": "6c0eedfc116d5327d5b8a1d53bbdaedf9d1774601bf5d946642bf3faf4252653",
+    "apps/runtime/native-authority/test/ecs-workspace.test.mjs": "db8881c75117a1cda98cd798c0d90a8aab1dfa4c7bf02a6eed0fbd4f802c51e1",
+    "apps/runtime/native-authority/test/supervisor-workspace.test.mjs": "6840152af2e73a1d748651e488acaeb2524cc2f68124e7221a1ce2a76235fc0c",
+    "apps/runtime/product-applications.mjs": "0786822a690e5f2f7d7f5e48e799a9caa8bc347cc79225dfd3b8245ba1de9f11",
+    "apps/runtime/test/process-fixture.mjs": "921e2137bf8bc9fa6a950568582db7c2f8e61b4605c939f6d187a507a6a544eb",
+    "apps/runtime/test/snapshot-mount.test.mjs": "2bb91e2a19b9b779d3d1a29a3e1b56209e7894c3a8e9dd96e0ed700a370f5bf0",
+    "packages/contracts/retrieval-0.2/validate.mjs": "612ff22b743d39ba21071cd82ef2109fb5703aef4d00686790c600c2729577fe",
+    "packages/contracts/validate.mjs": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605"
+  },
+  "evidence": {
+    "docs/qualification/candidates/native-single-query-20261014/independent/AGGREGATE-POSTREVIEW.json": {
+      "bytes": 1289,
+      "sha256": "f0a2ffd2c7d79baabde414e189d6e56954c870e4d89aa68bf94ef5112f5b080d"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/REVIEW.md": {
+      "bytes": 8122,
+      "sha256": "320ff14247f364cab6e466a7352efbd12961c0e0a27c1d5c2caf570afe689728"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/SDK-POSTEXECUTION-READONLY-FINAL.json": {
+      "bytes": 1703,
+      "sha256": "17841b7c716484bdecf88921fd7229a76776e0b6d4da7243879ffa6096036963"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/SDK-POSTEXECUTION.json": {
+      "bytes": 1690,
+      "sha256": "441e36eb0ecc48a926abb693f6dfbd9d5889c037e3c32eaa7c55a2ba3c6ed2d6"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/SDK-PREEXECUTION-READONLY-FINAL.json": {
+      "bytes": 3130,
+      "sha256": "8a505c1da5fcd08935db7254a93d619293edca2bc423a8bbe9a165f488191abe"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/SDK-PREEXECUTION.json": {
+      "bytes": 2794,
+      "sha256": "8766ff5d965bc9cf715892a3d61c78a3c060719e944001f4763106ace9852e47"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/capture-reaped.py": {
+      "bytes": 5330,
+      "sha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-deferred-controls.json": {
+      "bytes": 1510,
+      "sha256": "f461bbe4586df41db053dce6e1b19e24499a992f976ff105b55771a92e2e9c17"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-deferred-controls.stderr.bin": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-deferred-controls.stdout.bin": {
+      "bytes": 1132,
+      "sha256": "5b7e4757a245f4c3b9c6fea2921edd6e47bb89195e72c3a4ff5dbbd1dc038399"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-public-equivalence.json": {
+      "bytes": 1520,
+      "sha256": "0b8c260edb6bac787e6b8f3bb6afadb8dedb2917cb08c96f39bae7abd860a0db"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-public-equivalence.stderr.bin": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-public-equivalence.stdout.bin": {
+      "bytes": 1143,
+      "sha256": "d304c8fcefe2b6f267c0b49d3523218711d80a620bd26797b95f74b2a6b44a7b"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-readonly-deferred-controls.json": {
+      "bytes": 1422,
+      "sha256": "fe46494b9d18952acb32b1f068725a07ad548ed0d97981aac4a710da6e1570e3"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-readonly-deferred-controls.stderr.bin": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/final-readonly-deferred-controls.stdout.bin": {
+      "bytes": 2132,
+      "sha256": "33a8b65f9bba5a737062d634ab42d2fb21027d6dd37d5828d625526d8894be41"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/initial-deferred-controls.json": {
+      "bytes": 1496,
+      "sha256": "e3286b036ea0483cec268874128e0a560b3b97a7ee6a06ce2a9a9dadebbed878"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/initial-deferred-controls.stderr.bin": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/initial-deferred-controls.stdout.bin": {
+      "bytes": 1007,
+      "sha256": "5620aa1cf9d33def0153cd1bcf03a5dfb4e59b8d0e18acf6fbe66969eebe3bdb"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/initial-source-inputs.json": {
+      "bytes": 1590,
+      "sha256": "bb99a1b89ea9630b5dd8f249879d0c3495ca7c08cd894ca01b1051bde9f36b24"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/public-validator-equivalence.test.mjs": {
+      "bytes": 2726,
+      "sha256": "35f7aa6e6f268736b0276f1fbf5b958de8760f2e15e2edcb5c3ecd9171618a54"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/readonly-release-characterization.json": {
+      "bytes": 1477,
+      "sha256": "911b62556c6727dd9a53f338d82c9b1b3d3e1c699d9e7284c5a1a80a86df1ecc"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/readonly-release-characterization.stderr.bin": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/qualification/candidates/native-single-query-20261014/independent/readonly-release-characterization.stdout.bin": {
+      "bytes": 243,
+      "sha256": "11ac5d89f62ed00a162e075b72a012f5c18eae7cc7bcbf03ecfebe1c69bd9cc6"
+    }
+  },
+  "aggregateReview": "AGGREGATE-POSTREVIEW.json",
+  "retainedFailures": "Initial parent250/263 and independent readonly9/10 remain preserved; exact affected standalone1/1 and corrected parent319/319 passed."
+}

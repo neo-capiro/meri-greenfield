@@ -1,0 +1,68 @@
+{
+  "status": "ACCEPT_INTEGRATED_LOCAL_SOURCE_AND_ACTUAL_SDK_COMPONENT",
+  "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "basePublication": "ab0d7a2ac302f95869063a223d79a991662303a3",
+  "aggregate": {
+    "tests": 319,
+    "pass": 319,
+    "fail": 0,
+    "files": 32,
+    "capture": "author/corrected-aggregate.json",
+    "actualResources": [
+      "task-owned PostgreSQL16 networknone unixsocket",
+      "separate native supervisor/processes",
+      "HTTP listeners",
+      "filesystem"
+    ],
+    "syntheticOwners": [
+      "authority/context/admission/allocation inputs",
+      "ECS command responses",
+      "checkpoint/object fixtures"
+    ]
+  },
+  "actualSdk": {
+    "queries": 2,
+    "cliLaunches": 2,
+    "turns": 0,
+    "cost": 0,
+    "providerRequests": 0,
+    "distinctGenuineWitnesses": 2,
+    "capture": "author/final-readonly-sdk.json",
+    "scope": "SDK/process/InMemorySessionStore component, not live broker/database/authority/placement acceptance"
+  },
+  "independentManifestSha256": "2748eda32ee71392cf1e750cb55410e52985553dec2ec9e4f8da10044756b3b6",
+  "typecheck": "PASS exact frozen source; author/final-typecheck.txt",
+  "olderFailedChecksRetained": [
+    "initial SDK cleanup and source-pin mismatch",
+    "initial aggregate250/263",
+    "initial workspace/snapshot fixture setup failures",
+    "original timing-sensitive process controls",
+    "final standalone independent9/10 thenaffected1/1; corrected aggregate10/10",
+    "missing esbuild generated check; corrected1/1"
+  ],
+  "cleanup": "CLEANUP.json",
+  "remainingCode": [
+    "separateFargate remote process-stream transport",
+    "exact SDK-generated config-tree transfer/readback",
+    "approved runner/native entrypoint preparation/allocation binding preserving fullplan identity",
+    "canonical checkpoint/object-provider integration"
+  ],
+  "remainingConfiguration": [
+    "real approved authority origin/source/image/current native principal/bearer/expiry/client/conversation/fence",
+    "product database/migrations/role-bound allocation/grants",
+    "task definition/image/network/IAM and verified native-descendant reaper",
+    "proxy/model/pricing/budget/sandbox/egress",
+    "Temporal endpoint/namespace/queue/TLS",
+    "frontend fixedhostproxy/currentopaque-session activation"
+  ],
+  "oldCleanupUnknown": "PID89147 parentPID1/group89126; initial SDKworkspace retained; three likely old control zombies ownership uncertain",
+  "authorizationScope": {
+    "engineering": "OpenAI/Codex only",
+    "awsMutations": 0,
+    "newCredentials": 0,
+    "deploymentSecurityChanges": 0,
+    "paidProviderCalls": 0,
+    "liveDocumentGeneration": 0
+  },
+  "noProjectCompletionClaim": true
+}

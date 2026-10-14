@@ -1,0 +1,18 @@
+✔ pending writable queue is counted even after readable high-water saturation (15.364954ms)
+✔ pending end callback overload flushes exact bytes after one attachment (7.12992ms)
+✔ pending limit accounts encoded string bytes and end(chunk,callback) (4.633963ms)
+✔ closed deferred streams never attach or deliver held bytes (1.266815ms)
+✔ one exact deferred request queues before admitted launch; genuine child bytes register only after release (8135.811664ms)
+✔ cancelled pre-admission deferred request has no kernel process and refuses late release (642.755792ms)
+✔ separate SDK and secure config paths remain independently pinned and symlink refused (1682.649446ms)
+✔ SDK preparation rejects proxy options and declared async bind before any trap/call/import (10.017215ms)
+✔ private supervisor IPC restores and verifies literal workspace before native release (3371.438543ms)
+✔ ordinary Promise-returning binding closes its late handle and remains UNKNOWN with zero CLI release (2082.725452ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25036.842154

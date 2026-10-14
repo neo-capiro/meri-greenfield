@@ -1,0 +1,63 @@
+{
+  "scope": "SOURCE_CANONICAL_VALIDATION_AND_SCRIPTED_NATIVE_SQL_TEMPORAL_HTTP_PROCESS_CONTROLS_NO_PROVIDER_AWS_CREDENTIAL_ACTIONS",
+  "productionChange": "same catalog/definitions eagerly registered; compile canonical private shape validators once on first use",
+  "fixtureChange": "ready IPC sent only after message and signal shutdown handlers installed",
+  "guards": "existing10sec totalchildguard/1secHTTP/3secpreparation/runtimeleases unchanged; process.test byteunchanged",
+  "checks": {
+    "retrievalR2AndCatalog": {
+      "pass": 35,
+      "fail": 0
+    },
+    "finalProcess": {
+      "pass": 6,
+      "fail": 0
+    },
+    "isolatedSteering": {
+      "pass": 1,
+      "fail": 0
+    }
+  },
+  "failedAttempts": [
+    {
+      "capture": "process-controls",
+      "pass": 3,
+      "fail": 3,
+      "reason": "timing guards while expensive baseline benchmark concurrent"
+    },
+    {
+      "capture": "serial-process-controls",
+      "pass": 2,
+      "fail": 4,
+      "reason": "startup/walltime guard misses and RPC/EXECUTION_FAILED; CLI also44seconds; no limits softened"
+    },
+    {
+      "capture": "quiet-process-controls",
+      "pass": 3,
+      "fail": 3,
+      "reason": "firstguard32.96sec; SIGTERM ready/handler ownership race; steer408RPCdeadline"
+    }
+  ],
+  "benchmarks": {
+    "baselineImportUnderConcurrentLoadMs": 30568.651303,
+    "lazyImportUnderConcurrentLoadMs": 13836.070277,
+    "lazyImportQuieterMs": 3436.658135,
+    "limitation": "different concurrent host load; timings are diagnostic observations, not controlled throughput acceptance"
+  },
+  "publicOwner": "qualified @capiro/meri-contracts/node and source resolve identical /workspace/meri-native-runtime-recovery/packages/contracts/validate.mjs; duplicate public validator owner not present in current aliases",
+  "cleanup": [
+    {
+      "path": "/tmp/meri-runtime-task-qUjcJN",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-Y3Y2h1",
+      "absent": true
+    }
+  ],
+  "remainingTaskRoots": [],
+  "ownedFileSha256": {
+    "packages/contracts/retrieval-0.2/validate.mjs": "612ff22b743d39ba21071cd82ef2109fb5703aef4d00686790c600c2729577fe",
+    "apps/runtime/test/process-fixture.mjs": "921e2137bf8bc9fa6a950568582db7c2f8e61b4605c939f6d187a507a6a544eb",
+    "apps/runtime/test/process.test.mjs": "c7f2772b0460d88f27f50c69d208dbb8f466c9d7418f0e2590efa546035edb09"
+  }
+}

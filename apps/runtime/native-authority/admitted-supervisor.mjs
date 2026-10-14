@@ -32,7 +32,7 @@ export function createAdmittedSessionSupervisor(configuration){
   const signal=AbortSignal.any([preparation.signal,input.signal,pinned.signal].filter(Boolean));
   const receipt=assertWorkerAuthorization(await taskVerifier.verify({capability:input.capability,binding:pinned.binding,operation,inputSha256,signal}),{binding:pinned.binding,operation,inputSha256,started,now});
   if(closed||input.signal?.aborted||pinned.signal?.aborted||now()>=Math.min(pinned.expiresAtMs,receipt.expiresAtMs))throw taskFault('REFUSED');
-  launcher=createNativeSessionLauncher({binding:pinned.binding,workspace:pinned.workspace,configDirectory:pinned.configDirectory,launch:pinned.launch,versions:pinned.versions,executableSha256:pinned.executableSha256,
+  launcher=createNativeSessionLauncher({binding:pinned.binding,workspace:pinned.workspace,configDirectory:pinned.configDirectory,...(pinned.secureStorageDirectory!==pinned.configDirectory?{secureStorageDirectory:pinned.secureStorageDirectory}:{}),launch:pinned.launch,versions:pinned.versions,executableSha256:pinned.executableSha256,
    shutdownMs:pinned.shutdownMs,limits:pinned.limits,expiresAtMs:Math.min(pinned.expiresAtMs,receipt.expiresAtMs),enabled:true,now,
    ...(input.signal||pinned.signal?{signal:AbortSignal.any([input.signal,pinned.signal].filter(Boolean))}:{})});
   return launcher;

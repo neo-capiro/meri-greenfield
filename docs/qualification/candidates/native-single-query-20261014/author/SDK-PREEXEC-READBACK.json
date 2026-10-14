@@ -1,0 +1,12 @@
+{
+  "result": "EXACT_HASH_READBACK_PASS",
+  "sha256": {
+    "docs/qualification/candidates/native-single-query-20261014/author/sdk-single-query-probe.mjs": "c5f0299d20417dbab7b2e497ac74ccfd3803cf9f8fc8e92bb8037361ff680db9",
+    "docs/qualification/candidates/native-single-query-20261014/author/capture-reaped.py": "fbda7eb452c4882542c88a25142d00e98df7b3d513dc33a9bbd93e60d83ad15c",
+    "apps/runtime/native-authority/sdk-query-preparation.mjs": "6d8507c195d6e4eb42bbdf2169c6b2c495ce39178aeb25f55b76c8a33f002cde",
+    "apps/runtime/native-authority/independent-task.mjs": "d013e0b80c0dafff412a7601c54151856f1d5810184ad57c0de157b23307e627",
+    "apps/runtime/native-authority/launch-configuration.mjs": "2a6754011fe7fdc01b2eac072f1769342a6523d9e17ab0b979fdedb9c7a40fcd",
+    "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+    "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+  }
+}

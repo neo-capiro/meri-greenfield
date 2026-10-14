@@ -1,0 +1,34 @@
+{
+  "source": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "all11Pins": "EXACT_POSTEXEC_MATCH",
+  "sourceDiffBytes": 0,
+  "newGroups": [
+    {
+      "phase": "source",
+      "pidAndGroup": 104453,
+      "absent": true
+    },
+    {
+      "phase": "source",
+      "pidAndGroup": 104479,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "pidAndGroup": 104512,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "pidAndGroup": 104539,
+      "absent": true
+    }
+  ],
+  "newOwnedRootRemoved": true,
+  "priorRootRetained": [
+    "/tmp/meri-single-query-sdk-zlU9zY"
+  ],
+  "priorCleanupUnknown": "native89147/group89126 andlikelyoldreaperPythonorphans belongPID1; no reaping/mutation attempted",
+  "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE",
+  "captureSha256": "f14c235b4312eb7f8ef917eac3c0d5cc538de69f541c745904376662636c0ad5"
+}

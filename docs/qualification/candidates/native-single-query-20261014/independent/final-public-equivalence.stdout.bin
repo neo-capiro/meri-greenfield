@@ -1,0 +1,20 @@
+✔ all 28 canonical public definitions retain exact rejection messages on first and cached use (893.146555ms)
+✔ unknown public names retain exact errors without prototype or private namespace fallback (0.583712ms)
+✔ accepts portable manifests and immutable proposals (110.939392ms)
+✔ rejects unsafe workspace paths before restoration (4.212839ms)
+✔ rejects duplicate paths and unsupported symlinks (1.72611ms)
+✔ rejects changed approved arguments, input versions and tenant approvers (1.631807ms)
+✔ rejects unknown protocol versions, loose identity fields and unsafe integers (25.901494ms)
+✔ canonical hashes are key-order independent and bind every command input (0.375668ms)
+✔ event envelope requires typed payload, scopes and positive durable sequence (395.30656ms)
+✔ rejects file ancestors regardless of manifest insertion order (4.658384ms)
+✔ truncated scans cannot claim complete coverage (26.978904ms)
+✔ approval survives executor replacement while approved intent stays immutable (26.792407ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3459.991667

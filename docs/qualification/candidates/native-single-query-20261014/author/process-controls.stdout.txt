@@ -1,0 +1,58 @@
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (10119.066166ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (5981.911408ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (2837.50718ms)
+✖ actual process exits on SIGTERM after listener shutdown (10054.579257ms)
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (10091.102208ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (6580.952468ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 3
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46140.066372
+
+✖ failing tests:
+
+test at apps/runtime/test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (10119.066166ms)
+  Error: fixture exited null SIGKILL 
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:3:123)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/runtime/test/process.test.mjs:17:1
+✖ actual process exits on SIGTERM after listener shutdown (10054.579257ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  null !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:17:176)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/process.test.mjs:18:1
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (10091.102208ms)
+  Error: write EPIPE
+      at target._send (node:internal/child_process:917:20)
+      at target.send (node:internal/child_process:792:19)
+      at Object.close (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:715)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:18:1129)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -32,
+    code: 'EPIPE',
+    syscall: 'write'
+  }

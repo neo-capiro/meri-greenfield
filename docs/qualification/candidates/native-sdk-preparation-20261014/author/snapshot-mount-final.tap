@@ -1,0 +1,11 @@
+✔ actual control mount and fixed loopback relay deliver snapshot to captured canonical port (204.453365ms)
+✔ snapshot remains 404 when no borrowed snapshot port is supplied (2.043051ms)
+✔ snapshot port getters and proxies refuse without invocation or transport (1.355891ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5090.310695

@@ -1,0 +1,59 @@
+{
+  "completed": true,
+  "phase": "completed",
+  "spawns": 2,
+  "results": [
+    {
+      "phase": "source",
+      "subtype": "success",
+      "is_error": false,
+      "num_turns": 0,
+      "total_cost_usd": 0
+    },
+    {
+      "phase": "fork",
+      "subtype": "success",
+      "is_error": false,
+      "num_turns": 0,
+      "total_cost_usd": 0
+    }
+  ],
+  "witnesses": [
+    {
+      "phase": "source",
+      "observationId": "a73703032c38af3a371278943a3dc1696ad51f956c1ddbe8491ae0227727c142"
+    },
+    {
+      "phase": "fork",
+      "observationId": "360d05fa220569a2366e400c5a536dd8f56dd162f12b85df5f4d1e6929e7ea56"
+    }
+  ],
+  "states": [
+    {
+      "phase": "source",
+      "supervisorPid": 104453,
+      "nativePid": 104479,
+      "booted": true,
+      "launched": true,
+      "closed": true,
+      "physicalStopProven": true
+    },
+    {
+      "phase": "fork",
+      "supervisorPid": 104512,
+      "nativePid": 104539,
+      "booted": true,
+      "launched": true,
+      "closed": true,
+      "physicalStopProven": true
+    }
+  ],
+  "sinkMetadata": [],
+  "providerRequests": 0,
+  "cleanupProven": true,
+  "cleanupErrors": [],
+  "retainedWorkspace": null,
+  "sdkSha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+  "cliSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE"
+}

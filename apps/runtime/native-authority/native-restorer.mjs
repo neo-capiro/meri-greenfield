@@ -9,7 +9,8 @@ import {buildContinuationOptions} from '../../worker/conversation/continuation/o
 import {executionFault} from './execution-broker.mjs';
 const sha=b=>createHash('sha256').update(b).digest('hex');
 export function createNativeCheckpointRestorer(configuration){
- const c=own(configuration,['journal','objects','workspace','expiresAtMs'],['now']),now=c.now??Date.now,get=storageMethod(c.objects,'get'),claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record');
+ const c=own(configuration,['journal','objects','workspace','expiresAtMs'],['now','workspaceOwner']),now=c.now??Date.now,get=storageMethod(c.objects,'get'),claim=storageMethod(c.journal,'claim'),read=storageMethod(c.journal,'read'),record=storageMethod(c.journal,'record');
+ const physical=c.workspaceOwner?own(c.workspaceOwner,['restore','verify']):null,remoteRestore=physical?storageMethod(c.workspaceOwner,'restore'):null,remoteVerify=physical?storageMethod(c.workspaceOwner,'verify'):null;
  if(typeof c.workspace!=='string'||!c.workspace.startsWith('/')||!Number.isSafeInteger(c.expiresAtMs)||typeof now!=='function')throw executionFault('RESTORE_CONFIGURATION');
  function context(value){const v=own(value,['binding','versions','request','sourceRequest','scopes','continuation','restoreKey'],['signal','revalidate']);nativeSignal(v.signal);const {signal,revalidate,...pins}=v,{restoreKey,...target}=pins;
   if(typeof revalidate!=='function'||hash(target)!==restoreKey)throw executionFault('RESTORE_REFUSED');buildContinuationOptions(v.continuation,{binding:v.binding,versions:v.versions,request:v.request,sourceRequest:v.sourceRequest,scopes:v.scopes});
@@ -19,17 +20,21 @@ export function createNativeCheckpointRestorer(configuration){
   const key={projectKey:c.workspace.replace(/[^a-zA-Z0-9]/gu,'-'),sessionId:cp.sessionId},snapshot=await createCheckpointSdkSnapshot({key,transcripts:parsed});return {key,snapshot};}
  const intent=v=>({binding:v.binding,restoreKey:v.restoreKey,checkpointSha256:v.continuation.checkpointSha256,contextSha256:v.continuation.contextSha256,sourceRequestSha256:v.continuation.sourceRequestSha256,workspaceSha256:v.continuation.checkpoint.workspaceSha256,opaqueSessionSha256:v.continuation.checkpoint.opaqueSession.sha256,expiresAtMs:c.expiresAtMs});
  const matches=(saved,wanted)=>{if(Object.keys(wanted).some(k=>hash(saved[k])!==hash(wanted[k])))throw executionFault('RESTORE_REFUSED');};
+ const workspaceRequest=v=>({binding:v.binding,restoreKey:v.restoreKey,workspaceSha256:v.continuation.checkpoint.workspaceSha256,manifest:v.continuation.checkpoint.workspace,signal:v.signal});
+ async function workspaceCall(method,v,extra={}){const started=now(),receipt=data(own(await method({...workspaceRequest(v),...extra}),['binding','restoreKey','workspaceSha256','checkedAtMs','expiresAtMs']));v.check();
+  if(hash(receipt.binding)!==hash(v.binding)||receipt.restoreKey!==v.restoreKey||receipt.workspaceSha256!==v.continuation.checkpoint.workspaceSha256||!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>now()||receipt.expiresAtMs!==c.expiresAtMs)throw executionFault('RESTORE_READBACK_REFUSED');}
+ async function verifyWorkspace(v){if(remoteVerify)await workspaceCall(remoteVerify,v);else verifyWorkspaceBytes({workspace:c.workspace,manifest:v.continuation.checkpoint.workspace,check:v.check});}
  function response(v){const cp=v.continuation.checkpoint;return data({restoreReceipt:{verificationId:randomUUID(),binding:v.binding,checkpointId:cp.checkpointId,checkpointSha256:v.continuation.checkpointSha256,workspaceSha256:cp.workspaceSha256,opaqueSessionSha256:cp.opaqueSession.sha256,scopes:v.scopes,contextSha256:v.continuation.contextSha256,sourceRequestSha256:v.continuation.sourceRequestSha256,checkedAtMs:now(),expiresAtMs:c.expiresAtMs},sdkSessionKey:{projectKey:c.workspace.replace(/[^a-zA-Z0-9]/gu,'-'),sessionId:v.continuation.mode==='resume'?cp.sessionId:v.continuation.targetSessionId}});}
  async function restore(value){const v=context(value),wanted=intent(v),old=(await read({binding:v.binding,restoreKey:v.restoreKey},v.check)).record;
-  if(old){matches(old,wanted);if(old.state!=='RESTORED')throw executionFault('RESTORE_UNKNOWN');await opaque(v);verifyWorkspaceBytes({workspace:c.workspace,manifest:v.continuation.checkpoint.workspace,check:v.check});await v.revalidate();return response(v);}
+  if(old){matches(old,wanted);if(old.state!=='RESTORED')throw executionFault('RESTORE_UNKNOWN');await opaque(v);await verifyWorkspace(v);await v.revalidate();return response(v);}
   const entries=v.continuation.checkpoint.workspace.entries;if(entries.length>256||entries.some(e=>e.object.bytes>8*1024*1024)||entries.reduce((n,e)=>n+e.object.bytes,0)>32*1024*1024)throw executionFault('RESTORE_OBJECT_REFUSED');
   await opaque(v);const files=[];for(const e of entries){files.push(await bytes(e.object,v.signal));v.check();}await v.revalidate();
   const claimed=await claim(wanted,v.check);if(!claimed.dispatch)throw executionFault('RESTORE_UNKNOWN');
-  try{restoreWorkspaceBytes({workspace:c.workspace,manifest:v.continuation.checkpoint.workspace,files,check:v.check});await v.revalidate();v.check();
+  try{if(remoteRestore){await workspaceCall(remoteRestore,v,{files:files.map(bytes=>({bytes:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')}))});}else restoreWorkspaceBytes({workspace:c.workspace,manifest:v.continuation.checkpoint.workspace,files,check:v.check});await v.revalidate();v.check();
    await record({binding:v.binding,restoreKey:v.restoreKey,state:'RESTORED',receipt:{workspaceSha256:wanted.workspaceSha256,opaqueSessionSha256:wanted.opaqueSessionSha256}},v.check);v.check();return response(v);
   }catch(error){try{await record({binding:v.binding,restoreKey:v.restoreKey,state:'UNKNOWN',receipt:null},()=>{});}catch{}throw executionFault('RESTORE_UNKNOWN');}
  }
- async function snapshot(value){const v=context(value),saved=(await read({binding:v.binding,restoreKey:v.restoreKey},v.check)).record;if(saved?.state!=='RESTORED')throw executionFault('RESTORE_UNKNOWN');matches(saved,intent(v));const source=await opaque(v);verifyWorkspaceBytes({workspace:c.workspace,manifest:v.continuation.checkpoint.workspace,check:v.check});await v.revalidate();v.check();
+ async function snapshot(value){const v=context(value),saved=(await read({binding:v.binding,restoreKey:v.restoreKey},v.check)).record;if(saved?.state!=='RESTORED')throw executionFault('RESTORE_UNKNOWN');matches(saved,intent(v));const source=await opaque(v);await verifyWorkspace(v);await v.revalidate();v.check();
   return {binding:v.binding,key:source.key,checkpointSha256:v.continuation.checkpointSha256,opaqueSessionSha256:v.continuation.checkpoint.opaqueSession.sha256,transcripts:source.snapshot.transcripts()};}
  return Object.freeze({restore,snapshot});
 }

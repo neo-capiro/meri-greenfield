@@ -1,0 +1,15 @@
+{
+  "completed": false,
+  "sourceAndForkSdkResults": "bothactualsuccess0turn0cost,2spawns,2distinctgenuinewitnesses,0HTTPrequests",
+  "nativeCleanup": "sourceproven; targetunknown; exactworkspace retained",
+  "targetOrphanObserved": {
+    "pid": 89147,
+    "parent": 1,
+    "processGroup": 89126,
+    "state": "Z",
+    "comm": "claude"
+  },
+  "remainingBlocker": "Cannot reap a zombie alreadyownedbyPID1 fromcurrentprocess; no retry/kill attempted",
+  "retainedWorkspace": "/tmp/meri-single-query-sdk-zlU9zY",
+  "sourceBinding": "preexecreadbackhelper6d8507;postexecutionsourcef308c134; moving-source diagnosticonly, no frozen acceptance"
+}

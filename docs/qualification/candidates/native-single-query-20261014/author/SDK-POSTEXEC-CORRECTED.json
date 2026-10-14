@@ -1,0 +1,34 @@
+{
+  "head": "a4872a2b8dc685454e126db53b90e78ce4dad3c1",
+  "sourceAndAll11Pins": "EXACT_POSTEXEC_MATCH",
+  "codeDiffBytes": 0,
+  "newGroups": [
+    {
+      "phase": "source",
+      "pidAndGroup": 96525,
+      "absent": true
+    },
+    {
+      "phase": "source",
+      "pidAndGroup": 96541,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "pidAndGroup": 96601,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "pidAndGroup": 96608,
+      "absent": true
+    }
+  ],
+  "newOwnedRootRemoved": true,
+  "retainedOlderRoot": [
+    "/tmp/meri-single-query-sdk-zlU9zY"
+  ],
+  "priorCleanupNotProven": "89147/group89126,parent1Z; likelyownpython90756,90757,90787Zparent1 exactinitialPopenownershipnotcaptured",
+  "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE",
+  "captureSha256": "2ee4054fe2dc9b1ed01b63399f755370e7859a13b27a7b394af648ac95a01dd9"
+}

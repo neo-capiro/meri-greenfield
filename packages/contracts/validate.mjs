@@ -9,11 +9,16 @@ const schema = JSON.parse(readFileSync(new URL('./meri.schema.json', import.meta
 const ajv = new Ajv({ allErrors: true, strict: true });
 addFormats(ajv);
 ajv.addSchema(schema);
-const validators = new Map(Object.keys(schema.$defs).map(name => [name, ajv.compile({ $ref: `${schema.$id}#/$defs/${name}` })]));
+// The canonical schema is registered in full; compile a public shape only when
+// this process uses it, then reuse that validator for every subsequent check.
+const validatorRefs = new Map(Object.keys(schema.$defs).map(name => [name, `${schema.$id}#/$defs/${name}`]));
+const validators = new Map();
 
 export function validateShape(name, value) {
-  const validator = validators.get(name);
-  if (!validator) throw new Error(`Unknown contract ${name}`);
+  const ref = validatorRefs.get(name);
+  if (!ref) throw new Error(`Unknown contract ${name}`);
+  let validator = validators.get(name);
+  if (!validator) { validator = ajv.compile({ $ref: ref }); validators.set(name, validator); }
   if (!validator(value)) throw new Error(`${name}: ${ajv.errorsText(validator.errors)}`);
   return value;
 }

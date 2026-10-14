@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "raise SystemExit(7)"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "ab0d7a2ac302f95869063a223d79a991662303a3",
+  "sourceDiffSha256": "3732a4c5d523553854531175e0c851f421de5bc7cecd48933f90d40354f1d5b7",
+  "sourceDiffBytes": 44363,
+  "captureSha256": "ff630b4e503aaf8c97d931cf2599a0039f93f77828e031392981ff34be0fdaeb",
+  "startedAt": "2026-10-14T07:15:58.026752+00:00",
+  "durationSeconds": 5.085,
+  "exitCode": 7,
+  "timedOut": false,
+  "ownedPidAndPgid": 91322,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-reaper-primary-failure-control.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/corrected-reaper-primary-failure-control.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

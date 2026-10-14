@@ -1,0 +1,55 @@
+{
+  "verdict": "ACCEPT_ACTUAL_LOCAL_SDK_READONLY_SOURCE_FORK_COMPONENT_ONLY",
+  "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "verifiedPinCount": 11,
+  "captureScriptSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "captureReceiptSha256": "f14c235b4312eb7f8ef917eac3c0d5cc538de69f541c745904376662636c0ad5",
+  "rawStreams": [
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/final-readonly-sdk.stdout.bin",
+      "bytes": 1481,
+      "sha256": "0d77c7ef5995bb2895018165152ef7313a547672025051adfdc58920f853de52"
+    },
+    {
+      "path": "docs/qualification/candidates/native-single-query-20261014/author/final-readonly-sdk.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "spawns": 2,
+  "zeroTurnsAndCost": true,
+  "sinkRequests": 0,
+  "distinctGenuineWitnesses": true,
+  "freshOwnedGroups": [
+    {
+      "phase": "source",
+      "kind": "supervisorPid",
+      "pidAndGroup": 104453,
+      "absent": true
+    },
+    {
+      "phase": "source",
+      "kind": "nativePid",
+      "pidAndGroup": 104479,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "kind": "supervisorPid",
+      "pidAndGroup": 104512,
+      "absent": true
+    },
+    {
+      "phase": "fork",
+      "kind": "nativePid",
+      "pidAndGroup": 104539,
+      "absent": true
+    }
+  ],
+  "old89147StateParentGroup": [
+    "Z",
+    "1",
+    "89126"
+  ],
+  "scope": "Reviewer read-only verification; no execution/rerun. InMemory sessions/synthetic bindings, no PG/broker/deployed isolation/Fargate acceptance. Fresh probe absence does not prove old UNKNOWN cleanup."
+}

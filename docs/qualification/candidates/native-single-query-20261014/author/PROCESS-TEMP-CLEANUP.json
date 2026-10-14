@@ -1,0 +1,17 @@
+{
+  "scope": "exact three own guard-killed fixture roots first observed2026-10-14T06:53Z; no other paths",
+  "results": [
+    {
+      "path": "/tmp/meri-runtime-task-PlITmR",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-VR5pMV",
+      "absent": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-tCFUfh",
+      "absent": true
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "sourceHead": "369895ef4fea261fa012ba57403a158d71c4a866",
+  "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-native-runtime-recovery",
+  "databaseContainer": "meri-single-query-postgres-20261014",
+  "socket": "/tmp/meri-broker-pg-socket-20261014",
+  "network": "none",
+  "expectedCases": 319,
+  "sourceChangesSinceActualSdk": "none",
+  "sdkProbe": "final-readonly-sdk.json"
+}

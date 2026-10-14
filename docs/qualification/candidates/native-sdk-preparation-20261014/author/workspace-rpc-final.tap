@@ -1,0 +1,26 @@
+✔ resume: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (477.981565ms)
+✔ fork: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (97.66264ms)
+✔ lost durable claim acknowledgement never writes bytes or dispatches on replay (10.977179ms)
+✔ uncertain restored acknowledgement leaves UNKNOWN and cannot retry original writes (11.509181ms)
+✔ corrupted immutable object refuses before durable claim or filesystem effect (8.453665ms)
+✔ native-file bundle is never interpreted as a SessionStore snapshot (5.889408ms)
+✔ admission revoked after object reads refuses before workspace effects (11.407766ms)
+✔ replay detects modified workspace and additional directory without rewriting them (15.408738ms)
+✔ snapshot read detects actual workspace byte changes without rewriting caller changes (17.129774ms)
+✔ workspace alias cannot receive restoration and borrowed sibling remains intact (17.986175ms)
+✔ canonical claim precedes real supervisor RPC byte write; replay/snapshot use task readback before CLI spawn (2319.427058ms)
+✔ foreign binding and caller path overrides cannot reach task workspace (1052.311199ms)
+✔ nested caller getters and corrupt encoded bytes refuse without executing getters or writing files (1200.737968ms)
+✔ ambiguous supervisor write acknowledgement records canonical UNKNOWN and never repeats bytes (2910.88447ms)
+✔ task-side mutation blocks snapshot/readback and direct physical restoration cannot be repeated (2912.149071ms)
+✔ worker stdin byte JSON cannot invoke trusted workspace RPC after actual fixture child launches (2183.188031ms)
+✔ mismatched task readback receipt cannot commit RESTORED or retry physical bytes (1750.525355ms)
+✔ original task lease expiry blocks physical restore and later readback without deleting files (7.045926ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16591.527163
