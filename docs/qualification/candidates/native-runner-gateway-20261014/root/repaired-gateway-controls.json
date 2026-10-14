@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/native-runner-gateway.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "f64a69aeff91f8ee40dca176d1c74858f135310b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:33:03.867964+00:00",
+  "durationSeconds": 5.512,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 49657,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/repaired-gateway-controls.stdout.bin",
+      "bytes": 1706,
+      "sha256": "6a59699df815ef1e9460fd081eadd219fe0fe54e6c3a580368f8d3009de8c0d7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/repaired-gateway-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "First6/7 failed from fixture status event missing reasonCode. Added canonical null field and corrected helper header merging/precise refusal assertions; production source unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
