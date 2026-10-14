@@ -1,0 +1,247 @@
+{
+  "productionFreeze": "ca38a341a98b160c4ba8091bd651dce0a3a6d75a",
+  "testFreeze": "a78fca398110c521e23bb4f34810bf58242fd841",
+  "independentEvidenceCommit": "a4710ca5139fc7d04c0ad44a85b18b00087db29f",
+  "records": [
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/OUTLINE.md",
+      "bytes": 2503,
+      "sha256": "eec9afaa08458eb02076d4d583aed59f2e9a555691cdea373627c1b81b15d320"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/DEPENDENCY-LINKS.json",
+      "bytes": 629,
+      "sha256": "735fd6341e5f1864619cd22c8f0111db3b62852351db77e6def44677140d3f0d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/HANDOFF.md",
+      "bytes": 3471,
+      "sha256": "e8f1814cb1ae58ed34fedce9fb272d17bd99688ba7552516bbee6da97a75bfe6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/OUTLINE.md",
+      "bytes": 1518,
+      "sha256": "43a72bc63711fc71a5238dbbe475686b57b1272795cd26e7317e5a7cd2ff856b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/SOURCE-MANIFEST.json",
+      "bytes": 1308,
+      "sha256": "f827da3afe6235807eec6acda1b5b4972fa3b7d510db19de96e9e6e90cd395d4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/TEMP-CLEANUP.json",
+      "bytes": 201,
+      "sha256": "be5a2f168c7e22f7562bf3e507ddb121f3cbd1c7737029162af6a8199120d76f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/cleanup-owner-controls.json",
+      "bytes": 1464,
+      "sha256": "3a0ed701e6b75dcdacc471be0febc067a2d26e37bd0e4e956e38eac5f5c4b443"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/cleanup-owner-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/cleanup-owner-controls.stdout.bin",
+      "bytes": 1116,
+      "sha256": "df1e6c9d69b1fa9e3aeb825a3bed61c6e3f92604041c740dcb39bb145c579a3d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/frozen-observer-controls.json",
+      "bytes": 1459,
+      "sha256": "b840602b5b8dae29163f70d3d3f0ee4e7393ede1100b5b338b03819fb12e6a77"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/frozen-observer-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/frozen-observer-controls.stdout.bin",
+      "bytes": 1223,
+      "sha256": "9e971fb56cacfaaf90313e2215f5dd0125db4185c3e6710293aa7361b7d83a93"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/initial-observer-controls.json",
+      "bytes": 1315,
+      "sha256": "f70cef027277f2b57a4adaa53212964569db66d5dca89daae5af9e5fdb00d503"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/initial-observer-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/initial-observer-controls.stdout.bin",
+      "bytes": 1492,
+      "sha256": "6b0a449e7e943e5cce98a841e075fc6ea972ecadc3d02a43c7041b247672f134"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/linked-observer-controls.json",
+      "bytes": 1353,
+      "sha256": "0afa032c1d523a701cca8dae0ffaa956b469facfa0bf81c7d9151e726b5770de"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/linked-observer-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/linked-observer-controls.stdout.bin",
+      "bytes": 1613,
+      "sha256": "dca938812e8b0518fb05e05147c9ad172731826e9a2420d6066d78300464b7eb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/native-stdout-fixture.mjs",
+      "bytes": 388,
+      "sha256": "5bec0c25f59a8289b14340be06eca45924c1000dafbed2ae6c4528df24371933"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/physical-exit-controls.json",
+      "bytes": 1411,
+      "sha256": "e4077348ea88abe0c58b0e8c42a8784a56010ad163260d04e207c9d606bef9ca"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/physical-exit-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/physical-exit-controls.stdout.bin",
+      "bytes": 3263,
+      "sha256": "69e36c02e4a4a8f86a43e4c5bdfaba85dc0b2fca9b5e664c930d2dfd9367f1d6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/CLEANUP-READBACK.json",
+      "bytes": 452,
+      "sha256": "d59f83ac3240b37d9daf5eb8797c674a345c9646110c61003b0047af0d99ab8a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/POSTEXECUTION.md",
+      "bytes": 3699,
+      "sha256": "59f7f65d9ec0bd907a62f0a37b15c2a90b167c62cdc4d87e15eb0cf603fe5795"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/PREEXECUTION.md",
+      "bytes": 2636,
+      "sha256": "b06dd225b79a497f405e1a0cd169e2da5761eeb08a2c1408c962c634757edc68"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/REVIEW.md",
+      "bytes": 2775,
+      "sha256": "194a6dfc5d006b0b7501570399088fcc312de4e33eb8f49a84abc204a3c3568b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.json",
+      "bytes": 1330,
+      "sha256": "1ca76d1d6a2433b5ec0baa6b3b7928c12891933c217070decd2a4e87f3bbf357"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.stdout.bin",
+      "bytes": 742,
+      "sha256": "7a7104853a90ce97e1379c649e52d9d05566717636d77650b6fbbd4bd09d637e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/controls.test.mjs",
+      "bytes": 6429,
+      "sha256": "5bae261cc49a1fe76b2daafd1c7b0a73cdc19d984f2e5ef478385d0de019d51f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/manifest.json",
+      "bytes": 6225,
+      "sha256": "1dda8755898519a58f17ae8dc2e0fc07c14c7f3de6f8f7c5629c805d9e53688d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/native-fixture.mjs",
+      "bytes": 375,
+      "sha256": "c5e0a8554ab711625c48fa91fbe7b1a777efb932d13083ce907f8e2f49b5ec26"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/CLEANUP.json",
+      "bytes": 573,
+      "sha256": "080b8ed3d7ba8e6cfdc245fb70ad3f0a9e288fad8c3836b4b0a157a39995a49b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/DEPENDENCY-LINKS.json",
+      "bytes": 288,
+      "sha256": "2e3d3bb716fbfaa87f16a8cac4f3a640a50126d64bb0749c18a14d53ddd4014e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/PREEXECUTION-INPUTS.json",
+      "bytes": 1703,
+      "sha256": "a0646e99fa276920f2e0d891962cc90da830aa9a6e96d4c5687920522f962241"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.json",
+      "bytes": 1330,
+      "sha256": "90b8c2ec39037270ccf55135b4f2e94888049b25826c9de4f3d04e408893bdc1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.stderr.bin",
+      "bytes": 717,
+      "sha256": "bfe779d789ce2ccb9b016361a9e354a47dc8999d9f2a0f8c6e47255999132320"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/corrected-sdk-registration.json",
+      "bytes": 1445,
+      "sha256": "dfe373371ffaf5942a84cf163865645b081d1b0190e735db6196b859f12fdd12"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/corrected-sdk-registration.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/corrected-sdk-registration.stdout.bin",
+      "bytes": 1407,
+      "sha256": "e927d6ca533806a44b5f4ef3017a06390d160995f05e1186546b174f2d30baa1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/sdk-registration-observation.mjs",
+      "bytes": 13070,
+      "sha256": "daff7c5df60aa03d58152759996eefb89aea722c81242b74acd919adbd6453ee"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-registration.mjs",
+      "bytes": 9397,
+      "sha256": "4c9ab92ff4bcd6ad86066da8242d46dbe8aaf48e5b2b241f3814ff763fc04066"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/session-registration.test.mjs",
+      "bytes": 14562,
+      "sha256": "1d6051cfc7b605e062727759d83998147b1ae42a6428d3a3b61d47354c5e1af1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-SESSION-SUPERVISOR-20261014.md",
+      "bytes": 9372,
+      "sha256": "88d3f1daf98eeef937a50d29932c0797dc5d6e0679a12c31cfe2aa3f78a3f183"
+    }
+  ]
+}

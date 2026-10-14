@@ -1,0 +1,131 @@
+{
+  "scope": "INDEPENDENT_SOURCE_ONLY_NOT_NATIVE_ADMISSION",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/REVIEW.md",
+      "bytes": 2775,
+      "sha256": "194a6dfc5d006b0b7501570399088fcc312de4e33eb8f49a84abc204a3c3568b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/controls.test.mjs",
+      "bytes": 6429,
+      "sha256": "5bae261cc49a1fe76b2daafd1c7b0a73cdc19d984f2e5ef478385d0de019d51f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/native-fixture.mjs",
+      "bytes": 375,
+      "sha256": "c5e0a8554ab711625c48fa91fbe7b1a777efb932d13083ce907f8e2f49b5ec26"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.json",
+      "bytes": 1330,
+      "sha256": "1ca76d1d6a2433b5ec0baa6b3b7928c12891933c217070decd2a4e87f3bbf357"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.stdout.bin",
+      "bytes": 742,
+      "sha256": "7a7104853a90ce97e1379c649e52d9d05566717636d77650b6fbbd4bd09d637e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-registration.mjs",
+      "bytes": 9397,
+      "sha256": "4c9ab92ff4bcd6ad86066da8242d46dbe8aaf48e5b2b241f3814ff763fc04066"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/PREEXECUTION.md",
+      "bytes": 2636,
+      "sha256": "b06dd225b79a497f405e1a0cd169e2da5761eeb08a2c1408c962c634757edc68"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/POSTEXECUTION.md",
+      "bytes": 3699,
+      "sha256": "59f7f65d9ec0bd907a62f0a37b15c2a90b167c62cdc4d87e15eb0cf603fe5795"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/PREEXECUTION-INPUTS.json",
+      "bytes": 1703,
+      "sha256": "a0646e99fa276920f2e0d891962cc90da830aa9a6e96d4c5687920522f962241"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/sdk-registration-observation.mjs",
+      "bytes": 13070,
+      "sha256": "daff7c5df60aa03d58152759996eefb89aea722c81242b74acd919adbd6453ee"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.json",
+      "bytes": 1330,
+      "sha256": "90b8c2ec39037270ccf55135b4f2e94888049b25826c9de4f3d04e408893bdc1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.stderr.bin",
+      "bytes": 717,
+      "sha256": "bfe779d789ce2ccb9b016361a9e354a47dc8999d9f2a0f8c6e47255999132320"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/corrected-sdk-registration.json",
+      "bytes": 1445,
+      "sha256": "dfe373371ffaf5942a84cf163865645b081d1b0190e735db6196b859f12fdd12"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/corrected-sdk-registration.stdout.bin",
+      "bytes": 1407,
+      "sha256": "e927d6ca533806a44b5f4ef3017a06390d160995f05e1186546b174f2d30baa1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/corrected-sdk-registration.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/CLEANUP-READBACK.json",
+      "bytes": 452,
+      "sha256": "d59f83ac3240b37d9daf5eb8797c674a345c9646110c61003b0047af0d99ab8a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/CLEANUP.json",
+      "bytes": 573,
+      "sha256": "080b8ed3d7ba8e6cfdc245fb70ad3f0a9e288fad8c3836b4b0a157a39995a49b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/DEPENDENCY-LINKS.json",
+      "bytes": 288,
+      "sha256": "2e3d3bb716fbfaa87f16a8cac4f3a640a50126d64bb0749c18a14d53ddd4014e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/author/DEPENDENCY-LINKS.json",
+      "bytes": 629,
+      "sha256": "735fd6341e5f1864619cd22c8f0111db3b62852351db77e6def44677140d3f0d"
+    }
+  ],
+  "admittedProbe": {
+    "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/sdk-registration-observation.mjs",
+    "sha256": "a426b19016dd3d16fcd0522519d94fa8dd85fb2856d2da1ac8c4a38bada95fc6",
+    "readAtHead": "a78fca398110c521e23bb4f34810bf58242fd841",
+    "scope": "SINGLE_LOCAL_MECHANICAL_OBSERVATION_WITH_SYNTHETIC_AUTHORITY_SQL"
+  },
+  "admittedProbeCorrection": {
+    "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/sdk-registration-observation.mjs",
+    "sha256": "daff7c5df60aa03d58152759996eefb89aea722c81242b74acd919adbd6453ee",
+    "readAtHead": "d5207dc7aed59f436dbecefaf2513cab4bcc35d3",
+    "scope": "SINGLE_CORRECTED_LOCAL_MECHANICAL_OBSERVATION_WITH_SYNTHETIC_AUTHORITY_SQL",
+    "preservedFailure": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.json"
+  },
+  "manifestInitiallyCreatedAtHead": "67406ce05bf9ad89ad9ddc7e23b04e41b9cb6d54",
+  "testedSourceHead": "ca38a341a98b160c4ba8091bd651dce0a3a6d75a",
+  "postexecutionReviewedAtHead": "d5207dc7aed59f436dbecefaf2513cab4bcc35d3"
+}

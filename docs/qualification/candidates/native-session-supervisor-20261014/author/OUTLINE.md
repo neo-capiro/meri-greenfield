@@ -1,0 +1,7 @@
+# Native session registration author checks
+
+Root owns production observer/decoder. Author owns focused tests and evidence only. Use a real task-owned Node ChildProcess whose IPC commands write exact raw UTF8 stdout bytes and keep it physically alive until explicit fixture cleanup. Install transparent tap as SDK-visible stdout before any output, collect bytes independently, assert exact unchanged output and stable first-observation receipts. Original borrowed source/child are retained for detach/cleanup assertions; only fixture cleanup kills an unresponsive owned child and verifies close.
+
+Positive local chain: complete native init + main transcript_mirror -> native registration.read -> existing SDK-session Fetch application/client -> canonical durable owner on existing explicit synthetic SQL/admission fixture -> append/load/idempotency. Existing current authority fixture supplies explicit valid synthetic auth receipts; observation does not become task or deployment authority. Add missing/foreign/conflicting/malformed/overflow/closed/exited/expired stream and cancellation/deadline/pending-limit controls, checking bounded readers and listener detachment while borrowed child/source remain alive.
+
+No provider/SDK/cloud/database/credentials/output actions, protected fixture access or dependency installs. Capture focused runs with existing Linux child-subreaper, retain failures, bind final tests to committed source hashes. Exact production interface agreed in root OUTLINE.md and parent allocation.

@@ -1,0 +1,38 @@
+✔ raw live native stdout registers through canonical client/HTTP/durable owner and append/load retains data (82.92516ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ missing init or main mirror cannot release registration, and read cancellation/deadline retires waiters (200.437212ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ foreign caller binding/key cannot install observed authority before or after real frames (245.774239ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ conflicting native init, CLI pin or main path permanently refuses receipts (148.280331ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ malformed UTF8/JSON, frame overflow and total overflow refuse without killing borrowed process/source (186.733516ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ stream exit after observation and original expiry prevent new or late receipt release (86.209613ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ closed observer detaches listeners/refuses queued readers and preserves borrowed process (41.682657ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ disabled or invalid launch configuration cannot promote worker-supplied observations (51.018289ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ pending-read limit and constructor cancellation remain bounded without disposing borrowed source (104.089248ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+✔ truncated EOF and premature subagent mirrors cannot become a main-session registration (116.271008ms)
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ Owned fixture physically closed: exit0, no signal; borrowed observer never claimed physical stop.
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4887.185731

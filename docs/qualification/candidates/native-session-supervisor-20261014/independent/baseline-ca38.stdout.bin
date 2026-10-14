@@ -1,0 +1,14 @@
+✔ fragmented UTF8 and repeated pre-init main batches preserve first witness and byte forwarding (53.128266ms)
+✔ subagent frames corroborate no main authority; wrong native session permanently refuses (43.446436ms)
+✔ stdout EOF with unterminated tail invalidates receipt even while borrowed child remains alive (41.859918ms)
+✔ request accessors and nested proxies are rejected without executing their traps (40.564817ms)
+✔ canceled caller does not revoke independently observed authority or leak waiter capacity (39.278531ms)
+✔ clock rollback cannot renew the original observation after clock recovery (41.090138ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 638.147619

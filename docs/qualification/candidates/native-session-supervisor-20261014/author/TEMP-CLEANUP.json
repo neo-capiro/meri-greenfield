@@ -1,0 +1,9 @@
+{
+  "removed": [
+    {
+      "path": "/tmp/meri-session-registration-BGI5Bs",
+      "removed": "empty owned fixture directory after captured owned process-group absence"
+    }
+  ],
+  "remaining": []
+}

@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/native-session-supervisor-20261014/root/sdk-registration-observation.mjs"
+  ],
+  "cwd": "/workspace/meri-native-session-supervisor",
+  "sourceHead": "d5207dc7aed59f436dbecefaf2513cab4bcc35d3",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T02:18:45.205476+00:00",
+  "durationSeconds": 3.431,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 65704,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/root/actual-sdk-registration.stderr.bin",
+      "bytes": 717,
+      "sha256": "bfe779d789ce2ccb9b016361a9e354a47dc8999d9f2a0f8c6e47255999132320"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

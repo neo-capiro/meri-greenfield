@@ -1,0 +1,36 @@
+{
+  "sourceHead": "d5207dc7aed59f436dbecefaf2513cab4bcc35d3",
+  "records": [
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "bytes": 2546,
+      "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211"
+    },
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs",
+      "bytes": 1235617,
+      "sha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0"
+    },
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/package.json",
+      "bytes": 282,
+      "sha256": "8cb928d63aa51ed7117257d2f162bc00ba85d335d54baf659e4097f3ec0b907c"
+    },
+    {
+      "path": "/workspace/meri-first-session/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+      "bytes": 256113848,
+      "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+    },
+    {
+      "path": "/workspace/meri-native-session-supervisor/apps/runtime/native-authority/session-registration.mjs",
+      "bytes": 9397,
+      "sha256": "4c9ab92ff4bcd6ad86066da8242d46dbe8aaf48e5b2b241f3814ff763fc04066"
+    },
+    {
+      "path": "/workspace/meri-native-session-supervisor/docs/qualification/candidates/native-session-supervisor-20261014/root/sdk-registration-observation.mjs",
+      "bytes": 13070,
+      "sha256": "daff7c5df60aa03d58152759996eefb89aea722c81242b74acd919adbd6453ee"
+    }
+  ],
+  "scope": "INSTALLED_INPUT_READBACK_BEFORE_CORRECTED_ACTUAL_SDK_EXECUTION_NOT_DEPLOYED_IMAGE_QUALIFICATION"
+}
