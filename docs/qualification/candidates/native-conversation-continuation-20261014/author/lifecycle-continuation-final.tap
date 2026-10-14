@@ -1,0 +1,15 @@
+✔ mounted resume passes exact proof/current authority, retires first, and canonical journal alone persists/dispatches target (641.671693ms)
+✔ mounted fork preserves source owner and gives fresh conversation/run/session with exact target dispatch (193.632953ms)
+✔ mounted retirement refusal leaves UNKNOWN barrier and cannot redispatch target (244.842726ms)
+✔ mounted admission refusal leaves UNKNOWN barrier and cannot redispatch target (211.67602ms)
+✔ mounted scope refusal leaves UNKNOWN barrier and cannot redispatch target (206.288576ms)
+✔ lost Temporal start ACK preserves inserted target but never starts it again on control replay (289.979419ms)
+✔ mounted approval owners verify existing proposal/decision before resume retirement/admission (409.025316ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27887.494254

@@ -1,0 +1,18 @@
+{
+  "action": "Fresh readonly Git fetch exact frontend PR39 in own temporary bare object directory",
+  "result": "Terminated after unnecessary >1GiB transfer; incomplete Git source not used for acceptance. Exact GitHub file reads succeeded instead.",
+  "ownedGroup": 176399,
+  "parentCommandExitCode": 143,
+  "ownedTemporaryDirectoryRemoved": "/tmp/meri-continuation-frontend-objects-20261014",
+  "exitedHelpers": {
+    "pids": [
+      176404,
+      176530
+    ],
+    "state": "Z parent1",
+    "reason": "Owner terminated group without subreaper capture; init now owns wait/reaping. This agent cannot waitpid them; no live helper remains.",
+    "cleanup": "UNREAPED_KERNEL_CHILDREN_PRESERVED"
+  },
+  "readback": "    PID    PPID    PGID S COMMAND\n 176404       1  176399 Z git\n 176530       1  176399 Z git\n",
+  "foreignSourcePublication": "No private frontend/backend source embedded or published into Meri."
+}

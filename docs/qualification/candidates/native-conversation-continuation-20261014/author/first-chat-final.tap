@@ -1,0 +1,23 @@
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (20.598917ms)
+✔ current canonical run identity remains usable after original task expiry (2.87333ms)
+✔ present canonical mismatch never falls back binding (2.076895ms)
+✔ present canonical mismatch never falls back scopes (1.559083ms)
+✔ present canonical mismatch never falls back policyRevision (1.378907ms)
+✔ canonical storage STORE_CORRUPT never falls back (1.402702ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (2.194637ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (1.349329ms)
+✔ native wrong principal and revoked identity cannot issue initial context (2.396829ms)
+✔ public candidate mounts actual issuance and exact approved queued binding before lazy allocation, and private readiness is control-only (416.098485ms)
+✔ same public request replays one canonical run/event with the same upstream Temporal deduplication identity (61.88019ms)
+✔ foreign public issuance conversationId selector refuses without dispatch or allocation (5.412055ms)
+✔ foreign public issuance runId selector refuses without dispatch or allocation (5.12594ms)
+✔ foreign public issuance clientId selector refuses without dispatch or allocation (6.462266ms)
+✔ fresh backend revocation after session issuance prevents public submit and Temporal start (9.701515ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2062.250102

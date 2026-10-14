@@ -1,0 +1,48 @@
+✔ mounted resume passes exact proof/current authority, retires first, and canonical journal alone persists/dispatches target (711.607927ms)
+✔ mounted fork preserves source owner and gives fresh conversation/run/session with exact target dispatch (235.108274ms)
+✔ mounted retirement refusal leaves UNKNOWN barrier and cannot redispatch target (352.216917ms)
+✔ mounted admission refusal leaves UNKNOWN barrier and cannot redispatch target (152.17606ms)
+✔ mounted scope refusal leaves UNKNOWN barrier and cannot redispatch target (171.21493ms)
+✔ lost Temporal start ACK preserves inserted target but never starts it again on control replay (165.370318ms)
+✔ mounted approval owners verify existing proposal/decision before resume retirement/admission (254.370923ms)
+(node:180894) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:180894) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ borrowed lifecycle methods are inertly captured with original receiver and no getters (2.084959ms)
+✔ candidate startup preserves direct approval owner and mandatory candidate identity (356.050491ms)
+✔ candidate startup preserves synchronous factory approval owner and mandatory candidate identity (81.762871ms)
+✔ invalid async factories and accessor ports refuse before secrets or connections (4.800339ms)
+✔ ordinary synchronous factory returning Promise is refused without unhandled rejection (8.637876ms)
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (65.521557ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (49.039597ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (10.98445ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (5.241209ms)
+✔ runner native restore substitution refuses the single SDK query (3.095872ms)
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (56.620838ms)
+✔ current canonical run identity remains usable after original task expiry (5.851492ms)
+✔ present canonical mismatch never falls back binding (4.867164ms)
+✔ present canonical mismatch never falls back scopes (3.314717ms)
+✔ present canonical mismatch never falls back policyRevision (3.169888ms)
+✔ canonical storage STORE_CORRUPT never falls back (8.501393ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (4.727528ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (3.401094ms)
+✔ native wrong principal and revoked identity cannot issue initial context (5.185627ms)
+✔ public candidate mounts actual issuance and exact approved queued binding before lazy allocation, and private readiness is control-only (815.862876ms)
+✔ same public request replays one canonical run/event with the same upstream Temporal deduplication identity (131.738177ms)
+✔ foreign public issuance conversationId selector refuses without dispatch or allocation (15.166325ms)
+✔ foreign public issuance runId selector refuses without dispatch or allocation (15.363971ms)
+✔ foreign public issuance clientId selector refuses without dispatch or allocation (16.729086ms)
+✔ fresh backend revocation after session issuance prevents public submit and Temporal start (20.980929ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (24.509423ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (3.53973ms)
+✔ runner refuses missing observed registration before the single SDK query (229.15041ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (38.288422ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (47.400721ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14601.424367
