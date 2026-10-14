@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/native-execution-broker-20261014/author/sdk-independent-probe.mjs"
+  ],
+  "cwd": "/workspace/meri-native-execution-broker",
+  "sourceHead": "9fba21f58beedfa3876aed23ebdeb3eff8fffece",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T03:43:10.953049+00:00",
+  "durationSeconds": 32.372,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 22762,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/actual-sdk.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/actual-sdk.stderr.bin",
+      "bytes": 537,
+      "sha256": "e6840b31847f71b12d524a52fbbb884ded48b803ec90e9c335891c0e8fd4ae4f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

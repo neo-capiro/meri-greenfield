@@ -7,7 +7,7 @@ import {compileNativeLaunch,matchNativeLaunch,launchFault} from './launch-config
 import {ownNativeProcess} from './process-lifetime.mjs';
 import {createNativeSessionRegistration} from './session-registration.mjs';
 
-function verifyPaths(c){
+export function verifyNativeLaunchPaths(c){
  for(const name of [c.workspace,c.configDirectory]){const stat=lstatSync(name);if(!stat.isDirectory()||stat.isSymbolicLink()||realpathSync(name)!==name)throw launchFault('PATH');}
  if(realpathSync(c.launch.command)!==c.launch.command)throw launchFault('EXECUTABLE');
  let fd;try{fd=openSync(c.launch.command,'r');const stat=fstatSync(fd);
@@ -25,7 +25,7 @@ export function createNativeSessionLauncher(configuration){
   if(!c.enabled||closed||used||process.platform!=='linux')throw launchFault('UNAVAILABLE');
   spawnSignal=matchNativeLaunch(request,c);const current=c.now();
   if(c.signal?.aborted||spawnSignal?.aborted||!Number.isSafeInteger(current)||current<c.startedAtMs||current>=c.expiresAtMs)throw launchFault('STOPPED');
-  try{verifyPaths(c);}catch{throw launchFault('PREFLIGHT');}
+  try{verifyNativeLaunchPaths(c);}catch{throw launchFault('PREFLIGHT');}
   const checked=c.now();
   if(c.signal?.aborted||spawnSignal?.aborted||!Number.isSafeInteger(checked)||checked<current||checked>=c.expiresAtMs)throw launchFault('STOPPED');
   used=true;

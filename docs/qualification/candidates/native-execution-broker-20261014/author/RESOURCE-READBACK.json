@@ -1,0 +1,31 @@
+{
+  "containerId": "d964fd6662966d5b2c03436a444af0c3f425b63c06dbc1903a2a78cbb021dc7a",
+  "imageDigest": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd",
+  "networkMode": "none",
+  "portBindings": {},
+  "mounts": [
+    {
+      "Type": "bind",
+      "Source": "/tmp/meri-broker-pg-socket-20261014",
+      "Destination": "/tmp/meri-pg-socket",
+      "Mode": "",
+      "RW": true,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "volume",
+      "Name": "6b538c006e2c82245f68a2db40d0fe8ae9a80f4fc56f4919067153d13e307951",
+      "Source": "/var/lib/docker/volumes/6b538c006e2c82245f68a2db40d0fe8ae9a80f4fc56f4919067153d13e307951/_data",
+      "Destination": "/var/lib/postgresql/data",
+      "Driver": "local",
+      "Mode": "",
+      "RW": true,
+      "Propagation": ""
+    }
+  ],
+  "databaseReadback": "PostgreSQL 16.15 (Debian 16.15-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit\n\nretired|1\n",
+  "initialReadbackFailures": [
+    "psql default socket absent; corrected task-owned socket succeeds",
+    "phase is within record JSONB, not a SQL column; corrected query succeeds; both attempts read-only"
+  ]
+}

@@ -1,0 +1,14 @@
+✔ real PostgreSQL concurrent/replayed start retains one actual independent supervisor and original claim (2377.899547ms)
+✔ actual protected HTTP broker/runtime path correlates current native task and original runtime (2306.809957ms)
+✔ separate supervisor observes real native-format bytes and canonical PG session owner retains witness (2265.500407ms)
+✔ lost real claim commit acknowledgement dispatches zero and durable replay never relaunches (449.59591ms)
+✔ durable journal refuses altered plan/expiry/phase and SQL trigger protects original identity (1088.510011ms)
+✔ product completion and native process exit are independent facts; revocation still permits original containment (1724.307196ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16022.062686

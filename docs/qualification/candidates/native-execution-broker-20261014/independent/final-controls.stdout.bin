@@ -1,0 +1,15 @@
+✔ actual launch observes committed claim before effect; concurrent replay has one physical owner (2486.88191ms)
+✔ revocation after acknowledged native launch retires original task before start failure (2047.691536ms)
+✔ coherently rehashed malformed native receipt fails durable decoding instead of repair (1662.091155ms)
+✔ actual launch/runtime plan changes cannot replay original durable intent (1421.804878ms)
+✔ hostile original launch configuration refuses without traps or task allocation (341.578846ms)
+✔ worker byte port cannot forge registration; independent supervisor reads real CLI stdout (1784.038236ms)
+✔ runtime refuses continuation body and altered runtime pins without additional task (1165.969352ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16000.530578

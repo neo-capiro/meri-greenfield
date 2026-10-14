@@ -1,0 +1,36 @@
+✔ request is immutable and replay survives owner reconstruction (21.1382ms)
+✔ events atomically advance state and stable IDs replay without duplicates (6.562679ms)
+✔ concurrent starting attempts serialize and allow one model admission (2.380814ms)
+✔ stored reads/writes deny foreign tenant (1.87334ms)
+✔ stored reads/writes deny foreign actor (1.466369ms)
+✔ stored reads/writes deny foreign conversation (1.222629ms)
+✔ stored reads/writes deny foreign run (1.596302ms)
+✔ stored reads/writes deny foreign attempt (1.424972ms)
+✔ stored reads/writes deny foreign worker (2.045738ms)
+✔ stored reads/writes deny foreign fence (2.11261ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (3.895151ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (1.281737ms)
+✔ retained event corruption and a sequence hole refuse reconnect (2.774651ms)
+✔ cursor after durable end and oversized publication refuse (2.973193ms)
+✔ real PostgreSQL concurrent/replayed start retains one actual independent supervisor and original claim (1647.793949ms)
+✔ actual protected HTTP broker/runtime path correlates current native task and original runtime (1575.190616ms)
+✔ separate supervisor observes real native-format bytes and canonical PG session owner retains witness (1557.993479ms)
+✔ lost real claim commit acknowledgement dispatches zero and durable replay never relaunches (747.691972ms)
+✔ durable journal refuses altered plan/expiry/phase and SQL trigger protects original identity (1126.866617ms)
+✔ product completion and native process exit are independent facts; revocation still permits original containment (1492.403027ms)
+✔ owned genuine process bytes establish immutable receipt through readable SDK transport (2178.339717ms)
+✔ altered SDK inputs and second spawn refuse, original compiled data survives caller mutation (1050.694134ms)
+✔ hostile descriptors/proxies and bad pins fail before child allocation (1056.741838ms)
+✔ launch uses explicit environment without ambient inheritance (706.476647ms)
+✔ cancelled SDK request and disabled launcher allocate no child (850.811934ms)
+✔ expiry with no stdout reads physically retires owned group and refuses registration (1784.771336ms)
+✔ supervisor cancellation retires pending registration and closes exactly owned group (632.277316ms)
+✔ malformed native stream retires owned child rather than merely refusing receipts (1087.502358ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17349.777358

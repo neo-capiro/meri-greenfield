@@ -1,0 +1,28 @@
+✖ real PostgreSQL concurrent/replayed start retains one actual independent supervisor and original claim (1650.004141ms)
+✔ actual protected HTTP broker/runtime path correlates current native task and original runtime (2562.004318ms)
+✔ separate supervisor observes real native-format bytes and canonical PG session owner retains witness (3158.363141ms)
+✔ lost real claim commit acknowledgement dispatches zero and durable replay never relaunches (1036.299406ms)
+✔ durable journal refuses altered plan/expiry/phase and SQL trigger protects original identity (1599.737111ms)
+✔ product completion and native process exit are independent facts; revocation still permits original containment (1914.851568ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 24528.585287
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/execution-broker.test.mjs:5:1
+✖ real PostgreSQL concurrent/replayed start retains one actual independent supervisor and original claim (1650.004141ms)
+  Error: NATIVE_EXECUTION_TASK_NOT_FOUND
+      at executionFault (file:///workspace/meri-native-execution-broker/apps/runtime/native-authority/execution-broker.mjs:9:49)
+      at Object.inspect (file:///workspace/meri-native-execution-broker/apps/runtime/native-authority/independent-task.mjs:51:78)
+      at file:///workspace/meri-native-execution-broker/apps/artifacts/storage/boundary.mjs:26:60
+      at file:///workspace/meri-native-execution-broker/apps/runtime/native-authority/execution-broker.mjs:23:80
+      at file:///workspace/meri-native-execution-broker/packages/runtime/operation-lifetime.mjs:38:65
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+    code: 'NATIVE_EXECUTION_TASK_NOT_FOUND'
+  }

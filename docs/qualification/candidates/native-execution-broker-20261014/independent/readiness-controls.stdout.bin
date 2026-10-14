@@ -1,0 +1,12 @@
+✔ actual readiness HTTP is control-only closed-body connectivity and allocates no execution (1659.287971ms)
+✔ readiness refuses missing execution/session/allocation schema in own database (2125.791646ms)
+✔ readiness refuses actual executable hash mismatch without process allocation (616.829952ms)
+✔ readiness refuses current grant revocation and closed supervisor even with schema/pins intact (970.151321ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12596.637983
