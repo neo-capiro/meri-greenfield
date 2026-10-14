@@ -1,0 +1,244 @@
+{
+  "scope": "ACCEPT_SOURCE_TEN_ROUTE_RELAY_AND_SCRIPTED_ACK_SDK_MECHANICS_NOT_NATIVE_AUTHORITY",
+  "base": "742e57287db5294f84724b6c1878c113bff3bba8",
+  "productionFreeze": "7df7a9e00b72f097de66acb1a467c51eac026e2c",
+  "sourceHead": "b6a195bee725014d6c67cd0319f76db422341f46",
+  "sameProductionAsAcceptedFreeze": true,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/.gitattributes",
+      "bytes": 13,
+      "sha256": "c7c6541111ee53947140bac154f1275c6b1b244c40c045b190662f23226509c9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/MANIFEST.json",
+      "bytes": 6624,
+      "sha256": "1d2b1bbe74e4fa89ee903b4c07567f3cccd81e4910625c5e64c699a794a6e10c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/POSTEXECUTION.md",
+      "bytes": 3521,
+      "sha256": "74f4f899d9fea212e3f095802197ab0e60b1ea0789a7c8cff23073fe15a656ba"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/PREEXECUTION.md",
+      "bytes": 3026,
+      "sha256": "bccbdaf033b76ad392299c721571aa8a28b23c8e2831f0b3f793491f6576f9d8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/REVIEW.md",
+      "bytes": 6916,
+      "sha256": "e01a699aac8883117b4726429517b012dd00c14566eab50148cc8f2ec0699e93"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs",
+      "bytes": 1118,
+      "sha256": "be4cf7637659fca9169775b509ef3a9cae7ebcbab3ee7829ddda29c99986d9cf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-errors.json",
+      "bytes": 1708,
+      "sha256": "309fd092d59ac8f5343e6c50b8de7bc92188ec96cc212c55441a08323b097a96"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-errors.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-errors.stdout.bin",
+      "bytes": 2006,
+      "sha256": "9043ae049e4e297ab1d2de3370565c4aaa11677a61530bc5c7f581a7933c44f1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/capture-b2ce.py",
+      "bytes": 4009,
+      "sha256": "108d7e8b649f3e5f91bffd80aecc6f110e79ad76a22f507e428a75651f2f5c56"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/capture-final.py",
+      "bytes": 4009,
+      "sha256": "f250b8b7bc1300ebbf71d3dff6446daa4b391807d91f846d5ced35e1a1bca64d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/capture-original.py",
+      "bytes": 4009,
+      "sha256": "f3361490bb531c00cedbcbcc2f1ca6aadea5dcd7791d23dc0f18bee32117c96d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-edge.json",
+      "bytes": 2022,
+      "sha256": "db247f90dbdad1b37598810793bfcec076e555f841d027725ce9aa31708484c9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-edge.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-edge.stdout.bin",
+      "bytes": 1277,
+      "sha256": "18b80920e74a0542ffa450e8f6af3bed8dbad8b68bc826f4945d58df424cddf4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-reply.test.mjs",
+      "bytes": 1147,
+      "sha256": "10e8d4f1738ab3f2f00aef05fe40a26c71c9342c137117cbc2f6e2d7fec51c95"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/final-controls.json",
+      "bytes": 2696,
+      "sha256": "2d12cb46287056f6ef7d810f7d6e4407a69ea8a91228d14368cf85d0645c310f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/final-controls.stdout.bin",
+      "bytes": 1554,
+      "sha256": "704b30df1a76f7521513b19a7082519af4458a0ebe96263b50584dd85677e56d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/relay-boundaries.test.mjs",
+      "bytes": 2929,
+      "sha256": "d51bafb05d1b87e57fa87e4a97daff211cb870ead66d4542c018b6835b0c603c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/actual-sdk-gateway.json",
+      "bytes": 1299,
+      "sha256": "f4359b5aff30c0e9bca9c57b222bd33660f235e86fdcd7c948ae186298f8f6cf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/actual-sdk-gateway.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/actual-sdk-gateway.stdout.bin",
+      "bytes": 1277,
+      "sha256": "de99ddc2c222f10f64e93d7631731c745a7f76da24a759776f74a59ef7067067"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/canonical-publish-repaired.json",
+      "bytes": 1516,
+      "sha256": "48466c3641114f555905ccf735327e354d1e1ab98528860f39de0dcb5a06c9b2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/canonical-publish-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/canonical-publish-repaired.stdout.bin",
+      "bytes": 252,
+      "sha256": "66a2d5a7cdf31fa17fa29944405ca91e0413f7b9d91e6978feb138b7985e7d7f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/cleanup-owned-links.py",
+      "bytes": 1922,
+      "sha256": "f91650de43736a0cd9d5705aab5c1d12aa86f160d25d6f7014e21ac344fb3b17"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/final-gateway-controls.json",
+      "bytes": 1381,
+      "sha256": "1b3d8f0bb87ff93faed49b8f27091ca8ff78b18f5c7903b4a711aae65eafd2bd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/final-gateway-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/final-gateway-controls.stdout.bin",
+      "bytes": 971,
+      "sha256": "2020a512e34b9ef425b3797098ceec1ccecd5232e72ef306c57ca5165d534864"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/gateway-controls.json",
+      "bytes": 1265,
+      "sha256": "56ae122902cf91aecab10dac085c0fd4ae9279d1977bdb220c1ff779e7de88a2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/gateway-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/gateway-controls.stdout.bin",
+      "bytes": 1707,
+      "sha256": "c8df50e97f3fe45ed5fc2d3672a32746f6a4ca814809c3c4841294ac60b6064d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/installed-input-readback.json",
+      "bytes": 1379,
+      "sha256": "fdc77ff2456d68672ca20540a787e16d46ec0eb81d5ce8e8c63cca98479a30f0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/owned-dependency-cleanup.json",
+      "bytes": 1309,
+      "sha256": "4e7a46261c89aad79901b9086d0c823b171fcb2f32b614c771d83a442f626613"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/owned-dependency-cleanup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/owned-dependency-cleanup.stdout.bin",
+      "bytes": 233,
+      "sha256": "13582db3821fce343efca915f684729c3aa172f6bcb32077ef5c1570ceec7f25"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/repaired-gateway-controls.json",
+      "bytes": 1403,
+      "sha256": "1fb82a30a788286f155fd55d85b8187ad21f0cc7e429a48b3d84d61cc21de177"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/repaired-gateway-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/repaired-gateway-controls.stdout.bin",
+      "bytes": 1706,
+      "sha256": "6a59699df815ef1e9460fd081eadd219fe0fe54e6c3a580368f8d3009de8c0d7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/safe-error-gateway-controls.json",
+      "bytes": 1463,
+      "sha256": "b52a3ed26dd057300a5a40c6523d6084ceabf41e1e1a5be446c28173dc43fbfc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/safe-error-gateway-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/safe-error-gateway-controls.stdout.bin",
+      "bytes": 969,
+      "sha256": "d00e391bdda894f9807536ef15c5cd60040845e79012ffa7256ae8c77db903ff"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/sdk-gateway-observation.mjs",
+      "bytes": 11543,
+      "sha256": "9fae35ef51d4c7ca4380727f9cf2ce2678908700b56f2c5361e122fa25026e78"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-RUNNER-GATEWAY-20261014.md",
+      "bytes": 8801,
+      "sha256": "d3e1f3e2e9c65ef9e34808dac5c5ed6fd0643b7b3465e3d0b0c19845e6912e38"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPIRO-BACKEND-INTEGRATION-BOUNDARY-20261014.md",
+      "bytes": 8861,
+      "sha256": "0fa68b5b0454855f209c9103d1944dd701d45d6fb1dc946d4f12f3967281ab6e"
+    }
+  ]
+}
