@@ -46,10 +46,10 @@ const env={PATH:process.env.PATH,CLAUDE_CONFIG_DIR:configDir,CLAUDE_SECURESTORAG
 // This is this probe process only; HOME and persistent configuration remain unchanged.
 for(const name of Object.keys(process.env))if(/^(CLAUDE_|ANTHROPIC_|AWS_|GOOGLE_|GCP_|AZURE_|OPENAI_|LITELLM_)/u.test(name))delete process.env[name];
 Object.assign(process.env,env);
-({query}=await import(pathToFileURL(join(sdkDir,'sdk.mjs')).href));
 let failure=false,closeObserved=false,forcedKill=false,nativeFrameError=false;
 try{
  timer=setTimeout(()=>abort.abort(),20000);
+ ({query}=await import(pathToFileURL(join(sdkDir,'sdk.mjs')).href));abort.signal.throwIfAborted();
  q=query({prompt:'/status',options:{cwd:workspace,env,abortController:abort,pathToClaudeCodeExecutable:cli,settingSources:[],settings:{autoMemoryEnabled:false},skills:[],plugins:[],mcpServers:{},hooks:{},tools:[],allowedTools:[],permissionMode:'default',canUseTool:async()=>({behavior:'deny',message:'No tool admitted'}),model:'meri-local-no-provider',maxTurns:1,maxBudgetUsd:0.000001,persistSession:true,sessionStoreFlush:'eager',sessionStore:{async append(key,entries){const k=scopedSessionKey(key,key);copySessionEntries(entries);mirrorBatches++;const name=JSON.stringify(k),expectedOffset=offsets.get(name)??0;const ack=await rpcClient.append({key:k,appendId:randomUUID(),expectedOffset,entriesSha256:canonicalHash(entries),entries});offsets.set(name,ack.offset);if(!keys.some(v=>JSON.stringify(v)===JSON.stringify(k)))keys.push(k);},async load(){throw Error('FRESH_LOAD_REFUSED');},async listSubkeys(){throw Error('FRESH_LOAD_REFUSED');}},spawnClaudeCodeProcess(options){
   assert.equal(++spawns,1);assert.equal(realpathSync(options.command),cli);assert.equal(options.cwd,workspace);
   for(const name of ['ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY'])assert.ok(!options.env[name]);
@@ -72,5 +72,5 @@ try{
 const streamComplete=record.stdoutEnded===true&&record.stdoutClosed===true&&!record.stdoutReadError&&!record.stdoutOverflow&&!nativeFrameError;
 const main=keys.filter(key=>key.subpath===undefined),correlated=main.length===1&&nativeInit.some(m=>m.sessionId===main[0].sessionId&&m.cliVersion==='2.1.295')&&nativeMirrors.some(m=>m.filePath===join(configDir,'projects',main[0].projectKey,main[0].sessionId+'.jsonl'));
 const receipt={scope:'ACTUAL_LOCAL_SDK_GATEWAY_TRANSPORT_WITH_SCRIPTED_ACK_NOT_TASK_AUTHORITY',sdkVersion:'0.3.295',cliPackageVersion:JSON.parse(readFileSync(join(dirname(cli),'package.json'),'utf8')).version,cliPath:cli,relays,acks,transportAckMatches:relays===acks&&acks===mirrorBatches,registrationQualified:false,durableStorageQualified:false,spawns,childPid:child?.pid,closeObserved,forcedKill,streamComplete,nativeFrameError,stdoutError:record.stdoutReadError===true||record.stdoutOverflow===true,localRefusedRequests:localRequests,providerCalls:0,providerTransportInstalled:false,mirrorBatches,mainKeys:main,nativeInit,nativeMirrorFrameCount:nativeMirrors.length,actualInitMainKeyCorrelated:correlated,results,queryFailed:failure,stdoutBytes:record.stdoutTotalBytes,stdoutSha256:record.stdoutSha256,physicalIsolationQualified:false,productTaskVerifierInstalled:false,productRegistrationReaderInstalled:false};
-console.log(JSON.stringify(receipt));if(closeObserved)await rm(taskRoot,{recursive:true,force:true});
+console.log(JSON.stringify(receipt));if(!child||closeObserved)await rm(taskRoot,{recursive:true,force:true});
 if(!correlated||!closeObserved||!streamComplete||forcedKill||acks!==mirrorBatches||relays!==acks||acks===0)process.exitCode=1;

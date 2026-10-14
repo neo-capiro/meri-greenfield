@@ -8,7 +8,8 @@ import {response} from '../control/action-application/http.mjs';
 
 const requestGet=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const replyGet=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
-class RelayError extends Error{constructor(code,status=503){super(code);this.code=code;this.status=status;}}
+const relayErrors=new WeakMap();
+class RelayError extends Error{constructor(code,status=503){super(code);relayErrors.set(this,Object.freeze({code,status}));}}
 const fail=(code,status)=>{throw new RelayError(code,status);};
 function length(headers,limit){const value=Headers.prototype.get.call(headers,'content-length');if(value===null)return null;if(!/^(0|[1-9][0-9]*)$/u.test(value)||!Number.isSafeInteger(Number(value)))fail('NATIVE_GATEWAY_LENGTH',400);const n=Number(value);if(n>limit)fail('NATIVE_GATEWAY_LIMIT',413);return n;}
 function cancelReply(value){try{if(value&&!types.isProxy(value)&&value instanceof Response){const body=replyGet.body.call(value);if(body)void ReadableStream.prototype.cancel.call(body).catch(()=>{});}}catch{}}
@@ -42,6 +43,6 @@ export function createNativeRunnerGateway(configuration){
   if(!(status===200||status>=400&&status<=599)||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(replyHeader('content-type')??'')||![null,'identity'].includes(replyHeader('content-encoding')))fail('NATIVE_GATEWAY_UNAVAILABLE');
   const replyLimit=Math.min(l.maxResponseBytes,route.session?35651584:2097152),reply=await bytes(replyGet.body.call(upstream),replyLimit,length(replyHeaders,replyLimit),life);life.check();
   return new Response(reply,{status,headers:{'content-type':replyHeader('content-type'),'cache-control':'no-store','x-content-type-options':'nosniff'}});
- }catch(error){return response({error:{code:error instanceof RelayError?error.code:'NATIVE_GATEWAY_UNAVAILABLE',outcome:dispatched?'UNKNOWN':'NOT_DISPATCHED'}},error instanceof RelayError?error.status:503);}
+ }catch(error){const facts=error&&typeof error==='object'&&!types.isProxy(error)?relayErrors.get(error):undefined;return response({error:{code:facts?.code??'NATIVE_GATEWAY_UNAVAILABLE',outcome:dispatched?'UNKNOWN':'NOT_DISPATCHED'}},facts?.status??503);}
  finally{cancelReply(upstream);life?.close();}}});
 }
