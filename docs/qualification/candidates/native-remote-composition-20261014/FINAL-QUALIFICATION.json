@@ -35,7 +35,9 @@
       "passed": 50,
       "failed": 0,
       "sourceHead": "0f13ca34342e60e89e7cf318a1ff384634ffe43a",
-      "receipt": "independent/final-changed-controls.json"
+      "receipt": "independent/final-changed-controls.json",
+      "verdict": "ACCEPT_LOCAL_REVIEWED_SOURCE_AND_SDK_COMPONENT",
+      "review": "independent/LAUNCHER-FINAL-REVIEW.md"
     }
   },
   "sdkComponent": {
@@ -47,10 +49,11 @@
     "costUsd": 0,
     "providerRequests": 0,
     "cleanupProven": true,
-    "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE"
+    "scope": "ACTUAL_SDK_SOURCE_FORK_SINGLE_QUERY_INDEPENDENT_PROCESSES_IN_MEMORY_SESSION_STORE_SYNTHETIC_BINDINGS_NO_PG_BROKER_DEPLOYED_ACCEPTANCE",
+    "postexec": "independent/SDK-POSTEXEC-ACCEPT.json"
   },
   "cleanup": {
-    "status": "pending owned resource teardown after independent checks",
+    "status": "Owned database/volume/cache/dependency installations and only own alias entries removed; original containers/worktrees and borrowed dependency targets preserved. Empty UID65534 socket directory remains because current host owner cannot rmdir it; no sudo executable.",
     "preservedUnknown": [
       {
         "pid": 89147,
@@ -73,6 +76,22 @@
       "anonymousVolume": "00b2950220253a1a2f88fc55be3467428809b45e113dbcaca11baf11a857ca79",
       "stopExitCode": 0,
       "removedAndReadbackAbsent": true
+    },
+    "dependenciesRemoved": [
+      "node_modules",
+      "apps/runtime/node_modules",
+      "apps/artifacts/storage/node_modules",
+      "apps/worker/conversation/node_modules",
+      "packages/contracts/node_modules",
+      "packages/window-resolution/node_modules",
+      "packages/ui-stream/node_modules"
+    ],
+    "socketRemoval": {
+      "path": "/tmp/meri-broker-pg-socket-20261014",
+      "state": "remaining empty directory",
+      "uid": 65534,
+      "reason": "PermissionError EPERM in sticky /tmp; sudo unavailable",
+      "notDeniedByApproval": true
     }
   },
   "remainingCode": [
