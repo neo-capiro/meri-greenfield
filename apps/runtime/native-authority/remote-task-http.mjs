@@ -34,7 +34,7 @@ export function createRemoteNativeTaskApplication(configuration){
     if(hash(p.binding)!==hash(original.binding)||p.expiresAtMs!==original.expiresAtMs)throw remoteFault();verifySdkConfiguration(tree,configs());
    }
    processPort=task.spawnClaudeCodeProcess(d);processPort.stdout.on('data',raw=>{const bytes=Buffer.from(raw);for(let at=0;at<bytes.length;at+=limits.maxFrameBytes){const part=bytes.subarray(at,at+limits.maxFrameBytes);queued+=part.length;if(queued>limits.maxBufferedBytes){state='unknown';void stop().catch(()=>{});return;}output.push(Buffer.from(part));}notify();});
-   processPort.stdout.on('error',()=>{state='unknown';notify();void stop().catch(()=>{});});processPort.on('exit',(code,signal)=>{ended=true;exitCode=code;signalCode=signal;notify();});await fresh(signal);if(state!=='preparing'||signal.aborted)throw remoteFault();state='prepared';return {original,...pins,...(ack?{ack}:{})};
+   processPort.stdout.on('error',()=>{if(['closing','stopped'].includes(state))return;state='unknown';notify();void stop().catch(()=>{});});processPort.on('exit',(code,signal)=>{ended=true;exitCode=code;signalCode=signal;notify();});await fresh(signal);if(state!=='preparing'||signal.aborted)throw remoteFault();state='prepared';return {original,...pins,...(ack?{ack}:{})};
   }catch(error){state='unknown';try{await stop();}catch{}throw error;}
  }
  async function operation(name,request,signal){
