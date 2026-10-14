@@ -1,10 +1,12 @@
 receipt written: /home/meri/rehearsal/with-proposal.json
-✔ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (4184.075126ms)
-ℹ tests 1
+✔ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (4386.333622ms)
+receipt written: /home/meri/rehearsal/with-proposal-cancellation.json
+✔ cancellation after launch stops the live CLI physically and records a cancelled run without a second dispatch (2977.839539ms)
+ℹ tests 2
 ℹ suites 0
-ℹ pass 1
+ℹ pass 2
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 5645.10834
+ℹ duration_ms 8771.378718

@@ -34,7 +34,8 @@ Worker suite 135/135 after both changes (`checks/RESULTS-touched-suites-worker-d
 | Run | Runner module | Outcome |
 | --- | --- | --- |
 | `with-proposal` | PR86 plus the gap 2 patch, applied to the working tree only and reverted afterwards | PASSED: 18 distinct routes reached across runner, controller, remote task and session owners; events `queued`, `starting`, `running`, one `message.delta`, `completed`; one registered SDK session with six durable entries; launch binding `STARTED`; `physicalStopProven: true` after the single query and after worker close; no process left |
-| `control-pr86-runner` | PR86 bytes | FAILED at the worker's SDK options pin (`NATIVE_EXECUTION_SDK_OPTIONS_REFUSED`) before any native-task route; the run is durably `failed` |
+| `with-proposal-cancellation` | same as above | PASSED: the runner's signal aborted right after the remote task's `start` acknowledgement with the CLI live; `EXECUTION_STOPPED`, run durably `cancelled`, no display text, physical stop proven, launch binding `STARTED`, journal and authorizer refuse a second dispatch |
+| `control-pr86-runner` (both tests) | PR86 bytes | FAILED at the worker's SDK options pin (`NATIVE_EXECUTION_SDK_OPTIONS_REFUSED`) before any native-task route; the run is durably `failed` |
 
 The rehearsal's launch template carries the synthetic proxy credential, the gap 3 shape; a configured template without it cannot match the descriptor the SDK produces. The committed tree is unchanged by the rehearsal (`source-proof` 3/3 after the revert).
 

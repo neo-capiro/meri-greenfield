@@ -1,11 +1,12 @@
 {
  "schema": "meri.composed-first-chat-rehearsal.v1",
- "startedAt": "2026-10-14T21:31:27.317Z",
+ "rehearsal": "first-chat",
+ "startedAt": "2026-10-14T21:38:40.283Z",
  "repository": {
   "root": "/home/user/meri-first-chat",
-  "head": "7f7ee020f3ce3580cd506bf44bbbe174aa024aef",
-  "tree": "3976b0ed962bcb7b1d09022816e2e1fc7bc5e2cb",
-  "uncommittedPaths": 3
+  "head": "3dde19970878f5938ced8eae2ff112e0ee2a8955",
+  "tree": "1c81b9500d549f642dec5e63a2a0d1721b1ce45a",
+  "uncommittedPaths": 9
  },
  "runnerModule": {
   "path": "apps/runtime/conversation-runner.mjs",
@@ -18,29 +19,29 @@
  "steps": [
   {
    "name": "fixture",
-   "atMs": 680,
+   "atMs": 616,
    "database": "postgres"
   },
   {
    "name": "descriptor-captured",
-   "atMs": 1533
+   "atMs": 1491
   },
   {
    "name": "allocation-admitted",
-   "atMs": 1566
+   "atMs": 1520
   },
   {
    "name": "controller-allocated",
-   "atMs": 1577,
+   "atMs": 1532,
    "allocations": 1
   },
   {
    "name": "runner-assembled",
-   "atMs": 1578
+   "atMs": 1535
   },
   {
    "name": "activity-returned",
-   "atMs": 4132,
+   "atMs": 4276,
    "result": {
     "state": "completed"
    }
@@ -66,15 +67,15 @@
    "--settings",
    "{\"autoMemoryEnabled\":false}"
   ],
-  "cwd": "/tmp/meri-broker-author-rzHZOf/11111111-1111-4111-8111-111111111111",
+  "cwd": "/tmp/meri-broker-author-JB1E06/11111111-1111-4111-8111-111111111111",
   "env": {
    "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
    "ANTHROPIC_AUTH_TOKEN": {
     "redacted": true,
     "sha256": "4d3c2a9251e22fb8ed930db307730012cf67d56ebb294bb82b92f9686d25800b"
    },
-   "CLAUDE_CONFIG_DIR": "/tmp/meri-broker-author-rzHZOf/config/sdk-22222222-2222-4222-8222-222222222222",
-   "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/tmp/meri-broker-author-rzHZOf/secure",
+   "CLAUDE_CONFIG_DIR": "/tmp/meri-broker-author-JB1E06/config/sdk-22222222-2222-4222-8222-222222222222",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/tmp/meri-broker-author-JB1E06/secure",
    "CLAUDE_CODE_ENTRYPOINT": "sdk-ts",
    "CLAUDE_AGENT_SDK_VERSION": "0.3.295",
    "CLAUDE_CODE_SDK_READS_SESSION_STATE": "1"
@@ -97,26 +98,86 @@
   ],
   "carriesProxyCredential": true
  },
- "sdkOptionsSha256": "adaf6f0ca4bd00bcb1ab65f7bb279c66a3bb826cb1fe3a2e8572d3fb3c3adc74",
+ "sdkOptionsSha256": "d5c711a23b4861355c1800629911e5d2fdb78a131162c88441f7baebe79925e4",
  "routes": {
-  "/v1/native-task/inspect": 2,
+  "/v1/native-task/inspect": 3,
   "/v1/native-task/launch": 1,
   "/v1/native-task/prepare": 1,
   "/v1/native-task/registration": 1,
   "/v1/native-task/start": 1,
   "/v1/native-task/stdin": 3,
-  "/v1/native-task/stdout": 12,
+  "/v1/native-task/stdout": 9,
   "/v1/native-task/stop": 1,
-  "/v1/runner/load": 1,
+  "/v1/runner/load": 2,
   "/v1/runner/native/prepare": 1,
   "/v1/runner/native/start": 1,
   "/v1/runner/native/started": 1,
-  "/v1/runner/native/verify": 35,
+  "/v1/runner/native/verify": 29,
   "/v1/runner/publish": 4,
   "/v1/runner/runtime": 1,
   "/v1/runner/session/append": 3,
   "/v1/runner/session/load": 1,
   "/v1/runner/session/register": 1
+ },
+ "durableSdkSession": {
+  "registered": 1,
+  "rows": [
+   {
+    "sessionId": "195f9131-9c73-4bce-bd06-f1cf1445b8d2",
+    "projectKey": "-tmp-meri-broker-author-JB1E06-11111111-1111-4111-8111-111111111111",
+    "entriesCount": "6",
+    "bytes": "1715"
+   }
+  ],
+  "entryRows": 6
+ },
+ "nativeAfterActivity": {
+  "state": "stopped",
+  "physicalStopProven": true
+ },
+ "sdkConfigDirectoryTree": [
+  {
+   "path": ".claude.json",
+   "bytes": 852,
+   "mode": "600"
+  },
+  {
+   "path": "backups/",
+   "mode": "755"
+  },
+  {
+   "path": "backups/.claude.json.backup.1792013923620",
+   "bytes": 84,
+   "mode": "600"
+  },
+  {
+   "path": "projects/",
+   "mode": "700"
+  },
+  {
+   "path": "projects/-tmp-meri-broker-author-JB1E06-11111111-1111-4111-8111-111111111111/",
+   "mode": "700"
+  },
+  {
+   "path": "projects/-tmp-meri-broker-author-JB1E06-11111111-1111-4111-8111-111111111111/195f9131-9c73-4bce-bd06-f1cf1445b8d2.jsonl",
+   "bytes": 1721,
+   "mode": "600"
+  },
+  {
+   "path": "sessions/",
+   "mode": "700"
+  }
+ ],
+ "secureStorageDirectoryEntries": 0,
+ "cleanupStatus": {
+  "pendingInitializations": 0,
+  "closed": true,
+  "failures": [],
+  "physicalStopProven": false
+ },
+ "counters": {
+  "allocations": 1,
+  "retirements": 0
  },
  "conversation": {
   "runState": "completed",
@@ -160,78 +221,23 @@
      "reasonCode": null
     }
    }
-  ]
- },
- "durableSdkSession": {
-  "registered": 1,
-  "rows": [
-   {
-    "sessionId": "91393672-9a0d-4915-8810-350f8bd2971c",
-    "projectKey": "-tmp-meri-broker-author-rzHZOf-11111111-1111-4111-8111-111111111111",
-    "entriesCount": "6",
-    "bytes": "1715"
-   }
   ],
-  "entryRows": 6
+  "assistantText": "/status isn't available in this environment."
  },
  "launchBinding": {
   "state": "STARTED",
-  "descriptorSha256": "cc0aafff2353a41fb0d29ddacad98a620316d72af22da7ed6ae27474769fcea0",
-  "configTreeSha256": "a46f65c823cc450461f989c1af845680efc328bff8ca5c01d1ddf3aa8a365c04"
+  "descriptorSha256": "aee2c4e2d44e6fcbe5ebd51037513db2d293c6d3bc5d3139c7f9b4fb4a3a5850",
+  "configTreeSha256": "d81ecaf7a4192807571a67990be3d189b571726743e10fa95ca13dd453c96a10"
  },
- "nativeAfterActivity": {
-  "state": "stopped",
-  "physicalStopProven": true
- },
- "sdkConfigDirectoryTree": [
-  {
-   "path": ".claude.json",
-   "bytes": 852,
-   "mode": "600"
-  },
-  {
-   "path": "backups/",
-   "mode": "755"
-  },
-  {
-   "path": "backups/.claude.json.backup.1792013490475",
-   "bytes": 84,
-   "mode": "600"
-  },
-  {
-   "path": "projects/",
-   "mode": "700"
-  },
-  {
-   "path": "projects/-tmp-meri-broker-author-rzHZOf-11111111-1111-4111-8111-111111111111/",
-   "mode": "700"
-  },
-  {
-   "path": "projects/-tmp-meri-broker-author-rzHZOf-11111111-1111-4111-8111-111111111111/91393672-9a0d-4915-8810-350f8bd2971c.jsonl",
-   "bytes": 1721,
-   "mode": "600"
-  },
-  {
-   "path": "sessions/",
-   "mode": "700"
-  }
- ],
- "secureStorageDirectoryEntries": 0,
- "cleanupStatus": {
-  "pendingInitializations": 0,
-  "closed": true,
-  "failures": [],
-  "physicalStopProven": false
- },
- "counters": {
-  "allocations": 1,
-  "retirements": 0
+ "replayedActivity": {
+  "refused": true,
+  "launchRouteCount": 1
  },
  "nativeAfterWorkerClose": {
   "state": "stopped",
   "physicalStopProven": true
  },
- "finishedAt": "2026-10-14T21:31:31.483Z",
- "durationMs": 4166,
+ "finishedAt": "2026-10-14T21:38:44.648Z",
+ "durationMs": 4313,
  "scope": "Local rehearsal only: synthetic ECS/identity/authority/proxy facts, synthetic proxy credential hashed where recorded, no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance."
 }

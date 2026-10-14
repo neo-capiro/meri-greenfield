@@ -1,25 +1,54 @@
 receipt written: /home/meri/rehearsal/control-pr86-runner.json
-✖ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (1698.768144ms)
-ℹ tests 1
+✖ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (1755.309042ms)
+receipt written: /home/meri/rehearsal/control-pr86-runner-cancellation.json
+✖ cancellation after launch stops the live CLI physically and records a cancelled run without a second dispatch (1488.855134ms)
+ℹ tests 2
 ℹ suites 0
 ℹ pass 0
-ℹ fail 1
+ℹ fail 2
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 3146.668158
+ℹ duration_ms 4725.99534
 
 ✖ failing tests:
 
-test at scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:33:1
-✖ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (1698.768144ms)
+test at scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:78:1
+✖ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (1755.309042ms)
   Error: EXECUTION_FAILED
       at fault (file:///home/user/meri-first-chat/apps/worker/conversation/activity.mjs:14:33)
       at executeConversation (file:///home/user/meri-first-chat/apps/worker/conversation/activity.mjs:53:10)
       at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
-      at async execute (file:///home/user/meri-first-chat/apps/runtime/conversation-runner.mjs:35:41)
-      at async TestContext.<anonymous> (file:///home/user/meri-first-chat/scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:76:16)
+      at async Object.execute (file:///home/user/meri-first-chat/apps/runtime/conversation-runner.mjs:35:41)
+      at async TestContext.<anonymous> (file:///home/user/meri-first-chat/scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:82:16)
       at async Test.run (node:internal/test_runner/test:1409:7)
       at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
     code: 'EXECUTION_FAILED'
+  }
+
+test at scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:102:1
+✖ cancellation after launch stops the live CLI physically and records a cancelled run without a second dispatch (1488.855134ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /EXECUTION_STOPPED/. Input:
+  
+  'Error: EXECUTION_FAILED'
+  
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///home/user/meri-first-chat/scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:106:3)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: EXECUTION_FAILED
+        at fault (file:///home/user/meri-first-chat/apps/worker/conversation/activity.mjs:14:33)
+        at executeConversation (file:///home/user/meri-first-chat/apps/worker/conversation/activity.mjs:53:10)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async Object.execute (file:///home/user/meri-first-chat/apps/runtime/conversation-runner.mjs:35:41)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///home/user/meri-first-chat/scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs:106:3)
+        at async Test.run (node:internal/test_runner/test:1409:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:974:7),
+    expected: /EXECUTION_STOPPED/,
+    operator: 'rejects',
+    diff: 'simple'
   }
