@@ -37,7 +37,7 @@ export function createNativeRunnerGateway(configuration){
   life=createOperationLifetime({now,deadlineMs:started+l.maxRequestMs,signal:info.signal,errorFactory:code=>new RelayError(code,['DEADLINE','CANCELLED'].includes(code)?408:503)});
   const body=await bytes(info.body,requestLimit,expected,life);life.check();
   const headers={authorization,'content-type':header('content-type'),accept:'application/json',...(header('content-encoding')===null?{}:{'content-encoding':header('content-encoding')})};
-  upstream=await life.run(signal=>{dispatched=true;const pending=Promise.resolve(fetchImpl(origin+route.path,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers,body,signal}));pending.then(value=>{if(life.signal.aborted)cancelReply(value);},()=>{});return pending;});
+  upstream=await life.run(signal=>{dispatched=true;const pending=Promise.resolve(fetchImpl(origin+route.path,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers,body,signal}));pending.then(value=>{upstream=value;if(life.signal.aborted)cancelReply(value);},()=>{});return pending;});
   if(!upstream||types.isProxy(upstream)||!(upstream instanceof Response)||replyGet.redirected.call(upstream))fail('NATIVE_GATEWAY_UNAVAILABLE');
   const status=replyGet.status.call(upstream),replyHeaders=replyGet.headers.call(upstream),replyHeader=k=>Headers.prototype.get.call(replyHeaders,k);
   if(!(status===200||status>=400&&status<=599)||!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(replyHeader('content-type')??'')||![null,'identity'].includes(replyHeader('content-encoding')))fail('NATIVE_GATEWAY_UNAVAILABLE');
