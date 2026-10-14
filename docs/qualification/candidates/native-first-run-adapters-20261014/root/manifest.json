@@ -1,0 +1,96 @@
+{
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "base": "c87a7321db17091db4baac75182d4727ad8acd75",
+  "acceptedSource": "a41c822abf11639808acb69b5d0399b690f2c856",
+  "changedSource": [
+    {
+      "path": "apps/runtime/native-authority/task-authority.mjs",
+      "bytes": 2541,
+      "sha256": "31bc405505d6e4a1c525a96850d5cc826a21e5ced84e0fa549f64679d673bca1"
+    },
+    {
+      "path": "apps/runtime/native-authority/first-run-ports.mjs",
+      "bytes": 1587,
+      "sha256": "cd4e1ca51c5e9b64f938c9d79e9d1146753731208ad2e721bd8cd5e3d9a9ec5e"
+    },
+    {
+      "path": "apps/runtime/native-authority/index.mjs",
+      "bytes": 433,
+      "sha256": "1a6cc8c74af0555db5ccbc164e262f0c6d5c12f9aa9a8a8b19c005b74f5b5901"
+    },
+    {
+      "path": "apps/runtime/worker-http.mjs",
+      "bytes": 3585,
+      "sha256": "4506bbd6e16c7bc05b52312abf1ee4030b5df461e9c65e3a0d10a5837bb8b1ff"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/adapter-first.json",
+      "bytes": 1345,
+      "sha256": "12a61d362c0880a26c95bc2c228954e60925d92aeb9758c022bb9bb11fa76366"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/adapter-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/adapter-first.stdout.bin",
+      "bytes": 1480,
+      "sha256": "b0ac1e859fbe008953de13c925ca30d61761789eab87527a2f49fd8673cc2b47"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/independent-reproduction.json",
+      "bytes": 1550,
+      "sha256": "4c164d3a0e52f1c350d4ec32f2e0e0726644c6f81515d05af2ce3cfe5ca65e63"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/independent-reproduction.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/independent-reproduction.stdout.bin",
+      "bytes": 588,
+      "sha256": "306fc97c390480f5985bf6268fee93ee14d1373627025bd697ce679eed3956e1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/repaired-adapters.json",
+      "bytes": 1532,
+      "sha256": "e9976f6c790d9c6451dcfab3a3534eac97f7a9bb42902127fcc87e8f8ce3b9cd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/repaired-adapters.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/repaired-adapters.stdout.bin",
+      "bytes": 1739,
+      "sha256": "2e69a158e86fef2dd77325786bb3dfef9a855327a47e6b18a4cab2e03a0b6def"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/worker-rpc.json",
+      "bytes": 1388,
+      "sha256": "b6a4d0aa7036e59964a4f1660e2ffa06058167346e59c3da2cd947e99c6c27d8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/worker-rpc.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/worker-rpc.stdout.bin",
+      "bytes": 371,
+      "sha256": "779bc0ef5b02a3e84d4449383bb6c0ab399f2d04bf6ffaf012a63fb7aba4d832"
+    }
+  ],
+  "controlledDependencies": "Task-owned links borrow unchanged pinned PR67 node_modules for root, runtime, conversation, window-resolution and ui-stream. No installs, lock changes, native CLI/model or live DB/provider calls. Links are removed after all source checks; original dependency trees remain.",
+  "gates": "Source-only; genuine external native worker verifier and independently observed SDK registration reader remain absent. No qualification schemas/fixture grants become product authority."
+}

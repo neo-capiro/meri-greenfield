@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/task-authority.test.mjs",
+    "apps/runtime/native-authority/test/first-run-ports.test.mjs",
+    "docs/qualification/candidates/assembled-runtime-20261013/source-independent/lifecycle-rpc-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-adapters",
+  "sourceHead": "a41c822abf11639808acb69b5d0399b690f2c856",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T00:12:19.290205+00:00",
+  "durationSeconds": 5.423,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 14736,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/repaired-adapters.stdout.bin",
+      "bytes": 1739,
+      "sha256": "2e69a158e86fef2dd77325786bb3dfef9a855327a47e6b18a4cab2e03a0b6def"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/repaired-adapters.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Verify strict digest repair on frozena41c822a with adapter tests and existing worker RPC contract; no native service or model.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

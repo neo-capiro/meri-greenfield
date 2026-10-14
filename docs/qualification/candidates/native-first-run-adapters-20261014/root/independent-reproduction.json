@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs",
+    "docs/qualification/candidates/native-first-run-adapters-20261014/independent/compiled-boundaries.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-adapters",
+  "sourceHead": "a41c822abf11639808acb69b5d0399b690f2c856",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T00:13:04.850485+00:00",
+  "durationSeconds": 4.387,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 15040,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/independent-reproduction.stdout.bin",
+      "bytes": 588,
+      "sha256": "306fc97c390480f5985bf6268fee93ee14d1373627025bd697ce679eed3956e1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/independent-reproduction.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Root independently reproduces the reviewer strict-input, captured-method, in-lease revocation and cancellation assertions on repaireda41c822a; no broad repetition.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

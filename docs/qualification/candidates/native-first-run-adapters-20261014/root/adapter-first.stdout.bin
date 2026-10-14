@@ -1,0 +1,22 @@
+✔ compiled first-run ports reuse canonical identity/context join and current allocation/session owner (23.02889ms)
+✔ disabled first-run graph refuses without native observation or allocation effects (2.518338ms)
+✔ missing genuine verifier or independent observation refuses before registration/SQL effects (2.86417ms)
+✔ boolean/caller-key/expired or future observation is refused by existing owner (9.477674ms)
+✔ native verifier changes during lease refresh prevent registered authority release (3.125939ms)
+✔ canonical context current-policy drift refuses with no SDK registration (2.162856ms)
+✔ configuration cannot install worker payload/booleans or execute getter ports (0.474181ms)
+✔ task adapter delegates exact opaque capability/operation/hash to existing native owner with preserved receiver (5.31246ms)
+✔ default disabled or absent verifier makes zero native effects (0.777697ms)
+✔ malformed input and caller-added authority refuse before native effects (1.680509ms)
+✔ foreign operation/hash/binding/client/scope and expired/future/boolean receipts confer no authority (5.39238ms)
+✔ native refusal is not retried or exposed, even with active error fields (0.631324ms)
+✔ parked native verifier is bounded and aborts its supplied signal (20.241708ms)
+✔ already cancelled verification never dispatches a capability (0.610076ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6227.288637
