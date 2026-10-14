@@ -1,0 +1,20 @@
+{
+  "scope": "OFFLINE_SOURCE_CHECK_ONLY_NO_NETWORK_CREDENTIALS_OR_MODEL",
+  "runtimeHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "runbookPath": "docs/coordination/runbooks/FIRST-CHAT-PR39-PR81-20261014.md",
+  "runbookSha256": "315a11d545d35075e75af69f64d035b99a1c0399b0a703efffa94a04d09207fa",
+  "scriptSha256": "c9217634e3ba3568067f052fc285a1fbafe5df23c29131fa9cb948e02b0fbd19",
+  "command": [
+    "python",
+    "-c",
+    "exact fenced script in runbook"
+  ],
+  "exitCode": 0,
+  "stdout": "PR81 source and 39 pinned files match; live acceptance NOT RUN\n",
+  "stderr": "",
+  "liveAcceptance": "UNRUN",
+  "fixturesReexecuted": false,
+  "draftingFailure": "Two heredoc drafting delimiter mistakes failed before file writes; corrected with apply_patch. Neither was a runtime/fixture/live test failure.",
+  "rerunReason": "Parent clarified existing active conversation mapping bootstrap gate. Script unchanged; reverified staged PR81 checkout and final document hash.",
+  "executionCwd": "/workspace/meri-prepared-kickoff"
+}
