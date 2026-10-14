@@ -20,7 +20,7 @@ export function compileNativeLaunch(configuration){
   launch.env.CLAUDE_SECURESTORAGE_CONFIG_DIR!==c.configDirectory)throw launchFault('CONFIGURATION');
  // Proxy-scoped ANTHROPIC_AUTH_TOKEN may be compiled by the runtime owner. Never
  // inherit provider/account, database, cloud or control-plane credentials.
- const forbidden=['DATABASE_URL','PGPASSWORD','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','TEMPORAL_API_KEY','MERI_NATIVE_ADMIN_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY'];
+ const forbidden=['DATABASE_URL','PGPASSWORD','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','ANTHROPIC_AWS_BEARER_TOKEN','ANTHROPIC_AWS_REGION','TEMPORAL_API_KEY','MERI_NATIVE_ADMIN_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY'];
  if(Object.keys(launch.env).some(k=>/^(AWS_|GOOGLE_|GCP_|AZURE_|OPENAI_)/u.test(k)||forbidden.includes(k)))throw launchFault('ENVIRONMENT');
  const at=now();if(!Number.isSafeInteger(at)||at<1||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<=at||c.expiresAtMs-at>2147483647)throw launchFault('LEASE');
  const limits=c.limits===undefined?undefined:data(own(c.limits,[],['maxFrameBytes','maxTotalBytes','maxWaiters','maxRequestMs']));
