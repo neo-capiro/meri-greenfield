@@ -1,0 +1,316 @@
+{
+  "sourceHead": "a9a4d4dfe35a6fca9eeb38912572a7e37710e7e7",
+  "basePr75Head": "dbe7ed6c1c5c4e728dfead4224479dc5b7d90a5e",
+  "authorIntegratedSource": "6905609f0aa70451acb26474429d1773e85d6d99",
+  "authorFinalLifecycleSource": "a9a4d4dfe35a6fca9eeb38912572a7e37710e7e7",
+  "sdkExecutionSource": "9fba21f58beedfa3876aed23ebdeb3eff8fffece",
+  "independentManifestVerifiedRecords": 36,
+  "scope": "LOCAL_SOURCE_REAL_TASK_OWNED_PG_SDK_INDEPENDENT_PROCESS_SYNTHETIC_AUTHORITY_NOT_DEPLOYMENT_ACCEPTANCE",
+  "records": [
+    {
+      "path": "apps/control/conversations/execution-boundary.mjs",
+      "bytes": 1442,
+      "sha256": "0ace87d5a887f31c97f44c985a3004b613b68b58925fdfc2d6ab383920a0e163"
+    },
+    {
+      "path": "apps/control/conversations/execution-journal.mjs",
+      "bytes": 4162,
+      "sha256": "c62461dfe12042cc5856983d1b78fa57dacd6638f97a4b5d2c372eb5494667a6"
+    },
+    {
+      "path": "apps/control/conversations/migrations/0006_native_executions.sql",
+      "bytes": 1315,
+      "sha256": "9537daf4f3611cfce8aae0ee148bf4da3bcfc53116faaec6eb1c57cf05b4d714"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "bytes": 8929,
+      "sha256": "418ec591fed4a00561376d528c5c5ba7270195cb4bca09a44ea22dbc1df1a9af"
+    },
+    {
+      "path": "apps/runtime/native-authority/broker-stack.mjs",
+      "bytes": 4092,
+      "sha256": "f744c4654a8e6c9311f6ffc1601d4ed3d2e6de960be16215e0613149e3571e39"
+    },
+    {
+      "path": "apps/runtime/native-authority/execution-broker.mjs",
+      "bytes": 6219,
+      "sha256": "bfaaaea4c914245a0400351e697f4cc62fc653924c4432d7474f83a21131510d"
+    },
+    {
+      "path": "apps/runtime/native-authority/execution-http.mjs",
+      "bytes": 3482,
+      "sha256": "ac0d3c7ff276f91f77c397f6e0612d676c58c977b4df5ec060b6c702a00b4d1b"
+    },
+    {
+      "path": "apps/runtime/native-authority/independent-task.mjs",
+      "bytes": 9406,
+      "sha256": "e5dc0caabf66aff1393ea08be2276f125d3e4e7ae02d16905b3674eb005a8c8a"
+    },
+    {
+      "path": "apps/runtime/native-authority/runtime-provider.mjs",
+      "bytes": 2766,
+      "sha256": "1b6413111de52a1f4460642d5179dc3f62ef78fb28e83a338099c6bfd5b439de"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-launcher.mjs",
+      "bytes": 3976,
+      "sha256": "c5f6f2236c01ccb44825401c49f21e6777f3113e1f4a378655735232196d10b0"
+    },
+    {
+      "path": "apps/runtime/native-authority/supervisor-process.mjs",
+      "bytes": 2496,
+      "sha256": "6a00f5933debc214f899dff06713d049b33dafbe8b09d19423c6e384d156289b"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs",
+      "bytes": 6961,
+      "sha256": "6ad8421dbe5136f16be02b5899470fd2b8a2e725bec3a53b8314d8453a3ec24b"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/execution-broker.test.mjs",
+      "bytes": 7110,
+      "sha256": "4344f9b1ad01980d6d7ad701f3e434f1b6e5dcf65b5eeca4a756dd0e2a2f10b1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-RUN-CONVERGENCE-20261014.md",
+      "bytes": 6475,
+      "sha256": "929e6b7a910827d8515b67b50055e648b36c28d3258ac0b2c5e9b7bc96ffa65f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-EXECUTION-BROKER-20261014.md",
+      "bytes": 6895,
+      "sha256": "0f29310c3886e401d78e558c27be5c71e3366baed04dc0da396c09a422268ec0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/OUTLINE.md",
+      "bytes": 2413,
+      "sha256": "03b712821d13a7c3c5fb1751910809430560416f7456ee5cb892936329a638bb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/CLEANUP.json",
+      "bytes": 2111,
+      "sha256": "4e3266947043839c7ffac096f0740348e92b48266f5e2f526fc023c38179fbb1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/PREEXECUTION-CORRECTED.json",
+      "bytes": 1684,
+      "sha256": "6e23b68fbe8b0537149af174c4a9d1d9acdccfc5896b677f20285aff6666fcd4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/PREEXECUTION.json",
+      "bytes": 1612,
+      "sha256": "9277df3cab85164a27cdf5ba3c499a30fde6d42e8790f231d79f12e0a176c1ef"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/RESOURCE-READBACK.json",
+      "bytes": 1191,
+      "sha256": "43e800f281ba9fa669d337b7df2192d49d4794753bf910e675f14ccb4c3095d2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/actual-sdk.json",
+      "bytes": 1296,
+      "sha256": "4d76c240d747af1371c129ca269dae95468cb13909f340dad8fca20f861dfe6a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/actual-sdk.stderr.bin",
+      "bytes": 537,
+      "sha256": "e6840b31847f71b12d524a52fbbb884ded48b803ec90e9c335891c0e8fd4ae4f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/actual-sdk.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/corrected-pg.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/corrected-pg.stdout.txt",
+      "bytes": 830,
+      "sha256": "2a024e6e35679833a41f612663187cee98c0cec8da7959457eaa59535f994982"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/corrected-sdk.json",
+      "bytes": 1302,
+      "sha256": "2dc9a13f0efe956acf20801ec9a7d8cd3f8059ba3778d7bc200d5b9b31eb30b8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/corrected-sdk.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/corrected-sdk.stdout.bin",
+      "bytes": 880,
+      "sha256": "8105e7e93b1ade5eea8ca3c70ad5d44c6fcd65e4f3834632a9c8df48aa57ed97"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-lifecycle.json",
+      "bytes": 1285,
+      "sha256": "ec88f5572c4fe846fbbe3e551a194f50cdada78da921d62e6cf10c159c36fedb"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-lifecycle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-lifecycle.stdout.bin",
+      "bytes": 829,
+      "sha256": "ea6601f205a4fb4331dd060aacab1ff30f7178f07a6ed3a18910cc9ec11bbe5c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-pg.json",
+      "bytes": 1394,
+      "sha256": "74a799470d6629f0a8a256eb93c8108cabc12b1413fbd2b1eda58678882c7561"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-pg.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-pg.stdout.bin",
+      "bytes": 2620,
+      "sha256": "0a2fab4b0e832860b2a32029c56340469f276d309ed165659ed425be05091869"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/frozen-pg.json",
+      "bytes": 1328,
+      "sha256": "ed3d40a80643f3935a7204b22549a501dd94d2171a590f792aaa626ae301ebca"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/frozen-pg.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/frozen-pg.stdout.bin",
+      "bytes": 1846,
+      "sha256": "3b88ae1fe29b5c876b78708df13ec55f54c9024a91202df31ca0f8b86b3032c3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/initial-pg.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/initial-pg.stdout.txt",
+      "bytes": 1796,
+      "sha256": "0d4e4afa176399af1cadbca515aa9018a3b92ffe689e906045b4c3584ad54cfc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/runtime-install.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/runtime-install.stdout.txt",
+      "bytes": 27,
+      "sha256": "706750b6c5f975d4b16f33a64c9957a764db36a3a99a6ca3d4806ce5ecd00699"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/sdk-independent-probe-initial.mjs",
+      "bytes": 7415,
+      "sha256": "baad450848ef59919ffcee4b62778d326b941fc8b7cc5d3e2521739a55071b84"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/sdk-independent-probe.mjs",
+      "bytes": 7683,
+      "sha256": "683a46911ed8d143335822052619825b8e973311cc8fe184dc5feefa3d916b61"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/sdk-install.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/sdk-install.stdout.txt",
+      "bytes": 27,
+      "sha256": "91bde62551a0962c327e7d313ce6669e7f9a5385a0240ffe03ec971c7ba88f46"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/POSTEXECUTION.md",
+      "bytes": 3647,
+      "sha256": "55f4ae01d3b035d53452c2a4c963859b1af99c4b4412d7e5fc7d71357cac200b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/REVIEW.md",
+      "bytes": 7964,
+      "sha256": "ba7a6d66287a4e626d324ef0e47bd8bacabc4ea3fb5fec98a6fe9ab446149e39"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/controls.test.mjs",
+      "bytes": 6001,
+      "sha256": "38bf2ef2a58f650291408709a5ed7f8738cd0867495322dada62040d4c268aef"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/final-controls.json",
+      "bytes": 1325,
+      "sha256": "4778a723a94312cfd90e6ef03c5368366c009486cf334b11fc6a23373d644750"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/final-controls.stdout.bin",
+      "bytes": 847,
+      "sha256": "9041a32bace8171f04fb9c4723ec402e3dbc78def0d83e76a664cee5fbc377ce"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/final-readiness-controls.json",
+      "bytes": 1346,
+      "sha256": "2068a9b9dfe2017e9d799e511b9558183434599cf10a2572736488ca485211b0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/final-readiness-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/final-readiness-controls.stdout.bin",
+      "bytes": 640,
+      "sha256": "e61cbaa7ef3d802ae377b83fb727b975c39047582aa8dfaa42368d3e6d9b83c7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/manifest.json",
+      "bytes": 8192,
+      "sha256": "75b52ae0d699ae0701eeb2d657918f4f87c87df00012de8c4a9dad8b0c440ef7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/readiness-controls.json",
+      "bytes": 1334,
+      "sha256": "fa712cc2ab014852b0da11f5c4f9f5387e931668b5f7678955f0a3dd65547a45"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/readiness-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/readiness-controls.stdout.bin",
+      "bytes": 534,
+      "sha256": "bb163eab55faec011bda7d2a0e3766f89ee999fc208f43526998c0b85ec3d919"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/independent/readiness.test.mjs",
+      "bytes": 3837,
+      "sha256": "113f9c30216ecc27a487bb9fd5a4d039c50d4075d9693838fb3fd6e389254f30"
+    }
+  ]
+}

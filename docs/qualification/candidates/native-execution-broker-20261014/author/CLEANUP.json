@@ -1,0 +1,69 @@
+{
+  "ownedContainerId": "d964fd6662966d5b2c03436a444af0c3f425b63c06dbc1903a2a78cbb021dc7a",
+  "ownedVolumeIds": [
+    "6b538c006e2c82245f68a2db40d0fe8ae9a80f4fc56f4919067153d13e307951"
+  ],
+  "before": "meri-broker-pg-20261014 Up 45 minutes\nmeri-native-postgres Exited (255) About an hour ago\ncapiro-postgres Up About an hour (healthy)\n",
+  "actions": [
+    {
+      "command": [
+        "docker",
+        "stop",
+        "-t",
+        "5",
+        "meri-broker-pg-20261014"
+      ],
+      "exitCode": 0,
+      "stdout": "meri-broker-pg-20261014\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "-v",
+        "meri-broker-pg-20261014"
+      ],
+      "exitCode": 0,
+      "stdout": "meri-broker-pg-20261014\n",
+      "stderr": ""
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-execution-broker/node_modules/ajv",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-execution-broker/node_modules/ajv-formats",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-execution-broker/node_modules/canonicalize",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-execution-broker/node_modules/@capiro/meri-contracts",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/workspace/meri-native-execution-broker/apps/runtime/node_modules",
+      "absent": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/workspace/meri-native-execution-broker/apps/worker/conversation/node_modules",
+      "absent": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/tmp/meri-broker-npm-cache",
+      "absent": true
+    }
+  ],
+  "socketDirectoryAbsent": true,
+  "after": "meri-native-postgres Exited (255) About an hour ago\ncapiro-postgres Up About an hour (healthy)\n",
+  "ownedContainerAbsent": true,
+  "ownedVolumesAbsent": true,
+  "ownedFixtureTempsRemaining": [],
+  "actualSdkOriginalPidsAbsent": {
+    "23922": true,
+    "23929": true
+  }
+}

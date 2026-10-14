@@ -1,0 +1,28 @@
+✔ request is immutable and replay survives owner reconstruction (35.982815ms)
+✔ events atomically advance state and stable IDs replay without duplicates (16.32346ms)
+✔ concurrent starting attempts serialize and allow one model admission (4.158373ms)
+✔ stored reads/writes deny foreign tenant (3.540467ms)
+✔ stored reads/writes deny foreign actor (2.517764ms)
+✔ stored reads/writes deny foreign conversation (2.808103ms)
+✔ stored reads/writes deny foreign run (4.676668ms)
+✔ stored reads/writes deny foreign attempt (1.867378ms)
+✔ stored reads/writes deny foreign worker (4.498319ms)
+✔ stored reads/writes deny foreign fence (3.839948ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (10.010939ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (2.199706ms)
+✔ retained event corruption and a sequence hole refuse reconnect (7.247456ms)
+✔ cursor after durable end and oversized publication refuse (5.236631ms)
+✔ real PostgreSQL concurrent/replayed start retains one actual independent supervisor and original claim (2260.259835ms)
+✔ actual protected HTTP broker/runtime path correlates current native task and original runtime (2519.461032ms)
+✔ separate supervisor observes real native-format bytes and canonical PG session owner retains witness (3835.203062ms)
+✔ lost real claim commit acknowledgement dispatches zero and durable replay never relaunches (699.054439ms)
+✔ durable journal refuses altered plan/expiry/phase and SQL trigger protects original identity (1564.40207ms)
+✔ product completion and native process exit are independent facts; revocation still permits original containment (2393.967092ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18994.228723

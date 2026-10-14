@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/execution-broker.test.mjs",
+    "apps/control/conversations/test/store.test.mjs",
+    "apps/runtime/native-authority/test/session-launcher.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-execution-broker",
+  "sourceHead": "6905609f0aa70451acb26474429d1773e85d6d99",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T03:50:55.572453+00:00",
+  "durationSeconds": 17.486,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 25139,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-pg.stdout.bin",
+      "bytes": 2620,
+      "sha256": "0a2fab4b0e832860b2a32029c56340469f276d309ed165659ed425be05091869"
+    },
+    {
+      "path": "docs/qualification/candidates/native-execution-broker-20261014/author/final-pg.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

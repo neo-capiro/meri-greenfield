@@ -1,0 +1,35 @@
+{
+  "spawns": 1,
+  "results": [
+    {
+      "subtype": "success",
+      "is_error": false,
+      "num_turns": 0,
+      "total_cost_usd": 0
+    }
+  ],
+  "sinkRequests": 1,
+  "sinkMetadata": [
+    {
+      "method": "HEAD",
+      "path": "/api/hello",
+      "replyStatus": 403
+    }
+  ],
+  "entries": 6,
+  "ownerWitness": "a78d2d656d8d67432f35f3fd2202766283c631b725045663fe0b2cb0bb670b45",
+  "expiresAtMs": 1791949649823,
+  "taskStatus": {
+    "supervisorPid": 23922,
+    "nativePid": 23929,
+    "booted": true,
+    "launched": true,
+    "closed": true,
+    "physicalStopProven": true
+  },
+  "pins": {
+    "sdkSha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+    "cliSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+  },
+  "scope": "ACTUAL_SDK_REAL_TASK_OWNED_PG_INDEPENDENT_PROCESS_SYNTHETIC_AUTHORITY_NO_DEPLOYED_ISOLATION"
+}
