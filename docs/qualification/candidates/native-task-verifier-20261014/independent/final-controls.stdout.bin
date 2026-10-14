@@ -1,0 +1,16 @@
+✔ all configured task grant hashes are forbidden as trusted-control caller (871.336812ms)
+✔ hostile command context accessors and proxy execute no traps (431.378032ms)
+✔ native original expiry narrows authorization while request deadline does not renew or shorten it (1039.916971ms)
+✔ constructed operation allowlist and launch plan are snapshots despite caller mutation (689.797557ms)
+✔ supervisor close aborts pending native preparation and subsequent verification dispatch (322.58411ms)
+✔ actual protected HTTP refuses worker caller and caller-added authority body fields (360.86212ms)
+✔ verifier snapshots inside held canonical lease contain no row locks or effects (306.941576ms)
+✔ changed admitted facts between native reads refuse receipt without restoring revoked state (309.414262ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13414.417551

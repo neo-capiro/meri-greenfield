@@ -1,0 +1,16 @@
+✔ actual native authorization HTTP/client returns canonical task receipt with original authority expiry (1325.874187ms)
+✔ foreign capability/binding, unsupported operation and hostile input refuse before SQL/native reads (341.397203ms)
+✔ committed grant revocation/fence/quarantine/expiry prevents receipt and launch preparation (1313.39224ms)
+✔ revocation committed during native context await is caught by a fresh later snapshot (344.802087ms)
+✔ held canonical allocation can refresh verifier without reacquiring budget row lock (378.295325ms)
+✔ canonical durable session owner uses native HTTP verifier inside locked SQL effect (997.836667ms)
+✔ admitted preparation preserves immutable launch plan and narrows original lease before real spawn (803.892913ms)
+✔ disabled composition, canceled preparation and shared task/control hash cannot allocate (776.871049ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15597.361328

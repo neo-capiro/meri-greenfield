@@ -1,0 +1,86 @@
+{
+  "reviewedSourceHead": "280c804dd0dcd114ec1a0b8803764f6187ad2049",
+  "scope": "SOURCE_WITH_EXPLICIT_SYNTHETIC_SQL_NATIVE_AUTHORITY_AND_ACTUAL_LOCAL_HTTP_NODE_CHILD_NO_SDK_PROVIDER_DATABASE_SERVER_CLOUD_OUTPUT",
+  "records": [
+    {
+      "path": "apps/runtime/native-authority/task-verifier.mjs",
+      "bytes": 5670,
+      "sha256": "145fd6c442096ab7c22cc9c1f066e38bdd9de6cd3d3c90d4bc44be56e0dd36d0"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-verifier-http.mjs",
+      "bytes": 2779,
+      "sha256": "69566955f0c2459afe4c10b3ac5c2ac3f35c8a49980646d6c89ba3f10a494536"
+    },
+    {
+      "path": "apps/runtime/native-authority/admitted-supervisor.mjs",
+      "bytes": 4729,
+      "sha256": "bf5933b6eb42d30f2a9fc4a923d8176808fd61fe8637d55eb7ef5d64ff378ac5"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-launcher.mjs",
+      "bytes": 3945,
+      "sha256": "923c12f4a7d6411c2ac5d43cc2f3d0eea295b843e4eb76742f9665833bb050fe"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-registration.mjs",
+      "bytes": 9397,
+      "sha256": "4c9ab92ff4bcd6ad86066da8242d46dbe8aaf48e5b2b241f3814ff763fc04066"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-owner.mjs",
+      "bytes": 4261,
+      "sha256": "f59684b99cf2e5086a07cf0779dcc1b6a3b35b694107c447c41fd4f5b1339c09"
+    },
+    {
+      "path": "apps/gateway/budget/admitted-run-current.mjs",
+      "bytes": 2907,
+      "sha256": "cf16d9b3db2da39639eb0b906dddd2e5695f195866a945e8829d17ec3445f9a1"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "bytes": 2803,
+      "sha256": "d699e52e62203aa990012aa5f54e8171b4428c381a509d737927fa62a4118fc9"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/task-verifier-fixture.mjs",
+      "bytes": 3783,
+      "sha256": "685d8fa902a9b6e7becc2f8e8c2103e0f94d20cc5cb391855b7e7bae6c3bcb1c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/REVIEW.md",
+      "bytes": 5372,
+      "sha256": "d581aae41ca2ad502861cc453ef750186b00510c4d00f1cfa76013ba72d8ff37"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/controls.test.mjs",
+      "bytes": 8319,
+      "sha256": "9a853d681007ddefc8ff92cc9b6a60fe55e5e74bccabedc3e5a2add42c8349aa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.json",
+      "bytes": 1312,
+      "sha256": "b15fab3db5f4e9b99e64129eb379907bd256700804302c023fc167855a95f225"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/final-controls.stdout.bin",
+      "bytes": 926,
+      "sha256": "afbf36c5c065cdb603340f53bbb719bb405ecc09607aa5085a874d15e7f133aa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-task-verifier-20261014/independent/native-child.mjs",
+      "bytes": 554,
+      "sha256": "d6208ffef5e10184e1e4a00f7a1e37ed123b370f3eacd1b65759cff57f452778"
+    }
+  ]
+}

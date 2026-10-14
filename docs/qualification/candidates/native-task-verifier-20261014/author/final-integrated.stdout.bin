@@ -1,0 +1,34 @@
+✔ explicit product namespace runs canonical bind/reserve/settle/completion with one ledger (67.425135ms)
+✔ atomic leased callback sees immutable exact allocation and closed SQL port after commit (12.852285ms)
+✔ changed grant during compiled effect refuses result and rolls back under same lease (8.294177ms)
+✔ changed fence during compiled effect refuses result and rolls back under same lease (6.860837ms)
+✔ immutable allocation deadline cannot be refreshed by a later current call (12.505946ms)
+✔ lost leased COMMIT acknowledgement releases no result and does not retry effect (9.09583ms)
+✔ serialized effects share budget lock and second callback cannot overtake first (22.520633ms)
+✔ hostile binding/input and noncompiled callback refuse before SQL effects (6.654841ms)
+✔ only two fixed server namespace choices are accepted before connection (0.32756ms)
+✔ readCompletion refuses revoked without preparation, reconciliation or redispatch (20.466208ms)
+✔ readCompletion refuses fence without preparation, reconciliation or redispatch (29.104492ms)
+✔ readCompletion refuses quarantine without preparation, reconciliation or redispatch (17.384412ms)
+✔ readCompletion refuses unprepared without preparation, reconciliation or redispatch (7.136584ms)
+✔ readCompletion refuses unknown without preparation, reconciliation or redispatch (11.708582ms)
+✔ readCompletion wrong delivery/raw request and lost read COMMIT never yield marker (33.666589ms)
+✔ product migration is empty canonical structure, no seed/role/grant or fixed allowance (9.111561ms)
+✔ actual native authorization HTTP/client returns canonical task receipt with original authority expiry (463.333595ms)
+✔ foreign capability/binding, unsupported operation and hostile input refuse before SQL/native reads (377.44613ms)
+✔ committed grant revocation/fence/quarantine/expiry prevents receipt and launch preparation (1225.424615ms)
+✔ revocation committed during native context await is caught by a fresh later snapshot (303.879276ms)
+✔ held canonical allocation can refresh verifier without reacquiring budget row lock (305.647546ms)
+✔ canonical durable session owner uses native HTTP verifier inside locked SQL effect (486.056239ms)
+✔ admitted preparation preserves immutable launch plan and narrows original lease before real spawn (614.391453ms)
+✔ disabled composition, canceled preparation and shared task/control hash cannot allocate (519.726735ms)
+✔ compiled production ports bind admitted real child registration to canonical persistence owner (626.884789ms)
+✔ supervisor close aborts parked launch preparation before any native context or process dispatch (266.068776ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13409.179868
