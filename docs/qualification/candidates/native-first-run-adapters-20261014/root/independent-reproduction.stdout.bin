@@ -1,0 +1,12 @@
+✔ compiled methods survive prototype replacement and share one admitted current owner without lease reacquisition (19.941676ms)
+✔ native revocation during existing allocation lease refuses release and fixture rollback retains no registered owner (2.85542ms)
+✔ caller cancellation aborts in-flight native verifier without a retry or accepted authority (0.938896ms)
+✔ non-string digest cannot execute coercion or dispatch task capability before refusal (3.568973ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4318.176722

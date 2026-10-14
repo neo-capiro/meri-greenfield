@@ -1,0 +1,57 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs",
+    "docs/qualification/candidates/native-first-run-adapters-20261014/independent/compiled-boundaries.test.mjs",
+    "apps/runtime/native-authority/test/task-authority.test.mjs",
+    "apps/runtime/native-authority/test/first-run-ports.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-adapters",
+  "sourceHead": "a41c822abf11639808acb69b5d0399b690f2c856",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "testSources": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs",
+      "sha256": "09d39bf73ed7857077d6bc0199fb65be6b237750ae68a22735fd925411c6bf6a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/compiled-boundaries.test.mjs",
+      "sha256": "c39e5aa76232afc8d3100aed07859e04c609fabdf47cef3b7ab73e7f829fabe6"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/task-authority.test.mjs",
+      "sha256": "d9933a92be8f12367346294fe1aa1a88e5053a3841b34d696acc674d854421b3"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/first-run-ports.test.mjs",
+      "sha256": "73d39add468a3706bd0384e1b7a86ea92c8808efe98eb6a9901ff18094be9ee7"
+    }
+  ],
+  "postSourceHead": "a41c822abf11639808acb69b5d0399b690f2c856",
+  "postSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "captureSha256": "cf34318c3c89f1b0263cf54071794f2445e2c0e7b690960e4b4c16841a651d0c",
+  "startedAt": "2026-10-14T00:12:00.198637+00:00",
+  "durationSeconds": 9.216,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 14567,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/repaired.stdout.bin",
+      "bytes": 1955,
+      "sha256": "3f6f887fdeaf9939d3c270f30a405e99692707a322cbab3ed7ba3e07f206f749"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent strict-digest failure rerun after explicit string guard; receiver capture and in-lease revocation/cancellation boundaries independently checked.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

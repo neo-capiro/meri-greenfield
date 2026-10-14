@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/native-authority/test/task-authority.test.mjs",
+    "apps/runtime/native-authority/test/first-run-ports.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-adapters",
+  "sourceHead": "c87a7321db17091db4baac75182d4727ad8acd75",
+  "sourceDiffSha256": "66f0d9368a9741c85e30f65e5e122e66290808da12d4a95e1f34fcdb90b47c2f",
+  "sourceDiffBytes": 20843,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T00:09:17.488226+00:00",
+  "durationSeconds": 6.348,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 13390,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/adapter-first.stdout.bin",
+      "bytes": 1480,
+      "sha256": "b0ac1e859fbe008953de13c925ca30d61761789eab87527a2f49fd8673cc2b47"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/root/adapter-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

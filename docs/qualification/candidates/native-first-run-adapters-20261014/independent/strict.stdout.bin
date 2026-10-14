@@ -1,0 +1,34 @@
+✖ non-string digest cannot execute coercion or dispatch task capability before refusal (7.233459ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3898.97013
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs:6:1
+✖ non-string digest cannot execute coercion or dispatch task capability before refusal (7.233459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   coerced: 1,
+  +   effects: 1
+  -   coerced: 0,
+  -   effects: 0
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-first-run-adapters/docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs:11:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { coerced: 1, effects: 1 },
+    expected: { coerced: 0, effects: 0 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,87 @@
+{
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "base": "c87a7321db17091db4baac75182d4727ad8acd75",
+  "initialSourceHead": "1c5cb7ab581071ecf0d10614bc8895d4ae7f5a7e",
+  "acceptedSourceHead": "a41c822abf11639808acb69b5d0399b690f2c856",
+  "postProductionDiffBytes": 0,
+  "postProductionDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "changedSource": [
+    {
+      "path": "apps/runtime/native-authority/task-authority.mjs",
+      "bytes": 2541,
+      "sha256": "31bc405505d6e4a1c525a96850d5cc826a21e5ced84e0fa549f64679d673bca1"
+    },
+    {
+      "path": "apps/runtime/native-authority/first-run-ports.mjs",
+      "bytes": 1587,
+      "sha256": "cd4e1ca51c5e9b64f938c9d79e9d1146753731208ad2e721bd8cd5e3d9a9ec5e"
+    },
+    {
+      "path": "apps/runtime/native-authority/index.mjs",
+      "bytes": 433,
+      "sha256": "1a6cc8c74af0555db5ccbc164e262f0c6d5c12f9aa9a8a8b19c005b74f5b5901"
+    },
+    {
+      "path": "apps/runtime/worker-http.mjs",
+      "bytes": 3585,
+      "sha256": "4506bbd6e16c7bc05b52312abf1ee4030b5df461e9c65e3a0d10a5837bb8b1ff"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/REVIEW.md",
+      "bytes": 6706,
+      "sha256": "87c6909f8a80caeb95b50681ebb00e82f68cf0001f1b66daa0339ee58d9b6f96"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/capture-reaped.py",
+      "bytes": 4053,
+      "sha256": "9b4aaecf23fcaef36c8bc57d6d5acce13a61d1173e94f55a19e5f5b16f833674"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/capture-repaired.py",
+      "bytes": 4053,
+      "sha256": "cf34318c3c89f1b0263cf54071794f2445e2c0e7b690960e4b4c16841a651d0c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/compiled-boundaries.test.mjs",
+      "bytes": 5387,
+      "sha256": "c39e5aa76232afc8d3100aed07859e04c609fabdf47cef3b7ab73e7f829fabe6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/repaired.json",
+      "bytes": 2616,
+      "sha256": "1eee5d852ef1aadd26e1f6464bef3e7bc42ee8dba305e84a2d7ef0caeb8938cf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/repaired.stdout.bin",
+      "bytes": 1955,
+      "sha256": "3f6f887fdeaf9939d3c270f30a405e99692707a322cbab3ed7ba3e07f206f749"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs",
+      "bytes": 864,
+      "sha256": "09d39bf73ed7857077d6bc0199fb65be6b237750ae68a22735fd925411c6bf6a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict.json",
+      "bytes": 1707,
+      "sha256": "b655611087bd954cab4797421ed0202fe898582f2ffe04b0609a29cb9bdd0f1d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict.stdout.bin",
+      "bytes": 1162,
+      "sha256": "7de78cd58f0b5f7109545d9c050da5db6345e6f8aeb475b8658b0d7300a749cc"
+    }
+  ]
+}

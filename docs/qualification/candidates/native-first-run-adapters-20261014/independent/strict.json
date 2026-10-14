@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs"
+  ],
+  "cwd": "/workspace/meri-first-run-adapters",
+  "sourceHead": "1c5cb7ab581071ecf0d10614bc8895d4ae7f5a7e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "testSources": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict-input.test.mjs",
+      "sha256": "09d39bf73ed7857077d6bc0199fb65be6b237750ae68a22735fd925411c6bf6a"
+    }
+  ],
+  "postSourceHead": "1c5cb7ab581071ecf0d10614bc8895d4ae7f5a7e",
+  "postSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "captureSha256": "9b4aaecf23fcaef36c8bc57d6d5acce13a61d1173e94f55a19e5f5b16f833674",
+  "startedAt": "2026-10-14T00:10:52.696118+00:00",
+  "durationSeconds": 4.053,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 14047,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict.stdout.bin",
+      "bytes": 1162,
+      "sha256": "7de78cd58f0b5f7109545d9c050da5db6345e6f8aeb475b8658b0d7300a749cc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-first-run-adapters-20261014/independent/strict.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
