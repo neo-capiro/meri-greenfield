@@ -29,7 +29,7 @@ import {sdkSessionOperations} from '../../../packages/contracts/runtime-0.2/sess
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {capabilityDigest,matchesCapability,compileNativeTaskAccess} from './task-verifier.mjs';
 import {exactOriginal} from './remote-task-boundary.mjs';
-import {compileNativePreparationIntent,matchPreparedDescriptor} from './preparation-intent.mjs';
+import {compileNativePreparationIntent,matchPreparedDescriptorShape} from './preparation-intent.mjs';
 export function createRemoteNativeController(configuration){
  const {runtimeConfiguration,transport,objects}=own(configuration,['runtimeConfiguration','transport'],['objects']);
  const pinned=compileNativeBrokerPlan({runtime:runtimeConfiguration.runtime,plan:runtimeConfiguration.plan,preparationIntent:runtimeConfiguration.preparationIntent});exactOriginal(transport.original,pinned.original);if(!matchesCapability(transport.credential,runtimeConfiguration.controlCapabilitySha256))throw Error('REMOTE_CONTROL_BINDING_REFUSED');
@@ -52,7 +52,8 @@ export function createRemoteNativeWorker(configuration){
  if(c.capture&&c.session)throw Error('REMOTE_CAPTURE_CONFIGURATION');
  const capture=c.session?createTaskCheckpointSource({original:c.original,workspace:i.workspace,session:c.session,native:{close:()=>nativeTask.close(),inspect:value=>nativeTask.inspect(value)},closeQuery:()=>activeQuery.close(),now:c.now??Date.now,maxRequestMs:c.limits?.maxRequestMs??8000}):c.capture;
  const application=createRemoteNativeTaskApplication({original:c.original,controlCapabilitySha256:c.controlCapabilitySha256,taskCapabilitySha256:c.taskCapabilitySha256,taskArn:c.taskArn,descriptorPolicy:{workspace:i.workspace,command:i.launchTemplate.command,configParentDirectory:i.configParentDirectory,secureStorageDirectory:i.secureStorageDirectory},preparationAuthorizer:createNativePreparationClient({native:c.native}),nativeFactory({original,descriptor}){
-  const d=matchPreparedDescriptor(descriptor,i),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
+  // Task-side shape check only; the preparation authority verifies the exact issued credential before any launch.
+  const d=matchPreparedDescriptorShape(descriptor,i),launchConfiguration={binding:original.binding,workspace:d.cwd,configDirectory:d.env.CLAUDE_CONFIG_DIR,secureStorageDirectory:i.secureStorageDirectory,versions:{sdk:original.versions.sdk,cli:original.versions.cli},expiresAtMs:original.expiresAtMs,executableSha256:i.executableSha256,launch:{command:d.command,args:d.args,env:d.env},enabled:c.enabled??false};
   nativeTask=createIndependentNativeTask({original,launchConfiguration,deferredSpawn:true});return {task:nativeTask,launchConfiguration};
  },parkedWorkspace:workspace,...(capture?{capture}:{}),enabled:c.enabled??false,now:c.now??Date.now,...(c.limits?{limits:c.limits}:{})});
  return Object.freeze({application,workspace,query,capture,close:()=>application.close()});

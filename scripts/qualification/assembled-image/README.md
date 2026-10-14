@@ -49,3 +49,7 @@ requires frozen lock installations plus the canonical contracts link. The actual
 apps/runtime/test/image-closure.test.mjs requires an approved Docker engine. Windows
 supporting evidence does not qualify Linux. Never change ACLs/global cache settings
 or weaken isolation to compensate for a blocked host check.
+
+## Candidate manifest with explicitly changed proof rows
+
+`candidate-manifest-fable-20261014.json` is the Fable source candidate after dot's 14 October review: it preserves `source-manifest.json` (hash recorded under `historicalManifest`), lists all 45 rows with their current hashes, and enumerates every row whose bytes changed in `changedRows` with the historical hash, the current hash, the reason and the recorded decision. `source-proof.test.mjs` keeps the historical pins on the historical manifest, proves every unenumerated row equal to its historical bytes, requires each changed row to carry both hashes and a decision, and refuses a changed recipe. It is a source-review artifact: nothing in it is built, scanned or admitted.

@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {once} from 'node:events';
 import {execFileSync} from 'node:child_process';
-import {readFileSync,writeFileSync,readdirSync,statSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,readdirSync,statSync,existsSync,chmodSync} from 'node:fs';
 import {join,resolve,dirname,relative} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'../../..');
@@ -40,13 +40,13 @@ async function compose(t,receipt,{onTaskRoute}={}){
  assert.notEqual(process.getuid(),0,'the runner workspace control refuses root');
  const f=await fixture(t,{leaseMs:120000}),{binding,runtime,pool,facts,config}=f;receipt.step('fixture',{database:process.env.MERI_BROKER_TEST_DATABASE??'postgres'});
  const saved=await f.stack.store.read(binding,{after:0,limit:1},()=>{}),scopes=saved.run.scopes;
- const configParentDirectory=f.configDirectory,secureStorageDirectory=join(f.root,'secure'),sdkConfigDirectory=join(configParentDirectory,'sdk-'+binding.runId);
+ const configParentDirectory=f.configDirectory,secureStorageDirectory=join(f.root,'secure'),sdkConfigDirectory=join(configParentDirectory,'sdk-'+binding.runId);chmodSync(configParentDirectory,0o700);
  // The exact option set the activity builds (runtime, cwd, durable store surface, runner-derived directories): argv and SDK options pin.
  const probe=buildConversationOptions({...runtime,cwd:f.workspace,sessionStore:{async load(){},async append(){},async listSubkeys(){}},sdkConfigDirectory,sdkSecureStorageDirectory:secureStorageDirectory},new AbortController());
  probe.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes,skill:saved.request.skill});
  const sdkOptionsSha256=hash(projectNativeSdkOptions(probe));
  let descriptor=null;try{sdkQuery({prompt:saved.request.prompt,options:{...probe,spawnClaudeCodeProcess(r){descriptor={command:r.command,args:[...r.args],cwd:r.cwd,env:{...r.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});}catch{}
- assert.ok(descriptor,'the SDK produced a launch descriptor');const {CLAUDE_CONFIG_DIR:configDir,...templateEnv}=descriptor.env;assert.equal(configDir,sdkConfigDirectory);
+ assert.ok(descriptor,'the SDK produced a launch descriptor');const {CLAUDE_CONFIG_DIR:configDir,ANTHROPIC_AUTH_TOKEN:issuedCredential,...templateEnv}=descriptor.env;assert.equal(configDir,sdkConfigDirectory);assert.equal(issuedCredential,runtime.proxyCredential);
  const launchTemplate={command:descriptor.command,args:descriptor.args,env:templateEnv},executableSha256=sha(readFileSync(descriptor.command));
  receipt.descriptor={command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:redactEnvironment(descriptor.env)};receipt.cli={path:descriptor.command,sha256:executableSha256};receipt.launchTemplate={command:launchTemplate.command,argsSha256:hash(launchTemplate.args),envKeys:Object.keys(templateEnv),carriesProxyCredential:Object.hasOwn(templateEnv,'ANTHROPIC_AUTH_TOKEN')};receipt.sdkOptionsSha256=sdkOptionsSha256;
  receipt.step('descriptor-captured');

@@ -20,6 +20,10 @@ Reading: see [the finding report](../../../coordination/reports/FABLE-REMOTE-LAU
 
 The launch template of both runs carries the synthetic proxy credential (`carriesProxyCredential: true` in the receipt), which is exactly the gap 3 shape dot must decide on; the receipts record it as a hash only.
 
+## Step 3: gaps 2 and 3 in source (`composed/source-gap2-gap3*.json`)
+
+After dot's source review, the runner derivation (revised with ownership, permission and symlink verification) and the separate credential verification are in source; `proposals/gap2-runner-sdk-directories.patch` is retained as the historical proposal and is superseded. `composed/source-gap2-gap3.json` and `composed/source-gap2-gap3-cancellation.json` (both PASSED, no patch applied) are the same two rehearsal tests at this head; the launch template no longer carries the credential (`carriesProxyCredential: false`) and the controller verifies the issued credential at preparation. `checks/RESULTS-gap2-gap3-source.json`: `native-authority` 309/309, `runtime-tests` 119/120 (Docker control only), `worker-conversation` 135/135, `scripts-local` 27/27.
+
 ## Checks
 
 `checks/RESULTS-touched-suites-worker-directories.json` (local baseline runner, non-root, local PostgreSQL 16 running, head `4adfc41` plus the uncommitted worker/tool changes of this step): `source-proof` 3/3, `runtime-typecheck` pass, `runtime-tests` 111/112 (only the Docker image-closure control), `worker-conversation` 135/135, `gateway-selected-skills` 36/36, `scripts-local` 27/27.

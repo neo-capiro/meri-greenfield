@@ -4,13 +4,35 @@ import {canonicalSha256,validateShape} from '../../packages/contracts/validate.m
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {lstat,realpath} from 'node:fs/promises';
+import {lstat,realpath,mkdir} from 'node:fs/promises';
+import {join,dirname} from 'node:path';
+import {compileNativePreparationIntent} from './native-authority/preparation-intent.mjs';
 import {createLifecycleRunOwner} from '../control/conversations/lifecycle/worker-owner.mjs';
 import {createTaskSelectedSkills} from './selected/task.mjs';
 import {createRuntimeSdkSessionFactory,createOwnedRuntimeSdkSession} from './sdk-session-runtime.mjs';
 import {waitForAdmittedTask,loadRemoteTaskBinding} from './task-bootstrap.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 export function assertRunnerEnvironment(environment=process.env){for(const key of ['DATABASE_URL','PGPASSWORD','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY','AWS_SESSION_TOKEN','ANTHROPIC_API_KEY','CLAUDE_CODE_OAUTH_TOKEN','TEMPORAL_API_KEY','MERI_NATIVE_ADMIN_TOKEN','CLAUDE_CODE_USE_BEDROCK','CLAUDE_CODE_USE_VERTEX','CLAUDE_CODE_USE_FOUNDRY','ANTHROPIC_AWS_BEARER_TOKEN','ANTHROPIC_AWS_REGION'])if(environment[key])throw fault('RUNNER_AMBIENT_CREDENTIAL_REFUSED');}
+/** Per-run SDK configuration directories under the admitted preparation intent; absent outside the remote task path. */
+export function sdkConfigurationDirectories(configuration){
+ if(configuration.remoteTask===undefined)return {};
+ const intent=compileNativePreparationIntent(configuration.remoteTask.preparationIntent);
+ return {sdkConfigDirectory:join(intent.configParentDirectory,'sdk-'+configuration.binding.runId),sdkSecureStorageDirectory:intent.secureStorageDirectory};
+}
+/** A directory the SDK may use only if it is a real directory owned by this task's uid, private to it, and reached without symlinks. */
+async function assertOwnedPrivateDirectory(path,uid){let stat;try{stat=await lstat(path);}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}if(stat.isSymbolicLink()||!stat.isDirectory()||stat.uid!==uid||(stat.mode&0o077)!==0||await realpath(path)!==path)throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
+/** The config directory is fresh per run (an existing one refuses); secure storage may pre-exist. Parents and both directories are verified owned, private and symlink-free before any SDK initialization. */
+export async function ensureSdkConfigurationDirectories(directories,{uid=process.getuid()}={}){
+ if(directories.sdkConfigDirectory===undefined)return directories;
+ const {sdkConfigDirectory,sdkSecureStorageDirectory}=directories;
+ await assertOwnedPrivateDirectory(dirname(sdkConfigDirectory),uid);
+ try{await mkdir(sdkConfigDirectory,{mode:0o700});}catch{throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
+ await assertOwnedPrivateDirectory(sdkConfigDirectory,uid);
+ await assertOwnedPrivateDirectory(dirname(sdkSecureStorageDirectory),uid);
+ try{await mkdir(sdkSecureStorageDirectory,{mode:0o700});}catch(error){if(error?.code!=='EEXIST')throw fault('RUNNER_SDK_DIRECTORY_REFUSED');}
+ await assertOwnedPrivateDirectory(sdkSecureStorageDirectory,uid);
+ return directories;
+}
 export function assembleConversationRunner({configuration,native,query,credentialForBinding,sessionFactory,now=Date.now}){
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
  const binding=configuration.binding,call=(operation,input,signal)=>native.call(operation,{binding,...input},{signal});
@@ -30,7 +52,8 @@ export function assembleConversationRunner({configuration,native,query,credentia
   const {sdkSessionKey,...runtime}=r;let sessionStore;
   if(sessionFactory!==undefined){if(sdkSessionKey===undefined||sdkSessionKey===null&&continuation!==undefined)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');sessionStore=await sdkSession.prepare({binding:b,sessionKey:sdkSessionKey,signal,continuation,...(sdkSessionKey===null||continuation!==undefined?{runtimeSignal}:{})});}
   else sessionStore={load:key=>call('runner/session/load',{key}).then(v=>{own(v,['entries']);return v.entries;}),append:(key,entries)=>call('runner/session/append',{key,entries}).then(v=>{own(v,['committed']);if(v.committed!==true)throw fault('SESSION_PERSISTENCE_FAILED');})};
-  return {...runtime,cwd:configuration.workspace,sessionStore};};
+  const directories=await ensureSdkConfigurationDirectories(sdkConfigurationDirectories(configuration));
+  return {...runtime,cwd:configuration.workspace,sessionStore,...directories};};
  const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,now,...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),heartbeat:()=>{}});
  const execute=async input=>{try{return await activity(input);}finally{try{await selectedSkills.close();}finally{await sdkSession?.close();}}};
  Object.defineProperty(execute,'cleanupStatus',{value:()=>sdkSession?.cleanupStatus()??{pendingInitializations:0,closed:true,failures:[],physicalStopProven:false}});return execute;

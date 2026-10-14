@@ -10,7 +10,7 @@ const refuse=()=>{throw executionFault('SDK_OPTIONS_REFUSED');};
 export function projectNativeSdkOptions(options){
  const o=own(options,[],[...fields,...callbacks]),result={};
  for(const [k,v]of Object.entries(o)){
-  if(!callbacks.has(k)){if(k==='env'){if(!v||typeof v!=='object'||types.isProxy(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))refuse();const env=own(v,[],Object.keys(v));result.env=Object.fromEntries(Object.entries(env).map(([name,value])=>[name,value===undefined?null:value]));}else result[k]=v;continue;}
+  if(!callbacks.has(k)){if(k==='env'){if(!v||typeof v!=='object'||types.isProxy(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))refuse();const env=own(v,[],Object.keys(v));result.env=Object.fromEntries(Object.entries(env).map(([name,value])=>{if(name==='ANTHROPIC_AUTH_TOKEN'){if(typeof value!=='string'||!value)refuse();return [name,'issued-task-credential'];}return [name,value===undefined?null:value];}));}else result[k]=v;continue;}
   if(k==='canUseTool'){if(typeof v!=='function'||types.isProxy(v))refuse();result[k]='approved-runner-callback';}
   else if(k==='abortController'){if(types.isProxy(v)||!(v instanceof AbortController))refuse();result[k]='owned-abort-controller';}
   else if(k==='sessionStore'){const s=own(v,['load','append'],['listSubkeys']);if(Object.values(s).some(fn=>typeof fn!=='function'||types.isProxy(fn)))refuse();result[k]=Object.keys(s).sort();}

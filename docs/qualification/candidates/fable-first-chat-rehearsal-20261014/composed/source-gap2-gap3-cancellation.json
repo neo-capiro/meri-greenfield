@@ -1,0 +1,189 @@
+{
+ "schema": "meri.composed-first-chat-rehearsal.v1",
+ "rehearsal": "cancellation-after-launch",
+ "startedAt": "2026-10-14T22:17:53.210Z",
+ "repository": {
+  "root": "/home/user/meri-first-chat",
+  "head": "8997fd515c6322bf3dfbd5c12d83a343e8e843b1",
+  "tree": "4b78138e0a70efb0b341760b1d8c2b916f8a1fe0",
+  "uncommittedPaths": 10
+ },
+ "runnerModule": {
+  "path": "apps/runtime/conversation-runner.mjs",
+  "sha256": "ad01ddfbab79758c7b6a8d6fc922ccbaf3cebde5df4aca831efb24420ab2f776",
+  "pr86Sha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+  "gap2PatchApplied": true,
+  "proposalPatchSha256": "d7ed593fcf69e0fdc2df0a336651ed52a4632c1f91a715f426b03459616e1eff"
+ },
+ "outcome": "PASSED",
+ "steps": [
+  {
+   "name": "fixture",
+   "atMs": 573,
+   "database": "postgres"
+  },
+  {
+   "name": "descriptor-captured",
+   "atMs": 1380
+  },
+  {
+   "name": "allocation-admitted",
+   "atMs": 1417
+  },
+  {
+   "name": "controller-allocated",
+   "atMs": 1419,
+   "allocations": 1
+  },
+  {
+   "name": "runner-assembled",
+   "atMs": 1420
+  },
+  {
+   "name": "abort-after-start",
+   "atMs": 2803
+  },
+  {
+   "name": "activity-rejected",
+   "atMs": 2857
+  }
+ ],
+ "descriptor": {
+  "command": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "args": [
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--input-format",
+   "stream-json",
+   "--max-turns=1",
+   "--max-budget-usd=0.000001",
+   "--model=meri-local-no-provider",
+   "--permission-prompt-tool=stdio",
+   "--tools=",
+   "--setting-sources=",
+   "--permission-mode=default",
+   "--include-partial-messages",
+   "--session-mirror",
+   "--settings",
+   "{\"autoMemoryEnabled\":false}"
+  ],
+  "cwd": "/tmp/meri-broker-author-s8xL1b/11111111-1111-4111-8111-111111111111",
+  "env": {
+   "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
+   "ANTHROPIC_AUTH_TOKEN": {
+    "redacted": true,
+    "sha256": "4d3c2a9251e22fb8ed930db307730012cf67d56ebb294bb82b92f9686d25800b"
+   },
+   "CLAUDE_CONFIG_DIR": "/tmp/meri-broker-author-s8xL1b/config/sdk-22222222-2222-4222-8222-222222222222",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/tmp/meri-broker-author-s8xL1b/secure",
+   "CLAUDE_CODE_ENTRYPOINT": "sdk-ts",
+   "CLAUDE_AGENT_SDK_VERSION": "0.3.295",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE": "1"
+  }
+ },
+ "cli": {
+  "path": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+ },
+ "launchTemplate": {
+  "command": "/home/user/meri-first-chat/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "argsSha256": "5bb894da2938dcbb93e59341677f1bd17413a87c3f92764a2685cf821a7a71a2",
+  "envKeys": [
+   "ANTHROPIC_BASE_URL",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR",
+   "CLAUDE_CODE_ENTRYPOINT",
+   "CLAUDE_AGENT_SDK_VERSION",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE"
+  ],
+  "carriesProxyCredential": false
+ },
+ "sdkOptionsSha256": "71b7bd711b75cc0b9131c6de8ba9259d3a22881d886ec35771df44c933e0c8b7",
+ "routes": {
+  "/v1/native-task/inspect": 2,
+  "/v1/native-task/launch": 1,
+  "/v1/native-task/prepare": 1,
+  "/v1/native-task/start": 1,
+  "/v1/native-task/stdin": 1,
+  "/v1/native-task/stdout": 1,
+  "/v1/native-task/stop": 1,
+  "/v1/runner/load": 1,
+  "/v1/runner/native/prepare": 1,
+  "/v1/runner/native/start": 1,
+  "/v1/runner/native/started": 1,
+  "/v1/runner/native/verify": 6,
+  "/v1/runner/publish": 3,
+  "/v1/runner/runtime": 1
+ },
+ "nativeAfterActivity": {
+  "state": "stopped",
+  "physicalStopProven": true
+ },
+ "counters": {
+  "allocations": 1,
+  "retirements": 0
+ },
+ "conversation": {
+  "runState": "cancelled",
+  "events": [
+   {
+    "sequence": 1,
+    "type": "run.status",
+    "data": {
+     "state": "queued",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 2,
+    "type": "run.status",
+    "data": {
+     "state": "starting",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 3,
+    "type": "run.status",
+    "data": {
+     "state": "running",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 4,
+    "type": "run.status",
+    "data": {
+     "state": "cancelled",
+     "reasonCode": "EXECUTION_STOPPED"
+    }
+   }
+  ]
+ },
+ "launchBinding": {
+  "state": "STARTED",
+  "descriptorSha256": "7b9a6891e3863371053317bf26fc38a85bfe989fed9704e16cc553570edae2e1",
+  "configTreeSha256": "cbd0188deb2600bca55743e90f9b519356dfaa5fcd984dd44a93e73db0821762"
+ },
+ "secondDispatch": {
+  "journal": {
+   "refused": "NATIVE_PREPARATION_REFUSED"
+  },
+  "authorizer": {
+   "refused": "NATIVE_PREPARATION_REFUSED"
+  }
+ },
+ "cleanupStatus": {
+  "pendingInitializations": 0,
+  "closed": true,
+  "failures": [],
+  "physicalStopProven": false
+ },
+ "nativeAfterWorkerClose": {
+  "state": "stopped",
+  "physicalStopProven": true
+ },
+ "finishedAt": "2026-10-14T22:17:56.173Z",
+ "durationMs": 2889,
+ "scope": "Local rehearsal only: synthetic ECS/identity/authority/proxy facts, synthetic proxy credential hashed where recorded, no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance."
+}

@@ -8,13 +8,28 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const proof=JSON.parse(fs.readFileSync(new URL('./source-manifest.json',import.meta.url),'utf8'));
+const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261014.json',import.meta.url),'utf8'));
 
-test('all45 historical proof paths and44 non-recipe hashes remain; every candidate source hash matches',()=>{
+test('all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest',()=>{
   assert.equal(proof.files.length,45);
   assert.equal(hash(proof.files.map(row=>row.path).sort().join('\n')+'\n'),'d340511c6f520b2de292626640a96f06df1c0284ff29bb960cbbfd8d37b6fde8');
   assert.equal(hash(proof.files.filter(row=>row.path!=='apps/runtime/Dockerfile').sort((a,b)=>a.path.localeCompare(b.path)).map(row=>row.path+':'+row.sha256).join('\n')+'\n'),'79e334ed6f997a9bf3938c31dcbd9bb368b617754f589f0168c302d02344cd32');
-  for(const row of proof.files)assert.equal(hash(fs.readFileSync(path.join(root,row.path))),row.sha256,row.path);
   assert.equal(proof.sourceHead,null);assert.equal(proof.publicationSource,null);
+  assert.equal(hash(fs.readFileSync(new URL('./source-manifest.json',import.meta.url))),candidate.historicalManifest.sha256,'the historical manifest bytes are the ones the candidate was derived from');
+});
+
+test('the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged',()=>{
+  assert.equal(candidate.files.length,45);assert.equal(candidate.sourceHead,null);assert.equal(candidate.publicationSource,null);
+  assert.deepEqual(candidate.files.map(row=>row.path).sort(),proof.files.map(row=>row.path).sort());
+  const changed=new Map(candidate.changedRows.map(row=>[row.path,row]));
+  assert.equal(changed.size,candidate.changedRows.length);assert.equal(changed.size,candidate.changedRowCount);assert.equal(45-changed.size,candidate.unchangedRowCount);assert.ok(changed.size>0&&changed.size<45);assert.ok(!changed.has('apps/runtime/Dockerfile'));
+  for(const row of proof.files){
+    const current=hash(fs.readFileSync(path.join(root,row.path))),declared=candidate.files.find(f=>f.path===row.path);
+    assert.equal(current,declared.sha256,row.path);
+    const change=changed.get(row.path);
+    if(change){assert.equal(change.historicalSha256,row.sha256,row.path);assert.equal(change.sha256,current,row.path);assert.notEqual(change.sha256,change.historicalSha256,row.path);assert.ok(typeof change.reason==='string'&&change.reason.length>0&&typeof change.decision==='string'&&change.decision.length>0,row.path);}
+    else assert.equal(current,row.sha256,row.path);
+  }
 });
 
 test('exact16 proof-test files are allowlisted with parent reopening and sibling denial',()=>{

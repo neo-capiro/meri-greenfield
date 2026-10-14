@@ -5,8 +5,8 @@ Base `c6053e24b465be677cc5980533009b4aab03beab` (PR86). Author: Fable. Status: D
 ## 1. Preconditions that this packet cannot satisfy
 
 1. Admitted image: the PR86 image is scan-blocked (2 Critical, 48 High). Admission requires zero High and zero Critical. Fable's dependency-traced candidate needs the private finding table (HANDOFF SCAN-STATUS). No build is requested here.
-2. Launch-template credential shape (gap 3 in `FABLE-REMOTE-LAUNCH-DESCRIPTOR-FINDING-20261014.md`): the configured `launchTemplate.env` is compared for exact equality with the SDK's descriptor after stripping only `CLAUDE_CONFIG_DIR`, and the SDK places the per-task proxy credential in that env. Until dot decides the matcher shape, the `preparationIntent` of section 2 cannot be configured without placing a secret in configuration.
-3. Gap 2 (per-task SDK config directories) must be applied to the runner for the remote composition to pass the config-directory gates (`composed/` receipts show the pass with the proposal and the failure without it).
+2. Launch-template credential shape (gap 3): resolved in source after dot's acceptance. The configured `launchTemplate.env` must not carry `ANTHROPIC_AUTH_TOKEN`; the preparation authority verifies the issued credential separately. The `preparationIntent` of section 2 can now be configured without a secret.
+3. Gap 2 (per-task SDK config directories): resolved in source with ownership, permission and symlink verification; the task's config parent and secure storage parent must be owned by the task uid and private (mode without group or other bits), which the task bootstrap and image must guarantee.
 
 ## 2. Binding inventory from the PR86 configuration schema
 

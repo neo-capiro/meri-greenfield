@@ -21,7 +21,7 @@ export function compileNativeBrokerPlan(configuration){
  if(c.preparationIntent!==undefined){
   const preparationIntent=compileNativePreparationIntent(c.preparationIntent);if(runtime.versions.imageDigest!=='sha256:'+preparationIntent.imageSha256)throw executionFault('STACK_CONFIGURATION');
   if(c.launchConfiguration!==undefined){const p=compileNativeLaunch(c.launchConfiguration);if(hash(p.binding)!==hash(runtime.binding)||p.expiresAtMs!==runtime.deadlineMs)throw executionFault('STACK_CONFIGURATION');}
-  if(c.launchConfiguration!==undefined)matchPreparedDescriptor({command:c.launchConfiguration.launch.command,args:c.launchConfiguration.launch.args,env:c.launchConfiguration.launch.env,cwd:c.launchConfiguration.workspace},preparationIntent);
+  if(c.launchConfiguration!==undefined)matchPreparedDescriptor({command:c.launchConfiguration.launch.command,args:c.launchConfiguration.launch.args,env:c.launchConfiguration.launch.env,cwd:c.launchConfiguration.workspace},preparationIntent,runtime.proxyCredential);
   const plan=data({ownerPlan:data(c.plan),runtimeSha256:hash(runtime),preparationSha256:hash(preparationIntent)});
   const original=createExecutionBinding({binding:runtime.binding,versions:runtime.versions,plan,expiresAtMs:runtime.deadlineMs});
   return Object.freeze({runtime,preparationIntent,plan,original,...(c.launchConfiguration===undefined?{}:{launchConfiguration:data(c.launchConfiguration)})});
