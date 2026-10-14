@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/native-runner-gateway-20261014/root/cleanup-owned-links.py"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "662a330f2b4cb9fccdbbb1014f577ae55ee63642",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:48:34.487952+00:00",
+  "durationSeconds": 0.066,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 54877,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/owned-dependency-cleanup.stdout.bin",
+      "bytes": 233,
+      "sha256": "13582db3821fce343efca915f684729c3aa172f6bcb32077ef5c1570ceec7f25"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/owned-dependency-cleanup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

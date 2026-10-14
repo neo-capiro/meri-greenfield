@@ -1,0 +1,34 @@
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (22.441322ms)
+✖ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (71.820011ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (47.013812ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (2.490826ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (9.073179ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (65.835407ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (3.402853ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5429.925574
+
+✖ failing tests:
+
+test at apps/runtime/test/native-runner-gateway.test.mjs:21:1
+✖ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (71.820011ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  403 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runner-gateway/apps/runtime/test/native-runner-gateway.test.mjs:26:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 403,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

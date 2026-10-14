@@ -1,0 +1,39 @@
+✖ transport Proxy rejection is normalized without executing returns prototype trap (9.91022ms)
+✖ transport Proxy rejection is normalized without executing throws prototype trap (1.123717ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 390.358827
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs:5:44
+✖ transport Proxy rejection is normalized without executing returns prototype trap (9.91022ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runner-gateway/docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs:11:161)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs:5:44
+✖ transport Proxy rejection is normalized without executing throws prototype trap (1.123717ms)
+  Error: synthetic active prototype
+      at Object.getPrototypeOf (file:///workspace/meri-native-runner-gateway/docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs:7:86)
+      at [Symbol.hasInstance] (<anonymous>)
+      at Object.handle (file:///workspace/meri-native-runner-gateway/apps/runtime/native-runner-gateway.mjs:45:51)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runner-gateway/docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs:10:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

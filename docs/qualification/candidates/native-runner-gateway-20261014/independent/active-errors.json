@@ -1,0 +1,42 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "70dc8840f12a96d9fb60240fbef50b9466877888",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "testSources": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-error.test.mjs",
+      "sha256": "be4cf7637659fca9169775b509ef3a9cae7ebcbab3ee7829ddda29c99986d9cf"
+    }
+  ],
+  "postSourceHead": "70dc8840f12a96d9fb60240fbef50b9466877888",
+  "postSourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "captureSha256": "f3361490bb531c00cedbcbcc2f1ca6aadea5dcd7791d23dc0f18bee32117c96d",
+  "startedAt": "2026-10-14T01:37:15.108887+00:00",
+  "durationSeconds": 0.478,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 51038,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-errors.stdout.bin",
+      "bytes": 2006,
+      "sha256": "9043ae049e4e297ab1d2de3370565c4aaa11677a61530bc5c7f581a7933c44f1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/independent/active-errors.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

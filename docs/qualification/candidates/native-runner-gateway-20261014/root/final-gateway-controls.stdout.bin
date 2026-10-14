@@ -1,0 +1,15 @@
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (75.42845ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (129.427723ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (143.629304ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (15.062102ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (26.270983ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (62.504663ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (3.61085ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6143.501124

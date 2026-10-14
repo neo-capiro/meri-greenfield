@@ -1,0 +1,20 @@
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (18.65703ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (73.09528ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (43.886657ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (2.756186ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (5.644226ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (62.324468ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (7.854686ms)
+✔ transport Proxy rejection is normalized without executing returns prototype trap (10.663764ms)
+✔ transport Proxy rejection is normalized without executing throws prototype trap (1.618341ms)
+✔ reply acquired at post-dispatch deadline is cancelled even when lifetime refuses before outer assignment (13.352746ms)
+✔ fixed hop carries only original task authority and preserves exact UNKNOWN reply bytes without metadata credentials (13.018516ms)
+✔ opaque SDK payload bypasses ordinary request/response limits while ordinary route remains bounded before dispatch (61.114733ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7858.098688

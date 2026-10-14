@@ -1,0 +1,30 @@
+✔ transport Proxy rejection is normalized without executing returns prototype trap (8.64332ms)
+✔ transport Proxy rejection is normalized without executing throws prototype trap (1.234896ms)
+✖ reply acquired at post-dispatch deadline is cancelled even when lifetime refuses before outer assignment (13.290561ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1371.200296
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-reply.test.mjs:5:1
+✖ reply acquired at post-dispatch deadline is cancelled even when lifetime refuses before outer assignment (13.290561ms)
+  AssertionError [ERR_ASSERTION]: owned reply body must be released when post-await deadline rejects
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runner-gateway/docs/qualification/candidates/native-runner-gateway-20261014/independent/deadline-reply.test.mjs:10:121)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

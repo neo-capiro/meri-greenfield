@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/native-runner-gateway.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runner-gateway",
+  "sourceHead": "7df7a9e00b72f097de66acb1a467c51eac026e2c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T01:41:07.151731+00:00",
+  "durationSeconds": 6.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 52371,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/final-gateway-controls.stdout.bin",
+      "bytes": 971,
+      "sha256": "2020a512e34b9ef425b3797098ceec1ccecd5232e72ef306c57ca5165d534864"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runner-gateway-20261014/root/final-gateway-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Production reply acquisition changed after independent deadline-edge failure. Replay focused seven gateway controls on final source, with all prior failures retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
