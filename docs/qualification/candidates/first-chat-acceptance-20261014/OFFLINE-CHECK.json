@@ -1,0 +1,19 @@
+{
+  "scope": "OFFLINE_SOURCE_CHECK_ONLY_NO_NETWORK_CREDENTIALS_OR_MODEL",
+  "runtimeHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "runbookPath": "docs/coordination/runbooks/FIRST-CHAT-PR39-PR81-20261014.md",
+  "runbookSha256": "a6fdbd0a56a5a8120521e4b4cb4c712f1c9a5d9d929a1b4e3bb2276a26e0187d",
+  "scriptSha256": "c9217634e3ba3568067f052fc285a1fbafe5df23c29131fa9cb948e02b0fbd19",
+  "command": [
+    "python",
+    "-c",
+    "exact fenced script in runbook"
+  ],
+  "exitCode": 0,
+  "stdout": "PR81 source and 39 pinned files match; live acceptance NOT RUN\n",
+  "stderr": "",
+  "liveAcceptance": "UNRUN",
+  "fixturesReexecuted": false,
+  "draftingFailure": "Initial nested heredoc delimiter collided before file creation; corrected quoted unique delimiter. No live/fixture test attempt occurred.",
+  "rerunReason": "Independent review corrected Observe-before-history order; offline script/source unchanged, current document pin refreshed."
+}
