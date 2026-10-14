@@ -24,7 +24,7 @@ export function createPreparedNativeRuntime(configuration){
   const saved=await life.run(()=>read(key,life.check));if(saved.record?.state!=='ADMITTED'||!same(saved.record.original,original)||!admitted||saved.record.resource.taskArn!==admitted.resource.taskArn)throw executionFault('PREPARATION_REFUSED');
   const began=now(),proof=data(own(await life.run(signal=>c.verifyTask({original,resource:saved.record.resource,signal})),['taskArn','imageSha256','runnerSha256','checkedAtMs','expiresAtMs']));
   if(proof.taskArn!==saved.record.resource.taskArn||proof.imageSha256!==preparationIntent.imageSha256||proof.runnerSha256!==preparationIntent.runnerSha256||!Number.isSafeInteger(proof.checkedAtMs)||proof.checkedAtMs<began||proof.checkedAtMs>now()||!Number.isSafeInteger(proof.expiresAtMs)||proof.expiresAtMs<original.expiresAtMs)throw executionFault('PREPARATION_REFUSED');
-  life.check();return {saved,receipt};
+  life.check();check(life.signal);return {saved,receipt};
  }
  const request=(value,descriptor=false)=>{const v=own(value,['original','descriptorSha256','configTreeSha256',...(descriptor?['descriptor']:['preparationId'])],['signal']);if(!same(v.original,original)||![v.descriptorSha256,v.configTreeSha256].every(x=>typeof x==='string'&&/^[a-f0-9]{64}$/u.test(x)))throw executionFault('PREPARATION_REFUSED');return v;};
  const pins=v=>({...key,descriptorSha256:v.descriptorSha256,configTreeSha256:v.configTreeSha256,preparationId:v.preparationId});

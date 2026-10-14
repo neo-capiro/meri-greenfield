@@ -14,7 +14,7 @@ export function projectNativeSdkOptions(options){
   if(k==='canUseTool'){if(typeof v!=='function'||types.isProxy(v))refuse();result[k]='approved-runner-callback';}
   else if(k==='abortController'){if(types.isProxy(v)||!(v instanceof AbortController))refuse();result[k]='owned-abort-controller';}
   else if(k==='sessionStore'){const s=own(v,['load','append'],['listSubkeys']);if(Object.values(s).some(fn=>typeof fn!=='function'||types.isProxy(fn)))refuse();result[k]=Object.keys(s).sort();}
-  else if(k==='mcpServers'){const servers=own(v,[],['meri_original_reads']),s=own(servers.meri_original_reads,['type','name','instance']);if(s.type!=='sdk'||s.name!=='meri_original_reads')refuse();storageMethod(s.instance,'close');result[k]={meri_original_reads:{type:s.type,name:s.name,instance:'approved-runner-server'}};}
+  else if(k==='mcpServers'){const servers=own(v,[],['meri_original_reads']),s=own(servers.meri_original_reads,['type','name','instance'],['timeout']);if(s.type!=='sdk'||s.name!=='meri_original_reads')refuse();storageMethod(s.instance,'close');if(s.timeout!==undefined&&(!Number.isSafeInteger(s.timeout)||s.timeout<1||s.timeout>2147483647))refuse();result[k]={meri_original_reads:{type:s.type,name:s.name,instance:'approved-runner-server',...(s.timeout===undefined?{}:{timeout:s.timeout})}};}
   else{const h=own(v,['PreToolUse']);const row=own(singleton(h.PreToolUse),['matcher','hooks']);if(typeof singleton(row.hooks)!=='function'||types.isProxy(singleton(row.hooks)))refuse();result[k]={PreToolUse:[{matcher:row.matcher,hooks:['approved-runner-callback']}]};}
  }
  return data(result);

@@ -11,7 +11,7 @@ import {createWorkspaceCapture} from './workspace-capture.mjs';
 const fault=()=>Error('TASK_CHECKPOINT_SOURCE_UNKNOWN'),refuse=()=>{throw fault();};
 export function createTaskCheckpointSource(configuration){
  const c=own(configuration,['original','workspace','session','native','closeQuery'],['now','maxRequestMs']),original=remoteOriginal(c.original),now=c.now??Date.now,maxRequestMs=c.maxRequestMs??8000;
- const settle=storageMethod(c.session,'settle'),snapshot=storageMethod(c.session,'snapshot'),closeSession=storageMethod(c.session,'close'),closeNative=storageMethod(c.native,'close'),inspectNative=storageMethod(c.native,'inspect'),closeQuery=storageMethod(c,'closeQuery');
+ const settle=storageMethod(c.session,'settle'),snapshot=storageMethod(c.session,'snapshot'),closeSession=storageMethod(c.session,'close'),closeNative=storageMethod(c.native,'close'),inspectNative=storageMethod(c.native,'inspect'),closeQuery=storageMethod(c,'closeQuery'),assertFrozen=Object.hasOwn(c.session,'assertFrozen')?storageMethod(c.session,'assertFrozen'):null;
  if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)refuse();
  const workspace=createWorkspaceCapture({workspace:c.workspace,expiresAtMs:original.expiresAtMs,now});let state='pristine';
  return Object.freeze({async capture(value){
@@ -28,7 +28,7 @@ export function createTaskCheckpointSource(configuration){
    const frozen=await frozenSnapshot(),second=await frozenSnapshot();if(hash(frozen)!==hash(second))refuse();const beforeStop=assertNativeExecution(await life.run(signal=>inspectNative({...original,signal})),original);if(beforeStop.state!=='executing'||beforeStop.physicalStopProven)refuse();
    await life.run(signal=>closeQuery({signal}));queryClosed=true;
    await life.run(signal=>closeNative({...original,signal}));
-   const quiescence=assertNativeExecution(await life.run(signal=>inspectNative({...original,signal})),original);if(!quiescence.physicalStopProven||quiescence.state!=='stopped')refuse();nativeClosed=true;
+   const quiescence=assertNativeExecution(await life.run(signal=>inspectNative({...original,signal})),original);if(!quiescence.physicalStopProven||quiescence.state!=='stopped')refuse();nativeClosed=true;if(assertFrozen)await life.run(signal=>assertFrozen({signal}));
    const files=workspace.capture({signal:life.signal});life.check();state='captured';return copySessionJson({...input,key:frozen.key,transcripts:frozen.transcripts,files,quiescence},56*1024*1024);
   }catch{state='unknown';throw fault();}
   finally{
