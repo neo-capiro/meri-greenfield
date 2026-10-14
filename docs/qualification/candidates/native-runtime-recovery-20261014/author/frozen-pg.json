@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/execution-broker.test.mjs",
+    "apps/runtime/native-authority/test/ecs-recovery-pg.test.mjs",
+    "apps/control/conversations/test/store.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "b49011f35b9b0b13eb3efc20dc1460fabedaf1db",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T04:28:48.016862+00:00",
+  "durationSeconds": 34.29,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 38151,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-pg.stdout.bin",
+      "bytes": 1968,
+      "sha256": "866b0bac69269dd7834dd0aa0876c380163a4f1c0d92fe6fd0cf47fdad3b2c44"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-pg.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

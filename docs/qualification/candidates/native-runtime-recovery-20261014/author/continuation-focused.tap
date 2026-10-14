@@ -1,0 +1,96 @@
+✔ resume: persisted lifecycle join supplies exact native restore request and correlated key (47.130035ms)
+✔ fork: persisted lifecycle join supplies exact native restore request and correlated key (12.621278ms)
+✔ worker continuation substitution refuses before native restore (3.43202ms)
+✔ worker sourceRequest substitution refuses before native restore (2.474022ms)
+✔ worker request substitution refuses before native restore (3.293214ms)
+✔ worker scopes substitution refuses before native restore (2.868054ms)
+✔ omitted continuation and absent native restore both refuse a persisted target (7.223162ms)
+✔ fresh persisted run returns null and cannot accept continuation hints or restoration witness (2.335994ms)
+✔ canonical scope changes during restore refuse returned runtime (4.710037ms)
+✔ canonical client changes during restore refuse returned runtime (9.373739ms)
+✔ canonical cancel changes during restore refuse returned runtime (3.055839ms)
+✔ native checkpointSha256 mismatch refuses (3.576563ms)
+✔ native opaqueSessionSha256 mismatch refuses (2.318404ms)
+✔ native expiresAtMs mismatch refuses (4.096333ms)
+✔ native sdkSessionKey mismatch refuses (2.521039ms)
+✔ foreign registration session is refused without native read; worker receipt fields are inert (3.957078ms)
+✔ native registration observation cannot survive admission revocation during owner read (2.456275ms)
+✔ native restore configuration accessors refuse without invocation (0.695398ms)
+✔ actual runtime HTTP accepts canonical continuation hints only under task role and returns validated restore (20.253313ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@anthropic-ai/claude-agent-sdk' imported from /workspace/meri-native-runtime-recovery/apps/worker/conversation/activity.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/test/first-session.test.mjs (275.625546ms)
+✔ SDK resume: exact supported option delta, immutable request/skill/scopes, independent target (34.204533ms)
+✔ SDK fork: exact supported option delta, immutable request/skill/scopes, independent target (1.932429ms)
+✔ exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback (1.941142ms)
+✔ continuation checkpointHash substitution refuses (1.529528ms)
+✔ continuation requestHash substitution refuses (2.002008ms)
+✔ continuation prompt substitution refuses (1.608664ms)
+✔ continuation requestId substitution refuses (1.965815ms)
+✔ continuation window substitution refuses (1.106898ms)
+✔ continuation skill substitution refuses (1.335834ms)
+✔ continuation scope substitution refuses (1.420088ms)
+✔ continuation sdk substitution refuses (1.514556ms)
+✔ continuation cli substitution refuses (1.62429ms)
+✔ continuation image substitution refuses (1.080643ms)
+✔ continuation tenant substitution refuses (1.200949ms)
+✔ continuation actor substitution refuses (1.126261ms)
+✔ continuation run substitution refuses (1.593414ms)
+✔ continuation attempt substitution refuses (1.054008ms)
+✔ continuation worker substitution refuses (1.452973ms)
+✔ continuation fence substitution refuses (1.150041ms)
+✔ continuation conversation substitution refuses (1.007012ms)
+✔ continuation sourceSessionAlias substitution refuses (0.731327ms)
+✔ continuation workspaceBinding substitution refuses (1.054481ms)
+✔ continuation opaqueScope substitution refuses (1.313061ms)
+✔ fork cannot reuse original conversation/session and does not retire original task (3.131714ms)
+✔ workspace paths and exact object scopes use canonical validation (4.182396ms)
+✔ request/context accessor and proxy refusal is inert (0.500361ms)
+✔ single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded (3.26591ms)
+✔ input invalid/mutating messages cannot inject SDK authority or configuration (0.731633ms)
+✔ closing input discards queued work and completes a parked iterator without an abrupt stream error (2.724295ms)
+✔ steer preserves exact UUID; local duplicate never redispatches nor claims durable success (4.883709ms)
+✔ pause: owned interrupt receiver, honest still-queued receipt and one close (1.709792ms)
+✔ waitForApproval: owned interrupt receiver, honest still-queued receipt and one close (3.94268ms)
+✔ older interrupt API undefined receipt never becomes proof of empty queue or physical retirement (1.191293ms)
+✔ SDK interrupt failure stays UNKNOWN and discloses no private diagnostics (1.564896ms)
+✔ approval wait proposal metadata is immutable context; it never changes SDK permission mode (1.12903ms)
+✔ cleanup attempts owned Query close even when input close fails; private diagnostics stay hidden (1.603771ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (1.354594ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.836826ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (0.979761ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (1.308115ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (1.247114ms)
+✔ parked interrupt deadline is bounded and late receipt cannot rerun SDK (26.43008ms)
+✔ parked interrupt cancellation is bounded and late receipt cannot rerun SDK (1.911054ms)
+ℹ tests 63
+ℹ suites 0
+ℹ pass 62
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6585.778708
+
+✖ failing tests:
+
+test at apps/runtime/test/first-session.test.mjs:1:1
+✖ apps/runtime/test/first-session.test.mjs (275.625546ms)
+  'test failed'

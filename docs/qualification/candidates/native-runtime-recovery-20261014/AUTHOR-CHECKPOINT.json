@@ -1,0 +1,137 @@
+{
+  "committedSourceHead": "013e6d56a8631acfedceb2a8761bad08248c0127",
+  "sourceDiffBytes": 0,
+  "authorRecords": [
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/CONTINUATION.md",
+      "bytes": 5812,
+      "sha256": "105c616f729bf09d31431791982dc01594dfeed182a600e4fb84617fad9ca446"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-body.tap",
+      "bytes": 2128,
+      "sha256": "05b4b1032aaaade83285bf704f5401711722c6a19ae185777aa4303b7a4d5de2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-characterization.tap",
+      "bytes": 9900,
+      "sha256": "c812ef03dbbcb5dac3972e36eb7d9e71949a5bd62c6f41a2bf4c34e767bfb0ca"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-contained.tap",
+      "bytes": 8804,
+      "sha256": "95bdd23a90384eee6f5599a1ba1971379f131bea3ae60021e3a12fb3eb3bf51e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-final-characterization.tap",
+      "bytes": 10063,
+      "sha256": "5332236b2d2d113c1cfa39465cae87a49c5db8c65b9da75d3d33789a9ef27b62"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-final-isolated.tap",
+      "bytes": 5318,
+      "sha256": "36e2b12b766a3399021d40cb58dca3f7e5aa6686b1b8d57cc9fe5b66803813da"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-focused.tap",
+      "bytes": 6498,
+      "sha256": "9b3cfe1ebf1357cb0438f2babe9fea1b26d8ac484361127c60681281f5bf3248"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-isolated.tap",
+      "bytes": 5209,
+      "sha256": "d1d882673d0c6954c424e23ce835ca22f2ff17616a949ee009f8dc1e80e853e3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/continuation-ready-characterization.tap",
+      "bytes": 9862,
+      "sha256": "1606e3763bf17634fb48d0d1306c4a6c74757756d2bdb426c4cc5f94f5bc940d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-ownership.json",
+      "bytes": 1381,
+      "sha256": "07371ac5c48ba61377eeea321a83bb4452fdfda0181be59aadd0747cce3b88ea"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-ownership.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-ownership.stdout.bin",
+      "bytes": 2138,
+      "sha256": "927c1e36313bdbf150d06f5589e9c9b97c509a6da7bc1763a2c0e551f6e31000"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-pg.json",
+      "bytes": 1422,
+      "sha256": "cc96227023a3be1e6fed17a9b1db3a75372f69e32fcb7ec2b74f2384be2c1eaf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-pg.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-pg.stdout.bin",
+      "bytes": 1968,
+      "sha256": "866b0bac69269dd7834dd0aa0876c380163a4f1c0d92fe6fd0cf47fdad3b2c44"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-source.json",
+      "bytes": 1352,
+      "sha256": "7a188e0d6c6deb79e47dfd7f0f0e13999863f2fa9742bb2c3a04694c735d3b5c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/frozen-source.stdout.bin",
+      "bytes": 3317,
+      "sha256": "2a30caf8776248b7b60e5bea927521aae5845725540341435d2e444304bb1ed4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/typecheck.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runtime-recovery-20261014/author/typecheck.stdout.txt",
+      "bytes": 76,
+      "sha256": "b9205ad279b7793153bca230ab7c3f290da1268763a1aa38303f79010a2455bc"
+    }
+  ],
+  "installedDependencies": [
+    {
+      "path": "apps/runtime/node_modules/@aws-sdk/client-ecs/package.json",
+      "version": "3.1151.0",
+      "bytes": 2364,
+      "sha256": "4756a732d3cae4c459a32c284a1c1ba9330f2c55795e2a5e9c37e08ba108cb9f"
+    },
+    {
+      "path": "apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "version": "0.3.295",
+      "bytes": 2546,
+      "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211"
+    },
+    {
+      "path": "packages/window-resolution/node_modules/@js-temporal/polyfill/package.json",
+      "version": "0.5.1",
+      "bytes": 4612,
+      "sha256": "8406de0f5b7642ee1518c01c40ee6b797da7bc97575fea406e1f17876493e9cc"
+    },
+    {
+      "path": "packages/ui-stream/node_modules/ai/package.json",
+      "version": "7.0.137",
+      "bytes": 3259,
+      "sha256": "4ca1b24eaf34eaa8921618695835114d65086b045e5754a55b0a6ee7242f4e94"
+    }
+  ]
+}

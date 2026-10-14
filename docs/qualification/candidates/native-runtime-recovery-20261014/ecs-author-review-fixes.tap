@@ -1,0 +1,27 @@
+✔ controller reconstruction rediscovers exact admitted task; SDK commands never allocate replacement (19.230722ms)
+✔ stop acknowledgement cannot prove termination, original scope is retained for next read (2.738876ms)
+✔ missing or aged out resource remains UNKNOWN and is never treated as stopped (2.33253ms)
+✔ contradictory definition refuses before any stop effect (1.629546ms)
+✔ contradictory plan refuses before any stop effect (1.878214ms)
+✔ contradictory created time refuses before any stop effect (1.304255ms)
+✔ contradictory duplicate tags refuses before any stop effect (2.160528ms)
+✔ startedBy uses sole filter and separate stopped inventory; pagination cycles refuse (4.159607ms)
+✔ a second resource claiming original startedBy refuses native release (1.534253ms)
+✔ caller cannot substitute persisted ARN hint (1.719174ms)
+✔ expired reconstructed broker denies start but retires original persisted task after expiry (5.23696ms)
+✔ task factory joins actual admitted worker ARN before construction, never fabricates allocation (15.21007ms)
+✔ unqualified image cannot run but original positively owned task remains containable (2.220669ms)
+✔ unqualified execute command cannot run but original positively owned task remains containable (2.228469ms)
+✔ unqualified platform cannot run but original positively owned task remains containable (2.253698ms)
+✔ contradictory container metadata does not erase original stop ownership, but cannot prove cleanup (2.627265ms)
+✔ registration cannot return a native witness after original task stops during RPC (0.989821ms)
+✔ native configuration registration getter refuses without invocation or service calls (1.056435ms)
+✔ factory original getter refuses without invocation or service calls (8.993833ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7812.653112

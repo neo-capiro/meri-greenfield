@@ -1,0 +1,76 @@
+{
+  "containerId": "5119e78b66bd5caafb377d6a60d21102999e7c67ef8109f9f01f027a2bc9d2e9",
+  "image": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd",
+  "volumes": [
+    "bca51e8e1bd8ebcd41b31bbfc5f2e5343b140569aef2520a6c1504b81b321cd3"
+  ],
+  "before": "meri-recovery-pg-20261014 Up 22 minutes\nmeri-native-postgres Exited (255) 2 hours ago\ncapiro-postgres Up 2 hours (healthy)\n",
+  "databaseReadback": "PostgreSQL 16.15 (Debian 16.15-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit\n\nretired|1\n",
+  "actions": [
+    {
+      "command": [
+        "docker",
+        "stop",
+        "-t",
+        "5",
+        "meri-recovery-pg-20261014"
+      ],
+      "exitCode": 0,
+      "stdout": "meri-recovery-pg-20261014\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "rm",
+        "-v",
+        "meri-recovery-pg-20261014"
+      ],
+      "exitCode": 0,
+      "stdout": "meri-recovery-pg-20261014\n",
+      "stderr": ""
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-runtime-recovery/node_modules/ajv",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-runtime-recovery/node_modules/ajv-formats",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-runtime-recovery/node_modules/canonicalize",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskSymlink": "/workspace/meri-native-runtime-recovery/node_modules/@capiro/meri-contracts",
+      "originalTargetStillExists": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/workspace/meri-native-runtime-recovery/apps/runtime/node_modules",
+      "absent": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/workspace/meri-native-runtime-recovery/apps/worker/conversation/node_modules",
+      "absent": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/workspace/meri-native-runtime-recovery/packages/window-resolution/node_modules",
+      "absent": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/workspace/meri-native-runtime-recovery/packages/ui-stream/node_modules",
+      "absent": true
+    },
+    {
+      "removedTaskInstallationOrCache": "/tmp/meri-recovery-npm-cache",
+      "absent": true
+    }
+  ],
+  "socketAbsent": true,
+  "after": "meri-native-postgres Exited (255) 2 hours ago\ncapiro-postgres Up 2 hours (healthy)\n",
+  "containerAbsent": true,
+  "volumesAbsent": true,
+  "fixtureTempsRemaining": [],
+  "accidentalContractsSymlinkAbsent": true
+}

@@ -1,0 +1,21 @@
+{
+  "library": "@aws-sdk/client-ecs",
+  "version": "3.1151.0",
+  "license": "Apache-2.0",
+  "installedModelFacts": [
+    "Container.taskArn optional string",
+    "Task.createdAt optional Date"
+  ],
+  "records": [
+    {
+      "path": "apps/runtime/node_modules/@aws-sdk/client-ecs/package.json",
+      "bytes": 2364,
+      "sha256": "4756a732d3cae4c459a32c284a1c1ba9330f2c55795e2a5e9c37e08ba108cb9f"
+    },
+    {
+      "path": "apps/runtime/node_modules/@aws-sdk/client-ecs/dist-types/models/models_1.d.ts",
+      "bytes": 100054,
+      "sha256": "afeeac4e213c69b213f6b1220584f1b345b6e639be1533a316e4be8fcb363fba"
+    }
+  ]
+}
