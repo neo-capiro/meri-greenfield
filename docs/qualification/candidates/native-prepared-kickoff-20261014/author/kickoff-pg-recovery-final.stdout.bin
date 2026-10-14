@@ -1,0 +1,19 @@
+✖ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (22120.331479ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23732.265427
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:7:1
+✖ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (22120.331479ms)
+  Error: TEST_TIMEOUT
+      at until (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:5:97)
+      at async TestContext.<anonymous> (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:28:373)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)

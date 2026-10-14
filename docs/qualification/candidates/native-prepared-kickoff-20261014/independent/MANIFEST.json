@@ -1,0 +1,126 @@
+{
+  "verdict": "ACCEPT_LOCAL_PREPARED_FIRST_RUN_SOURCE",
+  "sourceHead": "fbb25c374c835e907c500da27c555ca628368a41",
+  "base": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "sourceManifest": {
+    "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/SOURCE-MANIFEST.json",
+    "sha256": "8b4d6bd5cf9cfcd5c10bef89b134841b270b74a7d0153391a7736c9ce26b1fd2",
+    "filesMatched": 39
+  },
+  "independentControlsPassed": 77,
+  "independentControlGroups": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.json",
+      "sha256": "afeb7199fdd2a50a0aec9f9653f99f08a37085d7563589665117d1b3f8545ee6",
+      "passed": 69,
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.stdout.bin",
+          "bytes": 7431,
+          "sha256": "8d7012f7513011e96b8ce26a85956de85f25947a12b43b9bce249966339ae38a"
+        },
+        {
+          "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/remote-final.json",
+      "sha256": "3e8dbb24e7ebbc4dd1a15d976a897607e71b8aff9ff625567215dbd9b82be5ed",
+      "passed": 8,
+      "streams": [
+        {
+          "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/remote-final.stdout.bin",
+          "bytes": 911,
+          "sha256": "39afb2b3dc402733359b0314bcfc45c1525cc4f57669b8dceb37b67b7c4cd03a"
+        },
+        {
+          "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/remote-final.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "rootIntegratedReceipt": {
+    "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-final.json",
+    "sha256": "433df5c075a5841652c03ecd68610d80d5ee4f2ce883c2d400df6b6188e55d1d",
+    "passed": 241,
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-final.stdout.bin",
+        "bytes": 24664,
+        "sha256": "79f18f0c4e87b9e80ef4d8cd54de3350f0e120e6926c7c11fd401f18008f5faf"
+      },
+      {
+        "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/frozen-final.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "actualOwnedNativeGroups": [
+    {
+      "processGroup": 172875,
+      "readOnlyAbsent": true
+    },
+    {
+      "processGroup": 172882,
+      "readOnlyAbsent": true
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/FINAL-REVIEW.md",
+      "bytes": 3985,
+      "sha256": "d33297693cb7882dbf88369fdc523b61745432c038a7d45fafe9ab0d1c94f2e4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/FOCUSED-COMMAND.json",
+      "bytes": 1608,
+      "sha256": "869316a8665628ca862338a8438ef6d99a8220a6b3b1f97fb73cf018946efe60"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/STARTUP-READ-REVIEW.md",
+      "bytes": 6564,
+      "sha256": "69c6d494451200af762efca99c1cd18f5e3739a9aff2d5c8d744ad8344d1ecc5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/capture-reaped.py",
+      "bytes": 5330,
+      "sha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.json",
+      "bytes": 2049,
+      "sha256": "afeb7199fdd2a50a0aec9f9653f99f08a37085d7563589665117d1b3f8545ee6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.stdout.bin",
+      "bytes": 7431,
+      "sha256": "8d7012f7513011e96b8ce26a85956de85f25947a12b43b9bce249966339ae38a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/remote-final.json",
+      "bytes": 1509,
+      "sha256": "3e8dbb24e7ebbc4dd1a15d976a897607e71b8aff9ff625567215dbd9b82be5ed"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/remote-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/remote-final.stdout.bin",
+      "bytes": 911,
+      "sha256": "39afb2b3dc402733359b0314bcfc45c1525cc4f57669b8dceb37b67b7c4cd03a"
+    }
+  ]
+}

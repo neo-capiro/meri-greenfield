@@ -1,0 +1,30 @@
+{
+  "sourceHead": "fbb25c374c835e907c500da27c555ca628368a41",
+  "command": [
+    "python3",
+    "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/capture-reaped.py",
+    "focused-final",
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
+    "apps/control/conversations/test/read-optional-pg.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+    "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+    "apps/runtime/test/prepared-temporal.test.mjs",
+    "apps/runtime/test/prepared-candidate-config.test.mjs",
+    "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+    "apps/runtime/test/prepared-candidate-bootstrap.test.mjs"
+  ],
+  "environment": {
+    "MERI_REVIEW_SOURCE_ROOT": "/workspace/meri-prepared-kickoff",
+    "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+    "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+    "MERI_BROKER_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+    "MERI_BROKER_TEST_DATABASE": "meri_kickoff_final"
+  },
+  "scope": "Independent invocation of existing focused controls; actual isolated PostgreSQL/local native Node processes; ECS/Capiro/SDK activity fixtures synthetic. No SDK Query/provider/cloud calls. Own prior authored preparation latch excluded."
+}

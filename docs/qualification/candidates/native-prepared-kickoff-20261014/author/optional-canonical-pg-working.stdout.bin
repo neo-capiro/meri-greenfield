@@ -1,0 +1,12 @@
+✔ only genuine zero-row readOptional returns null; ordinary read still refuses absence (219.189855ms)
+✔ existing canonical row cannot become initial authority after stale writer fence (25.514339ms)
+✔ damaged projection checksum is corruption rather than absence (27.037999ms)
+✔ missing event history cannot fall back to prebound initial context (24.962572ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2117.334906

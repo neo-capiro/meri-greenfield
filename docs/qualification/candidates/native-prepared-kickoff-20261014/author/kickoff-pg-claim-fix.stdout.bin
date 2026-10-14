@@ -1,0 +1,26 @@
+{"diagnostic":"verify","code":"NATIVE_EXECUTION_PREPARATION_REFUSED"}
+✖ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (4527.062063ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6719.111907
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:7:1
+✖ real SQL/process fast terminal and controller reconstruction preserve one release until final control stop (4527.062063ms)
+  Error: ENOENT: no such file or directory, open '/proc/159992/task/159992/children'
+      at readFileSync (node:fs:484:20)
+      at TestContext.<anonymous> (file:///workspace/meri-prepared-kickoff/apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs:25:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/proc/159992/task/159992/children'
+  }

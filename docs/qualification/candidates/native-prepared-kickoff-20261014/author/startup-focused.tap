@@ -1,0 +1,28 @@
+✔ closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO (70.776451ms)
+✔ bad legacy cluster refuses before pool/client/effect access (3.654281ms)
+✔ bad ambient credentials refuses before pool/client/effect access (1.550091ms)
+✔ bad new issuer refuses before pool/client/effect access (1.35666ms)
+✔ bad caller module refuses before pool/client/effect access (0.415417ms)
+✔ bad inline proxy credential refuses before pool/client/effect access (1.145769ms)
+✔ bad public networking refuses before pool/client/effect access (3.748386ms)
+✔ bad unknown launch flag refuses before pool/client/effect access (2.467915ms)
+✔ bad foreign binding refuses before pool/client/effect access (2.380568ms)
+✔ control and task capabilities stay distinct and native control file is the same explicit binding (5.473524ms)
+✔ only temporal role accepts explicitly enabled prepared kickoff flag (1.897082ms)
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (58.006862ms)
+✔ current canonical run identity remains usable after original task expiry (4.044665ms)
+✔ present canonical mismatch never falls back binding (3.797339ms)
+✔ present canonical mismatch never falls back scopes (2.152852ms)
+✔ present canonical mismatch never falls back policyRevision (3.27197ms)
+✔ canonical storage STORE_CORRUPT never falls back (5.519355ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (5.539627ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (2.949839ms)
+✔ native wrong principal and revoked identity cannot issue initial context (4.271001ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3562.157863

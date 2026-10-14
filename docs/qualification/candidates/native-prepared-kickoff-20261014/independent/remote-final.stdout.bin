@@ -1,0 +1,16 @@
+✔ client ignores late stdout exit until its close receipt proves closure (584.079173ms)
+✔ close while preparation authority is pending prevents factory or process release (524.909754ms)
+✔ readonly original binding recovery is control-only and never prepares or launches twice (245.248805ms)
+✔ recovery refuses changed live config while stopped proof makes no current tree claim (233.181333ms)
+✔ canonical controller close retains its first ACK for repeated owner cleanup (1.607227ms)
+✔ late stdout close error cannot overwrite already proven original stop (304.039595ms)
+✔ pending stdin completion after original stop refuses ACK without discarding physical proof (282.055902ms)
+✔ late stdout data after original stop cannot discard physical proof or buffer bytes (277.772839ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3319.533052

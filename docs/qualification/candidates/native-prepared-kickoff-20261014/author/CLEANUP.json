@@ -1,0 +1,45 @@
+{
+  "scope": "Only fresh owned prepared-kickoff local qualification resources; no cloud action",
+  "actions": [
+    "docker stop --time10 meri-prepared-kickoff-pg-20261014",
+    "docker rm -v meri-prepared-kickoff-pg-20261014"
+  ],
+  "initialReceiptFailure": "Initial cleanup script stopped/removed successfully, then asserted uppercase No such against Docker lowercase no such volume. Read-only inspection established both absent before continuing; mutation not repeated.",
+  "absenceChecks": {
+    "container": {
+      "target": "meri-prepared-kickoff-pg-20261014",
+      "absent": true,
+      "exitCode": 1,
+      "stderr": "Error response from daemon: No such container: meri-prepared-kickoff-pg-20261014"
+    },
+    "volume": {
+      "target": "b9098e324afe8235732231d1d44beeb6706943e5fa647afbe0fe0b228f2ff6b2",
+      "absent": true,
+      "exitCode": 1,
+      "stderr": "Error response from daemon: get b9098e324afe8235732231d1d44beeb6706943e5fa647afbe0fe0b228f2ff6b2: no such volume"
+    }
+  },
+  "removedPaths": [
+    "/workspace/meri-prepared-kickoff/node_modules",
+    "/workspace/meri-prepared-kickoff/apps/runtime/node_modules",
+    "/workspace/meri-prepared-kickoff/apps/artifacts/storage/node_modules",
+    "/workspace/meri-prepared-kickoff/apps/worker/conversation/node_modules",
+    "/workspace/meri-prepared-kickoff/packages/contracts/node_modules",
+    "/workspace/meri-prepared-kickoff/packages/window-resolution/node_modules",
+    "/workspace/meri-prepared-kickoff/packages/ui-stream/node_modules",
+    "/tmp/meri-prepared-kickoff-pg-20261014",
+    "/tmp/meri-prepared-kickoff-npm-cache"
+  ],
+  "borrowedAndHistoricalPreserved": {
+    "/workspace/meri-prepared-kickoff": true,
+    "/workspace/meri-greenfield/node_modules/ajv": true,
+    "/workspace/meri-greenfield/node_modules/ajv-formats": true,
+    "/workspace/meri-greenfield/node_modules/canonicalize": true,
+    "/tmp/meri-single-query-sdk-zlU9zY": true,
+    "/tmp/meri-broker-pg-socket-20261014": true
+  },
+  "oldUnknownPreserved": "    PID    PPID    PGID S COMMAND\n  89147       1   89126 Z claude\n 145484       1  145484 Z python\n",
+  "remainingContainers": "meri-native-postgres Exited (255) 9 hours ago\ncapiro-postgres Up 9 hours (healthy)\n",
+  "historicalCleanup": "Old PID89147 claude and PID145484 python are parent1 zombies and cannot be reaped by this owner. Old protected empty PG socket is preserved. No retry/kill/removal attempted.",
+  "worktreePreserved": true
+}

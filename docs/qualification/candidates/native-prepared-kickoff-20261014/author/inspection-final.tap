@@ -1,0 +1,29 @@
+✔ retained read exclusively uses current-control route; original task read and capture retain their owner (31.875586ms)
+✔ inspection-only mount works without a task owner or capability (3.37546ms)
+✔ unconfigured or disabled inspection never routes controller requests through expired task fallback (2.539777ms)
+✔ wrong method, query/hash/body injection refuse before inspection dispatch (4.760776ms)
+✔ construction getters and equal-role digests refuse without invocation (0.869404ms)
+✔ Fetch boundary rejects request getters/proxies without executing them (1.142399ms)
+✔ retained canonical SQL proof is inspected after source task expiry using only fresh control identity (1434.79787ms)
+✔ revoked current identity refuses without releasing proof or reading object bytes (54.63621ms)
+✔ foreign principal refuses without releasing proof or reading object bytes (64.568812ms)
+✔ foreign selected client refuses without releasing proof or reading object bytes (74.591454ms)
+✔ foreign writer fence refuses without releasing proof or reading object bytes (58.172271ms)
+✔ foreign current scope refuses without releasing proof or reading object bytes (66.979689ms)
+✔ checkpoint selector hash refuses without releasing proof or reading object bytes (94.575654ms)
+✔ immutable object bytes changed after source expiry refuse without journal mutation (144.216088ms)
+✔ current identity revoked during immutable reads cannot release a checkpoint receipt (108.634897ms)
+✔ current context revision drift during immutable reads cannot reuse prior authority (124.817014ms)
+✔ canonical proof corruption during readback is detected by final SQL journal reread (180.577924ms)
+✔ canonical source writer fence change during readback refuses current-source mismatch (107.41647ms)
+✔ current-control deadline expires during object read without extending from refreshed identity (107.276502ms)
+✔ caller cancellation during immutable reads refuses and releases canonical SQL clients (140.72447ms)
+✔ caller metadata getters cannot execute or dispatch backend/object requests (43.877885ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4638.197246

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "ce2c71a3510098249a29862a8d550afee9e87762",
+  "sourceDiffSha256": "26976780194f729505efe5867d6e5b62c4013d8695a69d08da1b874aa209afcc",
+  "sourceDiffBytes": 4877,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T11:19:46.715598+00:00",
+  "durationSeconds": 18.955,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 171326,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/terminal-stdin-corrected.stdout.bin",
+      "bytes": 3893,
+      "sha256": "d295f90b0428b0bd3e87a87d5cc79bab71ce0d0a88df0fd067aca46c66cd0d13"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/terminal-stdin-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preliminary moving-source control: PG test-file refused because MERI_REVIEW_SOURCE_ROOT omitted. Remote28 passed. Further guards edited during this preliminary capture; final frozen241 run is authoritative provenance.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

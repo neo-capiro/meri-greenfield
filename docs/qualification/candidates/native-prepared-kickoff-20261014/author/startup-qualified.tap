@@ -1,0 +1,58 @@
+(node:155024) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:155024) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ mount captures original preadmitted data and issues an actual action session through canonical product SQL (130.369953ms)
+✔ compiled startup factory receives the same owned pool/native before readiness and listener (22.080087ms)
+✔ mounted SDK registration joins current product allocation with the borrowed verifier and registration reader (41.683074ms)
+✔ precompiled borrowed owner is captured before asynchronous startup and retains its receiver (20.781106ms)
+✔ invalid/accessor/proxy/async/generator and ambiguous factories refuse before startup IO (3.665443ms)
+✔ factory failures and invalid Promise/thenable/results preserve owned cleanup and never listen (102.953027ms)
+✔ startup cancellation after Temporal allocation closes owners without invoking the factory (28.617058ms)
+✔ readiness failure or cancellation during mounting closes owned resources without disposing borrowed ports (30.300699ms)
+✔ mount rejects statically incompatible identity/grants and registration accessors without IO (33.589688ms)
+✔ standard task bootstrap polls only existing capability route and returns validated original gated binding (38.172178ms)
+✔ foreign bootstrap proof refuses before returning executable configuration (4.769901ms)
+✔ cancelled bootstrap invokes no transport or execution (2.593998ms)
+✔ closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO (108.64683ms)
+✔ bad legacy cluster refuses before pool/client/effect access (4.36993ms)
+✔ bad ambient credentials refuses before pool/client/effect access (1.112178ms)
+✔ bad new issuer refuses before pool/client/effect access (1.186548ms)
+✔ bad caller module refuses before pool/client/effect access (1.109714ms)
+✔ bad inline proxy credential refuses before pool/client/effect access (26.163597ms)
+✔ bad public networking refuses before pool/client/effect access (6.21213ms)
+✔ bad unknown launch flag refuses before pool/client/effect access (3.286404ms)
+✔ bad foreign binding refuses before pool/client/effect access (3.331644ms)
+✔ control and task capabilities stay distinct and native control file is the same explicit binding (11.862846ms)
+✔ only temporal role accepts explicitly enabled prepared kickoff flag (1.601328ms)
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (41.924713ms)
+✔ current canonical run identity remains usable after original task expiry (3.949847ms)
+✔ present canonical mismatch never falls back binding (3.687968ms)
+✔ present canonical mismatch never falls back scopes (1.955001ms)
+✔ present canonical mismatch never falls back policyRevision (1.998225ms)
+✔ canonical storage STORE_CORRUPT never falls back (2.648444ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (2.824035ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (3.028883ms)
+✔ native wrong principal and revoked identity cannot issue initial context (4.256087ms)
+✔ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (739.898737ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (105.408608ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (14.652482ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (4.65701ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (327.087327ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (29.33997ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (25.471288ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (22.49516ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (1.762992ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (2.37416ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (1.755377ms)
+✔ broker refuses a response from another writer fence (0.776019ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (203.994618ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (12.837525ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (11.735672ms)
+ℹ tests 47
+ℹ suites 0
+ℹ pass 47
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8471.925314

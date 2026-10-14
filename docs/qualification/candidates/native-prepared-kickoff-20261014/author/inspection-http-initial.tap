@@ -1,0 +1,13 @@
+✔ retained read exclusively uses current-control route; original task read and capture retain their owner (28.980762ms)
+✔ inspection-only mount works without a task owner or capability (2.422001ms)
+✔ unconfigured or disabled inspection never routes controller requests through expired task fallback (2.961752ms)
+✔ wrong method, query/hash/body injection refuse before inspection dispatch (4.909694ms)
+✔ construction getters and equal-role digests refuse without invocation (1.625578ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1324.137882

@@ -1,0 +1,46 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
+    "apps/control/conversations/test/read-optional-pg.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+    "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+    "apps/runtime/test/prepared-temporal.test.mjs",
+    "apps/runtime/test/prepared-candidate-config.test.mjs",
+    "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+    "apps/runtime/test/prepared-candidate-bootstrap.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "fbb25c374c835e907c500da27c555ca628368a41",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T11:22:37.965481+00:00",
+  "durationSeconds": 26.336,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 172765,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.stdout.bin",
+      "bytes": 7431,
+      "sha256": "8d7012f7513011e96b8ce26a85956de85f25947a12b43b9bce249966339ae38a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/independent/focused-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

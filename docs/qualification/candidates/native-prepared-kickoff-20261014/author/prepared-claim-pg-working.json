@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs"
+  ],
+  "cwd": "/workspace/meri-prepared-kickoff",
+  "sourceHead": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "sourceDiffSha256": "a819d356386f8706bdd3f17adcc490d6dcb0e0a58ba34ad0517f198adfd66547",
+  "sourceDiffBytes": 86207,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T10:45:40.721448+00:00",
+  "durationSeconds": 2.348,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 160198,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/prepared-claim-pg-working.stdout.bin",
+      "bytes": 829,
+      "sha256": "c376e98f4475fc6f5a6df914e08beef3a2f8dad549bb5293e6ff34b988e13d44"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prepared-kickoff-20261014/author/prepared-claim-pg-working.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

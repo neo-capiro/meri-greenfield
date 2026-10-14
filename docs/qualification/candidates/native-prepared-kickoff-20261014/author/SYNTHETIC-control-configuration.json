@@ -1,0 +1,184 @@
+{
+  "version": 1,
+  "profile": "isolated-preview",
+  "sourceEnabled": false,
+  "limits": {
+    "startupMs": 3000,
+    "shutdownMs": 1000,
+    "requestMs": 1000,
+    "requestBytes": 131072
+  },
+  "native": {
+    "origin": "https://control.synthetic.invalid",
+    "capabilityFile": "/run/secrets/control",
+    "loopback": false,
+    "maxResponseBytes": 2097152
+  },
+  "http": {
+    "hostname": "0.0.0.0",
+    "port": 8080,
+    "frontendOrigin": "https://frontend.synthetic.invalid"
+  },
+  "database": {
+    "connectionFile": "/run/secrets/database"
+  },
+  "temporal": {
+    "address": "temporal.synthetic.invalid:7233",
+    "namespace": "meri-first",
+    "taskQueue": "meri-v1",
+    "tls": {
+      "caFile": "/run/secrets/ca",
+      "certFile": "/run/secrets/cert",
+      "keyFile": "/run/secrets/key"
+    }
+  },
+  "sessions": {
+    "mode": "process-local",
+    "replicas": 1,
+    "maxSessions": 10,
+    "maxTtlMs": 300000
+  },
+  "versions": {
+    "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sdk": "0.3.295",
+    "cli": "2.1.295",
+    "contracts": "0.1.0",
+    "skillsDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "checkpointFormat": "0.1.0"
+  },
+  "nativeCandidate": {
+    "identity": {
+      "origin": "https://authority.synthetic.invalid",
+      "credentialFile": "/run/secrets/identity",
+      "commandContext": {
+        "binding": {
+          "tenantId": "tenant-a",
+          "actorId": "actor-a",
+          "conversationId": "00000001-0000-4000-8000-000000000000",
+          "runId": "00000002-0000-4000-8000-000000000000",
+          "attemptId": "00000003-0000-4000-8000-000000000000",
+          "workerId": "00000004-0000-4000-8000-000000000000",
+          "writerFence": 1
+        },
+        "clientResolution": {
+          "reference": "00000005-0000-4000-8000-000000000000",
+          "clientId": "00000005-0000-4000-8000-000000000000"
+        }
+      }
+    },
+    "runtime": {
+      "binding": {
+        "tenantId": "tenant-a",
+        "actorId": "actor-a",
+        "conversationId": "00000001-0000-4000-8000-000000000000",
+        "runId": "00000002-0000-4000-8000-000000000000",
+        "attemptId": "00000003-0000-4000-8000-000000000000",
+        "workerId": "00000004-0000-4000-8000-000000000000",
+        "writerFence": 1
+      },
+      "versions": {
+        "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sdk": "0.3.295",
+        "cli": "2.1.295",
+        "contracts": "0.1.0",
+        "skillsDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "checkpointFormat": "0.1.0"
+      },
+      "proxyUrl": "https://proxy.synthetic.invalid",
+      "model": "synthetic-never-call",
+      "deadlineMs": 1791975237509,
+      "maxTurns": 1,
+      "maxCostMicroUSD": 1,
+      "maxOutputBytes": 1024
+    },
+    "proxyCredentialFile": "/run/secrets/proxy",
+    "plan": {
+      "purpose": "synthetic-first-conversation"
+    },
+    "preparationIntent": {
+      "workspace": "/workspace/00000001-0000-4000-8000-000000000000",
+      "configParentDirectory": "/tmp/sdk-config",
+      "secureStorageDirectory": "/tmp/sdk-secure",
+      "launchTemplate": {
+        "command": "/usr/bin/node",
+        "args": [],
+        "env": {
+          "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/tmp/sdk-secure"
+        }
+      },
+      "executableSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "imageSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "runnerSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "sdkOptionsSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "authoritySha256": "14c2d21f1f7baa2c352eea6f1200de699a09e3e7f0ee8d8132983d94a9d87b16"
+    },
+    "allocationJson": "{\"run\":{\"tenantId\":\"tenant-a\",\"actorId\":\"actor-a\",\"conversationId\":\"00000001-0000-4000-8000-000000000000\",\"runId\":\"00000002-0000-4000-8000-000000000000\"},\"manifest\":{\"contractVersion\":\"0.2.0\",\"skillId\":\"quick_skill.relationship_brief\",\"skillVersion\":\"1.0.0\",\"prose\":{\"id\":\"urn:meri:synthetic:candidate:1\",\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"requiredSources\":[{\"sourceId\":\"synthetic-source\",\"authority\":\"authoritative\",\"purpose\":\"enumeration\"}],\"allowedOperations\":[{\"id\":\"search_federal_contract_awards\",\"version\":\"0.2.0\"}],\"subjectKinds\":[\"personal\"],\"windowBases\":[\"unbounded\"],\"completion\":{\"requireAllSources\":true,\"allowDisclosedPartial\":true,\"negativeClaims\":\"complete-covered-only\",\"rubric\":[{\"id\":\"evidence\",\"requirement\":\"Synthetic only\",\"evidenceRequired\":true}]},\"approval\":{\"mutations\":\"separate-immutable-proposal\",\"autoCreateTasks\":false},\"budgets\":{\"maxTurns\":5,\"maxToolCalls\":3,\"maxRecoveryAttempts\":0,\"maxRuntimeSeconds\":300,\"maxCostMicroUSD\":100,\"maxOutputBytes\":65536},\"versionPolicy\":{\"existingRuns\":\"pin-immutable\",\"resume\":\"exact-or-explicit-migration\",\"fork\":\"preserve-unless-explicit-reselection\"}},\"manifestSha256\":\"3b5ac8abb9c24ebbdd934b47c2431fb72f4cf18d8a3db150c4c8e1b9b876be19\",\"catalogSha256\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"budgets\":{\"maxTurns\":5,\"maxToolCalls\":3,\"maxRecoveryAttempts\":0,\"maxRuntimeSeconds\":300,\"maxCostMicroUSD\":100,\"maxOutputBytes\":65536},\"schedule\":{\"revision\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"expiresAt\":\"2026-10-14T10:53:57.509Z\",\"operations\":[{\"operation\":{\"id\":\"search_federal_contract_awards\",\"version\":\"0.2.0\"},\"chargeMicrousd\":10}]}}",
+    "qualification": {
+      "attempt": 1,
+      "policyRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "grantIntents": [
+      {
+        "grantId": "00000099-0000-4000-8000-000000000000",
+        "capabilitySha256": "e2fc7cc16e09e21b4b29fbfc9c48f6191da478b9158bbd88a0a4c75a51f1c628",
+        "expiresAtMs": 1791975237509
+      }
+    ],
+    "grantId": "00000099-0000-4000-8000-000000000000",
+    "operations": [
+      "load",
+      "publish",
+      "next-controls",
+      "claim-control",
+      "ack-control",
+      "record-checkpoint",
+      "runner/session/register",
+      "runner/session/load",
+      "runner/session/append",
+      "runner/session/list-subkeys"
+    ],
+    "taskCapabilityFile": "/run/secrets/task",
+    "controlCapabilityFile": "/run/secrets/control",
+    "taskRequest": {
+      "cluster": "arn:aws:ecs:us-east-1:967807252336:cluster/meri-greenfield-qualification",
+      "taskDefinition": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-qualified:1",
+      "networkConfiguration": {
+        "awsvpcConfiguration": {
+          "subnets": [
+            "subnet-1234"
+          ],
+          "securityGroups": [
+            "sg-1234"
+          ],
+          "assignPublicIp": "DISABLED"
+        }
+      },
+      "overrides": {
+        "containerOverrides": [
+          {
+            "name": "worker",
+            "command": [
+              "conversation-runner",
+              "--config",
+              "/run/meri/task.json"
+            ],
+            "environment": []
+          }
+        ]
+      }
+    },
+    "containerName": "worker",
+    "taskOrigin": "https://task.synthetic.invalid",
+    "taskHttp": {
+      "hostname": "0.0.0.0",
+      "port": 8080,
+      "frontendOrigin": "https://task.synthetic.invalid"
+    },
+    "objects": {
+      "bucket": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+      "prefix": "qualification-sdk/fixture/candidate",
+      "expectedBucketOwner": "967807252336",
+      "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/11111111-1111-4111-8111-111111111111"
+    }
+  }
+}

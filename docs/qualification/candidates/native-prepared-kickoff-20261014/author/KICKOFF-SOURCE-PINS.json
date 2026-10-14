@@ -1,0 +1,14 @@
+{
+  "base": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "worktree": "/workspace/meri-prepared-kickoff",
+  "files": {
+    "apps/runtime/temporal-worker.mjs": "7e309e52b3fd6e0b5ebb74b91f82d2953fef48425936d13953d472e2633ffb9b",
+    "apps/runtime/native-authority/prepared-kickoff.mjs": "b8623c6b9c78b92a81a858756073dace0fd47a4646c12eadb9f403a80dfcf875",
+    "apps/runtime/native-authority/prepared-kickoff-http.mjs": "74b523647a3a433fbfce031a91a96a37d5ddec2a86cd88ba5d2b18c4ace03b08",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs": "bbb281d13032b357b11ba0bed60bf5d388fc690fdd9bca0a7d673c952ca8e87b",
+    "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs": "f8618e4efb2768ab107cf5204babae9f76add89c62c3255e0fcb998a77a77fec",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs": "d64265e70259968f9514b26b55dd10c6548adb8b1791fe8118d89f02f6dc881a",
+    "apps/runtime/test/prepared-temporal.test.mjs": "654ba8b9c9b00dc6e83dd92cc561c374e68839179055e006c98cb43f95b8d5ba"
+  },
+  "note": "Task-owned files frozen after kickoff-final-settled capture; parent owns final commit. Capture git diff does not include untracked new files; these explicit hashes cover them."
+}

@@ -1,0 +1,81 @@
+(node:157419) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:157419) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ mount captures original preadmitted data and issues an actual action session through canonical product SQL (232.358481ms)
+✔ compiled startup factory receives the same owned pool/native before readiness and listener (13.908113ms)
+✔ mounted SDK registration joins current product allocation with the borrowed verifier and registration reader (52.05886ms)
+✔ precompiled borrowed owner is captured before asynchronous startup and retains its receiver (41.626939ms)
+✔ invalid/accessor/proxy/async/generator and ambiguous factories refuse before startup IO (2.108725ms)
+✔ factory failures and invalid Promise/thenable/results preserve owned cleanup and never listen (231.737912ms)
+✔ startup cancellation after Temporal allocation closes owners without invoking the factory (15.75304ms)
+✔ readiness failure or cancellation during mounting closes owned resources without disposing borrowed ports (857.334067ms)
+✔ mount rejects statically incompatible identity/grants and registration accessors without IO (64.921574ms)
+✔ standard task bootstrap polls only existing capability route and returns validated original gated binding (43.211982ms)
+✔ foreign bootstrap proof refuses before returning executable configuration (2.78794ms)
+✔ cancelled bootstrap invokes no transport or execution (1.625301ms)
+✔ gated standard runner starts one Query after HTTP release and retains listener through final control stop (721.458273ms)
+✔ closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO (62.030912ms)
+✔ bad legacy cluster refuses before pool/client/effect access (4.335641ms)
+✔ bad ambient credentials refuses before pool/client/effect access (1.073837ms)
+✔ bad new issuer refuses before pool/client/effect access (0.90721ms)
+✔ bad caller module refuses before pool/client/effect access (0.648955ms)
+✔ bad inline proxy credential refuses before pool/client/effect access (3.786066ms)
+✔ bad budget excess refuses before pool/client/effect access (8.036323ms)
+✔ bad foreign authority refuses before pool/client/effect access (6.287101ms)
+✔ bad public networking refuses before pool/client/effect access (4.392556ms)
+✔ bad unknown launch flag refuses before pool/client/effect access (2.178566ms)
+✔ bad foreign binding refuses before pool/client/effect access (2.520189ms)
+✔ control and task capabilities stay distinct and native control file is the same explicit binding (5.291553ms)
+✔ only temporal role accepts explicitly enabled prepared kickoff flag (1.710323ms)
+✔ restart can construct retained inspector with expired original task, without allocation or credential renewal (32.885336ms)
+✔ initial absent run uses fixed approved input only with fresh independent native identity/context (65.731412ms)
+✔ current canonical run identity remains usable after original task expiry (17.244509ms)
+✔ present canonical mismatch never falls back binding (12.235486ms)
+✔ present canonical mismatch never falls back scopes (9.056997ms)
+✔ present canonical mismatch never falls back policyRevision (9.857413ms)
+✔ canonical storage STORE_CORRUPT never falls back (12.835511ms)
+✔ canonical storage STORE_UNAVAILABLE never falls back (4.142562ms)
+✔ canonical storage STORE_COMMIT_UNKNOWN never falls back (14.083209ms)
+✔ native wrong principal and revoked identity cannot issue initial context (6.247964ms)
+✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (3067.580581ms)
+✔ concrete runner owns same worker/query/mirror and keeps listener through cleanup; all execution ports scripted (399.89094ms)
+✔ execute failure still retires original worker/mirror before listener; no source/provider call (33.847777ms)
+✔ foreign original binding fails before secret reads/listener/worker construction (3.201444ms)
+✔ actual private HTTP listener and canonical existing mirror/client share snapshot owner; Query/native process remain scripted (358.2107ms)
+✔ failed physical cleanup and mirror cleanup remain bounded and close listener without reporting success (143.400202ms)
+✔ caller cancellation keeps actual HTTP receiver alive through original worker close (24.998271ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (100.342327ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (3.035831ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (4.454524ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (1.447756ms)
+✔ broker refuses a response from another writer fence (1.336857ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (589.391131ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (24.138469ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (11.303445ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 50
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29784.840961
+
+✖ failing tests:
+
+test at apps/runtime/test/prepared-candidate.test.mjs:13:1
+✖ public candidate mounts actual issuance and queued submit before lazy allocation, and private readiness is control-only (3067.580581ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  403 !== 200
+  
+      at TestContext.<anonymous> (file:///workspace/meri-prepared-kickoff/apps/runtime/test/prepared-candidate.test.mjs:18:368)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 403,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

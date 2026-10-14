@@ -1,0 +1,12 @@
+✔ standard task bootstrap polls only existing capability route and returns validated original gated binding (45.722031ms)
+✔ foreign bootstrap proof refuses before returning executable configuration (4.038503ms)
+✔ cancelled bootstrap invokes no transport or execution (1.505187ms)
+✔ gated standard runner starts one Query after HTTP release and retains listener through final control stop (703.725994ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3415.941745
