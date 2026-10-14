@@ -1,0 +1,4 @@
+# Qualification seals bind exact bytes, including the preserved source manifest.
+*.mjs -text
+*.py -text
+*.json -text whitespace=cr-at-eol
