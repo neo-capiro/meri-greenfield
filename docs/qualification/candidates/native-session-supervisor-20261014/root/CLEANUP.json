@@ -1,0 +1,20 @@
+{
+  "removedLinks": [
+    "node_modules/ajv",
+    "node_modules/ajv-formats",
+    "node_modules/canonicalize",
+    "node_modules/@capiro",
+    "apps/runtime/node_modules/@hono/node-server"
+  ],
+  "removedEmptyDirectories": [
+    "apps/runtime/node_modules/@hono",
+    "apps/runtime/node_modules",
+    "node_modules"
+  ],
+  "originalDependencyTargetsStillPresent": true,
+  "actualSdkTemporaryDirectoryAbsent": "/tmp/meri-native-registration-CI70G9",
+  "observerPendingReads": 0,
+  "childCloseObserved": true,
+  "borrowedChildForcedKill": false,
+  "ownedGroupAbsent": true
+}

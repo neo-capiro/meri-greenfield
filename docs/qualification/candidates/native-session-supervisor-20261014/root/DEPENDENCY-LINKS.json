@@ -1,0 +1,12 @@
+{
+  "links": [
+    {
+      "path": "apps/runtime/node_modules/@hono/node-server",
+      "target": "/workspace/meri-first-session/apps/runtime/node_modules/@hono/node-server"
+    }
+  ],
+  "createdDirectories": [
+    "apps/runtime/node_modules",
+    "apps/runtime/node_modules/@hono"
+  ]
+}
