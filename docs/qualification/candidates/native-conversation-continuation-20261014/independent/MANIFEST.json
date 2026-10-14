@@ -1,0 +1,71 @@
+{
+  "verdict": "ACCEPT_BORROWED_LIFECYCLE_OWNER_COMPOSITION",
+  "sourceHead": "b09069dd20a36f9fd58e35435adb51859b0fba48",
+  "baseHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "sourceManifest": {
+    "path": "docs/qualification/candidates/native-conversation-continuation-20261014/SOURCE-MANIFEST.json",
+    "sha256": "6a596ac9cbbb4f43d66d17a6b46bc18eec4825e6e77a0f87db11d43da5d276f9",
+    "filesMatched": 5
+  },
+  "independentControlsPassed": 37,
+  "independentReceipt": {
+    "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/focused-final.json",
+    "sha256": "87fe44227d09c5f46b02812147ad163d52cb734acd9a2ae5e619b549cd900a9d",
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/focused-final.stdout.bin",
+        "bytes": 4119,
+        "sha256": "b1483bcf0971c04a482a14f3f12184644b868f3cb525bb48f8dc3e1e9a307495"
+      },
+      {
+        "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/focused-final.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "rootIntegratedReceipt": {
+    "path": "docs/qualification/candidates/native-conversation-continuation-20261014/author/frozen-integrated.json",
+    "sha256": "2550a40679ef76c39c64f8aa7f9ed5fea0ec4d08ab794afa088a93be910d1a25",
+    "passed": 118,
+    "streams": [
+      {
+        "path": "docs/qualification/candidates/native-conversation-continuation-20261014/author/frozen-integrated.stdout.bin",
+        "bytes": 12829,
+        "sha256": "016c880429a709d1942dad1f99041028405e81a7905b49507721ed0dba0822ef"
+      },
+      {
+        "path": "docs/qualification/candidates/native-conversation-continuation-20261014/author/frozen-integrated.stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/FINAL-REVIEW.md",
+      "bytes": 4521,
+      "sha256": "f1961fdb172fae06e678982ae115ef10c227d086213912132c34f80275f4655d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/capture-reaped.py",
+      "bytes": 5330,
+      "sha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/focused-final.json",
+      "bytes": 1664,
+      "sha256": "87fe44227d09c5f46b02812147ad163d52cb734acd9a2ae5e619b549cd900a9d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/focused-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/independent/focused-final.stdout.bin",
+      "bytes": 4119,
+      "sha256": "b1483bcf0971c04a482a14f3f12184644b868f3cb525bb48f8dc3e1e9a307495"
+    }
+  ]
+}

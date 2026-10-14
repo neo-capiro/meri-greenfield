@@ -1,0 +1,48 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-concurrency=1",
+    "apps/runtime/test/lifecycle-owner-mount.test.mjs",
+    "apps/runtime/test/lifecycle-continuation-mount.test.mjs",
+    "apps/runtime/test/prepared-candidate.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs",
+    "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+    "apps/runtime/test/prepared-candidate-config.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs",
+    "apps/runtime/test/prepared-temporal.test.mjs",
+    "apps/runtime/test/remote-conversation-runner.test.mjs",
+    "apps/control/conversations/test/lifecycle.test.mjs",
+    "apps/control/conversations/test/lifecycle-inspection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-conversation-continuation",
+  "sourceHead": "b09069dd20a36f9fd58e35435adb51859b0fba48",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "4c4f07c9a6cca6f0d14b6df34480fc59bf845b8e5439b51b4f43176f83f95ab5",
+  "startedAt": "2026-10-14T11:41:03.130106+00:00",
+  "durationSeconds": 59.208,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 180206,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "ownedAdoptedChildrenAbsent": true,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/author/frozen-integrated.stdout.bin",
+      "bytes": 12829,
+      "sha256": "016c880429a709d1942dad1f99041028405e81a7905b49507721ed0dba0822ef"
+    },
+    {
+      "path": "docs/qualification/candidates/native-conversation-continuation-20261014/author/frozen-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "TASK_OWNED_QUALIFICATION_HOST_INIT_REAPING_NOT_PRODUCTION_ISOLATION_OR_RUNTIME_ADMISSION"
+}

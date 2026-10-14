@@ -1,5 +1,9 @@
 # Meri kickoff status
 
+## 14 October 2026: borrowed lifecycle owner composition
+
+PR81 continuation preserves explicitly supplied continuation/approval owners in prepared control without replacing candidate identity or creating an issuer/store. First-chat selectors/binding/replay/revocation are qualified locally; author118/118 and independent37/37 pass. [Focused result](reports/CODEX-BORROWED-CONVERSATION-LIFECYCLE-OWNERS-20261014.md) and [exact frontend/backend authority inputs](reports/CODEX-CURRENT-CONVERSATION-AUTHORITY-INPUTS-20261014.md) separate first chat from later target admission/runtime selection and independent approval decisions. The latter remain unimplemented/unbound beyond owner composition. First genuine chat and all337 native rows remain OPEN; G1 OPEN, G2–G7 unaccepted. No shipping/provider/security mutation occurred.
+
 ## 14 October 2026: prepared candidate source closure
 
 Prepared Temporal kickoff, original controller recovery, current-control checkpoint inspection after source-task expiry, and standard CLI first-run composition are implemented in the stacked PR80 continuation. Exact source/checks and the minimal dedicated deployment bundle are in [the implementation report](reports/CODEX-PREPARED-KICKOFF-CONTROL-INSPECTION-20261014.md) and [deployment handoff](reports/CODEX-PREPARED-CANDIDATE-DEPLOYMENT-20261014.md). Local PostgreSQL/process/HTTP checks do not establish deployed acceptance.

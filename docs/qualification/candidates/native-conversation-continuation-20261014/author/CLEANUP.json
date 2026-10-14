@@ -1,0 +1,36 @@
+{
+  "scope": "Fresh owned source qualification dependencies/cache/temporary output; no AWS or database resource created this slice",
+  "removedPaths": [
+    "/workspace/meri-conversation-continuation/node_modules",
+    "/workspace/meri-conversation-continuation/apps/runtime/node_modules",
+    "/workspace/meri-conversation-continuation/apps/artifacts/storage/node_modules",
+    "/workspace/meri-conversation-continuation/apps/worker/conversation/node_modules",
+    "/workspace/meri-conversation-continuation/packages/contracts/node_modules",
+    "/workspace/meri-conversation-continuation/packages/window-resolution/node_modules",
+    "/workspace/meri-conversation-continuation/packages/ui-stream/node_modules",
+    "/tmp/meri-continuation-npm-cache-20261014",
+    "/tmp/meri-lifecycle-owner-first.stdout",
+    "/tmp/meri-lifecycle-owner-first.stderr",
+    "/tmp/meri-lifecycle-owner-final.stdout",
+    "/tmp/meri-lifecycle-owner-final.stderr",
+    "/tmp/meri-first-chat-regressions.tap"
+  ],
+  "worktreePreserved": true,
+  "borrowedTargetsPreserved": {
+    "ajv": true,
+    "ajv-formats": true,
+    "canonicalize": true
+  },
+  "taskOwnedGitFetchDirectoryAbsent": true,
+  "unreapedHelperLimit": {
+    "pids": [
+      176404,
+      176530
+    ],
+    "reason": "terminated read-only Git helpers exited but became parent1 zombies, cannot waitpid/reap from this owner; no further kill attempted",
+    "status": "UNREAPED_KERNEL_CHILDREN_PRESERVED"
+  },
+  "historicalUnchanged": "Old parent1 zombies89147/145484, SDK workspace and protected old socket untouched",
+  "readback": "    PID    PPID    PGID S COMMAND\n  89147       1   89126 Z claude\n 145484       1  145484 Z python\n 176404       1  176399 Z git\n 176530       1  176399 Z git\n",
+  "containersUnchanged": "meri-native-postgres Exited (255) 9 hours ago\ncapiro-postgres Up 9 hours (healthy)\n"
+}

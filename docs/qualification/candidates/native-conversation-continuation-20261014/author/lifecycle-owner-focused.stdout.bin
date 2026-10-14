@@ -1,0 +1,16 @@
+(node:177862) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:177862) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ borrowed lifecycle methods are inertly captured with original receiver and no getters (5.088175ms)
+✔ candidate startup preserves direct approval owner and mandatory candidate identity (468.188411ms)
+✔ candidate startup preserves synchronous factory approval owner and mandatory candidate identity (91.393637ms)
+✔ invalid async factories and accessor ports refuse before secrets or connections (2.746523ms)
+✔ ordinary synchronous factory returning Promise is refused without unhandled rejection (4.205029ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2697.090291

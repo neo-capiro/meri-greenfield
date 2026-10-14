@@ -1,0 +1,13 @@
+{
+  "base": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "file": "apps/runtime/test/prepared-candidate.test.mjs",
+  "sha256": "f6934e49593a35fa30dd77d76aece7eb0c24e732ac10ad245d6992d25e587cba",
+  "command": "node --test --test-concurrency=1 apps/runtime/test/prepared-candidate.test.mjs",
+  "result": {
+    "tests": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "scope": "Actual issuance/application/service/PostgreSQL store and Temporal dispatcher owners; scripted backend identity/context, SQL rows, and Temporal client; zero allocation, AWS, Query or provider calls. Replay verifies actual dispatcher workflow identity and upstream reuse/conflict flags; no live Temporal acceptance claim.",
+  "earlier_failure": "first-chat-setup-first.tap: attempted while centrally-owned dependency installation was incomplete; missing AWS SDK module prevented test discovery. No install restarted, assertion or source budget changed."
+}

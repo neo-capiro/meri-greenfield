@@ -1,0 +1,26 @@
+{
+  "sourceHead": "b09069dd20a36f9fd58e35435adb51859b0fba48",
+  "baseHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "files": [
+    {
+      "path": "apps/runtime/control.mjs",
+      "sha256": "dc7986870995ff3149630b127e1e9f2249d976a65bcf46b5cda514105c1dd6b7"
+    },
+    {
+      "path": "apps/runtime/product-applications.mjs",
+      "sha256": "aa75a870ba4ee6fd4b6b6ca57fcd609674141e3659584714b65651775472fef2"
+    },
+    {
+      "path": "apps/runtime/test/lifecycle-continuation-mount.test.mjs",
+      "sha256": "040df3e3e02c7263d68621486ac7ac0846bf903ed3bbeacbabe5deea7e0daa94"
+    },
+    {
+      "path": "apps/runtime/test/lifecycle-owner-mount.test.mjs",
+      "sha256": "13dfb897cea91a86723556f0ec32eaa7cbd47231392f244883e277beea84b459"
+    },
+    {
+      "path": "apps/runtime/test/prepared-candidate.test.mjs",
+      "sha256": "f6934e49593a35fa30dd77d76aece7eb0c24e732ac10ad245d6992d25e587cba"
+    }
+  ]
+}

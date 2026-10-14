@@ -1,0 +1,115 @@
+{
+  "schema": "meri.source-qualification.v1",
+  "status": "ACCEPT_BORROWED_LIFECYCLE_OWNER_COMPOSITION",
+  "sourceHead": "b09069dd20a36f9fd58e35435adb51859b0fba48",
+  "baseHead": "480944bae488932ab5dea5452d2d3dbdcb04a755",
+  "sourceManifest": {
+    "path": "SOURCE-MANIFEST.json",
+    "sha256": "6a596ac9cbbb4f43d66d17a6b46bc18eec4825e6e77a0f87db11d43da5d276f9",
+    "files": 5
+  },
+  "scope": {
+    "actual": [
+      "Canonical action session and public conversation application/service",
+      "canonical PostgreSQL store/lifecycle journal code",
+      "actual Temporal dispatcher code and enum policies",
+      "actual local control HTTP listeners",
+      "borrowed owner capture and synchronous factory composition"
+    ],
+    "scripted": [
+      "SQL transport/rows (no actual PostgreSQL this slice)",
+      "backend authority/session facts",
+      "checkpoint bytes, target admission/retirement and approval decisions",
+      "Temporal client/service",
+      "candidate allocation/startup infrastructure"
+    ],
+    "actualAwsCalls": 0,
+    "actualSdkQueries": 0,
+    "providerRequests": 0,
+    "modelTurns": 0,
+    "newDeployedCredentials": 0,
+    "securityChanges": 0,
+    "liveDocuments": 0,
+    "deployedAcceptance": false
+  },
+  "foreignSource": {
+    "frontendPR39": "348c98dfe1962fac962157eb785732281a282d06",
+    "backendPR17": "dd02f3ba0b4ab77e3725e83e4b9af27aecdc8eca",
+    "exactRead": "GitHub exact file contents and blob IDs read, current first-chat selectors and authority inputs independently reviewed. Foreign private source not archived in Meri.",
+    "failedAttempt": "author/FRONTEND-READ-ATTEMPT.json records terminated oversized readonly Git fetch and unreaped init-owned helper zombies."
+  },
+  "earlierFailures": [
+    {
+      "path": "author/first-chat-setup-first.tap",
+      "reason": "Attempted before centrally installed dependency completion; missing client-ecs prevented discovery, final15/15 passed."
+    },
+    {
+      "reason": "Owner mount first attempt missing root @capiro/meri-contracts alias prevented discovery. Tool reported exact ERR_MODULE_NOT_FOUND; raw error stream not retained, explicitly reconstructed setup note only; final11/11 passed."
+    }
+  ],
+  "firstChat": "No new binding generator required; exact backend context supplies approved binding and frontend initial hint is current client only. Wrong hints/revocation denied, replay retains exact workflow identity. Live chat remains UNRUN.",
+  "remainingSource": [
+    "actual independent target preallocation authorization owner and correct target-before-RunTask ordering",
+    "canonical target identity/runtime/bootstrap selection for resumed/fork sessions and worker kickoff",
+    "concrete independent proposal/current decision authority instantiated by hosting composition",
+    "standard CLI actual later-owner binding; borrowed ports alone do not implement it",
+    "full accepted capabilities and all337 frontend acceptance"
+  ],
+  "remainingConfiguration": [
+    "exact serving backend identity/current owned conversation/client/native user mapping and existing credential reference",
+    "approved dedicated runtime image/measurements/init/private TLS",
+    "dedicated database/Temporal/provider/task/object bindings from PR81 deployment handoff",
+    "approved distinct fresh target capability/grant/resource recipe for later continuation",
+    "actual independent approval reader/decision owner identifier/reference"
+  ],
+  "overallPlan": {
+    "G0": "HISTORICAL_ACCEPT",
+    "G1": "OPEN",
+    "G2-G7": "UNENTERED_UNACCEPTED_BY_THIS_SLICE",
+    "frontend337": "OPEN",
+    "firstAuthenticatedConversation": "UNRUN"
+  },
+  "author": {
+    "receipt": "author/frozen-integrated.json",
+    "tests": 118,
+    "passed": 118,
+    "failed": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "durationSeconds": 59.208,
+    "sourceDiffBytes": 0,
+    "ownedProcessGroupAbsent": true,
+    "ownedAdoptedChildrenAbsent": true,
+    "ownedGroupKillRequired": false,
+    "receiptSha256": "2550a40679ef76c39c64f8aa7f9ed5fea0ec4d08ab794afa088a93be910d1a25"
+  },
+  "typecheck": {
+    "path": "author/typecheck.txt",
+    "result": "PASS",
+    "source": "same changed production bytes as frozen source; performed before code commit"
+  },
+  "independent": {
+    "verdict": "ACCEPT_BORROWED_LIFECYCLE_OWNER_COMPOSITION",
+    "review": "independent/FINAL-REVIEW.md",
+    "tests": 37,
+    "passed": 37,
+    "failed": 0,
+    "receipt": "independent/focused-final.json",
+    "receiptSha256": "87fe44227d09c5f46b02812147ad163d52cb734acd9a2ae5e619b549cd900a9d",
+    "manifest": "independent/MANIFEST.json",
+    "manifestSha256": "5baf038f1d98748a078d97601c8d87da2c04ab88b09b0860bc86f46f23349dcd",
+    "sourceDiffBytes": 0,
+    "ownedGroupAndAdoptedChildrenAbsent": true
+  },
+  "cleanup": {
+    "path": "author/CLEANUP.json",
+    "sha256": "9f660bebe1d95f18fadc3f4effc71d6f5695ca2c0339a6c3cd23274e563d1fbb",
+    "ownedDependenciesCacheTempOutputAbsent": true,
+    "worktreeBorrowedHistoricalPreserved": true,
+    "unreapedReadOnlyGitHelpers": [
+      176404,
+      176530
+    ],
+    "blocker": "Parent1 owns exited zombies; this owner cannot reap them. No live Git helper remains; historical and these kernel records preserved."
+  }
+}

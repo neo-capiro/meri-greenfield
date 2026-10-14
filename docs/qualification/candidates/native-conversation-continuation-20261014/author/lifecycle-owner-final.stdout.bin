@@ -1,0 +1,25 @@
+(node:177985) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:177985) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ borrowed lifecycle methods are inertly captured with original receiver and no getters (1.89689ms)
+✔ candidate startup preserves direct approval owner and mandatory candidate identity (432.069667ms)
+✔ candidate startup preserves synchronous factory approval owner and mandatory candidate identity (114.153494ms)
+✔ invalid async factories and accessor ports refuse before secrets or connections (3.085993ms)
+✔ ordinary synchronous factory returning Promise is refused without unhandled rejection (4.451639ms)
+(node:177992) ExperimentalWarning: Module mocking is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:177992) DeprecationWarning: mock.module(): options.namedExports is deprecated. Use options.exports instead.
+✔ parent cancellation retains actual control HTTP through ordered original candidate cleanup (123.068368ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (15.47748ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (2.04392ms)
+✔ runner refuses missing observed registration before the single SDK query (206.62363ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (63.45384ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (27.284988ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3189.522288
