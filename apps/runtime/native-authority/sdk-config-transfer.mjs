@@ -1,0 +1,36 @@
+/** Raw SDK-generated configuration files. No transcript/JSONL decoding or journal. */
+import {constants,openSync,lstatSync,realpathSync,readdirSync,mkdirSync,closeSync,fstatSync,readSync,writeFileSync,fchmodSync,chmodSync} from 'node:fs';
+import {resolve,relative,join,isAbsolute,normalize} from 'node:path';import {createHash} from 'node:crypto';
+import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {copySessionJson} from '../../worker/qualification/checkpoint/session-store-data.mjs';
+import {remoteFault,digest} from './remote-task-boundary.mjs';
+const sha=b=>createHash('sha256').update(b).digest('hex'),refuse=()=>{throw remoteFault();};
+const absolute=p=>typeof p==='string'&&isAbsolute(p)&&normalize(p)===p&&p!=='/'&&!p.endsWith('/')&&!/[\x00-\x1f\x7f]/u.test(p);
+const pathName=p=>typeof p==='string'&&p.length>0&&p.length<=4096&&!p.startsWith('/')&&!p.includes('\\')&&!/[\x00-\x1f\x7f]/u.test(p)&&p.split('/').every(x=>x!==''&&x!=='.'&&x!=='..');
+function directory(path){const s=lstatSync(path);if(!s.isDirectory()||s.isSymbolicLink()||realpathSync(path)!==path||s.uid!==process.getuid())refuse();return s;}
+function roots(configuration){const c=own(configuration,['configDirectory','secureStorageDirectory']);if(!absolute(c.configDirectory)||!absolute(c.secureStorageDirectory))refuse();const result=[...new Set([c.configDirectory,c.secureStorageDirectory])];if(result.length===2&&(result[0].startsWith(result[1]+'/')||result[1].startsWith(result[0]+'/')))refuse();return result;}
+function stable(a,b){return a.dev===b.dev&&a.ino===b.ino&&a.size===b.size&&a.mtimeMs===b.mtimeMs&&a.ctimeMs===b.ctimeMs;}
+function scan(root,check,budget){const before=directory(root),entries=[],directories=[],observed=[];function visit(base){check();const prior=directory(base),names=readdirSync(base).sort();observed.push({target:base,stat:prior,names});for(const name of names){const target=join(base,name),path=relative(root,target);if(!pathName(path))refuse();const stat=lstatSync(target);
+ if(stat.isSymbolicLink()||stat.uid!==process.getuid())refuse();if(stat.isDirectory()){if(++budget.directories>256)refuse();directories.push({path,mode:stat.mode&0o777});visit(target);continue;}
+ if(!stat.isFile()||stat.nlink!==1||stat.size>8388608||budget.files>=256||budget.bytes+stat.size>33554432)refuse();
+ const fd=openSync(target,constants.O_RDONLY|constants.O_NOFOLLOW);let bytes;try{const opened=fstatSync(fd);if(!stable(stat,opened))refuse();bytes=Buffer.alloc(stat.size);let at=0;while(at<bytes.length){check();const count=readSync(fd,bytes,at,bytes.length-at,at);if(count===0)refuse();at+=count;}const extra=Buffer.alloc(1);if(readSync(fd,extra,0,1,at)!==0||!stable(opened,fstatSync(fd)))refuse();}finally{closeSync(fd);}
+ if(!stable(stat,lstatSync(target)))refuse();observed.push({target,stat});budget.files++;budget.bytes+=bytes.length;entries.push({path,mode:stat.mode&0o777,bytes:bytes.length,sha256:sha(bytes),base64:bytes.toString('base64')});check();
+ }}visit(root);check();for(const item of observed){if(!stable(item.stat,lstatSync(item.target))||item.names&&JSON.stringify(readdirSync(item.target).sort())!==JSON.stringify(item.names))refuse();}if(!stable(before,lstatSync(root)))refuse();return {directory:root,mode:before.mode&0o777,directories,entries};}
+function manifest(bundle){return {roots:bundle.roots.map(r=>({directory:r.directory,mode:r.mode,directories:r.directories,entries:r.entries.map(({base64,...metadata})=>metadata)}))};}
+export function captureSdkConfiguration(configuration,{check=()=>{}}={}){const budget={bytes:0,files:0,directories:0},bundle={roots:roots(configuration).map(root=>scan(root,check,budget))};return validateSdkConfiguration(copySessionJson({...bundle,sha256:hash(manifest(bundle))},48*1024*1024),configuration);}
+export function validateSdkConfiguration(value,configuration){const v=copySessionJson(value,48*1024*1024);own(v,['roots','sha256']);const targets=roots(configuration);if(!digest(v.sha256)||!Array.isArray(v.roots)||v.roots.length!==targets.length||hash(manifest(v))!==v.sha256)refuse();let total=0,count=0,directoryCount=0;
+ for(let i=0;i<targets.length;i++){const r=own(v.roots[i],['directory','mode','directories','entries']);if(r.directory!==targets[i]||!Array.isArray(r.entries)||!Array.isArray(r.directories)||r.directories.length>256||!Number.isSafeInteger(r.mode)||r.mode<0||r.mode>0o777)refuse();const dirs=new Set();for(const row of r.directories){const d=own(row,['path','mode']);if(++directoryCount>256||!pathName(d.path)||dirs.has(d.path)||!Number.isSafeInteger(d.mode)||d.mode<0||d.mode>0o777)refuse();dirs.add(d.path);}const seen=new Set();for(const entry of r.entries){const e=own(entry,['path','mode','bytes','sha256','base64']);if(!pathName(e.path)||seen.has(e.path)||!Number.isSafeInteger(e.mode)||e.mode<0||e.mode>0o777||!Number.isSafeInteger(e.bytes)||e.bytes<0||e.bytes>8388608||!digest(e.sha256)||typeof e.base64!=='string'||e.base64.length!==Math.ceil(e.bytes/3)*4||++count>256||(total+=e.bytes)>33554432)refuse();seen.add(e.path);const bytes=Buffer.from(e.base64,'base64');if(bytes.length!==e.bytes||bytes.toString('base64')!==e.base64||sha(bytes)!==e.sha256)refuse();}
+  for(const name of seen)if(dirs.has(name)||[...dirs].some(other=>other.startsWith(name+'/'))||[...seen].some(other=>other!==name&&other.startsWith(name+'/')))refuse();
+ for(const name of [...dirs,...seen]){const parent=name.includes('/')?name.slice(0,name.lastIndexOf('/')):null;if(parent&&!dirs.has(parent))refuse();}
+ }return v;
+}
+export function verifySdkConfiguration(value,configuration,{check=()=>{}}={}){const wanted=validateSdkConfiguration(value,configuration),actual=captureSdkConfiguration(configuration,{check});if(actual.sha256!==wanted.sha256)refuse();return {sha256:actual.sha256,verified:true};}
+export function installSdkConfiguration(value,configuration,{check=()=>{}}={}){const v=validateSdkConfiguration(value,configuration);check();
+ // A transfer is fresh-only. No overwrite, merge, descriptor rewrite or retry
+ // after partial installation; caller retains uncertainty and physical owner.
+ for(const r of v.roots){try{lstatSync(r.directory);refuse();}catch(error){if(error.code!=='ENOENT')throw error;}directory(resolve(r.directory,'..'));}
+ for(const r of v.roots){check();mkdirSync(r.directory,{mode:r.mode});chmodSync(r.directory,r.mode);for(const d of [...r.directories].sort((a,b)=>a.path.split('/').length-b.path.split('/').length||a.path.localeCompare(b.path))){check();mkdirSync(join(r.directory,d.path),{mode:d.mode});chmodSync(join(r.directory,d.path),d.mode);}for(const e of r.entries){check();const components=e.path.split('/');let parent=r.directory;for(const part of components.slice(0,-1)){parent=join(parent,part);try{mkdirSync(parent,{mode:0o700});}catch(error){if(error.code!=='EEXIST')throw error;}directory(parent);}
+  const target=join(r.directory,e.path),fd=openSync(target,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,e.mode);try{writeFileSync(fd,Buffer.from(e.base64,'base64'));fchmodSync(fd,e.mode);}finally{closeSync(fd);}check();}
+ }return verifySdkConfiguration(v,configuration,{check});
+}

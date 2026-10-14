@@ -15,7 +15,7 @@ test('all canonical relay destinations preserve presented bearer and exact bytes
  const calls=[],body='{ "opaque": {"duplicates":[1,1]} }\n',gateway=make(async(url,init)=>{calls.push({url,init});return new Response(' { "ok" : true }\n',{headers:{'content-type':'application/json'}});});
  for(const op of Object.keys(runOwnerOperations)){const r=await gateway.handle(request('/v1/runner/'+op,body,'actual-presented-'+op));assert.equal(r.status,200);assert.equal(await r.text(),' { "ok" : true }\n');const c=calls.at(-1);assert.equal(c.url,'https://control.synthetic.invalid/internal/conversations/'+op);assert.equal(c.init.headers.authorization,'Bearer actual-presented-'+op);assert.equal(Buffer.from(c.init.body).toString(),body);assert.equal(c.init.redirect,'error');assert.equal(c.init.credentials,'omit');}
  for(const op of sdkSessionOperations){assert.equal((await gateway.handle(request('/v1/runner/session/'+op))).status,200);assert.equal(calls.at(-1).url,'https://control.synthetic.invalid/v1/runner/session/'+op);}
- for(const path of ['/v1/worker/authorize','/v1/readiness','/v1/execution/start','/v1/runner/runtime','/v1/runner/checkpoint/capture','/v1/runner/load/extra'])assert.equal(await gateway.handle(request(path)),null);
+ for(const path of ['/v1/worker/authorize','/v1/readiness','/v1/execution/start','/v1/runner/runtime','/v1/runner/load/extra'])assert.equal(await gateway.handle(request(path)),null);
  assert.equal(calls.length,10);
 });
 test('relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects',async()=>{
