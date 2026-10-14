@@ -6,7 +6,8 @@ import {createAdmittedSessionSupervisor} from '../admitted-supervisor.mjs';impor
 import {versions} from '../../../control/conversations/test/store-fixture.mjs';import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 export const socket='/tmp/meri-broker-pg-socket-20261014',control='synthetic-existing-control';export const sha=b=>createHash('sha256').update(b).digest('hex');
 export async function fixture(t,{tasksFactory=createIndependentNativeTask,leaseMs=30000,launchOverride}={}){
- const pool=new pg.Pool({host:socket,user:'postgres',database:'postgres',max:12});
+ const database=process.env.MERI_BROKER_TEST_DATABASE??'postgres';if(!['postgres','meri_broker_independent'].includes(database))throw Error('TASK_TEST_DATABASE_REQUIRED');
+ const pool=new pg.Pool({host:socket,user:'postgres',database,max:12});
  assertOwnDatabase(await pool.query("SELECT current_setting('listen_addresses') AS listen, version() AS version"));
  await pool.query('TRUNCATE meri_conversations.conversations CASCADE; TRUNCATE meri_product_budget.budget,meri_product_budget.runs CASCADE');
  const f=productFixture(),binding=f.invocation.binding,now=Date.now,at=now(),expiry=at+leaseMs,allocation=structuredClone(f.allocation);
