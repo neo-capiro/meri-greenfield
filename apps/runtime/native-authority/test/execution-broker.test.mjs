@@ -5,7 +5,7 @@ import {listenFetch} from './task-verifier-fixture.mjs';import {createNativeSdkS
 test('real PostgreSQL concurrent/replayed start retains one actual independent supervisor and original claim',async t=>{
  const x=await fixture(t);const replies=await Promise.all(Array.from({length:4},()=>x.start()));assert.ok(replies.every(r=>r.executionId===hash(x.binding)));
  const rows=await x.pool.query('SELECT record FROM meri_conversations.native_executions');assert.equal(rows.rows.length,1);assert.equal(rows.rows[0].record.phase,'started');const pid=x.stack.tasks.status().supervisorPid;assert.ok(pid>0&&pid!==process.pid);
- const fresh=createNativeExecutionBroker({binding:x.binding,versions:x.runtime.versions,plan:x.config.plan,expiresAtMs:x.expiry,journal:createPostgresConversationStore({pool:x.pool}).executions,tasks:x.stack.tasks,verifier:x.config.supervisor.taskVerifier,taskCapability:x.f.credential,enabled:true,maxRequestMs:5000});
+ const fresh=createNativeExecutionBroker({binding:x.binding,versions:x.runtime.versions,plan:x.stack.plan,expiresAtMs:x.expiry,journal:createPostgresConversationStore({pool:x.pool}).executions,tasks:x.stack.tasks,verifier:x.config.supervisor.taskVerifier,taskCapability:x.f.credential,enabled:true,maxRequestMs:5000});
  assert.equal((await fresh.start({binding:x.binding,executionKey:hash(x.binding)})).executionId,replies[0].executionId);assert.equal(x.stack.tasks.status().supervisorPid,pid);assert.equal((await x.poll()).state,'executing');
 });
 test('actual protected HTTP broker/runtime path correlates current native task and original runtime',async t=>{
@@ -27,7 +27,7 @@ test('separate supervisor observes real native-format bytes and canonical PG ses
 test('lost real claim commit acknowledgement dispatches zero and durable replay never relaunches',async t=>{
  const x=await fixture(t);let lose=true;const wrapped={async connect(){const real=await x.pool.connect();return {async query(sql,args){const out=await real.query(sql,args);if(sql==='COMMIT'&&lose){lose=false;throw Error('synthetic lost ACK after actual PG COMMIT');}return out;},release:e=>real.release(e)};}};
  const journal=createPostgresConversationStore({pool:wrapped}).executions;let calls=0;const tasks={launch(){calls++;throw Error();},inspect(){throw Error('no launch exists');},retire(){throw Error('no launch exists');}};
- const broker=createNativeExecutionBroker({binding:x.binding,versions:x.runtime.versions,plan:x.config.plan,expiresAtMs:x.expiry,journal,tasks,verifier:x.config.supervisor.taskVerifier,taskCapability:x.f.credential,enabled:true});
+ const broker=createNativeExecutionBroker({binding:x.binding,versions:x.runtime.versions,plan:x.stack.plan,expiresAtMs:x.expiry,journal,tasks,verifier:x.config.supervisor.taskVerifier,taskCapability:x.f.credential,enabled:true});
  await assert.rejects(broker.start({binding:x.binding,executionKey:hash(x.binding)}),/COMMIT_UNKNOWN/);assert.equal(calls,0);assert.equal((await x.pool.query('SELECT count(*) FROM meri_conversations.native_executions')).rows[0].count,'1');await assert.rejects(broker.start({binding:x.binding,executionKey:hash(x.binding)}));assert.equal(calls,0);
 });
 test('durable journal refuses altered plan/expiry/phase and SQL trigger protects original identity',async t=>{
