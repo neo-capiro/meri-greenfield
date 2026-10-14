@@ -1,0 +1,8 @@
+{
+  "scope": "READ_ONLY_CLEANUP_METADATA_AND_PATH_VALIDATION_NOT_TEST_OR_PROBE",
+  "verifiedLinksAbsent": 5,
+  "originalTargetsPresent": true,
+  "exactSdkTempAbsent": true,
+  "initialMetadataShapeValidationFailure": "TypeError: list indices must be integers or slices, not str; author manifest is list while root manifest is object",
+  "correction": "Read each recorded manifest using its actual list/object shape; no resource or production changes"
+}

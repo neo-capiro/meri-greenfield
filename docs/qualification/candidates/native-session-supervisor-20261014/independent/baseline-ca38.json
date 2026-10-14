@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-session-supervisor-20261014/independent/controls.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-session-supervisor",
+  "sourceHead": "ca38a341a98b160c4ba8091bd651dce0a3a6d75a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T02:16:06.338603+00:00",
+  "durationSeconds": 0.718,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64219,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.stdout.bin",
+      "bytes": 742,
+      "sha256": "7a7104853a90ce97e1379c649e52d9d05566717636d77650b6fbbd4bd09d637e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-session-supervisor-20261014/independent/baseline-ca38.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
