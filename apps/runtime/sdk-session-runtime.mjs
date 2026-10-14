@@ -6,6 +6,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {createFirstRuntimeSdkSession} from './sdk-first-session.mjs';
+import {createContinuationRuntimeSdkSession} from './sdk-continuation-session.mjs';
 export function createRuntimeSdkSessionFactory(configuration){
  const {origin,credential,binding,fetchImpl=fetch,now=Date.now}=own(configuration,['origin','credential','binding'],['fetchImpl','now']);
  const pinnedBinding=data(binding),client=createNativeSdkSessionClient({origin,credential,binding:pinnedBinding,fetchImpl,now});
@@ -13,6 +14,7 @@ export function createRuntimeSdkSessionFactory(configuration){
   const {binding:currentBinding,sessionKey,signal,runtimeSignal,continuation}=own(value,['binding'],['sessionKey','signal','runtimeSignal','continuation']);
   if(canonicalSha256(data(currentBinding))!==canonicalSha256(pinnedBinding)||sessionKey===undefined)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');
   if(sessionKey===null){nativeSignal(signal);nativeSignal(runtimeSignal);if(continuation!==undefined||signal?.aborted||runtimeSignal?.aborted)throw fault('RUNNER_SDK_REGISTRATION_UNAVAILABLE');return createFirstRuntimeSdkSession({client,binding:pinnedBinding,signal:runtimeSignal});}
+  if(continuation!==undefined)return createContinuationRuntimeSdkSession({client,binding:pinnedBinding,sessionKey,continuation,signal,runtimeSignal});
   const bound=createNativeBoundSdkSessionStore({client,binding:pinnedBinding,sessionKey});
   const settle=async()=>{const result=await bound.settleObservedCalls();if(result.uncertain)throw fault('RUNNER_SDK_SESSION_UNKNOWN');};
   const close=async()=>{bound.closeMirror();await settle();};
