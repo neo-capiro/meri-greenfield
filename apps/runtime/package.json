@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@aws-sdk/client-ecs": "3.1151.0",
     "@hono/node-server": "2.1.5",
     "@temporalio/activity": "1.24.0",
     "@temporalio/client": "1.24.0",

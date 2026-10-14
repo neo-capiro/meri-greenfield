@@ -21,7 +21,7 @@ export function createIndependentNativeTask(configuration){
  async function bounded(signal,body){const life=createOperationLifetime({now,signal,deadlineMs:now()+maxRequestMs,errorFactory:()=>executionFault('TASK_UNAVAILABLE')});try{return await life.run(body);}finally{life.close();}}
  async function rpc(type,request,signal){nativeSignal(signal);if(closed||!booted||retiring||pending.size>=32)throw executionFault('TASK_UNAVAILABLE');const id=++nextId,reply=Promise.withResolvers();pending.set(id,reply);
   try{return await bounded(signal,()=>{send({type,id,...(request?{request}:{})});return reply.promise;});}finally{pending.delete(id);}}
- function tuple(value){const v=own(value,['binding','executionKey','executionId','planSha256','expiresAtMs','versions'],['signal','plan']);nativeSignal(v.signal);
+ function tuple(value){const v=own(value,['binding','executionKey','executionId','planSha256','expiresAtMs','versions'],['signal','plan','taskId']);nativeSignal(v.signal);if(v.taskId!==undefined&&v.taskId!==String(supervisor?.pid))throw executionFault('TASK_REFUSED');
   if(hash({binding:v.binding,executionKey:v.executionKey,executionId:v.executionId,planSha256:v.planSha256,expiresAtMs:v.expiresAtMs,versions:v.versions})!==hash(original))throw executionFault('TASK_REFUSED');return v;}
  const receipt=()=>data({binding:original.binding,executionId:original.executionId,planSha256:original.planSha256,expiresAtMs:original.expiresAtMs,versions:original.versions,taskId:String(supervisor.pid),state:stopped?'stopped':'executing',physicalStopProven:stopped});
  async function launch(value){const input=tuple(value);if(supervisor||closed||!p.enabled||now()>=p.expiresAtMs||input.signal?.aborted)throw executionFault('TASK_REFUSED');
