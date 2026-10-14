@@ -1,0 +1,64 @@
+✖ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (484.582568ms)
+✔ real PG acknowledged-commit loss requires exact admission readback (222.651024ms)
+✖ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (298.871258ms)
+✔ restoration receipt exactness and uncertain byte-write state stay immutable in real PG (166.76423ms)
+✖ coherently rehashed malformed resource remains corrupt at canonical read boundary (182.491687ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 2
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9700.809236
+
+✖ failing tests:
+
+test at apps/control/conversations/test/native-preparation.test.mjs:27:1
+✖ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (484.582568ms)
+  Error: 42725
+      at tx (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:12:35)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:30:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: '42725'
+  }
+
+test at apps/control/conversations/test/native-preparation.test.mjs:46:1
+✖ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (298.871258ms)
+  Error: 42725
+      at tx (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:12:35)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:49:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: '42725'
+  }
+
+test at apps/control/conversations/test/native-preparation.test.mjs:66:1
+✖ coherently rehashed malformed resource remains corrupt at canonical read boundary (182.491687ms)
+  error: operator is not unique: unknown - unknown
+      at /workspace/meri-native-runtime-recovery/apps/runtime/node_modules/pg-pool/index.js:45:11
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:69:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    length: 567,
+    severity: 'ERROR',
+    code: '42725',
+    detail: undefined,
+    hint: 'Could not choose a best candidate operator. You might need to add explicit type casts.',
+    position: undefined,
+    internalPosition: '151',
+    internalQuery: "OLD.record->'resource' <> 'null'::jsonb AND\n   (NEW.record->'resource' IS NULL OR NEW.record->'resource'='null'::jsonb OR\n    (NEW.record->'resource' - 'grantFactsJsons' - 'physicalStopProven') IS DISTINCT FROM\n    (OLD.record->'resource' - 'grantFactsJsons' - 'physicalStopProven'))",
+    where: 'PL/pgSQL function meri_conversations.preserve_native_preparation_identity() line 16 at IF',
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_oper.c',
+    line: '639',
+    routine: 'op_error'
+  }

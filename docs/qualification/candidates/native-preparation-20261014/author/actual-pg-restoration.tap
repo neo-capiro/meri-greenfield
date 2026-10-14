@@ -1,0 +1,11 @@
+✔ resume: actual canonical SQL restoration claim/readback and inode-preserving replay (2437.953418ms)
+✔ fork: actual canonical SQL restoration claim/readback and inode-preserving replay (1366.954592ms)
+✔ actual canonical SQL UNKNOWN restoration cannot repeat filesystem effects (715.627952ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 30364.195778

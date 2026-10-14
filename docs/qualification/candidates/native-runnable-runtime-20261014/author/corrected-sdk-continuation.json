@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-continuation-probe.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "5c199845e42b2159d5775e00c659b5da62d4113a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "9dea50a30311d89f9ae5f838904d00adb30f88f20fa76650437d45dcbe06ab69",
+  "startedAt": "2026-10-14T06:00:39.465960+00:00",
+  "durationSeconds": 14.041,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 67479,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-sdk-continuation.stdout.bin",
+      "bytes": 554,
+      "sha256": "16dd8c1a62beddd1642216952b97cd8e7b60d618bb47062cb2a0f7ac46709f8c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-sdk-continuation.stderr.bin",
+      "bytes": 1404,
+      "sha256": "67fab282c83a38fedf51508fead7140adb43757f313c95253da6eca5beabbcaf"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

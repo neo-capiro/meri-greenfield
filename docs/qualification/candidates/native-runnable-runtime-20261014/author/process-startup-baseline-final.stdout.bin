@@ -1,0 +1,2 @@
+{"phase":"startup-timeout","durationMs":20094}
+{"ready":false,"code":null,"signal":"SIGTERM","durationMs":20176,"stderr":""}

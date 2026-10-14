@@ -1,0 +1,345 @@
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/test/bundle.test.mjs (2272.075989ms)
+file:///workspace/meri-native-runtime-recovery/apps/runtime/test/first-run-mount.test.mjs:10
+mock.module('pg',{namedExports:{Pool:class{constructor(){events.push('pool');return ownedPool;}}}});
+     ^
+
+TypeError: mock.module is not a function
+    at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/first-run-mount.test.mjs:10:6
+
+Node.js v24.19.0
+✖ apps/runtime/test/first-run-mount.test.mjs (19307.312223ms)
+✔ fresh mirror is inert until actual main key and preserves ordered canonical native writes (86.631397ms)
+✔ fresh mirror cannot load old state or report completion without observed registration (2.091398ms)
+✔ invalid entries, first subkey and accessor keys refuse before registration and poison later dispatch (2.974129ms)
+✔ first callback key must match independently observed native key; rejection is never registered again (5.127052ms)
+✔ registered fresh mirror refuses another project/session and cannot settle it as success (17.663615ms)
+✔ native revocation and uncertain registration remain terminal barriers across SDK retries (11.078592ms)
+✔ null fresh selector cannot be used for continuation or changed binding (1.441631ms)
+✔ closing before registration acknowledgement retires queued effects without re-registering (2.823634ms)
+✔ one scripted SDK query obtains its first mirror key and settles before durable completion (130.119345ms)
+✔ scripted success without first mirror cannot produce durable completed state (39.731649ms)
+✔ runner lifecycle reuses canonical claim/UUID echo ACK over fixed task-capability facade (69.223815ms)
+✔ native checkpoint readback permits ordinary pause and source capture refusal never reports paused (36.021968ms)
+✔ runner resume forwards exact retained context and supported SDK restoration options (13.327272ms)
+✔ runner fork forwards exact retained context and supported SDK restoration options (7.944882ms)
+✔ runner native restore substitution refuses the single SDK query (6.030809ms)
+✔ all canonical relay destinations preserve presented bearer and exact bytes; unrelated provider operations fall through (34.937634ms)
+✔ relay executes canonical task-authorized load/publish and denies foreign/revoked tasks before further durable effects (90.383897ms)
+✔ canonical SDK client/owner registers and preserves opaque deep entries, marker duplicates and UNKNOWN through relay (45.797273ms)
+✔ constructor and request refusals are inert; origins cannot be supplied or coerced by callers (3.214235ms)
+✔ body overflow and parked request cancellation release owned readers without waiting on cancel promises (10.486105ms)
+✔ parked response cancellation and late replies clean up, preserve UNKNOWN and never retry (64.438558ms)
+✔ redirect, response media/length and size failures release no result after a single dispatch (4.694481ms)
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (457.308504ms)
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (316.169912ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (2946.573663ms)
+✖ actual process exits on SIGTERM after listener shutdown (424.119743ms)
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (440.190704ms)
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (419.861456ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (37.382875ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (5.616146ms)
+✔ runner refuses missing observed registration before the single SDK query (107.893966ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (63.237931ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (56.667649ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ apps/runtime/test/runtime.test.mjs (538.522603ms)
+✔ SDK resume: exact supported option delta, immutable request/skill/scopes, independent target (107.3129ms)
+✔ SDK fork: exact supported option delta, immutable request/skill/scopes, independent target (5.872581ms)
+✔ exact immutable whole-checkpoint prefix can omit resumeSessionAt without latest-session fallback (7.291008ms)
+✔ continuation checkpointHash substitution refuses (4.32846ms)
+✔ continuation requestHash substitution refuses (7.806936ms)
+✔ continuation prompt substitution refuses (7.722185ms)
+✔ continuation requestId substitution refuses (7.617057ms)
+✔ continuation window substitution refuses (3.702367ms)
+✔ continuation skill substitution refuses (7.155235ms)
+✔ continuation scope substitution refuses (1.621896ms)
+✔ continuation sdk substitution refuses (3.658561ms)
+✔ continuation cli substitution refuses (2.756084ms)
+✔ continuation image substitution refuses (2.212805ms)
+✔ continuation tenant substitution refuses (3.77059ms)
+✔ continuation actor substitution refuses (2.566972ms)
+✔ continuation run substitution refuses (4.442805ms)
+✔ continuation attempt substitution refuses (1.999466ms)
+✔ continuation worker substitution refuses (3.108677ms)
+✔ continuation fence substitution refuses (1.10687ms)
+✔ continuation conversation substitution refuses (3.71719ms)
+✔ continuation sourceSessionAlias substitution refuses (1.737351ms)
+✔ continuation workspaceBinding substitution refuses (2.579553ms)
+✔ continuation opaqueScope substitution refuses (2.986078ms)
+✔ fork cannot reuse original conversation/session and does not retire original task (4.001527ms)
+✔ workspace paths and exact object scopes use canonical validation (10.388025ms)
+✔ request/context accessor and proxy refusal is inert (2.586963ms)
+✔ single long-lived input stream preserves SDK UUID/text and explicit end; queue stays bounded (7.722874ms)
+✔ input invalid/mutating messages cannot inject SDK authority or configuration (1.85192ms)
+✔ closing input discards queued work and completes a parked iterator without an abrupt stream error (7.592805ms)
+✔ steer preserves exact UUID; local duplicate never redispatches nor claims durable success (8.171057ms)
+✔ pause: owned interrupt receiver, honest still-queued receipt and one close (4.834905ms)
+✔ waitForApproval: owned interrupt receiver, honest still-queued receipt and one close (4.572761ms)
+✔ older interrupt API undefined receipt never becomes proof of empty queue or physical retirement (4.001841ms)
+✔ SDK interrupt failure stays UNKNOWN and discloses no private diagnostics (3.261707ms)
+✔ approval wait proposal metadata is immutable context; it never changes SDK permission mode (4.129299ms)
+✔ cleanup attempts owned Query close even when input close fails; private diagnostics stay hidden (1.69553ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (2.605915ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (1.493386ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (1.163654ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (2.082285ms)
+✔ control immutable binding/context/proposal boundary rejects before SDK effect (2.14877ms)
+✔ parked interrupt deadline is bounded and late receipt cannot rerun SDK (39.03754ms)
+✔ parked interrupt cancellation is bounded and late receipt cannot rerun SDK (9.044911ms)
+✔ one SDK query persists streamed text once, hides reasoning and completes durable run (139.366095ms)
+✔ nonstreamed final assistant text is displayed with a valid generated UUID (64.696645ms)
+✔ SDK mirror never leaks diagnostics or makes a duplicate model query (49.384486ms)
+✔ SDK missing never leaks diagnostics or makes a duplicate model query (81.003878ms)
+✔ SDK sdkFailure never leaks diagnostics or makes a duplicate model query (55.126796ms)
+✔ SDK duplicate never leaks diagnostics or makes a duplicate model query (69.171592ms)
+✔ SDK subagent never leaks diagnostics or makes a duplicate model query (41.02175ms)
+✔ revocation during query stops publication and closes SDK before another result (29.570496ms)
+✔ output limit fails instead of truncating a completed response (40.138838ms)
+✔ late SDK iterator is bounded by deadline and closed without a second query (61.061654ms)
+✔ SDK options reject ambient config, wrong workspace and upstream keys (1.324932ms)
+✔ final assistant frame repairs a missing streamed suffix without duplicate prefix (62.486226ms)
+✔ a conflicting final text refuses completion instead of silently dropping the mismatch (52.202018ms)
+✔ runtime preparation mismatch records a failed run without invoking SDK (37.357238ms)
+✔ actual authenticated journal/activity pause retains exact checkpoint then resumes in a fresh session (1179.682766ms)
+✔ actual authenticated journal/activity approval.wait retains exact checkpoint then resumes in a fresh session (665.321351ms)
+✔ actual activity streams literal composed UUID inputs, claims once, observes exact echo and closes terminal input (87.949942ms)
+✔ terminal result never acknowledges an unobserved steering UUID and never repeats UNKNOWN delivery (6.112479ms)
+✔ durable claimed-false barrier prevents SDK control input (4.281998ms)
+✔ pause: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event (19.44497ms)
+✔ waitForApproval: SDK interrupt/close followed by trusted checkpoint record holds run without terminal event (8.633795ms)
+✔ resume: actual activity passes pinned native restore before one supported SDK query (13.953057ms)
+✔ fork: actual activity passes pinned native restore before one supported SDK query (4.767716ms)
+✔ native restore checkpointSha256 substitution refuses before SDK (5.135041ms)
+✔ native restore workspaceSha256 substitution refuses before SDK (3.621092ms)
+✔ native restore opaqueSessionSha256 substitution refuses before SDK (3.738617ms)
+✔ native restore contextSha256 substitution refuses before SDK (3.585178ms)
+✔ native restore sourceRequestSha256 substitution refuses before SDK (3.207045ms)
+✔ native restore binding substitution refuses before SDK (2.933254ms)
+✔ native restore scopes substitution refuses before SDK (2.69419ms)
+✔ native restore checkedAtMs substitution refuses before SDK (3.086287ms)
+✔ native restore expiresAtMs substitution refuses before SDK (2.539339ms)
+✔ native capture checkpointSha256 substitution refuses checkpoint ACK and retains UNKNOWN (4.776178ms)
+✔ native capture workspaceReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN (15.378156ms)
+✔ native capture opaqueSessionReadbackSha256 substitution refuses checkpoint ACK and retains UNKNOWN (8.631723ms)
+✔ native capture sourceRequestSha256 substitution refuses checkpoint ACK and retains UNKNOWN (5.771876ms)
+✔ native capture contextSha256 substitution refuses checkpoint ACK and retains UNKNOWN (5.017102ms)
+✔ native capture sessionId substitution refuses checkpoint ACK and retains UNKNOWN (5.346703ms)
+✔ native capture checkedAtMs substitution refuses checkpoint ACK and retains UNKNOWN (9.474698ms)
+✔ native capture expiresAtMs substitution refuses checkpoint ACK and retains UNKNOWN (4.492843ms)
+✔ invalid lifecycle ports fail before invoking SDK (0.995297ms)
+✔ SDK uuid echo cannot acknowledge this dispatched control (3.743647ms)
+✔ SDK replay echo cannot acknowledge this dispatched control (2.71423ms)
+✔ SDK subagent echo cannot acknowledge this dispatched control (3.926523ms)
+✔ SDK text echo substitution refuses APPLIED (7.032269ms)
+✔ SDK session echo substitution refuses APPLIED (3.918031ms)
+✔ journal hash substitution refuses before claim/delivery (3.615449ms)
+✔ journal binding substitution refuses before claim/delivery (2.327311ms)
+✔ journal context substitution refuses before claim/delivery (2.414483ms)
+✔ journal sequence substitution refuses before claim/delivery (2.637928ms)
+✔ parked current-authority control read is bounded and closes the single owned query on cancellation (19.284881ms)
+✔ checkpoint persistence refusal never claims a paused run (4.999076ms)
+✔ SDK failure before init closes promptly without waiting for an unused control reader (3.832381ms)
+ℹ tests 132
+ℹ suites 0
+ℹ pass 124
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106549.381359
+
+✖ failing tests:
+
+test at apps/runtime/test/bundle.test.mjs:1:1
+✖ apps/runtime/test/bundle.test.mjs (2272.075989ms)
+  'test failed'
+
+test at apps/runtime/test/first-run-mount.test.mjs:1:1
+✖ apps/runtime/test/first-run-mount.test.mjs (19307.312223ms)
+  'test failed'
+
+test at apps/runtime/test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (457.308504ms)
+  Error: fixture exited 1 null node:internal/modules/package_json_reader:301
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:3:123)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/runtime/test/process.test.mjs:15:1
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (316.169912ms)
+  Error: fixture exited 1 null node:internal/modules/package_json_reader:301
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:15:120)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/test/process.test.mjs:17:1
+✖ actual process exits on SIGTERM after listener shutdown (424.119743ms)
+  Error: fixture exited 1 null node:internal/modules/package_json_reader:301
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:17:82)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/test/process.test.mjs:18:1
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (440.190704ms)
+  Error: fixture exited 1 null node:internal/modules/package_json_reader:301
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:18:131)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/test/process.test.mjs:19:1
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (419.861456ms)
+  Error: fixture exited 1 null node:internal/modules/package_json_reader:301
+    throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+          ^
+  
+  Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@temporalio/client' imported from /workspace/meri-native-runtime-recovery/apps/control/conversations/temporal-dispatch.mjs
+      at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+      at packageResolve (node:internal/modules/esm/resolve:768:81)
+      at moduleResolve (node:internal/modules/esm/resolve:859:18)
+      at defaultResolve (node:internal/modules/esm/resolve:992:11)
+      at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+      at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+      at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+      at #resolve (node:internal/modules/esm/loader:683:17)
+      at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+      at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+    code: 'ERR_MODULE_NOT_FOUND'
+  }
+  
+  Node.js v24.19.0
+  
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:19:115)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/test/runtime.test.mjs:1:1
+✖ apps/runtime/test/runtime.test.mjs (538.522603ms)
+  'test failed'

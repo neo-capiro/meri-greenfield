@@ -1,0 +1,58 @@
+✖ control and runnable modules import without SDK snapshot verifier/provider loading (15067.428194ms)
+✔ snapshot bootstrap rechecks restored workspace and never accepts tampering or rewrites it (433.781431ms)
+✔ durable restored state cannot promote changed opaque source bytes into SDK snapshot (26.570655ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18038.942632
+
+✖ failing tests:
+
+test at docs/qualification/candidates/native-runnable-runtime-20261014/independent/import-inert.test.mjs:2:1
+✖ control and runnable modules import without SDK snapshot verifier/provider loading (15067.428194ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+  +     at Object.spawnSync (node:internal/child_process:1160:20)
+  +     at spawnSync (node:child_process:928:24)
+  +     at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-runnable-runtime-20261014/independent/import-inert.test.mjs:5:14)
+  +     at Test.runInAsyncScope (node:async_hooks:227:14)
+  +     at Test.run (node:internal/test_runner/test:1382:25)
+  +     at Test.start (node:internal/test_runner/test:1242:17)
+  +     at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+  +   code: 'ETIMEDOUT',
+  +   errno: -110,
+  +   path: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node',
+  +   spawnargs: [
+  +     '--input-type=module',
+  +     '--eval',
+  +     `import {registerHooks} from 'node:module';import {resolve} from "file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-runnable-runtime-20261014/independent/sdk-deny-loader.mjs";registerHooks({resolve});await import("file:///workspace/meri-native-runtime-recovery/apps/runtime/control.mjs");await import("file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/runnable-runtime.mjs");console.log('INERT_IMPORT_OK');`
+  +   ],
+  +   syscall: 'spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node'
+  + }
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-runnable-runtime-20261014/independent/import-inert.test.mjs:5:121)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node ETIMEDOUT
+        at Object.spawnSync (node:internal/child_process:1160:20)
+        at spawnSync (node:child_process:928:24)
+        at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-runnable-runtime-20261014/independent/import-inert.test.mjs:5:14)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.start (node:internal/test_runner/test:1242:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17),
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,99 @@
+✔ resume: persisted lifecycle join supplies exact native restore request and correlated key (52.628815ms)
+✔ fork: persisted lifecycle join supplies exact native restore request and correlated key (12.04298ms)
+✔ worker continuation substitution refuses before native restore (3.99898ms)
+✔ worker sourceRequest substitution refuses before native restore (4.092989ms)
+✔ worker request substitution refuses before native restore (2.503277ms)
+✔ worker scopes substitution refuses before native restore (2.231543ms)
+✔ omitted continuation and absent native restore both refuse a persisted target (5.294874ms)
+✔ fresh persisted run returns null and cannot accept continuation hints or snapshot reads (2.202555ms)
+✔ canonical scope changes during restore refuse returned runtime (2.726511ms)
+✔ canonical client changes during restore refuse returned runtime (3.217627ms)
+✔ canonical cancel changes during restore refuse returned runtime (5.707128ms)
+✔ native checkpointSha256 mismatch refuses (3.022879ms)
+✔ native opaqueSessionSha256 mismatch refuses (1.933424ms)
+✔ native expiresAtMs mismatch refuses (5.231907ms)
+✔ native sdkSessionKey mismatch refuses (2.519325ms)
+✔ worker snapshot key is refused without immutable object read; worker receipt fields are inert (1.053584ms)
+✔ checkpoint snapshot cannot survive admission revocation during object read (2.842882ms)
+✔ missing checkpoint snapshot refuses (1.983557ms)
+✔ native restore configuration accessors refuse without invocation (0.576131ms)
+✔ actual runtime HTTP accepts canonical continuation hints only under task role and returns validated restore (20.530886ms)
+✔ runtime native-error still rechecks broker for revocation containment (3.250326ms)
+✔ runtime canonical-drift still rechecks broker for revocation containment (3.540918ms)
+✔ bounded native HTTP transports valid repeated continuation requests above fresh-only size limit (25.137252ms)
+✖ resume: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (59.93249ms)
+✖ fork: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (11.513799ms)
+✖ lost durable claim acknowledgement never writes bytes or dispatches on replay (8.365879ms)
+✖ uncertain restored acknowledgement leaves UNKNOWN and cannot retry original writes (5.905194ms)
+✔ corrupted immutable object refuses before durable claim or filesystem effect (4.621669ms)
+✔ native-file bundle is never interpreted as a SessionStore snapshot (5.042536ms)
+✔ admission revoked after object reads refuses before workspace effects (4.538222ms)
+✖ replay detects modified workspace and additional directory without rewriting them (2.691483ms)
+✖ workspace alias cannot receive restoration and borrowed sibling remains intact (7.325994ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 26
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7326.528219
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/native-restorer.test.mjs:16:37
+✖ resume: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (59.93249ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at buildContinuationOptions (file:///workspace/meri-native-runtime-recovery/apps/worker/conversation/continuation/options.mjs:28:16)
+      at context (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/native-restorer.mjs:15:104)
+      at Object.restore (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/native-restorer.mjs:23:40)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/native-restorer.test.mjs:17:96)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/runtime/native-authority/test/native-restorer.test.mjs:16:37
+✖ fork: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (11.513799ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at buildContinuationOptions (file:///workspace/meri-native-runtime-recovery/apps/worker/conversation/continuation/options.mjs:28:16)
+      at context (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/native-restorer.mjs:15:104)
+      at Object.restore (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/native-restorer.mjs:23:40)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/native-restorer.test.mjs:17:96)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/native-authority/test/native-restorer.test.mjs:23:1
+✖ lost durable claim acknowledgement never writes bytes or dispatches on replay (8.365879ms)
+  TypeError: Cannot read properties of null (reading 'state')
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/native-restorer.test.mjs:24:211)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/native-authority/test/native-restorer.test.mjs:26:1
+✖ uncertain restored acknowledgement leaves UNKNOWN and cannot retry original writes (5.905194ms)
+  TypeError: Cannot read properties of null (reading 'state')
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/native-restorer.test.mjs:27:166)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/native-authority/test/native-restorer.test.mjs:38:1
+✖ replay detects modified workspace and additional directory without rewriting them (2.691483ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at buildContinuationOptions (file:///workspace/meri-native-runtime-recovery/apps/worker/conversation/continuation/options.mjs:28:16)
+      at context (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/native-restorer.mjs:15:104)
+      at Object.restore (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/native-restorer.mjs:23:40)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/native-restorer.test.mjs:39:84)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/native-authority/test/native-restorer.test.mjs:41:1
+✖ workspace alias cannot receive restoration and borrowed sibling remains intact (7.325994ms)
+  TypeError: Cannot read properties of null (reading 'state')
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/native-restorer.test.mjs:42:425)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

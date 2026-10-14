@@ -1,0 +1,25 @@
+✔ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (436.187913ms)
+✔ real PG acknowledged-commit loss requires exact admission readback (246.033238ms)
+✔ real PG original revocation proves absence then retires exact authority even after quarantine (189.623436ms)
+✔ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (226.241702ms)
+✔ restoration receipt exactness and uncertain byte-write state stay immutable in real PG (184.777165ms)
+✔ coherently rehashed malformed resource remains corrupt at canonical read boundary (122.498475ms)
+✔ new actual-task allocation atomically activates original grants and exact replay never extends deadlines (87.578116ms)
+✔ concurrent identical admissions share budget owner and leave a single exact allocation (19.269853ms)
+✔ lost commit acknowledgement is UNKNOWN until exact canonical ACTIVE readback (18.033244ms)
+✔ activation failure rolls back whole allocation and read cannot release pending task (13.613576ms)
+✔ original cleanup proves absent authority, revokes only exact original set and works after expiry/quarantine (23.731675ms)
+✔ exact read/admit refuses task without rebinding or repair (19.393021ms)
+✔ exact read/admit refuses expiry without rebinding or repair (20.36905ms)
+✔ exact read/admit refuses revoked without rebinding or repair (18.696164ms)
+✔ exact read/admit refuses extra without rebinding or repair (19.478242ms)
+✔ exact read/admit refuses allocation without rebinding or repair (13.249767ms)
+✔ expired, cancelled, wrong-account and duplicate/extended intent calls refuse before SQL (11.628287ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13078.263608

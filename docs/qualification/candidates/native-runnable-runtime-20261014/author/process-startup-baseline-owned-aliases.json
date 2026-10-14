@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3dd430ffe5f47ad8853a346cffa998551775cfd9c1d6a451488b8476f4322f74",
+  "startedAt": "2026-10-14T06:22:16.024928+00:00",
+  "durationSeconds": 19.943,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 74657,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-owned-aliases.stdout.bin",
+      "bytes": 106,
+      "sha256": "194227d493b2b33483541f643d9003585c2b443d612fb0d2ba4eb4c001f0bf21"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-owned-aliases.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact PR77 baseline with own contracts alias to avoid duplicate validators through candidate package realpaths; all earlier baseline setup/failures preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

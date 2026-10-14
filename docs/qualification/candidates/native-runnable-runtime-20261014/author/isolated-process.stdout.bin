@@ -1,0 +1,64 @@
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (10205.178285ms)
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (10056.023817ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (6227.103778ms)
+✖ actual process exits on SIGTERM after listener shutdown (10045.174563ms)
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (25013.494504ms)
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (10068.047866ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 1
+ℹ fail 4
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 71800.382126
+
+✖ failing tests:
+
+test at apps/runtime/test/process.test.mjs:3:1
+✖ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (10205.178285ms)
+  Error: fixture exited null SIGKILL 
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:3:123)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/runtime/test/process.test.mjs:15:1
+✖ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (10056.023817ms)
+  Error: fixture exited null SIGKILL 
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:15:120)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/test/process.test.mjs:17:1
+✖ actual process exits on SIGTERM after listener shutdown (10045.174563ms)
+  Error: fixture exited null SIGKILL 
+      at file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:397
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async fixture (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:285)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:17:82)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/runtime/test/process.test.mjs:18:1
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (25013.494504ms)
+  'test timed out after 25000ms'
+
+test at apps/runtime/test/process.test.mjs:19:1
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (10068.047866ms)
+  Error: write EPIPE
+      at target._send (node:internal/child_process:917:20)
+      at target.send (node:internal/child_process:792:19)
+      at Object.close (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:2:715)
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/test/process.test.mjs:19:1060)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -32,
+    code: 'EPIPE',
+    syscall: 'write'
+  }

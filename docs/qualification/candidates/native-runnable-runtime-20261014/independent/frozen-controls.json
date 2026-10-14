@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-runnable-runtime-20261014/independent/controls.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "1a12f1d84f328767ecc69b0a8e9cedf78a00f450",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T05:53:27.951038+00:00",
+  "durationSeconds": 12.59,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 64835,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.stdout.bin",
+      "bytes": 1419,
+      "sha256": "d8201a7da207edf2017a3871f617c3c69aaba1737dd896f0266c08bacf7d9262"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Final frozen production1a12f1d84f328767ecc69b0a8e9cedf78a00f450; rerun after reported composition/lease/snapshot/revocation fixes, initialfailure retained.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

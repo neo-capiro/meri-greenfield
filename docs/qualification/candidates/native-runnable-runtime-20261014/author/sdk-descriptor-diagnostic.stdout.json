@@ -1,0 +1,25 @@
+{
+  "plans": 3,
+  "actualChildren": 0,
+  "nullVsImmutable": {
+    "commandEqual": true,
+    "cwdEqual": true,
+    "argsEqual": true,
+    "envEqual": false,
+    "changedArgs": [],
+    "changedEnvKeys": [
+      "CLAUDE_CONFIG_DIR"
+    ]
+  },
+  "immutableVsImmutable": {
+    "commandEqual": true,
+    "cwdEqual": true,
+    "argsEqual": true,
+    "envEqual": false,
+    "changedArgs": [],
+    "changedEnvKeys": [
+      "CLAUDE_CONFIG_DIR"
+    ]
+  },
+  "scope": "SDK_DESCRIPTOR_PLANNING_REFUSES_ALL_SPAWNS_NO_CLI_MODEL_DATABASE_AWS"
+}

@@ -1,0 +1,420 @@
+{
+  "verdict": "ACCEPT_IMPLEMENTED_LOCAL_SOURCE_NOT_DEPLOYED_OR_END_TO_END_ACCEPTANCE",
+  "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+  "baseHead": "eed08ddecde9974b689235cbd9084e0c4e15ee2e",
+  "acceptedCaptures": [
+    {
+      "receipt": "final-controls.json",
+      "sourceHead": "5c199845e42b2159d5775e00c659b5da62d4113a",
+      "passed": 21,
+      "failed": 0
+    },
+    {
+      "receipt": "frozen-controls.json",
+      "sourceHead": "1a12f1d84f328767ecc69b0a8e9cedf78a00f450",
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "receipt": "observed-inert-import.json",
+      "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+      "passed": 1,
+      "failed": 0,
+      "scope": "Read-only V8 loaded-script observation; no SDK/verifier eager import, not performance acceptance"
+    }
+  ],
+  "retainedFailedCapture": {
+    "receipt": "initial-controls.json",
+    "passed": 6,
+    "failed": 2,
+    "scope": "Unfrozen moving-source characterization only; no exact input-byte acceptance"
+  },
+  "scope": "Real local filesystem and installed ECS command classes; scripted ECS/admission/authority/journal. No reviewer PG/network/SDK/provider/AWS operations.",
+  "remainingCodeGaps": [
+    "Remote task filesystem transfer",
+    "Deployed discovery/nativeFactory/process-stream transport",
+    "Production resource adapter/entrypoint wiring"
+  ],
+  "files": [
+    {
+      "path": "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "bytes": 3435,
+      "sha256": "76da1fa221bb463ce116d3ca794566321f219177b2055193c2c7f609f5e6ba19"
+    },
+    {
+      "path": "apps/control/conversations/native-preparation-journal.mjs",
+      "bytes": 8549,
+      "sha256": "1b6111794442aaf5729ebfb184ad314d24966c357b9daf553634d6ebc8515dfc"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "bytes": 9059,
+      "sha256": "019047fdea7a7cd63a8d30991053d73eedae6fc35a75ce31e849af9d9abd662b"
+    },
+    {
+      "path": "apps/control/conversations/test/native-preparation.test.mjs",
+      "bytes": 9813,
+      "sha256": "f6d9d5ed1135a0962652b27344760f0ba64a1f3c2cd8933251045c3edc267f6a"
+    },
+    {
+      "path": "apps/control/conversations/test/store-fixture.mjs",
+      "bytes": 4977,
+      "sha256": "65749c817588bd14fbb33aa62de0b6496d2c5ccb9198500f0f90663a7a602c67"
+    },
+    {
+      "path": "apps/gateway/budget/native-allocation-admission.mjs",
+      "bytes": 9209,
+      "sha256": "97adc65cd24bb32f5a0cfc462ce24d474b6d951cd1ecb59aa9728c1895bb2b99"
+    },
+    {
+      "path": "apps/gateway/budget/product-scripted-fixture.mjs",
+      "bytes": 5378,
+      "sha256": "9291570483392aab3daf4ab6b387edd3fcc0c9b70e90a02ccd0e3742aa3b9ee8"
+    },
+    {
+      "path": "apps/gateway/budget/test/native-allocation-admission.test.mjs",
+      "bytes": 8404,
+      "sha256": "1f7f41226d6c311565a867512e449c097f47f9a0c2da711765ed727f6a58f495"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "bytes": 4366,
+      "sha256": "69766bf94e244c60971802475b000ffd53f84ceffe1f21f3e433484880c7759e"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 6549,
+      "sha256": "47d88e6bb8fd26bf72cf7c8f66a57d623cafc02979b4e21223a78d906b78c8df"
+    },
+    {
+      "path": "apps/runtime/native-authority/allocated-runtime.mjs",
+      "bytes": 3190,
+      "sha256": "b04a3283dc4d50e40170c6ad93ebf88c03a26cb3fe1bf995b6fa442845f76dff"
+    },
+    {
+      "path": "apps/runtime/native-authority/broker-stack.mjs",
+      "bytes": 5709,
+      "sha256": "22943017296cbaee234f87ad38f9f473bd05e81be8f8c7d17abe3b03221180ac"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-snapshot.mjs",
+      "bytes": 1914,
+      "sha256": "7967c01f77b66f238e66367e76f36c0ea34fbb1729a29a09cc529bfb66f0776f"
+    },
+    {
+      "path": "apps/runtime/native-authority/continuation-runtime.mjs",
+      "bytes": 6392,
+      "sha256": "8eadff7bfa5989445146707b026155414aed2bc136f692529c29d7c9b1f9f610"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-task-binding.mjs",
+      "bytes": 4495,
+      "sha256": "877059c43048323d4ee1b720750fbd44b92ff54e2973efbc6da3c137724f5a66"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-task-factory.mjs",
+      "bytes": 2646,
+      "sha256": "46ecb326866b88448e568f3e21983cf47d347e9ecb57d6f206b596668f543bae"
+    },
+    {
+      "path": "apps/runtime/native-authority/ecs-task-owner.mjs",
+      "bytes": 6777,
+      "sha256": "d9f3325d11bee419179364abb83e45e3943adb45402a41f7c142238f37be0f10"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-restorer.mjs",
+      "bytes": 5715,
+      "sha256": "32174252fac376574b88b74f68bd215fcbc172a94c65c97209d31f4c1d83774e"
+    },
+    {
+      "path": "apps/runtime/native-authority/preallocation-authority.mjs",
+      "bytes": 2635,
+      "sha256": "186d76d4a574d80393872b56249235b1d6d4614ef48a53a90da5f6e4b6e0e5f5"
+    },
+    {
+      "path": "apps/runtime/native-authority/runnable-runtime.mjs",
+      "bytes": 5357,
+      "sha256": "02399c19e2e87088382c13484d5603cea43e5ad16555156bbc87f9e35a602988"
+    },
+    {
+      "path": "apps/runtime/native-authority/runtime-provider.mjs",
+      "bytes": 3499,
+      "sha256": "4b2c7657d483aa112802df9a2bd507d6d26af8910bc8ac3c4804f409a3eeeffc"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-client.mjs",
+      "bytes": 8194,
+      "sha256": "38f1f034981c38961e6692650185fd4b4a84d99febe2b8a43f921c68871e9fc9"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-http.mjs",
+      "bytes": 4370,
+      "sha256": "09e4228c1c0e4eece7d0d940f59838de1b75e67e003efec7a36ea233d321b4b4"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-allocator.mjs",
+      "bytes": 11124,
+      "sha256": "68c47c7b282e0651b9f3ef6690ccdbf69c2d1cd6c1797eba897e903670866682"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-verifier.mjs",
+      "bytes": 6249,
+      "sha256": "9c7d47e2e78eca4fba08c5f754b90579dab79e6459b94360166e5b1ff198469a"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/broker-stack.test.mjs",
+      "bytes": 6963,
+      "sha256": "2ebbf6b88461f125846a329b6897d5803ae19aab287717064f5d335f673f4e46"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/continuation-runtime.test.mjs",
+      "bytes": 13422,
+      "sha256": "9ec347996f9b4efbc649da967e1e41ed3d5baa7eee831fe50bf28306a6fb4f58"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/native-restorer-pg.test.mjs",
+      "bytes": 5147,
+      "sha256": "81d0e38d224b5f1c42ec3f4ecc6a4a25fa6cc7c9d7253e7c1e64988778b958bf"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/native-restorer.test.mjs",
+      "bytes": 7800,
+      "sha256": "cd0eec774bf4a712b3950f6562f2d970da4f90e99a5686c05823dfef0a50ff52"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/runnable-runtime.test.mjs",
+      "bytes": 6383,
+      "sha256": "4416791ee125df6d26b7f487afbfd34529dcedadba603c5b8c7c787ce64297c3"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs",
+      "bytes": 7794,
+      "sha256": "f668b10b34b47dd0169baf5a42c36368e94c03cd5f9c33f125f017b2ea5904d8"
+    },
+    {
+      "path": "apps/runtime/native-authority/workspace-restore.mjs",
+      "bytes": 3455,
+      "sha256": "b102e34121417870929ef9a7cbeb5a52fb506e9f14e4ba4275942dafc869cc0c"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "bytes": 6778,
+      "sha256": "ee7344c472cf838b9120de1f2a5bff40b09e3f68248948038836d71d048506d4"
+    },
+    {
+      "path": "apps/runtime/package-lock.json",
+      "bytes": 99365,
+      "sha256": "5ce134fa205f5c18c7dc2f880c0de45908614d3e9e92416e7017978d379e1fd8"
+    },
+    {
+      "path": "apps/runtime/package.json",
+      "bytes": 700,
+      "sha256": "90639e384b530b52f74af78bee3756f0bed85186195200b6b061306b3af2e441"
+    },
+    {
+      "path": "apps/runtime/sdk-continuation-session.mjs",
+      "bytes": 4992,
+      "sha256": "0ad191df4a7ed77da079f8158c4529f2efdacb7920f379375270179b0adc084b"
+    },
+    {
+      "path": "apps/runtime/sdk-session-runtime.mjs",
+      "bytes": 4661,
+      "sha256": "24533e288133c8350bd8b884a8c98fd08321f5cdfdb90300e0fc15bd40e5bc12"
+    },
+    {
+      "path": "apps/runtime/task-bootstrap.mjs",
+      "bytes": 1920,
+      "sha256": "705ca1a67064b9f815535602de85fb03126c393baa99706a883846b6f6a3c5ba"
+    },
+    {
+      "path": "apps/runtime/test/native-runner-gateway.test.mjs",
+      "bytes": 11468,
+      "sha256": "3d171d99686ec6c5bf3d02798ec530542360c8f124ceefc20e584102d35a6ddc"
+    },
+    {
+      "path": "apps/runtime/test/process.test.mjs",
+      "bytes": 7348,
+      "sha256": "c7f2772b0460d88f27f50c69d208dbb8f466c9d7418f0e2590efa546035edb09"
+    },
+    {
+      "path": "apps/worker/conversation/continuation/test/fixtures.mjs",
+      "bytes": 2157,
+      "sha256": "92abc96768b30dcd5de64d8128d310c4b4d5b9cf7eaaac49a5c6ba30b14a246e"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/bound-session-store.mjs",
+      "bytes": 6925,
+      "sha256": "c4100a00783a43bf89f3e4ed34bee155169d3aff611c84deb8a94d329320cdce"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2887,
+      "sha256": "bdfac290cea0157676d6949c31a7bc7b546312eedd25849f26fad4d626c4d53a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/REVIEW.md",
+      "bytes": 5592,
+      "sha256": "c8ff6a214132118027b29853c944a1737fdf05f0eac4aad42a9c3eeb22efa71e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/composition-config.test.mjs",
+      "bytes": 4430,
+      "sha256": "4616b5c8d60b757d603a11d8565cf57d6996ce7dacabc301b9727e86b298d163"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/controls.test.mjs",
+      "bytes": 14474,
+      "sha256": "cb1225ed3a300da89788ff872a9b0d638ac0c9c9359f014035a5b0f896301047"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/final-controls.json",
+      "bytes": 1665,
+      "sha256": "7fa6c7db8db08d313233fb33d1bfbbc43edbc54f4b235b2bd7eb81d75368a861"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/final-controls.stdout.bin",
+      "bytes": 2218,
+      "sha256": "58dfde5f49edacee0ac12e93ab4cc89fea96c1942c98c23ceb49041c4bf0bdd3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.json",
+      "bytes": 1421,
+      "sha256": "9ecfda8a99cd34704d3d7d1ae62870e63a2c750dc35818575f40263a80609479"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.stdout.bin",
+      "bytes": 1419,
+      "sha256": "d8201a7da207edf2017a3871f617c3c69aaba1737dd896f0266c08bacf7d9262"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.test.txt",
+      "bytes": 13022,
+      "sha256": "c813499d104d7d5853d685ffac754a2ca735d59d073f3e71d0e9404cf18b0d2e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/import-observation.test.mjs",
+      "bytes": 923,
+      "sha256": "4451ad6921437146cb01a3b608364dd346f557d306a734bfe6b0cec7f261cecd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.json",
+      "bytes": 1408,
+      "sha256": "7d57c2fc94e2cfb6baa6f02ac238407e037fd788a5e25541035ec0402253b9ae"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.stdout.bin",
+      "bytes": 2544,
+      "sha256": "6722cc60a108b85d23f88897734238bce0f4ced9f11b5fc4b9c612479dff998c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.test.txt",
+      "bytes": 10213,
+      "sha256": "b389895f7334e0b6ed885a2174d9919d0697dcd5079f28898527c07806ddc616"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-import-inert.test.txt",
+      "bytes": 952,
+      "sha256": "560966100deb6d79b6e6bcd5a725897be5ab7acfb3c9d75a6813a0a53350e8b7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-sdk-deny-loader.txt",
+      "bytes": 331,
+      "sha256": "0f9ec01c82b3d6b39143bfed9cb8894a109ecf81c2b2a979b304c9cf48fd7b28"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/lazy-import-controls.json",
+      "bytes": 1587,
+      "sha256": "c838a6025ea37eaf75a54020812f678111df5c855cd04aa641d876312ee1a432"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/lazy-import-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/lazy-import-controls.stdout.bin",
+      "bytes": 3434,
+      "sha256": "83d7b5d20f47f7ce54d3abe6cdd63f84ca0e5c95078c7ae28d21884d1609a007"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/observed-inert-import.json",
+      "bytes": 1492,
+      "sha256": "604124deb7f09fbfe2eb51c0d62d5c56abcc848aafeab8d2338a3c2d56b6cb34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/observed-inert-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/observed-inert-import.stdout.bin",
+      "bytes": 217,
+      "sha256": "5d02ac0d3b5232e46b9f76798cb3856a3a2882406fc9ef77f80fac5cc3bfbbe2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/restoration-boundary.test.mjs",
+      "bytes": 2953,
+      "sha256": "f59e19601e76d875f5bd432749b2ed3e15a0065a1086f9d9f6e9e9627bd0385a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-controls.json",
+      "bytes": 1609,
+      "sha256": "ca9c5a99c67ba3cbd7e761eaa5ed4baaded3fe8c8a8fccceeb511702e1a51a49"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-controls.stdout.bin",
+      "bytes": 3477,
+      "sha256": "1cae9036842204c6308fd397d5457def5e710dd561451d4c03233d9db4f8c8f5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-inert.test.txt",
+      "bytes": 994,
+      "sha256": "be6b42267bb5d8360181b36b9f1c8ea252532949d1c4a618c6caf57af85964dd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-sdk-deny-loader.txt",
+      "bytes": 325,
+      "sha256": "9fe3dc307a5438e1743bd8c570093d53fce4a31037e2dc5e367a98810eb210dc"
+    }
+  ],
+  "narrowRestorationEvidence": {
+    "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+    "receipts": [
+      "lazy-import-controls.json",
+      "synchronous-import-controls.json"
+    ],
+    "restorationCasesPassedPerRun": 2,
+    "wholeSuitePassedPerRun": 2,
+    "wholeSuiteFailedPerRun": 1,
+    "scope": "Actual workspace-tamper and changed opaque bytes refused; import guard independently exceeded15second child deadline in both suites"
+  },
+  "additionalRetainedFailedCaptures": [
+    "lazy-import-controls.json",
+    "synchronous-import-controls.json"
+  ]
+}

@@ -1,0 +1,5 @@
+/** Independent import guard only; never loaded by product code. */
+export async function resolve(specifier,context,nextResolve){
+ if(specifier.includes('@anthropic-ai/claude-agent-sdk')||specifier.endsWith('/verify-session-store.mjs'))throw Error('UNEXPECTED_EAGER_SDK_SNAPSHOT_IMPORT');
+ return nextResolve(specifier,context);
+}

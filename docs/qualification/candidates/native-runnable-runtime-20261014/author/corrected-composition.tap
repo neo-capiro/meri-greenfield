@@ -1,0 +1,31 @@
+✖ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (2053.057388ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58002.043883
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/runnable-runtime.test.mjs:9:1
+✖ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (2053.057388ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/runnable-runtime.test.mjs:27:96)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'arn:aws:ecs:us-east-1:967807252336:task/Synthetic/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

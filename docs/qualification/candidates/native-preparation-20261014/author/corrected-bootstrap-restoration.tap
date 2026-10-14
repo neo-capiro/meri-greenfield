@@ -1,0 +1,48 @@
+✔ resume: persisted lifecycle join supplies exact native restore request and correlated key (89.019691ms)
+✔ fork: persisted lifecycle join supplies exact native restore request and correlated key (26.830122ms)
+✔ worker continuation substitution refuses before native restore (3.551133ms)
+✔ worker sourceRequest substitution refuses before native restore (3.520936ms)
+✔ worker request substitution refuses before native restore (2.780397ms)
+✔ worker scopes substitution refuses before native restore (2.794933ms)
+✔ omitted continuation and absent native restore both refuse a persisted target (6.168447ms)
+✔ fresh persisted run returns null and cannot accept continuation hints or snapshot reads (2.839739ms)
+✔ canonical scope changes during restore refuse returned runtime (3.667749ms)
+✔ canonical client changes during restore refuse returned runtime (3.495125ms)
+✔ canonical cancel changes during restore refuse returned runtime (3.306077ms)
+✔ native checkpointSha256 mismatch refuses (2.873805ms)
+✔ native opaqueSessionSha256 mismatch refuses (2.686749ms)
+✔ native expiresAtMs mismatch refuses (4.781992ms)
+✔ native sdkSessionKey mismatch refuses (2.47111ms)
+✔ worker snapshot key is refused without immutable object read; worker receipt fields are inert (0.953062ms)
+✔ checkpoint snapshot cannot survive admission revocation during object read (4.234066ms)
+✔ missing checkpoint snapshot refuses (2.460991ms)
+✔ native restore configuration accessors refuse without invocation (0.484078ms)
+✔ actual runtime HTTP accepts canonical continuation hints only under task role and returns validated restore (23.719108ms)
+✔ runtime native-error still rechecks broker for revocation containment (3.917298ms)
+✔ runtime canonical-drift still rechecks broker for revocation containment (7.096275ms)
+✔ bounded native HTTP transports valid repeated continuation requests above fresh-only size limit (53.708072ms)
+✔ resume: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (77.522931ms)
+✔ fork: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (21.138312ms)
+✔ lost durable claim acknowledgement never writes bytes or dispatches on replay (13.536871ms)
+✔ uncertain restored acknowledgement leaves UNKNOWN and cannot retry original writes (9.046338ms)
+✔ corrupted immutable object refuses before durable claim or filesystem effect (5.525105ms)
+✔ native-file bundle is never interpreted as a SessionStore snapshot (4.906313ms)
+✔ admission revoked after object reads refuses before workspace effects (8.025526ms)
+✔ replay detects modified workspace and additional directory without rewriting them (9.059006ms)
+✔ workspace alias cannot receive restoration and borrowed sibling remains intact (6.72812ms)
+✔ resume: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (51.788005ms)
+✔ fork: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (5.135548ms)
+✔ snapshot reads cannot establish completed target or native registration (2.190076ms)
+✔ revoked native registration rejects first write and permanently bars redispatch (3.084306ms)
+✔ uncertain seeded target write cannot be retried or report success (2.094685ms)
+✔ prepare cancellation stays separate from actual query lifetime after immutable snapshot read (2.477456ms)
+✔ closed snapshot and foreign source key cannot be reused; first child write refuses before register (2.691648ms)
+✔ snapshot transport rejects worker checkpoint/key hints and preserves deep opaque entries (19.837954ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16418.723323

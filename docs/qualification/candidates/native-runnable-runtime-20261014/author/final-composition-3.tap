@@ -1,0 +1,27 @@
+✖ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (3496.871296ms)
+
+Interrupted while running:
+
+⚠ apps/runtime/native-authority/test/runnable-runtime.test.mjs (apps/runtime/native-authority/test/runnable-runtime.test.mjs:1:1)
+✖ apps/runtime/native-authority/test/runnable-runtime.test.mjs (136761.645424ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 1
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136774.691239
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/runnable-runtime.test.mjs:9:1
+✖ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (3496.871296ms)
+  Error: STORE_UNAVAILABLE
+      at tx (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:12:35) {
+    code: 'STORE_UNAVAILABLE'
+  }
+
+test at apps/runtime/native-authority/test/runnable-runtime.test.mjs:1:1
+✖ apps/runtime/native-authority/test/runnable-runtime.test.mjs (136761.645424ms)
+  'Promise resolution is still pending but the event loop has already resolved'

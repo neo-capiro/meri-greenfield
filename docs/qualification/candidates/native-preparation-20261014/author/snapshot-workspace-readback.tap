@@ -1,0 +1,18 @@
+✔ resume: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (101.833881ms)
+✔ fork: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (21.211671ms)
+✔ lost durable claim acknowledgement never writes bytes or dispatches on replay (17.968182ms)
+✔ uncertain restored acknowledgement leaves UNKNOWN and cannot retry original writes (10.472605ms)
+✔ corrupted immutable object refuses before durable claim or filesystem effect (6.64886ms)
+✔ native-file bundle is never interpreted as a SessionStore snapshot (7.369946ms)
+✔ admission revoked after object reads refuses before workspace effects (6.993565ms)
+✔ replay detects modified workspace and additional directory without rewriting them (13.636722ms)
+✔ snapshot read detects actual workspace byte changes without rewriting caller changes (24.627871ms)
+✔ workspace alias cannot receive restoration and borrowed sibling remains intact (8.541692ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7697.523615

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/runtime/test/bundle.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3dd430ffe5f47ad8853a346cffa998551775cfd9c1d6a451488b8476f4322f74",
+  "startedAt": "2026-10-14T06:23:40.000592+00:00",
+  "durationSeconds": 24.626,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 75208,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/native-bundle.stdout.bin",
+      "bytes": 1529,
+      "sha256": "255a791a7762aa9c6915bdb91dffd292cdbcd76d225e95faaeafc79b238112c0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/native-bundle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Managed filesystem maps root owner to uid65534, causing SWC ancestry refusal; run the same pure Temporal bundler check against actual filesystem ownership with task-owned cache, preserving native trust checks.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

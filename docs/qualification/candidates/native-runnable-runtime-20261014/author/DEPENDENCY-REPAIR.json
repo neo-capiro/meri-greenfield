@@ -1,0 +1,17 @@
+{
+  "removedConfirmedPriorSelfLinks": [
+    {
+      "accidentalSelfLink": "/workspace/meri-greenfield/node_modules/ajv/ajv",
+      "target": "/workspace/meri-greenfield/node_modules/ajv"
+    },
+    {
+      "accidentalSelfLink": "/workspace/meri-greenfield/node_modules/ajv-formats/ajv-formats",
+      "target": "/workspace/meri-greenfield/node_modules/ajv-formats"
+    },
+    {
+      "accidentalSelfLink": "/workspace/meri-greenfield/node_modules/canonicalize/canonicalize",
+      "target": "/workspace/meri-greenfield/node_modules/canonicalize"
+    }
+  ],
+  "addedTaskOnlySdkLink": "node_modules/@anthropic-ai/claude-agent-sdk"
+}
