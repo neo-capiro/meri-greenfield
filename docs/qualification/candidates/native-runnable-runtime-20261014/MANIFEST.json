@@ -1,0 +1,821 @@
+{
+  "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+  "basePr77Head": "eed08ddecde9974b689235cbd9084e0c4e15ee2e",
+  "independentManifestVerifiedRecords": 73,
+  "verdict": "ACCEPT_LOCAL_SOURCE_WITH_REPORTED_FAILED_GATES_NO_LIVE_OR_WHOLE_PROJECT_ACCEPTANCE",
+  "checks": {
+    "completedNative": {
+      "pass": 278,
+      "fail": 0
+    },
+    "runtimeRegression": {
+      "pass": 141,
+      "fail": 6,
+      "laterTemporalBundlePass": 1
+    },
+    "isolatedProcess": {
+      "pass": 1,
+      "fail": 4,
+      "cancelled": 1
+    },
+    "independent": {
+      "fullControlsAt5c199": 21,
+      "finalDeltaAtA5b1": 3
+    },
+    "actualSdkFork": "FAILED_BEFORE_TARGET_NATIVE_CLI_LAUNCH",
+    "runtimeTypecheck": "PASS"
+  },
+  "scope": "REAL_TASK_OWNED_SQL_FS_LOCAL_INDEPENDENT_PROCESS_SCRIPTED_ECS_AUTHORITY_OBJECTS_NO_AWS_MODEL_PROVIDER_DOCUMENT_DEPLOYMENT_ACCEPTANCE",
+  "records": [
+    {
+      "path": "apps/control/conversations/migrations/0007_native_preparation.sql",
+      "bytes": 3435,
+      "sha256": "76da1fa221bb463ce116d3ca794566321f219177b2055193c2c7f609f5e6ba19"
+    },
+    {
+      "path": "apps/control/conversations/native-preparation-journal.mjs",
+      "bytes": 8549,
+      "sha256": "1b6111794442aaf5729ebfb184ad314d24966c357b9daf553634d6ebc8515dfc"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "bytes": 9059,
+      "sha256": "019047fdea7a7cd63a8d30991053d73eedae6fc35a75ce31e849af9d9abd662b"
+    },
+    {
+      "path": "apps/control/conversations/test/native-preparation.test.mjs",
+      "bytes": 9813,
+      "sha256": "f6d9d5ed1135a0962652b27344760f0ba64a1f3c2cd8933251045c3edc267f6a"
+    },
+    {
+      "path": "apps/gateway/budget/native-allocation-admission.mjs",
+      "bytes": 9209,
+      "sha256": "97adc65cd24bb32f5a0cfc462ce24d474b6d951cd1ecb59aa9728c1895bb2b99"
+    },
+    {
+      "path": "apps/gateway/budget/test/native-allocation-admission.test.mjs",
+      "bytes": 8404,
+      "sha256": "1f7f41226d6c311565a867512e449c097f47f9a0c2da711765ed727f6a58f495"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "bytes": 4366,
+      "sha256": "69766bf94e244c60971802475b000ffd53f84ceffe1f21f3e433484880c7759e"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 6549,
+      "sha256": "47d88e6bb8fd26bf72cf7c8f66a57d623cafc02979b4e21223a78d906b78c8df"
+    },
+    {
+      "path": "apps/runtime/native-authority/allocated-runtime.mjs",
+      "bytes": 3190,
+      "sha256": "b04a3283dc4d50e40170c6ad93ebf88c03a26cb3fe1bf995b6fa442845f76dff"
+    },
+    {
+      "path": "apps/runtime/native-authority/broker-stack.mjs",
+      "bytes": 5709,
+      "sha256": "22943017296cbaee234f87ad38f9f473bd05e81be8f8c7d17abe3b03221180ac"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-snapshot.mjs",
+      "bytes": 1914,
+      "sha256": "7967c01f77b66f238e66367e76f36c0ea34fbb1729a29a09cc529bfb66f0776f"
+    },
+    {
+      "path": "apps/runtime/native-authority/continuation-runtime.mjs",
+      "bytes": 6392,
+      "sha256": "8eadff7bfa5989445146707b026155414aed2bc136f692529c29d7c9b1f9f610"
+    },
+    {
+      "path": "apps/runtime/native-authority/native-restorer.mjs",
+      "bytes": 5715,
+      "sha256": "32174252fac376574b88b74f68bd215fcbc172a94c65c97209d31f4c1d83774e"
+    },
+    {
+      "path": "apps/runtime/native-authority/preallocation-authority.mjs",
+      "bytes": 2635,
+      "sha256": "186d76d4a574d80393872b56249235b1d6d4614ef48a53a90da5f6e4b6e0e5f5"
+    },
+    {
+      "path": "apps/runtime/native-authority/runnable-runtime.mjs",
+      "bytes": 5357,
+      "sha256": "02399c19e2e87088382c13484d5603cea43e5ad16555156bbc87f9e35a602988"
+    },
+    {
+      "path": "apps/runtime/native-authority/runtime-provider.mjs",
+      "bytes": 3499,
+      "sha256": "4b2c7657d483aa112802df9a2bd507d6d26af8910bc8ac3c4804f409a3eeeffc"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-client.mjs",
+      "bytes": 8194,
+      "sha256": "38f1f034981c38961e6692650185fd4b4a84d99febe2b8a43f921c68871e9fc9"
+    },
+    {
+      "path": "apps/runtime/native-authority/session-http.mjs",
+      "bytes": 4370,
+      "sha256": "09e4228c1c0e4eece7d0d940f59838de1b75e67e003efec7a36ea233d321b4b4"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-allocator.mjs",
+      "bytes": 11124,
+      "sha256": "68c47c7b282e0651b9f3ef6690ccdbf69c2d1cd6c1797eba897e903670866682"
+    },
+    {
+      "path": "apps/runtime/native-authority/task-verifier.mjs",
+      "bytes": 6249,
+      "sha256": "9c7d47e2e78eca4fba08c5f754b90579dab79e6459b94360166e5b1ff198469a"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/broker-stack.test.mjs",
+      "bytes": 6963,
+      "sha256": "2ebbf6b88461f125846a329b6897d5803ae19aab287717064f5d335f673f4e46"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/continuation-runtime.test.mjs",
+      "bytes": 13422,
+      "sha256": "9ec347996f9b4efbc649da967e1e41ed3d5baa7eee831fe50bf28306a6fb4f58"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/native-restorer-pg.test.mjs",
+      "bytes": 5147,
+      "sha256": "81d0e38d224b5f1c42ec3f4ecc6a4a25fa6cc7c9d7253e7c1e64988778b958bf"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/native-restorer.test.mjs",
+      "bytes": 7800,
+      "sha256": "cd0eec774bf4a712b3950f6562f2d970da4f90e99a5686c05823dfef0a50ff52"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/runnable-runtime.test.mjs",
+      "bytes": 6383,
+      "sha256": "4416791ee125df6d26b7f487afbfd34529dcedadba603c5b8c7c787ce64297c3"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs",
+      "bytes": 7794,
+      "sha256": "f668b10b34b47dd0169baf5a42c36368e94c03cd5f9c33f125f017b2ea5904d8"
+    },
+    {
+      "path": "apps/runtime/native-authority/workspace-restore.mjs",
+      "bytes": 3455,
+      "sha256": "b102e34121417870929ef9a7cbeb5a52fb506e9f14e4ba4275942dafc869cc0c"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "bytes": 6778,
+      "sha256": "ee7344c472cf838b9120de1f2a5bff40b09e3f68248948038836d71d048506d4"
+    },
+    {
+      "path": "apps/runtime/sdk-continuation-session.mjs",
+      "bytes": 4992,
+      "sha256": "0ad191df4a7ed77da079f8158c4529f2efdacb7920f379375270179b0adc084b"
+    },
+    {
+      "path": "apps/runtime/sdk-session-runtime.mjs",
+      "bytes": 4661,
+      "sha256": "24533e288133c8350bd8b884a8c98fd08321f5cdfdb90300e0fc15bd40e5bc12"
+    },
+    {
+      "path": "apps/runtime/task-bootstrap.mjs",
+      "bytes": 1920,
+      "sha256": "705ca1a67064b9f815535602de85fb03126c393baa99706a883846b6f6a3c5ba"
+    },
+    {
+      "path": "apps/runtime/test/native-runner-gateway.test.mjs",
+      "bytes": 11468,
+      "sha256": "3d171d99686ec6c5bf3d02798ec530542360c8f124ceefc20e584102d35a6ddc"
+    },
+    {
+      "path": "apps/runtime/test/process.test.mjs",
+      "bytes": 7348,
+      "sha256": "c7f2772b0460d88f27f50c69d208dbb8f466c9d7418f0e2590efa546035edb09"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FIRST-RUN-CONVERGENCE-20261014.md",
+      "bytes": 8402,
+      "sha256": "b9e3eb54ea0db9e5bc135697f1fd78dfcd13f4960e0ccffc200418b9a4bd0a5f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-NATIVE-PREPARATION-20261014.md",
+      "bytes": 7871,
+      "sha256": "41eb436ebdf04ce094011f3442f7b6c6ce81aaef457eb230d09f8724bc20d463"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/RESTORATION-BOOTSTRAP.md",
+      "bytes": 8716,
+      "sha256": "49496b08ca254167cef3035f4148be2c55c02c892bae92f02a933721b34fbf00"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/actual-pg-restoration.tap",
+      "bytes": 416,
+      "sha256": "e6efe6fa883e07497d3d8f00e95aeb53463d3746b5682a53b9ae06a174a1df34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/characterization-bootstrap-restoration.tap",
+      "bytes": 11666,
+      "sha256": "4def1609f31a4a35de9b3c314ec10b81e101f8c9b607cd26fc8802a8199f9f4b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/corrected-bootstrap-restoration.tap",
+      "bytes": 3818,
+      "sha256": "00ef7ced176cda3901744be8e6e539cec71c3821ec4eb661cacf6b17905f10a6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/corrected-restoration.tap",
+      "bytes": 8038,
+      "sha256": "feb01d187c2d14aa1bce406bb01be6d007c9e2fc2dd2519c9f3afa8e69e1e45b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/corrected-stack-composition.tap",
+      "bytes": 558,
+      "sha256": "32f47d7ea552de140096aabb0571ee11187224e233c9d9e5b05ead7b72818f40"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/final-bootstrap-restoration.tap",
+      "bytes": 11864,
+      "sha256": "bbd95cfcbf113de801cf999c085446eb871b9d9ecb7f386339510541569284ed"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/final-stack-composition.tap",
+      "bytes": 4565,
+      "sha256": "ff1e74fb47f33232360ba3b5517f699baaa1299798d8e69e77b253bc08939634"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/initial-bootstrap.tap",
+      "bytes": 1816,
+      "sha256": "4e63a24f9c10e3033864d3b089edcf53a2c3f5d243a0eea337c2adc7b9a75732"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/initial-restoration.tap",
+      "bytes": 8167,
+      "sha256": "0d99045a55a56de7aeacd66363fbd22f9c1e12464b47c90901d2e832292a4194"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/lazy-snapshot-sdk-import.tap",
+      "bytes": 1982,
+      "sha256": "f1bdcebe8e45a3c54118dcba69313f160d1d7bd290738628ffc3c0b2f345851b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/snapshot-workspace-readback.tap",
+      "bytes": 1117,
+      "sha256": "3fa8e706ba538706841b8b8083cd96971975ca84ca45627fee4bc2a18c69429c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-preparation-20261014/author/stack-composition.tap",
+      "bytes": 1585,
+      "sha256": "ef93be9b6539d3c6406c8d535d951426b667ddf943313e9c0998e7de035b9564"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/CLEANUP.json",
+      "bytes": 3952,
+      "sha256": "24e6b08889460403870c78e1b51f668691188156526cfeec437a59da79fd0b91"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/OUTLINE.md",
+      "bytes": 2345,
+      "sha256": "58fe4017ea6684dc1528726e0e633915af022efe85bf676c41c34a3228f88d3d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/DEPENDENCY-REPAIR.json",
+      "bytes": 631,
+      "sha256": "d1088b2e111580ba54a85f9e665a5289a8e8af512aa9416c562b1b2a0527ba19"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/PREPARATION-RESULT.json",
+      "bytes": 2071,
+      "sha256": "7d48f565410561b3fff263fc4b0352d1ee31d65181bc59f690392975e5c2838b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/SDK-CONTINUATION-PREEXEC-CORRECTED.json",
+      "bytes": 3240,
+      "sha256": "b9321bfb4144a35a7b23b7e1a2fa2e55419a3873de048d140f0fe9edf2833327"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/SDK-CONTINUATION-PREEXECUTION.json",
+      "bytes": 3102,
+      "sha256": "75a6b10fbc4e5e26620b53af82e4766edd9997e31aa4308bdff737c50b7a8dd3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/SDK-CONTINUATION-RESULTS.md",
+      "bytes": 4188,
+      "sha256": "83312255428682feae844c048aaead7edaf623731f24e35c96931f057832345f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/actual-sdk-continuation.json",
+      "bytes": 1322,
+      "sha256": "5a367dcb87f5d9496e89a2a679dd3b41f859d7058bc2705a06c945932f83fd9d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/actual-sdk-continuation.stderr.bin",
+      "bytes": 807,
+      "sha256": "19121bcc0e977b5305ba900c684268a6a701193ceea8a95b5098ed66728908da"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/actual-sdk-continuation.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/capture-aggregate.py",
+      "bytes": 3376,
+      "sha256": "fbda7eb452c4882542c88a25142d00e98df7b3d513dc33a9bbd93e60d83ad15c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/capture-check.py",
+      "bytes": 3376,
+      "sha256": "3dd430ffe5f47ad8853a346cffa998551775cfd9c1d6a451488b8476f4322f74"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/capture-sdk-continuation.py",
+      "bytes": 3375,
+      "sha256": "9dea50a30311d89f9ae5f838904d00adb30f88f20fa76650437d45dcbe06ab69"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/completed-native-capture.txt",
+      "bytes": 3333,
+      "sha256": "c4b81de2d141f508d65f6cc639be332f958a9b4543b40852bac963e7e48cb2b7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/completed-native.json",
+      "bytes": 3186,
+      "sha256": "6e8493873728061fe90354d46b4a44d2f7282a5b9a01b426c18ead1ce94a5c37"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/completed-native.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/completed-native.stdout.bin",
+      "bytes": 29098,
+      "sha256": "73f3ec62378708ab26085ca8e87c3eee966f327f391bc9e83996943ab2faa2d5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-composition.tap",
+      "bytes": 1336,
+      "sha256": "8b6b215f479d5310dcdc36a680d58fe3397dd8ecbf06f5b00ff0ae82b22dfffa"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-preparation-pg.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-preparation-pg.stdout.txt",
+      "bytes": 3698,
+      "sha256": "2de4f87c00a8274bd1fd9db54734780fecb02d2624d1fcee8bbe5fc4c199015a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-sdk-continuation.json",
+      "bytes": 1332,
+      "sha256": "fa5afd261481031ab303305d41de2162147c8a00cb56af9ede08c31f95604391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-sdk-continuation.stderr.bin",
+      "bytes": 1404,
+      "sha256": "67fab282c83a38fedf51508fead7140adb43757f313c95253da6eca5beabbcaf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/corrected-sdk-continuation.stdout.bin",
+      "bytes": 554,
+      "sha256": "16dd8c1a62beddd1642216952b97cd8e7b60d618bb47062cb2a0f7ac46709f8c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-composition-2.tap",
+      "bytes": 968,
+      "sha256": "0e8f1ebd922681fa5d99d3c86b502751bc2c00a73b555f97d2d1d0c4928fbd81"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-composition-3.tap",
+      "bytes": 1177,
+      "sha256": "b7b63c3830db3a1c1288b0bcd50fcfaed18d9143631b53635f230fc30c4e6678"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-composition-4.tap",
+      "bytes": 271,
+      "sha256": "ec2fc38b7ad41e1dc4ff78c53ad346dc599a52c8b3920170c7924f289fc68534"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-composition.tap",
+      "bytes": 1454,
+      "sha256": "67fbfd45716e5e4b193cf349ffc8d8c94230a5faab229e86adbb5e06fdfbaf2c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-native-capture.txt",
+      "bytes": 3232,
+      "sha256": "5f456eb3038e6bb64bc57643e3be96ac212ed5760c78f4e24aab6e59f6dc828e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-native.json",
+      "bytes": 3125,
+      "sha256": "ef3b030584cfefde97ab057cbc058ef90d6b45763bbcbed8c89c96093312565d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-native.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-native.stdout.bin",
+      "bytes": 23046,
+      "sha256": "dfddaee4f987e918701e8fb91d488830af93dc343b73be2460739f4307729704"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-preparation-pg.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-preparation-pg.stdout.txt",
+      "bytes": 1822,
+      "sha256": "72b35d799b0992dc999b289c0c82f157b2dc4b2e079b01e183914f788adc1d29"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-runtime-capture.txt",
+      "bytes": 2124,
+      "sha256": "8623fb64f2fe83e7cf52602c79dd9b0a4c740f80b6098c8b45be9bda4be979a8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-runtime.json",
+      "bytes": 1941,
+      "sha256": "259f64e9cc6b1dae828ff68f730f18dfbf5768bb45eba1a282133fbed4b27939"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-runtime.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-runtime.stdout.bin",
+      "bytes": 21927,
+      "sha256": "1e47e45d6d370439a3c3ccc64e90d4270218ebebff138cd2e321fe8e087e3b01"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/initial-composition.tap",
+      "bytes": 1791,
+      "sha256": "ac928496918d7217b840fa3c39183f7c781157062d6f3f9862c7da8e8f71b06c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/initial-preparation-pg.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/initial-preparation-pg.stdout.txt",
+      "bytes": 5759,
+      "sha256": "387ee1dce465ca8c1b66c1c5caacc588c78fe184aff6c0ddff3f74a3b3ac4732"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/isolated-process-capture.txt",
+      "bytes": 1602,
+      "sha256": "274b72c24c8db3d371571588a248ccdc7bf77b854897fb13895621f3fecb7f71"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/isolated-process.json",
+      "bytes": 1367,
+      "sha256": "759cd97567ce67e36c18fdc9cd36e951f6d1202400282d3b83a5027a61fbf767"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/isolated-process.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/isolated-process.stdout.bin",
+      "bytes": 4012,
+      "sha256": "b631dc5a398306e48ad07cca34d809cf9d844c5ef747390af64cb8c61318cdb0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/native-bundle-capture.txt",
+      "bytes": 1660,
+      "sha256": "d3f4a20f3b14713912d890fc7f725c6f6ddb09b5959a42da05eb93288c194892"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/native-bundle.json",
+      "bytes": 1403,
+      "sha256": "261e378c98fa70e7cad175fc69ffd0907e4b3d0f1f5f50fbc78f6a072498a14c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/native-bundle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/native-bundle.stdout.bin",
+      "bytes": 1529,
+      "sha256": "255a791a7762aa9c6915bdb91dffd292cdbcd76d225e95faaeafc79b238112c0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-capture.txt",
+      "bytes": 1569,
+      "sha256": "e7021910859480dab1f732b47a3c1eb2f52fdbbd36b733591bd534ffd0468786"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-corrected-capture.txt",
+      "bytes": 1643,
+      "sha256": "3d3f1aea417973b714669e893b12d04f84c6671637da56ba4e807e5e2c14b02f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-corrected.json",
+      "bytes": 1400,
+      "sha256": "04bf4d4adb7c9aec7ed41a2e840432319928811d285315bf40b2a67e1a2d0705"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-corrected.stdout.bin",
+      "bytes": 1148,
+      "sha256": "514d02334744f23e923e924bc826ace56a6eb4243ad91d216e809ca6f660c57c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-final-capture.txt",
+      "bytes": 1412,
+      "sha256": "6d4866b7f596c62de20ba741659d67e9b2dfe601908046d0c0ce5ae00593beaf"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-final.json",
+      "bytes": 1394,
+      "sha256": "798618f9de668bab48540feae47a641bb8c500c19dddb4062b300372e14fa6a7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-final.stdout.bin",
+      "bytes": 125,
+      "sha256": "8e7b0f0f372b3dee2b82103431f6aa5fa529c938ee81103e1ee68b9e385a3555"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-owned-aliases-capture.txt",
+      "bytes": 1451,
+      "sha256": "8ea29c950bbf240da4a4b07e0a02aee5951cbef26beabc0b37b42356a363751a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-owned-aliases.json",
+      "bytes": 1452,
+      "sha256": "efdedc9a03abdc370d88a41c653732b7364ee34c5a47cb3c7e8201a0bedd2a8b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-owned-aliases.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline-owned-aliases.stdout.bin",
+      "bytes": 106,
+      "sha256": "194227d493b2b33483541f643d9003585c2b443d612fb0d2ba4eb4c001f0bf21"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline.json",
+      "bytes": 1326,
+      "sha256": "aa61ec8d9abfc5b9254fa3590afb42f118453fc71c7f0e88442f9dcd8dae8a0a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline.mjs",
+      "bytes": 975,
+      "sha256": "dcc3726657dd98316fa3307b960e59701e9454a39c349c0de5a9dce91e34b7db"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-baseline.stdout.bin",
+      "bytes": 1162,
+      "sha256": "41203ca3403ad8d7bfbd121029f9fae48c5dd94aefb4c85c41325aaaa496c60a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-capture.txt",
+      "bytes": 1310,
+      "sha256": "ce0e94b2f2abd7b30c01f737c0698ecb05f578f6dbcd0dd7c6926e7a925f9df6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup-diagnostic.mjs",
+      "bytes": 952,
+      "sha256": "cc3f264d1a66ff46373c505bf39e4dad302410dbfd37a08ff34e44b712e2fb45"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup.json",
+      "bytes": 1311,
+      "sha256": "010c609455b31ff9b920765093b50f934872ecb575e21abe9d9190afd527b38d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/process-startup.stdout.bin",
+      "bytes": 106,
+      "sha256": "7d6bf9e2a22b98cefc7f1cae102316e7f35bbae732f2d57114c4212ecb44f80d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/runtime-regression-corrected.tap",
+      "bytes": 17554,
+      "sha256": "1d9ea35c98b1403aa653631850a3231500c5c6a1194b81fe762af5fe50e37678"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/runtime-regression.tap",
+      "bytes": 24445,
+      "sha256": "795df1f1ce8f3465403b1c65f588c2be76acc52605f6e39ec88e0318ad45e380"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/runtime-typecheck.txt",
+      "bytes": 284,
+      "sha256": "8427a190a43f2a43372a98adf9db07d94f6493e4264ceee978610e37998a5444"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-continuation-probe-initial.mjs",
+      "bytes": 13200,
+      "sha256": "20d5adb4af04f121faa88ecfd7445b87be30847cf60093471fd4a17a9ca06bd1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-continuation-probe.mjs",
+      "bytes": 14071,
+      "sha256": "2c5bd631b599a13da4d6f0b6eb8684df92a6e9bc9b22fafb36a1bf7109aaa04b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-descriptor-diagnostic.mjs",
+      "bytes": 3851,
+      "sha256": "695d344cbc99b2f7c104a0e7b688bc51648568e44a959da0ffba9dba56162579"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-descriptor-diagnostic.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-descriptor-diagnostic.stdout.json",
+      "bytes": 530,
+      "sha256": "04c75d3382118c3f578c36933f00473d4a5fc8a692ffe6fb886eb16e44516721"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/working-controls.tap",
+      "bytes": 1416,
+      "sha256": "47be9914faa689da9f6af2fc7ad0a50ad431f4ca9f81d66e3b0ecd71bcb19408"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/REVIEW.md",
+      "bytes": 5592,
+      "sha256": "c8ff6a214132118027b29853c944a1737fdf05f0eac4aad42a9c3eeb22efa71e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/composition-config.test.mjs",
+      "bytes": 4430,
+      "sha256": "4616b5c8d60b757d603a11d8565cf57d6996ce7dacabc301b9727e86b298d163"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/controls.test.mjs",
+      "bytes": 14474,
+      "sha256": "cb1225ed3a300da89788ff872a9b0d638ac0c9c9359f014035a5b0f896301047"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/final-controls.json",
+      "bytes": 1665,
+      "sha256": "7fa6c7db8db08d313233fb33d1bfbbc43edbc54f4b235b2bd7eb81d75368a861"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/final-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/final-controls.stdout.bin",
+      "bytes": 2218,
+      "sha256": "58dfde5f49edacee0ac12e93ab4cc89fea96c1942c98c23ceb49041c4bf0bdd3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.json",
+      "bytes": 1421,
+      "sha256": "9ecfda8a99cd34704d3d7d1ae62870e63a2c750dc35818575f40263a80609479"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.stdout.bin",
+      "bytes": 1419,
+      "sha256": "d8201a7da207edf2017a3871f617c3c69aaba1737dd896f0266c08bacf7d9262"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/frozen-controls.test.txt",
+      "bytes": 13022,
+      "sha256": "c813499d104d7d5853d685ffac754a2ca735d59d073f3e71d0e9404cf18b0d2e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/import-observation.test.mjs",
+      "bytes": 923,
+      "sha256": "4451ad6921437146cb01a3b608364dd346f557d306a734bfe6b0cec7f261cecd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.json",
+      "bytes": 1408,
+      "sha256": "7d57c2fc94e2cfb6baa6f02ac238407e037fd788a5e25541035ec0402253b9ae"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.stdout.bin",
+      "bytes": 2544,
+      "sha256": "6722cc60a108b85d23f88897734238bce0f4ced9f11b5fc4b9c612479dff998c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.test.txt",
+      "bytes": 10213,
+      "sha256": "b389895f7334e0b6ed885a2174d9919d0697dcd5079f28898527c07806ddc616"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-import-inert.test.txt",
+      "bytes": 952,
+      "sha256": "560966100deb6d79b6e6bcd5a725897be5ab7acfb3c9d75a6813a0a53350e8b7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-sdk-deny-loader.txt",
+      "bytes": 331,
+      "sha256": "0f9ec01c82b3d6b39143bfed9cb8894a109ecf81c2b2a979b304c9cf48fd7b28"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/lazy-import-controls.json",
+      "bytes": 1587,
+      "sha256": "c838a6025ea37eaf75a54020812f678111df5c855cd04aa641d876312ee1a432"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/lazy-import-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/lazy-import-controls.stdout.bin",
+      "bytes": 3434,
+      "sha256": "83d7b5d20f47f7ce54d3abe6cdd63f84ca0e5c95078c7ae28d21884d1609a007"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/manifest.json",
+      "bytes": 16965,
+      "sha256": "adbd7614410d0615cf7ac819f0b7410bde840e183719a7830b79f12a6e8654a6"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/observed-inert-import.json",
+      "bytes": 1492,
+      "sha256": "604124deb7f09fbfe2eb51c0d62d5c56abcc848aafeab8d2338a3c2d56b6cb34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/observed-inert-import.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/observed-inert-import.stdout.bin",
+      "bytes": 217,
+      "sha256": "5d02ac0d3b5232e46b9f76798cb3856a3a2882406fc9ef77f80fac5cc3bfbbe2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/restoration-boundary.test.mjs",
+      "bytes": 2953,
+      "sha256": "f59e19601e76d875f5bd432749b2ed3e15a0065a1086f9d9f6e9e9627bd0385a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-controls.json",
+      "bytes": 1609,
+      "sha256": "ca9c5a99c67ba3cbd7e761eaa5ed4baaded3fe8c8a8fccceeb511702e1a51a49"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-controls.stdout.bin",
+      "bytes": 3477,
+      "sha256": "1cae9036842204c6308fd397d5457def5e710dd561451d4c03233d9db4f8c8f5"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-import-inert.test.txt",
+      "bytes": 994,
+      "sha256": "be6b42267bb5d8360181b36b9f1c8ea252532949d1c4a618c6caf57af85964dd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/synchronous-sdk-deny-loader.txt",
+      "bytes": 325,
+      "sha256": "9fe3dc307a5438e1743bd8c570093d53fce4a31037e2dc5e367a98810eb210dc"
+    }
+  ]
+}

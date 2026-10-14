@@ -61,3 +61,9 @@ test('redirect, response media/length and size failures release no result after 
   let calls=0;const gateway=make(async()=>{calls++;return create();},{limits:{...limits,maxResponseBytes:1}}),r=await gateway.handle(request('/v1/runner/publish'));assert.ok(r.status>=400);assert.equal((await r.json()).error.outcome,'UNKNOWN');assert.equal(calls,1);
  }
 });
+
+test('private immutable snapshot read relays exact bearer and bytes to canonical session receiver',async()=>{
+ let called=0;const snapshot={async readSnapshot(value){called++;assert.equal(value.credential,'original-task');assert.deepEqual(value.request,{binding});return {binding,key:{projectKey:'-workspace-conversation',sessionId:id(88)},checkpointSha256:'a'.repeat(64),opaqueSessionSha256:'b'.repeat(64),transcripts:[{entries:[{type:'system',opaque:['preserved',null]}]}]};}};
+ const receiver=createNativeSdkSessionApplication({owner:{register(){throw Error();},load(){throw Error();},append(){throw Error();},listSubkeys(){throw Error();}},snapshot}),gateway=make((url,init)=>receiver.handle(new Request(url,init)));
+ const response=await gateway.handle(request('/v1/runner/session/snapshot',JSON.stringify({binding}),'original-task'));assert.equal(response.status,200);assert.equal((await response.json()).transcripts[0].entries[0].opaque[0],'preserved');assert.equal(called,1);
+});

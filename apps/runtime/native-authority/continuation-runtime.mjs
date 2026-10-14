@@ -7,12 +7,14 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {buildContinuationOptions} from '../../worker/conversation/continuation/options.mjs';
 import {assertRestoreReceipt} from '../../worker/conversation/continuation/native-receipts.mjs';
 import {executionFault} from './execution-broker.mjs';
+import {capabilityDigest,matchesCapability} from './task-verifier.mjs';
+import {createCheckpointSdkSnapshot} from './checkpoint-snapshot.mjs';
 const same=(a,b)=>hash(a)===hash(b),hints=['continuation','sourceRequest','request','scopes'];
 export function createNativeContinuationRuntime(configuration){
  const c=own(configuration,['store','verifier','taskCapability'],['restorer','now']);
  const read=storageMethod(c.store,'read'),execution=storageMethod(c.store.lifecycle,'execution'),verify=storageMethod(c.verifier,'verify'),now=c.now??Date.now;
- const nativeOwner=c.restorer?own(c.restorer,['restore','registration']):null;
- const restore=nativeOwner?storageMethod(c.restorer,'restore'):null,registration=nativeOwner?storageMethod(nativeOwner.registration,'read'):null;
+ const nativeOwner=c.restorer?own(c.restorer,['restore','snapshot']):null;
+ const restore=nativeOwner?storageMethod(c.restorer,'restore'):null,readNativeSnapshot=nativeOwner?storageMethod(c.restorer,'snapshot'):null;
  if(typeof now!=='function')throw executionFault('CONTINUATION_CONFIGURATION');
  async function snapshot(binding,signal){
   nativeSignal(signal);const check=()=>{if(signal?.aborted)throw executionFault('REFUSED');};
@@ -31,23 +33,23 @@ export function createNativeContinuationRuntime(configuration){
   const context={binding:input.binding,versions:first.target.run.versions,request:first.target.request,sourceRequest:first.saved.sourceRequest,scopes:first.receipt.scopes,continuation:first.saved.continuation},started=now();
   // The borrowed owner must durably deduplicate this original target; uncertain
   // restoration must remain UNKNOWN rather than repeat physical writes.
-  const restored=data(own(await restore({...context,restoreKey:hash(context),signal:input.signal}),['restoreReceipt','sdkSessionKey']));
+  const restored=data(own(await restore({...context,restoreKey:hash(context),signal:input.signal,revalidate:async()=>{const current=await snapshot(input.binding,input.signal);if(!same(pin(first),pin(current)))throw executionFault('CONTINUATION_REFUSED');}}),['restoreReceipt','sdkSessionKey']));
   const expiresAtMs=assertRestoreReceipt(restored.restoreReceipt,{...context,started,now}),key=assertSdkSessionKey(restored.sdkSessionKey,{main:true}),expected=context.continuation.mode==='resume'?context.continuation.checkpoint.sessionId:context.continuation.targetSessionId;
   if(key.sessionId!==expected)throw executionFault('CONTINUATION_REFUSED');
   const final=await snapshot(input.binding,input.signal);
   if(!same(pin(first),pin(final))||expiresAtMs>Math.min(first.receipt.expiresAtMs,final.receipt.expiresAtMs)||expiresAtMs<=now())throw executionFault('CONTINUATION_REFUSED');
   return restored;
  }
- async function readRegistration(value){
-  const input=own(value,['binding','key'],['signal','deadlineMs']),first=await snapshot(input.binding,input.signal);
-  if(first.saved===null)return null;
-  const expected=first.saved.continuation.mode==='resume'?first.saved.continuation.checkpoint.sessionId:first.saved.continuation.targetSessionId,key=assertSdkSessionKey(input.key,{main:true});
-  if(!registration||key.sessionId!==expected)throw executionFault('CONTINUATION_REFUSED');
-  // This is an independent owner read, never a receipt uploaded by the worker.
-  // The canonical session owner validates its native observation and persists it.
-  const observation=await registration(input);if(observation===null||observation===undefined)throw executionFault('CONTINUATION_REFUSED');
-  const final=await snapshot(input.binding,input.signal);
-  if(!same(pin(first),pin(final)))throw executionFault('CONTINUATION_REFUSED');return observation;
+ async function readSnapshot(value){
+  const input=own(value,['credential','request'],['signal','deadlineMs']),request=own(input.request,['binding']);
+  if(!matchesCapability(input.credential,capabilityDigest(c.taskCapability)))throw executionFault('CONTINUATION_REFUSED');
+  const first=await snapshot(request.binding,input.signal);if(!first.saved||!readNativeSnapshot)throw executionFault('CONTINUATION_REFUSED');
+  const context={binding:request.binding,versions:first.target.run.versions,request:first.target.request,sourceRequest:first.saved.sourceRequest,scopes:first.receipt.scopes,continuation:first.saved.continuation};
+  const raw=own(await readNativeSnapshot({...context,restoreKey:hash(context),signal:input.signal,revalidate:async()=>{const current=await snapshot(request.binding,input.signal);if(!same(pin(first),pin(current)))throw executionFault('CONTINUATION_REFUSED');}}),['binding','key','checkpointSha256','opaqueSessionSha256','transcripts']);
+  const {transcripts,...headers}=raw,header=data(headers),cp=first.saved.continuation.checkpoint;
+  if(!same(header.binding,request.binding)||header.key.sessionId!==cp.sessionId||header.checkpointSha256!==first.saved.continuation.checkpointSha256||header.opaqueSessionSha256!==cp.opaqueSession.sha256)throw executionFault('CONTINUATION_REFUSED');
+  const source=await createCheckpointSdkSnapshot({key:header.key,transcripts}),final=await snapshot(request.binding,input.signal);
+  if(!same(pin(first),pin(final)))throw executionFault('CONTINUATION_REFUSED');return {...header,transcripts:source.transcripts()};
  }
- return Object.freeze({prepare,readRegistration});
+ return Object.freeze({prepare,readSnapshot});
 }

@@ -14,14 +14,14 @@ function fixture(mode='resume'){
  const verifier={async verify({binding:verified,operation,inputSha256}){return {binding:verified,operation,inputSha256,identityCredential:'synthetic-identity',...authority,authorizationDecisionId:'synthetic-decision',checkedAtMs:NOW,expiresAtMs:NOW+10000};}};
  const restoreReceipt={verificationId:id(70),binding,checkpointId:f.continuation.checkpoint.checkpointId,checkpointSha256:f.continuation.checkpointSha256,workspaceSha256:f.continuation.checkpoint.workspaceSha256,opaqueSessionSha256:f.continuation.checkpoint.opaqueSession.sha256,scopes,contextSha256:f.continuation.contextSha256,sourceRequestSha256:f.continuation.sourceRequestSha256,checkedAtMs:NOW,expiresAtMs:NOW+5000};
  const restored={restoreReceipt,sdkSessionKey:{projectKey:'synthetic-project',sessionId:mode==='resume'?f.continuation.checkpoint.sessionId:f.continuation.targetSessionId}};
- const restorer={async restore(input){restores++;assert.equal(input.restoreKey,hash({binding,versions,scopes,request,sourceRequest,continuation:f.continuation}));assert.deepEqual(input.continuation,f.continuation);onRestore();return restored;},registration:{async read(input){registrations++;return {binding:input.binding,key:input.key,independentTestWitness:true};}}};
+ const restorer={async restore(input){restores++;assert.equal(input.restoreKey,hash({binding,versions,scopes,request,sourceRequest,continuation:f.continuation}));assert.deepEqual(input.continuation,f.continuation);onRestore();return restored;},async snapshot(input){registrations++;return {binding:input.binding,key:{projectKey:'synthetic-project',sessionId:f.continuation.checkpoint.sessionId},checkpointSha256:f.continuation.checkpointSha256,opaqueSessionSha256:f.continuation.checkpoint.opaqueSession.sha256,transcripts:[{entries:[{type:'system',synthetic:true}]}]};}};
  const config={store,verifier,taskCapability:'synthetic-task',restorer,now:()=>NOW};
  return {f,config,restored,input:{binding,versions,scopes,request,sourceRequest,continuation:f.continuation},authority,run,counts:()=>({restores,reads,registrations}),setSaved:v=>{saved=v;},onRestore:f=>{onRestore=f;}};
 }
 for(const mode of ['resume','fork'])test(`${mode}: persisted lifecycle join supplies exact native restore request and correlated key`,async()=>{
  const x=fixture(mode),native=createNativeContinuationRuntime(x.config),value=await native.prepare(x.input);
  assert.deepEqual(value,x.restored);assert.equal(x.counts().restores,1);assert.equal(x.counts().reads,2);
- const witness=await native.readRegistration({binding:x.input.binding,key:value.sdkSessionKey});assert.equal(witness.independentTestWitness,true);assert.equal(x.counts().registrations,1);
+ const witness=await native.readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding}});assert.equal(witness.transcripts[0].entries[0].synthetic,true);assert.equal(x.counts().registrations,1);
 });
 for(const field of ['continuation','sourceRequest','request','scopes'])test(`worker ${field} substitution refuses before native restore`,async()=>{
  const x=fixture(),input=structuredClone(x.input);input[field]=field==='scopes'?[]:{...input[field],foreign:true};
@@ -30,11 +30,11 @@ for(const field of ['continuation','sourceRequest','request','scopes'])test(`wor
 test('omitted continuation and absent native restore both refuse a persisted target',async()=>{
  const x=fixture();await assert.rejects(createNativeContinuationRuntime(x.config).prepare({binding:x.input.binding,versions:x.input.versions}));
  const {restorer,...unsupported}=x.config;await assert.rejects(createNativeContinuationRuntime(unsupported).prepare(x.input));assert.equal(x.counts().restores,0);
- await assert.rejects(createNativeContinuationRuntime(unsupported).readRegistration({binding:x.input.binding,key:x.restored.sdkSessionKey}));
+ await assert.rejects(createNativeContinuationRuntime(unsupported).readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding}}));
 });
-test('fresh persisted run returns null and cannot accept continuation hints or restoration witness',async()=>{
+test('fresh persisted run returns null and cannot accept continuation hints or snapshot reads',async()=>{
  const x=fixture();x.setSaved(null);const native=createNativeContinuationRuntime(x.config);
- assert.equal(await native.prepare({binding:x.input.binding,versions:x.input.versions}),null);assert.equal(await native.readRegistration({binding:x.input.binding,key:x.restored.sdkSessionKey}),null);
+ assert.equal(await native.prepare({binding:x.input.binding,versions:x.input.versions}),null);await assert.rejects(native.readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding}}));
  await assert.rejects(native.prepare(x.input));assert.equal(x.counts().restores,0);assert.equal(x.counts().registrations,0);
 });
 for(const change of ['scope','client','cancel'])test(`canonical ${change} changes during restore refuse returned runtime`,async()=>{
@@ -45,22 +45,29 @@ for(const field of ['checkpointSha256','opaqueSessionSha256','expiresAtMs','sdkS
  const x=fixture();if(field==='sdkSessionKey')x.restored.sdkSessionKey.sessionId=id(99);else x.restored.restoreReceipt[field]=field==='expiresAtMs'?NOW+20000:'e'.repeat(64);
  await assert.rejects(createNativeContinuationRuntime(x.config).prepare(x.input));
 });
-test('foreign registration session is refused without native read; worker receipt fields are inert',async()=>{
+test('worker snapshot key is refused without immutable object read; worker receipt fields are inert',async()=>{
  const x=fixture(),native=createNativeContinuationRuntime(x.config);
- await assert.rejects(native.readRegistration({binding:x.input.binding,key:{...x.restored.sdkSessionKey,sessionId:id(99)}}));
+ await assert.rejects(native.readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding,key:{...x.restored.sdkSessionKey,sessionId:id(99)}}}));
  let getters=0;await assert.rejects(native.prepare({...x.input,get restoreReceipt(){getters++;return x.restored.restoreReceipt;}}));assert.equal(getters,0);assert.equal(x.counts().registrations,0);assert.equal(x.counts().restores,0);
 });
-test('native registration observation cannot survive admission revocation during owner read',async()=>{
- const x=fixture();x.config.restorer.registration.read=async()=>{x.run.state='cancelled';return {binding:x.input.binding,key:x.restored.sdkSessionKey};};
- await assert.rejects(createNativeContinuationRuntime(x.config).readRegistration({binding:x.input.binding,key:x.restored.sdkSessionKey}));
+test('checkpoint snapshot cannot survive admission revocation during object read',async()=>{
+ const x=fixture();x.config.restorer.snapshot=async()=>{x.run.state='cancelled';return {binding:x.input.binding,key:x.restored.sdkSessionKey,checkpointSha256:x.f.continuation.checkpointSha256,opaqueSessionSha256:x.f.continuation.checkpoint.opaqueSession.sha256,transcripts:[{entries:[{type:'system'}]}]};};
+ await assert.rejects(createNativeContinuationRuntime(x.config).readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding}}));
 });
-test('missing native continuation observation refuses rather than selecting a fresh witness',async()=>{
- const x=fixture();x.config.restorer.registration.read=async()=>null;
- await assert.rejects(createNativeContinuationRuntime(x.config).readRegistration({binding:x.input.binding,key:x.restored.sdkSessionKey}));
+test('missing checkpoint snapshot refuses',async()=>{
+ const x=fixture();x.config.restorer.snapshot=async()=>null;
+ await assert.rejects(createNativeContinuationRuntime(x.config).readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding}}));
 });
 test('native restore configuration accessors refuse without invocation',()=>{
- const x=fixture();let getters=0;x.config.restorer={restore:x.config.restorer.restore,get registration(){getters++;return {};}};
+ const x=fixture();let getters=0;x.config.restorer={restore:x.config.restorer.restore,get snapshot(){getters++;return {};}};
  assert.throws(()=>createNativeContinuationRuntime(x.config));assert.equal(getters,0);
+});
+test('foreign snapshot capability refuses before authority/storage/object reads',async()=>{
+ const x=fixture();await assert.rejects(createNativeContinuationRuntime(x.config).readSnapshot({credential:'foreign-task',request:{binding:x.input.binding}}));assert.equal(x.counts().reads,0);assert.equal(x.counts().registrations,0);
+});
+test('worker checkpoint hint cannot select snapshot object; snapshot getter remains inert',async()=>{
+ const x=fixture(),native=createNativeContinuationRuntime(x.config);await assert.rejects(native.readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding,checkpointSha256:'e'.repeat(64)}}));let getters=0;
+ await assert.rejects(native.readSnapshot({credential:'synthetic-task',request:{binding:x.input.binding,get checkpointId(){getters++;return id(99);}}}));assert.equal(getters,0);assert.equal(x.counts().reads,0);assert.equal(x.counts().registrations,0);
 });
 test('actual runtime HTTP accepts canonical continuation hints only under task role and returns validated restore',async()=>{
  const x=fixture(),task='synthetic-task',control='synthetic-control',digest=capabilityDigest(task),broker={taskCapabilitySha256:digest,async current(){return {run:x.run,record:{expiresAtMs:NOW+10000}};},async start(){},async poll(){}},runtime={binding:x.input.binding,versions:x.input.versions,proxyUrl:'https://synthetic-proxy.invalid',proxyCredential:'synthetic-proxy',model:'synthetic-model',deadlineMs:NOW+10000,maxTurns:1,maxCostMicroUSD:1,maxOutputBytes:10};

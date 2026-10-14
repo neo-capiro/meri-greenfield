@@ -1,0 +1,26 @@
+✔ resume: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (726.32488ms)
+✔ fork: restores actual immutable workspace bytes and exact opaque SDK snapshot; replay has no writes (123.295459ms)
+✔ lost durable claim acknowledgement never writes bytes or dispatches on replay (18.045282ms)
+✔ uncertain restored acknowledgement leaves UNKNOWN and cannot retry original writes (48.833846ms)
+✔ corrupted immutable object refuses before durable claim or filesystem effect (24.25681ms)
+✔ native-file bundle is never interpreted as a SessionStore snapshot (26.134872ms)
+✔ admission revoked after object reads refuses before workspace effects (23.641635ms)
+✔ replay detects modified workspace and additional directory without rewriting them (30.997809ms)
+✔ snapshot read detects actual workspace byte changes without rewriting caller changes (30.192051ms)
+✔ workspace alias cannot receive restoration and borrowed sibling remains intact (48.498291ms)
+✔ resume: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (99.977484ms)
+✔ fork: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (13.587256ms)
+✔ snapshot reads cannot establish completed target or native registration (6.304797ms)
+✔ revoked native registration rejects first write and permanently bars redispatch (5.095928ms)
+✔ uncertain seeded target write cannot be retried or report success (7.785636ms)
+✔ prepare cancellation stays separate from actual query lifetime after immutable snapshot read (6.108599ms)
+✔ closed snapshot and foreign source key cannot be reused; first child write refuses before register (5.247092ms)
+✔ snapshot transport rejects worker checkpoint/key hints and preserves deep opaque entries (31.033918ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16715.863301

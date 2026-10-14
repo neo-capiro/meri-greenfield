@@ -1,0 +1,16 @@
+file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/launch-configuration.mjs:5
+export const launchFault=code=>Object.assign(Error('NATIVE_LAUNCH_'+code),{code:'NATIVE_LAUNCH_'+code});
+                                             ^
+
+Error: NATIVE_LAUNCH_REQUEST_REFUSED
+    at launchFault (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/launch-configuration.mjs:5:46)
+    at matchNativeLaunch (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/launch-configuration.mjs:34:104)
+    at Object.spawnClaudeCodeProcess (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/independent-task.mjs:43:152)
+    at Object.spawnClaudeCodeProcess (file:///workspace/meri-native-runtime-recovery/docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-continuation-probe.mjs:33:183)
+    at Xx.initialize (file:///workspace/meri-native-runtime-recovery/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:136:103387)
+    at Xx.spawn (file:///workspace/meri-native-runtime-recovery/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:136:97175)
+    at file:///workspace/meri-native-runtime-recovery/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:143:1443 {
+  code: 'NATIVE_LAUNCH_REQUEST_REFUSED'
+}
+
+Node.js v24.19.0

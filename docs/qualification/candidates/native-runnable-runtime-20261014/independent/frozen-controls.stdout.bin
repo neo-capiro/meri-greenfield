@@ -1,0 +1,21 @@
+✔ consumed claim precedes actual ECS command and actual task admission; replay has zero RunTask (60.760743ms)
+✔ lost allocation reply retains consumed claim and discovery never redispatches (74.758829ms)
+✔ admission failure contains original task and retains original resource for retirement (22.650343ms)
+✔ unsafe public networking and secret override refuse before effects (24.38549ms)
+✔ preallocation composes original credential without changing closed authority configuration (609.226345ms)
+✔ final canonical cancellation refuses preallocation after successful identity/context receipts (13.823803ms)
+✔ admitted wrapper closes canonical non-execution HTTP surface after retirement (15.549851ms)
+✔ bootstrap accepts shortened active runtime lease without extra work or provider call (9.90429ms)
+✔ preallocation nested commandContext getter refuses without invocation (8.758294ms)
+✔ allocated wrapper snapshots original binding before caller mutation (10.055974ms)
+✔ post-admission authority failure revokes exact original grants before task containment (13.5375ms)
+✔ explicit allocator stop revokes exact active admission before original task retirement (16.085341ms)
+✔ uncertain revocation does not mint completed retirement even after physical containment (16.127157ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12374.2596

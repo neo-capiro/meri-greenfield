@@ -1,0 +1,62 @@
+{
+  "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+  "ownedPathsRemoved": {
+    "/workspace/meri-native-runtime-recovery/node_modules": true,
+    "/workspace/meri-native-runtime-recovery/apps/runtime/node_modules": true,
+    "/workspace/meri-native-runtime-recovery/apps/worker/conversation/node_modules": true,
+    "/workspace/meri-native-runtime-recovery/packages/window-resolution/node_modules": true,
+    "/workspace/meri-native-runtime-recovery/packages/ui-stream/node_modules": true,
+    "/workspace/meri-native-runtime-recovery/.swc-native-cache": true,
+    "/tmp/meri-runnable-npm-cache": true,
+    "/tmp/meri-broker-pg-socket-20261014": true,
+    "/workspace/meri-pr77-startup-baseline-20261014": true
+  },
+  "taskContainerRemoved": "meri-runnable-postgres-20261014",
+  "completedCapturedProcessGroupsAbsent": true,
+  "exitedZombiePendingHostReap": {
+    "pid": 62548,
+    "parent": 1,
+    "state": "Z",
+    "scope": "interrupted initial composition test; already exited, no live execution; only its parent can reap it"
+  },
+  "runtimeFixtureResidualDirectoryInventory": [],
+  "residualDirectoryHandling": "Five exact failed-test seed directories confirmed by source fixture bytes/structure, own UID and capture times; removed individually after live processes exited. No global prefix deletion.",
+  "initialSocketRemovalFailure": "Docker PostgreSQL changed socket ownership. Direct removal refused; first rmdir saw two stale owned socket files. Exact task directory and those files removed by named network-disabled cleanup container; cleanup container exited/removed.",
+  "removedConfirmedRuntimeFixtureOrphans": [
+    {
+      "path": "/tmp/meri-runtime-task-xpExaI",
+      "sourceFixture": "apps/runtime/test/process-fixture.mjs",
+      "ownershipEvidence": "Exact synthetic capability and empty fixed fixture conversation directory, actor uid and creation times within recorded failed runtime test captures. No other files or live fixture processes.",
+      "capabilitySha256": "fd04e410325df1a695401a5fbc5774d521496f35ab90da8de551d76b7fa0a31b",
+      "removed": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-zLuXrB",
+      "sourceFixture": "apps/runtime/test/process-fixture.mjs",
+      "ownershipEvidence": "Exact synthetic capability and empty fixed fixture conversation directory, actor uid and creation times within recorded failed runtime test captures. No other files or live fixture processes.",
+      "capabilitySha256": "fd04e410325df1a695401a5fbc5774d521496f35ab90da8de551d76b7fa0a31b",
+      "removed": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-8gt27S",
+      "sourceFixture": "apps/runtime/test/process-fixture.mjs",
+      "ownershipEvidence": "Exact synthetic capability and empty fixed fixture conversation directory, actor uid and creation times within recorded failed runtime test captures. No other files or live fixture processes.",
+      "capabilitySha256": "fd04e410325df1a695401a5fbc5774d521496f35ab90da8de551d76b7fa0a31b",
+      "removed": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-NznPWa",
+      "sourceFixture": "apps/runtime/test/process-fixture.mjs",
+      "ownershipEvidence": "Exact synthetic capability and empty fixed fixture conversation directory, actor uid and creation times within recorded failed runtime test captures. No other files or live fixture processes.",
+      "capabilitySha256": "fd04e410325df1a695401a5fbc5774d521496f35ab90da8de551d76b7fa0a31b",
+      "removed": true
+    },
+    {
+      "path": "/tmp/meri-runtime-task-9Pvuwl",
+      "sourceFixture": "apps/runtime/test/process-fixture.mjs",
+      "ownershipEvidence": "Exact synthetic capability and empty fixed fixture conversation directory, actor uid and creation times within recorded failed runtime test captures. No other files or live fixture processes.",
+      "capabilitySha256": "fd04e410325df1a695401a5fbc5774d521496f35ab90da8de551d76b7fa0a31b",
+      "removed": true
+    }
+  ]
+}

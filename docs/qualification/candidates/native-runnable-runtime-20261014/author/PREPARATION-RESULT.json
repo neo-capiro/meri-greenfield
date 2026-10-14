@@ -1,0 +1,45 @@
+{
+  "scope": "REAL_TASK_OWNED_POSTGRES_SYNTHETIC_AUTHORITY_AND_TASK_METADATA_NO_AWS_PROVIDER_REQUESTS",
+  "container": "meri-runnable-postgres-20261014",
+  "socket": "/tmp/meri-broker-pg-socket-20261014",
+  "database": "postgres",
+  "migrationScope": "only freshly task-owned database; budget0001 and conversations0001..0007",
+  "checks": {
+    "scripted": 11,
+    "realPostgres": 6,
+    "passed": 17,
+    "failed": 0
+  },
+  "failedAttempts": [
+    {
+      "action": "migration0007 application",
+      "exitCode": 3,
+      "reason": "PL/pgSQL IF NOT CASE required parentheses; transaction rolled back",
+      "correction": "parenthesized CASE before rerun of0007 only"
+    },
+    {
+      "action": "initial5 PostgreSQL controls",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 5,
+      "reason": "test fixture scope kind personal invalid publicConversation",
+      "correction": "existing canonical client scope"
+    },
+    {
+      "action": "corrected5 PostgreSQL controls",
+      "exitCode": 1,
+      "passed": 2,
+      "failed": 3,
+      "reason": "PL/pgSQL JSON arrow/minus precedence ambiguous unknown operator",
+      "correction": "parenthesized JSON resource access; recreated onlynew0007 fixturetables/function"
+    }
+  ],
+  "cleanup": "each pool ended by test after callbacks; no child/native process launched; container remains borrowed for root integration",
+  "files": {
+    "apps/gateway/budget/native-allocation-admission.mjs": "97adc65cd24bb32f5a0cfc462ce24d474b6d951cd1ecb59aa9728c1895bb2b99",
+    "apps/gateway/budget/test/native-allocation-admission.test.mjs": "1f7f41226d6c311565a867512e449c097f47f9a0c2da711765ed727f6a58f495",
+    "apps/control/conversations/native-preparation-journal.mjs": "1b6111794442aaf5729ebfb184ad314d24966c357b9daf553634d6ebc8515dfc",
+    "apps/control/conversations/migrations/0007_native_preparation.sql": "76da1fa221bb463ce116d3ca794566321f219177b2055193c2c7f609f5e6ba19",
+    "apps/control/conversations/test/native-preparation.test.mjs": "f6d9d5ed1135a0962652b27344760f0ba64a1f3c2cd8933251045c3edc267f6a"
+  }
+}

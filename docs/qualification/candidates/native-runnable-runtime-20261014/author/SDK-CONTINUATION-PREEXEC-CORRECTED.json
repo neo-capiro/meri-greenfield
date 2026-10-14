@@ -1,0 +1,31 @@
+{
+  "head": "5c199845e42b2159d5775e00c659b5da62d4113a",
+  "status": "ROOT_PREEXEC_ACCEPT_ONE_CORRECTED_BOUNDED_RUN",
+  "probeSha256": "2c5bd631b599a13da4d6f0b6eb8684df92a6e9bc9b22fafb36a1bf7109aaa04b",
+  "sdkSha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+  "cliSha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "pins": {
+    "apps/runtime/native-authority/broker-stack.mjs": "22943017296cbaee234f87ad38f9f473bd05e81be8f8c7d17abe3b03221180ac",
+    "apps/runtime/native-authority/continuation-runtime.mjs": "8eadff7bfa5989445146707b026155414aed2bc136f692529c29d7c9b1f9f610",
+    "apps/runtime/native-authority/checkpoint-snapshot.mjs": "7faa11ac9fa6d24f55896196fbca9fcb253f2e44cf873c52a3a5312248ea2319",
+    "apps/runtime/native-authority/native-restorer.mjs": "32174252fac376574b88b74f68bd215fcbc172a94c65c97209d31f4c1d83774e",
+    "apps/runtime/native-authority/workspace-restore.mjs": "b102e34121417870929ef9a7cbeb5a52fb506e9f14e4ba4275942dafc869cc0c",
+    "apps/runtime/native-authority/session-client.mjs": "38f1f034981c38961e6692650185fd4b4a84d99febe2b8a43f921c68871e9fc9",
+    "apps/runtime/native-authority/session-http.mjs": "09e4228c1c0e4eece7d0d940f59838de1b75e67e003efec7a36ea233d321b4b4",
+    "apps/runtime/native-authority/session-owner.mjs": "266017f3f517c9f4b626be77068fd1028b7448270ee0b69eae5663826738e7a9",
+    "apps/runtime/native-authority/independent-task.mjs": "03690305fb3adb421f43ea6f2441899541a0793bde59981a823e93c7c8b85352",
+    "apps/runtime/native-authority/supervisor-process.mjs": "6a00f5933debc214f899dff06713d049b33dafbe8b09d19423c6e384d156289b",
+    "apps/runtime/native-authority/session-launcher.mjs": "c5f6f2236c01ccb44825401c49f21e6777f3113e1f4a378655735232196d10b0",
+    "apps/runtime/native-authority/launch-configuration.mjs": "dddd64dde282c7d7ab182816a03cb96de15715d5e14f0bc496d3b9d570bd8386",
+    "apps/runtime/native-authority/runtime-provider.mjs": "4b2c7657d483aa112802df9a2bd507d6d26af8910bc8ac3c4804f409a3eeeffc",
+    "apps/runtime/native-authority/execution-broker.mjs": "46f3a57a4c949e233d42c12c49706e25a3c94d1f5dec69c3602f8d13342e4a86",
+    "apps/runtime/sdk-continuation-session.mjs": "0ad191df4a7ed77da079f8158c4529f2efdacb7920f379375270179b0adc084b",
+    "apps/control/conversations/native-preparation-journal.mjs": "1b6111794442aaf5729ebfb184ad314d24966c357b9daf553634d6ebc8515dfc",
+    "apps/control/conversations/postgres-store.mjs": "019047fdea7a7cd63a8d30991053d73eedae6fc35a75ce31e849af9d9abd662b",
+    "apps/runtime/native-authority/test/broker-pg-fixture.mjs": "6ad8421dbe5136f16be02b5899470fd2b8a2e725bec3a53b8314d8453a3ec24b",
+    "docs/qualification/candidates/native-runnable-runtime-20261014/author/sdk-continuation-probe.mjs": "2c5bd631b599a13da4d6f0b6eb8684df92a6e9bc9b22fafb36a1bf7109aaa04b",
+    "docs/qualification/candidates/native-runnable-runtime-20261014/author/capture-sdk-continuation.py": "9dea50a30311d89f9ae5f838904d00adb30f88f20fa76650437d45dcbe06ab69"
+  },
+  "sourceState": "root frozen source, production diff0; original failed receipt preserved",
+  "rerunReason": "source independent witness is acquired during first actual SDK append instead of after native exit; no observer lifetime weakening"
+}

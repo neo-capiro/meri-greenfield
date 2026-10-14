@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {spawnSync} from 'node:child_process';
+test('control and runnable modules import without SDK snapshot verifier/provider loading',()=>{
+ const loader=new URL('./sdk-deny-loader.mjs',import.meta.url).href,control=new URL('../../../../../apps/runtime/control.mjs',import.meta.url).href,runnable=new URL('../../../../../apps/runtime/native-authority/runnable-runtime.mjs',import.meta.url).href;
+ const source=`import {registerHooks} from 'node:module';import {resolve} from ${JSON.stringify(loader)};registerHooks({resolve});await import(${JSON.stringify(control)});await import(${JSON.stringify(runnable)});console.log('INERT_IMPORT_OK');`;
+ const child=spawnSync(process.execPath,['--input-type=module','--eval',source],{encoding:'utf8',timeout:15000});assert.equal(child.error,undefined);assert.equal(child.signal,null);assert.equal(child.status,0,child.stderr);assert.equal(child.stdout.trim(),'INERT_IMPORT_OK');
+});

@@ -1,0 +1,70 @@
+✖ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (146.2686ms)
+✖ real PG acknowledged-commit loss requires exact admission readback (116.645387ms)
+✖ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (95.756657ms)
+✖ restoration receipt exactness and uncertain byte-write state stay immutable in real PG (125.199203ms)
+✖ coherently rehashed malformed resource remains corrupt at canonical read boundary (97.243492ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7022.287656
+
+✖ failing tests:
+
+test at apps/control/conversations/test/native-preparation.test.mjs:27:1
+✖ real PG consumes one allocation claim and actual-ARN admission/readback survives owner reconstruction (146.2686ms)
+  Error: Conversation: data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/meri-native-runtime-recovery/packages/contracts/validate.mjs:17:32)
+      at Object.accept (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:18:3)
+      at fixture (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:18:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:28:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at apps/control/conversations/test/native-preparation.test.mjs:38:1
+✖ real PG acknowledged-commit loss requires exact admission readback (116.645387ms)
+  Error: Conversation: data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/meri-native-runtime-recovery/packages/contracts/validate.mjs:17:32)
+      at Object.accept (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:18:3)
+      at fixture (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:18:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:39:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/conversations/test/native-preparation.test.mjs:46:1
+✖ journal refuses malformed intents/proofs and SQL prevents rebinding, lease extension and unproved retirement (95.756657ms)
+  Error: Conversation: data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/meri-native-runtime-recovery/packages/contracts/validate.mjs:17:32)
+      at Object.accept (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:18:3)
+      at fixture (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:18:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:47:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/conversations/test/native-preparation.test.mjs:56:1
+✖ restoration receipt exactness and uncertain byte-write state stay immutable in real PG (125.199203ms)
+  Error: Conversation: data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/meri-native-runtime-recovery/packages/contracts/validate.mjs:17:32)
+      at Object.accept (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:18:3)
+      at fixture (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:18:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:57:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at apps/control/conversations/test/native-preparation.test.mjs:66:1
+✖ coherently rehashed malformed resource remains corrupt at canonical read boundary (97.243492ms)
+  Error: Conversation: data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/meri-native-runtime-recovery/packages/contracts/validate.mjs:17:32)
+      at Object.accept (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/postgres-store.mjs:18:3)
+      at fixture (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:18:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/control/conversations/test/native-preparation.test.mjs:67:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

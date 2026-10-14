@@ -1,0 +1,48 @@
+{
+  "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-timeout=25000",
+    "--test-concurrency=1",
+    "apps/runtime/test/bundle.test.mjs",
+    "apps/runtime/test/first-run-mount.test.mjs",
+    "apps/runtime/test/first-session.test.mjs",
+    "apps/runtime/test/lifecycle.test.mjs",
+    "apps/runtime/test/native-runner-gateway.test.mjs",
+    "apps/runtime/test/process.test.mjs",
+    "apps/runtime/test/product-mount.test.mjs",
+    "apps/runtime/test/runtime.test.mjs",
+    "apps/worker/conversation/test/activity.test.mjs",
+    "apps/worker/conversation/test/control-application.test.mjs",
+    "apps/worker/conversation/test/lifecycle-activity.test.mjs",
+    "apps/worker/conversation/continuation/test/continuation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "a5b1f4a8ab917342b06777cc4b61891c7aedffaa",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3dd430ffe5f47ad8853a346cffa998551775cfd9c1d6a451488b8476f4322f74",
+  "startedAt": "2026-10-14T06:07:26.411523+00:00",
+  "durationSeconds": 205.279,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 69711,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-runtime.stdout.bin",
+      "bytes": 21927,
+      "sha256": "1e47e45d6d370439a3c3ccc64e90d4270218ebebff138cd2e321fe8e087e3b01"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/author/final-runtime.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

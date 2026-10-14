@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/native-runnable-runtime-20261014/independent/controls.test.mjs"
+  ],
+  "cwd": "/workspace/meri-native-runtime-recovery",
+  "sourceHead": "eed08ddecde9974b689235cbd9084e0c4e15ee2e",
+  "sourceDiffSha256": "c90c529e09af77dcda660465e0a8cdffb5d57cce42577f84e248e4e18ddfe4f4",
+  "sourceDiffBytes": 45461,
+  "captureSha256": "cb042e0869a22ff87ff1b16c4d56b5a50b052641e35edd675ac705367730079e",
+  "startedAt": "2026-10-14T05:40:05.464872+00:00",
+  "durationSeconds": 8.651,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 59470,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.stdout.bin",
+      "bytes": 2544,
+      "sha256": "6722cc60a108b85d23f88897734238bce0f4ced9f11b5fc4b9c612479dff998c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/initial-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial independent focused controls on explicitly unfrozen new source; not source acceptance. Production input bytes separately hashed.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

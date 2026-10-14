@@ -1,0 +1,13 @@
+/** Existing Capiro identity/context joined to canonical queued run before task grants exist. */
+import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {storageMethod} from '../../artifacts/storage/boundary.mjs';
+import {createNativeIdentityContext} from './identity-context.mjs';
+import {executionFault} from './execution-broker.mjs';
+export function createPreallocationAuthority(configuration){
+ const c=own(configuration,['store','identity','binding','expiresAtMs','limits'],['enabled','now']),binding=data(c.binding),i=own(c.identity,['origin','commandContext','fetchImpl','credential']),read=storageMethod(c.store,'read'),now=c.now??Date.now,commandContext=data(i.commandContext);own(commandContext,['binding','clientResolution']);
+ if(hash(commandContext.binding)!==hash(binding)||!Number.isSafeInteger(c.expiresAtMs)||c.expiresAtMs<1)throw executionFault('ALLOCATION_CONFIGURATION');
+ const currentOwner={async currentRun(request,{signal}){if(hash(request)!==hash(binding))throw executionFault('ALLOCATION_REFUSED');const check=()=>{if(signal?.aborted||now()>=c.expiresAtMs)throw executionFault('ALLOCATION_REFUSED');},row=await read(binding,{},check);check();if(!['queued','starting','running'].includes(row.run.state))throw executionFault('ALLOCATION_REFUSED');return JSON.stringify({binding,policyRevision:row.run.policyRevision,deadlineMs:c.expiresAtMs,checkedAtMs:now()});}};
+ const authority=createNativeIdentityContext({origin:i.origin,commandContext,fetchImpl:i.fetchImpl,currentOwner,now,limits:c.limits,enabled:c.enabled??false});
+ return Object.freeze({async verify({signal}){const deadlineMs=Math.min(c.expiresAtMs,now()+c.limits.maxRequestMs),identity=await authority.verifyIdentity({credential:i.credential,deadlineMs,signal});const context=await authority.resolveContext({identityCredential:i.credential,identity,identitySha256:hash(identity),hints:{conversationId:binding.conversationId,runId:binding.runId,clientId:commandContext.clientResolution.clientId},deadlineMs,signal});const row=await read(binding,{},()=>{if(signal?.aborted||now()>=c.expiresAtMs)throw executionFault('ALLOCATION_REFUSED');});if(!['queued','starting','running'].includes(row.run.state)||hash(row.run.binding)!==hash(binding)||context.scopes.some(scope=>scope.policyRevision!==row.run.policyRevision)||hash(context.binding)!==hash(binding)||hash(row.run.scopes)!==hash(context.scopes)||context.expiresAtMs<c.expiresAtMs||now()>=context.expiresAtMs)throw executionFault('ALLOCATION_REFUSED');return context;}});
+}

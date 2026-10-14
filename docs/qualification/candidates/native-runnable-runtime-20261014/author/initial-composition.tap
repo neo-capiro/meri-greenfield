@@ -1,0 +1,25 @@
+✖ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (1106.715451ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8286.907116
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/runnable-runtime.test.mjs:9:1
+✖ canonical claim → qualified ARN admission → independent native registration and runtime; close revokes and proves task retirement (1106.715451ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:6:32)
+      at own (file:///workspace/meri-native-runtime-recovery/packages/contracts/commands-0.2/execution-boundary.mjs:10:166)
+      at createIndependentNativeTask (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/independent-task.mjs:11:10)
+      at Object.nativeFactory (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/runnable-runtime.test.mjs:26:894)
+      at Object.assemble (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/runnable-runtime.mjs:27:17)
+      at prepare (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/allocated-runtime.mjs:12:135)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.start (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/allocated-runtime.mjs:15:167)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/runnable-runtime.test.mjs:27:16)
+      at async Test.run (node:internal/test_runner/test:1389:7)

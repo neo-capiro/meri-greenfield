@@ -1,0 +1,29 @@
+✔ resume: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (44.153007ms)
+✖ fork: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (12.055172ms)
+✔ snapshot reads cannot establish completed target or native registration (3.224943ms)
+✔ revoked native registration rejects first write and permanently bars redispatch (2.559111ms)
+✔ uncertain seeded target write cannot be retried or report success (2.548005ms)
+✔ prepare cancellation stays separate from actual query lifetime after immutable snapshot read (2.993654ms)
+✔ closed snapshot and foreign source key cannot be reused; first child write refuses before register (2.226533ms)
+✔ snapshot transport rejects worker checkpoint/key hints and preserves deep opaque entries (22.489115ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8223.619617
+
+✖ failing tests:
+
+test at apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs:13:37
+✖ fork: supported SDK snapshot reads precede register; target writes wait for independent owner acknowledgement (12.055172ms)
+  Error: RUNNER_SDK_SESSION_UNKNOWN
+      at fault (file:///workspace/meri-native-runtime-recovery/apps/runtime/config.mjs:7:40)
+      at Object.close (file:///workspace/meri-native-runtime-recovery/apps/runtime/sdk-continuation-session.mjs:37:224)
+      at async TestContext.<anonymous> (file:///workspace/meri-native-runtime-recovery/apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs:18:199)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'RUNNER_SDK_SESSION_UNKNOWN'
+  }
