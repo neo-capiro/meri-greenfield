@@ -16,7 +16,7 @@ export function compileEcsTaskBinding(value){
 function workerIdentity(task,c){
  if(!Array.isArray(task.containers)||task.containers.length!==1)refused();
  const worker=task.containers[0],containerPrefix=c.prefix+'container/'+c.cluster+'/'+task.taskArn.split('/').at(-1)+'/';
- if(worker.name!==c.containerName||worker.taskArn!==task.taskArn||typeof worker.containerArn!=='string'||!worker.containerArn.startsWith(containerPrefix)||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(worker.containerArn.slice(containerPrefix.length)))refused();return worker;
+ if(worker.name!==c.containerName||worker.taskArn!==undefined&&worker.taskArn!==task.taskArn||typeof worker.containerArn!=='string'||!worker.containerArn.startsWith(containerPrefix)||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(worker.containerArn.slice(containerPrefix.length)))refused();return worker;
 }
 export function assertEcsOwnedTask(task,c){
  if(!task||task.taskArn!==c.taskArn||task.clusterArn!==c.clusterArn||task.taskDefinitionArn!==c.taskDefinitionArn||task.startedBy!==c.original.executionKey||task.group!=='meri:'+c.original.executionId||!(task.createdAt instanceof Date)||task.createdAt.getTime()!==c.createdAtMs||!Array.isArray(task.tags))refused();
