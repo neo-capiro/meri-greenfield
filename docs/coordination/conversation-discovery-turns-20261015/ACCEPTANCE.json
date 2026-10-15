@@ -1,0 +1,151 @@
+{
+  "kind": "PROPOSED_PENDING_OWNER_CONFORMANCE_NOT_PASSING_TESTS",
+  "sourceFrontendCasesCommit": "bae3bfad9967f4ab99107b20e86a94944f4f5e9d",
+  "wholeGateAccepted": false,
+  "runtimeQualified": false,
+  "publicSchemaFrozen": false,
+  "mobile": "DEFERRED",
+  "cases": [
+    {
+      "id": "MRC-01",
+      "parents": [
+        "W06"
+      ],
+      "checks": [
+        "page with0+complete only => complete empty",
+        "page0+more => more results, not empty",
+        "denied vs unavailable vs loading/retry distinct"
+      ],
+      "logicalOperations": [
+        "discoverConversations"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    },
+    {
+      "id": "MRC-02",
+      "parents": [
+        "R-02",
+        "RG-12"
+      ],
+      "checks": [
+        "page all authorized metadata only",
+        "foreign/stale/expired/cyclic cursor refused or restart",
+        "repeated same page not appended twice",
+        "late scope response discarded",
+        "revoked row denied before selection"
+      ],
+      "logicalOperations": [
+        "discoverConversations",
+        "openConversation"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    },
+    {
+      "id": "MRC-03",
+      "parents": [
+        "W06",
+        "R-02"
+      ],
+      "checks": [
+        "fresh exact-pair read-only open before history/events",
+        "terminal historical reads need distinct retained-read purpose",
+        "client-only reconnect never reserves",
+        "foreign pair/session mismatch refused"
+      ],
+      "logicalOperations": [
+        "openConversation"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    },
+    {
+      "id": "MNT-01",
+      "parents": [
+        "W06"
+      ],
+      "checks": [
+        "new-conversation independent of next-turn source",
+        "active/failed/cancelled/missing proof blocked as specified",
+        "completed+checkpoint+retirement+all grants revoked => single reservation",
+        "two tabs cannot create distinct successors"
+      ],
+      "logicalOperations": [
+        "prepareConversationTurn"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    },
+    {
+      "id": "MNT-02",
+      "parents": [
+        "RG-12"
+      ],
+      "checks": [
+        "lost prepare ACK before ANY submit -> recorded same target -> explicit admitted-target open -> first-submit if unused/valid",
+        "unknown initial target submit -> exact retained identity/bytes only",
+        "lookup unavailable/cache absence404 never means not-committed",
+        "same command changed input conflicts",
+        "same historical command source no longer latest recovers same receipt first; new command source stale conflicts"
+      ],
+      "logicalOperations": [
+        "prepareConversationTurn",
+        "lookupConversationTurn",
+        "openConversation"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    },
+    {
+      "id": "MNT-03",
+      "parents": [
+        "R-02",
+        "RG-12"
+      ],
+      "checks": [
+        "new admitted lifetime remounts port/view/actions and pins exact hints",
+        "old observer stops without cancel",
+        "source/target/continuation journals stay scoped",
+        "recorded after deadline no credential/write readiness",
+        "revoked/suppressed receipt forbidden -> denied no metadata",
+        "payloadpurged permitted receipt -> receipt-only; no fakehistory",
+        "unknown command retained after navigation and scope change"
+      ],
+      "logicalOperations": [
+        "openConversation",
+        "lookupConversationTurn"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    },
+    {
+      "id": "MNT-04",
+      "parents": [
+        "W06",
+        "G4",
+        "RG-12"
+      ],
+      "checks": [
+        "actual qualified desktop keyboard/stream/run-local history/terminal continuation",
+        "conversation sequence ranges preserved with explicit gaps",
+        "no fixtures satisfy native gate",
+        "read-only view cannot render enabled submit/cancel merely from terminalstate"
+      ],
+      "logicalOperations": [
+        "discoverConversations",
+        "openConversation",
+        "prepareConversationTurn",
+        "lookupConversationTurn"
+      ],
+      "status": "PENDING_OWNER_CONTRACT_AND_IMPLEMENTATION"
+    }
+  ],
+  "frontEndSeams": {
+    "B1": "exact successfully admitted hints on remount AND in-place reconnect; separate local fixc060f046 owner-reported source only",
+    "B6": "historical read eligibility distinct from latest writer; actual server purpose enforcement required",
+    "B7": "new exact target session/port/view/action lifetime; old journal/draft never reused"
+  },
+  "holds": [
+    "cursor integrity owner",
+    "read-only session enforcement and retained-read authorization",
+    "durable create/continue command association in existing owners",
+    "frozen receiver/exports and exact production ownership",
+    "local concurrency/ACK/expiry/refusal tests",
+    "real admitted desktop/native/runtime and cleanup evidence"
+  ]
+}

@@ -1,0 +1,319 @@
+{
+  "kind": "PROPOSED_CONVERSATION_CONTROL_DESIGN_NOT_JSON_SCHEMA_OR_RECEIVER",
+  "version": "conversation-controls-proposal/20261015.1",
+  "schemaAccepted": false,
+  "runtimeImplemented": false,
+  "publicExports": null,
+  "routePaths": null,
+  "packageVersion": null,
+  "ownership": "Extend existing application identity/context, opaque session issuer, conversation journals and next-run owner; Fable owns runtime. No second API stack, issuer or scheduler.",
+  "scalars": {
+    "uuid": "canonical UUID text",
+    "sha256": "lowercase64hex canonical existing serializer hash; not authority",
+    "time": "nonnegative safe integer epoch milliseconds",
+    "cursor": "null or opaque integrity-protected string, max4096; codec owner not allocated",
+    "nativeCredential": "existing native bridge authentication, never a DTO field"
+  },
+  "definitions": {
+    "scope": {
+      "closed": true,
+      "required": {
+        "tenantId": "trusted native identity tenant",
+        "actorId": "trusted native identity actor",
+        "clientId": "current authorized UUID client",
+        "identityRevision": "current native identity revision",
+        "policyRevision": "current policy revision",
+        "checkedAtMs": "time <= trusted observation time",
+        "expiresAtMs": "time > release time, bounded by current receipts"
+      }
+    },
+    "source": {
+      "closed": true,
+      "required": {
+        "conversationId": "uuid selector",
+        "runId": "uuid selector",
+        "bindingSha256": "sha256 of exact server-loaded complete RunBinding",
+        "completionReceiptSha256": "sha256 of exact published immutable completion proof"
+      }
+    },
+    "target": {
+      "closed": true,
+      "required": {
+        "conversationId": "uuid from existing trusted owner",
+        "runId": "uuid from existing trusted owner",
+        "bindingSha256": "sha256 of full original server target binding"
+      }
+    },
+    "immutableReceipt": {
+      "closed": true,
+      "required": {
+        "commandId": "uuid",
+        "commandSha256": "sha256 over full canonical prepare input",
+        "intent": "new-conversation | next-turn",
+        "source": "source iff next-turn, null iff new-conversation",
+        "target": "target",
+        "admissionReference": "protected immutable reference, not credential",
+        "admissionSha256": "sha256 of exact durable original admission association",
+        "originalTargetExpiresAtMs": "time fixed by original target admission",
+        "recordedAtMs": "trusted durable receipt time <= trusted current observation",
+        "receiptSha256": "sha256 of receipt excluding this field"
+      }
+    },
+    "historyAnchor": {
+      "closed": true,
+      "required": {
+        "conversationId": "uuid",
+        "selectedRunId": "uuid",
+        "sequenceBase": "safe integer >=0 from existing run sequence owner",
+        "sourceRunId": "uuid or null; disclose only if currently authorized",
+        "coverage": "retained | unsubmitted | history-unavailable"
+      }
+    },
+    "sessionProjection": {
+      "closed": true,
+      "required": {
+        "target": "target",
+        "access": "observe | first-submit | same-submit",
+        "allowedOperations": "closed subset of existing submit/history/cancel/events/reconnect; observe excludes submit/cancel",
+        "checkedAtMs": "trusted time",
+        "expiresAtMs": "time bounded by session/current facts and by original target expiry for effects",
+        "submitConstraint": "null for observe; first-input for first-submit; original requestId+inputSha256 for same-submit",
+        "history": "historyAnchor"
+      }
+    },
+    "presentEligibility": {
+      "closed": true,
+      "required": {
+        "mode": "reopen-target | observe-only | receipt-only",
+        "submit": "unsubmitted | same-input-only | not-permitted",
+        "checkedAtMs": "trusted time <= current observation",
+        "expiresAtMs": "fresh current eligibility projection deadline",
+        "reason": "valid-target | target-expired | target-not-current | target-terminal | original-input-required | payload-unavailable"
+      }
+    }
+  },
+  "operations": {
+    "discoverConversations": {
+      "effect": "read only; no selection, reservation, session issue or dispatch",
+      "input": {
+        "closed": true,
+        "required": {
+          "discoveryId": "uuid per invocation",
+          "clientId": "uuid hint",
+          "cursor": "cursor",
+          "limit": "integer1..50"
+        }
+      },
+      "responses": {
+        "page": {
+          "closed": true,
+          "required": {
+            "kind": "page",
+            "discoveryId": "exact input ID",
+            "scope": "scope",
+            "items": "0..50 closed items {conversationId,createdAt,latestVisibleRun:{runId,state}}",
+            "querySha256": "sha256 of canonical query and traversal context",
+            "snapshotAtMs": "time of initial traversal observation",
+            "coverage": "more iff nextCursor non-null; complete iff null",
+            "nextCursor": "cursor"
+          }
+        },
+        "error": "error"
+      },
+      "order": [
+        "immutable createdAt DESC",
+        "conversationId DESC"
+      ],
+      "cursorBinding": [
+        "tenant",
+        "actor",
+        "client",
+        "identityRevision",
+        "policyRevision",
+        "queryVersion",
+        "limit",
+        "upperCreatedBound",
+        "lastScannedKey",
+        "expiry"
+      ],
+      "pageRule": "Reauthorize every page/row. Invalid/stale context refuses. Zero-visible more is not empty. Explicit retry may repeat same page; client deduplicates page input/output cursor and refuses cycles. Failure emits no partial page or fake complete."
+    },
+    "openConversation": {
+      "effect": "existing issuer only; no conversation/run/task/grant allocation, mutation, submit, dispatch or cancel",
+      "input": {
+        "closed": true,
+        "required": {
+          "openId": "uuid correlation",
+          "clientId": "uuid hint",
+          "conversationId": "uuid exact selector",
+          "runId": "uuid exact selector",
+          "access": "observe | admitted-target",
+          "admissionReference": "null iff observe; exact immutable reference iff admitted-target",
+          "retainedSubmit": "null or closed {requestId,inputSha256}; original browser bytes retained separately, not sent in open"
+        }
+      },
+      "responses": {
+        "opened": {
+          "closed": true,
+          "required": {
+            "kind": "opened",
+            "openId": "exact input ID",
+            "scope": "scope",
+            "session": "existing issuer receipt, exact pair",
+            "projection": "sessionProjection"
+          }
+        },
+        "selection-required": {
+          "closed": true,
+          "required": {
+            "kind": "selection-required",
+            "openId": "exact input ID",
+            "scope": "scope"
+          }
+        },
+        "error": "error"
+      },
+      "crossFields": [
+        "observe yields observe only, never submit/cancel",
+        "admitted-target requires fresh exact immutable command/target mapping and original deadline",
+        "durably unused current target may yield first-submit",
+        "existing/unknown target input yields same-submit only with original input identity/bytes",
+        "expired/stale target cannot yield first-submit/same-submit",
+        "inaccessible and nonexistent pair both denied with no metadata",
+        "client-only compatibility bootstrap can only selection-required or read-only existing pair, never reserve"
+      ],
+      "currentReceiverChangeRequired": true
+    },
+    "prepareConversationTurn": {
+      "effect": "existing admission/next-run owner only; no prompt acceptance/model/dispatch",
+      "input": {
+        "closed": true,
+        "required": {
+          "commandId": "uuid fixed before first delivery",
+          "clientId": "uuid hint",
+          "intent": "closed tagged new-conversation with source:null OR next-turn with source:source"
+        }
+      },
+      "responses": {
+        "prepared": {
+          "closed": true,
+          "required": {
+            "kind": "prepared",
+            "scope": "scope",
+            "receipt": "immutableReceipt",
+            "session": "fresh existing issuer receipt",
+            "projection": "sessionProjection with first-submit or same-submit only",
+            "replayed": "boolean"
+          }
+        },
+        "recorded": "recorded",
+        "pending": "pending",
+        "unknown": "unknown",
+        "blocked": "blocked",
+        "conflict": "conflict",
+        "error": "error"
+      },
+      "precedence": [
+        "Fresh native authority",
+        "Existing same-command exact bytes -> immutable mapping first; changed bytes -> conflict",
+        "Only new command tests latest completed source and current checkpoint/retirement/revocation",
+        "Compute current effect/read eligibility separately; stale historical receipt never prepared"
+      ],
+      "durabilityGap": "f0 next_runs does not bind public commandId/hash; initial process-local issuer has no general durable creation command map. Existing owner extension/design and any separate allocation required before implementation."
+    },
+    "lookupConversationTurn": {
+      "effect": "read only, no session issue or allocation/reserve/dispatch",
+      "input": "exact original prepare commandId/hash/client/intent/source; no new ID",
+      "responses": {
+        "recorded": "recorded",
+        "pending": "pending",
+        "unknown": "unknown",
+        "not-committed": "notCommitted",
+        "conflict": "conflict",
+        "error": "error"
+      },
+      "credentialsAllowed": false,
+      "freshness": "Fresh current authority permits only exact retained receipt; reopen-target is a hint to explicit open+recheck, never a write grant."
+    }
+  },
+  "responses": {
+    "recorded": {
+      "closed": true,
+      "required": {
+        "kind": "recorded",
+        "scope": "scope",
+        "receipt": "immutableReceipt",
+        "eligibility": "presentEligibility",
+        "replayed": "boolean"
+      }
+    },
+    "pending": {
+      "closed": true,
+      "required": {
+        "kind": "pending",
+        "scope": "scope",
+        "commandId": "exact UUID",
+        "commandSha256": "exact sha256"
+      }
+    },
+    "unknown": {
+      "closed": true,
+      "required": {
+        "kind": "unknown",
+        "commandId": "exact UUID",
+        "commandSha256": "exact sha256",
+        "reason": "delivery-uncertain | commit-uncertain | lookup-unavailable"
+      }
+    },
+    "notCommitted": {
+      "closed": true,
+      "required": {
+        "kind": "not-committed",
+        "scope": "scope",
+        "commandId": "exact UUID",
+        "commandSha256": "exact sha256",
+        "lookupWitnessSha256": "authoritative durable identity lookup proof; not generic404"
+      }
+    },
+    "blocked": {
+      "closed": true,
+      "required": {
+        "kind": "blocked",
+        "scope": "scope",
+        "commandId": "exact UUID",
+        "commandSha256": "exact sha256",
+        "reason": "source-active | source-not-ready | unsupported-source-state | target-expired | original-input-required"
+      }
+    },
+    "conflict": {
+      "closed": true,
+      "required": {
+        "kind": "conflict",
+        "commandId": "exact UUID",
+        "commandSha256": "exact submitted sha256",
+        "reason": "input-changed | source-changed | already-bound"
+      }
+    },
+    "error": {
+      "closed": true,
+      "required": {
+        "kind": "error",
+        "code": "invalid-input | denied | cursor-invalid | cursor-stale | unavailable | deadline"
+      }
+    }
+  },
+  "invariants": [
+    "All alternatives closed: fields from other variants forbidden. No empty-on-error or hidden total.",
+    "Lookup/recorded never includes session, credential or allowedOperations containing submit.",
+    "prepared requires currently authorized effect-eligible target and original deadline; not merely historical admitted receipt.",
+    "Open/session exact pair + projection target must equal immutable association; mismatch refuses.",
+    "Current revocation/suppression forbidding receipt returns denied without receipt/source/target.",
+    "Expiry/purge cannot remint; receipt-only may be returned only when current retention owner permits control metadata.",
+    "Continuation ACK and target initial-submit ACK remain separate identities/receipts.",
+    "Original full source and target RunBindings remain server-trusted; browser fields are selectors only.",
+    "Source-completed is insufficient: published checkpoint, physical task retirement and complete grant revocation precede successor admission.",
+    "next-turn is not resume/fork; no old prompt replay, new grant, worker expiry renewal or automatic retry.",
+    "Immutable receipt outcome + current eligibility are separate; exact same-command recovery precedes a new-command latest-source test.",
+    "No capability or wire accepted by these design JSON bytes."
+  ]
+}

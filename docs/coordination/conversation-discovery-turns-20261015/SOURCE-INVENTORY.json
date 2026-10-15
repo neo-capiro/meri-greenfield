@@ -1,0 +1,208 @@
+{
+  "kind": "READ_ONLY_EXACT_SOURCE_INVENTORY_NOT_RUNTIME_ACCEPTANCE",
+  "docsBase": "9a41cfe54174cdd11cdfbd84e90cc8087bdfc0d6",
+  "masterCrosswalkSha256": "f134f9d5634c02cafab43d5e6460af8c35868a22a311b69f38d977f4f6a54fdb",
+  "sourcePinHold": true,
+  "files": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/next-run.mjs",
+      "gitBlob": "118d2f53e6b48829b4486c4123bf1e6338ae6857",
+      "bytes": 3106,
+      "sha256": "49643e6ed4d9eac0d6b8885c1974cb210039fb5c4bdb4cc59e40da170b0337ca",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/next-run.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/next-run-journal.mjs",
+      "gitBlob": "8e9b4203727cc88fa9d7ce78747f403ca5d33481",
+      "bytes": 16484,
+      "sha256": "85e788dbbb117bf07b44295be9b9f20efc54b226c7e22fa207605fd6b3689a3a",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/next-run-journal.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "gitBlob": "942f72d770845ce71c47b315118d14b2f3953d31",
+      "bytes": 10186,
+      "sha256": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/postgres-store.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/service.mjs",
+      "gitBlob": "30c243a5c0c716dff2cf804c7947974a106670a4",
+      "bytes": 11129,
+      "sha256": "e888dceb510694333e580a54392fa3b79f92acdbab939b30b93ccf83da7587e3",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/service.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/http.mjs",
+      "gitBlob": "5a850749ece0c0dc793d2ce10de31ab646a2cca8",
+      "bytes": 5425,
+      "sha256": "2e65b13ceb17ae74afc96490b639b1afc0a5cdce37ffd76ddc2c1eb28fb28b79",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/http.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/sequence-ranges.mjs",
+      "gitBlob": "6af4b20372ce09efb175c16df524edf2fc74f32f",
+      "bytes": 1067,
+      "sha256": "f433a1ecf39ea159b752fd21afbca4c2da73846e29d969aded5f8c656387b3bc",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/sequence-ranges.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/lifecycle/service.mjs",
+      "gitBlob": "9b54c7c23a595c90537c8ce4b3fad9345ee54c90",
+      "bytes": 19757,
+      "sha256": "b505c4d9848e2cd4ce0e184642bb0199fbfb84c8a80964c12b094f5011959f0c",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/lifecycle/service.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/conversations/migrations/0009_next_runs.sql",
+      "gitBlob": "ca24d9dbadc196bac3b194e161f555f8f42e9dd9",
+      "bytes": 10893,
+      "sha256": "85de8c731a269b00fc8b8f16d95772d56fd70a585431904cbb5049cdc2f8a8ed",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/conversations/migrations/0009_next_runs.sql"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/action-host/application-adapters/context-adapter.mjs",
+      "gitBlob": "dd6be8d03bfcc598f7126f7cb8c01e872de598bb",
+      "bytes": 9179,
+      "sha256": "8ad73ebabf8327ab6bf975bb81847da6d1b4469e3237ccdede36266e2c371038",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/action-host/application-adapters/context-adapter.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/action-host/application-adapters/mount.mjs",
+      "gitBlob": "bf36a58d1bc75930947f9992cd4d382838dd0ccf",
+      "bytes": 2630,
+      "sha256": "3aa6a5c6a6d2c77b67a46babe0f9ad7eff11d816dd957163fdd2b300ba647b1d",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/action-host/application-adapters/mount.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/action-host/session/owner.mjs",
+      "gitBlob": "38cf4f1f472baa0cdfe7e3ff78cf0e10df47a18f",
+      "bytes": 15556,
+      "sha256": "c4bc6f66c46a144eb7a560ca6dfa6b09a66e88620d2f231d8484ea1ecc4d7c6c",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/action-host/session/owner.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "apps/control/action-host/session/http.mjs",
+      "gitBlob": "90803a311a626d627ea3f83a55adb8c6c7f68abe",
+      "bytes": 3415,
+      "sha256": "069ccfb7253dd12b39c23517cb72acd5937267c4a83f06e4fc0ae3154243f2dc",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/apps/control/action-host/session/http.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "packages/contracts/conversation-application/protocol.mjs",
+      "gitBlob": "28b414a050e2b6a2c5b232cf60603cfff54590ee",
+      "bytes": 2047,
+      "sha256": "7c515d2eedaa17b5e76977c8c8650cc53920f5d5653acae4741e262baffe80e2",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/packages/contracts/conversation-application/protocol.mjs"
+    },
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "path": "packages/contracts/conversation-application/schema.mjs",
+      "gitBlob": "5e04167a6bf26b858d0dd90d46c6a9ba6a44cc36",
+      "bytes": 2515,
+      "sha256": "c60771d1febe7cafdcacc0240345f019bbfa6e2097c0ba253279e922c58c7512",
+      "url": "https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/packages/contracts/conversation-application/schema.mjs"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+      "path": "apps/web/src/shared/meri-actions/session-bootstrap.ts",
+      "gitBlob": "4f17e9817795c6e93ee57278319d34002170938e",
+      "bytes": 1640,
+      "sha256": "f3e1b503b067294867655ac52572f8b82ebfc0cd478eb5169e6f3ad219af0028",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/4e1421054df0d32c564f7c9bc75cbd5e5366b428/apps/web/src/shared/meri-actions/session-bootstrap.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+      "path": "apps/web/src/shared/meri-actions/opaque-session-controller.ts",
+      "gitBlob": "44bf33b74af7a9e706e6fc089dde7edd18e7775a",
+      "bytes": 3389,
+      "sha256": "cf627a3a025a625d20e96932f1a6a801382757adbec49cfd0ab63016e6625f97",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/4e1421054df0d32c564f7c9bc75cbd5e5366b428/apps/web/src/shared/meri-actions/opaque-session-controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+      "path": "apps/web/src/shared/meri-conversations/host-controller.ts",
+      "gitBlob": "777f08232791cda480e256c29404ddfff2c41846",
+      "bytes": 2201,
+      "sha256": "39d3057c02b92781ed996b844193cd65b229c54a314b13b64de2f2e3fd027ec4",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/4e1421054df0d32c564f7c9bc75cbd5e5366b428/apps/web/src/shared/meri-conversations/host-controller.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+      "path": "apps/web/src/shared/meri-conversations/query-journal.ts",
+      "gitBlob": "537b3b7821855465910492d349c16c4864dbe9c5",
+      "bytes": 2856,
+      "sha256": "9277a86fea85089e58e63d5a596f2876cc1b7b0032566e87f6b0592ccb14e00f",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/4e1421054df0d32c564f7c9bc75cbd5e5366b428/apps/web/src/shared/meri-conversations/query-journal.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+      "path": "apps/web/src/features/meri/conversation/useConversationActions.ts",
+      "gitBlob": "f87c10b9af684e4dfb016ff4a1d097171bd9f9fd",
+      "bytes": 3690,
+      "sha256": "09bb5f9fde3579ae35a3b8722a9931c1e71cc4ae25ce951905f0008f9bb2295e",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/4e1421054df0d32c564f7c9bc75cbd5e5366b428/apps/web/src/features/meri/conversation/useConversationActions.ts"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "4e1421054df0d32c564f7c9bc75cbd5e5366b428",
+      "path": "apps/web/src/features/meri/conversation/MeriConversationHost.tsx",
+      "gitBlob": "d7e22b5929492607cb8f13ed92efa1357d951c3e",
+      "bytes": 3072,
+      "sha256": "8ba58da878038a86d9daa898557ff9e23808ce351350958333f24260e927c646",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/4e1421054df0d32c564f7c9bc75cbd5e5366b428/apps/web/src/features/meri/conversation/MeriConversationHost.tsx"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "bae3bfad9967f4ab99107b20e86a94944f4f5e9d",
+      "path": "docs/meri-desktop-controls-20261015/CASES.json",
+      "gitBlob": "ef51496ce0076aca639a00f7feee4128144aecba",
+      "bytes": 7745,
+      "sha256": "21c91a4bc5575eba9cbc2c6e22757683a50a38993908d0ddd7c297a65abea451",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/bae3bfad9967f4ab99107b20e86a94944f4f5e9d/docs/meri-desktop-controls-20261015/CASES.json"
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "commit": "bae3bfad9967f4ab99107b20e86a94944f4f5e9d",
+      "path": "apps/web/tests/meri-desktop-controls-unimplemented.test.ts",
+      "gitBlob": "4ffee303e06c2cb938bd301a16d87734dab75aff",
+      "bytes": 1002,
+      "sha256": "86e40f96d951b4a94d989f7e62046b4b5e14fa56324aca09dc5384a543d985c6",
+      "url": "https://github.com/neo-capiro/capiro-frontend/blob/bae3bfad9967f4ab99107b20e86a94944f4f5e9d/apps/web/tests/meri-desktop-controls-unimplemented.test.ts"
+    }
+  ],
+  "verification": "Git blob bytes and hashes; frontend frozen receiving and local test-only pin read locally; no private source copied",
+  "runtimeTestsRun": false
+}
