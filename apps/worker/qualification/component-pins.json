@@ -668,8 +668,8 @@
         "sourcePath": "packages/contracts/validate.mjs",
         "contextPath": "build-dependencies/contracts/validate.mjs",
         "imagePath": "/packages/contracts/validate.mjs",
-        "bytes": 3311,
-        "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+        "bytes": 3606,
+        "sha256": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605"
       },
       {
         "sourcePath": "packages/contracts/meri.schema.json",
