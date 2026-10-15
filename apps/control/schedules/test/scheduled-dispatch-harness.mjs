@@ -12,7 +12,7 @@ import {storeFixture,versions} from '../../conversations/test/store-fixture.mjs'
 import {scheduleOwnerFixture} from './schedule-owner-fixture.mjs';
 
 const require=createRequire(new URL('../../conversations/package.json',import.meta.url));
-export const {WorkflowNotFoundError,ScheduleNotFoundError}=require('@temporalio/client');
+export const {WorkflowNotFoundError,ScheduleNotFoundError,ScheduleClient,WorkflowService}=require('@temporalio/client');
 export const NOW=Date.parse('2026-10-15T12:00:01.000Z');
 export const ids={schedule:'22222222-2222-4222-8222-222222222222',task:'33333333-3333-4333-8333-333333333333',create:'11111111-1111-4111-8111-111111111111',update:'44444444-4444-4444-8444-444444444444',cancel:'55555555-5555-4555-8555-555555555555',run:'66666666-6666-4666-8666-666666666666'};
 export const instruction='Summarise new committee activity for the selected client.';
