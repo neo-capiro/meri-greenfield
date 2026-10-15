@@ -66,7 +66,7 @@ Specific packet fixes: the current copy can overwrite an existing CA, directory 
 
 Leave `/opt/codex` rebinding stopped. A legitimate fresh isolated qualification environment must not replace a shared or installed runtime. Any needed filesystem/security action must have its own permitted scope.
 
-After permitted setup, execute the two-turn and recovery rehearsal through the genuine pinned CLI and control-plane path, including per-run issuance, actual checkpoint completion/capture, restoration, revocation and physical retirement. A composed fixture or store append is not the canonical path. Keep negative TLS and fail-closed controls. Clean up only owned artifacts and retain receipts.
+After permitted setup, execute the two-turn and recovery rehearsal through the genuine pinned CLI and control-plane path, including per-run issuance, actual checkpoint completion/capture, restoration, revocation and physical retirement. A fixture-only or direct-store substitute does not prove the canonical path. A composed harness can qualify that path when it exercises the genuine pinned CLI and control-plane owners with explicitly labelled synthetic external ports; it still does not prove live infrastructure bindings. Keep negative TLS and fail-closed controls. Clean up only owned artifacts and retain receipts.
 
 ## 5. Shared source ownership is now assigned
 
