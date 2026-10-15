@@ -6,9 +6,13 @@ targets these tables and is exercised against a real engine only when `MERI_TENA
 
 ## Proposed DDL and allocation
 
-**Proposed allocation (dot, 15 Oct 2026): `meri_product_budget`, `apps/gateway/budget/migrations/0002_tenant_budgets.sql`.** The DDL
-now lives in that source file. This is source numbering only: the central migration publication is still pending, so the allocation is
-recorded as **proposed, not published**, and nothing in this repository executes it.
+**Allocation: `meri_product_budget`, `apps/gateway/budget/migrations/0002_tenant_budgets.sql`, RESERVED for Fable as sole source
+author, source authoring only** (`docs/coordination/tasks/CODEX-TENANT-BUDGET-0002-ALLOCATION-20261015.md`, central commit
+`1b61483d`). The allocation supplies the number only; it does not accept this DDL or state machine, which await dot's review. The DDL
+now lives in that source file and nothing in this repository executes it. Before authoring, all fetched remote `dot/*`, `fable/*` and
+`main` heads (266 refs, fetched 2026-10-15T18:48Z) were rechecked: none holds a product-budget 0002 path, every product-budget 0001 blob
+is `bc0ff007fe38606463a2613904930f9dc5bfe5f0` (unchanged here), and the latest register head (`7606375d`) records only this reservation.
+Conversation-family 0012/0013 are not used.
 
 Correction after dot's HOLD of `06b2f49` (p1b): the first proposal let `RELEASED` free both the concurrency slot and the cost hold, so
 a cancelled run could be followed by a second full reservation and then settle the first (reserve 100, release, reserve 100, settle 70

@@ -1,5 +1,5 @@
 /** PostgreSQL tenant budget store over the proposed `meri_product_budget.tenant_budgets` / `tenant_run_reservations` tables
- * (`../migrations/0002_tenant_budgets.sql`: proposed allocation, not centrally published and never applied by this source).
+ * (`../migrations/0002_tenant_budgets.sql`: centrally reserved allocation, source authoring only, never applied by this source).
  * Each operation is one owned transaction of the canonical budget store: the tenant row is locked first, the reservation row second;
  * the rule itself is the shared policy kernel. The pool is borrowed and never ended. */
 import {PostgresBudgetStore,refuse} from '../postgres-budget-store.mjs';

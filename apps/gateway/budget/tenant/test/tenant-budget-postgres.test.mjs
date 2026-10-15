@@ -79,7 +79,7 @@ test('real PostgreSQL adapter over the proposed tables',{skip:socket?false:'MERI
 test('proposed migration source 0002 declares exactly the policy states, the per-state timestamps and no data, role or grant change',async()=>{
  const {readFile}=await import('node:fs/promises'),{states}=await import('../policy.mjs');
  const sql=await readFile(new URL('../../migrations/0002_tenant_budgets.sql',import.meta.url),'utf8');
- assert.match(sql,/PROPOSED allocation meri_product_budget\/0002/u);assert.match(sql,/never executed/u);
+ assert.match(sql,/RESERVED allocation meri_product_budget\/0002/u);assert.match(sql,/never executed/u);
  assert.deepEqual(/state IN \(([^)]*)\)/u.exec(sql)[1].split(',').map(s=>s.trim().replace(/'/gu,'')),[...states]);
  for(const column of ['released_at','settled_at','not_dispatched_at'])assert.match(sql,new RegExp(`${column} timestamptz`,'u'));
  assert.doesNotMatch(sql,/\b(?:INSERT|UPDATE|DELETE|DROP|TRUNCATE|GRANT|REVOKE|CREATE ROLE|ALTER ROLE|CREATE SCHEMA)\b/u);

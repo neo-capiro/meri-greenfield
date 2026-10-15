@@ -1,5 +1,6 @@
--- Product namespace DDL ONLY. PROPOSED allocation meri_product_budget/0002 (dot, 15 Oct 2026); central publication pending.
--- Source numbering only: not published, not applied by runtime/import, never executed by this source or its tests.
+-- Product namespace DDL ONLY. RESERVED allocation meri_product_budget/0002, Fable sole source author, source authoring only
+-- (docs/coordination/tasks/CODEX-TENANT-BUDGET-0002-ALLOCATION-20261015.md, central commit 1b61483d). The allocation is numbering,
+-- not acceptance of this DDL. Not applied by runtime/import, never executed by this source or its tests. 0001 is unchanged.
 -- Tenant-level cost and concurrency caps above the per-run allocations in 0001. No data, roles, grants or seeds.
 -- Per-tenant monthly cost cap and concurrent-run cap. Operator-managed policy rows; no default cap.
 CREATE TABLE meri_product_budget.tenant_budgets (

@@ -26,7 +26,8 @@ no existing allocation, grant, deadline, migration or SQL path is changed.
   `TENANT_BUDGET_CONFIGURATION`; PostgreSQL commit uncertainty stays `BudgetCommitUncertain`.
 - **Deadlines.** Unchanged. The gate carries no deadline of its own; the caller's existing operation lifetime and cancellation signal apply.
 - **Persistence.** The PostgreSQL adapter targets `meri_product_budget.tenant_budgets` and `meri_product_budget.tenant_run_reservations`
-  in `../migrations/0002_tenant_budgets.sql` (proposed allocation from dot; central publication pending, so proposed, not published;
+  in `../migrations/0002_tenant_budgets.sql` (centrally reserved for Fable, source authoring only, by
+  `docs/coordination/tasks/CODEX-TENANT-BUDGET-0002-ALLOCATION-20261015.md` at central commit `1b61483d`; numbering, not DDL acceptance;
   see `docs/coordination/proposals/FABLE-MIGRATION-REQUEST-TENANT-BUDGETS-20261015.md`). Nothing applies DDL; the adapter's real-engine test is skipped unless `MERI_TENANT_BUDGET_PG_SOCKET` names a socket of a database an operator
   has already migrated.
 
