@@ -1,13 +1,13 @@
 /** Actual AWS SDK commands; native S3 version identity is never a content digest. */
 import {S3Client,PutObjectCommand,GetObjectCommand,HeadObjectCommand,GetBucketVersioningCommand} from '@aws-sdk/client-s3';
 import {Readable} from 'node:stream';
-import {v,own,data,fail,sha,uuid,digest,scopeFacts,storageLifetime,configuration,storageMethod} from './boundary.mjs';
+import {v,own,data,fail,sha,uuid,digest,scopeFacts,storageLifetime,configuration,storageMethod,bucketIdentity} from './boundary.mjs';
 const retire=body=>{try{if(body instanceof Readable)body.destroy();else if(body instanceof ReadableStream)Promise.resolve(body.cancel()).catch(()=>{});}catch{}};
 const nativeVersion=value=>{if(typeof value!=='string'||value==='null'||!value.length||Buffer.byteLength(value)>1024||!value.isWellFormed())fail('ARTIFACT_S3_VERSION');return value;};
 export function createS3ArtifactObjects(options){
  const {client,bucket,prefix,expectedBucketOwner,kmsKeyId,now,maxRequestMs=15000,maxBytes=8388608}=own(options,['client','bucket','prefix','expectedBucketOwner','kmsKeyId','now'],['maxRequestMs','maxBytes']);
- configuration(now,maxRequestMs);const send=storageMethod(client,'send');if(typeof bucket!=='string'||! /^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u.test(bucket)||bucket.endsWith('--x-s3')||
-  typeof prefix!=='string'||! /^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u.test(prefix)||prefix.endsWith('/')||prefix.includes('//')||! /^[0-9]{12}$/u.test(expectedBucketOwner)||
+ configuration(now,maxRequestMs);const send=storageMethod(client,'send');bucketIdentity(bucket,expectedBucketOwner);if(
+  typeof prefix!=='string'||! /^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u.test(prefix)||prefix.endsWith('/')||prefix.includes('//')||
   typeof kmsKeyId!=='string'||! /^arn:aws(?:-us-gov|-cn)?:kms:[a-z0-9-]+:[0-9]{12}:key\/[a-f0-9-]{36}$/u.test(kmsKeyId)||!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>8388608)fail('ARTIFACT_STORAGE_CONFIGURATION');
  const key=o=>`${prefix}/${v.hash(o.scopes)}/${o.objectId}/${o.sha256}`,args=o=>({Bucket:bucket,Key:key(o),ExpectedBucketOwner:expectedBucketOwner});
  const checksum=o=>Buffer.from(o.sha256,'hex').toString('base64');

@@ -14,6 +14,9 @@ export function digest(value){if(typeof value!=='string'||!/^[a-f0-9]{64}$/u.tes
 export function scopeFacts(raw){const scopes=data(raw);if(!Array.isArray(scopes)||!scopes.length||scopes.length>4096)fail('ARTIFACT_STORAGE_INPUT');
  scopes.forEach(scope=>validateShape('Scope',scope));if(new Set(scopes.map(v.hash)).size!==scopes.length||scopes.some(s=>s.tenantId!==scopes[0].tenantId))fail('ARTIFACT_STORAGE_INPUT');return scopes;}
 export function storageLifetime({now,maxRequestMs},signal){nativeSignal(signal);return createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal,errorFactory:code=>Object.assign(Error('ARTIFACT_STORAGE_'+code),{code:'ARTIFACT_STORAGE_'+code})});}
+/** The configured bucket identity shared by the object adapter and the privacy verifier: an S3 general purpose bucket name (never a
+ * directory bucket) and the exact 12-digit expected owner account sent as ExpectedBucketOwner on every request. */
+export function bucketIdentity(bucket,expectedBucketOwner){if(typeof bucket!=='string'||!/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/u.test(bucket)||bucket.endsWith('--x-s3')||typeof expectedBucketOwner!=='string'||!/^[0-9]{12}$/u.test(expectedBucketOwner))fail('ARTIFACT_STORAGE_CONFIGURATION');return {bucket,expectedBucketOwner};}
 export function configuration(now,maxRequestMs){if(typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('ARTIFACT_STORAGE_CONFIGURATION');}
 /** Admit configured native prototype methods without executing getters or proxies. */
 export function storageMethod(port,name){
