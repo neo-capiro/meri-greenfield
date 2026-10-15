@@ -1,0 +1,152 @@
+{
+  "status": "PROPOSAL_NOT_APPROVED",
+  "asOfUTC": "2026-10-15",
+  "currency": "USD",
+  "region": "us-east-1",
+  "mode": "Reduced24hPreviewRequiresExplicitTopologyException",
+  "hoursPerMonth": 730,
+  "services": [
+    {
+      "service": "control",
+      "vCPU": 0.5,
+      "GiB": 1,
+      "replicas": 1,
+      "hourlyUSD": 0.0246852
+    },
+    {
+      "service": "temporal-worker",
+      "vCPU": 0.5,
+      "GiB": 1,
+      "replicas": 1,
+      "hourlyUSD": 0.0246852
+    },
+    {
+      "service": "temporal-preview-server",
+      "vCPU": 1,
+      "GiB": 2,
+      "replicas": 1,
+      "hourlyUSD": 0.0493704
+    },
+    {
+      "service": "trusted-model-proxy",
+      "vCPU": 1,
+      "GiB": 2,
+      "replicas": 1,
+      "hourlyUSD": 0.0493704
+    },
+    {
+      "service": "authority-relay",
+      "vCPU": 0.25,
+      "GiB": 0.5,
+      "replicas": 1,
+      "hourlyUSD": 0.0123426
+    }
+  ],
+  "rates": {
+    "fargateVCPUHour": 0.0404784,
+    "fargateGiBHour": 0.004446,
+    "fargateAdditionalStorageGiBHour": 0.00011088,
+    "rdsSingleAZT4gSmallHourHistorical": 0.032,
+    "rdsGp3GiBMonthHistorical": 0.115,
+    "albHour": 0.0225,
+    "albLCUHour": 0.008,
+    "publicIPv4Hour": 0.005,
+    "interfaceEndpointAZHourPlanning": 0.01
+  },
+  "pilot24h": {
+    "lineItemsUSD": {
+      "serviceCompute": 3.850891,
+      "runnerComputeAndExtraStorage": 0.059926,
+      "rdsCompute": 0.768,
+      "rdsStorage": 0.075616,
+      "albAt1LCU": 0.732,
+      "publicIPv4ThreeAddresses": 0.36,
+      "threeNewEndpointsTwoAZs": 1.44,
+      "oneBuildReserve": 3,
+      "ancillaryReserve": 3
+    },
+    "estimatedUSD": 13.29,
+    "requestedReserveUSD": 25,
+    "allocationApproved": false,
+    "modelUsageApproved": false
+  },
+  "reducedContinuous730h": {
+    "lineItemsUSD": {
+      "serviceCompute": 117.131274,
+      "runner15TaskHoursAndExtraStorage": 1.797768,
+      "rdsCompute": 23.36,
+      "rdsStorage": 2.3,
+      "albAt1LCU": 22.265,
+      "publicIPv4ThreeAddresses": 10.95,
+      "threeNewEndpointsTwoAZs": 43.8,
+      "oneBuildReserve": 3,
+      "ancillaryReserve": 25
+    },
+    "estimatedIncrementalUSD": 249.6,
+    "planningRangeUSD": [
+      250,
+      320
+    ],
+    "illustrativeExistingBaselineAdditionalUSD": [
+      50,
+      130
+    ],
+    "planningTotalWithBaselineUSD": [
+      300,
+      450
+    ],
+    "continuousOperationApproved": false
+  },
+  "acceptedHATopologyComparison": {
+    "temporalRoles": 5,
+    "replicasPerRole": 2,
+    "temporalTotalVCPU": 12,
+    "temporalTotalGiB": 24,
+    "temporalCompute730hUSD": 432.48,
+    "allInPlanningRangeUSD": [
+      750,
+      1000
+    ],
+    "rdsMultiAZQuote": "UNBOUND: proposed100-200USD/month planning allowance; exact instance/engine/pool capacity and quote required",
+    "note": "This comparison retains five-role/cross-AZ design; sizing remains provisional, not a measured capacity guarantee."
+  },
+  "assumptions": [
+    "At most24h reduced pilot; aggregate runner0.5task-hour across all runs, concurrency1; one build no retry/upsize.",
+    "Monthly scenario15runner task-hours; not a deployment authorization.",
+    "3new AWS interface endpoint services across2AZs (ECS API,Secrets Manager,Bedrock Runtime), only if absent. Existing ECR/log endpoints and all existing baseline costs excluded from incremental.",
+    "Public ALB2addresses and authority relay1address. Model proxy stays private; Bedrock role and endpoint avoid new account credential.",
+    "<=1LCU and low traffic; low-volume object/log/API cost included as reserve rather than measured invoice.",
+    "RDS rates copied from retained14October shipping RDS-PRICE/RDS-STORAGE-PRICE receipts, not freshly verified AWS quote.",
+    "Private endpoint hourly rate is a planning input requiring a regional quote, not a fetched regional offer.",
+    "No NAT,AWS Private CA,managed Temporal subscription,browser host or production cutover.",
+    "No free tier,credit or commitment discount assumed. No model spend included or renewed.",
+    "Budgets/alarms are not hard invoice caps. Exact retention,cleanup and current project remaining allowance required before provisioning.",
+    "Burst credits,cross-AZ/US transfer,extra logs/storage/LCU,failed builds or prolonged retention can exceed estimates."
+  ],
+  "sources": [
+    {
+      "url": "https://aws.amazon.com/fargate/pricing/",
+      "basis": "PublishedUS East Linux/x86 per-second example converted to hourly."
+    },
+    {
+      "url": "https://aws.amazon.com/elasticloadbalancing/pricing/",
+      "basis": "Published ALB hourly and LCU example."
+    },
+    {
+      "url": "https://aws.amazon.com/vpc/pricing/",
+      "basis": "Published0.005USD/publicIPv4-hour; no NAT proposed."
+    },
+    {
+      "url": "https://aws.amazon.com/privatelink/pricing/",
+      "basis": "Endpoint pricing structure;0.01USD/ENI-hour is planning rate requiring exact regional confirmation."
+    },
+    {
+      "url": "https://aws.amazon.com/rds/postgresql/pricing/",
+      "basis": "Quote required; retained shipping receipts provide only historical0.032/hour and0.115/GiB-month inputs."
+    },
+    {
+      "url": "https://aws.amazon.com/secrets-manager/pricing/",
+      "basis": "0.40USD/secret-month and0.05USD/10000API calls included in ancillary reserve."
+    }
+  ]
+}
