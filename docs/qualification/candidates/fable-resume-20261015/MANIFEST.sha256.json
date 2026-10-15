@@ -24,8 +24,8 @@
   },
   {
    "path": "DENIED-OPERATIONS.md",
-   "bytes": 12997,
-   "sha256": "55952d4166875861a7a20b6bdbb6f2e7a4ae08d8fd23b9f9582c32a3fab35b65"
+   "bytes": 15426,
+   "sha256": "84e48f489e3c41be76bd6bca977a3975bd061922b0f3c1715b39a839ec66d1e9"
   },
   {
    "path": "README.md",
@@ -276,6 +276,11 @@
    "path": "rehearsal/next-turn-preflight.stdout.txt",
    "bytes": 1424,
    "sha256": "87052aad24561d561af57cf8c389e55932e8aee51ea78c70d323e8f4d3e63244"
+  },
+  {
+   "path": "rehearsal/standin-probes-20261015.json",
+   "bytes": 3664,
+   "sha256": "ec8604bef39e8b82be62a0cb7e6f2a8e2bfd853497cb444afdf487f430349d98"
   }
  ]
 }
