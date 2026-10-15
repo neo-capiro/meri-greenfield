@@ -1,0 +1,307 @@
+{
+  "schema": "meri-scope-ledger-product-capabilities/1",
+  "note": "Curated input. Product capabilities outside the 139-row legacy registry. Rows with scopeRow quote docs/CAPABILITY-SCOPE.md 'Required new product capabilities outside the legacy registry' exactly; ledger.test.mjs verifies every table row is present with the same planned owner. Every row is OPEN: source presence, fixtures or screens are not acceptance.",
+  "capabilities": [
+    {
+      "id": "identity-membership",
+      "scopeRow": "Clerk session and current authoritative membership",
+      "plannedOwner": "B",
+      "decision": "required",
+      "canonicalOwner": "Fable lane B (apps/gateway/authorization, apps/control/action-host/session) consuming dot's Core membership source",
+      "currentState": "Real conversation host uses authenticated identity and selected-client context; live authentication, entitlement enforcement and restart recovery are not demonstrated. Prepared startup supplies identityContext only.",
+      "gates": [
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Canonical actor and tenant resolution; no model-supplied authority; membership removal denies new and stored access.",
+      "auditRefs": [
+        "meri-audit-product-integration.md 'What is genuinely implemented' and section 1"
+      ]
+    },
+    {
+      "id": "memory-read-propose",
+      "scopeRow": "memory.read and memory.propose",
+      "plannedOwner": "B",
+      "decision": "required",
+      "canonicalOwner": "Fable lane B (apps/control/commands memory.propose producer; apps/gateway/sources/client-knowledge search_memory; apps/gateway/sources/memory-proposals) + dot (canonical memory review in Core)",
+      "currentState": "Read and pending-proposal source owners exist; personal scope refused PENDING_PRODUCER_UNAVAILABLE; Memory desktop surface is fixture-only. Includes sourced corrections proposed through memory.propose and reviewed canonically. Direct confirm_memory/correct_memory/forget_memory are excluded by owner direction.",
+      "gates": [
+        "MEMORY-PRODUCER",
+        "COMMAND-G5",
+        "READ-QUALIFICATION",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Eligible lifecycle/owner/client scope; sourced immutable candidate; canonical review remains authoritative; no direct publish by proposal.",
+      "auditRefs": [
+        "data-artifacts-report.md 'Institutional memory'",
+        "audit README 'Corrected tool and scope accounting'"
+      ]
+    },
+    {
+      "id": "conversation-controls",
+      "scopeRow": "Conversation controls and attachment workflow",
+      "plannedOwner": "A/C",
+      "decision": "required",
+      "canonicalOwner": "Fable lane A (apps/control/conversations, lifecycle) for Meri APIs; dot for the unified frontend (capiro-frontend)",
+      "currentState": "Frontend is a one-run observer: input disabled after a submission, no discovery/new-turn/steer/resume/fork/approval recovery; history API is per-run while next-turn sequencing is conversation-wide (L3); continuation and approval owners unmounted in prepared startup (L2); pause/approval-hold publication race (L1).",
+      "gates": [
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "List, submit, stream/reconnect, stop, steer, retry, resume, fork, approve/reject, upload, citations and clear state; every visible control passes E2E checks.",
+      "additionalAcceptance": "Multi-turn, history paging, reload, reconnect, old-history selection and lost-ACK cases without duplicate effects or identity substitution (audit).",
+      "auditRefs": [
+        "lifecycle-report.md L1-L3",
+        "meri-audit-product-integration.md section 2"
+      ]
+    },
+    {
+      "id": "durable-restoration",
+      "scopeRow": "Durable SDK and workspace restoration",
+      "plannedOwner": "A",
+      "decision": "required",
+      "canonicalOwner": "Fable lane A (apps/runtime native-authority checkpoint/continuation, apps/control/conversations workflows)",
+      "currentState": "One-attempt workflows lack production crash reconciliation; failed/cancelled latest runs cannot use the next-run path (L4); production recovery workflows are qualification-only.",
+      "gates": [
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "One writer/fencing; verified transcript and file manifest; worker-loss and approval-wait recovery; no duplicate effects.",
+      "additionalAcceptance": "Recovery within two minutes on healthy infrastructure; UNKNOWN never licenses redispatch or stale checkpoint reuse (audit).",
+      "auditRefs": [
+        "lifecycle-report.md L4"
+      ]
+    },
+    {
+      "id": "native-artifacts",
+      "scopeRow": "Native artifacts and revisions",
+      "plannedOwner": "C",
+      "decision": "required",
+      "canonicalOwner": "Fable lane C (apps/control/document-application, apps/artifacts, apps/runtime/artifacts)",
+      "currentState": "Application admits create_word/create_excel and DOCX/TXT/XLSX only; PDF revision parser defect (DA-2) and PPTX overlap (DA-3); artifact options owner absent in startup; frontend offers Word or Excel only.",
+      "gates": [
+        "ARTIFACT-ADMISSION",
+        "ARTIFACT-NATIVE",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "DOCX/PDF, spreadsheets, slides, HTML/code and analysis outputs using adopted components; originals preserved; verified native bytes and previews.",
+      "auditRefs": [
+        "data-artifacts-report.md DA-2, DA-3 and 'Native artifacts'"
+      ]
+    },
+    {
+      "id": "public-browser",
+      "scopeRow": "Public browser session",
+      "plannedOwner": "A/C",
+      "decision": "required; browser ON by default (owner direction recorded in commit 7606375d, 15 Oct 2026 18:39 UTC)",
+      "canonicalOwner": "Fable (apps/worker/conversation/browser in flight on fable/p2c-browser-default-on-20261015 @31ed4a73; not at this base) on the D005 dedicated isolated browser host",
+      "currentState": "P1c source reviewed default disabled and uncomposed; HOLD findings remain (consequential-action controls before effects, download limits/filename races, DOCX qualification, egress/redirect/private-address enforcement, profile persistence). Default-on direction does not accept those defects or authorize activation.",
+      "gates": [
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "One qualified official Playwright integration; conversation-bound state, cancellation, downloads/uploads and source scopes; infrastructure egress enforcement.",
+      "additionalAcceptance": "Browser available by default; network destinations denied by default; pre-execution controls for consequential actions (owner direction 7606375d). Measured non-root browser and renderer sandbox on the approved host; actual egress/redirect/private-address enforcement; safe downloads and profile isolation/persistence (audit, P1c HOLD).",
+      "auditRefs": [
+        "commit 7606375d (DOT-REVIEW-FABLE-P1C-e0f94fe0-20261015.md)",
+        "audit README 'Complete desktop and default-on browser'"
+      ]
+    },
+    {
+      "id": "authenticated-browser-workflow",
+      "scopeRow": "Authenticated browser workflow",
+      "plannedOwner": "Deferred individually",
+      "decision": "historically deferred individually; not covered by the 15 Oct owner exclusion; owner decision required",
+      "canonicalOwner": "unassigned until Neo names a website/workflow",
+      "currentState": "Not started; the audit says it must be reconciled with 'complete it all', not silently dropped.",
+      "gates": [
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Requires named website/workflow, credential ownership, approval and separate authentication/isolation/revocation qualification; no implicit v1 parity.",
+      "auditRefs": [
+        "meri-audit-product-integration.md 'End-goal scope accounting'"
+      ]
+    },
+    {
+      "id": "application-schedules",
+      "scopeRow": "Application schedules",
+      "plannedOwner": "A/C",
+      "decision": "required",
+      "canonicalOwner": "Fable lane A/C (apps/control/schedules) + lane A for runtime dispatch composition",
+      "currentState": "Schedule owner, Temporal Schedules, claims, generation fences and explicit UNKNOWN exist; no product scheduled-run issuance/dispatch, no reconcile entry point, not mounted by product-applications; Routines surface fixture-only.",
+      "gates": [
+        "SCHEDULE-DISPATCH",
+        "INTENT-ROUTE",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Temporal Schedules, timezone, actor/scope/budget/retry policy, creation/inspection/pause/cancel/history and per-execution reauthorization.",
+      "auditRefs": [
+        "lifecycle-report.md L6"
+      ]
+    },
+    {
+      "id": "artifact-lifecycle",
+      "scopeRow": "Artifact preview/version/download/filing",
+      "plannedOwner": "B/C",
+      "decision": "required",
+      "canonicalOwner": "Fable lane C (apps/runtime/artifacts download links, apps/artifacts/storage) + lane B (artifact.file command)",
+      "currentState": "Immutable versions, byte identity, CAS and replay exist; P1b final awaited download-read authority race and uncertain-liability release remain HOLD.",
+      "gates": [
+        "COMMAND-G5",
+        "ARTIFACT-NATIVE",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Immutable version, checksum and scopes; current authorization; exact approved filing destination; no widening source access.",
+      "auditRefs": [
+        "audit README P1b HOLD row",
+        "data-artifacts-report.md 'Native artifacts'"
+      ]
+    },
+    {
+      "id": "revocation-lifecycle",
+      "scopeRow": "Revocation and lifecycle",
+      "plannedOwner": "A/B/C",
+      "decision": "required; includes application retention and deletion",
+      "canonicalOwner": "Fable lane A (apps/control/retention, runtime startup fence) + lane B/C for per-store deletion targets",
+      "currentState": "Startup composes a read gate and SQL projection only; authoritative ledger/reconciler/purge owner absent; serving gate starts open; DA-1 deletes objects before rejecting a mismatched SQL subject; DA-4 returns uncertain leases to the pool; several data classes have no deletion targets. Keep purge inactive until safe.",
+      "gates": [
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Numeric deadline agreed before G3; live cancellation, denial of publication and old thread/file/preview access; deletion across stores and backup handling.",
+      "additionalAcceptance": "Deletion across all retained data classes and restored backups; suppression before serving; per-step UNKNOWN; safe database lease disposal; zero unauthorized disclosure (audit DA-1/DA-4).",
+      "auditRefs": [
+        "data-artifacts-report.md DA-1, DA-4 and 'Retention/restore'",
+        "security-release-report.md SEC-REL-05"
+      ]
+    },
+    {
+      "id": "budgets-release-controls",
+      "scopeRow": "Budgets, usage and operational release controls",
+      "plannedOwner": "A",
+      "decision": "required",
+      "canonicalOwner": "Fable lane A (apps/gateway/budget, retained proxy) + dot/AWS shipping owner for release",
+      "currentState": "Product and qualification budget namespaces split; retargeted runs reuse configured proxy material; retained proxy rejects observed CLI POST /v1/messages?beta=true (SEC-REL-01); no current deploy/migration manifest or integrated CI evidence.",
+      "gates": [
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Enforced tenant/run limits, measured every attempt, retention, rollback/restore and in-flight workflow compatibility.",
+      "additionalAcceptance": "One canonical product budget consumed by model and tool reservations, with short-lived per-run peer-bound model grants, revocation and settlement (audit SEC-REL-02).",
+      "auditRefs": [
+        "security-release-report.md SEC-REL-01, SEC-REL-02, SEC-REL-05, SEC-REL-06"
+      ]
+    },
+    {
+      "id": "desktop-surfaces",
+      "title": "Complete desktop surfaces and settings",
+      "scopeRow": null,
+      "plannedOwner": "dot (unified frontend) with Fable Meri APIs",
+      "decision": "required",
+      "canonicalOwner": "dot (capiro-frontend); Fable supplies the Meri contracts and hosts",
+      "currentState": "Runs, Approvals, Memory, Routines and Data access have fixture-only destinations; Preferences disabled and unpersisted with the inherited /settings/preferences route defect; keyboard/ARIA and SSR HOLD at a0b58a2b.",
+      "gates": [
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Authenticated, scoped real hosts and persisted settings; exact-pin interaction/SSR evidence; every visible desktop control tested.",
+      "auditRefs": [
+        "meri-audit-product-integration.md section 3",
+        "audit README Frontend HOLD row"
+      ]
+    },
+    {
+      "id": "objective-strategy-planner",
+      "title": "Durable Objective -> Strategy -> Planner completion",
+      "scopeRow": null,
+      "plannedOwner": "dot (Core/backend) with Fable for the Meri-side protocol",
+      "decision": "required",
+      "canonicalOwner": "dot (capiro-backend Objective/Strategy/Planner); Meri strategy-operations contract candidate",
+      "currentState": "Automatic Planner continuation is browser-owned; closing the browser can stop it; ready-intent candidate is not a dispatcher.",
+      "gates": [
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Server-owned continuation with canonical association, authority, result custody and application receipts; close/reopen/crash/ACK-loss and concurrent revision cases; no duplicate model query or product effect.",
+      "auditRefs": [
+        "meri-audit-product-integration.md section 4"
+      ]
+    },
+    {
+      "id": "mobile",
+      "title": "Mobile",
+      "scopeRow": null,
+      "plannedOwner": "dot (unified frontend)",
+      "decision": "deferred relative to desktop",
+      "canonicalOwner": "dot (capiro-frontend)",
+      "currentState": "Frontend 9b4de058 changed mobile CSS/navigation tests only; mobile is kept separate from desktop acceptance.",
+      "gates": [],
+      "acceptance": "Not part of desktop acceptance; a later mobile scope needs its own owner direction and gates.",
+      "auditRefs": [
+        "audit README 'End-to-end completion criteria'"
+      ]
+    },
+    {
+      "id": "device-browser-bridge",
+      "title": "Device/browser bridge",
+      "scopeRow": null,
+      "plannedOwner": "Deferred",
+      "decision": "historically deferred; not covered by the 15 Oct owner exclusion; owner decision required",
+      "canonicalOwner": "unassigned",
+      "currentState": "Not started.",
+      "gates": [],
+      "acceptance": "Separate estimate and owner direction.",
+      "auditRefs": [
+        "docs/CAPABILITY-SCOPE.md paragraph after the required-capability table",
+        "meri-audit-product-integration.md 'End-goal scope accounting'"
+      ]
+    },
+    {
+      "id": "live-browser-takeover",
+      "title": "Live browser takeover",
+      "scopeRow": null,
+      "plannedOwner": "Deferred",
+      "decision": "historically deferred; not covered by the 15 Oct owner exclusion; owner decision required",
+      "canonicalOwner": "unassigned",
+      "currentState": "Not started.",
+      "gates": [],
+      "acceptance": "Separate estimate and owner direction.",
+      "auditRefs": [
+        "docs/CAPABILITY-SCOPE.md paragraph after the required-capability table",
+        "meri-audit-product-integration.md 'End-goal scope accounting'"
+      ]
+    },
+    {
+      "id": "in-browser-office-editing",
+      "title": "Full in-browser Office editing",
+      "scopeRow": null,
+      "plannedOwner": "Deferred",
+      "decision": "historically deferred; not covered by the 15 Oct owner exclusion; owner decision required",
+      "canonicalOwner": "unassigned",
+      "currentState": "Not started; native artifacts and revisions remain required.",
+      "gates": [],
+      "acceptance": "Separate estimate and owner direction.",
+      "auditRefs": [
+        "docs/CAPABILITY-SCOPE.md paragraph after the required-capability table",
+        "meri-audit-product-integration.md 'End-goal scope accounting'"
+      ]
+    },
+    {
+      "id": "full-139-workflow-parity",
+      "title": "Full 139-workflow parity",
+      "scopeRow": null,
+      "plannedOwner": "Deferred",
+      "decision": "superseded for the 43 excluded tools by the 15 Oct owner exclusion; parity for the 96 included capabilities is tracked per row; workflow-level parity beyond those rows needs an owner decision",
+      "canonicalOwner": "unassigned",
+      "currentState": "All 139 workflow dispositions remain NOT_QUALIFIED.",
+      "gates": [],
+      "acceptance": "Per-row gates in this ledger; no parity claim from counts.",
+      "auditRefs": [
+        "meri-audit-product-integration.md 'End-goal scope accounting'",
+        "data-artifacts-report.md 'Selected tool exposure'"
+      ]
+    }
+  ]
+}

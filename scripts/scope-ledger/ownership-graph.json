@@ -1,0 +1,172 @@
+{
+  "schema": "meri-scope-ledger-ownership-graph/1",
+  "status": "PROPOSAL for dot (audit repair step 2). Not accepted. It assigns no shared file, contract, lockfile or migration; those remain allocated centrally and need dot's decision before implementation.",
+  "note": "Curated input. 'sourceModules' and 'persistence' paths are verified to exist at this base by ledger.test.mjs (paths marked atBase:false are in-flight branches and are not verified). ownedToday: 'owned' = one canonical owner exists and trusted startup composes it; 'partial' = a canonical domain owner exists in source but startup composition, recovery or a responsibility listed under 'unowned' is missing; 'unowned' = no canonical owner is composed or assigned for the responsibility. Source presence never implies runtime acceptance.",
+  "domains": [
+    {
+      "id": "startup-composition",
+      "title": "Startup composition",
+      "sourceModules": ["apps/runtime/cli.mjs", "apps/runtime/control.mjs", "apps/runtime/product-applications.mjs", "apps/runtime/temporal-worker.mjs", "apps/runtime/prepared-candidate.mjs", "apps/runtime/prepared-run-registry.mjs"],
+      "persistence": [],
+      "composedByStartup": "partial: control composes conversations, lifecycle routes, action sessions, worker routes, documents/selected tasks/SDK sessions (unavailable without owners) and an optional retention read gate; native-candidate mode supplies identityContext only and refuses external product ports",
+      "ownedToday": "partial",
+      "unowned": ["action query/draft/prepare/execute application mount", "artifact options owner", "selected-task and SDK-session owners in native-candidate mode", "schedule owner and scheduled-run dispatch", "production recovery workflows (worker registers conversation workflow only)", "a machine-verifiable startup ownership graph (public control -> owner -> tables -> native operation -> worker registration)"],
+      "proposedCanonicalOwner": "Fable lane A: apps/runtime/control.mjs, product-applications.mjs and temporal-worker.mjs as the single composition root; each product owner enters through a reviewed port, never through configuration",
+      "auditRefs": ["meri-audit-product-integration.md section 1", "lifecycle-report.md L2 and recommendation 1", "security-release-report.md SEC-REL-05"]
+    },
+    {
+      "id": "current-authority",
+      "title": "Current authority (identity, membership, run, transition, tool)",
+      "sourceModules": ["apps/gateway/authorization/current-tool-authority.mjs", "apps/control/action-host/session", "apps/control/action-host/current.mjs", "apps/runtime/native-authority/identity-context.mjs", "apps/control/conversations/lifecycle/journal.mjs"],
+      "persistence": [],
+      "composedByStartup": "partial: action sessions are process-local over identityContext; transitionAuthority for resume/fork is not supplied by prepared startup (LIFECYCLE_EFFECT_UNKNOWN fallback); tool authority is composed only on the selected-skill gateway mount with sources disabled",
+      "ownedToday": "partial",
+      "unowned": ["target-current transition authority and target session context in prepared startup", "Clerk/Core membership source as a composed port (dot Core)", "discovery grant for general reads (P1)"],
+      "proposedCanonicalOwner": "Fable lane B for tool authority (apps/gateway/authorization); Fable lane A for transition authority composition; dot for the Core membership source and the P1 contract",
+      "auditRefs": ["lifecycle-report.md L2", "FABLE-GENERAL-READ-TOOLS-20261015.md P1"]
+    },
+    {
+      "id": "persistence",
+      "title": "Persistence and migrations",
+      "sourceModules": ["apps/control/conversations/postgres-store.mjs", "apps/artifacts/storage/postgres-versions.mjs", "apps/control/commands/postgres-command-journal.mjs", "apps/control/schedules/postgres-schedule-owner.mjs", "apps/gateway/budget/postgres-budget-store.mjs"],
+      "persistence": ["apps/control/conversations/migrations/0011_run_issuance.sql", "apps/artifacts/migrations/0002_retention.sql", "apps/control/commands/migrations/0001_commands.sql", "apps/control/schedules/migrations/0001_schedule_owner.sql", "apps/control/task-lookup/migrations/0001_task_lookup.sql", "apps/gateway/budget/migrations/0001_product_budget.sql"],
+      "composedByStartup": "partial: each schema has a source owner; readiness checks only a subset of tables",
+      "ownedToday": "partial",
+      "unowned": ["one current deploy/migration manifest keyed to the integrated SHA with order, privileges and restore/rollback prerequisites", "durable owner-only storage for file-backed capability material"],
+      "proposedCanonicalOwner": "Per-schema owners stay as they are; migration IDs remain centrally allocated by dot (product budget 0002 reserved for Fable source authoring; conversations 0011/0012 holds unchanged); the manifest is a dot/Fable release deliverable. No migration execution is authorized.",
+      "auditRefs": ["security-release-report.md SEC-REL-05", "audit README tenant-budget allocation paragraph"]
+    },
+    {
+      "id": "budget-proxy",
+      "title": "Budget, usage and model proxy",
+      "sourceModules": ["apps/gateway/budget/native-allocation-admission.mjs", "apps/gateway/budget/postgres-tool-budget.mjs", "apps/proxy/qualification/state/admission.py", "apps/proxy/qualification/state/ledger.py"],
+      "persistence": ["apps/gateway/budget/migrations/0001_product_budget.sql"],
+      "composedByStartup": "no: product namespace meri_product_budget and retained proxy namespace meri_qualification are split; prepared readiness reads the product budget while the proxy hard-codes qualification state",
+      "ownedToday": "unowned",
+      "unowned": ["one canonical product budget/ledger that model and tool reservations both consume", "trusted product proxy composition with the canonical grant/budget owners", "retained proxy route compatibility with the pinned CLI (SEC-REL-01)"],
+      "proposedCanonicalOwner": "apps/gateway/budget as the only authoritative budget (Fable lane A/B); the retained proxy is retargeted to it, not given a second budget; dot accepts the composition",
+      "auditRefs": ["security-release-report.md SEC-REL-01, SEC-REL-02", "audit README P1b HOLD row"]
+    },
+    {
+      "id": "issuance-revocation",
+      "title": "Per-run issuance and revocation",
+      "sourceModules": ["apps/runtime/prepared-run-issuance.mjs", "apps/runtime/prepared-run-issuer.mjs", "apps/runtime/prepared-run-issuance-postgres.mjs", "apps/runtime/capability-material-authority.mjs", "apps/runtime/native-authority/task-authority.mjs"],
+      "persistence": ["apps/control/conversations/migrations/0011_run_issuance.sql"],
+      "composedByStartup": "partial: multi-run mode composes the issuance store and a file-backed capability authority when a material directory is configured; per-run model credentials are not issued (retargeted runs reuse configured proxy material)",
+      "ownedToday": "partial",
+      "unowned": ["short-lived per-run, peer-bound model credential issuance and revocation", "durable owner-only capability-material storage", "production reconciliation owner for issuance after material loss (fails closed today)"],
+      "proposedCanonicalOwner": "Fable lane A (apps/runtime prepared-run issuance) for capability material; model-grant issuance joins the budget-proxy owner; dot accepts",
+      "auditRefs": ["security-release-report.md SEC-REL-02, SEC-REL-05", "FABLE-COMPLETION-RETURN-20261015.md (production reconciliation has no running owner)"]
+    },
+    {
+      "id": "cleanup",
+      "title": "Physical task cleanup and crash recovery",
+      "sourceModules": ["apps/runtime/native-authority/execution-broker.mjs", "apps/runtime/native-authority/execution-http.mjs", "apps/runtime/temporal-worker.mjs", "apps/control/qualification-temporal/recovery-activities.mjs"],
+      "persistence": ["apps/control/conversations/migrations/0006_native_executions.sql"],
+      "composedByStartup": "partial: prepared mode stops through an independent signal and refuses success when stop is unknown; non-prepared mode has no stop route (L5); recovery workflows are qualification-only",
+      "ownedToday": "partial",
+      "unowned": ["original-bound stop/revoke for non-prepared mode or a readiness refusal of that mode", "production crash reconciliation and retirement for one-attempt workflows (L4)"],
+      "proposedCanonicalOwner": "Fable lane A (native-authority execution broker and runtime worker registration); qualification fixture workflows stay separate and labelled",
+      "auditRefs": ["lifecycle-report.md L4, L5"]
+    },
+    {
+      "id": "schedules",
+      "title": "Schedules",
+      "sourceModules": ["apps/control/schedules/schedule-lifecycle.mjs", "apps/control/schedules/postgres-schedule-owner.mjs", "apps/control/schedules/tool-interface.mjs", "apps/control/schedules/temporal-schedule-mutations.mjs"],
+      "persistence": ["apps/control/schedules/migrations/0001_schedule_owner.sql"],
+      "composedByStartup": "no: product-applications has no schedule owner; worker registration is conversation-only",
+      "ownedToday": "partial",
+      "unowned": ["scheduled firing -> current authority -> fresh run binding -> capability issuance adapter", "exact-provider UNKNOWN reconciliation entry point"],
+      "proposedCanonicalOwner": "Fable lane A/C keeps apps/control/schedules as the only scheduler (no second scheduler); lane A composes it and the scheduled-run issuance adapter",
+      "auditRefs": ["lifecycle-report.md L6"]
+    },
+    {
+      "id": "artifacts",
+      "title": "Artifacts",
+      "sourceModules": ["apps/control/document-application/index.mjs", "apps/runtime/artifacts/application.mjs", "apps/runtime/artifacts/composition.mjs", "apps/artifacts/service.mjs", "apps/artifacts/storage/index.mjs"],
+      "persistence": ["apps/artifacts/migrations/0001_versions.sql", "apps/artifacts/migrations/0002_retention.sql"],
+      "composedByStartup": "partial: product-applications mounts the document application; without an artifact options owner it returns unavailable",
+      "ownedToday": "partial",
+      "unowned": ["artifact options owner in trusted startup", "admitted PowerPoint/analysis/PDF routes (after DA-2/DA-3 repairs)", "qualified native inspection and renderer sandbox"],
+      "proposedCanonicalOwner": "Fable lane C: generation, inspection, preview publication and filing stay separate cohesive owners",
+      "auditRefs": ["data-artifacts-report.md DA-2, DA-3 and 'Native artifacts'"]
+    },
+    {
+      "id": "sources",
+      "title": "Institutional sources and reads",
+      "sourceModules": ["apps/gateway/index.mjs", "apps/gateway/sources/source-admission.mjs", "apps/gateway/dispatch/tool-dispatch.mjs", "apps/gateway/dispatch/operation-context.mjs", "apps/gateway/selected-skills/mount.mjs", "apps/worker/conversation/skills/mcp.mjs"],
+      "persistence": ["apps/control/conversations/migrations/0005_selected_reads.sql"],
+      "composedByStartup": "no for ordinary conversations: production gateway exports source-disabled compositions and runtime config fixes sourceEnabled=false; selected-skill MCP admits two skills and at most 11 tools",
+      "ownedToday": "partial",
+      "unowned": ["general read server and gateway general-read mount (proposed, not built)", "native installation receipt for general reads (P2)", "base read budget allocation (P3)", "trusted dispatch contexts for 35 read contracts (P5)", "66 selected reads without adapters", "source connectivity and restricted roles (dot Core endpoints)"],
+      "proposedCanonicalOwner": "Fable lane B for adapters and the gateway mount, Fable for the worker read server, dot for Core endpoints and contracts P1-P5, native qualification owner for installation receipts",
+      "auditRefs": ["data-artifacts-report.md addendum", "FABLE-GENERAL-READ-TOOLS-20261015.md"]
+    },
+    {
+      "id": "retention",
+      "title": "Retention, deletion and restore",
+      "sourceModules": ["apps/control/retention/index.mjs", "apps/control/retention/ledger.mjs", "apps/control/retention/purge.mjs", "apps/control/retention/reconciliation.mjs", "apps/control/retention/suppression.mjs", "apps/control/retention/inventory.mjs"],
+      "persistence": ["apps/control/conversations/migrations/0010_retention.sql", "apps/artifacts/migrations/0002_retention.sql"],
+      "composedByStartup": "partial: optional read gate and SQL projection only; serving gate starts open and readiness checks a local flag, not a recovered ledger watermark",
+      "ownedToday": "unowned",
+      "unowned": ["authoritative ledger/reconciler/purge owner in startup", "restore serving fence and recovered watermark", "complete data-class inventory (browser state, previews, telemetry/backups, source-retained material, native metadata)", "write-once ledger sink, holds and per-class durations"],
+      "proposedCanonicalOwner": "Fable lane A owns apps/control/retention and its startup fence after DA-1/DA-4 repairs; per-store deletion targets come from each data owner; purge stays inactive until safe",
+      "auditRefs": ["data-artifacts-report.md DA-1, DA-4 and 'Retention/restore'"]
+    },
+    {
+      "id": "conversation-continuation",
+      "title": "Conversation history, continuation and approvals",
+      "sourceModules": ["apps/control/conversations/service.mjs", "apps/control/conversations/next-run-journal.mjs", "apps/control/conversations/lifecycle/service.mjs", "apps/worker/conversation/continuation"],
+      "persistence": ["apps/control/conversations/migrations/0002_lifecycle.sql", "apps/control/conversations/migrations/0009_next_runs.sql"],
+      "composedByStartup": "partial: lifecycle routes mounted; continuation admit/retire and approval read/decision forwarded to native operations the prepared registry does not provide",
+      "ownedToday": "partial",
+      "unowned": ["continuation admission/retirement and approval/decision owners in prepared startup", "conversation-wide authorized history API", "safe pause/approval-hold publication (L1 repair)"],
+      "proposedCanonicalOwner": "Fable lane A (apps/control/conversations and native continuation runtime); dot for the unified frontend lifecycle adoption",
+      "auditRefs": ["lifecycle-report.md L1-L3", "meri-audit-product-integration.md section 2"]
+    },
+    {
+      "id": "memory",
+      "title": "Memory reads and proposals",
+      "sourceModules": ["apps/control/commands/source-projection.mjs", "apps/gateway/sources/memory-proposals/handler.mjs", "apps/gateway/sources/client-knowledge"],
+      "persistence": ["apps/control/commands/migrations/0001_commands.sql"],
+      "composedByStartup": "no: sources disabled; command path not composed for conversations",
+      "ownedToday": "partial",
+      "unowned": ["personal-scope pending proposal producer", "canonical memory review owner as a composed port (dot Core)"],
+      "proposedCanonicalOwner": "Fable lane B for the proposal command and read adapters; dot owns canonical review; direct confirm/correct/forget stay excluded",
+      "auditRefs": ["data-artifacts-report.md 'Institutional memory'"]
+    },
+    {
+      "id": "browser",
+      "title": "Browser (ON by default)",
+      "sourceModules": [{"path": "apps/worker/conversation/browser", "atBase": false, "branch": "fable/p2c-browser-default-on-20261015 @31ed4a73"}],
+      "persistence": [],
+      "composedByStartup": "no at this base",
+      "ownedToday": "partial",
+      "unowned": ["qualified D005 isolated host composition", "egress/redirect/private-address enforcement evidence", "consequential-action pre-execution controls"],
+      "proposedCanonicalOwner": "Fable (implementation, owner direction 7606375d); AWS shipping owner for any separately authorized host action; dot verifies",
+      "auditRefs": ["commit 7606375d", "audit README P1c HOLD row"]
+    },
+    {
+      "id": "settings",
+      "title": "Settings and preferences",
+      "sourceModules": [],
+      "persistence": [],
+      "composedByStartup": "no",
+      "ownedToday": "unowned",
+      "unowned": ["verified settings contract and persistence (accounts/connectors, limits, skills, notifications, privacy)"],
+      "proposedCanonicalOwner": "dot (contract and unified frontend) with Fable for Meri-side persistence if allocated",
+      "auditRefs": ["meri-audit-product-integration.md section 3"]
+    },
+    {
+      "id": "release",
+      "title": "Release identity, CI and deployment",
+      "sourceModules": ["apps/runtime/Dockerfile", "apps/runtime/build"],
+      "persistence": [],
+      "composedByStartup": "n/a",
+      "ownedToday": "unowned",
+      "unowned": ["one immutable integrated source/image with provenance/SBOM and zero HIGH/CRITICAL admission", "complete task security profile attestation", "integrated CI and production observability evidence"],
+      "proposedCanonicalOwner": "dot (integration and release acceptance); AWS shipping owner alone for cloud actions; Fable supplies the source closure",
+      "auditRefs": ["security-release-report.md SEC-REL-03, SEC-REL-04, SEC-REL-06"]
+    }
+  ]
+}

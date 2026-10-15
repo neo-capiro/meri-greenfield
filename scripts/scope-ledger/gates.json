@@ -1,0 +1,114 @@
+{
+  "schema": "meri-scope-ledger-gates/1",
+  "note": "Curated input. Acceptance gates named by ledger rows. Every gate is OPEN: nothing in this ledger is accepted, enabled, qualified or live. 'owner' is who must produce the evidence; dot independently verifies exact commits and records ACCEPT or HOLD for every gate (lane D).",
+  "gates": {
+    "STARTUP-COMPOSITION": {
+      "title": "Trusted startup composes the canonical owner",
+      "owner": "Fable lane A (apps/runtime); dot verifies",
+      "requirement": "The capability's canonical owner is composed by reviewed trusted startup with durable authority and persistence; authenticated public paths are exercised against that exact composed artifact; unsupported controls report unavailable.",
+      "source": "audit README outcome matrix 'Trusted product startup'; lifecycle-report L2; meri-audit-product-integration.md section 1"
+    },
+    "READ-ADAPTER": {
+      "title": "Typed gateway source adapter",
+      "owner": "Fable lane B (apps/gateway/sources); Core/backend endpoint by dot",
+      "requirement": "An adapter brief with exact inputs, outputs and policy denials; an operation-specific adapter under apps/gateway/sources listed in scripts/general-reads/adapters.json; canonical DTO preserved; no generic SQL or unrestricted query path.",
+      "source": "FABLE-GENERAL-READ-TOOLS-20261015.md sections 1.4, 5 and 6"
+    },
+    "READ-CONTEXT": {
+      "title": "Trusted dispatch context profile",
+      "owner": "gateway shared file apps/gateway/dispatch/operation-context.mjs (one owner at a time) + dot for key semantics",
+      "requirement": "Every contextKey the contract declares is supplied from a trusted source by a reviewed dispatch profile (proposal P5). Required only where the row's dispatchContext starts with 'missing:'.",
+      "source": "FABLE-GENERAL-READ-TOOLS-20261015.md section 1.4 finding and P5"
+    },
+    "READ-SERVER": {
+      "title": "General read server availability",
+      "owner": "Fable (worker meri_reads server, gateway general-read mount); dot for contracts P1-P3, P8, P9; capability-policy lane for P8",
+      "requirement": "The read appears in an ordinary no-skill conversation only through the six-gate intersection (contract, native installation receipt P2, capability policy P8, discovery grant P1, client scope, exclusion) with the base read budget allocation P3 and the options mount P11/P12; unavailable reads are absent or return a closed UNAVAILABLE error, never an empty success; per-call current authority stays authoritative.",
+      "source": "FABLE-GENERAL-READ-TOOLS-20261015.md sections 2.3-2.8 and 7; audit data addendum 'Required design/acceptance correction'"
+    },
+    "READ-QUALIFICATION": {
+      "title": "Per-family read qualification (G3)",
+      "owner": "Fable (tests) + dot (Core endpoint, ACCEPT, contract availability record) + native qualification owner (installation receipt)",
+      "requirement": "Real SDK query through the approved proxy under the approved synthetic budget calls the mcp__meri_reads__ tool; gateway mount with real current-authority ports and durable Postgres budget/invocation owner; adapter reaches the dot Core endpoint for a dedicated synthetic tenant with broker-issued short-lived credentials; common assertions (policy matrix, receipts, cross-tenant/client/revocation/expiry/budget/deadline/cancel closed errors, argument authority refused, replay without second source call, output limit, process exit) plus family assertions; dot ACCEPT; contract owner records availability enabled / qualification qualified / handler sourceSha256. Offline or scripted runs are source evidence only.",
+      "source": "FABLE-GENERAL-READ-TOOLS-20261015.md section 5; docs/plans/MERI-DEPLOYMENT.md G3"
+    },
+    "SKILL-SUCCESSOR": {
+      "title": "Historical action-items successor decision",
+      "owner": "skills/contract owner (dot) with Fable",
+      "requirement": "New skill versions name actions.query instead of the historical client-scoped query_action_items (P7); immutable 1.0.0 manifests are not changed in place; scoped and unscoped semantics are never silently aliased.",
+      "source": "audit data addendum correction 2; FABLE-GENERAL-READ-TOOLS-20261015.md P7"
+    },
+    "INTENT-ROUTE": {
+      "title": "Governed conversational route for a product operation",
+      "owner": "Neo approval for the new meri_intents component (P10), then Fable; dot reviews",
+      "requirement": "A governed conversational path to the existing owner that only prepares (immutable proposal or draft version); effects run only after the existing approval control with fresh authority; UNKNOWN and replay handled; never exposed under readOnlyHint. A separate HTTP route or button alone is not conversational parity. Fallback if P10 is refused: typed structured-output intent.",
+      "source": "FABLE-GENERAL-READ-TOOLS-20261015.md section 3 and P10; audit README 'Corrected tool and scope accounting'"
+    },
+    "COMMAND-G5": {
+      "title": "Selected commands (G5)",
+      "owner": "Fable lane B (apps/control/commands); dot verifies",
+      "requirement": "Immutable proposals, approval expiry, current authorization, revocation, idempotent outcomes and receipts pass; repeated delivery creates zero duplicate mutations; exact pending-candidate lineage and lost-ACK behaviour through the selected producer.",
+      "source": "docs/plans/MERI-DEPLOYMENT.md G5; data-artifacts-report.md 'Institutional memory'"
+    },
+    "MEMORY-PRODUCER": {
+      "title": "Memory proposal producer and canonical review",
+      "owner": "Fable (command producer) + dot (canonical memory review owner in Core)",
+      "requirement": "Personal-scope pending producer exists (today PENDING_PRODUCER_UNAVAILABLE); firm/client/personal candidates stay pending until canonical review; no direct publish; real owner/client wall, lifecycle, grant, approval-expiry, replay and revoke evidence.",
+      "source": "data-artifacts-report.md 'Institutional memory'; docs/CAPABILITY-SCOPE.md memory.read and memory.propose"
+    },
+    "ARTIFACT-ADMISSION": {
+      "title": "Artifact family admitted by the document application",
+      "owner": "Fable lane C (apps/control/document-application, apps/artifacts)",
+      "requirement": "The format/operation is admitted by format-admission only after its internal defects are repaired (DA-2 PDF revision lineage, DA-3 PPTX overlap); generation, inspection, preview and filing stay separate owners.",
+      "source": "audit README outcome matrix 'Editable native artifacts'; data-artifacts-report.md DA-2/DA-3"
+    },
+    "ARTIFACT-NATIVE": {
+      "title": "Native artifact qualification",
+      "owner": "Fable lane C; dot verifies",
+      "requirement": "Held-out cases: 100% native openability and supported formulas/reference totals correct; at least 95% human quality; no critical clipping or corruption; zero unauthorized disclosure; real storage/KMS identity; admitted renderer sandbox; revisions, previews and filing. Generator success, magic bytes and XML inspection do not qualify.",
+      "source": "audit README 'End-to-end completion criteria'; docs/CAPABILITY-SCOPE.md 'Native artifacts and revisions'"
+    },
+    "ANALYSIS-SANDBOX": {
+      "title": "Analysis execution boundary",
+      "owner": "Fable lane C; approval needed for any new execution placement",
+      "requirement": "Typed pandas mode first; general program mode needs a separately admitted sandbox boundary; outputs stay pending inspection.",
+      "source": "scripts/general-reads/product-routes.json run_analysis"
+    },
+    "SCHEDULE-DISPATCH": {
+      "title": "Scheduled-run dispatch and UNKNOWN reconciliation",
+      "owner": "Fable lane A (runtime composition) + lane A/C (apps/control/schedules)",
+      "requirement": "A scheduled firing is mounted into current authority, fresh run binding and capability issuance; an exact-provider reconciliation entry point resolves UNKNOWN without blind redispatch or a second scheduler; claim/generation/expiry/cancel/recovery and duplicate-effect controls pass.",
+      "source": "lifecycle-report.md L6"
+    },
+    "DEPLOY-G1-G7": {
+      "title": "Original deployment gates",
+      "owner": "dot (acceptance); AWS shipping owner alone for separately authorized cloud actions",
+      "requirement": "All original G1-G7 and product acceptance gates in docs/plans/MERI-DEPLOYMENT.md remain in force against one immutable integrated source/image; this ledger lowers none.",
+      "source": "docs/plans/MERI-DEPLOYMENT.md gate table; audit README"
+    },
+    "EXCLUDED-NEVER-REGISTERED": {
+      "title": "Excluded tool is never registered",
+      "owner": "Fable (worker tool surfaces) + dot (catalog)",
+      "requirement": "The catalog original stays deferred with replacement null and zero contracts; the name is absent from catalog operations, SDK tool names and aliases, every skill manifest, the operation resolver, the general read server, the governed intent surface and the browser/workspace tool lists. Guarded by apps/worker/conversation/test/legacy-tools-excluded.test.mjs (875b3055) once integrated, and by the general-read inventory (deferred rows map to zero contracts).",
+      "source": "owner direction 15 Oct 2026; commit 875b3055; FABLE-GENERAL-READ-TOOLS-20261015.md section 2.3 gate 6"
+    },
+    "EXCLUDED-NO-IMPLEMENTATION": {
+      "title": "No accidental implementation or dead code",
+      "owner": "Fable",
+      "requirement": "Every file under apps/, packages/ and scripts/ that names an excluded tool is a classified non-implementation reference (scripts/scope-ledger/owner-exclusion.json knownReferences); an accidental implementation is deleted with its dead code rather than disabled.",
+      "source": "owner direction 15 Oct 2026; scripts/scope-ledger/ledger.test.mjs"
+    },
+    "EXCLUDED-NEUTRALIZE-GUIDANCE": {
+      "title": "Neutralize model-visible guidance naming an excluded tool",
+      "owner": "dot (contract owner) with the source producer; Fable interim notice in the general read server",
+      "requirement": "A successor contacts contract/note without the update_client_profile clause and registry guidance without create_client (P6); interim fixed notice block appended without rewriting canonical results.",
+      "source": "FABLE-GENERAL-READ-TOOLS-20261015.md section 4 and P6"
+    },
+    "EXCLUDED-RELEASE-NOTES": {
+      "title": "Exclusion stated in release notes",
+      "owner": "dot (release owner) with Fable",
+      "requirement": "Every excluded capability is listed in release notes as excluded by owner direction (15 Oct 2026); no release claim.",
+      "source": "docs/CAPABILITY-SCOPE.md scope rule ('Every deferred row must appear in release notes until explicitly selected')"
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "meri-general-reads-adapters/1",
+  "note": "Curated from reading each adapter's source. inventory.test.mjs verifies every listed operation id is a string literal in declaredIn, every adapter directory with a handler.mjs is listed, and every authorization file exists. Listing here is source evidence only; no adapter is enabled, qualified or live.",
+  "authorizationChecks": {
+    "gateway.current-tool-authority": {
+      "file": "apps/gateway/authorization/current-tool-authority.mjs",
+      "summary": "createCurrentToolAuthority(capabilityAction tool.read).check: verifyCapability (audience meri-gateway, action tool.read, unexpired, scopes in tenant/policy) -> currentRun -> authorizeBusiness (AuthorizationDecision allowed for exact operation@version, actor, policyRevision, requiredGrants, subject scopes within claims) -> authorizeSources (enabled, exact sourceIds) -> currentRun unchanged."
+    },
+    "gateway.dispatch-rechecks": {
+      "file": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "summary": "createToolDispatch.execute: rejects argument-borne authority, validates contract input, then repeats the current authority check before budget reservation, at effect, at release and after settlement; any change in binding/policy/subject or deadline denies. Budget reserve/settle; uncertain on failure."
+    },
+    "gateway.skill-installation": {
+      "file": "apps/gateway/selected-skills/mount.mjs",
+      "summary": "Skill route only: createSelectedSkillGatewayMount re-reads the native-qualified installation receipt (handler sourceSha256 measured) before and after every delivery; createInstalledRuntimeCatalog admits only sideEffect none / approvalBoundary none descriptors."
+    },
+    "adapter.authority-coherence": {
+      "file": "apps/gateway/sources/source-admission.mjs",
+      "summary": "Adapter-local re-validation of the dispatcher-supplied authority object (RunBinding/CapabilityClaims/AuthorizationDecision coherence, audience, tool.read, decision allowed for this operation, decisionId = subject.authorizationDecisionId, policy revision, deadline, cancellation). Not an authorization owner; it refuses incoherent input."
+    }
+  },
+  "adapters": [
+    {
+      "path": "apps/gateway/sources/mail",
+      "family": "mail",
+      "declaredIn": ["apps/gateway/sources/mail/request-context.mjs"],
+      "operations": ["mail.list_messages", "mail.search_messages", "mail.read_thread"],
+      "adapterChecks": ["adapter.authority-coherence", "per-operation selection shape (MailListSelection/MailSearchSelection/MailThreadSelection)"],
+      "subject": "current mailbox owner; client selection must equal the authorized subject"
+    },
+    {
+      "path": "apps/gateway/sources/meetings",
+      "family": "meeting-source",
+      "declaredIn": ["apps/gateway/sources/meetings/request-context.mjs"],
+      "operations": ["meeting.list_upcoming_meetings", "meeting.query_debriefs", "meeting.read_client_meetings"],
+      "adapterChecks": ["adapter.authority-coherence", "decision actor = binding actor and sourceIds exact", "clientId != null requires client subject = clientId; clientId = null requires personal subject = actor", "upcoming meetings for a client must all carry that client"],
+      "subject": "client (explicit clientId) or personal (actor)"
+    },
+    {
+      "path": "apps/gateway/sources/action-items",
+      "family": "action-items-complete",
+      "declaredIn": ["apps/gateway/sources/action-items/request-context.mjs"],
+      "operations": ["actions.query"],
+      "adapterChecks": ["adapter.authority-coherence", "client_scoped mode only (unscoped/name modes UNAVAILABLE)", "request clientId UUID = client subject entity"],
+      "subject": "client (explicit UUID)"
+    },
+    {
+      "path": "apps/gateway/sources/original-tracking",
+      "family": "operational-reads",
+      "declaredIn": ["apps/gateway/sources/original-tracking/request-context.mjs"],
+      "operations": ["query_tasks", "query_action_items"],
+      "adapterChecks": ["adapter.authority-coherence", "decision actor/scopes/sourceIds exact", "trusted normalization context actorId = binding actor"],
+      "subject": "actor; query_action_items requires an authorized client"
+    },
+    {
+      "path": "apps/gateway/sources/identity-contacts",
+      "family": "tenant-contacts / entity-candidates",
+      "declaredIn": ["apps/gateway/sources/identity-contacts/request-context.mjs"],
+      "operations": ["resolve_entity", "find_contacts"],
+      "adapterChecks": ["adapter.authority-coherence", "contacts: nonnull clientId must equal the resolved client subject; returned clientId must equal it", "entities: trusted defaultCongress context only"],
+      "subject": "tenant; optional resolved client"
+    },
+    {
+      "path": "apps/gateway/sources/client-evidence",
+      "family": "client-knowledge-profile / client-documents",
+      "declaredIn": ["apps/gateway/sources/client-evidence/request-context.mjs"],
+      "operations": ["get_client_context", "read_client_documents"],
+      "adapterChecks": ["adapter.authority-coherence", "client subject = input clientId", "read_client_documents normalization binding/subject = authority"],
+      "subject": "client (required)"
+    },
+    {
+      "path": "apps/gateway/sources/client-knowledge",
+      "family": "client-knowledge-memory / client-knowledge-monday",
+      "declaredIn": ["apps/gateway/sources/client-knowledge/request-context.mjs"],
+      "operations": ["search_memory", "read_monday_client_boards"],
+      "adapterChecks": ["adapter.authority-coherence", "search_memory normalization context {tenantId,userId} = binding"],
+      "subject": "tenant/user; boards bound to trusted client-board mapping"
+    },
+    {
+      "path": "apps/gateway/sources/dataset-metadata",
+      "family": "dataset-metadata",
+      "declaredIn": ["apps/gateway/sources/dataset-metadata/handler.mjs"],
+      "operations": ["list_global_datasets"],
+      "adapterChecks": ["binding/claims/policy revision coherence and deadline", "local immutable public-domain registry; no source call"],
+      "subject": "none (public metadata)"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals",
+      "family": "memory-proposals",
+      "declaredIn": ["apps/gateway/sources/memory-proposals/request-context.mjs"],
+      "operations": ["memory.list_own_proposals"],
+      "adapterChecks": ["subject personal or client; input clientId = client subject or null for personal", "binding/claims/policy coherence and deadline"],
+      "subject": "personal (actor) or client"
+    },
+    {
+      "path": "apps/gateway/sources/research-portfolio-evidence",
+      "family": "research-portfolio-evidence",
+      "declaredIn": ["apps/gateway/sources/research-portfolio-evidence/request-context.mjs"],
+      "operations": ["get_research_evidence"],
+      "adapterChecks": ["input re-normalized against {binding,subject} must equal dispatcher input", "binding/claims/policy coherence and deadline"],
+      "subject": "authorized portfolio subject"
+    }
+  ]
+}
