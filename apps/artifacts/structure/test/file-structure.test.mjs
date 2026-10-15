@@ -114,6 +114,10 @@ test('PDF: cross-reference sections, trailer and catalog must be coherent; xref 
  refused(edit('/Root 1 0 R','/Root 2 0 R'),'pdf','PDF_CATALOG','/Root is not a catalog');
  refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pagez 2 0 R'),'pdf','PDF_CATALOG','catalog without /Pages');
  refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 2 5 R'),'pdf','PDF_PAGE_TREE','/Pages generation differs from the cross-reference');
+ refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 2 1 R'),'pdf','PDF_PAGE_TREE','review probe: /Pages 2 1 R where the xref defines object 2 generation 0');
+ assert.deepEqual(structureCheck(pdfXrefStream({pagesInObjectStream:true}),'pdf'),{valid:true},'page tree root compressed in an object stream');
+ refused(pdfXrefStream({pagesInObjectStream:true,pagesRef:'2 1 R'}),'pdf','PDF_PAGE_TREE','compressed /Pages referenced with a nonzero generation');
+ refused(pdfXrefStream({catalogInObjectStream:true,pagesRef:'2 1 R'}),'pdf','PDF_PAGE_TREE','compressed catalog naming /Pages with the wrong generation');
  refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 3 0 R'),'pdf','PDF_PAGE_TREE','/Pages names a page leaf, not a page tree');
  refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 1 0 R'),'pdf','PDF_PAGE_TREE','/Pages names the catalog itself');
  refused(edit('/Type /Pages /Kids [3 0 R]','/Type /Pagez /Kids [3 0 R]'),'pdf','PDF_PAGE_TREE','page tree root is not /Type /Pages');

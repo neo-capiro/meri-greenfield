@@ -61,20 +61,21 @@ export function pdfIncremental(){
  const pageAt=Buffer.byteLength(base,'latin1'),page='3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] >>\nendobj\n',at=pageAt+Buffer.byteLength(page,'latin1');
  return Buffer.from(`${base}${page}xref\n3 1\n${entry(pageAt)}trailer\n<< /Size 4 /Root 1 0 R /Prev ${prev} >>\nstartxref\n${at}\n%%EOF\n`,'latin1');
 }
-/** PDF whose cross-reference is a stream (W [1 4 2]); optionally PNG-predicted (Up) and with the catalog compressed
- * inside an object stream. */
-export function pdfXrefStream({predictor=false,catalogInObjectStream=false}={}){
+/** PDF whose cross-reference is a stream (W [1 4 2]); optionally PNG-predicted (Up), with the catalog (and optionally the
+ * page tree root too) compressed inside an object stream, and with the catalog's /Pages reference replaced. */
+export function pdfXrefStream({predictor=false,catalogInObjectStream=false,pagesInObjectStream=false,pagesRef='2 0 R'}={}){
  const objects=[...PDF_OBJECTS];let compressed=null;
- if(catalogInObjectStream){
-  const catalog=objects[0],header='1 0 ';
-  const data=deflateSync(Buffer.from(`${header}${catalog}`,'latin1'));
-  objects[0]='<< /Type /Placeholder >>';
-  objects.push(`<< /Type /ObjStm /N 1 /First ${header.length} /Filter /FlateDecode /Length ${data.length} >>\nstream\n${data.toString('latin1')}\nendstream`);
+ objects[0]=objects[0].replace('/Pages 2 0 R',`/Pages ${pagesRef}`);
+ if(catalogInObjectStream||pagesInObjectStream){
+  const catalog=objects[0],pages=objects[1],header=pagesInObjectStream?`1 0 2 ${catalog.length+1} `:'1 0 ';
+  const data=deflateSync(Buffer.from(pagesInObjectStream?`${header}${catalog} ${pages}`:`${header}${catalog}`,'latin1'));
+  objects[0]='<< /Type /Placeholder >>';if(pagesInObjectStream)objects[1]='<< /Type /Placeholder >>';
+  objects.push(`<< /Type /ObjStm /N ${pagesInObjectStream?2:1} /First ${header.length} /Filter /FlateDecode /Length ${data.length} >>\nstream\n${data.toString('latin1')}\nendstream`);
   compressed={objstm:objects.length};
  }
  const {text,offsets}=layout(objects,'%PDF-1.7\n'),at=Buffer.byteLength(text,'latin1'),xrefNum=objects.length+1;
  const rows=[[0,0,65535],...offsets.map(o=>[1,o,0]),[1,at,0]];
- if(compressed){rows[1]=[2,compressed.objstm,0];}
+ if(compressed){rows[1]=[2,compressed.objstm,0];if(pagesInObjectStream)rows[2]=[2,compressed.objstm,1];}
  const raw=Buffer.alloc(rows.length*7);rows.forEach(([t,a,b],i)=>{raw.writeUInt8(t,i*7);raw.writeUInt32BE(a,i*7+1);raw.writeUInt16BE(b,i*7+5);});
  let body=raw,parms='';
  if(predictor){body=Buffer.alloc(rows.length*8);for(let r=0;r<rows.length;r++){body[r*8]=2;for(let x=0;x<7;x++)body[r*8+1+x]=(raw[r*7+x]-(r?raw[(r-1)*7+x]:0))&0xff;}parms=' /DecodeParms << /Predictor 12 /Columns 7 >>';}
