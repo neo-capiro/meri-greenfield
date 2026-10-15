@@ -121,7 +121,7 @@ It ran no product code, model, database, browser or deployment. "Declared" means
 | Excluded by owner group | {"Research Portfolio":17,"Relationships, legislation and Florida":9,"Older document and email workflows":5,"Direct canonical-memory writes":3,"Client and opportunity analysis":9} |
 | Excluded by registry kind | {"governed-write":25,"read":18} |
 | Excluded implementations found | 0 |
-| Files naming an excluded tool, by class | {"canonical-guidance":1,"exclusion-record":6,"negative-test":13,"note-fixture":4,"recorded-evidence":10,"unrelated-identifier":1} |
+| Files naming an excluded tool, by class | {"canonical-guidance":1,"exclusion-record":6,"guard-test":1,"negative-test":13,"note-fixture":4,"recorded-evidence":10,"unrelated-identifier":1} |
 | Audit declared-read equation | 47 literal legacy-name read matches + 6 renamed read IDs - 1 historical query_action_items match = 52 declared current reads; + create_word = 53 |
 | Live | 0 |
 
@@ -262,51 +262,51 @@ It ran no product code, model, database, browser or deployment. "Declared" means
 
 | Capability | Owner group | Registry kind | Implementation found | Files naming it, by class | Gates |
 | --- | --- | --- | --- | --- | --- |
-| `manage_research_portfolio` | Research Portfolio | governed-write | no | exclusion-record 3, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_analytics` | Research Portfolio | read | no | exclusion-record 3, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `create_research_portfolio_snapshot` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `request_research_portfolio_output` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `save_research_portfolio_output_to_client` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `watch_research_portfolio` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `update_research_portfolio_change_state` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_bookmarks` | Research Portfolio | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `create_research_portfolio_bookmark` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_fit` | Research Portfolio | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_reviews` | Research Portfolio | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `add_research_portfolio_review_note` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_rules` | Research Portfolio | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_imports` | Research Portfolio | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_research_portfolio_operations` | Research Portfolio | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `prepare_research_portfolio_brief` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `prepare_research_portfolio_meeting` | Research Portfolio | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `find_path_to` | Relationships, legislation and Florida | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_legiwatch_review` | Relationships, legislation and Florida | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `compare_florida_budget_amounts` | Relationships, legislation and Florida | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `prepare_legiwatch_briefing` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `compare_legislative_versions` | Relationships, legislation and Florida | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `save_legislative_research` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `preview_legiwatch_relevance` | Relationships, legislation and Florida | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `save_legiwatch_relevance` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `apply_legiwatch_suggestion` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `create_meeting_brief` | Older document and email workflows | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `draft_policy_memo` | Older document and email workflows | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `save_note` | Older document and email workflows | governed-write | no | exclusion-record 4 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `send_email` | Older document and email workflows | governed-write | no | exclusion-record 4 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `reply_email` | Older document and email workflows | governed-write | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `confirm_memory` | Direct canonical-memory writes | governed-write | no | exclusion-record 4 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `correct_memory` | Direct canonical-memory writes | governed-write | no | exclusion-record 4 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `forget_memory` | Direct canonical-memory writes | governed-write | no | exclusion-record 4 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_pe_buyer_workspace` | Client and opportunity analysis | read | no | exclusion-record 3, negative-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `create_client` | Client and opportunity analysis | governed-write | no | exclusion-record 5, negative-test 5, unrelated-identifier 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-NEUTRALIZE-GUIDANCE, EXCLUDED-RELEASE-NOTES |
-| `update_client_profile` | Client and opportunity analysis | governed-write | no | canonical-guidance 1, exclusion-record 5, negative-test 2, note-fixture 4, recorded-evidence 10 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-NEUTRALIZE-GUIDANCE, EXCLUDED-RELEASE-NOTES |
-| `explain_opportunity_match` | Client and opportunity analysis | read | no | exclusion-record 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `compare_funding_opportunities` | Client and opportunity analysis | read | no | exclusion-record 3, negative-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `build_opportunity_action_plan` | Client and opportunity analysis | read | no | exclusion-record 3, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `get_business_development_brief` | Client and opportunity analysis | read | no | exclusion-record 3, negative-test 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `resolve_business_development_source` | Client and opportunity analysis | read | no | exclusion-record 3, negative-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
-| `save_business_development_brief` | Client and opportunity analysis | governed-write | no | exclusion-record 3, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `manage_research_portfolio` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_analytics` | Research Portfolio | read | no | exclusion-record 3, guard-test 1, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `create_research_portfolio_snapshot` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `request_research_portfolio_output` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `save_research_portfolio_output_to_client` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `watch_research_portfolio` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `update_research_portfolio_change_state` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_bookmarks` | Research Portfolio | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `create_research_portfolio_bookmark` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_fit` | Research Portfolio | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_reviews` | Research Portfolio | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `add_research_portfolio_review_note` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_rules` | Research Portfolio | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_imports` | Research Portfolio | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_research_portfolio_operations` | Research Portfolio | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `prepare_research_portfolio_brief` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `prepare_research_portfolio_meeting` | Research Portfolio | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `find_path_to` | Relationships, legislation and Florida | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_legiwatch_review` | Relationships, legislation and Florida | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `compare_florida_budget_amounts` | Relationships, legislation and Florida | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `prepare_legiwatch_briefing` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `compare_legislative_versions` | Relationships, legislation and Florida | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `save_legislative_research` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `preview_legiwatch_relevance` | Relationships, legislation and Florida | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `save_legiwatch_relevance` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `apply_legiwatch_suggestion` | Relationships, legislation and Florida | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `create_meeting_brief` | Older document and email workflows | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `draft_policy_memo` | Older document and email workflows | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `save_note` | Older document and email workflows | governed-write | no | exclusion-record 4, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `send_email` | Older document and email workflows | governed-write | no | exclusion-record 4, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `reply_email` | Older document and email workflows | governed-write | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `confirm_memory` | Direct canonical-memory writes | governed-write | no | exclusion-record 4, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `correct_memory` | Direct canonical-memory writes | governed-write | no | exclusion-record 4, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `forget_memory` | Direct canonical-memory writes | governed-write | no | exclusion-record 4, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_pe_buyer_workspace` | Client and opportunity analysis | read | no | exclusion-record 3, guard-test 1, negative-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `create_client` | Client and opportunity analysis | governed-write | no | exclusion-record 5, guard-test 1, negative-test 5, unrelated-identifier 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-NEUTRALIZE-GUIDANCE, EXCLUDED-RELEASE-NOTES |
+| `update_client_profile` | Client and opportunity analysis | governed-write | no | canonical-guidance 1, exclusion-record 5, guard-test 1, negative-test 2, note-fixture 4, recorded-evidence 10 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-NEUTRALIZE-GUIDANCE, EXCLUDED-RELEASE-NOTES |
+| `explain_opportunity_match` | Client and opportunity analysis | read | no | exclusion-record 3, guard-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `compare_funding_opportunities` | Client and opportunity analysis | read | no | exclusion-record 3, guard-test 1, negative-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `build_opportunity_action_plan` | Client and opportunity analysis | read | no | exclusion-record 3, guard-test 1, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `get_business_development_brief` | Client and opportunity analysis | read | no | exclusion-record 3, guard-test 1, negative-test 3 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `resolve_business_development_source` | Client and opportunity analysis | read | no | exclusion-record 3, guard-test 1, negative-test 1 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
+| `save_business_development_brief` | Client and opportunity analysis | governed-write | no | exclusion-record 3, guard-test 1, negative-test 2 | EXCLUDED-NEVER-REGISTERED, EXCLUDED-NO-IMPLEMENTATION, EXCLUDED-RELEASE-NOTES |
 
-Every file under apps/, packages/, scripts/ (.mjs .js .cjs .ts .tsx .py .sql .json .sh .yaml .yml .toml; node_modules and symlinks skipped) that names an excluded tool (35); none is an implementation:
+Every file under apps/, packages/, scripts/ (.mjs .js .cjs .ts .tsx .py .sql .json .sh .yaml .yml .toml; node_modules and symlinks skipped) that names an excluded tool (36); none is an implementation:
 
 | File | Class | Excluded names in it |
 | --- | --- | --- |
@@ -323,6 +323,7 @@ Every file under apps/, packages/, scripts/ (.mjs .js .cjs .ts .tsx .py .sql .js
 | apps/control/document-application/selected-output/test/artifacts-root-inert-rerun/relationship_brief/provenance.json | recorded-evidence | `update_client_profile` |
 | apps/gateway/sources/identity-contacts/test/fixtures.mjs | note-fixture | `update_client_profile` |
 | apps/proxy/qualification/test/test_aws_counter.py | unrelated-identifier | `create_client` |
+| apps/worker/conversation/test/legacy-tools-excluded.test.mjs | guard-test | 43 names |
 | packages/contracts/retrieval-0.2/catalog.json | exclusion-record (also canonical-guidance: the lookup_client_registry descriptor guidance names create_client (P6)) | 43 names |
 | packages/contracts/retrieval-0.2/catalog.schema.json | exclusion-record | 43 names |
 | packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs | canonical-guidance | `update_client_profile` |

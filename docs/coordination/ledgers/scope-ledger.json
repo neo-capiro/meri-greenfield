@@ -71,6 +71,7 @@
     "excludedReferenceFiles": {
       "canonical-guidance": 1,
       "exclusion-record": 6,
+      "guard-test": 1,
       "negative-test": 13,
       "note-fixture": 4,
       "recorded-evidence": 10,
@@ -410,6 +411,55 @@
         "create_client"
       ],
       "class": "unrelated-identifier"
+    },
+    {
+      "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+      "tools": [
+        "add_research_portfolio_review_note",
+        "apply_legiwatch_suggestion",
+        "build_opportunity_action_plan",
+        "compare_florida_budget_amounts",
+        "compare_funding_opportunities",
+        "compare_legislative_versions",
+        "confirm_memory",
+        "correct_memory",
+        "create_client",
+        "create_meeting_brief",
+        "create_research_portfolio_bookmark",
+        "create_research_portfolio_snapshot",
+        "draft_policy_memo",
+        "explain_opportunity_match",
+        "find_path_to",
+        "forget_memory",
+        "get_business_development_brief",
+        "get_legiwatch_review",
+        "get_pe_buyer_workspace",
+        "get_research_portfolio_analytics",
+        "get_research_portfolio_bookmarks",
+        "get_research_portfolio_fit",
+        "get_research_portfolio_imports",
+        "get_research_portfolio_operations",
+        "get_research_portfolio_reviews",
+        "get_research_portfolio_rules",
+        "manage_research_portfolio",
+        "prepare_legiwatch_briefing",
+        "prepare_research_portfolio_brief",
+        "prepare_research_portfolio_meeting",
+        "preview_legiwatch_relevance",
+        "reply_email",
+        "request_research_portfolio_output",
+        "resolve_business_development_source",
+        "save_business_development_brief",
+        "save_legislative_research",
+        "save_legiwatch_relevance",
+        "save_note",
+        "save_research_portfolio_output_to_client",
+        "send_email",
+        "update_client_profile",
+        "update_research_portfolio_change_state",
+        "watch_research_portfolio"
+      ],
+      "class": "guard-test"
     },
     {
       "path": "packages/contracts/retrieval-0.2/catalog.json",
@@ -1440,6 +1490,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -1553,6 +1607,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -1668,6 +1726,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -1713,6 +1775,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -1760,6 +1826,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -1805,6 +1875,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -1852,6 +1926,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -1897,6 +1975,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -1944,6 +2026,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -1989,6 +2075,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -2036,6 +2126,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -2081,6 +2175,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -2128,6 +2226,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -2173,6 +2275,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -2220,6 +2326,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -2266,6 +2376,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -2311,6 +2425,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -2981,6 +3099,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -4697,6 +4819,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -4863,6 +4989,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -4908,6 +5038,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -5078,6 +5212,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -5123,6 +5261,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -5170,6 +5312,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -5216,6 +5362,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -5261,6 +5411,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -5685,6 +5839,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -5731,6 +5889,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -5776,6 +5938,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -5883,6 +6049,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -6204,6 +6374,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -6309,6 +6483,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -6359,6 +6537,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -6408,6 +6590,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -6657,6 +6843,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -8091,6 +8281,10 @@
           "class": "unrelated-identifier"
         },
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -8326,6 +8520,10 @@
         {
           "path": "apps/gateway/sources/identity-contacts/test/fixtures.mjs",
           "class": "note-fixture"
+        },
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
         },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
@@ -8661,6 +8859,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -8833,6 +9035,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -8882,6 +9088,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
@@ -9299,6 +9509,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -9357,6 +9571,10 @@
       ],
       "references": [
         {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
+        {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
         },
@@ -9406,6 +9624,10 @@
         "EXCLUDED-RELEASE-NOTES"
       ],
       "references": [
+        {
+          "path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs",
+          "class": "guard-test"
+        },
         {
           "path": "packages/contracts/retrieval-0.2/catalog.json",
           "class": "exclusion-record"
