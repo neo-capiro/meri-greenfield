@@ -49,13 +49,14 @@ test('exact replay of a held reservation is idempotent; a different hold or a te
  await refused(f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:11}),'TENANT_RESERVATION_CONFLICT');
  await f.gate.release({tenantId:tenant,runId:run(1)});await refused(f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:10}),'TENANT_RESERVATION_CONFLICT');
 });
-test('release on failure frees the slot and the hold; release is idempotent and never undoes a settlement',async()=>{
- const f=fixture({monthlyCapMicroUSD:100,maxConcurrentRuns:1});
+test('release on failure frees the concurrency slot but keeps the hold as liability; release is idempotent and never undoes a settlement',async()=>{
+ const f=fixture({monthlyCapMicroUSD:150,maxConcurrentRuns:1});
  await f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:100});
  await refused(f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:1}),'TENANT_CONCURRENCY_EXCEEDED');
  const released=await f.gate.release({tenantId:tenant,runId:run(1)});assert.equal(released.state,'RELEASED');assert.equal(released.settledMicroUSD,null);
  assert.deepEqual(await f.gate.release({tenantId:tenant,runId:run(1)}),released);
- assert.equal((await f.gate.read({tenantId:tenant})).remainingMicroUSD,100);assert.equal((await f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:100})).state,'HELD');
+ assert.deepEqual(await f.gate.read({tenantId:tenant}),{tenantId:tenant,month:'2026-10',monthlyCapMicroUSD:150,maxConcurrentRuns:1,activeRuns:0,heldMicroUSD:100,settledMicroUSD:0,remainingMicroUSD:50});
+ await refused(f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:51}),'TENANT_BUDGET_EXCEEDED');assert.equal((await f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:50})).state,'HELD');
  const settled=await f.gate.settle({tenantId:tenant,runId:run(2),measuredMicroUSD:30});assert.equal((await f.gate.release({tenantId:tenant,runId:run(2)})).state,'SETTLED');assert.equal(settled.settledMicroUSD,30);
  await refused(f.gate.release({tenantId:tenant,runId:run(9)}),'TENANT_RESERVATION_UNKNOWN');
 });
@@ -70,6 +71,42 @@ test('settle after cancel charges the measured usage to the reservation month; a
  await refused(f.gate.settle({tenantId:tenant,runId:run(5),measuredMicroUSD:1}),'TENANT_RESERVATION_UNKNOWN');
  assert.equal(settleTransition({tenantId:tenant,runId:run(1),month:'2026-10',holdMicroUSD:1,settledMicroUSD:null,state:'HELD'},0).settledMicroUSD,0);
 });
+test('regression: cancel/release cannot free the cost reservation; reserve 100, release, reserve 100 again is refused under a cap of 100',async()=>{
+ const f=fixture({monthlyCapMicroUSD:100,maxConcurrentRuns:1});
+ await f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:100});await f.gate.release({tenantId:tenant,runId:run(1)});
+ // The slot is free, the unresolved liability is not: the defect admitted this second 100 and then settled the first at 70 (170 > 100).
+ await refused(f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:100}),'TENANT_BUDGET_EXCEEDED');
+ assert.equal((await f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD:70})).state,'SETTLED');
+ assert.deepEqual(await f.gate.read({tenantId:tenant}),{tenantId:tenant,month:'2026-10',monthlyCapMicroUSD:100,maxConcurrentRuns:1,activeRuns:0,heldMicroUSD:0,settledMicroUSD:70,remainingMicroUSD:30});
+ await refused(f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:31}),'TENANT_BUDGET_EXCEEDED');assert.equal((await f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:30})).state,'HELD');
+ const total=f.store.rows().reduce((n,r)=>n+(r.state==='SETTLED'?r.settledMicroUSD:r.state==='HELD'||r.state==='RELEASED'?r.holdMicroUSD:0),0);assert.ok(total<=100,'liability never exceeds the cap');
+});
+test('variant: settle after cancel replaces the retained hold with the measured charge; a larger concurrency budget lets another run start meanwhile',async()=>{
+ const f=fixture({monthlyCapMicroUSD:200,maxConcurrentRuns:1});
+ await f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:100});await f.gate.release({tenantId:tenant,runId:run(1)});
+ assert.equal((await f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:100})).state,'HELD');await refused(f.gate.admit({tenantId:tenant,runId:run(3),holdMicroUSD:1}),'TENANT_CONCURRENCY_EXCEEDED');
+ await f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD:40});const view=await f.gate.read({tenantId:tenant});assert.equal(view.heldMicroUSD,100);assert.equal(view.settledMicroUSD,40);assert.equal(view.remainingMicroUSD,60);
+});
+test('variant: authoritative no-dispatch proof releases the retained hold without a charge; settlement after it, and proof after settlement, conflict',async()=>{
+ const f=fixture({monthlyCapMicroUSD:100,maxConcurrentRuns:1}),proof=n=>({outcome:'NOT_DISPATCHED',tenantId:tenant,runId:run(n)});
+ await f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:100});await f.gate.release({tenantId:tenant,runId:run(1)});
+ await refused(f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:100}),'TENANT_BUDGET_EXCEEDED');
+ for(const bad of [{...proof(1),outcome:'UNKNOWN'},proof(2),{...proof(1),tenantId:'tenant-b'},{...proof(1),extra:1},'NOT_DISPATCHED'])await assert.rejects(f.gate.notDispatched({tenantId:tenant,runId:run(1),proof:bad}));
+ const voided=await f.gate.notDispatched({tenantId:tenant,runId:run(1),proof:proof(1)});assert.equal(voided.state,'NOT_DISPATCHED');assert.equal(voided.settledMicroUSD,null);
+ assert.deepEqual(await f.gate.notDispatched({tenantId:tenant,runId:run(1),proof:proof(1)}),voided);assert.equal((await f.gate.release({tenantId:tenant,runId:run(1)})).state,'NOT_DISPATCHED');
+ assert.equal((await f.gate.read({tenantId:tenant})).remainingMicroUSD,100);
+ await refused(f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD:1}),'TENANT_SETTLEMENT_CONFLICT');
+ // Proof straight from HELD also frees the slot; proof after a settlement is refused.
+ await f.gate.admit({tenantId:tenant,runId:run(2),holdMicroUSD:100});assert.equal((await f.gate.notDispatched({tenantId:tenant,runId:run(2),proof:proof(2)})).state,'NOT_DISPATCHED');assert.equal((await f.gate.read({tenantId:tenant})).activeRuns,0);
+ await f.gate.admit({tenantId:tenant,runId:run(3),holdMicroUSD:10});await f.gate.settle({tenantId:tenant,runId:run(3),measuredMicroUSD:5});
+ await refused(f.gate.notDispatched({tenantId:tenant,runId:run(3),proof:proof(3)}),'TENANT_SETTLEMENT_CONFLICT');
+});
+test('variant: a double settlement is refused unless it is the identical replay, which charges nothing further',async()=>{
+ const f=fixture({monthlyCapMicroUSD:100,maxConcurrentRuns:2});
+ await f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:50});await f.gate.release({tenantId:tenant,runId:run(1)});await f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD:40});
+ for(const measuredMicroUSD of [41,39,0])await refused(f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD}),'TENANT_SETTLEMENT_CONFLICT');
+ assert.equal((await f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD:40})).settledMicroUSD,40);assert.equal((await f.gate.read({tenantId:tenant})).settledMicroUSD,40);
+});
 test('unconfigured tenants, hostile inputs and unknown store receipts refuse without admitting a slot',async()=>{
  const f=fixture();
  await refused(f.gate.admit({tenantId:'tenant-b',runId:run(1),holdMicroUSD:1}),'TENANT_BUDGET_UNCONFIGURED');
@@ -78,7 +115,7 @@ test('unconfigured tenants, hostile inputs and unknown store receipts refuse wit
  assert.throws(()=>admitReservation({policy:{tenantId:tenant,monthlyCapMicroUSD:10,maxConcurrentRuns:1},activeRuns:0,heldMicroUSD:0,settledMicroUSD:0},{holdMicroUSD:11}),/TENANT_BUDGET_EXCEEDED/u);
  assert.throws(()=>admitReservation({policy:{tenantId:tenant,monthlyCapMicroUSD:10,maxConcurrentRuns:1},activeRuns:1,heldMicroUSD:0,settledMicroUSD:0},{holdMicroUSD:1}),/TENANT_CONCURRENCY_EXCEEDED/u);
  assert.throws(()=>createMemoryTenantBudgetStore({policies:[{tenantId:tenant,monthlyCapMicroUSD:1,maxConcurrentRuns:1},{tenantId:tenant,monthlyCapMicroUSD:2,maxConcurrentRuns:1}]}),/TENANT_BUDGET_CONFIGURATION/u);
- const lying={async readTenantBudget(){},async reserve(){return {tenantId:'tenant-b',runId:run(1),month:'2026-10',holdMicroUSD:1,settledMicroUSD:null,state:'HELD'};},async release(){},async settle(){}};
+ const lying={async readTenantBudget(){},async reserve(){return {tenantId:'tenant-b',runId:run(1),month:'2026-10',holdMicroUSD:1,settledMicroUSD:null,state:'HELD'};},async release(){},async settle(){},async recordNotDispatched(){}};
  await refused(tenantBudgetGate({store:lying,now:()=>NOW}).admit({tenantId:tenant,runId:run(1),holdMicroUSD:1}),'TENANT_BUDGET_STATE');
  assert.throws(()=>tenantBudgetGate({store:{reserve(){}}}),/TENANT_BUDGET_CONFIGURATION/u);assert.equal(f.store.rows().length,0);
 });

@@ -2,7 +2,7 @@
  * one store-wide mutex so concurrent reservations observe each other exactly as a locked tenant row would. */
 import {refuse} from '../postgres-budget-store.mjs';
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {policy,tenantId,runId,month,microUsd,admitReservation,replayReservation,releaseTransition,settleTransition,aggregate,budgetView} from './policy.mjs';
+import {policy,tenantId,runId,month,microUsd,admitReservation,replayReservation,releaseTransition,settleTransition,notDispatchedTransition,aggregate,budgetView} from './policy.mjs';
 const key=(tenant,run)=>`${tenant}:${run}`;
 export function createMemoryTenantBudgetStore({policies=[]}={}){
  if(!Array.isArray(policies))refuse('TENANT_BUDGET_CONFIGURATION');
@@ -21,6 +21,7 @@ export function createMemoryTenantBudgetStore({policies=[]}={}){
     admitReservation(state,i);return {...store({tenantId:i.tenantId,runId:i.runId,month:i.month,holdMicroUSD:i.holdMicroUSD,settledMicroUSD:null,state:'HELD'}),replayed:false};});},
   async release(input){const i=own(input,['tenantId','runId'],['signal']);tenantId(i.tenantId);runId(i.runId);return locked(i.signal,()=>store(releaseTransition(existing(i.tenantId,i.runId))));},
   async settle(input){const i=own(input,['tenantId','runId','measuredMicroUSD'],['signal']);tenantId(i.tenantId);runId(i.runId);microUsd(i.measuredMicroUSD);return locked(i.signal,()=>store(settleTransition(existing(i.tenantId,i.runId),i.measuredMicroUSD)));},
+  async recordNotDispatched(input){const i=own(input,['tenantId','runId'],['signal']);tenantId(i.tenantId);runId(i.runId);return locked(i.signal,()=>store(notDispatchedTransition(existing(i.tenantId,i.runId))));},
   /** Test-only inspection of the rows a PostgreSQL adapter would hold. */
   rows:()=>[...rows.values()].map(r=>data(r)),
  });
