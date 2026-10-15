@@ -3,21 +3,43 @@
  * executed storage step; one exact database-row target per planned row deletion, which is what the immutability trigger amendments
  * consult together with the subject's current SUPPRESSED state. Every write takes the subject's advisory lock inside its transaction
  * (so an absent-row compare-and-set is atomic), the shared side of the recovery advisory lock, and compares the projection hash the
- * caller read. Recovery takes the exclusive side on a dedicated session. Borrowed pg-compatible pool; no connection on import. */
+ * caller read. Recovery takes the exclusive side on a dedicated session. Borrowed pg-compatible pool; no connection on import.
+ * Every lease is returned for reuse only when its transaction or session lock is known to be closed (committed, rolled back, or
+ * confirmed unlocked); a lost COMMIT acknowledgement, a failed or slow ROLLBACK or unlock, a client-side deadline, or a lease that
+ * arrives after its deadline is discarded through `release(error)` so no later borrower inherits an unknown transaction or lock. */
 import {fail,hash,uuid,text,subject as parseSubject,subjectKey} from './boundary.mjs';
 import {rowClassSubjectKind} from './inventory.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
 function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST');const parts=key.split(':');if(parts.length<3)fail('RETENTION_INVALID_REQUEST');const kind=parts.at(-2),subjectId=parts.at(-1),tenantId=parts.slice(0,-2).join(':');if(!tables[kind])fail('RETENTION_INVALID_REQUEST');return {tenantId,kind,subjectId};}
-export function createPostgresRetentionJournal({pool}){
- if(typeof pool?.connect!=='function')fail('RETENTION_CONFIGURATION');
- const wrap=e=>Object.assign(new Error(e?.code&&String(e.code).startsWith('RETENTION_')?e.code:'RETENTION_STORE_UNAVAILABLE'),{code:e?.code&&String(e.code).startsWith('RETENTION_')?e.code:'RETENTION_STORE_UNAVAILABLE',cause:e});
+/** `maxRequestMs` bounds every client-side wait (lease acquisition and each statement) independently of the server-side statement and
+ * lock timeouts; `now` is the clock those bounds read. */
+export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=10000}){
+ if(typeof pool?.connect!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>60000)fail('RETENTION_CONFIGURATION');
+ const storeError=(code,cause)=>Object.assign(new Error(code),{code,cause});
+ const wrap=e=>storeError(e?.code&&String(e.code).startsWith('RETENTION_')?e.code:'RETENTION_STORE_UNAVAILABLE',e);
+ /** One client-side bounded wait; a deadline leaves the lease's state unknown (`deadline` marks it), and the late result is discarded. */
+ async function bounded(operation,ms=maxRequestMs){const life=createOperationLifetime({deadlineMs:now()+ms,now,errorFactory:reason=>Object.assign(storeError('RETENTION_STORE_UNAVAILABLE'),{deadline:reason})});
+  try{return await life.run(operation);}finally{life.close();}}
+ /** Returns a lease for reuse only when it is known clean; otherwise retires it with the failure. A lease that arrives after its deadline is
+  * retired as soon as it arrives. The borrowed pool itself is never closed here. */
+ function retire(c,acquiring,reusable,failure){
+  if(!c){acquiring.then(lease=>{try{lease.release(storeError('RETENTION_LATE_LEASE'));}catch{}},()=>{});return failure;}
+  try{c.release(reusable?undefined:failure??storeError('RETENTION_LEASE_UNKNOWN'));}catch{return failure??storeError('RETENTION_RELEASE_UNKNOWN');}return failure;}
  /** One transaction with bounded waits. Transition writes take the shared side of the recovery lock (`exclusive` writes come from the
   * recovery pass that already holds the exclusive side on its own session); reads take no recovery lock, since the serving barrier
-  * already refuses reads while recovery runs. */
- async function tx(body,{exclusive=false,shared=!exclusive}={}){let c,begun=false;try{c=await pool.connect();await c.query('BEGIN');begun=true;await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");
-   if(shared)await c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`);const r=await body(c);await c.query('COMMIT');return r;}
-  catch(e){if(begun)try{await c.query('ROLLBACK');}catch{}throw wrap(e);}finally{if(c)c.release();}}
+  * already refuses reads while recovery runs. A failed COMMIT is an unknown outcome (`RETENTION_COMMIT_UNKNOWN`) and is never rolled
+  * back over; a body failure is rolled back within a short bound, and only a confirmed ROLLBACK makes the lease reusable. */
+ async function tx(body,{exclusive=false,shared=!exclusive}={}){
+  let c,begun=false,committing=false,reusable=false,uncertain=false,failure,result;const acquiring=Promise.resolve().then(()=>pool.connect());
+  const call=operation=>bounded(operation).catch(error=>{if(error?.deadline)uncertain=true;throw error;});
+  try{c=await call(()=>acquiring);await call(()=>c.query('BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query("SET LOCAL lock_timeout = '2s'"));
+   if(shared)await call(()=>c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`));
+   result=await body(Object.freeze({query:(sql,values)=>call(()=>c.query(sql,values))}));committing=true;await call(()=>c.query('COMMIT'));reusable=true;}
+  catch(error){failure=committing?storeError('RETENTION_COMMIT_UNKNOWN',error):wrap(error);
+   if(c&&begun&&!committing&&!uncertain)try{await bounded(()=>c.query('ROLLBACK'),Math.min(maxRequestMs,1000));reusable=true;}catch{}}
+  failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;}
  const subjectLock=(c,key)=>c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['meri_retention_subject:'+key]);
  const rowValue=r=>{if(hash(r.projection)!==r.projection_sha256)fail('RETENTION_STORE_CORRUPT');return r.projection;};
  async function readRow(c,k){const t=tables[k.kind];const rows=(await c.query(`SELECT * FROM ${t.schema}.retention_subjects WHERE tenant_id=$1 AND ${t.id}=$2 FOR UPDATE`,[k.tenantId,k.subjectId])).rows;return rows[0]??null;}
@@ -51,7 +73,14 @@ export function createPostgresRetentionJournal({pool}){
  }
  async function keys({exclusive=false}={}){return tx(async c=>{const out=[];for(const [kind,t] of Object.entries(tables)){const rows=(await c.query(`SELECT tenant_id,${t.id} AS subject_id FROM ${t.schema}.retention_subjects`)).rows;for(const r of rows)out.push(subjectKey({tenantId:r.tenant_id,kind,subjectId:r.subject_id}));}return out;},{shared:!exclusive});}
  /** Recovery on a dedicated session: the exclusive recovery advisory lock excludes every transition write for the whole pass. */
- async function exclusive(fn){const c=await pool.connect();try{await c.query(`SELECT pg_advisory_lock(${RECOVERY_LOCK})`);try{return await fn();}finally{await c.query(`SELECT pg_advisory_unlock(${RECOVERY_LOCK})`);}}catch(e){throw wrap(e);}finally{c.release();}}
+ /** The session is reusable only after a confirmed unlock; a lock or unlock whose outcome is unknown discards it (ending the session
+  * releases its advisory lock server-side). */
+ async function exclusive(fn){let c,reusable=false,failure,outcome,result;const acquiring=Promise.resolve().then(()=>pool.connect());
+  try{c=await bounded(()=>acquiring);await bounded(()=>c.query(`SELECT pg_advisory_lock(${RECOVERY_LOCK})`));
+   try{result=await fn();}catch(error){outcome=error;}
+   const unlocked=await bounded(()=>c.query(`SELECT pg_advisory_unlock(${RECOVERY_LOCK}) AS unlocked`));if(unlocked?.rows?.[0]?.unlocked!==true)fail('RETENTION_UNLOCK_UNKNOWN');reusable=true;}
+  catch(error){failure=wrap(outcome??error);}
+  if(!failure&&outcome)failure=wrap(outcome);failure=retire(c,acquiring,reusable,failure);if(failure)throw failure;return result;}
  /** Records the exact row and version targets a purge may delete, inside the caller's transaction, under the subject lock, only when the
   * subject is currently SUPPRESSED under the plan's suppression generation and the plan is the subject's current recorded plan. */
  async function planRows(c,key,plan){
