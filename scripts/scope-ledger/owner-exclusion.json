@@ -1,0 +1,89 @@
+{
+  "schema": "meri-scope-ledger-owner-exclusion/1",
+  "note": "Curated input. The 43 names and the five groups are the product owner's list; ledger.test.mjs verifies they equal the 43 historically deferred rows of docs/CAPABILITY-SCOPE.md exactly. knownReferences classifies every file under apps/, packages/ and scripts/ that names an excluded tool; the test fails on any unclassified file, so an accidental implementation cannot land silently on this branch.",
+  "direction": {
+    "date": "2026-10-15",
+    "owner": "Neo Martinez, product owner",
+    "quote": "make sure all of these legacy meri tools are excluded. if you built them by accident delete them and make sure you dont leave dead code behind",
+    "provenance": "Given by Neo in the Fable lead session on 15 October 2026 together with the 43-name list; quoted verbatim in the scope-ledger lane brief. The same list is copied verbatim into the guard test apps/worker/conversation/test/legacy-tools-excluded.test.mjs (commit 875b3055 on fable/p2a-capability-policy-sandbox-20261015, also carried by fable/a1-pause-checkpoint-20261015). This lane relays the direction; it did not independently re-confirm it with Neo.",
+    "decision": "excluded",
+    "distinction": "The 10 October 2026 accepted scope (docs/CAPABILITY-SCOPE.md, recorded as D011/D012) labelled these 43 rows 'proposed deferred': no release claim and no hidden dependency, provisional, and listed in release notes until explicitly selected. The comprehensive audit of 15 October 2026 ruled that this historical deferral does not settle the later 'complete it all' direction and must not be silently perpetuated. The 15 October owner direction is a new, explicit decision: these 43 are excluded from the final product by owner direction, not by carrying the old deferral forward. Re-including any of them needs a new dated owner direction recorded in this ledger.",
+    "doesNotExclude": [
+      "Local brief/document creation through the selected artifact operations (create_word, create_excel, create_powerpoint, run_analysis).",
+      "Memory reads, memory proposals and sourced corrections reviewed by the canonical memory owner (memory.read, memory.propose / save_memory, list_memory_proposals). Only the direct canonical-memory writes confirm_memory, correct_memory and forget_memory are excluded.",
+      "Application retention and deletion, including deletion across stores and backups.",
+      "The required new product capabilities in docs/CAPABILITY-SCOPE.md, and the browser enabled by default.",
+      "The five other historical deferrals outside the legacy registry (authenticated browser workflows, device/browser bridge, live browser takeover, full in-browser Office editing, full 139-workflow parity). The owner's list names legacy registry tools only; those five need their own decision."
+    ]
+  },
+  "groups": [
+    {
+      "name": "Research Portfolio",
+      "tools": ["manage_research_portfolio", "get_research_portfolio_analytics", "create_research_portfolio_snapshot", "request_research_portfolio_output", "save_research_portfolio_output_to_client", "watch_research_portfolio", "update_research_portfolio_change_state", "get_research_portfolio_bookmarks", "create_research_portfolio_bookmark", "get_research_portfolio_fit", "get_research_portfolio_reviews", "add_research_portfolio_review_note", "get_research_portfolio_rules", "get_research_portfolio_imports", "get_research_portfolio_operations", "prepare_research_portfolio_brief", "prepare_research_portfolio_meeting"]
+    },
+    {
+      "name": "Relationships, legislation and Florida",
+      "tools": ["find_path_to", "get_legiwatch_review", "compare_florida_budget_amounts", "prepare_legiwatch_briefing", "compare_legislative_versions", "save_legislative_research", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion"]
+    },
+    {
+      "name": "Older document and email workflows",
+      "tools": ["create_meeting_brief", "draft_policy_memo", "save_note", "send_email", "reply_email"]
+    },
+    {
+      "name": "Direct canonical-memory writes",
+      "tools": ["confirm_memory", "correct_memory", "forget_memory"]
+    },
+    {
+      "name": "Client and opportunity analysis",
+      "tools": ["get_pe_buyer_workspace", "create_client", "update_client_profile", "explain_opportunity_match", "compare_funding_opportunities", "build_opportunity_action_plan", "get_business_development_brief", "resolve_business_development_source", "save_business_development_brief"]
+    }
+  ],
+  "referenceClasses": {
+    "exclusion-record": "Records the exclusion itself (deferred catalog originals with replacement null, the catalog schema's deferred-original enum, this ledger's inputs). Not an implementation.",
+    "negative-test": "Asserts refusal, absence, deferral or untrusted handling of an excluded name. Not an implementation.",
+    "guard-test": "The owner-exclusion guard over catalog, manifests, resolver and SDK tool surface.",
+    "canonical-guidance": "Model-visible canonical contract text that names an excluded tool. Not an implementation, but it can steer the model; neutralization is contract proposal P6 for dot.",
+    "note-fixture": "Test fixture that reproduces the canonical contacts note byte-exact; it follows the contract once P6 lands.",
+    "recorded-evidence": "Immutable historical receipt bytes that contain the canonical contacts note. Evidence is never rewritten.",
+    "unrelated-identifier": "A different API with the same identifier (botocore Session.create_client)."
+  },
+  "knownReferences": [
+    {"path": "apps/control/document-application/mail-history/local/receipts-final/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/mail-history/local/receipts-utf16/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/mail-history/local/receipts-v2/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/mail-history/local/receipts/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/mail-history/test/fixtures.mjs", "class": "note-fixture"},
+    {"path": "apps/control/document-application/mail-history/test/retained-base-v2.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/relationship-brief/local/receipts-approved/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/relationship-brief/local/receipts-final/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/relationship-brief/local/receipts-release/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/selected-output/test/artifacts-root-inert-rerun/relationship_brief/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/control/document-application/selected-output/test/artifacts/relationship_brief/provenance.json", "class": "recorded-evidence"},
+    {"path": "apps/gateway/sources/identity-contacts/test/fixtures.mjs", "class": "note-fixture"},
+    {"path": "apps/proxy/qualification/test/test_aws_counter.py", "class": "unrelated-identifier"},
+    {"path": "apps/worker/conversation/test/legacy-tools-excluded.test.mjs", "class": "guard-test", "presentOn": "fable/p2a-capability-policy-sandbox-20261015 (875b3055) and fable/a1-pause-checkpoint-20261015; absent at this base"},
+    {"path": "packages/contracts/retrieval-0.2/catalog.json", "class": "exclusion-record", "alsoCarries": "canonical-guidance: the lookup_client_registry descriptor guidance names create_client (P6)"},
+    {"path": "packages/contracts/retrieval-0.2/catalog.schema.json", "class": "exclusion-record"},
+    {"path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs", "class": "canonical-guidance"},
+    {"path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-business-development-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-business-development.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-client-registry-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-client-registry.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-funding-opportunities-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-funding-opportunities.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-next-bindings.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-research-portfolio.test.mjs", "class": "negative-test"},
+    {"path": "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs", "class": "note-fixture"},
+    {"path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs", "class": "note-fixture"},
+    {"path": "scripts/general-reads/inventory.test.mjs", "class": "negative-test"},
+    {"path": "scripts/scope-ledger/ledger.test.mjs", "class": "exclusion-record"},
+    {"path": "scripts/scope-ledger/gates.json", "class": "exclusion-record"},
+    {"path": "scripts/scope-ledger/owner-exclusion.json", "class": "exclusion-record"},
+    {"path": "scripts/scope-ledger/ownership-graph.json", "class": "exclusion-record"},
+    {"path": "scripts/scope-ledger/product-capabilities.json", "class": "exclusion-record"}
+  ]
+}
