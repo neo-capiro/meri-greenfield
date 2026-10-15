@@ -19,7 +19,8 @@ no existing allocation, grant, deadline, migration or SQL path is changed.
   reservation is idempotent, any other replay is `TENANT_RESERVATION_CONFLICT`. Reaching the cap exactly is admitted.
 - **Refusal codes.** `TENANT_BUDGET_EXCEEDED`, `TENANT_CONCURRENCY_EXCEEDED`, `TENANT_BUDGET_UNCONFIGURED` (a tenant without a policy
   row fails closed), `TENANT_RESERVATION_CONFLICT`, `TENANT_RESERVATION_UNKNOWN`, `TENANT_SETTLEMENT_CONFLICT`, `TENANT_BUDGET_INPUT`,
-  `TENANT_BUDGET_STATE`; PostgreSQL commit uncertainty stays `BudgetCommitUncertain`.
+  `TENANT_BUDGET_STATE`, `TENANT_BUDGET_CANCELLED` (the caller's signal aborted before the store mutated), `TENANT_BUDGET_CLOCK`,
+  `TENANT_BUDGET_CONFIGURATION`; PostgreSQL commit uncertainty stays `BudgetCommitUncertain`.
 - **Deadlines.** Unchanged. The gate carries no deadline of its own; the caller's existing operation lifetime and cancellation signal apply.
 - **Persistence.** The PostgreSQL adapter targets `meri_product_budget.tenant_budgets` and `meri_product_budget.tenant_run_reservations`
   proposed in `docs/coordination/proposals/FABLE-MIGRATION-REQUEST-TENANT-BUDGETS-20261015.md`. No migration ID is allocated and nothing

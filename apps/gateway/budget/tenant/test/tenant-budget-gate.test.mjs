@@ -82,3 +82,11 @@ test('unconfigured tenants, hostile inputs and unknown store receipts refuse wit
  await refused(tenantBudgetGate({store:lying,now:()=>NOW}).admit({tenantId:tenant,runId:run(1),holdMicroUSD:1}),'TENANT_BUDGET_STATE');
  assert.throws(()=>tenantBudgetGate({store:{reserve(){}}}),/TENANT_BUDGET_CONFIGURATION/u);assert.equal(f.store.rows().length,0);
 });
+test('the caller signal reaches the memory store: a live signal is accepted and an aborted one refuses before any slot is taken',async()=>{
+ const f=fixture({maxConcurrentRuns:1}),live=new AbortController(),dead=new AbortController();dead.abort();
+ await refused(f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:10,signal:dead.signal}),'TENANT_BUDGET_CANCELLED');assert.equal(f.store.rows().length,0);
+ assert.equal((await f.gate.admit({tenantId:tenant,runId:run(1),holdMicroUSD:10,signal:live.signal})).state,'HELD');
+ assert.equal((await f.gate.read({tenantId:tenant,signal:live.signal})).activeRuns,1);
+ await refused(f.gate.release({tenantId:tenant,runId:run(1),signal:dead.signal}),'TENANT_BUDGET_CANCELLED');
+ assert.equal((await f.gate.settle({tenantId:tenant,runId:run(1),measuredMicroUSD:7,signal:live.signal})).state,'SETTLED');
+});
