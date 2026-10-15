@@ -113,6 +113,15 @@ test('PDF: cross-reference sections, trailer and catalog must be coherent; xref 
  refused(edit('/Size 4 /Root 1 0 R','/Size 4'),'pdf','PDF_TRAILER','no /Root');
  refused(edit('/Root 1 0 R','/Root 2 0 R'),'pdf','PDF_CATALOG','/Root is not a catalog');
  refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pagez 2 0 R'),'pdf','PDF_CATALOG','catalog without /Pages');
+ refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 2 5 R'),'pdf','PDF_PAGE_TREE','/Pages generation differs from the cross-reference');
+ refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 3 0 R'),'pdf','PDF_PAGE_TREE','/Pages names a page leaf, not a page tree');
+ refused(edit('/Type /Catalog /Pages 2 0 R','/Type /Catalog /Pages 1 0 R'),'pdf','PDF_PAGE_TREE','/Pages names the catalog itself');
+ refused(edit('/Type /Pages /Kids [3 0 R]','/Type /Pagez /Kids [3 0 R]'),'pdf','PDF_PAGE_TREE','page tree root is not /Type /Pages');
+ refused(edit('/Kids [3 0 R] /Count 1','/Kids [3 0 R] /Count 2'),'pdf','PDF_PAGE_TREE','/Count disagrees with the leaves');
+ refused(edit('/Kids [3 0 R]','/Kids  3 0 R '),'pdf','PDF_PAGE_TREE','/Kids is not an array');
+ refused(edit('/Kids [3 0 R]','/Kids [2 0 R]'),'pdf','PDF_PAGE_TREE','page tree node lists itself');
+ refused(edit('/Type /Page /Parent 2 0 R','/Type /Page /Parent 1 0 R'),'pdf','PDF_PAGE_TREE','leaf /Parent names another node');
+ refused(edit('/Type /Page /Parent 2 0 R','/Type /Page /Parenz 2 0 R'),'pdf','PDF_PAGE_TREE','leaf without /Parent');
  refused(edit('trailer\n<<','trailer\n<< /Root 1 0 R'),'pdf','PDF_OBJECT','duplicate trailer key');
  const at=/startxref\n(\d+)/u.exec(text)[1];refused(edit('/Root 1 0 R >>',`/Root 1 0 R /Prev ${at} >>`),'pdf','PDF_LIMIT','/Prev loop');
  const xs=pdfXrefStream().toString('latin1'),streamAt=xs.indexOf('stream\n',xs.indexOf('/Type /XRef'))+7,broken=Buffer.from(xs,'latin1');broken[streamAt+3]^=0xff;

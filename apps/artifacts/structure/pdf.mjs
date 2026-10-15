@@ -9,10 +9,10 @@
  * header of that number and generation, and every compressed entry names an in-use `/Type /ObjStm` object with
  * enough objects; every object number is below its section's `/Size`; the newest trailer has `/Size` and an indirect
  * `/Root` that resolves (directly or inside an object stream) to a dictionary with `/Type /Catalog` and an indirect
- * `/Pages` that the cross-reference marks in use. Bounds: PDF_LIMITS. Rendering is not qualified here. */
+ * `/Pages` whose page tree is coherent (verifyPageTree). Bounds: PDF_LIMITS. Rendering is not qualified here. */
 import {refuse} from './refusal.mjs';
 import {decodeStream,isCount,isName,isRef,objectHeaderAt,parseValue,readIndirectObject,skipSpace} from './pdf-objects.mjs';
-export const PDF_LIMITS=Object.freeze({maxSections:64,maxObjects:1000000,maxStreamBytes:16*1024*1024});
+export const PDF_LIMITS=Object.freeze({maxSections:64,maxObjects:1000000,maxStreamBytes:16*1024*1024,maxPageTreeDepth:256});
 const HEADER=/^%PDF-(?:1\.[0-7]|2\.0)(?![0-9.])/u;
 const TAIL=/startxref[\0\t\n\f\r ]+(\d{1,10})[\0\t\n\f\r ]+%%EOF[\0\t\n\f\r ]*$/u;
 const SUBSECTION=/[\0\t\n\f\r ]*(\d{1,10}) (\d{1,10})[\0\t\f ]*(?:\r\n|\r|\n)/y;
@@ -115,6 +115,25 @@ function objects(src,xref){
  };
  return {objectStream,resolve};
 }
+/** Walks the page tree from the catalog's `/Pages`: every node must resolve through the cross-reference (number and
+ * generation) to a `/Type /Pages` node with an array `/Kids` of indirect references and a `/Count` equal to its leaf
+ * total, or a `/Type /Page` leaf; every child's `/Parent` must name the node that lists it; no node may be reached twice.
+ * Bounded by PDF_LIMITS.maxObjects nodes and PDF_LIMITS.maxPageTreeDepth levels. */
+function verifyPageTree(rootRef,resolve){
+ const seen=new Set(),key=ref=>`${ref.num} ${ref.gen}`;
+ const walk=(ref,parent,depth)=>{
+  if(depth>PDF_LIMITS.maxPageTreeDepth||seen.has(key(ref))||seen.size>=PDF_LIMITS.maxObjects)refuse('PDF_PAGE_TREE');seen.add(key(ref));
+  const node=resolve(ref,'PDF_PAGE_TREE');if(!(node instanceof Map))refuse('PDF_PAGE_TREE');
+  const up=node.get('Parent');
+  if(parent?!(isRef(up)&&up.num===parent.num&&up.gen===parent.gen):up!==undefined)refuse('PDF_PAGE_TREE');
+  if(isName(node.get('Type'),'Page'))return parent?1:refuse('PDF_PAGE_TREE');
+  const kids=node.get('Kids'),count=node.get('Count');
+  if(!isName(node.get('Type'),'Pages')||!Array.isArray(kids)||!isCount(count)||!kids.every(isRef))refuse('PDF_PAGE_TREE');
+  let leaves=0;for(const kid of kids)leaves+=walk(kid,ref,depth+1);
+  return leaves===count?leaves:refuse('PDF_PAGE_TREE');
+ };
+ walk(rootRef,null,0);
+}
 /** Throws a StructureInvalid unless `bytes` is a structurally coherent PDF. */
 export function verifyPdf(bytes){
  const src=bytes.toString('latin1');
@@ -125,5 +144,6 @@ export function verifyPdf(bytes){
  for(const e of xref.values())if(e.type===2&&e.index>=objectStream(e.stream).n)refuse('PDF_XREF');
  const root=trailer.get('Root');if(!isRef(root))refuse('PDF_TRAILER');
  const catalog=resolve(root,'PDF_CATALOG'),pages=catalog instanceof Map?catalog.get('Pages'):undefined;
- if(!(catalog instanceof Map)||!isName(catalog.get('Type'),'Catalog')||!isRef(pages)||![1,2].includes(xref.get(pages.num)?.type))refuse('PDF_CATALOG');
+ if(!(catalog instanceof Map)||!isName(catalog.get('Type'),'Catalog')||!isRef(pages))refuse('PDF_CATALOG');
+ verifyPageTree(pages,resolve);
 }
