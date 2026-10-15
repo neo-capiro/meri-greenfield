@@ -1,16 +1,17 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.step-document",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
   "principal": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "clientId": "00000000-0000-4000-8000-000000000004",
     "ownerActorId": "00000000-0000-4000-8000-000000000003"
   },
   "source": {
     "kind": "objective",
+    "requestedIntentId": "00000000-0000-4000-8000-00000000001f",
     "objectiveId": "00000000-0000-4000-8000-000000000005",
     "objectiveRevisionId": "00000000-0000-4000-8000-000000000006",
     "objectiveVersion": 2,
@@ -82,7 +83,7 @@
   },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "b0855e231b3c8363626b7686db44dd8cc9c49a6018657ea343108ac78a5d9d73",
+  "inputSha256": "00a4615eac5c7a68985e6f27b7e062711523e12884555d68069a3fae4726597e",
   "input": {
     "kind": "workspace_draft",
     "strategyType": "authorization",
@@ -96,5 +97,22 @@
       "startsOn": "2026-10-17",
       "endsOn": null
     }
+  },
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.step-document",
+    "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "expectedExistingStrategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "expectedExistingStrategyHash": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "kind": "strategy-step-document",
+    "productOperation": "strategy.step-document",
+    "mode": "generate-document",
+    "nodeId": "00000000-0000-4000-8000-000000000065",
+    "nodeSha256": "e8040af0f46acea2909080d95d3daa2814cf5d87b2dbb8273ca6568398ce71ba",
+    "documentKind": "workspace_draft"
   }
 }

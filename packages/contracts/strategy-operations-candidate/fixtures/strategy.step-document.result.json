@@ -1,15 +1,65 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.step-document",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
-  "requestSha256": "ccf554407e2c6680d9462384f84301e4cbe545fb694551cad3e741963b558282",
-  "inputSha256": "b0855e231b3c8363626b7686db44dd8cc9c49a6018657ea343108ac78a5d9d73",
-  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "requestSha256": "370d8bafb7678ed199c50d466fe43f23e844d37080afb7b555431d80be28fa77",
+  "inputSha256": "00a4615eac5c7a68985e6f27b7e062711523e12884555d68069a3fae4726597e",
+  "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
   "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
   "basisSha256": "caa96463378b92f52caa4ce7c9ae9b82508a58decc6d3599b627d1bfc894ba24",
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.step-document",
+    "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "expectedExistingStrategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "expectedExistingStrategyHash": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "kind": "strategy-step-document",
+    "productOperation": "strategy.step-document",
+    "mode": "generate-document",
+    "nodeId": "00000000-0000-4000-8000-000000000065",
+    "nodeSha256": "e8040af0f46acea2909080d95d3daa2814cf5d87b2dbb8273ca6568398ce71ba",
+    "documentKind": "workspace_draft"
+  },
+  "association": {
+    "version": "strategy-attempt-association/1",
+    "associationId": "00000000-0000-4000-8000-000000000032",
+    "requestSha256": "370d8bafb7678ed199c50d466fe43f23e844d37080afb7b555431d80be28fa77",
+    "applicationTargetSha256": "4e46e1643db9e739578f54d21c92e810f69b1a008c481d3f8eb267fbf94fd9d0",
+    "origin": {
+      "kind": "product-operation",
+      "operation": "strategy.step-document",
+      "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6"
+    },
+    "backend": {
+      "claimId": "00000000-0000-4000-8000-000000000035",
+      "attemptNumber": 1
+    },
+    "meri": {
+      "binding": {
+        "tenantId": "00000000-0000-4000-8000-00000000001e",
+        "actorId": "00000000-0000-4000-8000-000000000003",
+        "conversationId": "00000000-0000-4000-8000-000000000014",
+        "runId": "00000000-0000-4000-8000-000000000015",
+        "attemptId": "00000000-0000-4000-8000-000000000016",
+        "workerId": "00000000-0000-4000-8000-000000000017",
+        "writerFence": 1
+      },
+      "issuance": {
+        "kind": "opaque-meri-0011-issuance-reference",
+        "identity": "synthetic-opaque-issuance-identity"
+      }
+    }
+  },
+  "admissionReceiptRef": "00000000-0000-4000-8000-000000000036",
+  "admissionReceiptSha256": "e669dcef96a720586646ab7f0324763dd77e8270dee188b2c794eac7f0ea41a3",
+  "completionReceiptRef": "00000000-0000-4000-8000-000000000037",
   "binding": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "conversationId": "00000000-0000-4000-8000-000000000014",
     "runId": "00000000-0000-4000-8000-000000000015",
@@ -22,7 +72,7 @@
     "model": "synthetic-trusted-model",
     "receiptRef": "00000000-0000-4000-8000-000000000019",
     "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
-    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+    "bindingSha256": "c6d1df128a3d66abe9d84b06afe5c4e1addfd17dd30082da0c8f70532089a2d8"
   },
   "resultRef": "00000000-0000-4000-8000-000000000018",
   "completedAtMs": 1792065601000,
@@ -59,5 +109,5 @@
   },
   "payloadSha256": "fc425e887646d7658674a90d73c2cc2b5fcf06082e8da3afec20013bb34a8c57",
   "issues": [],
-  "resultSha256": "692ea8be40e39392ca38ffa7ed527cfb44414249c67effb5650956dcf2cf6759"
+  "resultSha256": "145867f171ed5129fc1c0b79f65e5df8344a1ab488167fc3ad2dd13454481bec"
 }

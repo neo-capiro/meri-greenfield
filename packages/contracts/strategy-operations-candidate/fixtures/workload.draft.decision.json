@@ -1,5 +1,5 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "audience": "capiro:objective-strategy-generation:v1",
   "operation": "objective.strategy.draft",
   "use": "dispatch",
@@ -7,13 +7,13 @@
   "delegationRevision": "synthetic-revision",
   "jobId": "00000000-0000-4000-8000-000000000002",
   "principal": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "clientId": "00000000-0000-4000-8000-000000000004",
     "ownerActorId": "00000000-0000-4000-8000-000000000003"
   },
-  "inputSha256": "c3ab140f34a06cba0563c713b6b3c2ff6cb2cee067d5fb479d4781629c42e8ac",
-  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "inputSha256": "0510f01aad2a8489ed95df758063dae918ac1bbe09dff8bb76c7cd7b13a97841",
+  "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
   "policyRevision": "synthetic-policy",
   "issuedAtMs": 1792065600000,
   "expiresAtMs": 1792066500000,

@@ -1,0 +1,8 @@
+{
+  "kind": "meri-result-custody-receipt/1",
+  "receiptRef": "00000000-0000-4000-8000-000000000037",
+  "associationSha256": "77d9d7130aee7ebdc51872188f114ea8aa23a6cff86235f8992093e4f26a0325",
+  "resultRef": "00000000-0000-4000-8000-000000000018",
+  "resultSha256": "dc8444798cfbf4415651bc1bc9916a8c867aa9b48d088c61bbb2d824adf26153",
+  "durableCompletedAtMs": 1792065601000
+}

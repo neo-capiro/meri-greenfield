@@ -1,16 +1,17 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.draft",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
   "principal": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "clientId": "00000000-0000-4000-8000-000000000004",
     "ownerActorId": "00000000-0000-4000-8000-000000000003"
   },
   "source": {
     "kind": "objective",
+    "requestedIntentId": "00000000-0000-4000-8000-00000000001f",
     "objectiveId": "00000000-0000-4000-8000-000000000005",
     "objectiveRevisionId": "00000000-0000-4000-8000-000000000006",
     "objectiveVersion": 2,
@@ -79,7 +80,7 @@
   },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "c3ab140f34a06cba0563c713b6b3c2ff6cb2cee067d5fb479d4781629c42e8ac",
+  "inputSha256": "0510f01aad2a8489ed95df758063dae918ac1bbe09dff8bb76c7cd7b13a97841",
   "input": {
     "typeHint": null,
     "goal": null,
@@ -87,5 +88,29 @@
     "ownerUserId": null,
     "targetDate": null,
     "attachmentIds": []
+  },
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.draft",
+    "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "kind": "objective-strategy",
+    "productOperation": "objective.strategy.draft",
+    "canonicalPlanId": "00000000-0000-4000-8000-000000000029",
+    "bindingVersion": 1,
+    "epoch": 1,
+    "requestedIntentId": "00000000-0000-4000-8000-00000000001f",
+    "objectiveId": "00000000-0000-4000-8000-000000000005",
+    "requestedObjectiveRevisionId": "00000000-0000-4000-8000-000000000006",
+    "requestedObjectiveVersion": 2,
+    "snapshotHash": "de55f0639e2ded11959bda129eb326ffb262a63bef817fcc1f58fb068ba6cd8e",
+    "mode": "create",
+    "expectedExistingStrategyVersionId": null,
+    "expectedExistingStrategyHash": null,
+    "humanBaselineStrategyVersionId": null,
+    "humanBaselineStrategyHash": null
   }
 }

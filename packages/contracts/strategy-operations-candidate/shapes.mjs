@@ -1,8 +1,8 @@
 /** Candidate data shapes only. No authority, public export or runtime mount. */
 export const obj=(properties,required=Object.keys(properties))=>({type:'object',properties,required,additionalProperties:false});
 export const text=(maxLength=4000)=>({type:'string',minLength:1,maxLength,pattern:'\\S'});
-export const uuid={type:'string',pattern:'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'};
-export const sha={type:'string',pattern:'^[a-f0-9]{64}$'};
+export const uuid={type:'string',minLength:36,maxLength:36,pattern:'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'};
+export const sha={type:'string',minLength:64,maxLength:64,pattern:'^[a-f0-9]{64}$'};
 export const time={type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER};
 export const nullable=s=>({anyOf:[s,{type:'null'}]});
 export const list=(items,maxItems=60,minItems=0)=>({type:'array',items,minItems,maxItems});
@@ -20,5 +20,5 @@ export const sourceRef=obj({section:text(128),ref:text(256)});
 export const coverage=obj({complete:{type:'boolean'},omitted:list(text(256)),assumptions:list(text(1000)),sources:list(sourceRef,256),pendingSources:list(sourceRef,256)});
 export const nodeFields={kind:choice(kinds),subject:choice(subjects),title:text(300),note:nullable(text(8000)),status:choice(statuses),ownerRef:nullable(text(128)),startsOn:date,endsOn:nullable(date),openEnded:{type:'boolean'},sources:list(sourceRef,64)};
 export const principal=obj({tenantId:text(128),actorId:text(128),clientId:uuid,ownerActorId:text(128)});
-export const objective=obj({kind:{const:'objective'},objectiveId:uuid,objectiveRevisionId:uuid,objectiveVersion:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},snapshotSha256:sha,intent:obj({outcome:text(),governmentProblem:text(),askType:choice(['funding','policy_authority','both','protect_funding','meri_propose']),minimumWin:text(),limits:{type:'string',maxLength:4000}})});
+export const objective=obj({kind:{const:'objective'},requestedIntentId:uuid,objectiveId:uuid,objectiveRevisionId:uuid,objectiveVersion:{type:'integer',minimum:1,maximum:Number.MAX_SAFE_INTEGER},snapshotSha256:sha,intent:obj({outcome:text(),governmentProblem:text(),askType:choice(['funding','policy_authority','both','protect_funding','meri_propose']),minimumWin:text(),limits:{type:'string',maxLength:4000}})});
 export const manual=obj({kind:{const:'manual'},manualRequestId:uuid,goal:text()});

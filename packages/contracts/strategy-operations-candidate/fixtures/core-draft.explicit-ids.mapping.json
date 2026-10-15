@@ -40,12 +40,12 @@
     ]
   },
   "request": {
-    "candidateVersion": "strategy-candidate/20261015.2",
+    "candidateVersion": "strategy-candidate/20261015.3",
     "operation": "strategy.draft",
     "requestId": "00000000-0000-4000-8000-000000000001",
     "jobId": "00000000-0000-4000-8000-000000000002",
     "principal": {
-      "tenantId": "synthetic-tenant",
+      "tenantId": "00000000-0000-4000-8000-00000000001e",
       "actorId": "00000000-0000-4000-8000-000000000003",
       "clientId": "00000000-0000-4000-8000-000000000004",
       "ownerActorId": "synthetic-owner"
@@ -154,7 +154,7 @@
     },
     "requestedAtMs": 1792065600000,
     "originalExpiresAtMs": 1792066500000,
-    "inputSha256": "12f55162668351ae2638a472bbe34d62a727662d7203296b421450e50a5f0342",
+    "inputSha256": "213433a57add33f6143861f28138eabdef4e945f5b078129d5e2622e63002daf",
     "input": {
       "typeHint": "authorization",
       "goal": "  Preserve the supplied goal  ",
@@ -168,6 +168,23 @@
         "00000000-0000-4000-8000-0000000000cb",
         ""
       ]
+    },
+    "applicationTarget": {
+      "version": "strategy-application-target/1",
+      "tenantId": "00000000-0000-4000-8000-00000000001e",
+      "clientId": "00000000-0000-4000-8000-000000000004",
+      "operation": "strategy.draft",
+      "sourceSha256": "1cd44d6884781f5dc69e7610e534a8e7e288d73338872ea95b4be9218eb16fb3",
+      "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+      "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+      "kind": "manual-strategy-draft",
+      "productOperation": "manual.strategy.draft",
+      "manualRequestId": "00000000-0000-4000-8000-00000000005b",
+      "mode": "create",
+      "expectedExistingStrategyVersionId": null,
+      "expectedExistingStrategyHash": null,
+      "humanBaselineStrategyVersionId": null,
+      "humanBaselineStrategyHash": null
     }
   }
 }

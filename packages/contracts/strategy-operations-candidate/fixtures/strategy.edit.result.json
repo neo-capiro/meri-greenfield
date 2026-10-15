@@ -1,15 +1,62 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.edit",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
-  "requestSha256": "abd4f86afca3d4a81a07da951e55b3e1ab774b8037ed8c959a5a7262e54dca23",
-  "inputSha256": "1cc7e03db2803d29f41bf390b0d2594eabbffbea1babecadf01bb9be4e7ca9cc",
-  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "requestSha256": "c09e6e7fef98a4e4231470858ed0d7ddca6164109c3414c4acb197090ab0c809",
+  "inputSha256": "eb6b51c26dbc1db629436963e2459149321bec8339c96ca1bc0ce62a661c35b3",
+  "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
   "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
   "basisSha256": "caa96463378b92f52caa4ce7c9ae9b82508a58decc6d3599b627d1bfc894ba24",
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.edit",
+    "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "expectedExistingStrategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "expectedExistingStrategyHash": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "kind": "strategy-edit",
+    "productOperation": "strategy.edit",
+    "mode": "edit"
+  },
+  "association": {
+    "version": "strategy-attempt-association/1",
+    "associationId": "00000000-0000-4000-8000-000000000032",
+    "requestSha256": "c09e6e7fef98a4e4231470858ed0d7ddca6164109c3414c4acb197090ab0c809",
+    "applicationTargetSha256": "05407b2715fc936fdbbed28c62dbd31a267b6f05dbe8cab783a53e96585728e4",
+    "origin": {
+      "kind": "product-operation",
+      "operation": "strategy.edit",
+      "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6"
+    },
+    "backend": {
+      "claimId": "00000000-0000-4000-8000-000000000035",
+      "attemptNumber": 1
+    },
+    "meri": {
+      "binding": {
+        "tenantId": "00000000-0000-4000-8000-00000000001e",
+        "actorId": "00000000-0000-4000-8000-000000000003",
+        "conversationId": "00000000-0000-4000-8000-000000000014",
+        "runId": "00000000-0000-4000-8000-000000000015",
+        "attemptId": "00000000-0000-4000-8000-000000000016",
+        "workerId": "00000000-0000-4000-8000-000000000017",
+        "writerFence": 1
+      },
+      "issuance": {
+        "kind": "opaque-meri-0011-issuance-reference",
+        "identity": "synthetic-opaque-issuance-identity"
+      }
+    }
+  },
+  "admissionReceiptRef": "00000000-0000-4000-8000-000000000036",
+  "admissionReceiptSha256": "c96c20851a446026ff9cd4bae3a2f99746862eaf2280b9dfc2a7d28af27ae9ae",
+  "completionReceiptRef": "00000000-0000-4000-8000-000000000037",
   "binding": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "conversationId": "00000000-0000-4000-8000-000000000014",
     "runId": "00000000-0000-4000-8000-000000000015",
@@ -22,7 +69,7 @@
     "model": "synthetic-trusted-model",
     "receiptRef": "00000000-0000-4000-8000-000000000019",
     "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
-    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+    "bindingSha256": "c6d1df128a3d66abe9d84b06afe5c4e1addfd17dd30082da0c8f70532089a2d8"
   },
   "resultRef": "00000000-0000-4000-8000-000000000018",
   "completedAtMs": 1792065601000,
@@ -57,5 +104,5 @@
   },
   "payloadSha256": "b93cccf2690d9efca0bbbd0cff7af78d5d32bce1cbd69acbec2055d7cc40cbc2",
   "issues": [],
-  "resultSha256": "4f23505043d2677c0ef7a2fdbd9b808ce64539b0d14da2e3cb0842569424dae2"
+  "resultSha256": "3cb7903c8e438ad29b4907aa86b3743d93ab9abd46204d78fe3f7ae6b7b4773a"
 }

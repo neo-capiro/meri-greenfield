@@ -8,12 +8,12 @@
   },
   "resolvedDocuments": [],
   "request": {
-    "candidateVersion": "strategy-candidate/20261015.2",
+    "candidateVersion": "strategy-candidate/20261015.3",
     "operation": "strategy.draft",
     "requestId": "00000000-0000-4000-8000-000000000001",
     "jobId": "00000000-0000-4000-8000-000000000002",
     "principal": {
-      "tenantId": "synthetic-tenant",
+      "tenantId": "00000000-0000-4000-8000-00000000001e",
       "actorId": "00000000-0000-4000-8000-000000000003",
       "clientId": "00000000-0000-4000-8000-000000000004",
       "ownerActorId": "00000000-0000-4000-8000-000000000003"
@@ -79,7 +79,7 @@
     },
     "requestedAtMs": 1792065600000,
     "originalExpiresAtMs": 1792066500000,
-    "inputSha256": "10d719e4cd948d0fce8cc46d7b72923ee4ae464e7480efc00bd1163b302df215",
+    "inputSha256": "07e70bdc280afbc73e9b0fcaf1b723d82704777b4c30d61d3c0ab1636abcfc8a",
     "input": {
       "typeHint": "authorization",
       "goal": "",
@@ -87,6 +87,23 @@
       "ownerUserId": "   ",
       "targetDate": null,
       "attachmentIds": []
+    },
+    "applicationTarget": {
+      "version": "strategy-application-target/1",
+      "tenantId": "00000000-0000-4000-8000-00000000001e",
+      "clientId": "00000000-0000-4000-8000-000000000004",
+      "operation": "strategy.draft",
+      "sourceSha256": "1cd44d6884781f5dc69e7610e534a8e7e288d73338872ea95b4be9218eb16fb3",
+      "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+      "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+      "kind": "manual-strategy-draft",
+      "productOperation": "manual.strategy.draft",
+      "manualRequestId": "00000000-0000-4000-8000-00000000005b",
+      "mode": "create",
+      "expectedExistingStrategyVersionId": null,
+      "expectedExistingStrategyHash": null,
+      "humanBaselineStrategyVersionId": null,
+      "humanBaselineStrategyHash": null
     }
   }
 }

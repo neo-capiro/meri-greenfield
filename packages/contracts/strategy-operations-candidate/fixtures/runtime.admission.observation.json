@@ -1,0 +1,8 @@
+{
+  "kind": "meri-admission-observation/1",
+  "receiptRef": "00000000-0000-4000-8000-000000000036",
+  "requestSha256": "2b30f7dc505d4f2d8383d27d62fc141fffeff85da0765f3b9c9354f4c09292dc",
+  "applicationTargetSha256": "b2e49d36e8ed4b4f6cc7d8bfb291624f046daa8f37f2862c2ea1254021ef940d",
+  "associationSha256": "77d9d7130aee7ebdc51872188f114ea8aa23a6cff86235f8992093e4f26a0325",
+  "observedAtMs": 1792065600000
+}

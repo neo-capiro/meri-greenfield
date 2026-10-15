@@ -1,10 +1,10 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.edit",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
   "principal": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "clientId": "00000000-0000-4000-8000-000000000004",
     "ownerActorId": "00000000-0000-4000-8000-000000000003"
@@ -56,7 +56,7 @@
   },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "8a265990d89c4749e2f5f93abc1bb582c9c7d0903671892a3964b5b324bb3b12",
+  "inputSha256": "64c2efd51e836bd4604bcd57cda2d82cb8a41dfe26bb0968fd169a78781ad0b8",
   "input": {
     "scope": "strategy",
     "nodeId": null,
@@ -64,5 +64,19 @@
     "clientMessageId": "00000000-0000-4000-8000-00000000000b",
     "attachmentIds": [],
     "attachments": []
+  },
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.edit",
+    "sourceSha256": "173603b04db99a234e74ffe582148685ca08f76dc08613bd0ad0bb4d37d53c49",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "expectedExistingStrategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "expectedExistingStrategyHash": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "kind": "strategy-edit",
+    "productOperation": "strategy.edit",
+    "mode": "edit"
   }
 }

@@ -8,16 +8,21 @@ import {candidateSchema,policy} from './schema.mjs';
 import {nodeFields} from './shapes.mjs';
 import {graph,validateDraftGraph,validateEditGraph} from './graph.mjs';
 import {normalizedDraftDto,draftContextPacket} from './draft-context.mjs';
+import {checkApplicationTarget,checkAssociation} from './application-binding.mjs';
+import {checkAdmission,checkReceipts} from './receipts.mjs';
 export {hash};
 const ajv=new Ajv({strict:true,allErrors:false});formats(ajv);ajv.addSchema(canonical);const schema=candidateSchema();ajv.addSchema(schema);
-const validators=Object.fromEntries(['Request','Result','ModelOutcome','WorkloadDecision','ExecutionProvenance','LegacyDraftDto','ResolvedDocuments','CoreAttachmentResolution','Draft','Edit','Document'].map(n=>[n,ajv.compile({$ref:schema.$id+'#/$defs/'+n})]));
+const validators=Object.fromEntries(['Request','Result','ApplicationTarget','AttemptAssociation','AdmissionObservation','CompletionReceipt','BackendApplicationReceipt','ModelOutcome','WorkloadDecision','ExecutionProvenance','LegacyDraftDto','ResolvedDocuments','CoreAttachmentResolution','Draft','Edit','Document'].map(n=>[n,ajv.compile({$ref:schema.$id+'#/$defs/'+n})]));
 const fail=()=>{throw Error('STRATEGY_CANDIDATE_REFUSED');};
 const same=(a,b)=>hash(a)===hash(b);
 export const without=(v,key)=>Object.fromEntries(Object.entries(v).filter(([k])=>k!==key));
 export const requestInputHash=v=>hash(without(v,'inputSha256'));
 function shape(name,value,limit=policy.resultBytes){const v=data(value);if(Buffer.byteLength(JSON.stringify(v))>limit||!validators[name](v))fail();return v;}
-export function assertRequest(value){
+function requestAtObservation(value,{applicationTarget,observedAtMs,nowMs}={},historical=false){
  const v=shape('Request',value,policy.requestBytes),d=v.delegation;
+ shape('ApplicationTarget',applicationTarget);if(!same(v.applicationTarget,applicationTarget))fail();
+ checkAdmission(v,{observedAtMs,nowMs},{fail});checkApplicationTarget(v,{hash,fail});
+ if(!historical&&nowMs>=v.originalExpiresAtMs)fail();
  if(v.context.contextSha256!==hash(without(v.context,'contextSha256')))fail();
  if(v.operation==='strategy.draft'){
   const p=v.context.draft;if(p===null||p.clientId!==v.principal.clientId||p.selectedOwnerActorId!==v.principal.ownerActorId||!same(p.input,v.input))fail();
@@ -36,15 +41,16 @@ export function assertRequest(value){
  if(v.basis){graph(v.basis.nodes,n=>n.nodeId,n=>n.dependsOn);const ids=v.basis.nodes.map(n=>n.nodeId);if(v.operation==='strategy.edit'&&(v.input.scope==='node'?(v.input.nodeId===null||!ids.includes(v.input.nodeId)):v.input.nodeId!==null))fail();if(v.operation==='strategy.step-document'){const n=v.basis.nodes.find(n=>n.nodeId===v.input.node.id);if(!n||n.nodeSha256!==hash(v.input.node)||n.startsOn!==v.input.node.startsOn||n.endsOn!==v.input.node.endsOn)fail();}}
  return v;
 }
+export function assertRequest(value,options={}){return requestAtObservation(value,options);}
 /** Conformance only: expected DTO/documents must come from the trusted backend owner. */
-export function assertLegacyDraftMapping(value,{dto,resolvedDocuments}={}){
- const r=assertRequest(value),d=shape('LegacyDraftDto',dto,policy.requestBytes),docs=shape('ResolvedDocuments',resolvedDocuments),n=normalizedDraftDto(d);
+export function assertLegacyDraftMapping(value,{dto,resolvedDocuments,...admission}={}){
+ const r=assertRequest(value,admission),d=shape('LegacyDraftDto',dto,policy.requestBytes),docs=shape('ResolvedDocuments',resolvedDocuments),n=normalizedDraftDto(d);
  if(r.operation!=='strategy.draft'||r.principal.clientId!==n.clientId||!same(r.input,n.input)||r.principal.ownerActorId!==(d.ownerUserId?.trim()||r.principal.actorId)||!same(r.context.draft,draftContextPacket({clientId:n.clientId,input:n.input,ownerActorId:r.principal.ownerActorId,resolvedDocuments:docs})))fail();
  return r;
 }
 /** Existing DraftStrategyDto + Core attachment response conformance, not Objective owner authority. */
-export function assertCoreDraftMapping(value,{dto,coreResolution}={}){
- const r=assertRequest(value),d=shape('LegacyDraftDto',dto,policy.requestBytes),response=shape('CoreAttachmentResolution',coreResolution),n=normalizedDraftDto(d);
+export function assertCoreDraftMapping(value,{dto,coreResolution,...admission}={}){
+ const r=assertRequest(value,admission),d=shape('LegacyDraftDto',dto,policy.requestBytes),response=shape('CoreAttachmentResolution',coreResolution),n=normalizedDraftDto(d);
  if(r.operation!=='strategy.draft'||r.principal.clientId!==n.clientId||!same(r.input,n.input)||r.principal.ownerActorId!==(d.ownerUserId?.trim()||r.principal.actorId)||!same(r.context.draft,draftContextPacket({clientId:n.clientId,input:n.input,ownerActorId:r.principal.ownerActorId,coreResolution:response})))fail();
  return r;
 }
@@ -62,18 +68,24 @@ function payloadFor(v,r){
  if(name==='Edit'&&r.input.scope==='node'&&p.edits.some(e=>e.op==='add'||e.nodeId!==r.input.nodeId))fail();
  return p;
 }
-export function assertResult(value,{request,binding,execution=null}={}){
- const r=assertRequest(request),v=shape('Result',value);validateShape('RunBinding',binding);
+function resultWithReceipts(value,{request,applicationTarget,binding,association,admission,completion,nowMs,execution=null}={},retained=false){
+ shape('AdmissionObservation',admission);shape('CompletionReceipt',completion);shape('AttemptAssociation',association);
+ const r=requestAtObservation(request,{applicationTarget,observedAtMs:admission.observedAtMs,nowMs},true),v=shape('Result',value);validateShape('RunBinding',binding);
+ if(!same(v.applicationTarget,r.applicationTarget)||!same(v.association,association))fail();
+ checkAssociation(association,r,binding,{hash,fail});
+ checkReceipts(v,r,association,{admission,completion,nowMs,retained},{hash,fail});
  if(!same(v.binding,binding)||binding.tenantId!==r.principal.tenantId||binding.actorId!==r.principal.actorId||v.operation!==r.operation||v.requestId!==r.requestId||v.jobId!==r.jobId||v.inputSha256!==r.inputSha256||v.requestSha256!==hash(r)||v.sourceSha256!==hash(r.source)||v.contextSha256!==r.context.contextSha256||v.basisSha256!==(r.basis===null?null:hash(r.basis))||v.payloadSha256!==hash(v.payload)||v.resultSha256!==hash(without(v,'resultSha256'))||v.completedAtMs<r.requestedAtMs||v.state==='succeeded'&&v.completedAtMs>=r.originalExpiresAtMs)fail();
  if(v.execution!==null){shape('ExecutionProvenance',execution);if(!same(v.execution,execution)||v.execution.bindingSha256!==hash(binding))fail();}else if(execution!==null||v.state==='succeeded')fail();
  if(v.state==='succeeded'){if(v.payload===null||v.issues.length)fail();payloadFor(v.payload,r);}else if(v.payload!==null||!v.issues.length)fail();return v;
 }
-export function assertSdkPayload(raw,{request}={}){
- const r=assertRequest(request),m=data(raw);if(m.type!=='result'||m.subtype!=='success'||m.is_error!==false||m.structured_output===undefined)fail();const outcome=shape('ModelOutcome',m.structured_output);
+/** First publication uses the trusted clock and original deadline; no receipt can extend it. */
+export function assertResult(value,options={}){return resultWithReceipts(value,options);}
+export function assertSdkPayload(raw,{request,...admission}={}){
+ const r=assertRequest(request,admission),m=data(raw);if(m.type!=='result'||m.subtype!=='success'||m.is_error!==false||m.structured_output===undefined)fail();const outcome=shape('ModelOutcome',m.structured_output);
  if(outcome.operation!==r.operation)fail();if(outcome.state==='succeeded'){if(outcome.payload===null||outcome.issues.length)fail();payloadFor(outcome.payload,r);}else if(outcome.payload!==null||!outcome.issues.length)fail();return outcome;
 }
-export function assertRetainedResult(value,{request,binding,execution=null,resultRef,resultSha256}={}){
- const v=assertResult(value,{request,binding,execution});if(v.resultRef!==resultRef||v.resultSha256!==resultSha256)fail();return v;
+export function assertRetainedResult(value,{resultRef,resultSha256,...options}={}){
+ const v=resultWithReceipts(value,options,true);if(v.resultRef!==resultRef||v.resultSha256!==resultSha256)fail();return v;
 }
 /** Diagnostic candidate policy only: callers must verify Core provenance/current facts independently. */
 export function assertWorkloadDecision(value,{expected,nowMs,previousDecision=null}={}){

@@ -1,15 +1,62 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.edit",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
-  "requestSha256": "f36a182a26389931e104db777ed5ec07b4160acd018b687e348f9a7171b1815f",
-  "inputSha256": "8a265990d89c4749e2f5f93abc1bb582c9c7d0903671892a3964b5b324bb3b12",
+  "requestSha256": "26b1e7bd7a7a873e9ffb5b6f73eea3be45d4f923c3f6c4e80faca1b28ccfcc02",
+  "inputSha256": "64c2efd51e836bd4604bcd57cda2d82cb8a41dfe26bb0968fd169a78781ad0b8",
   "sourceSha256": "173603b04db99a234e74ffe582148685ca08f76dc08613bd0ad0bb4d37d53c49",
   "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
   "basisSha256": "90b1d0cd9fd2cf0ff9d422ff3ca6774cbe394a855082e0ca38e5c301ef0dc361",
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.edit",
+    "sourceSha256": "173603b04db99a234e74ffe582148685ca08f76dc08613bd0ad0bb4d37d53c49",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "expectedExistingStrategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "expectedExistingStrategyHash": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "kind": "strategy-edit",
+    "productOperation": "strategy.edit",
+    "mode": "edit"
+  },
+  "association": {
+    "version": "strategy-attempt-association/1",
+    "associationId": "00000000-0000-4000-8000-000000000032",
+    "requestSha256": "26b1e7bd7a7a873e9ffb5b6f73eea3be45d4f923c3f6c4e80faca1b28ccfcc02",
+    "applicationTargetSha256": "10c55a6831044705d54b8983a942149cedfbac06b9b2945c1b19f8a4c9ca860c",
+    "origin": {
+      "kind": "product-operation",
+      "operation": "strategy.edit",
+      "sourceSha256": "173603b04db99a234e74ffe582148685ca08f76dc08613bd0ad0bb4d37d53c49"
+    },
+    "backend": {
+      "claimId": "00000000-0000-4000-8000-000000000035",
+      "attemptNumber": 1
+    },
+    "meri": {
+      "binding": {
+        "tenantId": "00000000-0000-4000-8000-00000000001e",
+        "actorId": "00000000-0000-4000-8000-000000000003",
+        "conversationId": "00000000-0000-4000-8000-000000000014",
+        "runId": "00000000-0000-4000-8000-000000000015",
+        "attemptId": "00000000-0000-4000-8000-000000000016",
+        "workerId": "00000000-0000-4000-8000-000000000017",
+        "writerFence": 1
+      },
+      "issuance": {
+        "kind": "opaque-meri-0011-issuance-reference",
+        "identity": "synthetic-opaque-issuance-identity"
+      }
+    }
+  },
+  "admissionReceiptRef": "00000000-0000-4000-8000-000000000036",
+  "admissionReceiptSha256": "57a375fef24144cd5f0f024dc967042258e7110b51c395c55c087bd458632538",
+  "completionReceiptRef": "00000000-0000-4000-8000-000000000037",
   "binding": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "conversationId": "00000000-0000-4000-8000-000000000014",
     "runId": "00000000-0000-4000-8000-000000000015",
@@ -22,7 +69,7 @@
     "model": "synthetic-trusted-model",
     "receiptRef": "00000000-0000-4000-8000-000000000019",
     "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
-    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+    "bindingSha256": "c6d1df128a3d66abe9d84b06afe5c4e1addfd17dd30082da0c8f70532089a2d8"
   },
   "resultRef": "00000000-0000-4000-8000-000000000018",
   "completedAtMs": 1792065601000,
@@ -72,5 +119,5 @@
   },
   "payloadSha256": "fa2a348aea04dd5ee4ce17074333b05d63d289c2f0a18ade6d9c86ba58e74cee",
   "issues": [],
-  "resultSha256": "58e262ab4a74b461fb1dede21ce570930fce99b21c2a3c033279ee2b8cb63140"
+  "resultSha256": "f6fe86e9f895bec2cd3297c9ba827002f611c349892704b2c92cf110ec52e4fc"
 }

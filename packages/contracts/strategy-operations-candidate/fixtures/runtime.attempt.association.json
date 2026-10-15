@@ -1,0 +1,31 @@
+{
+  "version": "strategy-attempt-association/1",
+  "associationId": "00000000-0000-4000-8000-000000000032",
+  "requestSha256": "2b30f7dc505d4f2d8383d27d62fc141fffeff85da0765f3b9c9354f4c09292dc",
+  "applicationTargetSha256": "b2e49d36e8ed4b4f6cc7d8bfb291624f046daa8f37f2862c2ea1254021ef940d",
+  "origin": {
+    "kind": "core-objective-generation",
+    "intentId": "00000000-0000-4000-8000-00000000001f",
+    "generationOperationId": "00000000-0000-4000-8000-000000000033",
+    "generationAttemptId": "00000000-0000-4000-8000-000000000034"
+  },
+  "backend": {
+    "claimId": "00000000-0000-4000-8000-000000000035",
+    "attemptNumber": 1
+  },
+  "meri": {
+    "binding": {
+      "tenantId": "00000000-0000-4000-8000-00000000001e",
+      "actorId": "00000000-0000-4000-8000-000000000003",
+      "conversationId": "00000000-0000-4000-8000-000000000014",
+      "runId": "00000000-0000-4000-8000-000000000015",
+      "attemptId": "00000000-0000-4000-8000-000000000016",
+      "workerId": "00000000-0000-4000-8000-000000000017",
+      "writerFence": 1
+    },
+    "issuance": {
+      "kind": "opaque-meri-0011-issuance-reference",
+      "identity": "synthetic-opaque-issuance-identity"
+    }
+  }
+}

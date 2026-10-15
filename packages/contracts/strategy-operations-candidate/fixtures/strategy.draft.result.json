@@ -1,15 +1,73 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.2",
+  "candidateVersion": "strategy-candidate/20261015.3",
   "operation": "strategy.draft",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
-  "requestSha256": "81b37569198b2056708e5e64099ea89c630114f547d9d3d8dcbbe3a2cc2c0fd2",
-  "inputSha256": "c3ab140f34a06cba0563c713b6b3c2ff6cb2cee067d5fb479d4781629c42e8ac",
-  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "requestSha256": "2b30f7dc505d4f2d8383d27d62fc141fffeff85da0765f3b9c9354f4c09292dc",
+  "inputSha256": "0510f01aad2a8489ed95df758063dae918ac1bbe09dff8bb76c7cd7b13a97841",
+  "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
   "contextSha256": "415585f066c0448d6220402dcca39bc034a52b4bd318ab01175252e7a88d672a",
   "basisSha256": null,
+  "applicationTarget": {
+    "version": "strategy-application-target/1",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "operation": "strategy.draft",
+    "sourceSha256": "877c66a15aa1c2428fbbc361eac452b18350aaee13f74a313d21a2d76820faf6",
+    "canonicalStrategyId": "00000000-0000-4000-8000-000000000009",
+    "canonicalProjectId": "00000000-0000-4000-8000-000000000028",
+    "kind": "objective-strategy",
+    "productOperation": "objective.strategy.draft",
+    "canonicalPlanId": "00000000-0000-4000-8000-000000000029",
+    "bindingVersion": 1,
+    "epoch": 1,
+    "requestedIntentId": "00000000-0000-4000-8000-00000000001f",
+    "objectiveId": "00000000-0000-4000-8000-000000000005",
+    "requestedObjectiveRevisionId": "00000000-0000-4000-8000-000000000006",
+    "requestedObjectiveVersion": 2,
+    "snapshotHash": "de55f0639e2ded11959bda129eb326ffb262a63bef817fcc1f58fb068ba6cd8e",
+    "mode": "create",
+    "expectedExistingStrategyVersionId": null,
+    "expectedExistingStrategyHash": null,
+    "humanBaselineStrategyVersionId": null,
+    "humanBaselineStrategyHash": null
+  },
+  "association": {
+    "version": "strategy-attempt-association/1",
+    "associationId": "00000000-0000-4000-8000-000000000032",
+    "requestSha256": "2b30f7dc505d4f2d8383d27d62fc141fffeff85da0765f3b9c9354f4c09292dc",
+    "applicationTargetSha256": "b2e49d36e8ed4b4f6cc7d8bfb291624f046daa8f37f2862c2ea1254021ef940d",
+    "origin": {
+      "kind": "core-objective-generation",
+      "intentId": "00000000-0000-4000-8000-00000000001f",
+      "generationOperationId": "00000000-0000-4000-8000-000000000033",
+      "generationAttemptId": "00000000-0000-4000-8000-000000000034"
+    },
+    "backend": {
+      "claimId": "00000000-0000-4000-8000-000000000035",
+      "attemptNumber": 1
+    },
+    "meri": {
+      "binding": {
+        "tenantId": "00000000-0000-4000-8000-00000000001e",
+        "actorId": "00000000-0000-4000-8000-000000000003",
+        "conversationId": "00000000-0000-4000-8000-000000000014",
+        "runId": "00000000-0000-4000-8000-000000000015",
+        "attemptId": "00000000-0000-4000-8000-000000000016",
+        "workerId": "00000000-0000-4000-8000-000000000017",
+        "writerFence": 1
+      },
+      "issuance": {
+        "kind": "opaque-meri-0011-issuance-reference",
+        "identity": "synthetic-opaque-issuance-identity"
+      }
+    }
+  },
+  "admissionReceiptRef": "00000000-0000-4000-8000-000000000036",
+  "admissionReceiptSha256": "83efcca7ee7139f57904f95158a6c4f99740eda537f100193fb43500232740f5",
+  "completionReceiptRef": "00000000-0000-4000-8000-000000000037",
   "binding": {
-    "tenantId": "synthetic-tenant",
+    "tenantId": "00000000-0000-4000-8000-00000000001e",
     "actorId": "00000000-0000-4000-8000-000000000003",
     "conversationId": "00000000-0000-4000-8000-000000000014",
     "runId": "00000000-0000-4000-8000-000000000015",
@@ -22,7 +80,7 @@
     "model": "synthetic-trusted-model",
     "receiptRef": "00000000-0000-4000-8000-000000000019",
     "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
-    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+    "bindingSha256": "c6d1df128a3d66abe9d84b06afe5c4e1addfd17dd30082da0c8f70532089a2d8"
   },
   "resultRef": "00000000-0000-4000-8000-000000000018",
   "completedAtMs": 1792065601000,
@@ -85,5 +143,5 @@
   },
   "payloadSha256": "2cf496ff8dd73a3c37c65a761d3e8640f9f2e9ca875158ee3b82473388270a35",
   "issues": [],
-  "resultSha256": "b77a80f61b33249a3019c3b1fa714674198dc294c6d5aba86dc73e773bebda35"
+  "resultSha256": "dc8444798cfbf4415651bc1bc9916a8c867aa9b48d088c61bbb2d824adf26153"
 }
