@@ -16,7 +16,10 @@ function endpoint(value,loopback=false){let u;try{u=new URL(value);}catch{throw 
 export function validateConfiguration(raw,role){
  requireValue(['control','temporal-worker','conversation-runner'].includes(role));const c=data(raw);
  const common=['version','profile','sourceEnabled','limits','native'];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate']:[]);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions']:role==='temporal-worker'?['http','temporal']:['binding','versions','workspace','proxyOrigin'])],role==='conversation-runner'?['bootstrap','captureOwnsClose','remoteTask']:role==='control'?['nativeCandidate','retention']:[]);
+ // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and
+ // readiness requires the retention projections; when absent, no gate exists and nothing pretends otherwise.
+ if(c.retention!==undefined){requireValue(role==='control','RETENTION_CONFIGURATION');own(c.retention,['enabled']);requireValue(c.retention.enabled===true,'RETENTION_CONFIGURATION');}
  requireValue(c.version===1&&c.profile==='isolated-preview'&&c.sourceEnabled===false);
  if(c.captureOwnsClose!==undefined)requireValue(typeof c.captureOwnsClose==='boolean','RUNNER_CAPTURE_CONFIGURATION');
  if(c.bootstrap!==undefined){own(c.bootstrap,['expiresAtMs'],['remote']);requireValue(c.bootstrap.remote===undefined||typeof c.bootstrap.remote==='boolean','TASK_BOOTSTRAP_CONFIGURATION');if(c.bootstrap.remote===true)requireValue(c.captureOwnsClose===true&&c.remoteTask===undefined,'TASK_BOOTSTRAP_CONFIGURATION');requireValue(Number.isSafeInteger(c.bootstrap.expiresAtMs)&&c.bootstrap.expiresAtMs>0,'TASK_BOOTSTRAP_CONFIGURATION');}

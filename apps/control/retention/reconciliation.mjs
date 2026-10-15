@@ -15,7 +15,7 @@ export function createRecoveryReconciler({ledger,journal,storage,serving,keyFor,
  async function replan(subjectValue,journalState,nowMs){try{return await recomputePlan(facts,subjectValue,journalState,nowMs);}catch(error){return {state:'BLOCKED',blocks:[{reason:String(error?.code??'RETENTION_AUTHORITY_UNAVAILABLE'),detail:{}}],steps:[],rowSteps:[],planSha256:null};}}
  async function pass(report,nowMs){
   const entries=await ledger.replay();const bySubject=new Map();for(const e of entries){const k=subjectKey(e.subject);if(!bySubject.has(k))bySubject.set(k,[]);bySubject.get(k).push(e);}
-  for(const [key,history] of bySubject){const latest=history.at(-1),current=await journal.get(key),expected=projectionToken(current);const suppression=[...history].reverse().find(e=>['SUPPRESSED','RELEASED'].includes(e.state));
+  for(const [key,history] of bySubject){const latest=history.at(-1),current=await journal.get(key,{exclusive:true}),expected=projectionToken(current);const suppression=[...history].reverse().find(e=>['SUPPRESSED','RELEASED'].includes(e.state));
    const write=async row=>{if(JSON.stringify(current)===JSON.stringify(row))return;await journal.set(key,row,{expected,exclusive:true});};
    if(suppression?.state==='RELEASED'&&latest.state==='RELEASED'){const row={state:'RELEASED',ownerActorId:latest.subject.ownerActorId,releasedAtMs:suppression.atMs,ledgerSequence:suppression.sequence,entrySha256:suppression.entrySha256,authorization:suppression.facts.authorization,purge:null};if(!current||current.state!=='RELEASED'||current.ledgerSequence!==suppression.sequence){await write(row);report.released.push(key);}continue;}
    if(suppression?.state!=='SUPPRESSED')continue;

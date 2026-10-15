@@ -27,7 +27,8 @@ export function documentLimits(value){
 }
 export function configuration(value){
  const c=own(value,['sessions','selectedClientId','artifactOptions','credential','now','limits'],['enabled']);
- const o=own(c.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
+ const o=own(c.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace','retention']);
+ if(o.retention!==undefined&&typeof o.retention?.assertServable!=='function')fail('DOCUMENT_CONFIGURATION',500);
  const limits=documentLimits(c.limits);
  if(typeof c.now!=='function'||c.now!==o.now||o.validators!==v||typeof c.credential!=='string'||!c.credential||c.credential.length>4096||typeof(c.enabled??false)!=='boolean'||typeof(o.sourceEnabled??false)!=='boolean'||o.namespace!==undefined&&!['qualification','product'].includes(o.namespace))fail('DOCUMENT_CONFIGURATION',500);
  const context=data(v.context(o.context)),formatAdmission=admitDocumentDescriptor(o.descriptor),descriptor=formatAdmission.descriptor;

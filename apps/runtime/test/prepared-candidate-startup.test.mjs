@@ -6,14 +6,14 @@ import * as configurationModule from '../config.mjs';
 import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
 import {candidateFixture} from './prepared-candidate-fixture.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
-const f=candidateFixture(),order=[],received=[];
+const f=candidateFixture(),order=[],received=[],schema={missing:false,queried:[]};
 f.configuration.http={...f.configuration.http,hostname:'127.0.0.1',port:0};
-mock.module('pg',{namedExports:{Pool:class{async query(){return {rows:[{runs:'runs',events:'events',controls:'controls',selected_outputs:'selected_outputs'}]};}connect(){throw Error('No SQL effects');}async end(){order.push('pool-close');}}}});
+mock.module('pg',{namedExports:{Pool:class{async query(sql,args){schema.queried.push(sql);if(sql.includes('unnest'))return {rows:args[0].map(name=>({name,relation:schema.missing&&name.endsWith('retention_purge_targets')?null:name}))};return {rows:[{runs:'runs',events:'events',controls:'controls',selected_outputs:'selected_outputs'}]};}connect(){throw Error('No SQL effects');}async end(){order.push('pool-close');}}}});
 mock.module('@temporalio/client',{namedExports:{WorkflowIdReusePolicy,WorkflowIdConflictPolicy,Connection:{async connect(){return {withDeadline(_at,method){return method();},withAbortSignal(_signal,method){return method();},workflowService:{async getSystemInfo(){}},async close(){order.push('temporal-close');}};}},Client:class{workflow={start:async()=>{},getHandle:()=>({})};}}});
 mock.module('../config.mjs',{namedExports:{...configurationModule,async readSecret(path){return Buffer.from(path===f.configuration.database.connectionFile?'postgres://synthetic.invalid/meri?sslmode=verify-full':f.secret.control);}}});
 mock.module('../prepared-candidate.mjs',{namedExports:{async startPreparedCandidate(options){received.push(options);const {createPreparedRunBindings}=await import('../prepared-run-bindings.mjs');
  // The real bindings composition decides readiness from the supplied owners exactly as startPreparedCandidate does.
- createPreparedRunBindings({configuration:options.configuration,pool:options.pool,store:{allocations:{async read(){return null;}},async readOptional(){return null;}},credentials:{proxy:'synthetic-proxy',control:f.secret.control},issuanceStore:options.issuanceStore,capabilityAuthority:options.capabilityAuthority,limits:{maxRequestMs:1000,maxFactBytes:131072}});
+ if(options.configuration.nativeCandidate.multiRun!==undefined)createPreparedRunBindings({configuration:options.configuration,pool:options.pool,store:{allocations:{async read(){return null;}},async readOptional(){return null;}},credentials:{proxy:'synthetic-proxy',control:f.secret.control},issuanceStore:options.issuanceStore,capabilityAuthority:options.capabilityAuthority,limits:{maxRequestMs:1000,maxFactBytes:131072}});
  return {controlCapabilitySha256:capabilityDigest(f.secret.control),native:{async readiness(){},async call(){throw Error('No authority effects');}},identityContext:{async verifyIdentity(){throw Error('No user issuance');},async resolveContext(){throw Error('No user issuance');}},application:{async handle(){return null;}},bindApplication(){},async close(){order.push('candidate-close');}};}}});
 const {startControl,multiRunOwners}=await import('../control.mjs');
 test('a declared multi-run mode with the material directory reaches the candidate with the durable store over the pool and the file authority; without the directory the bindings refuse and startup fails after ordered cleanup',async()=>{
@@ -24,4 +24,12 @@ test('a declared multi-run mode with the material directory reaches the candidat
  await assert.rejects(startControl(partial,{}),/CONTROL_STARTUP_FAILED/,'a multi-run declaration without a material directory has no capability authority');assert.equal(received.length,1);assert.equal(received[0].capabilityAuthority,undefined);assert.equal(typeof received[0].issuanceStore?.claim,'function');
  assert.deepEqual(order,['temporal-close','pool-close'],'the failed startup still closes what it opened, in order');
  assert.deepEqual(multiRunOwners(f.configuration,{query(){}}),{},'no multi-run declaration composes no owners');
+});
+test('declared retention serving composes the canonical gate over the control database and requires its projections at readiness; without the declaration no gate exists; the declaration is control-only and explicit',async()=>{
+ const {retentionGate}=await import('../control.mjs');const {validateConfiguration}=await import('../config.mjs');
+ const declared=structuredClone(f.configuration);declared.retention={enabled:true};assert.doesNotThrow(()=>validateConfiguration(declared,'control'));
+ assert.throws(()=>validateConfiguration({...declared,retention:{enabled:false}},'control'),/RETENTION_CONFIGURATION/);assert.throws(()=>validateConfiguration({...declared,retention:{enabled:true,extra:1}},'control'),/INVALID_COMMAND/);
+ const composed=retentionGate(declared,{query(){},connect(){}});assert.equal(typeof composed.gate.assertServable,'function');assert.deepEqual(composed.tables,['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges']);assert.equal(retentionGate(f.configuration,{}),null);
+ order.length=0;schema.missing=false;const runtime=await startControl(declared,{});try{assert.ok(schema.queried.some(q=>q.includes('unnest')),'readiness asked for the retention projections');}finally{await runtime.close();}
+ schema.missing=true;await assert.rejects(startControl(declared,{}),/CONTROL_STARTUP_FAILED/,'a missing retention projection fails readiness instead of serving ungated');schema.missing=false;
 });

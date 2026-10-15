@@ -9,8 +9,9 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const own=(value,required,optional=[])=>{if(!value||Array.isArray(value)||required.some(k=>!Object.hasOwn(value,k))||Object.keys(value).some(k=>![...required,...optional].includes(k)))fail('ARTIFACT_BUDGET_CONFIGURATION');return value;};
 
 export function createPostgresArtifactService(options){
-  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,authorize,versions,objects,executor,now,ids,newReservationId,limits,sourceEnabled=false,namespace='qualification'}=own(options,
-    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
+  const {pool,allocationJson,producerContext,descriptor,context,validators:v,authority,authorize,versions,objects,executor,now,ids,newReservationId,limits,sourceEnabled=false,namespace='qualification',retention}=own(options,
+    ['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace','retention']);
+  if(retention!==undefined&&typeof retention?.assertServable!=='function')fail('ARTIFACT_BUDGET_CONFIGURATION');
   if(![v?.snapshot,v?.request,v?.context,authority?.check,authorize,versions?.commit,versions?.read,objects?.put,objects?.get,executor?.execute,now,ids,newReservationId].every(x=>typeof x==='function')||typeof sourceEnabled!=='boolean'||!['qualification','product'].includes(namespace))fail('ARTIFACT_BUDGET_CONFIGURATION');
   const trusted=v.snapshot({producerContext,descriptor,context,limits});trusted.context=v.context(trusted.context);
   own(trusted.producerContext,['context','producer']);validateShape('RunBinding',trusted.context.binding);
@@ -102,7 +103,7 @@ export function createPostgresArtifactService(options){
       }};
       const objectPort={get:(...args)=>objects.get(...args),put(...args){active();observation.writeStarted=true;return objects.put(...args);}};
       const executePort={async execute(value){active();const result=await executor.execute({...value,maxBytes:Math.min(value.maxBytes,maxBytes),deadlineMs:Math.min(value.deadlineMs,deadlineMs)});active();outputBytes=result.bytes?.length;if(!Number.isSafeInteger(outputBytes)||outputBytes>maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');return result;}};
-      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,ids:()=>{const allocated=v.snapshot(ids());observation.versionId=durableVersionId??allocated.versionId;return allocated;}});
+      const service=createArtifactService({validators:v,authorize:authorizeArtifact,budget,versions:versionPort,objects:objectPort,executor:executePort,now,...(retention===undefined?{}:{retention}),ids:()=>{const allocated=v.snapshot(ids());observation.versionId=durableVersionId??allocated.versionId;return allocated;}});
       async function recover(evidence){
         replaying=true;
         ticketId=evidence.reservationId;observation.ticketId=ticketId;observation.versionId=durableVersionId;

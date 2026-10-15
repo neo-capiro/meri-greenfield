@@ -3,7 +3,7 @@ import {createConversationLifecycleService} from '../lifecycle/service.mjs';
 import {createConversationLifecycleApplication} from '../lifecycle/http.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 export {binding,scopes,id,versions};
-export async function lifecycleFixture({extraClient=false,transitions=true}={}){const f=await applicationFixture({transitions,scopes:extraClient?[...scopes,{...scopes[0],resourceId:id(7)}]:scopes});let n=400;f.state.signals=0;f.state.retirements=0;f.state.admissions=0;const proofs=new Map();
+export async function lifecycleFixture({extraClient=false,transitions=true,retention}={}){const f=await applicationFixture({transitions,scopes:extraClient?[...scopes,{...scopes[0],resourceId:id(7)}]:scopes,...(retention?{retention}:{})});let n=400;f.state.signals=0;f.state.retirements=0;f.state.admissions=0;const proofs=new Map();
  const command={contractVersion:'0.1.0',commandId:id(200),binding,action:'task.create',arguments:{title:'Synthetic proposed task'},attachments:[],scopes,idempotencyKey:'immutable-task'};
  const proposal={proposalId:id(201),command,commandSha256:hash(command),createdAt:new Date(Date.now()-1000).toISOString(),expiresAt:new Date(Date.now()+30000).toISOString(),requiredApprover:{tenantId:binding.tenantId,actorId:binding.actorId}};
  f.state.continued=0;const dispatcher={...f.dispatcher,async continued(){f.state.continued++;},async signal(){f.state.signals++;if(f.state.signalUnknown)throw Error('lost signal ack');}},checkpoints={async read({checkpointId}){const p=proofs.get(checkpointId);if(!p)throw Error('missing checkpoint');return structuredClone(p);}};

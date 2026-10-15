@@ -20,7 +20,9 @@ export function createPostgresRetentionJournal({pool}){
  const subjectLock=(c,key)=>c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['meri_retention_subject:'+key]);
  const rowValue=r=>{if(hash(r.projection)!==r.projection_sha256)fail('RETENTION_STORE_CORRUPT');return r.projection;};
  async function readRow(c,k){const t=tables[k.kind];const rows=(await c.query(`SELECT * FROM ${t.schema}.retention_subjects WHERE tenant_id=$1 AND ${t.id}=$2 FOR UPDATE`,[k.tenantId,k.subjectId])).rows;return rows[0]??null;}
- async function get(key){const k=parseKey(key);return tx(async c=>{const r=await readRow(c,k);if(!r)return null;const v=rowValue(r);if(v.state!==r.state||Number(r.ledger_sequence)!==v.ledgerSequence)fail('RETENTION_STORE_CORRUPT');return v;},{shared:false});}
+ /** Reads take the shared side of the recovery lock too, so a serving gate in any process waits for, or refuses during, a recovery pass
+  * (bounded by lock_timeout); the recovery pass itself reads with `exclusive` on its own session. */
+ async function get(key,{exclusive=false}={}){const k=parseKey(key);return tx(async c=>{const r=await readRow(c,k);if(!r)return null;const v=rowValue(r);if(v.state!==r.state||Number(r.ledger_sequence)!==v.ledgerSequence)fail('RETENTION_STORE_CORRUPT');return v;},{shared:!exclusive});}
  /** Compare-and-set projection write under the subject advisory lock: `expected` null means the row must not exist (two writers that both
   * observed absence cannot both succeed); otherwise it must equal the current projection hash. */
  async function set(key,value,{expected,exclusive=false}={}){
@@ -46,7 +48,7 @@ export function createPostgresRetentionJournal({pool}){
     await c.query('INSERT INTO meri_conversations.retention_purge_targets(workflow_id,tenant_id,conversation_id,class,run_id,session_id,subpath,sequence,plan_sha256,state,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[r.workflowId,k.tenantId,k.subjectId,'sdkSession',g.runId,g.sessionId,g.subpath,g.sequence,purge.planSha256,r.state,purge.ledgerSequence]);}
    return projection;},{exclusive});
  }
- async function keys(){return tx(async c=>{const out=[];for(const [kind,t] of Object.entries(tables)){const rows=(await c.query(`SELECT tenant_id,${t.id} AS subject_id FROM ${t.schema}.retention_subjects`)).rows;for(const r of rows)out.push(subjectKey({tenantId:r.tenant_id,kind,subjectId:r.subject_id}));}return out;},{shared:false});}
+ async function keys({exclusive=false}={}){return tx(async c=>{const out=[];for(const [kind,t] of Object.entries(tables)){const rows=(await c.query(`SELECT tenant_id,${t.id} AS subject_id FROM ${t.schema}.retention_subjects`)).rows;for(const r of rows)out.push(subjectKey({tenantId:r.tenant_id,kind,subjectId:r.subject_id}));}return out;},{shared:!exclusive});}
  /** Recovery on a dedicated session: the exclusive recovery advisory lock excludes every transition write for the whole pass. */
  async function exclusive(fn){const c=await pool.connect();try{await c.query(`SELECT pg_advisory_lock(${RECOVERY_LOCK})`);try{return await fn();}finally{await c.query(`SELECT pg_advisory_unlock(${RECOVERY_LOCK})`);}}catch(e){throw wrap(e);}finally{c.release();}}
  /** Records the exact row and version targets a purge may delete, inside the caller's transaction, under the subject lock, only when the

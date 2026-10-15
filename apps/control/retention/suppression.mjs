@@ -8,6 +8,17 @@ import {own,data,fail,subject,subjectKey,clock,text,uuid} from './boundary.mjs';
 import {projectionToken} from './memory-journal.mjs';
 const principalOf=value=>{const p=own(data(value),['tenantId','actorId']);text(p.tenantId);text(p.actorId);return p;};
 export const refusingOwnerMediation=Object.freeze({async ownerMediated(){fail('RETENTION_AUTHORIZATION_REFUSED');}});
+/** The canonical trusted read gate every serving owner consults (conversations, lifecycle, artifacts). It reads the same journal
+ * rows the suppression owner writes (no parallel store): refused while the recovery barrier is closed, refused when the journal cannot
+ * answer (never "unsuppressed" by default), refused when the subject is suppressed. Subjects are trusted identities resolved by the
+ * owner after its own authentication, never caller claims. */
+export function createRetentionReadGate({journal,serving}){
+ if(typeof journal?.get!=='function'||typeof serving?.isEnabled!=='function')fail('RETENTION_CONFIGURATION');
+ const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
+ async function isSuppressed(rawSubject){barrier();const s=subject(rawSubject);let current;try{current=await journal.get(subjectKey(s));}catch{fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
+ async function assertServable(rawSubject){if(await isSuppressed(rawSubject))fail('RETENTION_SUPPRESSED');}
+ return Object.freeze({isSuppressed,assertServable});
+}
 export function createSuppressionOwner({ledger,journal,ownership,authorization=refusingOwnerMediation,cancellation=null,serving,now}){
  if(typeof ledger?.append!=='function'||typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof ownership?.ownerOf!=='function'||typeof authorization?.ownerMediated!=='function'||cancellation!==null&&typeof cancellation?.cancelInFlight!=='function'||typeof serving?.isEnabled!=='function'||typeof serving?.disable!=='function')fail('RETENTION_CONFIGURATION');const tick=clock(now);
  const barrier=()=>{if(!serving.isEnabled())fail('RETENTION_RECOVERY_BARRIER');};
@@ -41,9 +52,6 @@ export function createSuppressionOwner({ledger,journal,ownership,authorization=r
   const row={state:'RELEASED',ownerActorId:s.ownerActorId,releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,purge:null};
   await project(key,row,expected);return Object.freeze({...row,replayed:false});
  }
- /** The read-path check every owner consults: refused while the recovery barrier is closed; a journal error is a refusal, never "unsuppressed". */
- async function isSuppressed(rawSubject){barrier();const s=subject(rawSubject);let current;try{current=await journal.get(subjectKey(s));}catch{fail('RETENTION_READ_UNAVAILABLE');}barrier();return Boolean(current&&current.state!=='RELEASED');}
- /** Serving gate for owners: refuses (never returns false) when suppressed, barrier closed or the journal is unreadable. */
- async function assertServable(rawSubject){if(await isSuppressed(rawSubject))fail('RETENTION_SUPPRESSED');}
- return Object.freeze({suppress,release,isSuppressed,assertServable,now:tick});
+ const gate=createRetentionReadGate({journal,serving});
+ return Object.freeze({suppress,release,isSuppressed:gate.isSuppressed,assertServable:gate.assertServable,now:tick});
 }

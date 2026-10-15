@@ -19,6 +19,9 @@ import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {createPostgresIssuanceStore} from './prepared-run-issuance-postgres.mjs';
 import {createFileCapabilityAuthority} from './capability-material-authority.mjs';
+import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
+import {createRetentionReadGate} from '../control/retention/suppression.mjs';
+import {createServingGate} from '../control/retention/reconciliation.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 function productBinding(options){
@@ -31,9 +34,15 @@ function productBinding(options){
 /** Optional trusted-client authorization (S4): one token provider for the client (apiKey callback) and the worker (setApiKey). */
 export async function temporalAuthorization(configuration,{signal}={}){if(configuration.temporal.authorization===undefined)return null;const c=configuration.temporal.authorization,authorization=createTemporalAuthorization({configuration:c,reader:createTemporalTokenFileReader({tokenFile:c.tokenFile})});await authorization.refresh({signal});return authorization;}
 export async function temporalTls(config){const [serverRootCACertificate,crt,key]=await Promise.all([readSecret(config.caFile),readSecret(config.certFile),readSecret(config.keyFile)]);return {serverRootCACertificate,clientCertPair:{crt,key}};}
+/** The canonical retention read gate over the control database (migrations conversations 0010 and artifacts 0002), composed only when
+ * the configuration declares retention serving; the serving barrier is this process's recovery gate. */
+export function retentionGate(configuration,pool){
+ if(configuration.retention===undefined)return null;const serving=createServingGate(),journal=createPostgresRetentionJournal({pool});
+ return Object.freeze({serving,journal,gate:createRetentionReadGate({journal,serving}),tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges']});
+}
 export function assembleControl(options){
  const {configuration,pool,client,native,now=Date.now,...binding}=own(options,['configuration','pool','client','native'],['now','productPorts','productPortsFactory']);
- const captured=productBinding(binding);
+ const captured=productBinding(binding);const retention=retentionGate(configuration,pool);
  let supplied;
  if(captured.factory){
   supplied=Reflect.apply(captured.factory,undefined,[Object.freeze({configuration,pool,native,now})]);
@@ -50,12 +59,12 @@ export function assembleControl(options){
   resolveTransitionContext:ports.identityContext.resolveTransitionContext,
  }:{}),limits:{maxSessions:configuration.sessions.maxSessions,maxRequestMs:configuration.limits.requestMs,maxTtlMs:configuration.sessions.maxTtlMs,maxFactBytes:131072}});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
- const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{})});
+ const basic=createConversationService({sessions,store,dispatcher,versions:configuration.versions,now,maxRequestMs:configuration.limits.requestMs,...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(retention?{retention:retention.gate}:{})});
  const port=operation=>({signal,...input})=>native.call(operation,input,{signal});
  const service=createConversationLifecycleService({service:basic,store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,checkpoints:{read:port('checkpoint/read')},nativeAdmission:{admit:port('continuation/admit'),retire:port('continuation/retire')},approvals:{read:port('approval/read'),readDecision:port('approval/decision')}});
  const conversation=createConversationLifecycleApplication({service,now,maxRequestBytes:configuration.limits.requestBytes,maxRequestMs:configuration.limits.requestMs}),issuance=createActionSessionApplication({owner:sessions,now,maxRequestMs:configuration.limits.requestMs}),worker=createWorkerRunApplication({service,sessions,native,configuration,now});
- const products=createRuntimeProductApplications({configuration,sessions,ports,now});
- return Object.freeze({service,store,sessions,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close:()=>sessions.close()});
+ const products=createRuntimeProductApplications({configuration,sessions,ports,now,...(retention?{retention:retention.gate}:{})});
+ return Object.freeze({service,store,sessions,retention,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close:()=>sessions.close()});
 }
 /** Multi-run owners composed only by trusted startup (never named in configuration): the durable issuance store over the control
  * database (migration 0011) and the file-backed capability-material authority under the configured owner-only directory. A declared
@@ -81,7 +90,9 @@ export async function startControl(configuration,options={}){
   pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
   connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
   let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal,...multiRunOwners(configuration,pool)});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(candidate?{productPorts:{identityContext:candidate.identityContext}}:mounted)});candidate?.bindApplication(assembly.application);const application=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
-  async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs").then(result=>{if(!result.rows[0]||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();}
+  async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs").then(result=>{if(!result.rows[0]||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
+   // Declared retention serving needs its projections present and its serving barrier open; a missing dependency is exposed, never bypassed.
+   if(assembly.retention){const r=await pool.query('SELECT name,to_regclass(name) AS relation FROM unnest($1::text[]) AS names(name)',[assembly.retention.tables]);if(r.rows.length!==assembly.retention.tables.length||r.rows.some(row=>row.relation===null))throw fault('RETENTION_SCHEMA_UNAVAILABLE');if(!assembly.retention.serving.isEnabled())throw fault('RETENTION_RECOVERY_BARRIER');}await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();}
   await readiness({signal});listener=await listenRuntime({configuration,application,readiness,...(candidate?{}:{signal})});return Object.freeze({address:listener.address,close});
- }catch{await close();throw fault('CONTROL_STARTUP_FAILED');}
+ }catch(error){await close().catch(()=>{});throw Object.assign(fault('CONTROL_STARTUP_FAILED'),{cause:error});}
 }

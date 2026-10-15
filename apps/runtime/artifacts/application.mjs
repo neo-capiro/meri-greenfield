@@ -10,8 +10,8 @@ import {requestInfo,jsonBody,errorResponse} from '../../control/document-applica
 const fail=code=>{throw Object.assign(Error(code),{code});};
 function method(port,name){if(!port||typeof port!=='object'||types.isProxy(port))fail('ARTIFACT_RUNTIME_CONFIGURATION');const d=Object.getOwnPropertyDescriptor(port,name);
  if(!d||!Object.hasOwn(d,'value')||typeof d.value!=='function'||types.isProxy(d.value))fail('ARTIFACT_RUNTIME_CONFIGURATION');const fn=d.value;return (...args)=>Reflect.apply(fn,port,args);}
-export function createRuntimeArtifactApplication(configuration){const c=own(configuration,['sessions','now','limits'],['optionsOwner']),limits=data(own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']));
- if(typeof c.now!=='function'||Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216)fail('ARTIFACT_RUNTIME_CONFIGURATION');
+export function createRuntimeArtifactApplication(configuration){const c=own(configuration,['sessions','now','limits'],['optionsOwner','retention']),limits=data(own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes']));
+ if(typeof c.now!=='function'||Object.values(limits).some(n=>!Number.isSafeInteger(n)||n<1)||limits.maxRequestMs>60000||limits.maxRequestBytes>2097152||limits.maxResponseBytes>16777216||c.retention!==undefined&&typeof c.retention?.assertServable!=='function')fail('ARTIFACT_RUNTIME_CONFIGURATION');
  const resolve=c.optionsOwner===undefined?undefined:method(c.optionsOwner,'resolve');
  return Object.freeze({async handle(request){let life;const state={};try{const info=requestInfo(request);if(!resolve)fail('UNAVAILABLE');
   const deadlineMs=c.now()+limits.maxRequestMs;life=createOperationLifetime({deadlineMs,now:c.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
@@ -23,6 +23,8 @@ export function createRuntimeArtifactApplication(configuration){const c=own(conf
   const effectiveLimits=Object.fromEntries(Object.keys(limits).map(key=>[key,Math.min(limits[key],innerLimits[key])]));
   const effectiveDeadlineMs=deadlineMs-limits.maxRequestMs+effectiveLimits.maxRequestMs;life.limitDeadline(effectiveDeadlineMs);
   const o=own(options.artifactOptions,['pool','allocationJson','producerContext','descriptor','context','validators','authority','authorize','versions','objects','executor','now','ids','newReservationId','limits'],['sourceEnabled','namespace']);
+  // The runtime's canonical retention gate is bound here, never taken from the resolved owner options.
+  if(c.retention!==undefined)o.retention=c.retention;
   o.context=v.context(o.context);
   const pinned=hash({intent:info.intent,body});life.limitDeadline(o.context.deadlineMs);
   async function fresh(phase,resource=null){life.check();if(hash({intent:info.intent,body})!==pinned)fail('ACCESS_DENIED');

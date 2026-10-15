@@ -4,7 +4,7 @@ export {classes,externalClasses,rowClasses,enumerateReferences,createReferenceIn
 export {createRetentionLedger,createMemoryLedgerSink,transitions} from './ledger.mjs';
 export {createMemoryRetentionJournal,createRecoveryLock,projectionToken} from './memory-journal.mjs';
 export {createPostgresRetentionJournal} from './postgres-journal.mjs';
-export {createSuppressionOwner,refusingOwnerMediation} from './suppression.mjs';
+export {createSuppressionOwner,createRetentionReadGate,refusingOwnerMediation} from './suppression.mjs';
 export {classifyHeadOutcome,createVersionStorage,parsePermissions,outcomes} from './storage-port.mjs';
 export {planPurge,planDigest,verifyPlanDigest,recomputePlan,createPurgeExecutor,workflowIdentity,rowWorkflowIdentity,holderEligibility} from './purge.mjs';
 export {createRecoveryReconciler,createServingGate} from './reconciliation.mjs';

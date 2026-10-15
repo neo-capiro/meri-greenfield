@@ -5,9 +5,16 @@ import {ARTIFACT_MIME_TYPES as mime,artifactFilename as filenameFor} from '../..
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const closed=(value,keys)=>{if(!value||Array.isArray(value)||Object.keys(value).sort().join()!==keys.sort().join())fail('ARTIFACT_PORT_SHAPE');};
-export function createArtifactService({validators:v,authorize,budget,versions,objects,executor,now,ids}){
-  if(![authorize,now,ids,budget?.reserve,budget?.settle,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function'))fail('ARTIFACT_CONFIGURATION');
+export function createArtifactService({validators:v,authorize,budget,versions,objects,executor,now,ids,retention}){
+  if(![authorize,now,ids,budget?.reserve,budget?.settle,versions?.read,versions?.commit,objects?.put,objects?.get,executor?.execute].every(x=>typeof x==='function')||retention!==undefined&&typeof retention?.assertServable!=='function')fail('ARTIFACT_CONFIGURATION');
   const same=(a,b)=>v.hash(a)===v.hash(b);
+  // The canonical retention read gate: the conversation the caller is bound to, and, once a trusted scoped record resolved the version,
+  // the artifact and the conversation that version belongs to. Consulted before object bytes are read and again before release; its
+  // refusals keep their own codes (RETENTION_SUPPRESSED, RETENTION_RECOVERY_BARRIER, RETENTION_READ_UNAVAILABLE).
+  async function servable(life,context,record=null){if(!retention)return;
+    const subjects=[{tenantId:context.binding.tenantId,kind:'conversation',subjectId:context.binding.conversationId}];
+    if(record){const b=record.version.binding;if(b.conversationId!==context.binding.conversationId)subjects.push({tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId});subjects.push({tenantId:b.tenantId,kind:'artifact',subjectId:record.version.artifactId});}
+    for(const subject of subjects)await life.run(()=>retention.assertServable(subject));life.check();}
   function scopeVersion(record,id,context){
     closed(record,['version','spec','specSha256','requestSha256','inspection']);record=v.snapshot(record);record.version=v.version(record.version);record.spec=v.request(record.spec);
     if(record.version.versionId!==id||record.version.binding.tenantId!==context.binding.tenantId||record.version.binding.conversationId!==context.binding.conversationId||!same(record.version.scopes,context.scopes)||!same(record.version.object.scopes,record.version.scopes)||record.specSha256!==v.hash(record.spec))fail('ARTIFACT_VERSION_CONTEXT');
@@ -49,12 +56,12 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       settlementCompleted=true;
     }
     try{
-      receipt=await authority(life,action,resource,requestSha256,context);
+      receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context);
       if(baseVersionId!==null){
         readBase=scopeVersion(await life.run(signal=>versions.read(baseVersionId,signal)),baseVersionId,context);
         if(readBase.spec.operation!==request.operation||readBase.spec.format!==request.format)fail('ARTIFACT_REVISION_FORMAT');
-        // Revision consumes the exact original bytes as well as retained spec.
-        baseBytes=await bytesFor(life,readBase.version.object,context.maxBytes);
+        // Revision consumes the exact original bytes as well as retained spec; a suppressed base is never read.
+        await servable(life,context,readBase);baseBytes=await bytesFor(life,readBase.version.object,context.maxBytes);
         resource={...resource,object:readBase.version.object};receipt=await authority(life,action,resource,requestSha256,context);
       }
       reservationStarted=true;
@@ -64,7 +71,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       ticket=reserved;
       life.limitDeadline(ticket.deadlineMs);
       const assets=[];for(const asset of context.assets){const bytes=await bytesFor(life,asset.object,2097152);assets.push({id:asset.id,bytes});}
-      receipt=await authority(life,action,resource,requestSha256,context);
+      receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context,readBase);
       const result=await life.run(signal=>executor.execute({request:v.snapshot(request),assets,base:readBase?{request:v.snapshot(readBase.spec),bytes:Buffer.from(baseBytes)}:null,deadlineMs:Math.min(context.deadlineMs,ticket.deadlineMs,receipt.expiresAtMs),maxBytes:ticket.maxBytes,signal}));
       if(!Buffer.isBuffer(result.bytes)||result.bytes.length>ticket.maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
       const bytes=Buffer.from(result.bytes),inspection=inspectBytes(result.inspection,bytes,request.format);
@@ -78,7 +85,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       const commit=v.snapshot(await life.run(signal=>versions.commit({version:v.snapshot(version),spec:v.snapshot(request),specSha256:v.hash(request),requestSha256,inspection:v.snapshot(inspection),expectedParentVersionId:baseVersionId},signal)));
       closed(commit,['status','versionId','requestSha256','versionSha256']);
       if(!['committed','duplicate'].includes(commit.status)||commit.versionId!==version.versionId||commit.requestSha256!==requestSha256||commit.versionSha256!==v.hash(version))fail('ARTIFACT_COMMIT_RECEIPT');versionCommitted=true;
-      await settle('completed',bytes.length);receipt=await authority(life,action,{...resource,object},requestSha256,context);
+      await settle('completed',bytes.length);receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,readBase);
       return {version,inspection,execution:{requestSha256,authorizationReceiptId:receipt.receiptId,budgetTicketId:ticket.ticketId,objectCommitted:true,versionCommitted:true,nativeQualified:false}};
     }catch(cause){
       if(ticket&&!writeStarted&&!settlementStarted)try{await settle('failed',0);}catch{settlementUnknown=true;}
@@ -93,16 +100,16 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
     const context=v.context(contextValue),life=operation(context,options.signal),action=download?'artifact.download':'artifact.inspect';
     const requestSha256=v.hash({action,versionId,context});let resource={versionId,object:null,assetObjects:[]};
     try{
-      await authority(life,action,resource,requestSha256,context);
+      await authority(life,action,resource,requestSha256,context);await servable(life,context);
       const record=scopeVersion(await life.run(signal=>versions.read(versionId,signal)),versionId,context);
-      resource={...resource,object:record.version.object};await authority(life,action,resource,requestSha256,context);
+      resource={...resource,object:record.version.object};await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
       const bytes=await bytesFor(life,record.version.object,context.maxBytes);
       const inspection=inspectBytes(record.inspection,bytes,record.spec.format);
-      await authority(life,action,resource,requestSha256,context);
+      await authority(life,action,resource,requestSha256,context);await servable(life,context,record);
       return download?{version:record.version,bytes}:{version:record.version,inspection:{...inspection,currentBytesVerified:true}};
     }catch(error){error.lifetime=life.close();throw error;}finally{life.close();}
   }
   return Object.freeze({create:(request,context,options)=>generate(null,request,context,options),revise:(baseVersionId,request,context,options)=>{if(typeof baseVersionId!=='string')fail('ARTIFACT_VERSION_ID');return generate(baseVersionId,request,context,options);},
-    recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,budget},baseVersionId,request,context,options),
+    recover:(baseVersionId,request,context,options)=>recoverArtifact({v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,budget,servable},baseVersionId,request,context,options),
     inspect:(id,context,options)=>read(id,context,options),download:(id,context,options)=>read(id,context,options,true)});
 }
