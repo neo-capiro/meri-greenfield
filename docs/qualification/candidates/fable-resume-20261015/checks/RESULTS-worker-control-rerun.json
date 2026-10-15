@@ -1,0 +1,177 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-15T01:41:22.842Z",
+ "finishedAt": "2026-10-15T01:41:32.378Z",
+ "repository": {
+  "root": "/home/user/meri-fable-resume",
+  "head": "215930c8092577e84da563b1496d1cca9a4ad4d7",
+  "tree": "70aeef73e9d8a1ba8592787a1cd1cac115b6ed85",
+  "branch": "fable/meri-resume-20261015",
+  "uncommittedPaths": 0
+ },
+ "environment": {
+  "node": "v24.21.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/resume-out/worker-control-rerun/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-fable-resume",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/resume-out/worker-control-rerun/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/resume-out/worker-control-rerun/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 2,
+  "passedSuites": 2,
+  "tests": 398,
+  "pass": 398,
+  "fail": 0
+ },
+ "suites": [
+  {
+   "name": "worker-conversation",
+   "purpose": "Claude Agent SDK conversation activity, skills and continuation",
+   "kind": "node-test",
+   "cwd": "apps/worker/conversation",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "continuation/test/continuation.test.mjs",
+    "skills/test/mcp.test.mjs",
+    "skills/test/selected-runtime.test.mjs",
+    "test/activity.test.mjs",
+    "test/completion-activity.test.mjs",
+    "test/control-application.test.mjs",
+    "test/lifecycle-activity.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 4878,
+   "counts": {
+    "tests": 138,
+    "suites": 0,
+    "pass": 138,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 12491,
+    "sha256": "b530d7b703aa2e9c59c2c3cb943cfa9556417d01bc68c148ae463928732c3392"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "control-core",
+   "purpose": "control application core",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "apps/control/test/commands-durable-budget.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-independent-durable.test.mjs",
+    "apps/control/test/commands-independent-journal.test.mjs",
+    "apps/control/test/commands-independent-pipeline.test.mjs",
+    "apps/control/test/commands-independent-transport-budget.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+    "apps/control/test/schedule-lifecycle.test.mjs",
+    "apps/control/test/schedule-tool-interface.test.mjs",
+    "apps/control/test/temporal-inspection.test.mjs",
+    "apps/control/test/tool-invocations.test.mjs",
+    "apps/control/test/vertical-command-registry.test.mjs",
+    "apps/control/test/vertical-schedule-registry.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 4647,
+   "counts": {
+    "tests": 260,
+    "suites": 0,
+    "pass": 260,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 23654,
+    "sha256": "3f53401d717cb74a8b36f85cbd48b4a6c8f0115f9806609f961fddead8c18caa"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  }
+ ]
+}

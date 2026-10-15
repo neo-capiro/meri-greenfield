@@ -1,0 +1,637 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-15T01:38:27.493Z",
+ "finishedAt": "2026-10-15T01:39:52.076Z",
+ "repository": {
+  "root": "/home/user/meri-fable-resume",
+  "head": "215930c8092577e84da563b1496d1cca9a4ad4d7",
+  "tree": "70aeef73e9d8a1ba8592787a1cd1cac115b6ed85",
+  "branch": "fable/meri-resume-20261015",
+  "uncommittedPaths": 0
+ },
+ "environment": {
+  "node": "v24.21.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/resume-out/baseline/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-fable-resume",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/resume-out/baseline/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/resume-out/baseline/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 8,
+  "passedSuites": 4,
+  "tests": 656,
+  "pass": 607,
+  "fail": 49
+ },
+ "suites": [
+  {
+   "name": "source-proof",
+   "purpose": "45-row runtime proof hashes and recipe promotion",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/qualification/assembled-image/source-proof.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 162,
+   "counts": {
+    "tests": 5,
+    "suites": 0,
+    "pass": 5,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 744,
+    "sha256": "214ed3328f199e0dcabcf6ae9bef4c9ebafdcb3dba3bd2edc0c937b55f9b2074"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "runtime-typecheck",
+   "purpose": "assembled runtime TypeScript check",
+   "kind": "npm",
+   "cwd": ".",
+   "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/runtime",
+    "--silent"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 3009,
+   "counts": {},
+   "failures": [],
+   "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "runtime-tests",
+   "purpose": "assembled runtime: listener, CLI process, prepared candidate, first-run mount, image closure",
+   "kind": "node-test",
+   "cwd": "apps/runtime",
+   "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-concurrency=1",
+    "test/bundle.test.mjs",
+    "test/checkpoint-session-factory.test.mjs",
+    "test/first-run-mount.test.mjs",
+    "test/first-session.test.mjs",
+    "test/image-closure.test.mjs",
+    "test/lifecycle.test.mjs",
+    "test/native-runner-gateway.test.mjs",
+    "test/next-turn-wiring.test.mjs",
+    "test/prepared-candidate-bootstrap.test.mjs",
+    "test/prepared-candidate-config.test.mjs",
+    "test/prepared-candidate-control-lifetime.test.mjs",
+    "test/prepared-candidate.test.mjs",
+    "test/prepared-run-issuance.test.mjs",
+    "test/prepared-run-registry.test.mjs",
+    "test/prepared-temporal.test.mjs",
+    "test/process.test.mjs",
+    "test/product-mount.test.mjs",
+    "test/remote-conversation-runner.test.mjs",
+    "test/runtime.test.mjs",
+    "test/sdk-configuration-directories.test.mjs",
+    "test/snapshot-mount.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 45137,
+   "counts": {
+    "tests": 168,
+    "suites": 0,
+    "pass": 167,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "actual Docker-filtered COPY contains every role dependency and all three roles import with no workspace fallback",
+     "detail": "Error: Command failed: docker --config /home/meri/resume-tmp/meri-image-closure-FSo3IS/docker-client build --network none --progress plain -t meri-local-copy-closure:1775-1792028318788 -f /home/meri/resume-tmp/meri-image-closure-FSo3IS/Dockerfile /home/user/meri-fable-resume"
+    }
+   ],
+   "stdout": {
+    "bytes": 20727,
+    "sha256": "2a49ae98a43f5748efdaedf0289b240e1a16ec2583e5885bcc1775f4272bad67"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "non-root UID for runner workspace ownership checks",
+    "Docker daemon for the image-closure build control"
+   ]
+  },
+  {
+   "name": "conversations-typecheck",
+   "purpose": "conversation control TypeScript check",
+   "kind": "npm",
+   "cwd": ".",
+   "command": [
+    "npm",
+    "run",
+    "typecheck",
+    "--prefix",
+    "apps/control/conversations",
+    "--silent"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 4356,
+   "counts": {},
+   "failures": [],
+   "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "conversations-tests",
+   "purpose": "conversation requests, durable events, lifecycle, native preparation journals over local PostgreSQL",
+   "kind": "node-test",
+   "cwd": "apps/control/conversations",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-concurrency=1",
+    "test/application.test.mjs",
+    "test/completion.test.mjs",
+    "test/conversation-public-integration.test.mjs",
+    "test/lifecycle-inspection.test.mjs",
+    "test/lifecycle-transition.test.mjs",
+    "test/lifecycle-workflow.test.mjs",
+    "test/lifecycle.test.mjs",
+    "test/native-preparation.test.mjs",
+    "test/native-prepared-launch-pg.test.mjs",
+    "test/native-prepared-launch.test.mjs",
+    "test/next-run-owner.test.mjs",
+    "test/next-run-pg.test.mjs",
+    "test/prepared-execution-claim-pg.test.mjs",
+    "test/read-optional-pg.test.mjs",
+    "test/sequence-range-migration-pg.test.mjs",
+    "test/store-pg.test.mjs",
+    "test/store.test.mjs",
+    "test/stream.test.mjs",
+    "test/temporal-dispatch.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 25220,
+   "counts": {
+    "tests": 246,
+    "suites": 0,
+    "pass": 207,
+    "fail": 39,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "0009 retains valid out-of-insertion-order 5,6,1 history bytes and backfills exact ranges",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 explicitly retains an empty draft only with last_sequence zero and no events",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects negative writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects zero writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects missing writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects null writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects numeric string writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects malformed string writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects fractional writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects JS-unsafe writer fence and rolls back all DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 duplicate valid fences reject instead of guessing history order",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects gap and preserves old bytes on rollback",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects missing retained history and preserves old bytes on rollback",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects extra retained event and preserves old bytes on rollback",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects nonempty zero draft and preserves old bytes on rollback",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects retained redundant sequence substitution",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects retained redundant event id substitution",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects retained redundant binding substitution",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 rejects retained redundant scopes substitution",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 refuses unreconstructible huge legacy counts (unsafe base) without partial migration",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 refuses unreconstructible huge legacy counts (unsafe final total) without partial migration",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 refuses unreconstructible huge legacy counts (bigint overflow) without partial migration",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 persistent range constraint rejects unsafe last sequence",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 persistent range constraint rejects unsafe base",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 persistent range constraint rejects unsafe end",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 persistent range constraint rejects unsafe open final total",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 persistent range constraint rejects unsafe incorrect completed end",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 event-first race blocks the closer and rejects a stale declared end after event commit",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 close-first race blocks insertion and rejects it after the closed range commits",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 closed ranges reject event INSERT, UPDATE and DELETE",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 preserves the existing multi-event insert then counter-update transaction ordering",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 open-range insertion refuses JS-unsafe sequence and redundant payload substitutions",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 migration preflight refuses REPEATABLE READ before DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 migration preflight refuses SERIALIZABLE before DDL",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 close refuses REPEATABLE READ instead of reading a stale post-lock event snapshot",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 insert refuses REPEATABLE READ instead of reading a stale post-lock event snapshot",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 close refuses SERIALIZABLE instead of reading a stale post-lock event snapshot",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 insert refuses SERIALIZABLE instead of reading a stale post-lock event snapshot",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    },
+    {
+     "name": "0009 empty draft seals at zero and its range stays immutable",
+     "detail": "Error: EXPLICIT_ISOLATED_LOCAL_POSTGRES_REQUIRED"
+    }
+   ],
+   "stdout": {
+    "bytes": 63086,
+    "sha256": "09ccdb55678c2683007e95fc51aad91cf8e7b74c4ab6cb1cc0d197a9d845a07f"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "local PostgreSQL 16 clusters from provision-postgres.sh",
+    "root node_modules/pg test link from link-dependencies.sh"
+   ]
+  },
+  {
+   "name": "worker-conversation",
+   "purpose": "Claude Agent SDK conversation activity, skills and continuation",
+   "kind": "node-test",
+   "cwd": "apps/worker/conversation",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "continuation/test/continuation.test.mjs",
+    "skills/test/mcp.test.mjs",
+    "skills/test/selected-runtime.test.mjs",
+    "test/activity.test.mjs",
+    "test/completion-activity.test.mjs",
+    "test/control-application.test.mjs",
+    "test/lifecycle-activity.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 3570,
+   "counts": {
+    "tests": 107,
+    "suites": 0,
+    "pass": 106,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "skills/test/selected-runtime.test.mjs",
+     "detail": "'test failed'"
+    }
+   ],
+   "stdout": {
+    "bytes": 10742,
+    "sha256": "75755bfa7412b9a78040edb1e4a424b299c8cda73401a33c631038edd1f1b53c"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "control-core",
+   "purpose": "control application core",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "apps/control/test/commands-durable-budget.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-independent-durable.test.mjs",
+    "apps/control/test/commands-independent-journal.test.mjs",
+    "apps/control/test/commands-independent-pipeline.test.mjs",
+    "apps/control/test/commands-independent-transport-budget.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+    "apps/control/test/schedule-lifecycle.test.mjs",
+    "apps/control/test/schedule-tool-interface.test.mjs",
+    "apps/control/test/temporal-inspection.test.mjs",
+    "apps/control/test/tool-invocations.test.mjs",
+    "apps/control/test/vertical-command-registry.test.mjs",
+    "apps/control/test/vertical-schedule-registry.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 1962,
+   "counts": {
+    "tests": 103,
+    "suites": 0,
+    "pass": 95,
+    "fail": 8,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "apps/control/test/commands-durable-budget.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/commands-execution.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/commands-independent-durable.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/commands-independent-pipeline.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/commands-independent-transport-budget.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/commands-tool-interface-independent.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/commands-tool-interface.test.mjs",
+     "detail": "'test failed'"
+    },
+    {
+     "name": "apps/control/test/vertical-command-registry.test.mjs",
+     "detail": "'test failed'"
+    }
+   ],
+   "stdout": {
+    "bytes": 18320,
+    "sha256": "42a394ced6d9d74435be8c1b024c45846773d09c1bfa4cfef50c3ccadade9bdc"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "scripts-local",
+   "purpose": "local script checks outside the sdk-evidence set",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/local-action/admission-independent.test.mjs",
+    "scripts/local-action/admission.test.mjs",
+    "scripts/local-research-brief/cli.test.mjs",
+    "scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.test.mjs",
+    "scripts/qualification/local-baseline/run-suites.test.mjs",
+    "scripts/qualification/r2-reconciliation/reconcile.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 1154,
+   "counts": {
+    "tests": 27,
+    "suites": 0,
+    "pass": 27,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 3037,
+    "sha256": "b65972b0e4eaf7c96ed6d1196c8c3f743a21236d07fcb8a00d084f618c7cd0ab"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  }
+ ]
+}
