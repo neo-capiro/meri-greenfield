@@ -1,0 +1,59 @@
+{
+  "kind": "FRESH_RELEVANT_HEAD_COLLISION_INSPECTION_PATHS_ONLY",
+  "observedAtUtc": "2026-10-15T13:31:03.265011+00:00",
+  "repository": "neo-capiro/meri-greenfield",
+  "remoteHeadsVerifiedBeforeInspection": true,
+  "checks": [
+    {
+      "remoteRef": "refs/heads/fable/meri-complete-20261015",
+      "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "tree": "fb58adeccde7c5c7c48a5562ac3108b888a6d17e",
+      "pathsAbsent": [
+        "apps/control/conversations/migrations/0012_strategy_operation_results.sql",
+        "apps/control/strategy-operations/postgres-result-store.mjs",
+        "apps/control/strategy-operations/test/postgres-result-store.test.mjs"
+      ],
+      "other0012SqlAbsent": true
+    },
+    {
+      "remoteRef": "refs/heads/dot/meri-migration-allocation-audit-20261015",
+      "commit": "e6e3016e215126dfaf4cb4aa8ed13cd5a1bee4f7",
+      "tree": "d7c0052401c1390e6e627167176168078e2859a4",
+      "pathsAbsent": [
+        "apps/control/conversations/migrations/0012_strategy_operation_results.sql",
+        "apps/control/strategy-operations/postgres-result-store.mjs",
+        "apps/control/strategy-operations/test/postgres-result-store.test.mjs"
+      ],
+      "other0012SqlAbsent": true,
+      "centralRegistrySha256": "0804bb4fa0e2ec5e99b28c3c7e3bc5c60c3d3954eab9be9a9b5df304a40ee3ed",
+      "prior0012ReservationAbsent": true
+    },
+    {
+      "remoteRef": "refs/heads/dot/meri-strategy-contract-candidate-v1-20261015",
+      "commit": "5bedcf675b86de6ca3b48a76d6513674f346d86e",
+      "tree": "0578f4e15ec530f0fb4dc89ed599dd00aa76dca1",
+      "pathsAbsent": [
+        "apps/control/conversations/migrations/0012_strategy_operation_results.sql",
+        "apps/control/strategy-operations/postgres-result-store.mjs",
+        "apps/control/strategy-operations/test/postgres-result-store.test.mjs"
+      ],
+      "other0012SqlAbsent": true,
+      "centralRegistrySha256": "0804bb4fa0e2ec5e99b28c3c7e3bc5c60c3d3954eab9be9a9b5df304a40ee3ed",
+      "prior0012ReservationAbsent": true
+    },
+    {
+      "remoteRef": "refs/heads/main",
+      "commit": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "tree": "f1133b2190cf67acd782c00debfa82501fa71c43",
+      "pathsAbsent": [
+        "apps/control/conversations/migrations/0012_strategy_operation_results.sql",
+        "apps/control/strategy-operations/postgres-result-store.mjs",
+        "apps/control/strategy-operations/test/postgres-result-store.test.mjs"
+      ],
+      "other0012SqlAbsent": true
+    }
+  ],
+  "limitations": "Relevant named owner/registry/main/candidate heads only; recheck current heads immediately before actual authoring. No global guarantee over unpublished work.",
+  "sqlAuthored": false,
+  "sqlExecuted": false
+}

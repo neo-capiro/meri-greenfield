@@ -1,6 +1,6 @@
 # Strategy result-store0012: concrete allocation proposal
 
-15 October2026 UTC. **PROPOSED ONLY; UNRESERVED; no SQL or runtime implementation.** Parent requested a concrete schema/responsibility/author proposal before any allocation. Contract pickup `e3bbab9c32fc7b972299a6b9dbcb301656a82045`, tree `6daf165782899d681554c2f229d73099bbb86002`, remains an isolated candidate under independent cross-repository review. This document does not freeze its wire.
+15 October2026 UTC. **SCHEMA PROPOSAL ONLY; no SQL or runtime implementation.** Corrected isolated source `4d8bd8ee3d3c6f0c5e1c91edbfebe44598dcf7af`, tree `904213ec9ce995d5396e7bc30695eccb77dbb0cf`, is independently accepted source-only; its pickup is `5bedcf675b86de6ca3b48a76d6513674f346d86e`. The original e3bb candidate is historical. The subsequent [conditional path-only allocation](CODEX-STRATEGY-RESULT-STORE-0012-CONDITIONAL-ALLOCATION-20261015.md) assigns Fable exclusive future paths while SQL authoring remains blocked by its explicit conditions. This schema outline and the candidate do not freeze the wire. Earlier unreserved statements below record the original proposal state; only the later conditional record supersedes path/author status.
 
 ## Exact proposed allocation and author
 
@@ -13,11 +13,11 @@
 | New adapter | `apps/control/strategy-operations/postgres-result-store.mjs` |
 | New focused tests | `apps/control/strategy-operations/test/postgres-result-store.test.mjs` |
 | Recommended exclusive future SQL/adapter author | **Fable**, after explicit parent allocation and contract agreement; serialize runtime integration with Fable's existing correction queue |
-| Current actual assignment | **No0012 writer is allocated.** Codex currently owns candidate schemas/distribution/tests and this proposal only. Fable's existing0011 reservation supplies no0012 authority. |
+| Current actual assignment | **Fable has conditional exclusive future path ownership; AUTHORING BLOCKED.** Read the later conditional record for prerequisites and coordinator release. Codex owns candidate schemas/distribution/tests and this proposal only.0011 alone supplies no0012 authority. |
 
-Collision inspection is against Fable `f0befe1e486cfda644f1f6170cf3d9d671e5158f`, tree `fb58adeccde7c5c7c48a5562ac3108b888a6d17e`, and central registry `e6e3016e215126dfaf4cb4aa8ed13cd5a1bee4f7`, tree `d7c0052401c1390e6e627167176168078e2859a4`. Source conversations0001–0010 are occupied;0011 is centrally reserved exclusively for Fable's durable issuance journal; no0012 source/reservation was present. Recheck immediately before allocation; do not silently choose another number if it collides. The registry is unchanged.
+Original collision inspection is against Fable `f0befe1e486cfda644f1f6170cf3d9d671e5158f`, tree `fb58adeccde7c5c7c48a5562ac3108b888a6d17e`, and central registry `e6e3016e215126dfaf4cb4aa8ed13cd5a1bee4f7`, tree `d7c0052401c1390e6e627167176168078e2859a4`. Source conversations0001–0010 are occupied;0011 is centrally reserved exclusively for Fable's durable issuance journal; no0012 source/reservation was present at that inspection. The later conditional record includes a fresh four-head check and a central registry addendum; recheck before authoring, never silently choose another number on collision.
 
-**Concrete parent decision:** reserve the exact0012 path for Fable's single result table and focused PostgreSQL adapter/tests, conditional on contract acceptance, or return a different explicit author/path. Until then, nobody authors0012 SQL or edits shared runtime files for this result store.
+**Subsequent parent direction:** conditional ownership of the exact0012 path and focused adapter/tests is recorded for Fable. Frozen0011 binding, retention agreement, target/time/attempt conformance and explicit release of the authoring hold remain required. Nobody authors0012 SQL or edits shared runtime files for this store while that hold remains.
 
 ## Minimal proposed relational schema
 
