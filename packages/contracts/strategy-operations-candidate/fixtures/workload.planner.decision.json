@@ -1,0 +1,32 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.1",
+  "audience": "capiro:objective-planner-materialization:v1",
+  "operation": "objective.plan.prepare",
+  "use": "planner-materialize",
+  "delegationRef": "00000000-0000-4000-8000-000000000008",
+  "delegationRevision": "synthetic-revision",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "principal": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "ownerActorId": "00000000-0000-4000-8000-000000000003"
+  },
+  "inputSha256": "530c8e3cd27cd7d977946c91a1bde644def5e6bd84c2f8babf15fd1ddfb47dcb",
+  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "policyRevision": "synthetic-policy",
+  "issuedAtMs": 1792065600000,
+  "expiresAtMs": 1792066500000,
+  "confirmedAtMs": 1792065599000,
+  "absoluteExpiresAtMs": 1792151999000,
+  "originalExpiresAtMs": 1792066500000,
+  "renewalCount": 0,
+  "previousDecisionSha256": null,
+  "cancelled": false,
+  "allowedSources": [
+    "synthetic-source"
+  ],
+  "productWrites": [
+    "planner.materialize"
+  ]
+}

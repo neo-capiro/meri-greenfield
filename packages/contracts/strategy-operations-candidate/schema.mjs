@@ -1,0 +1,24 @@
+import {obj,text,uuid,sha,time,nullable,list,choice,ref,operations,strategyTypes,key,date,evidence,coverage,nodeFields,principal,objective,manual} from './shapes.mjs';
+export const candidateVersion='strategy-candidate/20261015.1';
+export const policy=Object.freeze({decisionMs:900000,decisionFreshMs:30000,attemptMs:900000,delegationMs:86400000,maxRenewals:3,requestBytes:131072,resultBytes:2097152});
+const branch=(operation,input,basis)=>({properties:{operation:{const:operation},input,basis}});
+export function candidateSchema(){
+ const basis=obj({strategyId:uuid,strategyVersionId:uuid,strategySha256:sha,nodes:list(obj({nodeId:uuid,nodeSha256:sha,dependsOn:{...list(uuid),uniqueItems:true},startsOn:nullable(date),endsOn:nullable(date)}),60,1)});
+ const common={candidateVersion:{const:candidateVersion},operation:choice(operations),requestId:uuid,jobId:uuid,principal,source:{oneOf:[objective,manual]},context:obj({packetId:uuid,contextSha256:sha,coverageSha256:sha,asOfMs:time,evidence:list(evidence,256),ownerRefs:{...list(text(128),100),uniqueItems:true}}),basis:nullable(basis),delegation:obj({ref:uuid,revision:text(128),issuedAtMs:time,absoluteExpiresAtMs:time}),requestedAtMs:time,originalExpiresAtMs:time,inputSha256:sha};
+ const request={...obj({...common,input:{type:'object'}}),oneOf:[
+  branch('strategy.draft',obj({typeHint:nullable(choice(strategyTypes))}),{type:'null'}),
+  branch('strategy.edit',obj({scope:choice(['node','strategy']),nodeId:nullable(uuid),instruction:text(),clientMessageId:uuid,attachmentIds:list(text(200),10),attachments:list(obj({id:uuid,filename:text(200),kind:text(40),status:text(40)},['id','filename']),10)}),basis),
+  branch('strategy.step-document',obj({kind:choice(['workspace_draft','outreach_record']),strategyType:choice(strategyTypes),goal:nullable(text()),node:obj({id:uuid,kind:choice(['action','decision','gate','milestone','risk']),subject:choice(['deliverable','submission','member','committee','ask','agency','outcome','optics']),title:text(300),note:nullable(text(8000)),startsOn:nullable(date),endsOn:nullable(date)})}),basis),
+ ]};
+ const draft=obj({type:choice(strategyTypes),rationale:text(),summary:text(16000),nodes:list(obj({sourceNodeKey:key,...nodeFields,dependsOn:{...list(key),uniqueItems:true}}),60,1),coverage});
+ const editDependency={oneOf:[obj({kind:{const:'existing'},nodeId:uuid}),obj({kind:{const:'new'},sourceNodeKey:key})]};
+ const edit=obj({op:choice(['add','update','remove','retime']),nodeId:nullable(uuid),sourceNodeKey:nullable(key),changes:obj({...nodeFields,dependsOn:{...list(editDependency),uniqueItems:true}},[])});
+ const edited=obj({reply:text(16000),summary:nullable(text(16000)),edits:list(edit),coverage});
+ // Proposal sections only: destination sanitization and execution assurance remain backend-owned.
+ const document=obj({title:nullable(text(300)),summary:nullable(text(16000)),sections:list(obj({heading:text(300),html:text(100000),sources:list(ref('SourceRef'),64)}),60,1),model:nullable(text(128)),coverage});
+ const payload=nullable({oneOf:[draft,edited,document]}),issues=list(obj({code:text(128),message:text(1000)}));
+ const outcome=obj({operation:choice(operations),state:choice(['succeeded','needs-information','refused']),payload,issues});
+ const result=obj({candidateVersion:{const:candidateVersion},operation:choice(operations),requestId:uuid,jobId:uuid,requestSha256:sha,inputSha256:sha,sourceSha256:sha,contextSha256:sha,basisSha256:nullable(sha),binding:{$ref:'urn:meri:contracts:0.1.0#/$defs/RunBinding'},resultRef:uuid,completedAtMs:time,state:choice(['succeeded','needs-information','refused','failed','cancelled']),payload,payloadSha256:sha,issues,resultSha256:sha});
+ const decision=obj({candidateVersion:{const:candidateVersion},audience:choice(['capiro:objective-strategy-generation:v1','capiro:objective-planner-materialization:v1']),operation:choice(['objective.strategy.draft','objective.plan.prepare']),use:choice(['dispatch','resume','source-read','retained-result-read','persist','planner-materialize']),delegationRef:uuid,delegationRevision:text(128),jobId:uuid,principal,inputSha256:sha,sourceSha256:sha,policyRevision:text(128),issuedAtMs:time,expiresAtMs:time,confirmedAtMs:time,absoluteExpiresAtMs:time,originalExpiresAtMs:time,renewalCount:{type:'integer',minimum:0,maximum:policy.maxRenewals},previousDecisionSha256:nullable(sha),cancelled:{const:false},allowedSources:{...list(text(128),64),uniqueItems:true},productWrites:{...list({const:'planner.materialize'},1),uniqueItems:true}});
+ return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:candidate:strategy-operations:20261015:1',title:'UNWIRED candidate; validation grants no authority', $defs:{Request:request,Result:result,ModelOutcome:outcome,WorkloadDecision:decision,Draft:draft,Edit:edited,Document:document,SourceRef:ref('SourceRefValue'),SourceRefValue:obj({section:text(128),ref:text(256)})}};
+}

@@ -1,0 +1,38 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.1",
+  "status": "CANDIDATE_RUNTIME_UNIMPLEMENTED",
+  "schemaId": "urn:meri:candidate:strategy-operations:20261015:1",
+  "definitions": [
+    "Request",
+    "ModelOutcome",
+    "Result",
+    "WorkloadDecision"
+  ],
+  "canonicalDependency": {
+    "path": "../meri.schema.json",
+    "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+  },
+  "sources": {
+    "shapes.mjs": "9f33e47397bf56d59f9a7f2f07a88a656957b0b7da5ad46400b08fda326f4752",
+    "schema.mjs": "708aa21b94a5e8bcc9c42e544608a503349ed625f0fb9f2d9c9c14e83043fdbf",
+    "graph.mjs": "388144d6dc9bc3b382e5e68d6dab5bc20d716022189f5cf694905aacf3f99271",
+    "validate.mjs": "0fa8f23a0dfa6286c8b81afff7b41a019486ba42c33647ec00daa34c37a34a04",
+    "fixture-source.mjs": "add3e475a05afd0526019b571230503181fe110c62a37612177a7f93c26ff861",
+    "generate.mjs": "6c9048f30b92ffda0b8dce028f942ee9e7c52786c826c30a090482061c0fac38"
+  },
+  "artifacts": {
+    "candidate.schema.json": "85eb200cadd97b4884186c48879d7eba303711bac90723815ff98b140c2c7279",
+    "fixtures/strategy.draft.request.json": "551ada4b1e08abefc2a9e12f39af0b107bb15295d216db2c32c2e3be78a902af",
+    "fixtures/strategy.draft.result.json": "fe6af321c3d91341c92d734068c88c92886554367475f80128fbb65da1b3ab90",
+    "fixtures/strategy.edit.request.json": "3b887e3f9902c5008a2ed947b8fce986dbdbf9f59912672604027bc5fba2fe3f",
+    "fixtures/strategy.edit.result.json": "537f5dc0ebae44165e251ebe40c728b0dab2ee1cbed3644f473b02c686c085ee",
+    "fixtures/strategy.step-document.request.json": "19d6b7b90c6d4b3d3ef63703f8e1ba316ba6f4be1b93271b7c3159426bf16d39",
+    "fixtures/strategy.step-document.result.json": "4deaac555fd546f0de6274dc75e926ba8a6f6b8737ffa7de73540ee74d5cf194",
+    "fixtures/workload.draft.decision.json": "81441b83c22acaf5a3e9e4c066450b2bf3ade1848098d77f788bef5bea6f92d4",
+    "fixtures/workload.planner.decision.json": "633b62c07dfddb17e2a87ee4220646e19eabe6515fb02394426eac5cddb5a5f4",
+    "fixtures/strategy.needs-information.result.json": "6b54ab8f9696ff1f4761394767e4a2e473e20264daa5d35236f851b4e1cafa9b"
+  },
+  "publicPackageExported": false,
+  "routesImplemented": false,
+  "resultStoreImplemented": false
+}

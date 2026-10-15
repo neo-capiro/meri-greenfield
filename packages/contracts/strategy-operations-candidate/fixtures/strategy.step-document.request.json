@@ -1,0 +1,99 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.1",
+  "operation": "strategy.step-document",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "principal": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "ownerActorId": "00000000-0000-4000-8000-000000000003"
+  },
+  "source": {
+    "kind": "objective",
+    "objectiveId": "00000000-0000-4000-8000-000000000005",
+    "objectiveRevisionId": "00000000-0000-4000-8000-000000000006",
+    "objectiveVersion": 2,
+    "snapshotSha256": "de55f0639e2ded11959bda129eb326ffb262a63bef817fcc1f58fb068ba6cd8e",
+    "intent": {
+      "outcome": "A reviewable route",
+      "governmentProblem": "Synthetic evidence gap",
+      "askType": "meri_propose",
+      "minimumWin": "Identify a supported route",
+      "limits": "No external send"
+    }
+  },
+  "context": {
+    "packetId": "00000000-0000-4000-8000-000000000007",
+    "contextSha256": "b125ceca63984735898ce92b3f96c0a7e586a6cd172bbdd8a6d4047b6f222a1b",
+    "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
+    "asOfMs": 1792065599000,
+    "evidence": [
+      {
+        "ref": "evidence:accepted",
+        "sourceId": "synthetic-source",
+        "asOfMs": 1792065598000,
+        "scope": "client",
+        "clientId": "00000000-0000-4000-8000-000000000004",
+        "reviewState": "accepted"
+      },
+      {
+        "ref": "evidence:pending",
+        "sourceId": "synthetic-candidate",
+        "asOfMs": 1792065598000,
+        "scope": "tenant-shared",
+        "clientId": null,
+        "reviewState": "pending"
+      }
+    ],
+    "ownerRefs": [
+      "owner:synthetic"
+    ]
+  },
+  "basis": {
+    "strategyId": "00000000-0000-4000-8000-000000000009",
+    "strategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "strategySha256": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "nodes": [
+      {
+        "nodeId": "00000000-0000-4000-8000-000000000065",
+        "nodeSha256": "e8040af0f46acea2909080d95d3daa2814cf5d87b2dbb8273ca6568398ce71ba",
+        "dependsOn": [],
+        "startsOn": "2026-10-17",
+        "endsOn": null
+      },
+      {
+        "nodeId": "00000000-0000-4000-8000-000000000066",
+        "nodeSha256": "18cba16469b0af421027ab46effb558ee73489bd54453733975a50e933ffdbd6",
+        "dependsOn": [
+          "00000000-0000-4000-8000-000000000065"
+        ],
+        "startsOn": "2026-10-18",
+        "endsOn": null
+      }
+    ]
+  },
+  "delegation": {
+    "ref": "00000000-0000-4000-8000-000000000008",
+    "revision": "synthetic-revision",
+    "issuedAtMs": 1792065599000,
+    "absoluteExpiresAtMs": 1792151999000
+  },
+  "requestedAtMs": 1792065600000,
+  "originalExpiresAtMs": 1792066500000,
+  "inputSha256": "896916dab20e2772b6a724a48d2a1751129db42a63795653f3a98d41d4383434",
+  "input": {
+    "kind": "workspace_draft",
+    "strategyType": "authorization",
+    "goal": null,
+    "node": {
+      "id": "00000000-0000-4000-8000-000000000065",
+      "kind": "action",
+      "subject": "deliverable",
+      "title": "Synthetic brief",
+      "note": null,
+      "startsOn": "2026-10-17",
+      "endsOn": null
+    }
+  }
+}

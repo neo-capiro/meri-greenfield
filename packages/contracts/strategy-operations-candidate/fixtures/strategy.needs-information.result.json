@@ -1,0 +1,32 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.1",
+  "operation": "strategy.draft",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "requestSha256": "4029e71a0de1562da240a6a092043b383fb9eba85fea3dd97da79b6d26e2abb6",
+  "inputSha256": "530c8e3cd27cd7d977946c91a1bde644def5e6bd84c2f8babf15fd1ddfb47dcb",
+  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "contextSha256": "b125ceca63984735898ce92b3f96c0a7e586a6cd172bbdd8a6d4047b6f222a1b",
+  "basisSha256": null,
+  "binding": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "conversationId": "00000000-0000-4000-8000-000000000014",
+    "runId": "00000000-0000-4000-8000-000000000015",
+    "attemptId": "00000000-0000-4000-8000-000000000016",
+    "workerId": "00000000-0000-4000-8000-000000000017",
+    "writerFence": 1
+  },
+  "resultRef": "00000000-0000-4000-8000-000000000018",
+  "completedAtMs": 1792065601000,
+  "state": "needs-information",
+  "payload": null,
+  "payloadSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+  "issues": [
+    {
+      "code": "MISSING_REQUIRED_DATE",
+      "message": "A required date is unknown."
+    }
+  ],
+  "resultSha256": "eb6e23cf87f7d545fd13e43e0f5cbdf094072025c613ab0de184795bf6e86025"
+}

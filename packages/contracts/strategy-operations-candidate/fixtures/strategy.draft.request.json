@@ -1,0 +1,66 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.1",
+  "operation": "strategy.draft",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "principal": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "ownerActorId": "00000000-0000-4000-8000-000000000003"
+  },
+  "source": {
+    "kind": "objective",
+    "objectiveId": "00000000-0000-4000-8000-000000000005",
+    "objectiveRevisionId": "00000000-0000-4000-8000-000000000006",
+    "objectiveVersion": 2,
+    "snapshotSha256": "de55f0639e2ded11959bda129eb326ffb262a63bef817fcc1f58fb068ba6cd8e",
+    "intent": {
+      "outcome": "A reviewable route",
+      "governmentProblem": "Synthetic evidence gap",
+      "askType": "meri_propose",
+      "minimumWin": "Identify a supported route",
+      "limits": "No external send"
+    }
+  },
+  "context": {
+    "packetId": "00000000-0000-4000-8000-000000000007",
+    "contextSha256": "b125ceca63984735898ce92b3f96c0a7e586a6cd172bbdd8a6d4047b6f222a1b",
+    "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
+    "asOfMs": 1792065599000,
+    "evidence": [
+      {
+        "ref": "evidence:accepted",
+        "sourceId": "synthetic-source",
+        "asOfMs": 1792065598000,
+        "scope": "client",
+        "clientId": "00000000-0000-4000-8000-000000000004",
+        "reviewState": "accepted"
+      },
+      {
+        "ref": "evidence:pending",
+        "sourceId": "synthetic-candidate",
+        "asOfMs": 1792065598000,
+        "scope": "tenant-shared",
+        "clientId": null,
+        "reviewState": "pending"
+      }
+    ],
+    "ownerRefs": [
+      "owner:synthetic"
+    ]
+  },
+  "basis": null,
+  "delegation": {
+    "ref": "00000000-0000-4000-8000-000000000008",
+    "revision": "synthetic-revision",
+    "issuedAtMs": 1792065599000,
+    "absoluteExpiresAtMs": 1792151999000
+  },
+  "requestedAtMs": 1792065600000,
+  "originalExpiresAtMs": 1792066500000,
+  "inputSha256": "530c8e3cd27cd7d977946c91a1bde644def5e6bd84c2f8babf15fd1ddfb47dcb",
+  "input": {
+    "typeHint": null
+  }
+}
