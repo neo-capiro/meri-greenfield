@@ -18,8 +18,10 @@ no SDK module and wraps nothing.
   append; one `meri.run` span per run is emitted at its terminal transition with each transition as a span event. Process-local
   state is bounded; replays and post-terminal duplicates are not counted twice. Telemetry never changes a publish result or failure.
 - **HTTP** (`http.mjs`). One server span per control request: method, path and status; time to response headers.
-- **Redaction** (`redaction.mjs`). Every attribute passes through it: keys matching credential/token/authorization/cookie are
-  dropped, values over 512 bytes are cut at a code-point boundary and marked `<key>.truncated`, non-primitives are dropped.
+- **Redaction** (`redaction.mjs`). Every attribute passes through it: keys matching credential/token/authorization/cookie/secret/
+  password/signature are dropped, values over 512 bytes are cut at a code-point boundary and marked `<key>.truncated`, non-primitives
+  are dropped. `url.path` passes `redactPath`: token-shaped (dot-separated base64url pairs), longer-than-64 or percent-encoded segments
+  become `{redacted}` and paths deeper than 16 segments are cut, so a signed download link misplaced in a path never becomes an attribute.
 
 ## Known gaps
 

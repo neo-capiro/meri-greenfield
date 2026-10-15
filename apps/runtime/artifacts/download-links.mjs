@@ -3,10 +3,15 @@
  * through that canonical download.
  *   POST /api/documents/links/issue  {versionId} -> {versionId, token, expiresAtMs}
  *   POST /api/documents/links/redeem {token}     -> the attachment the canonical download returns
- * Both require the caller's Bearer session. Issuance runs the canonical inspect (authorization, retention gate, current bytes) and
- * signs the version's exact sha256, the current actor, the current scope digest and the current suppression generation. Redemption
- * verifies the MAC and expiry, re-reads current authority (same actor and scope digest), re-inspects the version, requires the
- * generation unchanged, runs the canonical download, requires the exact bytes hash, and rechecks generation and expiry before release. */
+ * Both require the caller's Bearer session and a JSON body; a token is accepted only in the redeem body, never in a URL, so it cannot
+ * reach request-line access logs, URL telemetry or a Referer. Issuance and redemption run the same authorized read: canonical inspect
+ * (version-scoped `artifact.inspect` authorization, retention gate, current bytes), the suppression generation, then the canonical
+ * download (version-scoped `artifact.download` authorization for that exact version and its bytes), the exact bytes hash and the
+ * generation again. Issuance signs the version's sha256, the current actor, scope digest and generation; it never signs a link the
+ * caller could not download now. Redemption authenticates first, verifies the MAC and expiry, requires the same current actor and
+ * scope digest, the signed sha256 and generation before any byte read. After the final body and suppression reads both paths re-read
+ * current authority (same actor, scope digest, unexpired session) and redemption rechecks link expiry, synchronously before release. Every response on these
+ * routes is `no-store`, `no-referrer` and `nosniff`; refusals carry closed codes only and never echo a token. */
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {own,data,CommandError} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -14,12 +19,16 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {jsonBody,response} from '../../control/document-application/http.mjs';
 import {createSignedDownloadCodec,MIN_KEY_BYTES,MAX_TTL_MS} from '../../artifacts/storage/signed-download.mjs';
 import {readSecret,fault} from '../config.mjs';
-const ROUTE=/^\/api\/documents\/links\/(issue|redeem)$/u,MAX_BODY_BYTES=4096;
-const statuses=new Map([['INVALID_REQUEST',400],['INVALID_COMMAND',400],['INVALID_JSON',400],['INVALID_UTF8',400],['INVALID_BODY',400],['INVALID_CONTENT_LENGTH',400],['REQUEST_TOO_LARGE',413],['METHOD_NOT_ALLOWED',405],['UNAUTHENTICATED',401],
+export const LINK_ROUTE=/^\/api\/documents\/links\/(issue|redeem)$/u;
+const MAX_BODY_BYTES=4096,JSON_TYPE=/^application\/json(?:\s*;\s*charset=utf-8)?$/iu;
+const LINK_HEADERS=Object.freeze({'cache-control':'no-store','referrer-policy':'no-referrer','x-content-type-options':'nosniff'});
+const statuses=new Map([['INVALID_REQUEST',400],['INVALID_COMMAND',400],['INVALID_JSON',400],['INVALID_UTF8',400],['INVALID_BODY',400],['INVALID_CONTENT_LENGTH',400],['REQUEST_TOO_LARGE',413],['UNSUPPORTED_MEDIA_TYPE',415],['METHOD_NOT_ALLOWED',405],['UNAUTHENTICATED',401],
  ['SESSION_REFUSED',403],['ACCESS_DENIED',403],['DOWNLOAD_LINK_INVALID',403],['DOWNLOAD_LINK_ACTOR',403],['DOWNLOAD_LINK_CLAIMS',403],['DOWNLOAD_LINK_EXPIRED',410],['DOWNLOAD_LINK_REVOKED',410],['RETENTION_SUPPRESSED',410],
  ['DOWNLOAD_LINK_BYTES',409],['RETENTION_RECOVERY_BARRIER',503],['RETENTION_READ_UNAVAILABLE',503],['DEADLINE',408],['CANCELLED',499]]);
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
+/** The same response with the link-route cache, referrer and sniffing headers forced, including canonical pass-through refusals. */
+export function hardenLinkResponse(r){const headers=new Headers(r.headers);for(const [name,value] of Object.entries(LINK_HEADERS))headers.set(name,value);return new Response(r.body,{status:r.status,statusText:r.statusText,headers});}
 function refusal(error){const code=typeof error?.code==='string'?error.code:typeof error?.message==='string'?error.message:'',status=statuses.get(code);return response({error:{code:status?code:'DOWNLOAD_LINK_REFUSED'}},status??502);}
 /** The retention subjects the canonical artifact read gate consults for a version read from this session's conversation. */
 const versionSubjects=(binding,version)=>[{tenantId:binding.tenantId,kind:'conversation',subjectId:binding.conversationId},
@@ -37,33 +46,44 @@ export function createDownloadLinkApplication({documents,sessions,key,generation
   const authentication=await life.run(signal=>sessions.authenticateSession({credential,signal})),c=data(await life.run(signal=>sessions.readCurrentState({authentication,signal})));
   return {binding:c.binding,actorId:c.binding.actorId,expiresAtMs:c.expiresAtMs,scopeDigest:canonicalSha256({tenantId:c.binding.tenantId,conversationId:c.binding.conversationId,selectedClientId:c.selectedClientId,scopes:c.scopes})};
  }
- async function inspect(request,versionId,life){
-  const r=await life.run(signal=>forward(request,'inspect',{versionId},signal));if(r.status!==200)return {refused:r};
-  const {version}=data(await life.run(()=>r.json()));if(version?.versionId!==versionId)fail('DOWNLOAD_LINK_REFUSED');return {version};
+ /** Canonical inspect, generation, canonical download, exact bytes and unchanged generation, all under the caller's own session.
+  * With `expected` (redemption) the signed sha256 and generation must match before the download is attempted. A canonical refusal is
+  * returned as `{refused}` unchanged. */
+ async function authorizedRead(request,versionId,who,life,expected=null){
+  const inspected=await life.run(signal=>forward(request,'inspect',{versionId},signal));if(inspected.status!==200)return {refused:inspected};
+  const {version}=data(await life.run(()=>inspected.json()));if(version?.versionId!==versionId)fail('DOWNLOAD_LINK_REFUSED');
+  if(expected&&version.object.sha256!==expected.sha256)fail('DOWNLOAD_LINK_BYTES');
+  const subjects=versionSubjects(who.binding,version),read=()=>life.run(()=>generation(subjects)),suppressionGeneration=await read();
+  if(expected&&suppressionGeneration!==expected.suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');
+  const downloaded=await life.run(signal=>forward(request,'download',{versionId},signal));if(downloaded.status!==200)return {refused:downloaded};
+  const bytes=Buffer.from(await life.run(()=>downloaded.arrayBuffer()));if(sha256(bytes)!==version.object.sha256)fail('DOWNLOAD_LINK_BYTES');
+  if(await read()!==suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');
+  // Final authority read after the last asynchronous body and suppression reads: the same actor and scope digest under a session that
+  // is still current and unexpired. Nothing is awaited between this check and the caller's release or signature.
+  const latest=await current(request,life);if(latest.actorId!==who.actorId||latest.scopeDigest!==who.scopeDigest)fail('DOWNLOAD_LINK_ACTOR');
+  if(now()>=latest.expiresAtMs)fail('SESSION_REFUSED');life.check();
+  return {version,bytes,headers:downloaded.headers,suppressionGeneration,sessionExpiresAtMs:latest.expiresAtMs};
  }
  async function issue(request,body,life){
-  const {versionId}=own(body,['versionId']);if(typeof versionId!=='string')fail('INVALID_REQUEST');const who=await current(request,life),inspected=await inspect(request,versionId,life);if(inspected.refused)return inspected.refused;
-  const {version}=inspected,suppressionGeneration=await life.run(()=>generation(versionSubjects(who.binding,version)));life.check();
-  const expiresAtMs=Math.min(now()+ttlMs,who.expiresAtMs),token=codec.issue({versionId,sha256:version.object.sha256,scopeDigest:who.scopeDigest,actorId:who.actorId,expiresAtMs,suppressionGeneration});
+  const {versionId}=own(body,['versionId']);if(typeof versionId!=='string')fail('INVALID_REQUEST');const who=await current(request,life),read=await authorizedRead(request,versionId,who,life);if(read.refused)return read.refused;
+  const expiresAtMs=Math.min(now()+ttlMs,read.sessionExpiresAtMs),token=codec.issue({versionId,sha256:read.version.object.sha256,scopeDigest:who.scopeDigest,actorId:who.actorId,expiresAtMs,suppressionGeneration:read.suppressionGeneration});
   return response({versionId,token,expiresAtMs});
  }
  async function redeem(request,body,life){
-  const {token}=own(body,['token']),claims=codec.verify(token),who=await current(request,life);
+  const {token}=own(body,['token']),who=await current(request,life),claims=codec.verify(token);
   if(who.actorId!==claims.actorId||who.scopeDigest!==claims.scopeDigest)fail('DOWNLOAD_LINK_ACTOR');
-  const inspected=await inspect(request,claims.versionId,life);if(inspected.refused)return inspected.refused;if(inspected.version.object.sha256!==claims.sha256)fail('DOWNLOAD_LINK_BYTES');
-  const subjects=versionSubjects(who.binding,inspected.version),unchanged=async()=>{if(await life.run(()=>generation(subjects))!==claims.suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');};
-  await unchanged();const r=await life.run(signal=>forward(request,'download',{versionId:claims.versionId},signal));if(r.status!==200)return r;
-  const bytes=Buffer.from(await life.run(()=>r.arrayBuffer()));if(sha256(bytes)!==claims.sha256)fail('DOWNLOAD_LINK_BYTES');
-  await unchanged();if(now()>=claims.expiresAtMs)fail('DOWNLOAD_LINK_EXPIRED');life.check();
-  return new Response(bytes,{status:200,headers:r.headers});
+  const read=await authorizedRead(request,claims.versionId,who,life,claims);if(read.refused)return read.refused;
+  if(now()>=claims.expiresAtMs)fail('DOWNLOAD_LINK_EXPIRED');life.check();
+  return new Response(read.bytes,{status:200,headers:read.headers});
  }
  return Object.freeze({async handle(request){
-  const url=new URL(request.url),route=ROUTE.exec(url.pathname);if(!route)return documents.handle(request);let life;
+  const url=new URL(request.url),route=LINK_ROUTE.exec(url.pathname);if(!route)return documents.handle(request);let life;
   try{
-   if(request.method!=='POST')fail('METHOD_NOT_ALLOWED');if(url.search||url.hash)fail('INVALID_REQUEST');const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))fail('INVALID_CONTENT_LENGTH');
+   if(request.method!=='POST')fail('METHOD_NOT_ALLOWED');if(url.search||url.hash)fail('INVALID_REQUEST');if(!JSON_TYPE.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding')!==null)fail('UNSUPPORTED_MEDIA_TYPE');
+   const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))fail('INVALID_CONTENT_LENGTH');
    life=createOperationLifetime({deadlineMs:now()+maxRequestMs,now,signal:request.signal,errorFactory:code=>new CommandError(code)});
    const body=data(await jsonBody({body:request.body,length:length===null?null:Number(length)},MAX_BODY_BYTES,life,life.check));
-   return await (route[1]==='issue'?issue:redeem)(request,body,life);
-  }catch(error){return refusal(error);}finally{life?.close();}
+   return hardenLinkResponse(await (route[1]==='issue'?issue:redeem)(request,body,life));
+  }catch(error){return hardenLinkResponse(refusal(error));}finally{life?.close();}
  }});
 }

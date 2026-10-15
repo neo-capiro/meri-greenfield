@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {redactAttributes,truncateAttributeValue,MAX_ATTRIBUTE_BYTES} from '../redaction.mjs';
+import {redactAttributes,truncateAttributeValue,redactPath,MAX_ATTRIBUTE_BYTES} from '../redaction.mjs';
 
 test('secret-shaped keys are dropped regardless of case or position',()=>{
  const out=redactAttributes({'meri.run.id':'r1','x-api-token':'t','Authorization':'Bearer x','set-cookie':'c','meri.capability.credential':'k','refresh_TOKEN_hash':'h','http.request.method':'POST'});
@@ -18,3 +18,15 @@ test('only finite primitives and short primitive arrays survive; arrays are trun
  assert.deepEqual(Object.keys(out).sort(),['arr','arr.truncated','b','n']);assert.equal(out.arr[1].length,MAX_ATTRIBUTE_BYTES);
 });
 test('absent or non-object attributes produce an empty frozen set',()=>{for(const v of [undefined,null,'s',3])assert.deepEqual(redactAttributes(v),{});});
+test('secret, password and signature keys are dropped as well',()=>{
+ assert.deepEqual(redactAttributes({'meri.link.signature':'s','client_secret':'c','db.password':'p','meri.artifact.version':'v'}),{'meri.artifact.version':'v'});
+});
+test('paths keep routes and UUIDs but redact token-shaped, long or percent-encoded segments and cut deep paths',()=>{
+ for(const path of ['/api/documents/links/redeem','/api/conversations/00000000-0000-4000-8000-0000000000c1/history','/','/health/ready'])assert.equal(redactPath(path),path);
+ const token=Buffer.from(JSON.stringify({versionId:'v',sha256:'a'.repeat(64)})).toString('base64url')+'.'+'B'.repeat(43);
+ assert.equal(redactPath('/api/documents/links/redeem/'+token),'/api/documents/links/redeem/{redacted}');
+ assert.equal(redactPath('/x/eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0/y'),'/x/{redacted}/y');
+ assert.equal(redactPath('/x/'+'c'.repeat(65)),'/x/{redacted}');assert.equal(redactPath('/x/a%2Eb'),'/x/{redacted}');
+ assert.equal(redactPath('/'+Array(20).fill('s').join('/')),'/'+Array(16).fill('s').join('/')+'/{redacted}');
+ assert.equal(redactPath(undefined),'/');
+});

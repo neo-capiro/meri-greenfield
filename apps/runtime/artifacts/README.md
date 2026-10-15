@@ -14,26 +14,69 @@ Six meaningful tests pass through actual loopback HTTP, existing opaque sessions
 
 No native AWS/DB/model call, security setting change, new credential, private artifact transfer or publication retry occurred. Owned links/processes are removed after checks; donor dependencies and all previous files/failures are retained.
 
-## Short-lived revocable download links (additive, not mounted)
+## Short-lived revocable download links (mounted behind a readiness gate)
 
-`createDownloadLinkApplication({documents,sessions,key,generation,now,ttlMs?,maxRequestMs})` wraps the runtime artifact application:
-`POST /api/documents/links/issue {versionId}` and `POST /api/documents/links/redeem {token}` are served here and every other path,
-including the existing `/api/documents/download`, is delegated unchanged. Both routes require the caller's Bearer session.
-The token (`../../artifacts/storage/signed-download.mjs`) is an HMAC-SHA256 over `{versionId, sha256, scopeDigest, actorId,
-expiresAtMs, suppressionGeneration}`, at most five minutes and never beyond the session's current expiry. Issuance runs the canonical
-inspect and reads current authority; redemption verifies the MAC and expiry, requires the same current actor and scope digest
-(`canonicalSha256` of tenant, conversation, selected client and scopes), re-inspects, requires an unchanged suppression generation,
-runs the canonical download, requires the exact bytes hash and rechecks generation and expiry before release. Refusals:
-`DOWNLOAD_LINK_INVALID`, `DOWNLOAD_LINK_EXPIRED`, `DOWNLOAD_LINK_ACTOR`, `DOWNLOAD_LINK_REVOKED`, `DOWNLOAD_LINK_BYTES`, plus the
-retention gate's own codes; canonical refusals pass through unchanged.
+Product owner decision, 15 October 2026: wire signed download links into the live API once the API verifies the current user's access
+to that exact artifact before issuing, the bucket stays private and links never reach logs. This section is that wiring.
 
-`createSuppressionGeneration({journal,serving})` reads the same retention journal rows and recovery barrier as the canonical read
-gate and returns the highest projected ledger sequence of the version's subjects (session conversation, version conversation,
-artifact). Any suppression or release of one of them advances it, so links are revoked without a token store.
-`readDownloadLinkKey(keyFile)` reads a key of at least 32 bytes through `readSecret`.
+**Routes.** `POST /api/documents/links/issue {versionId}` returns `{versionId, token, expiresAtMs}`; `POST /api/documents/links/redeem
+{token}` returns the canonical attachment. Both require the caller's Bearer action session and `application/json`; every other path,
+including `/api/documents/download`, reaches the canonical document application unchanged. A token is accepted only in the redeem
+body: a query string is refused, and a token placed in the path is not a route (it is never parsed). Every link-route response,
+including canonical refusals passed through and gate refusals, carries `Cache-Control: no-store`, `Referrer-Policy: no-referrer` and
+`X-Content-Type-Options: nosniff`. Refusal bodies are `{error:{code}}` with closed codes only.
 
-Intended mount (a separate root change to `../product-applications.mjs`, `../config.mjs` and `../control.mjs`): when the control
-configuration declares retention serving and a link key file, read the key at startup and replace `documents` with
-`createDownloadLinkApplication({documents,sessions,key,generation:createSuppressionGeneration(retention),now,maxRequestMs})`.
-Redemption reads the version twice (inspect, then download). Tests: `test/download-links.test.mjs` (scripted ports plus one case
-through the real canonical owners and generator) and `../../artifacts/storage/test/signed-download.test.mjs`.
+**Authorization.** Issuance and redemption run one authorized read under the caller's own session (`download-links.mjs`): canonical
+inspect (version-scoped `artifact.inspect` authorization, scope/conversation binding, retention gate, current bytes), the suppression
+generation, then the canonical download (version-scoped `artifact.download` authorization for that exact `versionId`, retention gate,
+exact bytes), the bytes hash against the version record and the generation again, and finally a fresh current-authority read (same
+actor, same scope digest, unexpired session) after the last asynchronous body and suppression reads. Issuance signs only after all of
+that passes, so a link is never issued for a version the caller could not download now. Redemption authenticates before parsing the
+token, verifies the MAC and expiry, requires the signed actor, scope digest, sha256 and generation, runs the same read, then rechecks
+link expiry with no further await before releasing bytes. The token (`../../artifacts/storage/signed-download.mjs`) is an HMAC-SHA256
+over `{versionId, sha256, scopeDigest, actorId, expiresAtMs, suppressionGeneration}`. Lifetime: `ttlMs` (default 60 s, at most 5 min),
+never beyond the session's current expiry. A token is useless without the same actor's current session. No token is stored anywhere.
+
+Refusals: `DOWNLOAD_LINK_INVALID`, `DOWNLOAD_LINK_EXPIRED`, `DOWNLOAD_LINK_ACTOR`, `DOWNLOAD_LINK_REVOKED`, `DOWNLOAD_LINK_BYTES`,
+`DOWNLOAD_LINK_CLAIMS`, `SESSION_REFUSED`, `UNAUTHENTICATED`, `UNSUPPORTED_MEDIA_TYPE`, plus the retention gate's own codes; canonical
+refusals pass through unchanged.
+
+**Revocation.** `createSuppressionGeneration({journal,serving})` reads the canonical retention journal rows and recovery barrier and
+returns the highest projected ledger sequence of the version's subjects (session conversation, version conversation, artifact). Any
+suppression or release of one of them advances it, so outstanding links are revoked without a token store.
+
+**Mount and readiness gate (`download-gate.mjs`).** `createRuntimeProductApplications` wraps the canonical document application in
+`createDownloadLinkGate`. Until trusted startup opens it, the two link routes answer `503 {error:{code:'DOWNLOADS_UNAVAILABLE'}}` and
+nothing else changes. `startControl` calls `open` after assembly and before readiness/listen. The gate opens only when, in order:
+`downloadLinks.enabled === true`; retention serving is declared (the suppression generation needs its journal); the
+`artifactOptionsOwner` product port is composed (it authorizes each exact version per request); the `artifactStore` product port is
+composed and `verifyPrivate()` passes (`createRuntimeArtifactStorage().verifyPrivate`, read-only proof that every S3 Block Public Access
+setting is on, the bucket policy is not public, object ownership is `BucketOwnerEnforced` and versioning is Enabled); and the key file
+reads through `readSecret` with at least 32 bytes. The key is read last. Any failure leaves the routes closed with a closed reason
+(`DOWNLOAD_LINKS_DISABLED`, `DOWNLOAD_LINK_RETENTION_UNAVAILABLE`, `DOWNLOAD_LINK_AUTHORIZATION_UNAVAILABLE`,
+`DOWNLOAD_LINK_STORE_UNAVAILABLE`, `DOWNLOAD_LINK_STORE_UNVERIFIED`, `DOWNLOAD_LINK_KEY_UNAVAILABLE`) that `startControl` returns as
+`downloads` and the CLI prints in its `runtime.listening` line; control still starts and serves every other route. Only an aborted
+startup rejects. The nativeCandidate path composes no `artifactOptionsOwner`/`artifactStore`, so its gate stays closed.
+
+**Signing key (for the shipping owner; no value here).** Secret: the control role's download-link signing key, mounted as an owner-only
+file (for example `/run/secrets/meri-download-link-key`, the path named by `downloadLinks.keyFile`), 32–32768 random bytes (generate at
+least 32 bytes from a CSPRNG), readable only by the control UID, never baked into the image, never logged. It is a new secret value for
+the control role only; workers and runners never receive it. Rotation: replace the file and restart control. Every outstanding link
+is then refused as `DOWNLOAD_LINK_INVALID`; because links live at most five minutes and the caller simply issues a new one, rotation
+needs no dual-key window. Rotate on any suspected exposure and on the shipping owner's routine schedule. Creating, storing or mounting
+the secret, and granting the control task role `s3:GetBucketPublicAccessBlock`, `s3:GetBucketPolicyStatus`,
+`s3:GetBucketOwnershipControls` and `s3:GetBucketVersioning` on the artifact bucket, are separately authorized shipping-owner actions;
+without them the gate stays closed.
+
+**Logging.** Links never appear in URLs, so they cannot reach request-line access logs or a Referer. The runtime HTTP adapter writes no
+access log. Control telemetry records `url.path` through `redactPath` (token-shaped, long or percent-encoded segments become
+`{redacted}`) and drops `token`/`credential`/`secret`/`signature`/... attribute keys; bodies, headers and query strings are never
+read. Refusal bodies and errors carry closed codes only. Load balancer access logs record the request line only; deployment must keep
+that true (no body logging).
+
+Tests: `test/download-links.test.mjs` (scripted ports plus one case through the real canonical owners and generator: happy path,
+wrong actor, revoked and suppressed versions, expiry, tampering, changed bytes, download-authority refusal at issue, revocation, scope
+change, session expiry and suppression during the final reads, token placement, lifetime bounds), `test/download-links-redaction.test.mjs`
+(real loopback listener plus telemetry: no link in process output, spans, metrics or refusal bodies), `../test/download-links-mount.test.mjs`
+(startup gate through `startControl`), `../../artifacts/storage/test/signed-download.test.mjs` and
+`../../artifacts/storage/test/s3-private-bucket.test.mjs`.
