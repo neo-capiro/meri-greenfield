@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Root-level resolution links that mirror the runtime image recipe (apps/runtime/Dockerfile) plus
-# the two test-only links the existing PostgreSQL/JSZip test files resolve from the repository root.
+# Root-level resolution links that mirror the runtime image recipe (apps/runtime/Dockerfile). The former test-only
+# pg/jszip links are gone: the root (pg, jszip) and apps/control/conversations (pg) now declare them as devDependencies.
 # node_modules/ is ignored by Git; no lock or package source is changed.
 # Usage: link-dependencies.sh [--repo DIR]   Exit: 0 ok; 2 usage; 3 a non-link already occupies a target.
 set -euo pipefail
@@ -17,7 +17,3 @@ link(){ # target relative-source role
 link @capiro/meri-contracts ../../packages/contracts image
 link @anthropic-ai/claude-agent-sdk ../../apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk image
 link @aws-sdk/client-s3 ../../apps/artifacts/storage/node_modules/@aws-sdk/client-s3 image
-# Test-only resolution links (not part of the image): pg for apps/control/conversations/test/*-pg.test.mjs,
-# jszip for apps/artifacts/test independent checks.
-link pg ../apps/runtime/node_modules/pg test-only
-link jszip ../apps/worker/qualification/node_modules/jszip test-only
