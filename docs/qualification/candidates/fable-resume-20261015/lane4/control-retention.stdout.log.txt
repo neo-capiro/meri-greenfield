@@ -1,0 +1,27 @@
+✔ 1. one exact object referenced by several classes carries every obligation; a non-purgeable class blocks it; enumeration order never changes eligibility (32.070783ms)
+✔ 1b. a shared holder must itself be purge-eligible under its own obligations: suppressed but cooling, retained, held or released holders keep the version (23.589757ms)
+✔ 2. recovery facts live in the ledger: total projection loss is rebuilt exactly, a second reconciliation changes nothing, EXECUTED replay with another plan refuses, and a backup predating suppression with no purge receipt is re-suppressed (16.210301ms)
+✔ 3. every historical block reason is re-evaluated against current facts; a cleared block yields the ordinary current plan; combined reasons stay blocked until all clear (16.364118ms)
+✔ 5. an acknowledged suppression whose projection write fails closes serving; duplicate suppression is idempotent; a stale purge cannot overwrite an accepted release; delayed writes across reconciliation are refused (5.688521ms)
+✔ 6. authorization runs before replay and ownership comes from the application: wrong-actor replay, altered ownership claim and unauthorized release refuse; authorized exact replay succeeds (2.097529ms)
+✔ the ledger appends in order with a verifiable durable acknowledgement and refuses to proceed without one (7.368882ms)
+✔ suppression by the owning actor is immediate and idempotent; a different actor is refused by default; an owner-mediated receipt admits it; release is refused during a purge (5.469969ms)
+✔ a policy is explicit required configuration: every class, a positive cooling period and a version; nothing is defaulted (7.451431ms)
+✔ a missing policy blocks physical purge and is not consulted by suppression (2.601058ms)
+✔ the inventory enumerates exact object versions per class, deduplicates across classes, and a fork sharing a version is excluded as a shared reference (14.724073ms)
+✔ the PostgreSQL journal round-trips suppression and release for conversation and artifact subjects, mirrors purge steps as rows, and refuses corrupt projections (158.0531ms)
+✔ trigger amendments: SDK mirror rows and artifact versions stay immutable except for a DELETE inside the transaction that recorded the PLANNED purge rows (99.416248ms)
+✔ recovery over the PostgreSQL journal: a restore that predates a suppression is re-applied from the ledger behind the barrier (58.459108ms)
+✔ purge planning: refused without suppression or policy; cooling, holds, liabilities and shared fork references block; identities are deterministic and duplicates coalesce (38.356159ms)
+✔ the executor is disabled by default and fails closed before any effect; enabled against the injected store it deletes exact versions, marks a step executed only after an ABSENT readback, replays idempotently, and leaves UNKNOWN on ambiguity (16.164412ms)
+✔ recovery: a restore predating a suppression with no purge receipt is re-suppressed from the ledger behind the serving barrier; revived versions are re-planned; a cleared block returns to PLANNED; reconciliation is idempotent (18.689777ms)
+✔ version-specific absence: 404 is ABSENT only with the recorded list permission; 403, 405, delete markers, mismatches and ambiguity are UNKNOWN (4.208204ms)
+✔ the storage port times out to UNKNOWN, refuses deletes without the delete permission, and fails a version delete that produced a delete marker (34.715876ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 799.784496

@@ -1,0 +1,117 @@
+✔ standard task bootstrap polls only existing capability route and returns validated original gated binding (29.056793ms)
+✔ foreign bootstrap proof refuses before returning executable configuration (5.450379ms)
+✔ cancelled bootstrap invokes no transport or execution (4.422663ms)
+✖ gated standard runner starts one Query after HTTP release and retains listener through final control stop (121288.435721ms)
+✔ gated SDK failure and parent cancellation retain callback HTTP until positive original control stop (38.511898ms)
+✔ closed opt-in first candidate accepts existing canonical runtime/allocation/task schemas without IO (20.668649ms)
+✔ bad legacy cluster refuses before pool/client/effect access (3.107602ms)
+✔ bad ambient credentials refuses before pool/client/effect access (0.428763ms)
+✔ bad new issuer refuses before pool/client/effect access (0.362723ms)
+✔ bad caller module refuses before pool/client/effect access (0.596221ms)
+✔ bad inline proxy credential refuses before pool/client/effect access (0.518293ms)
+✔ bad budget excess refuses before pool/client/effect access (1.345684ms)
+✔ bad foreign authority refuses before pool/client/effect access (2.50433ms)
+✔ bad public networking refuses before pool/client/effect access (1.502522ms)
+✔ bad unknown launch flag refuses before pool/client/effect access (1.67912ms)
+✔ bad foreign binding refuses before pool/client/effect access (0.988173ms)
+✔ control and task capabilities stay distinct and native control file is the same explicit binding (3.013946ms)
+✔ only temporal role accepts explicitly enabled prepared kickoff flag (0.828245ms)
+✔ restart can construct retained inspector with expired original task, without allocation or credential renewal (8.562326ms)
+✔ readiness missing-table refuses before allocation/backend reads (3.427996ms)
+✔ readiness duplicate-table refuses before allocation/backend reads (3.556457ms)
+✔ readiness missing-budget refuses before allocation/backend reads (2.995909ms)
+✔ readiness quarantined-budget refuses before allocation/backend reads (4.0191ms)
+✔ readiness zero-cap refuses before allocation/backend reads (2.938386ms)
+✔ ECS role-only CMD combines with image ENTRYPOINT into accepted actual CLI argv (4.7236ms)
+✔ parent cancellation retains actual control HTTP through ordered original candidate cleanup (19.387236ms)
+✖ apps/runtime/test/prepared-candidate.test.mjs (0.071343ms)
+✔ per-run receipt compiles canonical facts; exact retries and restart preserve issuance, allocation and grants (10.034867ms)
+✔ fresh target gets independent capability/allocation identity after injected journal retirement and admission revoke (7.823514ms)
+✔ source ADMITTED refuses issuance without redispatch (1.206702ms)
+✔ source ALLOCATED refuses issuance without redispatch (0.938961ms)
+✔ source UNKNOWN refuses issuance without redispatch (0.782436ms)
+✔ unproven stop and rejected/unrevoked grants refuse fresh issuance (3.006555ms)
+✔ lost issuance acknowledgement reconciles durable issued identity once (5.492331ms)
+✔ durable UNKNOWN never reissues, including process-owner recreation (1.15388ms)
+✔ uncertain attempt never reissues even if broken provider subsequently reports absent (1.774727ms)
+✔ competing requests and changed compiled facts refuse immutable issuance replay (14.2099ms)
+✔ concurrent exact requests share the provider durable issuance identity (5.047633ms)
+✔ original deadline never extends on retry or credential resolution (3.318015ms)
+✔ issuer capability, binding and grant substitutions fail closed (3.134984ms)
+✔ source retirement is rechecked after issuance and fact compilation (3.223332ms)
+✔ absent issuer provider and already aborted requests perform no issuance (0.808122ms)
+✔ canonical compiler rejects substituted binding (2.455024ms)
+✔ canonical compiler rejects substituted allocation (2.029361ms)
+✔ canonical compiler rejects substituted budget (2.160846ms)
+✔ canonical compiler rejects substituted deadline (1.448347ms)
+✔ canonical compiler rejects substituted grant (1.383701ms)
+✔ canonical compiler rejects substituted expiry (2.399956ms)
+✔ canonical compiler rejects substituted request (2.237697ms)
+✔ canonical compiler rejects substituted control (1.560267ms)
+✔ next run requires source and refuses reused source capability and grant identities (1.312622ms)
+✔ provider errors never escape with opaque credential text (1.296482ms)
+✔ trusted in-memory controller facts resolve only against exact durable compiled hash (7.913269ms)
+✔ every target grant refuses retired source grantId reuse (2.887123ms)
+✔ every target grant refuses retired source capabilitySha256 reuse (3.007832ms)
+✔ next run refuses reused source attemptId (0.987513ms)
+✔ next run refuses reused source workerId (1.018251ms)
+✔ aborted trusted materialization resolves neither capability nor controller configuration (3.706473ms)
+✔ accepted run prepares one cached entry concurrently without allocating until canonical kickoff (17.840287ms)
+✔ pending reservation refuses issuance; later accepted prompt can prepare (6.82729ms)
+✔ UNKNOWN issuance entry is sticky and never reissued by same registry (1.407424ms)
+✔ retired source and active canonical target are required before issuance (2.301853ms)
+✔ bootstrap stays unavailable before allocation and isolates credentials, versions and binding (10.433128ms)
+✔ cancellation or changed accepted prompt before kickoff refuses allocation (11.642248ms)
+✔ close is idempotent, prevents new entries and does not allocate unstarted runs (5.26733ms)
+✔ explicit trusted expiry cannot exceed configured ceiling or renew itself (1.260771ms)
+✔ allocation UNKNOWN remains one attempted dispatch through repeated kickoff and ensure (7.593604ms)
+✔ late owned controller settlement after close is contained exactly once (28.69837ms)
+✔ HTTP kickoff authenticates and validates closed request before any issuance (18.259005ms)
+✔ HTTP status/bootstrap never prepare and unowned bindings fall through (22.424998ms)
+✔ prepared Temporal activity heartbeats preparing, then actual ready precedes existing poll (11.872226ms)
+✔ already finished STARTED run accepts canonical terminal proof and closes original allocation (11.590823ms)
+✔ unknown startup is not retried and cleanup uses independent original scope (0.422249ms)
+✔ configured Temporal registration opts prepared kickoff in and preserves legacy default (0.438874ms)
+✔ cancel during preparation closes original kickoff with an independent live signal (1.141073ms)
+✔ unknown original cleanup prevents successful terminal activity receipt (0.738533ms)
+ℹ tests 76
+ℹ suites 0
+ℹ pass 74
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123791.29146
+
+✖ failing tests:
+
+test at apps/runtime/test/prepared-candidate-bootstrap.test.mjs:10:1
+✖ gated standard runner starts one Query after HTTP release and retains listener through final control stop (121288.435721ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  503 !== 200
+  
+      at TestContext.<anonymous> (file:///home/user/meri-fable-complete/apps/runtime/test/prepared-candidate-bootstrap.test.mjs:16:112)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/runtime/test/prepared-candidate.test.mjs:1:1
+✖ apps/runtime/test/prepared-candidate.test.mjs (0.071343ms)
+  file:///home/user/meri-fable-complete/apps/runtime/test/prepared-candidate.test.mjs:2
+  import {createPreparedCandidateIdentity} from '../prepared-candidate.mjs';
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  SyntaxError: The requested module '../prepared-candidate.mjs' does not provide an export named 'createPreparedCandidateIdentity'
+      at #asyncInstantiate (node:internal/modules/esm/module_job:455:21)
+      at async ModuleJob.run (node:internal/modules/esm/module_job:553:5)
+      at async node:internal/modules/esm/loader:647:26
+      at async node:internal/test_runner/runner:1091:15
+      at async runFiles (node:internal/test_runner/runner:1057:9)
+      at async runChain (node:internal/test_runner/runner:1135:5)

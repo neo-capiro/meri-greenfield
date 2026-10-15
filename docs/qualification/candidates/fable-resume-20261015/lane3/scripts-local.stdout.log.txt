@@ -1,0 +1,44 @@
+✔ local CLI independent: inherited native admission refuses ambient PGOPTIONS before driver/pool access (32.417672ms)
+✔ local CLI independent: missing private input cannot touch existing output or disclose its supplied path (84.733048ms)
+✔ local CLI independent: help and malformed argv finish without an admitted fixture (190.999967ms)
+✔ private exact source-bound fixture input yields a nonsecret descriptor without opening a pool (40.842745ms)
+✔ native parseable server time retains its instant in the canonical runner descriptor (13.424316ms)
+✔ admission refuses remote host (14.107866ms)
+✔ admission refuses another database (36.086113ms)
+✔ admission refuses stale lifetime (6.13926ms)
+✔ admission refuses source migration substitution (10.565337ms)
+✔ admission refuses driver lock substitution (6.868038ms)
+✔ admission refuses extra wrapper field (5.120026ms)
+✔ admission refuses wrong input digest, public modes, symlinks and oversized files (6.208502ms)
+✔ CLI help and missing/bad arguments are inert bounded outcomes with no private path disclosure (211.198165ms)
+✔ CLI requires every named persistence case and explicit known cleanup before reporting success (0.813578ms)
+✔ research brief CLI help/import/invalid paths allocate no fixture or change source-root environment (1.598206ms)
+✔ research brief CLI preserves existing output and refuses before resource allocation (11.754461ms)
+✔ secret env values are hashed, undefined values are marked, ordinary values pass through (3.71097ms)
+✔ a descriptor with undefined env values fails the inert-JSON gate; a string-only descriptor passes it and compiles once directories are injected (7.855431ms)
+✔ the stand-in answers GET /api/hello and POST /v1/messages with or without a query string, and refuses everything else (900.969064ms)
+✔ spec summary counts and failing names with first error line are parsed (6.020125ms)
+✔ file-level failures without timing and crashes without a summary are retained (0.593877ms)
+✔ ambient credentials and host overrides are scrubbed; canonical fixture selectors are supplied, never overridden (1.034512ms)
+✔ arguments: --out is required, unknown flags and names refuse, help is available (0.709993ms)
+✔ CLI help exits 0 and missing --out exits 2 before any suite runs (163.831388ms)
+fatal: detected dubious ownership in repository at '/home/user/meri-fable-complete'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-fable-complete
+fatal: detected dubious ownership in repository at '/home/user/meri-fable-complete'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-fable-complete
+✔ agreeing synthetic ledgers and source produce no drift and exact counts (5.23254ms)
+✔ every drift class is detected and nothing is invented to hide it (0.801666ms)
+✔ repository run reproduces the recorded R2 counts and writes both outputs (640.458789ms)
+✔ arguments refuse without --out and reject unknown flags (0.682362ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1433.156676

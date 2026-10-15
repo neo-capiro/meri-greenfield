@@ -1,0 +1,13 @@
+{
+ "schema": "meri.cleanup-receipt.v1",
+ "at": "2026-10-15T08:39:52Z",
+ "slice": "lanes 3 and 4 on fable/meri-complete-20261015: provenance integration, migrations 0010 and artifacts 0002, retention adapter and corrections, S1-S4 runtime slices",
+ "clusters": {"lane3Data": "/tmp/meri-complete-pg-20261015 (fresh initdb so that 0010 and 0002 were applied), stopped with provision-postgres.sh stop", "earlierData": "/tmp/meri-resume-pg-20261015, already stopped", "brokerSocketEntries": 0, "kickoffSocketEntries": 0, "postgresProcesses": 0},
+ "testUserProcesses": 0,
+ "privateTmp": {"path": "/home/meri/resume-tmp", "byPrefix": {"meri-lifecycle-test": 13, "meri-r2-reconciliation": 4, "meri-ws": 1, "node-compile": 1, "cc": 1, "claude": 1}, "note": "two further directories (cc, claude) were created by the pinned CLI during the trust-path probes of the previous slice under the private TMPDIR; no process, socket or credential; the pg diagnosis script was removed"},
+ "probeMaterial": "/home/meri/standin-probe removed earlier including the private keys; no stand-in key material remains",
+ "codexShim": {"python3": "/usr/bin/python3", "nodeDirectoryExists": false},
+ "hostTrust": {"extraCaInstalled": false, "systemCaFiles": 6, "hostsMappingLines": 0, "note": "the process-scoped extra-CA proposal was written and not executed; the denied C1b rerun was not retried"},
+ "suiteOutputs": "/home/meri/complete-out/{provenance-linux,lane3,lane3-commands,lane4}, copied into the candidate directory with logs renamed .log.txt; the three secret-pattern hits in the copies are the runner's scrub-rule names and runtime test titles containing the word bearer",
+ "worktreeResidue": "none"
+}

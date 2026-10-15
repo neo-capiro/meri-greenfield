@@ -1,0 +1,17 @@
+[local-baseline] source-proof
+[local-baseline] source-proof: exit 0 tests 5 pass 5 fail 0
+[local-baseline] runtime-typecheck
+[local-baseline] runtime-typecheck: exit 0
+[local-baseline] runtime-tests
+[local-baseline] runtime-tests: exit 1 tests 180 pass 179 fail 1
+[local-baseline] conversations-tests
+[local-baseline] conversations-tests: exit 0 tests 246 pass 246 fail 0
+[local-baseline] native-authority
+[local-baseline] native-authority: exit 0 tests 349 pass 349 fail 0
+[local-baseline] control-retention
+[local-baseline] control-retention: exit 0 tests 13 pass 13 fail 0
+[local-baseline] scripts-local
+[local-baseline] scripts-local: exit 0 tests 28 pass 28 fail 0
+{"results":"/home/meri/complete-out/lane3/RESULTS.json","totals":{"suites":7,"passedSuites":6,"tests":821,"pass":820,"fail":1}}
+runner exit=1
+root-diff-check exit=0

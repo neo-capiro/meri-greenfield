@@ -1,0 +1,7 @@
+supplement-regression exit=1 stdout_sha=f606d226575a77ec stderr_sha=1c1c73ba61e1f7df tests=76 pass=74 fail=2
+supplement-regression-isolated exit=0 stdout_sha=6554b5f817cc89ff stderr_sha=e3b0c44298fc1c14 tests=85 pass=85 fail=0
+new-slice-tests exit=0 stdout_sha=fad20871f79a7cfd stderr_sha=e3b0c44298fc1c14 tests=12 pass=12 fail=0
+contracts-check exit=0 stdout_sha=49307f1b5abc36c8 stderr_sha=e3b0c44298fc1c14 tests=145 pass=145 fail=0
+worker-source-pins-check exit=0 stdout_sha=c8d7c07562d4a07c stderr_sha=e3b0c44298fc1c14 tests= pass= fail=
+worker-pins-unittest exit=0 stdout_sha=e3b0c44298fc1c14 stderr_sha=e23854bc4ac6a509 tests= pass= fail=
+source-proof-isolation-none exit=0 stdout_sha=396b09ef93f1c259 stderr_sha=e3b0c44298fc1c14 tests=5 pass=5 fail=0

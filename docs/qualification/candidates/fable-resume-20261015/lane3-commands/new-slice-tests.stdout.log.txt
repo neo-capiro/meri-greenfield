@@ -1,0 +1,20 @@
+✔ multi-run bounds are a closed configuration declaration; ports are built only from startup-supplied owners and a declared mode without them fails readiness (35.642044ms)
+✔ the composed ports reach the canonical owners: prepare issues once through the durable issuer, binds facts, resolves the capability; the next-run window is bounded by the allocation schedule; admission per binding exposes revoke (20.760244ms)
+✔ separate concurrent callers for the same key get one identity; the authority generates exactly once; a conflicting intent for the same key is refused (17.430202ms)
+✔ a crash at every boundary preserves the issued identity or a durable UNKNOWN; replay after restart never generates a replacement; reconciliation completes from the authority without generating (613.733049ms)
+✔ resolve retrieves existing material only: absent, revoked, expired, mismatched receipt and wrong digest refuse; nothing is regenerated (5.174641ms)
+✔ composed with the canonical issuance owner: prepare issues once, binds facts once, resolves the capability, and refuses a changed fact hash (1.207199ms)
+✔ a correlated delivery materializes three fresh owner-only files in a directory this module created; release removes exactly those (19.72998ms)
+✔ wrong binding, task ARN, revision, expiry, versions, origin or CA refuse and leave nothing behind; a pre-existing or linked directory refuses (12.664446ms)
+✔ release refuses foreign entries and links instead of deleting them; cancellation during delivery leaves no directory (16.025616ms)
+✔ configuration is closed and bounded; plaintext tokens or extra fields are refused (3.255988ms)
+✔ a fresh token serves the client callback and attached worker connections; expiry, wrong claims, over-long lifetime and close fail closed without retrying a stale token (2.348546ms)
+✔ the file reader applies readSecret semantics: owner-only mode, no follow, bounded size, JSON only (11.24965ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4524.737811

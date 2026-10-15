@@ -19,8 +19,9 @@ Base `b5be44d5141ae5fd3830aed789cb7ad525506c4e`, tree `efc4b7bf87480d65fc4e6090c
 | `6e1a1fab3f94f72b02a1fbf1dbbbf81c1294bc36` | `6b7a037ba0d34dd9e3387605f02e02125411fe3a` | cherry-pick of dot's c83b7cf (worker validator pin candidate); authorship preserved |
 | `7fbf232425fbcb9172e03e561720722154b9efbf` | `f8c1a718f1d303631e90f1b55868a39a2e331105` | cherry-pick of dot's b11a6c9 (clean-source check receipts); authorship preserved |
 | `eb4869737d793edf546a0c95e54d415792770aaf` | `79c00a6676a104c29d1e0bbd05b2d510397a8acc` | lane 3: migrations 0010 and artifacts 0002, PostgreSQL retention adapter, S1–S4 runtime slices, candidate manifest b; for dot review |
+| `c35ce6aa4175d015f405a1cf4c810d4880467930` | `b60b4ad57e8e749d834137f7d674a11b4b98dca3` | lane 4: dot's six retention corrections, process-scoped extra-CA proposal (not executed), README lane 3 numbers, completion-return corrections; for dot review (requested acceptance of the corrected retention source in place of 746fc5b) |
 
-Evidence commits after the last row (this return, lane 3 receipts, cleanup receipt, manifest) are appended by `git log` and the manifest is rebuilt at the final commit.
+Evidence commits after the last row (lane 3 and lane 4 receipts, cleanup receipt, manifest, this return's final text) are appended by `git log` and the manifest is rebuilt at the final commit.
 
 ## 2. Changed files
 
@@ -41,6 +42,12 @@ Runner: `node scripts/qualification/local-baseline/run-suites.mjs --out <dir> --
 | control-core | `746fc5b` (one untracked evidence directory) | 260/260 | `lane2/` |
 | control-retention | `746fc5b`, then the evidence commit (clean) | 10/10 | `lane2/`, `lane2/rerun-clean/` |
 | scripts-local | `746fc5b` | 27/27 | `lane2/` |
+| addendum provenance checks (npm ci, contracts check, worker pins check and unit tests, source-proof) | `7fbf232` with the migration source being written in parallel (dirty tree; `git diff --check` 129 from a missing `safe.directory` for the test user) | all exit 0 except the diff check | `provenance-linux/` |
+| supplement regression command (`--test-isolation=none`) | `eb48697` (clean) | 74/76, exit 1 (two shared-isolation effects retained; 85/85 under default isolation) | `lane3-commands/` |
+| new slice files (S1–S4) | `eb48697` (clean) | 12/12 | `lane3-commands/` |
+| contracts check; worker pins check and unit tests; source-proof (`--test-isolation=none`); root `git diff --check` | `eb48697` (clean) | 145/145; 0; 0; 5/5; 0 | `lane3-commands/`, `lane3/runner.log.txt` |
+| runner: source-proof, runtime-typecheck, runtime-tests, conversations-tests, native-authority, control-retention, scripts-local | `eb48697` (source clean; four uncommitted documentation drafts) | 5/5; 0; 179/180 (Docker host fact); 246/246; 349/349; 13/13; 28/28 | `lane3/` |
+| runner: control-retention, source-proof | `c35ce6a` (clean) | 19/19; 5/5 | `lane4/` |
 
 Initial failures and reruns are retained in the candidate README (lane 2: the hung storage call and the re-parsed policy).
 
@@ -58,13 +65,13 @@ Initial failures and reruns are retained in the candidate README (lane 2: the hu
 | W08 / G5 | UNRUN | current authority bindings |
 | W09 / REL09 / G6 | UNRUN | held-out suites need live bindings |
 | W10–W11 / G6–G7 | UNRUN | admitted candidate, shipping action |
-| Retention/deletion (§10) | ACCEPT_SOURCE candidate: policy, ledger, suppression, storage semantics, planning, reconciliation with purge disabled (`746fc5b`); allocated migrations 0010 and artifacts 0002 with trigger amendments and the PostgreSQL adapter over real PostgreSQL (`eb48697`) | evidence sink, bucket holds, legal values, read-path wiring, trusted-owner migration execution |
+| Retention/deletion (§10) | dot HOLD on `746fc5b` answered by the six corrections at `c35ce6a` (obligations per exact object and holder eligibility, complete recovery facts and mismatched replay refusal, block re-evaluation into usable plans, status-over-name classification, compare-and-set writes with a fail-closed barrier, trusted ownership and authorization before replay); allocated migrations 0010 and artifacts 0002 with trigger amendments and the PostgreSQL adapter (`eb48697`); purge disabled | dot's review of `c35ce6a`; evidence sink, bucket holds, legal values; read-path wiring into the conversations and artifacts services (separate slice: it changes `service.mjs`, which dot's provenance metadata binds); trusted-owner migration execution |
 | S4 Temporal trusted-client authorization | ACCEPT_SOURCE candidate: one token provider for both pinned 1.24.0 connection types, closed config, wired (`eb48697`) | token issuer (shipping), real-server controls UNRUN |
 | S1 durable per-run issuer | ACCEPT_SOURCE candidate over the store contract and disposable adapter (`eb48697`) | central allocation for the issuance store schema; capability authority and secret-store reference model (shipping) |
 | S2 production composition | ACCEPT_SOURCE candidate: ports composed from startup-supplied owners, declared multi-run without owners fails startup (`eb48697`) | the genuine two-turn harness with the real CLI (stand-in approval) |
 | S3 per-run bootstrap files | ACCEPT_SOURCE candidate: materializer and release with Linux controls (`eb48697`); the per-run transport port is frozen in the outline, not yet wired into the registry | capsule, DNS and certificate delivery (shipping); registry wiring after dot's review of the port |
 | First usable authenticated chat | UNRUN | every binding in dot's §6 |
-| Two-turn and recovery rehearsal (real CLI) | HOLD | one-time approval of the stand-in packet step 2 |
+| Two-turn and recovery rehearsal (real CLI) | HOLD EXECUTION on both routes (dot); the qualification-only process-scoped extra-CA proposal is written and not executed | action-time approval of one route |
 
 Image digest and deployment receipts: none; nothing was built, scanned or deployed.
 
@@ -74,7 +81,7 @@ Probes N1 and C1 of the packet ran without any trust-store or hosts change (`reh
 
 ## 5. Outstanding owner decisions and dependencies
 
-1. Dot: review of `9430eed` and `746fc5b`; ACCEPT or HOLD.
+1. Dot: review of `c35ce6a` (retention corrections in place of `746fc5b`) and `eb48697` (migrations, adapter, S1–S4); `9430eed` is accepted source-only.
 2. Central owner: allocation for the S1 issuance store schema (the retention allocations `0010` and artifacts `0002` were recorded on 15 October and are now implemented).
 3. Shipping: evidence sink binding and write-once semantics; product bucket lock/hold configuration; the §6 binding inventory.
 4. Product and legal: cooling period, per-class retention, policy id and version.

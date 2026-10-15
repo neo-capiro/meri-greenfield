@@ -1,0 +1,11 @@
+set -u; R=/home/user/meri-fable-complete; O=/home/meri/complete-out/lane3-commands; cd $R || exit 3
+{ echo "head=$(git rev-parse HEAD 2>/dev/null) tree=$(git rev-parse 'HEAD^{tree}' 2>/dev/null)"; node --version; npm --version; python3 --version; } > $O/env.txt 2>&1
+run(){ n=$1; shift; "$@" > $O/$n.stdout 2> $O/$n.stderr; e=$?; echo "$n exit=$e stdout_sha=$(sha256sum < $O/$n.stdout | cut -c1-16) stderr_sha=$(sha256sum < $O/$n.stderr | cut -c1-16) tests=$(grep -E '^ℹ tests' $O/$n.stdout | awk '{print $3}') pass=$(grep -E '^ℹ pass' $O/$n.stdout | awk '{print $3}') fail=$(grep -E '^ℹ fail' $O/$n.stdout | awk '{print $3}')" >> $O/summary.txt; }
+run supplement-regression node --experimental-test-module-mocks --test --test-isolation=none --test-concurrency=1 apps/runtime/test/prepared-run-issuance.test.mjs apps/runtime/test/prepared-run-registry.test.mjs apps/runtime/test/prepared-candidate.test.mjs apps/runtime/test/prepared-candidate-config.test.mjs apps/runtime/test/prepared-candidate-bootstrap.test.mjs apps/runtime/test/prepared-candidate-control-lifetime.test.mjs apps/runtime/test/prepared-temporal.test.mjs
+run supplement-regression-isolated node --experimental-test-module-mocks --test --test-concurrency=1 apps/runtime/test/prepared-run-issuance.test.mjs apps/runtime/test/prepared-run-registry.test.mjs apps/runtime/test/prepared-candidate.test.mjs apps/runtime/test/prepared-candidate-config.test.mjs apps/runtime/test/prepared-candidate-bootstrap.test.mjs apps/runtime/test/prepared-candidate-control-lifetime.test.mjs apps/runtime/test/prepared-temporal.test.mjs
+run new-slice-tests node --test --test-concurrency=1 apps/runtime/test/temporal-authorization.test.mjs apps/runtime/test/prepared-run-issuer.test.mjs apps/runtime/test/prepared-run-bindings.test.mjs apps/runtime/test/runner-bootstrap-files.test.mjs
+run contracts-check npm --prefix packages/contracts run check
+run worker-source-pins-check python3 -B scripts/qualification/worker_source_pins.py --check
+run worker-pins-unittest python3 -B -m unittest scripts.qualification.worker_source_pins_test scripts.qualification.worker_context_test
+run source-proof-isolation-none node --test --test-isolation=none --test-concurrency=1 scripts/qualification/assembled-image/source-proof.test.mjs
+cat $O/summary.txt
