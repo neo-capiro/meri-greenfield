@@ -1,0 +1,272 @@
+{
+  "observedAtUtc": "2026-10-15T18:17:18.8464817Z",
+  "repository": "https://github.com/neo-capiro/meri-greenfield.git",
+  "scope": "All current remote dot/* and fable/* heads fetched without source edits",
+  "rows": [
+    {
+      "branch": "dot/meri-completion-instructions-20261015",
+      "head": "8bbe8405e03964072ed79be068d2d0a84cf71609",
+      "tree": "45f38e9b1ef82cc68979c7a41ee1ac178fbfd2e5",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-desktop-conversation-proposal-20261015",
+      "head": "6eb1600c7b89689c8d5e185760cee11a4a1488d4",
+      "tree": "92ae8f1740f335e4f111c838aa31d9184f4d926b",
+      "productMigrationPaths": [],
+      "productMigrationBlobs": [],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-handoff-to-fable-20261015",
+      "head": "215930c8092577e84da563b1496d1cca9a4ad4d7",
+      "tree": "70aeef73e9d8a1ba8592787a1cd1cac115b6ed85",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-infrastructure-proposal-20261015",
+      "head": "3e1e76bf942b675e90c1b4de8f8194362c1d019f",
+      "tree": "1f97b89c44234ea7383d93890d1b503b8c9fdcb3",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-master-crosswalk-20261015",
+      "head": "9a41cfe54174cdd11cdfbd84e90cc8087bdfc0d6",
+      "tree": "a3c9c0de0e28fa89a865c92fbb0cacd57a2128a8",
+      "productMigrationPaths": [],
+      "productMigrationBlobs": [],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-migration-allocation-audit-20261015",
+      "head": "e6e3016e215126dfaf4cb4aa8ed13cd5a1bee4f7",
+      "tree": "d7c0052401c1390e6e627167176168078e2859a4",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-preview-iac-20261015",
+      "head": "dcb8225b98fde715802028310957ee536af980a6",
+      "tree": "cd07bf437ad7109ac6d2b78cd54177ab7159e14d",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-provenance-refresh-20261015",
+      "head": "b11a6c95631b219384a69b15447e873ab8b346e2",
+      "tree": "054477d478364c754ce40bad031c593a7780898f",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-review-fable-complete-20261015",
+      "head": "b4e5d18d02edd73bf6501d8d1825bd35506233c7",
+      "tree": "976b658cc7c6b58c8cd10be33a5c75b02c260ea7",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-review-fable-f0befe1-20261015",
+      "head": "e6e3016e215126dfaf4cb4aa8ed13cd5a1bee4f7",
+      "tree": "d7c0052401c1390e6e627167176168078e2859a4",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-slice-b-review",
+      "head": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+      "tree": "a6a2155dba18415ec8a778322a2da08c0d73f264",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-strategy-candidate-v3-20261015",
+      "head": "a631e22f6f8e2283c40140dd5fec147f1a487fa7",
+      "tree": "014f4cc5cb3704546185a773e22df6476782c040",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "dot/meri-strategy-contract-candidate-v1-20261015",
+      "head": "5bedcf675b86de6ca3b48a76d6513674f346d86e",
+      "tree": "0578f4e15ec530f0fb4dc89ed599dd00aa76dca1",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "fable/meri-complete-20261015",
+      "head": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+      "tree": "fb58adeccde7c5c7c48a5562ac3108b888a6d17e",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "fable/meri-first-chat",
+      "head": "700f203e7b97b64207489d29e17e00014f7ff43b",
+      "tree": "ffbcfe3da380439ec73aa5d4c4a2243759791f92",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "fable/meri-resume-20261015",
+      "head": "b5be44d5141ae5fd3830aed789cb7ad525506c4e",
+      "tree": "efc4b7bf87480d65fc4e6090c2a83b8e6d9dcf4d",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "fable/p1a-sdk-capabilities-20261015",
+      "head": "6d9bb391005f73c8be6ec636c346a05381b5bd98",
+      "tree": "1e22acc2889238a33ac1adbd4248e399a2a257a4",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "fable/p1b-operating-controls-20261015",
+      "head": "06b2f4991cfd9d85ea20fee1b7b9cb3bd721dc40",
+      "tree": "39fe8b930fe245ae23eecd40119c470420e54459",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    },
+    {
+      "branch": "fable/p1c-quality-browser-20261015",
+      "head": "e0f94fe00a65ddd7f3f663bc2eafd25def7dfda4",
+      "tree": "580df3710c26c19dd14c8933a068c4278eccd1df",
+      "productMigrationPaths": [
+        "apps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "productMigrationBlobs": [
+        "100644 blob bc0ff007fe38606463a2613904930f9dc5bfe5f0\tapps/gateway/budget/migrations/0001_product_budget.sql"
+      ],
+      "priorTenantReservationMatches": []
+    }
+  ],
+  "decision": "RESERVED_SOURCE_PATH_ONLY",
+  "namespace": "meri_product_budget",
+  "reservedPath": "apps/gateway/budget/migrations/0002_tenant_budgets.sql",
+  "soleSourceAuthor": "Fable",
+  "scopeLimit": "Observed remote source and central task records only; no unpublished-work or database-state guarantee.",
+  "proposal": {
+    "head": "06b2f4991cfd9d85ea20fee1b7b9cb3bd721dc40",
+    "path": "docs/coordination/proposals/FABLE-MIGRATION-REQUEST-TENANT-BUDGETS-20261015.md",
+    "gitBlob": "bb5c242f51ce4db371ec03a475fa02324c81868c"
+  },
+  "centralRegisterBase": {
+    "head": "a631e22f6f8e2283c40140dd5fec147f1a487fa7",
+    "path": "docs/coordination/tasks/CODEX-CENTRAL-MIGRATION-ALLOCATION-20261015.md",
+    "gitBlob": "bd35e5984c2a394682cb49e24b51605a0b29818c"
+  },
+  "main": {
+    "head": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "productMigrationPaths": []
+  },
+  "separateConversationNamespace": {
+    "p1a": {
+      "head": "6d9bb391005f73c8be6ec636c346a05381b5bd98",
+      "issuance0011Blob": "57a32381c2f97161274f04ef8609ac33eb9d2853",
+      "custody0012PathPresent": false
+    },
+    "p1b": {
+      "head": "06b2f4991cfd9d85ea20fee1b7b9cb3bd721dc40",
+      "issuance0011Blob": "57a32381c2f97161274f04ef8609ac33eb9d2853",
+      "custody0012PathPresent": false
+    },
+    "p1c": {
+      "head": "e0f94fe00a65ddd7f3f663bc2eafd25def7dfda4",
+      "issuance0011Blob": "57a32381c2f97161274f04ef8609ac33eb9d2853",
+      "custody0012PathPresent": false
+    }
+  },
+  "notExecuted": [
+    "SQL authoring",
+    "migration application",
+    "database inspection",
+    "tenant gate activation",
+    "qualification",
+    "AWS",
+    "model/provider calls"
+  ]
+}
