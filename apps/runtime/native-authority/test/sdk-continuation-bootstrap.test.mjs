@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {InMemorySessionStore} from '@anthropic-ai/claude-agent-sdk';
+import {InMemorySessionStore} from '../../../worker/conversation/agent-sdk.mjs';
 import {createContinuationRuntimeSdkSession} from '../../sdk-continuation-session.mjs';
 import {createRuntimeSdkSessionFactory} from '../../sdk-session-runtime.mjs';
 import {createNativeSdkSessionApplication} from '../session-http.mjs';

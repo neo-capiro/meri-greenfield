@@ -35,7 +35,7 @@ test('lost immutable object ACK retains uncertainty and never publishes checkpoi
  test('revocation after durable checkpoint publication refuses success; later authorized retry only reads',async t=>{const f=fixture(t);f.onCommit(()=>f.revoke());await assert.rejects(f.owner.captureCheckpoint(f.input));assert.equal(f.counts().checkpoints,1);assert.equal(f.counts().runState,'paused');assert.equal(f.counts().captures,1);f.onCommit(()=>{});f.unrevoke();await f.owner.captureCheckpoint(f.input);assert.deepEqual(f.counts(),{puts:2,captures:1,checkpoints:1,events:5,runState:'paused'});});
 
 test('borrowed canonical S3 adapter executes exact immutable-version commands through checkpoint composition',async t=>{
- const {createS3ArtifactObjects}=await import('../../../artifacts/storage/s3-objects.mjs');const {GetBucketVersioningCommand,PutObjectCommand,HeadObjectCommand,GetObjectCommand}=await import('@aws-sdk/client-s3');const {Readable}=await import('node:stream');
+ const {createS3ArtifactObjects}=await import('../../../artifacts/storage/s3-objects.mjs');const {GetBucketVersioningCommand,PutObjectCommand,HeadObjectCommand,GetObjectCommand}=await import('../../../artifacts/storage/s3-sdk.mjs');const {Readable}=await import('node:stream');
  const f=fixture(t),stored=new Map(),commands=[],kmsKeyId='arn:aws:kms:us-east-1:967807252336:key/11111111-1111-4111-8111-111111111111';
  const client={async send(command,{abortSignal}){assert.equal(abortSignal.aborted,false);commands.push(command);const v=command.input;assert.equal(v.Bucket,'meri-synthetic-checkpoint');assert.equal(v.ExpectedBucketOwner,'967807252336');
   if(command instanceof GetBucketVersioningCommand)return {Status:'Enabled'};
