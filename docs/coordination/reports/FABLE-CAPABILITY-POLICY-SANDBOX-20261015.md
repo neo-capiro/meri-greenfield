@@ -1,6 +1,6 @@
 # Fable lane P2a: capability policy, SDK-native confinement and sandboxed Bash (15 October 2026)
 
-Branch `fable/p2a-capability-policy-sandbox-20261015`, based on `6d9bb39` (P1a). Owned paths are `apps/worker/conversation/**` and this report. The runtime image recipe change was authored in commit `c509ca1d` and then reverted at the final pin, so `apps/runtime/Dockerfile` is unchanged; the packages are a proposal for the image owner (see "Runtime image recipe"). No contracts, lockfiles, migrations, credentials, deployment, paid build or cloud action were touched or used.
+Branch `fable/p2a-capability-policy-sandbox-20261015`, based on `6d9bb39` (P1a); reviewed by dot at `ff52b9e` (HOLD on P2a-R1/R2). The successor repairs are on `fable/p2a-r-readiness-plugin-20261015`, based on `ff52b9e`; see "Successor-review repairs (15 October 2026)" at the end. Owned paths are `apps/worker/conversation/**` and this report. The runtime image recipe change was authored in commit `c509ca1d` and then reverted at the final pin, so `apps/runtime/Dockerfile` is unchanged; the packages are a proposal for the image owner (see "Runtime image recipe"). No contracts, lockfiles, migrations, credentials, deployment, paid build or cloud action were touched or used.
 
 Pinned versions: SDK `@anthropic-ai/claude-agent-sdk` 0.3.295 and CLI 2.1.295. Every option used was checked in `sdk.d.ts`:
 - `Options.sandbox`, `Options.settings` and `Options.managedSettings` (around lines 2155–2240);
@@ -111,7 +111,7 @@ The check lives in `sandbox-readiness/`. `readiness.mjs` does the orchestration 
    - `ANTHROPIC_BASE_URL` is `http://127.0.0.1:9`, and the token is a non-secret placeholder;
    - with `failIfUnavailable`, an unavailable sandbox produces an error result instead of a session;
    - a ready host completes `initializationResult()`;
-   - the query is then closed, its consumer awaited, temp directories removed, and any observed turn or cost fails the check.
+   - after a short quiet window the query is deliberately closed, its consumer awaited and temp directories removed. Every frame observed before, during and after initialisation, including during the shutdown, is validated and accounted; any result, model turn, cost, error or failure refuses, and a failed shutdown is never ready (successor repair P2a-R1, below). At `ff52b9e` only error results were retained and a later contrary frame could not override an earlier initialisation; dot reproduced that.
 
 `toBashSandboxAttestation(report, {outerIsolationBoundary})` derives the runtime fact. A host that needs the weaker nested sandbox without that assertion is reported unavailable.
 
@@ -142,7 +142,7 @@ Results would be checked in-process from PostToolUse inputs, with only digests p
 ### dot HOLD items on P1a (6d9bb39)
 
 1. **Latching.** Every hook validation, projection or publication error now latches. `hooks.mjs` requires a `latch` port. `subagents.mjs` latches malformed hook input, refused Agent input and duplicate tool-use ids. Reaching the parallelism bound is a capacity denial, so it denies but does not latch. `check()` throws `CAPABILITY_HOOK_FAILED` (or `CAPABILITY_EVENT_REFUSED`), and no event is attempted after a latch. The activity checks the latch before using each SDK frame, before each `message.delta`, before a held-checkpoint return, and before skill output publication and completion. Tests cover every hook path, directly and through the activity.
-2. **Plugin path binding.** `assertSkillPluginDirectory` requires `realpath(dir) === dir`, so no alias or symlink is allowed anywhere on the path. The directory must be a real directory whose tree holds only regular files and directories (bounded at 1024 entries and depth 8). It must be disjoint from the resolved workspace in both directions. `buildConversationOptions` refuses a fragment whose plugin path is not exactly the trusted `skillPluginDirectory` runtime fact, or that has plugins with no such fact. Tests use real temporary directories for an alias, a symlinked parent, a symlink to the workspace, a workspace reached through an alias, a symlink inside the plugin tree, a mismatch and a missing fact.
+2. **Plugin path binding.** `assertSkillPluginDirectory` requires `realpath(dir) === dir`, so no alias or symlink is allowed anywhere on the path. The directory must be a real directory whose tree holds only regular files and directories (bounded at 1024 entries and depth 8). It must be disjoint from the resolved workspace in both directions. Since the successor repair P2a-R2 the workspace must also exist and is resolved by realpath; at `ff52b9e` a missing workspace was compared lexically, which dot showed lets a symlinked parent hide an overlap. `buildConversationOptions` refuses a fragment whose plugin path is not exactly the trusted `skillPluginDirectory` runtime fact, or that has plugins with no such fact. Tests use real temporary directories for an alias, a symlinked parent, a symlink to the workspace, a workspace reached through an alias, a symlink inside the plugin tree, a mismatch and a missing fact.
 3. **No implicit Bash.** Covered by the explicit `bash` flag (above), with tests at policy, composer and activity level.
 4. **Contract proposal amended.** See the next section.
 
@@ -175,7 +175,7 @@ Proposed: a separately versioned telemetry receiver, `CapabilityTelemetry` 0.1.0
     - `post`: the same plus `summarySha256` and `summaryBytes` (0 to 16 777 216)
   - `subagent.lifecycle`
     - `started` / `stopped`: `{phase, agentId(1–128), agentType ∈ SUBAGENT_TYPES ∪ {'subagent'}}`
-- **Digest semantics**: lowercase hex SHA-256 of the RFC 8785 canonical JSON (`canonicalSha256`) of the SDK hook field. For `compact_summary` and `error`, the digest is taken over the UTF-8 string value. Absent fields hash `null`. Digests support correlation only. They are never evidence of content, and the raw values are never transmitted or stored.
+- **Digest semantics**: superseded by the single precise rule and test vectors in "Successor-review repairs", proposal T1. (The earlier wording here mixed RFC 8785 bytes, raw UTF-8 string bytes and "absent hashes null", and did not match the hooks, which hash the JSON string form and then normalised a missing summary to `''`.) Digests support correlation only. They are never evidence of content, and the raw values are never transmitted or stored.
 - **Bounds**: at most 4096 telemetry events per run and 1 KiB per serialized event. Exceeding either is refused, which latches the worker and fails the run.
 - **Replay and idempotency**:
   - Same `telemetryId` with identical canonical bytes: accepted idempotently.
@@ -221,7 +221,7 @@ Nothing was built.
    | `npm run check` | 4238/4241 | 4238/4241 | Same 3 failures |
 
    One later rerun showed 2 extra load-timing failures in `lifecycle-transition.test.mjs`. That file passes 20/20 three times in isolation on both branch and base, and `apps/control` is unchanged by this branch.
-8. `source-proof.test.mjs`: 4/5, the intentional recipe failure described above.
+8. `source-proof.test.mjs`: 5/5 at the final pin `ff52b9e` (the recipe commit `c509ca1d` made it 4/5 and was reverted, as described above; dot independently reproduced 5/5).
 
 Not run or blocked:
 - `apps/runtime/test/image-closure.test.mjs`: needs Docker, and no build is authorized.
@@ -246,5 +246,110 @@ There is no product browser tool list on this branch. Only the qualification bro
 
 1. dot to review proposals A and B before any freeze, then provide the receiver and Core's policy storage.
 2. The runtime preparation owner to run `sandbox-readiness/cli.mjs` on the actual worker host, decide `--outer-isolation-boundary`, and pass `bashSandbox`. The runtime launch configuration hashes the env and args, so `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` and the `--settings`/`--managed-settings` content must be part of the prepared request when Bash is admitted. Until then the launch fails closed.
-3. The shipping or candidate owner to cut a new candidate manifest or drop the recipe commit, and to reconcile it with the FROM-scratch proposal.
+3. The shipping or candidate owner to decide the bubblewrap/socat image proposal (the recipe commit is already reverted at `ff52b9e`; nothing needs dropping), cut a new candidate manifest if accepted, and reconcile it with the FROM-scratch proposal.
 4. Placement approval if Bash is wanted anywhere Fargate cannot run bubblewrap.
+
+## Successor-review repairs (15 October 2026)
+
+Branch `fable/p2a-r-readiness-plugin-20261015`, based on `ff52b9e`. Acceptance: dot's corrected P2a capability-policy re-review (HOLD on P2a-R1 and P2a-R2; telemetry receiver direction accepted as a proposal only). The accepted narrow repairs (hook latch, explicit Bash flag, pure resolver, canonical plugin-path equality in options) are unchanged. No contract, UIEvent, migration, lockfile, Dockerfile, credential, deployment or cloud change. Node v24.21.0.
+
+### Outline (recorded before the changes)
+
+| Finding | Owning module | Change |
+| --- | --- | --- |
+| P2a-R1 readiness | `sandbox-readiness/` | New pure `startup-observation.mjs` accounts for every frame/failure and derives one verdict; `readiness.mjs` keeps orchestration only (start, race, quiet window, deliberate shutdown, cleanup) |
+| P2a-R2 plugin/workspace | `capabilities/skill-plugin.mjs` | Fail closed when the workspace does not exist (no lexical fallback) |
+| Digest blocker 1 (worker side) | `capabilities/hooks.mjs` | Refuse a missing/non-string required SDK string field; no contract or event-shape change |
+| Report corrections | this report | Stale "4/5" check and "drop the recipe commit" integration item corrected |
+
+### P2a-R1: readiness verdict over every observed SDK frame (closed in source)
+
+- Every frame is validated and counted. Bookkeeping `system` frames from a closed startup list (`init`, `status`, `hook_*`, `plugin_install`, `commands_changed`, `worker_shutting_down`) are tolerated; frames that exist only after a model request (`assistant`, `user`, `stream_event`, `rate_limit_event`, `tool_progress`, `tool_use_summary`, `prompt_suggestion`, and `system` `api_retry`/`thinking_tokens`/`model_refusal_*`/`compact_boundary`/`memory_recall`/`permission_denied`) are model activity; anything else, or a non-object/typeless frame, refuses.
+- Every result frame, success or error, is accounted. `num_turns` must be a non-negative safe integer and `total_cost_usd` a finite non-negative number (otherwise `SDK_FRAME_MALFORMED`); both are summed over all results. Any turn or cost refuses with `READINESS_MODEL_TURN_OBSERVED` (now a refused report, previously an exception with no report). An error result refuses with the bounded reason code. A zero-usage success result still refuses (`SDK_UNEXPECTED_RESULT`): the probe never asks for a turn.
+- The verdict is computed once, after the full consumption and the deliberate shutdown, in fixed precedence: model activity, malformed frame, startup error (error result, `initializationResult()` rejection, iterator rejection or `query()` throwing), unexpected frame/result, stream ending on its own, timeout, missing initialisation, failed shutdown, then `ready`. Contrary evidence observed at any time, including after initialisation and during the shutdown, therefore wins over an earlier `ready`.
+- Initialisation is followed by a 1 s quiet window (`OBSERVE_MS`) that ends early on contrary evidence.
+- **Deliberate shutdown versus startup failure.** After the probe begins its own close, a normal end of the stream or an `AbortError` from the iterator is the deliberate shutdown. Any other iterator failure (`SDK_SHUTDOWN_FAILED`), a throwing `close()` (`SDK_CLOSE_FAILED`), a consumer that does not settle within 5 s (`SDK_CLEANUP_TIMEOUT`) or an unremovable temp directory (`READINESS_CLEANUP_FAILED`) is a failed shutdown (`shutdown:'failed'`) and never ready. Before the close begins, the stream ending or failing for any reason is an unexpected startup failure.
+- `sdkStartup` now reports `{status, reasonCode, userMessagesSent:0, modelTurns, costUsd, messagesObserved, resultsObserved, initialized, shutdown}` (schema still `0.1-proposal`). `toBashSandboxAttestation` additionally requires a clean verdict (ready, initialised, no result, zero turns and cost, clean shutdown), so a report whose `ready` flag contradicts its verdict is not available.
+
+Regressions, `test/sandbox-readiness-verdict.test.mjs` (11 tests, scripted ports, synthetic control flow): positive control (no frames, a tolerated `system` frame, an `AbortError` on close); reviewer case 1 (init, then success with `num_turns:1`, `total_cost_usd:0.01`); reviewer case 2 (init, then `error_during_execution` "Sandbox required but unavailable", zero usage); both race orderings for error and usage results, plus cost on an error result; multiple results; results during the shutdown; iterator throw and unprompted end after init; model-activity, malformed and unexpected frames; close failure, non-abort shutdown failure, unsettled consumer, temp-dir removal failure, timeout with an unsettled consumer; `query()` throwing; tampered reports. Every negative asserts `ready:false` and `available:false` with and without the outer-boundary assertion, no user message, exactly one close, and temp-dir removal. `test/sandbox-readiness.test.mjs` is updated for the new report fields only.
+
+Reverted-fix proof: with `readiness.mjs` temporarily restored to `ff52b9e`, all 11 tests fail. Both reviewer cases fail on the `ready:false` assertion with the old verdict `{"status":"ready",...,"messagesObserved":1}`; the positive control fails only on the new report fields.
+
+### P2a-R2: missing workspace refused (closed in source)
+
+Runtime preparation provides the workspace (`configuration.workspace`, restored into by the supervisor) before `buildConversationOptions`/`createSdkCapabilities` run, and the SDK cannot start in a missing cwd, so a missing workspace has no legitimate use here. `assertSkillPluginDirectory` now resolves both the plugin and the workspace with `realpath` and requires both to be existing real directories; any error (missing, dangling link, not a directory) refuses with `SKILL_PLUGIN_DIRECTORY_REFUSED`. The lexical pre-checks, plain-tree walk and the exact trusted-path equality in `options.mjs` are unchanged.
+
+Regressions in `test/skill-plugin-binding.test.mjs` (2 new tests, real temporary directories): the reviewer's exact probe (`root/workspace-alias -> root/plugin`, workspace `root/workspace-alias/missing-conversation`); a dangling workspace link into the plugin; the reverse direction (plugin beneath the directory an aliased workspace parent resolves to, both with an existing workspace and with a missing one); a canonical but missing workspace; a file as workspace; the same through `buildConversationOptions`; controls (canonical disjoint accepted, existing alias into the plugin refused, `/./` plugin spelling refused, canonical trusted path still bound exactly). An ancestor of an existing plugin always exists, so the "workspace contains the plugin" direction with a missing leaf cannot occur; it is covered by the existing-alias case.
+
+Tests that bound the plugin to the nonexistent `/workspace/conversations/<id>` path (`capabilities`, `options-capabilities`, `legacy-tools-excluded`) now use `preparedWorkspace()` from `capability-fixture.mjs`, a real directory as runtime preparation provides; one hard-coded `Read(//workspace/...` prefix assertion now derives from that path. The 43-name exclusion assertions are unchanged.
+
+Reverted-fix proof: with `skill-plugin.mjs` restored to `ff52b9e`, both new tests fail ("Missing expected exception: missing leaf beneath a parent aliasing into the plugin", and the missing options workspace).
+
+### Worker-side digest fix (freeze blocker 1, local behaviour only)
+
+`hooks.mjs` normalised a missing `compact_summary` to `''` and digested a missing `error` as `null`. Both are required `string` fields in the SDK hook types (`PostCompactHookInput`, `PostToolUseFailureHookInput`). They are now refused through the existing latch (`COMPACTION_INPUT_REFUSED` / `AUDIT_INPUT_REFUSED`, loop stopped, `check()` throws `CAPABILITY_HOOK_FAILED`); a present value, including `''`, is digested exactly as before. `test/hook-digest.test.mjs` (4 tests) pins the vectors below and these refusals. Reverted-fix proof: with `hooks.mjs` restored, the two refusal tests fail; the vector and unknown-field tests pass on both (they pin unchanged behaviour). `hooks.mjs` is outside this lane's named paths; the lead authorised this local fix, and the accepted latch is untouched.
+
+### Checks
+
+| Check | Base `ff52b9e` | This branch |
+| --- | --- | --- |
+| `cd apps/worker/conversation && node --test 'test/*.test.mjs'` | 103/103 | **120/120**, 3 runs (2 default concurrency, 1 `--test-concurrency=1`) |
+| `node --test 'continuation/test/*.test.mjs' 'skills/test/*.test.mjs'` (same package) | 82/82 (lane report) | 82/82 |
+| `node --test 'packages/skills/test/*.test.mjs'` | 60/60 (lane report) | 60/60 |
+| `node --test scripts/qualification/assembled-image/source-proof.test.mjs` (repo root) | 5/5 | 5/5 |
+| `apps/control/conversations`: `npx tsc --noEmit -p tsconfig.json`; `apps/runtime`: `npx tsc --noEmit` | pass | pass |
+| Scratch strict `checkJs` config over the changed modules | n/a | no errors in `capabilities/*`, `sandbox-readiness/*` or `options.mjs`; `checkJs` also reaches `continuation/*.mjs`, which reports pre-existing implicit-any errors outside this lane |
+| Real pinned SDK readiness run on this container (no bwrap/socat, no model request) | refused / `SANDBOX_DEPENDENCIES_MISSING` | refused / `SANDBOX_DEPENDENCIES_MISSING`, `initialized:false`, `shutdown:'clean'`, 0 turns, 0 cost; no CLI process left |
+
+Not run: a ready-host SDK startup (needs bubblewrap/socat on an attested host), so the real CLI's frames and iterator behaviour on a deliberate close of an initialised session are unmeasured; if it throws a non-abort error there the check reports `SDK_SHUTDOWN_FAILED` (fail closed) and the classification must be revisited with that measurement. The tolerated startup `system` subtypes come from the SDK types, not a live trace. Every item in the earlier "Not run or blocked" list is still unrun.
+
+### Proposals for dot: telemetry receiver freeze blockers (proposal text only; nothing frozen or edited)
+
+**T1. One digest rule.** `digest(v)` = lowercase hex SHA-256 of the UTF-8 bytes of the RFC 8785 (JCS) serialisation of the JSON value `v` (`canonicalSha256` in `packages/contracts/validate.mjs`). For a string this includes the surrounding quotes and JCS escaping: only `"`, `\` and U+0000–U+001F are escaped (`\b \t \n \f \r` short forms, otherwise `\u00xx` lower-case); every other code point, including U+2028/U+2029 and astral characters, is literal UTF-8. Field classes:
+- SDK-required string fields (`error`, `compact_summary`): absent, `null` or non-string is refused and latched (worker fix above), never digested as `''` or `null`. `''` is valid.
+- SDK-required `unknown` fields (`tool_input`, `tool_response`): JSON cannot carry `undefined`, so an absent key and `null` both digest as `null`.
+- A lone surrogate has no UTF-8 encoding; the JCS serialiser throws and the projection is refused and latched. The same holds for any value JCS cannot serialise.
+- `summaryBytes` is the UTF-8 byte length of the string value itself (no quotes, no escaping), 0–16 777 216; larger is refused.
+- The receiver cannot recompute digests (it never sees raw values); it validates `^[0-9a-f]{64}$`.
+
+| Vector | JSON value | Exact canonical bytes | SHA-256 |
+| --- | --- | --- | --- |
+| empty | `""` | `""` | `12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126` |
+| absent or null (`unknown` fields only) | `null` | `null` | `74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b` |
+| escaping | `a"b\c` + LF + TAB + `/` | `"a\"b\\c\n\t/"` | `37cbb89a95cfae327a2e8681bc1627570b46bbf6b4a0cb672c174d38ebb9d05d` |
+| control | U+0001 | `"\u0001"` | `b81cfb0a6715e53b373345b49e8ad94eb55fd777519dc539373d0634973c186e` |
+| Unicode BMP | U+00E9 | `"é"` (4 bytes: quotes plus 2-byte UTF-8) | `f2886017e9c7abacf804b54d64787dce2b611c9544ba21f3affdd126a6e50086` |
+| Unicode astral | U+1F600 | `"😀"` (literal) | `7a0c50b92434b015545fe93ab723db2d4b2cdd14a441405624a9ce8be29f1d5a` |
+| U+2028 | U+2028 | literal, unescaped | `8aa716ff98153a8b537e4e21f27cb75d7ebe92f4754aca11a38ee7a27b714941` |
+| key order | `{b:1,a:[true,null,"x"]}` | `{"a":[true,null,"x"],"b":1}` | `54a65415ad370228851a1da4b31b6fd42dc58b19a50d35cae759325f7388ce64` |
+| missing required string | absent `compact_summary` / `error` | refused | none |
+| lone surrogate | U+D800 | refused | none |
+
+**T2. Closed bounds.** Proposed for the receiver schema and mirrored by the worker before publishing. Today the worker's `agentId`/`agentType` are unbounded strings, so this needs a worker change once agreed.
+- `agentId`: `null` or `^[A-Za-z0-9_-]{1,128}$`. `agentType`: `null` or one of `research`, `analysis`, `artifact_production`, `verification`, `subagent`. Both are `null` together or non-null together. This is the same rule in `tool.audit`, `compaction.boundary` and `subagent.lifecycle`; in `subagent.lifecycle` both are required non-null. Real SDK agent-id formats must be measured before freeze.
+- `toolUseId` `^[A-Za-z0-9_-]{1,128}$`; `tool` `^[A-Za-z0-9_]{1,64}$` (MCP names to be measured); `durationMs` `null` or an integer 0–86 400 000; `trigger` `manual|auto`; `interrupted` boolean.
+- `telemetryId`: lower-case UUID v4. `sequence`: integer 1–4096 (the per-run cap, far below 2^53−1). `createdAt`: exactly `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$`, and it must round-trip through `new Date(x).toISOString() === x`.
+- Size: every string field is ASCII-pattern-restricted, so the persisted event `{contractVersion, telemetryId, sequence, createdAt, type, data}` has a computed JCS maximum of 777 bytes (`tool.audit` failed; completed 763, compaction 489, lifecycle 365), below the 1 KiB cap. `RunBinding` is not part of the bounded bytes: its JCS worst case is 1 799 bytes (128-character tenant/actor ids of control characters). The receiver takes the binding from the run-owner credential and its own run record, and the request's binding must equal it. The receiver refuses any request whose JCS body exceeds 1 024 bytes, or that fails the schema, before persistence. It stores and logs only a refusal code, never the rejected body.
+
+**T3. Cursor, idempotency and fencing in one transaction.**
+- *Allocation and serialisation.* The worker composer allocates `sequence` from one per-attempt counter. Publication goes through a single in-flight queue (concurrent hooks from parallel subagents are serialised), so requests arrive in sequence order. The receiver is the authority and enforces contiguity.
+- *Receiver transaction* (one database transaction holding the run's row lock, the same lock used for terminalisation and fence advance):
+  1. Authenticate the run-owner credential, rejecting revoked or expired credentials (checked per request, not cached), and derive the binding.
+  2. Look up `(runId, telemetryId)`. If present with identical canonical bytes and an identical stored binding (attempt, worker, fence), acknowledge with the stored sequence and write nothing. If present with different bytes or binding, refuse `TELEMETRY_CONFLICT`.
+  3. If the credential's attempt, worker or fence is not current, refuse `STALE_WRITER`.
+  4. If the run is terminal, refuse `TELEMETRY_RUN_TERMINAL`.
+  5. Require `sequence === head + 1`, otherwise `TELEMETRY_SEQUENCE_GAP`, and require `sequence ≤ 4096`.
+  6. Insert the row (unique `(runId, sequence)` and `(runId, telemetryId)`), advance the head, commit, then acknowledge.
+
+  Step 2 before steps 3–4 reconciles "events after terminal refused" with "identical replay accepted": after terminalisation only a byte-identical replay of an already committed event from the same binding is acknowledged, and nothing new is written.
+- *Resume.* The cursor is per run and continuous across attempts. The transaction that advances the fence for a new attempt/worker reads the head; `load`/resume returns `{telemetryHead}`, and the new attempt continues at `head + 1`. The old writer is fenced out from that commit, so its uncommitted events are refused and never re-sent. An unknown outcome of an old in-flight event never licenses re-sending it under the new binding.
+- *Reads.* `history({runId, after, limit ≤ 256})` for authorised audit principals only, with tenant scope from the receiver's record. It is never streamed to the UI. Retention and purge follow the run's audit record, as decided by the control owner.
+- Any refusal is a latched worker failure, as today.
+
+**T4. Receiver and worker adapter remain unimplemented.** The composer still calls `runOwner.append` with `eventId`, and the control service still accepts only `run.status`/`message.delta`, so capability events fail closed today. After T1–T3 are accepted: a new `runOwner` telemetry port and adapter in `capabilities/index.mjs` (worker), and the receiver plus storage (control owner, with a centrally allocated migration). Not started here. UIEvent 0.1.0 is unchanged.
+
+### Residual risks
+
+- Readiness is still local evidence only. The quiet window is a bounded heuristic: a contrary frame the SDK never delivers after `close()` cannot be observed.
+- The plugin check proves canonical, existing, disjoint paths at check time only. It does not prove an immutable mount, ownership, file hashes, or the absence of a workspace swap between the check and SDK start; the runtime preparation/image owner must establish those.
+- The telemetry receiver, bounds and cursor are proposals; hooks must stay off in real runs until dot accepts and implements them.
