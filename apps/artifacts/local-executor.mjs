@@ -10,6 +10,9 @@ const error=code=>Object.assign(new Error(code),{code});
 export function createLocalArtifactExecutor({pythonExecutable,nodeExecutable,pptxModulePath,tempRoot,timeoutMs=30000,officeTransformer=null}){
   if(![pythonExecutable,nodeExecutable,pptxModulePath,tempRoot].every(p=>typeof p==='string'&&isAbsolute(p))||!Number.isInteger(timeoutMs)||timeoutMs<1||timeoutMs>60000)throw error('ARTIFACT_CONFIGURATION');
   return Object.freeze({async execute({request,assets,base=null,deadlineMs,maxBytes,signal}){
+    // PDF output is composed from a fresh DOCX intermediate that is not retained, and no PDF
+    // revision owner exists. Retained PDF bytes must never reach the DOCX revision owner.
+    if(request.format==='pdf'&&base!==null)throw error('ARTIFACT_REVISION_UNSUPPORTED');
     if(request.format==='pdf'&&!officeTransformer)throw error('ARTIFACT_RENDERER_UNAVAILABLE');
     const dir=await mkdtemp(join(tempRoot,'meri-artifact-'));let receipt;
     try{
