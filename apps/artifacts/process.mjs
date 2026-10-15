@@ -3,6 +3,18 @@ import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const error=code=>Object.assign(new Error(code),{code});
+// A killed or already-exited member stays in its process group as a zombie until its parent (or init, after
+// reparenting) reaps it, and SIGKILL delivery is asynchronous, so after the single group kill absence is polled
+// (signal 0 only) for a bounded time. A group still present at the bound stays ARTIFACT_CLEANUP_FAILED.
+const GROUP_DRAIN_MS=5000,GROUP_POLL_MS=10;
+async function killGroup(pid){
+  try{process.kill(-pid,'SIGKILL');}catch(e){return e.code==='ESRCH'?'absent':'error';}
+  for(const until=Date.now()+GROUP_DRAIN_MS;;){
+    try{process.kill(-pid,0);}catch(e){return e.code==='ESRCH'?'absent':'error';}
+    if(Date.now()>=until)return 'present';
+    await new Promise(resolve=>setTimeout(resolve,GROUP_POLL_MS));
+  }
+}
 // Only callers in this module select commands. Output limits stop owned children;
 // they cannot qualify a filesystem quota, network containment or a native host.
 export async function runArtifactProcess(executable,args,{cwd,input,signal,deadlineMs,maxOutput=262144}){
@@ -22,8 +34,8 @@ export async function runArtifactProcess(executable,args,{cwd,input,signal,deadl
     const result=await new Promise(resolve=>{child.once('error',e=>{spawnError=e.code;});child.once('close',(code,signal)=>resolve({code,signal}));});
     // Fixed product programs do not intentionally spawn descendants. Kill any
     // remaining members even after leader exit; do not claim namespace absence.
-    if(child.pid)try{process.kill(-child.pid,'SIGKILL');}catch(e){if(e.code!=='ESRCH')reason='ARTIFACT_CLEANUP_FAILED';}
-    let groupAbsent=child.pid===undefined;if(child.pid)try{process.kill(-child.pid,0);}catch(e){if(e.code==='ESRCH')groupAbsent=true;}
+    const group=child.pid?await killGroup(child.pid):'absent';if(group==='error')reason='ARTIFACT_CLEANUP_FAILED';
+    const groupAbsent=group==='absent';
     const retainedOut=Buffer.concat(stdout),retainedErr=Buffer.concat(stderr);
     const receipt={pid:child.pid??null,exitCode:result.code??null,signal:result.signal??null,spawnError,stdoutBytes:outBytes,stderrBytes:errBytes,stdoutRetainedBytes:retainedOut.length,stderrRetainedBytes:retainedErr.length,hashScope:'retained bytes',stdoutSha256:sha(retainedOut),stderrSha256:sha(retainedErr),stdoutEnded,stderrEnded,streamErrors,leaderClosed:true,groupKillAttempted:Boolean(child.pid),groupAbsent,sandboxQualified:false};
     if(reason||spawnError||result.code!==0||!stdoutEnded||!stderrEnded||!groupAbsent)throw Object.assign(error(reason??(!groupAbsent?'ARTIFACT_CLEANUP_FAILED':'ARTIFACT_PROCESS_FAILED')),{receipt,stdout:retainedOut,stderr:retainedErr});

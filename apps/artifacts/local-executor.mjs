@@ -10,15 +10,17 @@ const error=code=>Object.assign(new Error(code),{code});
 export function createLocalArtifactExecutor({pythonExecutable,nodeExecutable,pptxModulePath,tempRoot,timeoutMs=30000,officeTransformer=null}){
   if(![pythonExecutable,nodeExecutable,pptxModulePath,tempRoot].every(p=>typeof p==='string'&&isAbsolute(p))||!Number.isInteger(timeoutMs)||timeoutMs<1||timeoutMs>60000)throw error('ARTIFACT_CONFIGURATION');
   return Object.freeze({async execute({request,assets,base=null,deadlineMs,maxBytes,signal}){
-    // PDF output is composed from a fresh DOCX intermediate that is not retained, and no PDF
-    // revision owner exists. Retained PDF bytes must never reach the DOCX revision owner.
-    if(request.format==='pdf'&&base!==null)throw error('ARTIFACT_REVISION_UNSUPPORTED');
+    // Every PDF is composed from a fresh default-template DOCX intermediate that is not retained, so a PDF
+    // revision is a full re-render of the complete revised typed spec through the same route as creation.
+    // The exact parent stays the lineage base (verified by the service); its PDF bytes never reach a generator.
+    if(request.format==='pdf'&&base!==null&&base.request?.format!=='pdf')throw error('ARTIFACT_REVISION_FORMAT');
     if(request.format==='pdf'&&!officeTransformer)throw error('ARTIFACT_RENDERER_UNAVAILABLE');
+    const generationBase=request.format==='pdf'?null:base;
     const dir=await mkdtemp(join(tempRoot,'meri-artifact-'));let receipt;
     try{
       if(!['docx','txt','xlsx','pptx','zip','pdf'].includes(request.format))throw error('ARTIFACT_FORMAT');
       const generationRequest=request.format==='pdf'?{...request,format:'docx'}:request;
-      const input=Buffer.from(JSON.stringify({request:generationRequest,maxBytes,base:base?{request:base.request,base64:base.bytes.toString('base64')}:null,assets:assets.map(a=>({id:a.id,base64:a.bytes.toString('base64')}))}));if(input.length>16777216)throw error('ARTIFACT_INPUT_LIMIT');
+      const input=Buffer.from(JSON.stringify({request:generationRequest,maxBytes,base:generationBase?{request:generationBase.request,base64:generationBase.bytes.toString('base64')}:null,assets:assets.map(a=>({id:a.id,base64:a.bytes.toString('base64')}))}));if(input.length>16777216)throw error('ARTIFACT_INPUT_LIMIT');
       const presentation=request.format==='pptx';
       if(presentation&&assets.length){
         const validation=await runArtifactProcess(pythonExecutable,['-I','-B',join(here,'python/entry.py'),'--validate-assets'],{cwd:dir,input,signal,deadlineMs:Math.min(deadlineMs,Date.now()+timeoutMs)});
