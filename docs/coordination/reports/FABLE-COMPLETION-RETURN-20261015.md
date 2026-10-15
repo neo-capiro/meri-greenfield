@@ -7,7 +7,7 @@ Repository `neo-capiro/meri-greenfield`. Branch `fable/meri-complete-20261015` f
 | Commit | Tree | Content | Status |
 | --- | --- | --- | --- |
 | `b5be44d5141ae5fd3830aed789cb7ad525506c4e` | `efc4b7bf…` | pin (dot: ACCEPT SOURCE ONLY for `e32353f`, ACCEPT CANDIDATE RECORD, ACCEPT EVIDENCE PUBLICATION) | base |
-| `9430eed2acb7eaa94f6459158d0000cbef433fe1` | `38e6103a…` | lane 1: two-distinct-target race control; return-report corrections | source, for dot's review |
+| `9430eed2acb7eaa86f6459158d0000cbef433fe1` | `38e6103a…` | lane 1: two-distinct-target race control; return-report corrections | source, for dot's review |
 | `746fc5bf63398da982fe76032afbf0a2bf92eced` | `60e19ae4…` | lane 2: retention subsystem (purge disabled), revision 3, revised stand-in packet, `control-retention` suite | source, for dot's review |
 | evidence commits after these | see `git log` | `lane1/`, `lane2/`, this return, cleanup receipt, manifest | evidence only |
 
