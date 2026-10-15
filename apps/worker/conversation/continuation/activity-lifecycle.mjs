@@ -8,6 +8,8 @@ import {continuationContextSha256} from './options.mjs';
 import {assertCaptureReceipt} from './native-receipts.mjs';
 const fault=code=>Object.assign(new Error(code),{code}),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
+/** The control store's only worker exit from a control hold (lifecycle/journal.mjs HOLD_CHECKPOINT_FAILED): an explicit, verified failure, never a silent close. */
+export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 export function assertLifecycleConfiguration(config,runOwner) {
  const {captureCheckpoint,captureCompletion,pollMs=100,captureOwnsClose=false}=own(config,['captureCheckpoint'],['captureCompletion','pollMs','captureOwnsClose']);
  if(typeof captureOwnsClose!=='boolean'||typeof captureCheckpoint!=='function'||captureCompletion!==undefined&&typeof captureCompletion!=='function'||!Number.isSafeInteger(pollMs)||pollMs<5||pollMs>5000||
@@ -19,7 +21,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
  const contextSha256=continuationContextSha256(saved.request,saved.run.scopes),abort=new AbortController();
  const poll=createOperationLifetime({deadlineMs:runtime.deadlineMs,now,signal:AbortSignal.any([life.signal,abort.signal]),errorFactory:fault});
  const adapter=createSdkCommandAdapter({binding,contextSha256,input,query,lifetime:poll,captureOwnsClose}),pending=new Map();
- let stopped=false,held=false,after=0,sessionId=null,error,wakeIdle;const failed=Promise.withResolvers(),heldResult=Promise.withResolvers(),initialized=Promise.withResolvers();
+ let stopped=false,held=false,fenced=false,after=0,sessionId=null,error,wakeIdle;const failed=Promise.withResolvers(),heldResult=Promise.withResolvers(),initialized=Promise.withResolvers();
  const ack=(entry,outcome,sdkUserMessageId)=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,
  commandSha256:entry.commandSha256,outcome,...(sdkUserMessageId===undefined?{}:{sdkUserMessageId})},signal:poll.signal});
  function envelope(raw){const e=data(own(raw,['controlSequence','commandSha256','command'])),c=assertWorkerControl(e.command);
@@ -38,7 +40,7 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    recorded.state!=='APPLIED'||recorded.intent!==(entry.command.action==='pause'?'pause':'approval.wait'))throw fault('CHECKPOINT_RECORD_REFUSED');
   pending.delete(entry.command.controlId);heldResult.resolve({state:entry.command.action==='pause'?'paused':'waiting-for-approval'});
  }
- async function pump(){try{await poll.run(()=>initialized.promise);while(!stopped&&!held){const raw=await poll.run(signal=>runOwner.nextControls({binding,after,signal}));
+ async function pump(){try{await poll.run(()=>initialized.promise);while(!stopped&&!held){const fencedRead=fenced,raw=await poll.run(signal=>runOwner.nextControls({binding,after,signal}));
   if(!Array.isArray(raw)||raw.length>32)throw fault('CONTROL_PAGE_REFUSED');
   for(const row of raw){const entry=envelope(row);if(stopped||held)break;if(pending.size>=32)throw fault('CONTROL_PENDING_LIMIT');
    const claim=data(await poll.run(signal=>runOwner.claimControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256},signal})));
@@ -47,7 +49,10 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    pending.set(entry.command.controlId,entry);after=entry.controlSequence;
    if(entry.command.action==='steer')await adapter.apply(entry.command);else {await pause(entry);break;}
   }
-  if(!stopped&&!held)await poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,pollMs);wakeIdle=done;
+  // A read begun after a refused publication must reach the durable hold that refused it; exhausting
+  // the pending controls without one is not a hold, so the refusal stays an execution failure.
+  if(fencedRead&&!held&&raw.length===0)throw fault('HOLD_CONTROL_MISSING');
+  if(!stopped&&!held&&!fenced)await poll.run(signal=>new Promise((resolve,reject)=>{const timer=setTimeout(done,pollMs);wakeIdle=done;
    function done(){clearTimeout(timer);wakeIdle=undefined;signal.removeEventListener('abort',cancel);resolve();}function cancel(){clearTimeout(timer);wakeIdle=undefined;reject(fault('CANCELLED'));}
    signal.addEventListener('abort',cancel,{once:true});if(signal.aborted)cancel();}));
  }}catch(e){if(!stopped){error=fault('LIFECYCLE_EXECUTION_UNKNOWN');failed.resolve(error);heldResult.reject(error);}}
@@ -68,6 +73,11 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
    await poll.run(()=>ack(entry,'APPLIED',message.uuid));pending.delete(message.uuid);
   }
  }
+ /** The durable owner refused a publication (a pause/approval.wait hold may have committed before this
+  * reader saw it). Suppress all further display output and read again at once: a pending hold is claimed
+  * once and finished through the verified checkpoint; anything else fails through the existing owner.
+  * Returns false when no reader remains to settle a hold (the caller then fails explicitly). */
+ function fence(){if(held)return true;if(stopped||error)return false;fenced=true;wakeIdle?.();return true;}
  let finishing;
  function finish({keepInputOpen=false}={}){return finishing??=finishOnce(keepInputOpen);}
  async function finishOnce(keepInputOpen){stopped=true;wakeIdle?.();if(!sessionId)abort.abort();
@@ -76,16 +86,17 @@ export function createActivityLifecycle({config,runOwner,binding,saved,runtime,i
   // session needed by the activity's final publication. Deadline/caller abort
   // still cancels the read and refuses completion through the existing owner.
   await pumping;abort.abort();
+  if(fenced&&!held)heldResult.reject(error??fault('HOLD_UNSETTLED'));
   // A dispatched but unacknowledged UUID remains UNKNOWN, never re-enqueued.
   for(const entry of pending.values()){const cleanup=createOperationLifetime({deadlineMs:now()+100,now,errorFactory:fault});
    try{await cleanup.run(signal=>runOwner.ackControl({binding,input:{controlId:entry.command.controlId,commandSha256:entry.commandSha256,outcome:'UNKNOWN'},signal}));}
    catch{}finally{cleanup.close();pending.delete(entry.command.controlId);}}
   poll.close();if(!keepInputOpen)input.close();
  }
- async function complete(){if(!captureCompletion||held||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');await finish({keepInputOpen:true});if(error||held)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
+ async function complete(){if(!captureCompletion||held||fenced||!sessionId)throw fault('COMPLETION_CAPTURE_UNAVAILABLE');await finish({keepInputOpen:true});if(error||held||fenced)throw error??fault('COMPLETION_CAPTURE_UNAVAILABLE');const started=now();
   const captured=await life.run(signal=>captureCompletion({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,sessionId,contextSha256,signal}));
   const verified=assertCaptureReceipt(captured,{binding,versions:saved.run.versions,request:saved.request,scopes:saved.run.scopes,contextSha256,sessionId,started,now});life.limitDeadline(verified.expiresAtMs);return verified.receipt;
  }
- return Object.freeze({observe,finish,captureCompletion:complete,canCaptureCompletion:()=>captureCompletion!==undefined,isHeld:()=>held,heldResult:()=>heldResult.promise,
+ return Object.freeze({observe,fence,finish,captureCompletion:complete,canCaptureCompletion:()=>captureCompletion!==undefined,isHeld:()=>held||fenced,heldResult:()=>heldResult.promise,
   failure:failed.promise,check(){if(error)throw error;},close(){stopped=true;abort.abort();poll.close();input.close();}});
 }
