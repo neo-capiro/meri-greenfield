@@ -12,9 +12,11 @@ export const SKILL_TOOL='Skill';
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const MAX_PLUGIN_ENTRIES=1024,MAX_PLUGIN_DEPTH=8;
-/** Canonical path of an existing directory, or the textual path when it does not exist yet (a missing workspace can
- * contain no alias). @param {string} path */
-const canonical=path=>{try{return realpathSync(path);}catch(error){if(/** @type {{code?:string}} */(error).code==='ENOENT')return path;throw error;}};
+/** Canonical path of an existing real directory; anything else (missing, dangling, not a directory) throws. A missing
+ * workspace is refused rather than compared lexically: its existing parent can be a symlink into the plugin (dot
+ * P2a-R2), and runtime preparation creates the workspace before the SDK options are assembled (the SDK cannot start
+ * in a missing cwd). @param {string} path */
+const existingDirectory=path=>{const real=realpathSync(path);if(!lstatSync(real).isDirectory())throw Error('not a directory');return real;};
 /** Refuses any symlink (or non-regular, non-directory entry) inside the plugin tree, bounded in size and depth.
  * @param {string} root */
 function assertPlainTree(root){
@@ -26,10 +28,11 @@ function assertPlainTree(root){
 }
 /** The trusted prepared plugin directory, canonicalised: it must already be its own realpath (no alias or symlink
  * on the way), a real directory whose tree holds only regular files and directories, and disjoint from the
- * writable conversation workspace after resolving both. @param {unknown} directory @param {string} cwd @returns {string} */
+ * writable conversation workspace after resolving both. Both must exist; a missing workspace is refused.
+ * @param {unknown} directory @param {string} cwd @returns {string} */
 export function assertSkillPluginDirectory(directory,cwd){
  if(typeof directory!=='string'||!isAbsolute(directory)||directory.includes('/../')||directory.endsWith('/')||directory.includes('\0')||directory===cwd||directory.startsWith(cwd+'/')||cwd.startsWith(directory+'/'))fail('SKILL_PLUGIN_DIRECTORY_REFUSED');
- let real,workspace;try{real=realpathSync(directory);workspace=canonical(cwd);if(!lstatSync(real).isDirectory())fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}catch{fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}
+ let real,workspace;try{real=existingDirectory(directory);workspace=existingDirectory(cwd);}catch{fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}
  if(real!==directory||real===workspace||real.startsWith(workspace+'/')||workspace.startsWith(real+'/'))fail('SKILL_PLUGIN_DIRECTORY_REFUSED');
  try{assertPlainTree(real);}catch{fail('SKILL_PLUGIN_DIRECTORY_REFUSED');}
  return real;

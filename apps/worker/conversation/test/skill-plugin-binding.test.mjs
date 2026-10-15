@@ -47,3 +47,35 @@ test('an options fragment whose plugin path differs from the trusted prepared pa
  assert.throws(()=>buildConversationOptions(runtime(),new AbortController(),undefined,undefined,trusted),/CAPABILITY_FRAGMENT_REFUSED/,'no prepared path at all');
  assert.throws(()=>buildConversationOptions(runtime({skillPluginDirectory:join(scratch,'plugin-alias')}),new AbortController()),refused,'an aliased runtime fact');
 });
+
+test('dot P2a-R2: a missing workspace is refused, so an aliased existing parent cannot hide an overlap with the plugin',()=>{
+ const root=join(scratch,'r2');mkdirSync(join(root,'plugin'),{recursive:true});const pluginDir=join(root,'plugin');
+ // Reviewer's exact probe: the workspace's existing parent is a symlink to the plugin; the leaf does not exist yet.
+ symlinkSync(pluginDir,join(root,'workspace-alias'));
+ assert.throws(()=>assertSkillPluginDirectory(pluginDir,join(root,'workspace-alias','missing-conversation')),refused,'missing leaf beneath a parent aliasing into the plugin');
+ // The leaf itself is a dangling symlink whose target would sit inside the plugin.
+ symlinkSync(join(pluginDir,'later'),join(root,'dangling-workspace'));
+ assert.throws(()=>assertSkillPluginDirectory(pluginDir,join(root,'dangling-workspace')),refused,'dangling workspace link into the plugin');
+ // Reverse direction: the plugin sits beneath the directory an aliased workspace parent resolves to. An existing
+ // workspace is resolved and compared; a missing one cannot be verified and is refused rather than compared lexically.
+ const home=join(root,'home');mkdirSync(join(home,'conversation','skill-plugin'),{recursive:true});symlinkSync(home,join(root,'home-alias'));
+ assert.throws(()=>assertSkillPluginDirectory(join(home,'conversation','skill-plugin'),join(root,'home-alias','conversation')),refused,'plugin inside an existing aliased workspace');
+ const sibling=join(home,'skill-plugin');mkdirSync(sibling);
+ assert.throws(()=>assertSkillPluginDirectory(sibling,join(root,'home-alias','missing-conversation')),refused,'missing workspace beneath an alias of the plugin parent');
+ // Without any alias a missing workspace is refused as well, and a workspace that is a file is not a directory.
+ assert.throws(()=>assertSkillPluginDirectory(plugin,join(workspaceRoot,'missing-conversation')),refused,'canonical but missing workspace');
+ const fileWorkspace=join(root,'file-workspace');writeFileSync(fileWorkspace,'x');
+ assert.throws(()=>assertSkillPluginDirectory(plugin,fileWorkspace),refused,'workspace is not a directory');
+ // Controls: canonical disjoint directories are accepted; an existing alias into the plugin is refused.
+ assert.equal(assertSkillPluginDirectory(plugin,cwd),plugin);assert.equal(assertSkillPluginDirectory(pluginDir,cwd),pluginDir);
+ const existingAlias=join(root,'existing-alias');symlinkSync(pluginDir,existingAlias);
+ assert.throws(()=>assertSkillPluginDirectory(pluginDir,existingAlias),refused,'existing workspace alias resolving to the plugin');
+ assert.throws(()=>assertSkillPluginDirectory(`${root}/./plugin`,cwd),refused,'non-canonical plugin spelling');
+});
+
+test('dot P2a-R2: options built for a missing workspace refuse the plugin fact before any SDK option is produced',()=>{
+ const missing=join(scratch,'r2-options',conversation);symlinkSync(plugin,join(scratch,'r2-options-link'));
+ for(const target of [missing,join(scratch,'r2-options-link',conversation)])
+  assert.throws(()=>buildConversationOptions({...runtime({skillPluginDirectory:plugin}),cwd:target},new AbortController()),refused,target);
+ assert.deepEqual(buildConversationOptions(runtime({skillPluginDirectory:plugin}),new AbortController(),undefined,undefined,createSdkCapabilities({skillPlugin:true},facts(plugin)).options).plugins,[{type:'local',path:plugin,skipMcpDiscovery:true}],'the canonical trusted path still binds exactly');
+});

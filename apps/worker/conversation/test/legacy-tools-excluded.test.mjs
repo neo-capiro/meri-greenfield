@@ -12,9 +12,9 @@ import {createSubagents} from '../capabilities/subagents.mjs';
 import {createSdkCapabilities} from '../capabilities/index.mjs';
 import {sdkToolName} from '../skills/mcp.mjs';
 import {binding,id} from '../../../control/conversations/test/application-fixture.mjs';
-import {plugin} from './capability-fixture.mjs';
+import {plugin,preparedWorkspace} from './capability-fixture.mjs';
 const LEGACY_TOOLS=Object.freeze([ "manage_research_portfolio", "get_research_portfolio_analytics", "create_research_portfolio_snapshot", "request_research_portfolio_output", "save_research_portfolio_output_to_client", "watch_research_portfolio", "update_research_portfolio_change_state", "get_research_portfolio_bookmarks", "create_research_portfolio_bookmark", "get_research_portfolio_fit", "get_research_portfolio_reviews", "add_research_portfolio_review_note", "get_research_portfolio_rules", "get_research_portfolio_imports", "get_research_portfolio_operations", "prepare_research_portfolio_brief", "prepare_research_portfolio_meeting", "find_path_to", "get_legiwatch_review", "compare_florida_budget_amounts", "prepare_legiwatch_briefing", "compare_legislative_versions", "save_legislative_research", "preview_legiwatch_relevance", "save_legiwatch_relevance", "apply_legiwatch_suggestion", "create_meeting_brief", "draft_policy_memo", "save_note", "send_email", "reply_email", "confirm_memory", "correct_memory", "forget_memory", "get_pe_buyer_workspace", "create_client", "update_client_profile", "explain_opportunity_match", "compare_funding_opportunities", "build_opportunity_action_plan", "get_business_development_brief", "resolve_business_development_source", "save_business_development_brief"]);
-const cwd=`/workspace/conversations/${binding.conversationId}`;
+const cwd=preparedWorkspace(binding.conversationId);
 
 test('the exclusion list is the owner\'s 43 distinct names',()=>{assert.equal(LEGACY_TOOLS.length,43);assert.equal(new Set(LEGACY_TOOLS).size,43);});
 
