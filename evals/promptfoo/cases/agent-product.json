@@ -1,0 +1,551 @@
+{
+ "schema": "meri-promptfoo-cases/1",
+ "group": "agent-product",
+ "cases": [
+  {
+   "caseId": "AP-01",
+   "group": "agent-product",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Resume restores opaque transcript and subagent entries",
+   "capability": "durable.resume",
+   "prompt": "SYNTHETIC: Resume the synthetic conversation after worker loss.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-01-E1",
+     "source": "session-store-deterministic-qualification",
+     "path": "errors",
+     "value": [],
+     "required": true,
+     "describes": "no refusal during append and readback"
+    },
+    {
+     "evidenceId": "AP-01-E2",
+     "source": "session-store-deterministic-qualification",
+     "path": "main.0.compact.unknown",
+     "value": [
+      "verbatim",
+      7,
+      null
+     ],
+     "required": true,
+     "describes": "opaque SDK entry preserved verbatim"
+    },
+    {
+     "evidenceId": "AP-01-E3",
+     "source": "session-store-deterministic-qualification",
+     "path": "verification.transcripts",
+     "value": 2,
+     "required": true,
+     "describes": "main and subagent transcripts verified"
+    },
+    {
+     "evidenceId": "AP-01-E4",
+     "source": "session-store-deterministic-qualification",
+     "path": "verification.entries",
+     "value": 4,
+     "required": true,
+     "describes": "every entry accounted for"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic-eval run binding",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "recovery-state"
+   },
+   "successCriteria": [
+    "Opaque entries survive resume unchanged",
+    "Subagent transcript is not dropped"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "session-store",
+    "scenario": "opaque-resume"
+   }
+  },
+  {
+   "caseId": "AP-02",
+   "group": "agent-product",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "A foreign session key cannot be written by this run",
+   "capability": "durable.resume",
+   "prompt": "SYNTHETIC: Write the synthetic transcript into another session.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-02-E1",
+     "source": "session-store-deterministic-qualification",
+     "path": "writes",
+     "value": 0,
+     "required": true,
+     "describes": "no backend write occurred"
+    },
+    {
+     "evidenceId": "AP-02-E2",
+     "source": "session-store-deterministic-qualification",
+     "path": "errors",
+     "value": [
+      "SESSION_KEY_SCOPE"
+     ],
+     "required": true,
+     "describes": "scope refusal code"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic-eval run binding",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "recovery-state"
+   },
+   "successCriteria": [
+    "Foreign session append refused before any write"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "session-store",
+    "scenario": "foreign-session"
+   }
+  },
+  {
+   "caseId": "AP-03",
+   "group": "agent-product",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "A stale writer generation is fenced out",
+   "capability": "durable.fencing",
+   "prompt": "SYNTHETIC: Continue the synthetic run from a stale worker.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-03-E1",
+     "source": "session-store-deterministic-qualification",
+     "path": "writes",
+     "value": 0,
+     "required": true,
+     "describes": "no stale write landed"
+    },
+    {
+     "evidenceId": "AP-03-E2",
+     "source": "session-store-deterministic-qualification",
+     "path": "errors",
+     "value": [
+      "SESSION_TRANSPORT_FAILED",
+      "SESSION_TRANSPORT_FAILED"
+     ],
+     "required": true,
+     "describes": "both stale appends refused"
+    },
+    {
+     "evidenceId": "AP-03-E3",
+     "source": "session-store-deterministic-qualification",
+     "path": "state.uncertain",
+     "value": false,
+     "required": true,
+     "describes": "refusal is definite, not uncertain"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic-eval run binding",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "recovery-state"
+   },
+   "successCriteria": [
+    "Stale generation cannot write; outcome is definite"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "session-store",
+    "scenario": "stale-generation"
+   }
+  },
+  {
+   "caseId": "AP-04",
+   "group": "agent-product",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Resubmitting the same request is acknowledged as a replay, not a second run",
+   "capability": "conversation.submit",
+   "prompt": "SYNTHETIC: Start a synthetic run, then press submit again.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-04-E1",
+     "source": "conversations-http",
+     "path": "first.replayed",
+     "value": false,
+     "required": true,
+     "describes": "first submission creates the run"
+    },
+    {
+     "evidenceId": "AP-04-E2",
+     "source": "conversations-http",
+     "path": "second.replayed",
+     "value": true,
+     "required": true,
+     "describes": "second submission is a replay"
+    },
+    {
+     "evidenceId": "AP-04-E3",
+     "source": "conversations-http",
+     "path": "distinctRuns",
+     "value": 1,
+     "required": true,
+     "describes": "exactly one run reaches the runtime"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-ap actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Duplicate submit never creates a second run"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "conversation-submit-replay",
+    "tenantId": "tenant-synthetic-ap",
+    "tag": "a0a1"
+   }
+  },
+  {
+   "caseId": "AP-05",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Stop a running request mid-stream",
+   "capability": "conversation.stop",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-05-E1",
+     "source": "conversation.stop",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "run state transitions"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Run reaches cancelled state; no later publication"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-06",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Steer a running request with a follow-up",
+   "capability": "conversation.steer",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-06-E1",
+     "source": "conversation.steer",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "run events and pins"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Steer applies to the same run and skill pins"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-07",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Fork a conversation from an earlier turn",
+   "capability": "conversation.fork",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-07-E1",
+     "source": "conversation.fork",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "source turn and fork binding"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Fork preserves history up to the turn and new run binding"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-08",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Approve a pending action and observe exactly one effect",
+   "capability": "conversation.approve",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-08-E1",
+     "source": "conversation.approve",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "approval record and effect receipt"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Exactly one effect after repeated delivery"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-09",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Public browsing with a cited page",
+   "capability": "search_public_web",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-09-E1",
+     "source": "search_public_web",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "browser receipts and cited URLs"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Browser receipt recorded; page contents not retained in receipts",
+    "Citation URL host matches receipt"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-10",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Create, pause and cancel an application schedule",
+   "capability": "schedule_task",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-10-E1",
+     "source": "schedule_task",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "schedule records and history"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Timezone and per-execution reauthorization recorded"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-11",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Upload a file and reference it in a later turn",
+   "capability": "save_chat_attachments",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-11-E1",
+     "source": "save_chat_attachments",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "upload record and checksum"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "document"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Upload bound to the conversation and scoped"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "AP-12",
+   "group": "agent-product",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Reconnect to a stream after browser closure",
+   "capability": "conversation.reconnect",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "AP-12-E1",
+     "source": "conversation.reconnect",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "event sequence and run state"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Closing the browser does not cancel the durable run",
+    "Reconnect resumes from last sequence"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  }
+ ]
+}

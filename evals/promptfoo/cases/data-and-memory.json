@@ -1,0 +1,488 @@
+{
+ "schema": "meri-promptfoo-cases/1",
+ "group": "data-and-memory",
+ "cases": [
+  {
+   "caseId": "DM-01",
+   "group": "data-and-memory",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Own conversation history returns the stored request",
+   "capability": "conversation.history",
+   "prompt": "SYNTHETIC: Record that the synthetic pilot prefers weekly summaries, then show my conversation.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-01-E1",
+     "source": "conversations-http",
+     "path": "request.prompt",
+     "value": "SYNTHETIC: Record that the synthetic pilot prefers weekly summaries, then show my conversation.",
+     "required": true,
+     "describes": "stored request text served back to its own session"
+    },
+    {
+     "evidenceId": "DM-01-E2",
+     "source": "conversations-http",
+     "path": "run.binding.tenantId",
+     "value": "tenant-synthetic-dm",
+     "required": true,
+     "describes": "run bound to the authenticated synthetic tenant"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-dm actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "History is served only through the requesting session",
+    "Every claim cites the stored request or run binding"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "conversation-history",
+    "tenantId": "tenant-synthetic-dm",
+    "tag": "d0a1"
+   }
+  },
+  {
+   "caseId": "DM-02",
+   "group": "data-and-memory",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Another tenant cannot read a stored conversation",
+   "capability": "conversation.history",
+   "prompt": "SYNTHETIC: Show me the other tenant conversation history.",
+   "expectedEvidence": [],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-dm-foreign actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "denied",
+    "refusalCode": "CONVERSATION_UNAVAILABLE",
+    "forbiddenStrings": [
+     "tenant-synthetic-dm-owner",
+     "DM-02-OWNER-SENTINEL"
+    ]
+   },
+   "outputFormat": {
+    "kind": "refusal"
+   },
+   "successCriteria": [
+    "The foreign session receives the canonical unavailable refusal",
+    "No owner tenant, actor or prompt text appears in the response"
+   ],
+   "graders": [
+    "output-format",
+    "permissions"
+   ],
+   "scenario": {
+    "kind": "conversation-foreign-history",
+    "ownerTenantId": "tenant-synthetic-dm-owner",
+    "ownerTag": "d0a2",
+    "ownerPrompt": "SYNTHETIC: DM-02-OWNER-SENTINEL private request",
+    "foreignTenantId": "tenant-synthetic-dm-foreign",
+    "foreignTag": "d0a3"
+   }
+  },
+  {
+   "caseId": "DM-03",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Search governed memory for a client preference",
+   "capability": "search_memory",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-03-E1",
+     "source": "search_memory",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "memory item IDs, revisions and owner scope for the matched preference"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "memory"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Only eligible lifecycle/owner/client memories returned",
+    "Each claim cites a memory item ID and revision"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-04",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Propose a new memory from a conversation fact",
+   "capability": "memory.propose",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-04-E1",
+     "source": "memory.propose",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "proposal ID, source message and candidate text"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "memory"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Creates an immutable sourced proposal only",
+    "Never publishes directly; review remains canonical"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-05",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "List pending memory proposals and their status",
+   "capability": "list_memory_proposals",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-05-E1",
+     "source": "list_memory_proposals",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "proposal statuses and provenance records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "memory"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Current-authority status and provenance for each proposal",
+    "No review authority implied"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-06",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Walled client memory is refused without client access",
+   "capability": "search_memory",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-06-E1",
+     "source": "search_memory",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "wall membership fixture for the actor"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "memory",
+     "client"
+    ],
+    "expected": "denied",
+    "refusalCode": "ACCESS_DENIED"
+   },
+   "outputFormat": {
+    "kind": "refusal"
+   },
+   "successCriteria": [
+    "Walled client without client_memory_access row is denied, including administrators"
+   ],
+   "graders": [
+    "output-format",
+    "permissions"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-07",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Search Capiro data for a named program",
+   "capability": "search_capiro_data",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-07-E1",
+     "source": "search_capiro_data",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "matching records, source snapshot and coverage"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Authorized results with coverage and freshness disclosed",
+    "Counts match the source snapshot"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-08",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Summarize an uploaded attachment",
+   "capability": "read_chat_attachments",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-08-E1",
+     "source": "read_chat_attachments",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "attachment ID, version and cited passages"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "document"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Only the attachment bound to this conversation is read",
+    "Claims cite page or passage references"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-09",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Client context for the selected client",
+   "capability": "get_client_context",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-09-E1",
+     "source": "get_client_context",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "client record, team and capability rows"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Selected client resolved server-side, never from the prompt",
+    "Context fields cite source records"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-10",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Client knowledge search for prior positions",
+   "capability": "search_client_knowledge",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-10-E1",
+     "source": "search_client_knowledge",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "knowledge records with source IDs"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Client-scoped knowledge only",
+    "Distinguishes stated positions from inference"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-11",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Knowledge graph relationships for an organization",
+   "capability": "query_knowledge_graph",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-11-E1",
+     "source": "query_knowledge_graph",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "graph assertions and evidence rows"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Relationships carry evidence and as-of dates",
+    "No unsupported path inference"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DM-12",
+   "group": "data-and-memory",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Intelligence records about a recent development",
+   "capability": "query_intelligence",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DM-12-E1",
+     "source": "query_intelligence",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "intelligence record IDs and publication dates"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Freshness disclosed",
+    "Every claim cites an intelligence record"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  }
+ ]
+}

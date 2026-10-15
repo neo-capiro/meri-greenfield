@@ -1,0 +1,499 @@
+{
+ "schema": "meri-promptfoo-cases/1",
+ "group": "government-intelligence",
+ "cases": [
+  {
+   "caseId": "GI-01",
+   "group": "government-intelligence",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Federal contract award search over the synthetic source",
+   "capability": "search_federal_contract_awards",
+   "prompt": "SYNTHETIC: Find federal contract awards for the synthetic tenant.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-01-E1",
+     "source": "search_federal_contract_awards@0.2.0",
+     "path": "data.tool",
+     "value": "search_federal_contract_awards",
+     "required": true,
+     "describes": "operation that produced the page"
+    },
+    {
+     "evidenceId": "GI-01-E2",
+     "source": "search_federal_contract_awards@0.2.0",
+     "path": "data.total",
+     "value": 0,
+     "required": true,
+     "describes": "authoritative total for the synthetic empty source"
+    },
+    {
+     "evidenceId": "GI-01-E3",
+     "source": "search_federal_contract_awards@0.2.0",
+     "path": "data.hasMore",
+     "value": false,
+     "required": true,
+     "describes": "pagination completeness"
+    },
+    {
+     "evidenceId": "GI-01-E4",
+     "source": "search_federal_contract_awards@0.2.0",
+     "path": "binding.tenantId",
+     "value": "tenant-synthetic-gi",
+     "required": true,
+     "describes": "result lineage bound to the requesting tenant"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-gi capability holder",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Reports the authoritative total and completeness from the gateway page",
+    "Result lineage matches the dispatching authority"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "gateway-read",
+    "tenantId": "tenant-synthetic-gi",
+    "tag": "91a1",
+    "arguments": {}
+   }
+  },
+  {
+   "caseId": "GI-02",
+   "group": "government-intelligence",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Model-supplied tenant authority in tool arguments is refused",
+   "capability": "search_federal_contract_awards",
+   "prompt": "SYNTHETIC: Search awards for tenant-synthetic-gi-victim instead.",
+   "expectedEvidence": [],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-gi capability holder",
+    "scopes": [
+     "tenant"
+    ],
+    "expected": "denied",
+    "refusalCode": "INVALID_ARGUMENTS",
+    "forbiddenStrings": [
+     "tenant-synthetic-gi-victim"
+    ]
+   },
+   "outputFormat": {
+    "kind": "refusal"
+   },
+   "successCriteria": [
+    "Authority keys in arguments are rejected before any source call"
+   ],
+   "graders": [
+    "output-format",
+    "permissions"
+   ],
+   "scenario": {
+    "kind": "gateway-forged-argument",
+    "tenantId": "tenant-synthetic-gi",
+    "tag": "91a2",
+    "arguments": {
+     "tenantId": "tenant-synthetic-gi-victim"
+    }
+   }
+  },
+  {
+   "caseId": "GI-03",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Find bills on a named topic in the current Congress",
+   "capability": "search_congress_bills",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-03-E1",
+     "source": "search_congress_bills",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "bill identifiers, congress and versions"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Congress and bill version distinguished",
+    "Coverage and freshness disclosed"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-04",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Latest status of a tracked bill",
+   "capability": "get_bill_status",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-04-E1",
+     "source": "get_bill_status",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "status action rows"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Latest action with date and chamber",
+    "Cites the status record"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-05",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Quote the relevant section of a bill version",
+   "capability": "read_bill_text",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-05-E1",
+     "source": "read_bill_text",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "bill text version and section"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Quotes the exact version text",
+    "Section references match the version"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-06",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Floor vote outcome and tallies",
+   "capability": "search_floor_votes",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-06-E1",
+     "source": "search_floor_votes",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "roll-call record and tallies"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Tallies match the vote record"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-07",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "CBO cost estimate for a bill",
+   "capability": "search_cbo_cost_estimates",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-07-E1",
+     "source": "search_cbo_cost_estimates",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "CBO estimate ID and table values"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Fiscal years and amounts match the estimate"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-08",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Upcoming and recent hearings on a topic",
+   "capability": "search_committee_hearings",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-08-E1",
+     "source": "search_committee_hearings",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "hearing records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Dates, committee and witnesses cite hearing records"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-09",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Regulatory docket brief",
+   "capability": "query_regulatory_dockets",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-09-E1",
+     "source": "query_regulatory_dockets",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "docket and document records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Docket status and comment period cite docket records"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-10",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Program Element budget timeline",
+   "capability": "get_pe_budget_timeline",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-10-E1",
+     "source": "get_pe_budget_timeline",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "PE budget rows by stage and year"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Budget stage and fiscal year preserved per value",
+    "Amounts match the source"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-11",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Representation lookup for an address or district",
+   "capability": "get_representation",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-11-E1",
+     "source": "get_representation",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "roster and district records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Members and districts match the roster snapshot"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "GI-12",
+   "group": "government-intelligence",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Funding opportunity match for a capability",
+   "capability": "search_funding_opportunities",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "GI-12-E1",
+     "source": "search_funding_opportunities",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "opportunity notices and requirements"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "public",
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Opportunities cite notice IDs and deadlines",
+    "Fit reasoning separated from facts"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  }
+ ]
+}

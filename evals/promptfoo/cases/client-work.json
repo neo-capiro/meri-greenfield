@@ -1,0 +1,504 @@
+{
+ "schema": "meri-promptfoo-cases/1",
+ "group": "client-work",
+ "cases": [
+  {
+   "caseId": "CW-01",
+   "group": "client-work",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Client-scoped file is served within the same client scope",
+   "capability": "read_client_documents",
+   "prompt": "SYNTHETIC: Save the synthetic client note and give me the file.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-01-E1",
+     "source": "artifact-service",
+     "path": "version.mimeType",
+     "value": "text/plain; charset=utf-8",
+     "required": true,
+     "describes": "canonical MIME type of the stored version"
+    },
+    {
+     "evidenceId": "CW-01-E2",
+     "source": "artifact-service",
+     "path": "version.scopes.0.kind",
+     "value": "client",
+     "required": true,
+     "describes": "version carries the client scope it was created under"
+    },
+    {
+     "evidenceId": "CW-01-E3",
+     "source": "artifact-service",
+     "path": "version.binding.tenantId",
+     "value": "tenant-synthetic-cw",
+     "required": true,
+     "describes": "version bound to the creating tenant"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-cw actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "txt",
+    "files": 1,
+    "requiredText": [
+     "Synthetic client note",
+     "next step: synthetic follow-up"
+    ],
+    "maxBytes": 65536
+   },
+   "successCriteria": [
+    "The downloaded bytes match the committed version",
+    "The version keeps its client scope"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "usable-file",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "artifact-text-create",
+    "tenantId": "tenant-synthetic-cw",
+    "tag": "c0a1",
+    "title": "Synthetic client note",
+    "text": "Synthetic client note\nnext step: synthetic follow-up\n"
+   }
+  },
+  {
+   "caseId": "CW-02",
+   "group": "client-work",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Another tenant cannot download a client file by its version link",
+   "capability": "read_client_documents",
+   "prompt": "SYNTHETIC: Download the other tenant client note.",
+   "expectedEvidence": [],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-cw-foreign actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "denied",
+    "refusalCode": "ARTIFACT_VERSION_CONTEXT",
+    "forbiddenStrings": [
+     "CW-02-OWNER-SENTINEL",
+     "tenant-synthetic-cw-owner"
+    ]
+   },
+   "outputFormat": {
+    "kind": "refusal"
+   },
+   "successCriteria": [
+    "The artifact service refuses the foreign context before releasing bytes"
+   ],
+   "graders": [
+    "output-format",
+    "permissions"
+   ],
+   "scenario": {
+    "kind": "artifact-foreign-download",
+    "ownerTenantId": "tenant-synthetic-cw-owner",
+    "ownerTag": "c0a2",
+    "foreignTenantId": "tenant-synthetic-cw-foreign",
+    "foreignTag": "c0a3",
+    "text": "CW-02-OWNER-SENTINEL private note\n"
+   }
+  },
+  {
+   "caseId": "CW-03",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Relationship brief for a named contact",
+   "capability": "quick_skill.relationship_brief",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-03-E1",
+     "source": "quick_skill.relationship_brief",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "mail threads, meetings and contacts"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client",
+     "mailbox"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Mail and meetings read under current ownership",
+    "Claims cite messages or meetings"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-04",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "What changed for the client this week",
+   "capability": "quick_skill.client_changes",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-04-E1",
+     "source": "quick_skill.client_changes",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "client activity and change records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Changes dated and sourced",
+    "Coverage window disclosed"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-05",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Meeting prep brief for an upcoming meeting",
+   "capability": "quick_skill.meeting_prep",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-05-E1",
+     "source": "quick_skill.meeting_prep",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "meeting, attendees and prior notes"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client",
+     "mailbox"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Attendees, agenda and open items cite records"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-06",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Mail history with an organization",
+   "capability": "quick_skill.mail_history",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-06-E1",
+     "source": "quick_skill.mail_history",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "mail thread IDs and dates"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "mailbox"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Only mailboxes the actor owns are read"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-07",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Commitments and deliverables audit",
+   "capability": "quick_skill.commitments_audit",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-07-E1",
+     "source": "quick_skill.commitments_audit",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "commitment statements, owners, dates and delivery evidence"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client",
+     "mailbox"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Promises separated from suggestions",
+    "Known versus unknown owner and date",
+    "Delivery evidence and conflicts disclosed"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-08",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Research a company for a client",
+   "capability": "quick_skill.research_company",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-08-E1",
+     "source": "quick_skill.research_company",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "company records and public sources"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client",
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Public and client facts separated",
+    "Each claim cites a source"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-09",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Status from the mapped monday.com board",
+   "capability": "read_monday_client_boards",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-09-E1",
+     "source": "read_monday_client_boards",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "board items and update dates"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Only explicitly client-mapped boards are read"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-10",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Research portfolio changes for the client",
+   "capability": "quick_skill.portfolio_changes",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-10-E1",
+     "source": "quick_skill.portfolio_changes",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "portfolio change rows"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Changes cite portfolio change records"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-11",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Open tasks and action items for the client",
+   "capability": "query_tasks",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-11-E1",
+     "source": "query_tasks",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "engagement tasks and action items"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Task owners and due dates cite task records"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "CW-12",
+   "group": "client-work",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Mailbox owned by another user is refused",
+   "capability": "read_client_meetings",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "CW-12-E1",
+     "source": "read_client_meetings",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "mailbox ownership fixture"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "mailbox"
+    ],
+    "expected": "denied",
+    "refusalCode": "ACCESS_DENIED"
+   },
+   "outputFormat": {
+    "kind": "refusal"
+   },
+   "successCriteria": [
+    "Mail/meeting bodies of another owner are denied"
+   ],
+   "graders": [
+    "output-format",
+    "permissions"
+   ],
+   "scenario": null
+  }
+ ]
+}
