@@ -1,6 +1,9 @@
 """Fixed local source-test entry. Not a sandbox or native Office admission."""
 import base64,hashlib,importlib.util,json,os,pathlib,resource,sys,zipfile
 
+class BaseFormatMismatch(ValueError):
+    """A retained base whose format differs from the generation format."""
+
 def load(name):
     spec=importlib.util.spec_from_file_location('meri_artifact_'+name,pathlib.Path(__file__).with_name(name+'.py'))
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
@@ -29,7 +32,10 @@ def main(validate_assets=False):
     path=pathlib.Path('artifact.'+form)
     if path.exists():raise ValueError('Output already exists')
     base=data.get('base')
-    if base:base={'request':base['request'],'bytes':base64.b64decode(base['base64'],validate=True)}
+    if base:
+        base={'request':base['request'],'bytes':base64.b64decode(base['base64'],validate=True)}
+        # Each format's retained bytes go only to that format's own revision owner.
+        if base['request'].get('format')!=form or (form!='txt' and not base['bytes'].startswith(b'PK\x03\x04')):raise BaseFormatMismatch()
     if form=='txt':path.write_bytes(request['content']['text'].encode('utf8'));details={'encoding':'UTF-8','whitespace':'unchanged'}
     elif form=='docx':details=load('office').word(request['content'],assets,path,base)
     elif form=='xlsx':
