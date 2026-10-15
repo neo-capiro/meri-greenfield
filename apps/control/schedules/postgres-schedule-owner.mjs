@@ -38,16 +38,55 @@ export function createPostgresScheduleOwner({pool}) {
     },check);
   }
   async function transition(binding,state,check) {
-    const b=frozenScheduleData(binding),i=b.intent,p=i.projection,t=p.owner.tenantId;
+    const b=frozenScheduleData(binding),i=b.intent,t=i.projection.owner.tenantId;
     return transaction(async c=>{
       const row=(await c.query('SELECT * FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2 FOR UPDATE',[t,i.intentId])).rows[0];check();
       if(!row||row.binding_sha256!==b.bindingSha256||row.intent_sha256!==canonicalSha256(i)||!(state==='DISPATCHING'?['CLAIMED']:['DISPATCHING']).includes(row.state))denySchedule('SCHEDULE_TRANSITION');
       await c.query('UPDATE meri_schedules.intents SET state=$3,updated_at=clock_timestamp() WHERE tenant_id=$1 AND intent_id=$2',[t,i.intentId,state]);check();
-      if(state==='ACKNOWLEDGED') {
-        const changed=await c.query('UPDATE meri_schedules.projections SET generation=$4,projection=$5,projection_sha256=$6,active_intent=NULL WHERE tenant_id=$1 AND schedule_id=$2 AND active_intent=$3 AND generation=$7',[t,p.scheduleId,i.intentId,i.generation,p,canonicalSha256(p),i.expectedGeneration]);check();
-        if(changed.rowCount!==1)denySchedule('SCHEDULE_STALE');
-      }
+      if(state==='ACKNOWLEDGED')await acknowledgeProjection(c,i,check);
       return {intentId:i.intentId,bindingSha256:b.bindingSha256,state};
+    },check);
+  }
+  async function acknowledgeProjection(c,i,check) {
+    const p=i.projection,changed=await c.query('UPDATE meri_schedules.projections SET generation=$4,projection=$5,projection_sha256=$6,active_intent=NULL WHERE tenant_id=$1 AND schedule_id=$2 AND active_intent=$3 AND generation=$7',[p.owner.tenantId,p.scheduleId,i.intentId,i.generation,p,canonicalSha256(p),i.expectedGeneration]);check();
+    if(changed.rowCount!==1)denySchedule('SCHEDULE_STALE');
+  }
+  function storedIntent(row) {
+    if(!row||canonicalSha256(row.intent)!==row.intent_sha256||row.intent.intentId!==row.intent_id||!['CLAIMED','DISPATCHING','ACKNOWLEDGED','UNKNOWN'].includes(row.state))denySchedule('SCHEDULE_CORRUPT');
+    return row;
+  }
+  /** Firing facts for one schedule: its current projection/generation, any unresolved intent, and the acknowledged intent that
+   * produced the current generation (its configuration names the task and its instruction digest). Read only; no authority. */
+  async function readFiring(selection,check) {
+    const s=frozenScheduleData(selection);
+    return transaction(async c=>{
+      const rows=(await c.query("SELECT p.projection,p.projection_sha256,p.generation,p.active_intent,i.intent_id,i.intent,i.intent_sha256,i.state FROM meri_schedules.projections p LEFT JOIN meri_schedules.intents i ON i.tenant_id=p.tenant_id AND i.schedule_id=p.schedule_id AND i.state='ACKNOWLEDGED' AND (i.intent->>'generation')::bigint=p.generation WHERE p.tenant_id=$1 AND p.schedule_id=$2",[s.tenantId,s.scheduleId])).rows;check();
+      if(!rows.length)return null;
+      const r=rows[0],generation=Number(r.generation);
+      if(rows.length!==1||canonicalSha256(r.projection)!==r.projection_sha256||r.projection.scheduleId!==s.scheduleId||r.projection.owner.tenantId!==s.tenantId||!Number.isSafeInteger(generation))denySchedule('SCHEDULE_CORRUPT');
+      if(r.intent_id!==null&&(storedIntent(r).intent.generation!==generation||canonicalSha256(r.intent.projection)!==r.projection_sha256))denySchedule('SCHEDULE_CORRUPT');
+      return frozenScheduleData({projection:r.projection,generation,activeIntent:r.active_intent,intent:r.intent_id===null?null:r.intent});
+    },check);
+  }
+  async function readIntent(selection,check) {
+    const s=frozenScheduleData(selection);
+    return transaction(async c=>{
+      const row=(await c.query('SELECT intent_id,intent,intent_sha256,state FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2',[s.tenantId,s.intentId])).rows[0];check();
+      if(!row)return null;storedIntent(row);
+      if(row.intent.projection.owner.tenantId!==s.tenantId)denySchedule('SCHEDULE_CORRUPT');
+      return frozenScheduleData({intent:row.intent,intentSha256:row.intent_sha256,state:row.state});
+    },check);
+  }
+  /** Reconciliation records provider evidence that a dispatched or uncertain intent's exact effect is present. CLAIMED never
+   * dispatched and is refused here; the generation/projection fence is the same one commitKnown uses. */
+  async function acknowledgeReconciled(selection,check) {
+    const s=frozenScheduleData(selection);
+    return transaction(async c=>{
+      const row=(await c.query('SELECT intent_id,intent,intent_sha256,state FROM meri_schedules.intents WHERE tenant_id=$1 AND intent_id=$2 FOR UPDATE',[s.tenantId,s.intentId])).rows[0];check();
+      if(!row||storedIntent(row).intent_sha256!==s.intentSha256||!['DISPATCHING','UNKNOWN'].includes(row.state))denySchedule('SCHEDULE_TRANSITION');
+      await c.query("UPDATE meri_schedules.intents SET state='ACKNOWLEDGED',updated_at=clock_timestamp() WHERE tenant_id=$1 AND intent_id=$2",[s.tenantId,s.intentId]);check();
+      await acknowledgeProjection(c,row.intent,check);
+      return {intentId:s.intentId,state:'ACKNOWLEDGED'};
     },check);
   }
   async function list(selection,check) {
@@ -57,5 +96,5 @@ export function createPostgresScheduleOwner({pool}) {
       return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
     },check);
   }
-  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list});
+  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled});
 }
