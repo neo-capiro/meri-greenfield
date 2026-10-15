@@ -1,0 +1,12 @@
+receipt written: /home/meri/resume-out/rehearsal/composed-refactored.json
+✔ composed first chat: the real CLI answers a zero-turn request through controller, remote task, supervisor and runner (6705.517372ms)
+receipt written: /home/meri/resume-out/rehearsal/composed-refactored-cancellation.json
+✔ cancellation after launch stops the live CLI physically and records a cancelled run without a second dispatch (3138.212569ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11344.182994

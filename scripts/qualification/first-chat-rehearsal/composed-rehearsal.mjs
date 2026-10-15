@@ -7,14 +7,9 @@
  *   MERI_REHEARSAL_RECEIPT=/path/receipt.json node --test scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createServer} from 'node:http';
-import {once} from 'node:events';
-import {execFileSync} from 'node:child_process';
-import {readFileSync,writeFileSync,readdirSync,statSync,existsSync,chmodSync} from 'node:fs';
-import {join,resolve,dirname,relative} from 'node:path';
-import {fileURLToPath,pathToFileURL} from 'node:url';
-const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'../../..');
-const load=p=>import(pathToFileURL(join(root,p)).href);
+import {readFileSync,readdirSync,existsSync,chmodSync} from 'node:fs';
+import {join} from 'node:path';
+import {root,load,listener,tree,makeReceipt as makeRehearsalReceipt} from './rehearsal-support.mjs';
 const {fixture,sha,control}=await load('apps/runtime/native-authority/test/broker-pg-fixture.mjs');
 const {canonicalSha256:hash}=await load('packages/contracts/validate.mjs');
 const {compileNativeBrokerPlan}=await load('apps/runtime/native-authority/broker-stack.mjs');
@@ -27,14 +22,9 @@ const {projectNativeSdkOptions}=await load('apps/runtime/native-authority/sdk-op
 const {query:sdkQuery}=await load('apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs');
 const {redactEnvironment}=await load('scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.mjs');
 const PR86_RUNNER_SHA256='ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794';
-async function listener(t,handle){const server=createServer(async(req,res)=>{try{const body=await Array.fromAsync(req).then(parts=>Buffer.concat(parts));const reply=await handle(new Request('https://logical.invalid'+req.url,{method:req.method,headers:req.headers,body}));res.writeHead(reply?.status??404,Object.fromEntries(reply?.headers??[]));res.end(reply?Buffer.from(await reply.arrayBuffer()):'');}catch{res.writeHead(500);res.end();}});server.listen(0,'127.0.0.1');await once(server,'listening');const port=server.address().port,transport=(url,options)=>fetch('http://127.0.0.1:'+port+new URL(url).pathname,options);transport.close=()=>new Promise(resolve=>server.close(resolve));return transport;}
-function git(...args){try{return execFileSync('git',['-c','safe.directory=*','-C',root,...args],{encoding:'utf8'}).trim();}catch{return null;}}
-function tree(directory){const rows=[];const walk=d=>{for(const name of readdirSync(d).sort()){const p=join(d,name),s=statSync(p);if(s.isDirectory()){rows.push({path:relative(directory,p)+'/',mode:(s.mode&0o777).toString(8)});walk(p);}else rows.push({path:relative(directory,p),bytes:s.size,mode:(s.mode&0o777).toString(8)});}};walk(directory);return rows;}
-function makeReceipt(name){const receipt={schema:'meri.composed-first-chat-rehearsal.v1',rehearsal:name,startedAt:new Date().toISOString(),repository:{root,head:git('rev-parse','HEAD'),tree:git('rev-parse','HEAD^{tree}'),uncommittedPaths:(git('status','--porcelain')??'').split('\n').filter(Boolean).length},runnerModule:{path:'apps/runtime/conversation-runner.mjs',sha256:sha(readFileSync(join(root,'apps/runtime/conversation-runner.mjs'))),pr86Sha256:PR86_RUNNER_SHA256},outcome:'FAILED',steps:[]};
- receipt.runnerModule.gap2PatchApplied=receipt.runnerModule.sha256!==PR86_RUNNER_SHA256;const patch=join(root,'docs/qualification/candidates/fable-first-chat-rehearsal-20261014/proposals/gap2-runner-sdk-directories.patch');if(existsSync(patch))receipt.runnerModule.proposalPatchSha256=sha(readFileSync(patch));
- const t0=Date.now();receipt.step=(name,facts={})=>{receipt.steps.push({name,atMs:Date.now()-t0,...facts});};receipt.collectFacts=async()=>{};
- receipt.write=suffix=>{receipt.finishedAt=new Date().toISOString();receipt.durationMs=Date.now()-t0;receipt.scope='Local rehearsal only: synthetic ECS/identity/authority/proxy facts, synthetic proxy credential hashed where recorded, no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance.';const {step,collectFacts,write,...data}=receipt;const out=process.env.MERI_REHEARSAL_RECEIPT;if(out){const target=suffix?out.replace(/\.json$/u,'')+'-'+suffix+'.json':out;writeFileSync(target,JSON.stringify(data,null,1)+'\n');process.stdout.write('receipt written: '+target+'\n');}else process.stdout.write(JSON.stringify(data,null,1)+'\n');};
- return receipt;}
+const SCOPE='Local rehearsal only: synthetic ECS/identity/authority/proxy facts, synthetic proxy credential hashed where recorded, no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance.';
+function makeReceipt(name){const receipt=makeRehearsalReceipt(name,{schema:'meri.composed-first-chat-rehearsal.v1',scope:SCOPE});receipt.runnerModule={path:'apps/runtime/conversation-runner.mjs',sha256:sha(readFileSync(join(root,'apps/runtime/conversation-runner.mjs'))),pr86Sha256:PR86_RUNNER_SHA256};
+ receipt.runnerModule.gap2PatchApplied=receipt.runnerModule.sha256!==PR86_RUNNER_SHA256;const patch=join(root,'docs/qualification/candidates/fable-first-chat-rehearsal-20261014/proposals/gap2-runner-sdk-directories.patch');if(existsSync(patch))receipt.runnerModule.proposalPatchSha256=sha(readFileSync(patch));return receipt;}
 /** The composed path: fixture, descriptor/pin capture, admitted allocation, controller, remote task worker, runner. */
 async function compose(t,receipt,{onTaskRoute}={}){
  assert.notEqual(process.getuid(),0,'the runner workspace control refuses root');

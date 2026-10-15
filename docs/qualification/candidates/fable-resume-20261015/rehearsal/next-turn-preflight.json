@@ -1,0 +1,28 @@
+{
+ "schema": "meri.composed-next-turn-rehearsal.v1",
+ "rehearsal": "next-turn",
+ "startedAt": "2026-10-15T02:06:02.059Z",
+ "repository": {
+  "root": "/home/user/meri-fable-resume",
+  "head": "f94cd4f81e2a330d1d4a85735781b24cd881265c",
+  "tree": "fa303ff661ddd90331064df18d310accb97968b2",
+  "uncommittedPaths": 4
+ },
+ "outcome": "FAILED",
+ "steps": [],
+ "error": {
+  "code": "REHEARSAL_PROVIDER_STANDIN_REQUIRED",
+  "message": "REHEARSAL_PROVIDER_STANDIN_REQUIRED: the configured proxy host proxy.synthetic.invalid is not a trusted, reachable qualification stand-in on this host (ENOTFOUND); mapping the host and trusting its certificate are environment-owner actions",
+  "stack": [
+   "Error: REHEARSAL_PROVIDER_STANDIN_REQUIRED: the configured proxy host proxy.synthetic.invalid is not a trusted, reachable qualification stand-in on this host (ENOTFOUND); mapping the host and trusting its certificate are environment-owner actions",
+   "    at requireProviderStandIn (file:///home/user/meri-fable-resume/scripts/qualification/first-chat-rehearsal/composed-next-turn-rehearsal.mjs:44:595)",
+   "    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+   "    at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/scripts/qualification/first-chat-rehearsal/composed-next-turn-rehearsal.mjs:118:69)",
+   "    at async Test.run (node:internal/test_runner/test:1409:7)",
+   "    at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)"
+  ]
+ },
+ "finishedAt": "2026-10-15T02:06:03.951Z",
+ "durationMs": 411,
+ "scope": "Local rehearsal only: synthetic ECS/identity/authority/proxy facts and in-memory immutable objects; per-run proxy credentials hashed where recorded; no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance."
+}

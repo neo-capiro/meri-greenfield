@@ -1,0 +1,242 @@
+{
+ "schema": "meri.composed-first-chat-rehearsal.v1",
+ "rehearsal": "first-chat",
+ "startedAt": "2026-10-15T01:58:55.501Z",
+ "repository": {
+  "root": "/home/user/meri-fable-resume",
+  "head": "f94cd4f81e2a330d1d4a85735781b24cd881265c",
+  "tree": "fa303ff661ddd90331064df18d310accb97968b2",
+  "uncommittedPaths": 3
+ },
+ "outcome": "PASSED",
+ "steps": [
+  {
+   "name": "fixture",
+   "atMs": 655,
+   "database": "postgres"
+  },
+  {
+   "name": "descriptor-captured",
+   "atMs": 2064
+  },
+  {
+   "name": "allocation-admitted",
+   "atMs": 2091
+  },
+  {
+   "name": "controller-allocated",
+   "atMs": 2104,
+   "allocations": 1
+  },
+  {
+   "name": "runner-assembled",
+   "atMs": 2105
+  },
+  {
+   "name": "activity-returned",
+   "atMs": 4142,
+   "result": {
+    "state": "completed"
+   }
+  }
+ ],
+ "runnerModule": {
+  "path": "apps/runtime/conversation-runner.mjs",
+  "sha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
+  "pr86Sha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+  "gap2PatchApplied": true,
+  "proposalPatchSha256": "d7ed593fcf69e0fdc2df0a336651ed52a4632c1f91a715f426b03459616e1eff"
+ },
+ "descriptor": {
+  "command": "/home/user/meri-fable-resume/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "args": [
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--input-format",
+   "stream-json",
+   "--max-turns=1",
+   "--max-budget-usd=0.000001",
+   "--model=meri-local-no-provider",
+   "--permission-prompt-tool=stdio",
+   "--tools=",
+   "--setting-sources=",
+   "--permission-mode=default",
+   "--include-partial-messages",
+   "--session-mirror",
+   "--settings",
+   "{\"autoMemoryEnabled\":false}"
+  ],
+  "cwd": "/home/meri/resume-tmp/meri-broker-author-4Jap99/11111111-1111-4111-8111-111111111111",
+  "env": {
+   "ANTHROPIC_BASE_URL": "https://proxy.synthetic.invalid/",
+   "ANTHROPIC_AUTH_TOKEN": {
+    "redacted": true,
+    "sha256": "4d3c2a9251e22fb8ed930db307730012cf67d56ebb294bb82b92f9686d25800b"
+   },
+   "CLAUDE_CONFIG_DIR": "/home/meri/resume-tmp/meri-broker-author-4Jap99/config/sdk-22222222-2222-4222-8222-222222222222",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR": "/home/meri/resume-tmp/meri-broker-author-4Jap99/secure",
+   "CLAUDE_CODE_ENTRYPOINT": "sdk-ts",
+   "CLAUDE_AGENT_SDK_VERSION": "0.3.295",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE": "1"
+  }
+ },
+ "cli": {
+  "path": "/home/user/meri-fable-resume/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+ },
+ "launchTemplate": {
+  "command": "/home/user/meri-fable-resume/apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+  "argsSha256": "5bb894da2938dcbb93e59341677f1bd17413a87c3f92764a2685cf821a7a71a2",
+  "envKeys": [
+   "ANTHROPIC_BASE_URL",
+   "CLAUDE_SECURESTORAGE_CONFIG_DIR",
+   "CLAUDE_CODE_ENTRYPOINT",
+   "CLAUDE_AGENT_SDK_VERSION",
+   "CLAUDE_CODE_SDK_READS_SESSION_STATE"
+  ],
+  "carriesProxyCredential": false
+ },
+ "sdkOptionsSha256": "c3146964e7f3c22a2911677152ec1c48177fa56ee5b8a042697314fd63cefa27",
+ "routes": {
+  "/v1/native-task/inspect": 3,
+  "/v1/native-task/launch": 1,
+  "/v1/native-task/prepare": 1,
+  "/v1/native-task/registration": 1,
+  "/v1/native-task/start": 1,
+  "/v1/native-task/stdin": 3,
+  "/v1/native-task/stdout": 12,
+  "/v1/native-task/stop": 1,
+  "/v1/runner/load": 2,
+  "/v1/runner/native/prepare": 1,
+  "/v1/runner/native/start": 1,
+  "/v1/runner/native/started": 1,
+  "/v1/runner/native/verify": 35,
+  "/v1/runner/publish": 4,
+  "/v1/runner/runtime": 1,
+  "/v1/runner/session/append": 3,
+  "/v1/runner/session/load": 1,
+  "/v1/runner/session/register": 1
+ },
+ "durableSdkSession": {
+  "registered": 1,
+  "rows": [
+   {
+    "sessionId": "4f19c16c-07ad-4c1a-adc5-124a5a0d2fbc",
+    "projectKey": "-home-meri-resume-tmp-meri-broker-author-4Jap99-11111111-1111-4111-8111-111111111111",
+    "entriesCount": "6",
+    "bytes": "1749"
+   }
+  ],
+  "entryRows": 6
+ },
+ "nativeAfterActivity": {
+  "state": "stopped",
+  "physicalStopProven": true
+ },
+ "sdkConfigDirectoryTree": [
+  {
+   "path": ".claude.json",
+   "bytes": 852,
+   "mode": "600"
+  },
+  {
+   "path": "backups/",
+   "mode": "755"
+  },
+  {
+   "path": "backups/.claude.json.backup.1792029541241",
+   "bytes": 84,
+   "mode": "600"
+  },
+  {
+   "path": "projects/",
+   "mode": "700"
+  },
+  {
+   "path": "projects/-home-meri-resume-tmp-meri-broker-author-4Jap99-11111111-1111-4111-8111-111111111111/",
+   "mode": "700"
+  },
+  {
+   "path": "projects/-home-meri-resume-tmp-meri-broker-author-4Jap99-11111111-1111-4111-8111-111111111111/4f19c16c-07ad-4c1a-adc5-124a5a0d2fbc.jsonl",
+   "bytes": 1755,
+   "mode": "600"
+  },
+  {
+   "path": "sessions/",
+   "mode": "700"
+  }
+ ],
+ "secureStorageDirectoryEntries": 0,
+ "cleanupStatus": {
+  "pendingInitializations": 0,
+  "closed": true,
+  "failures": [],
+  "physicalStopProven": false
+ },
+ "counters": {
+  "allocations": 1,
+  "retirements": 0
+ },
+ "conversation": {
+  "runState": "completed",
+  "events": [
+   {
+    "sequence": 1,
+    "type": "run.status",
+    "data": {
+     "state": "queued",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 2,
+    "type": "run.status",
+    "data": {
+     "state": "starting",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 3,
+    "type": "run.status",
+    "data": {
+     "state": "running",
+     "reasonCode": null
+    }
+   },
+   {
+    "sequence": 4,
+    "type": "message.delta",
+    "data": {
+     "text": "/status isn't available in this environment."
+    }
+   },
+   {
+    "sequence": 5,
+    "type": "run.status",
+    "data": {
+     "state": "completed",
+     "reasonCode": null
+    }
+   }
+  ],
+  "assistantText": "/status isn't available in this environment."
+ },
+ "launchBinding": {
+  "state": "STARTED",
+  "descriptorSha256": "7f6fa786aa37f6d107846e11dc59e702448751d61a7b0330c0513c5c4396b84d",
+  "configTreeSha256": "de34dae881101987c99975a68f1a415cbd6ae22bca60de29ab2b8b2c7f019eeb"
+ },
+ "replayedActivity": {
+  "refused": true,
+  "launchRouteCount": 1
+ },
+ "nativeAfterWorkerClose": {
+  "state": "stopped",
+  "physicalStopProven": true
+ },
+ "finishedAt": "2026-10-15T01:59:02.181Z",
+ "durationMs": 4165,
+ "scope": "Local rehearsal only: synthetic ECS/identity/authority/proxy facts, synthetic proxy credential hashed where recorded, no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance."
+}

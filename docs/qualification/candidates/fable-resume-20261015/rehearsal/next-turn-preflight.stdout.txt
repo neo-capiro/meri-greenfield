@@ -1,0 +1,23 @@
+receipt written: /home/meri/resume-out/rehearsal/next-turn-preflight.json
+✖ composed next turn: a second prompt in the same conversation restores the first turn and completes with the real CLI (1903.601803ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3142.982712
+
+✖ failing tests:
+
+test at scripts/qualification/first-chat-rehearsal/composed-next-turn-rehearsal.mjs:114:1
+✖ composed next turn: a second prompt in the same conversation restores the first turn and completes with the real CLI (1903.601803ms)
+  Error: REHEARSAL_PROVIDER_STANDIN_REQUIRED: the configured proxy host proxy.synthetic.invalid is not a trusted, reachable qualification stand-in on this host (ENOTFOUND); mapping the host and trusting its certificate are environment-owner actions
+      at requireProviderStandIn (file:///home/user/meri-fable-resume/scripts/qualification/first-chat-rehearsal/composed-next-turn-rehearsal.mjs:44:595)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/scripts/qualification/first-chat-rehearsal/composed-next-turn-rehearsal.mjs:118:69)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'REHEARSAL_PROVIDER_STANDIN_REQUIRED'
+  }
