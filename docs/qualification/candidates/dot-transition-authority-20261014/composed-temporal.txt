@@ -1,0 +1,39 @@
+✔ composed canonical session, journal and Temporal dispatcher resume one successor and read APPLIED without effects (206.8094ms)
+✔ parked start RPC receives the shorter target deadline and no later effect dispatches (258.7361ms)
+✔ parked start RPC receives the shorter admission deadline and no later effect dispatches (282.2978ms)
+✔ parked start RPC receives the shorter retirement deadline and no later effect dispatches (282.9055ms)
+✔ parked continued RPC receives the shorter target deadline and no later effect dispatches (250.3849ms)
+✔ parked continued RPC receives the shorter admission deadline and no later effect dispatches (283.0593ms)
+✔ parked continued RPC receives the shorter retirement deadline and no later effect dispatches (266.6607ms)
+✔ target cancellation between commit authorization and finish transaction prevents APPLIED (73.9332ms)
+✔ lost APPLIED COMMIT ACK reconciles original in-flight receipt without a second dispatch (79.4078ms)
+✔ cancellation after APPLIED commit preserves APPLIED (70.926ms)
+✔ cancellation after APPLIED commit preserves APPLIED even when target becomes terminal (67.1285ms)
+✔ canonical reader refuses a changed receipt and coherent target-lineage substitution before another effect (52.2749ms)
+✔ fresh revocation after start refuses continued and historical replay sends nothing (48.6789ms)
+✔ canonical transition reader refuses coherent source-binding corruption (70.4565ms)
+✔ canonical transition reader refuses coherent target-envelope corruption (69.8221ms)
+✔ canonical transition reader refuses coherent target-conversation corruption (69.4244ms)
+✔ fork transition locks source and separately owned target in deterministic code-unit order and never notifies continued (65.841ms)
+✔ cancellation during postcommit target context preserves original session for bounded APPLIED readback (77.8249ms)
+✔ fork DISPATCHING cannot authorize a continued purpose (57.7964ms)
+✔ canonical third lifecycle run makes the prior transition target historical; old sessions dispatch nothing (165.6659ms)
+✔ installed SDK scopes reach start RPC with exact verified deadline and native cancellation signal (0.7701ms)
+✔ start parked RPC is cancelled by verified deadline with one dispatch and no late ACK success (42.611ms)
+✔ continued parked RPC is cancelled by verified deadline with one dispatch and no late ACK success (48.0245ms)
+✔ start caller cancellation reaches actual SDK call.cancel before late acknowledgement (0.6359ms)
+✔ continued caller cancellation reaches actual SDK call.cancel before late acknowledgement (0.3442ms)
+✔ legacy start/cancel without explicit deadline still scopes bounded RPCs (0.5726ms)
+✔ explicit late deadline is capped by configured dispatch bound (0.2308ms)
+✔ transport missing either supported SDK scope refuses before workflow invocation (0.3928ms)
+✔ expired/invalid deadlines and aborted signals cannot dispatch (0.3627ms)
+✔ post-RPC expiry refuses success and never invokes a second operation (0.3411ms)
+✔ wake-only signal keeps control text out of Temporal argument payload (0.4192ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3835.6667

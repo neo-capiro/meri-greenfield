@@ -1,6 +1,6 @@
 # Bounded session transition authority: review request
 
-Status: PROPOSED ONLY. No session-owner or public lifecycle contract implementation is included. Source acceptance, PostgreSQL qualification, and complete two-turn acceptance are separate gates.
+Historical proposal, now implemented after root review. See [current source candidate and evidence](../../qualification/candidates/dot-transition-authority-20261014/README.md). The proposal and source excerpts below are retained as review history, not the current source pin. Source acceptance, PostgreSQL qualification, and complete two-turn acceptance are separate gates.
 
 ## Exact proposed internal interface
 

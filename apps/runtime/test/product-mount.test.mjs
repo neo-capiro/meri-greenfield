@@ -4,6 +4,16 @@ import {assembleConversationRunner} from '../conversation-runner.mjs';
 import {applicationFixture,binding,versions} from '../../control/conversations/test/application-fixture.mjs';
 const configuration={sourceEnabled:false,limits:{requestMs:100,requestBytes:131072,startupMs:1000,shutdownMs:1000},native:{maxResponseBytes:131072}};
 const request=(path,body={})=>new Request('https://synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer opaque-synthetic-task','content-type':'application/json'},body:JSON.stringify(body)});
+
+test('trusted transition authority is captured with its original receiver and refuses accessor injection',async()=>{
+ let calls=0,getters=0;const owner={marker:'original',async readCurrent(input){assert.equal(this.marker,'original');calls++;return input;}};
+ assert.throws(()=>captureRuntimePorts({get transitionAuthority(){getters++;return owner;}}));
+ assert.throws(()=>captureRuntimePorts({transitionAuthority:{get readCurrent(){getters++;return ()=>{};}}}));assert.equal(getters,0);
+ const identity={async verifyIdentity(){},async resolveContext(){}};Object.setPrototypeOf(identity,new Proxy({}, {has(){getters++;throw Error('prototype trap');}}));assert.throws(()=>captureRuntimePorts({identityContext:identity}));assert.equal(getters,0);
+ assert.throws(()=>captureRuntimePorts({identityContext:{async verifyIdentity(){},async resolveContext(){},get resolveTransitionContext(){getters++;return ()=>{};}}}));assert.equal(getters,0);
+ const ports=captureRuntimePorts({transitionAuthority:owner});owner.readCurrent=()=>{throw Error('caller replacement');};
+ const input={binding:'synthetic-boundary-only'};assert.equal(await ports.transitionAuthority.readCurrent(input),input);assert.equal(calls,1);assert.ok(Object.isFrozen(ports.transitionAuthority));assert.equal(captureRuntimePorts().transitionAuthority,undefined);
+});
 test('runtime missing current owners refuses fixed product routes without remote effects',async()=>{
  const ports=captureRuntimePorts(),app=createRuntimeProductApplications({configuration,sessions:{},ports,now:Date.now});
  await assert.rejects(ports.identityContext.verifyIdentity({}),{code:'NATIVE_AUTHORITY_UNAVAILABLE'});

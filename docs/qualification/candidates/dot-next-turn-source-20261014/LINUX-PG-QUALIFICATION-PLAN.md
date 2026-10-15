@@ -4,16 +4,7 @@ Status: source-only preparation, 2026-10-14. None of the resource, installation,
 
 ## Exact source and current blockers
 
-Use the exact sanitized public review head/tree supplied by the source owner. Local source provenance is `9f2c04b9f566760677befbd4d2de3b1752d15bda`, tree `2305035807ace1f9e29fcfdbcd46bb1474ec3c2a`; this private local commit need not be reachable from the sanitized public branch. Record the tested checkout HEAD/tree and require exact source subtree hashes below. Do not substitute an unpinned branch or transplant Windows `node_modules`.
-
-Historical audited checkpoint: `1f9af4bd6a98985c9bf9d2fcd3a397de2f16887e`, tree `8f26eaf1db3ca3a10975dc64985f371c96e6f6fe`; implementation `e714bca3fd6fb8908ffeeda6146225b0c16126d0`, tree `4ea7309e9973029af2b1389e9d59ddf124d8c063`. Their `apps`, `packages` and `scripts` trees were identical. The preparation audit found these two defects at that historical checkpoint:
-
-1. **Committed-byte source proof mismatch.** Its candidate manifest declared `apps/control/conversations/postgres-store.mjs` as SHA-256 `6aed16c8d7c62105557550c5023835037aeeb59435895989d0f437ac46f64859`, while the committed LF blob was `1ed5a67da5d01c7539dfb50e71215802a9ab9748b82d531c741f082ab4d68608`. The Windows working file was CRLF despite `.gitattributes` requiring LF. All 45 committed candidate rows were audited and this was the single mismatch. The historical pin should fail clean-checkout source proof; do not normalize checkout bytes to match that wrong hash or alter the preserved historical manifest.
-2. **PG test expectation drift.** Its stale-session publication assertion expected `/RUN_NOT_WRITABLE/`, but the genuine completion hold returned `RUN_HELD` before terminal writability was evaluated. The audit identified a reproducible control/test mismatch, not an executed Linux PG result.
-
-Root's reviewed correction is the default source pin above: terminal `nextState` evaluation now precedes the completion-hold refusal, after existing event replay and closed-range checks; a new local regression checks terminal late message/status behavior. Root normalized the source file to LF and updated only its dot candidate proof row to the committed SHA-256 `335f0a1534256ce5a219e8bf41abbe3de218f2ddb8c9418a40360ae73fa663cc`. Root reported `completion.test.mjs`, `next-run-owner.test.mjs` and `source-proof.test.mjs` **25/25** (16+4+5) locally. This corrects the reviewed source prerequisites; **no Linux or PostgreSQL green result is claimed**. The commands below independently verify committed bytes and rerun all relevant tests in the eventual isolated Linux environment. Retain the original audit and any failed evidence rather than replacing it with the corrected source's result.
-
-The composed lifecycle resume HOLD also remains: a successor commits and closes the source range, then the existing postcommit `fresh()` rejects the now-historical source session before dispatcher start/continued. The retained test must continue to prove zero new starts, zero continued signals and UNKNOWN until the bounded transition-authority proposal is reviewed and implemented. Do not repin the historical session or skip current authority.
+Use the exact new public HEAD/tree supplied by the source owner and the current source subtree pins below. [The transition candidate](../dot-transition-authority-20261014/README.md) supersedes the prior source prerequisites and records local results, Windows limitations, the migration amendment and required Linux rerun. Earlier logs remain historical evidence. The former composed source-session stale refusal now has bounded transition authority; this remains source-only until independently qualified. No external issuer or live target-authority dependency is automatically constructed.
 
 ## Required environment supplied by its owner
 
@@ -49,9 +40,9 @@ test "$(id -u)" -ne 0
 test "$(node --version)" = v24.21.0
 test "$(git rev-parse HEAD)" = "${QUAL_EXPECTED_HEAD:?source owner must supply published full head}"
 test "$(git rev-parse 'HEAD^{tree}')" = "${QUAL_EXPECTED_TREE:?source owner must supply published full tree}"
-test "$(git rev-parse HEAD:apps)" = db9aebf6c83e4dffc2a0d6bcc0808be9f99c7557
+test "$(git rev-parse HEAD:apps)" = 4620ec508526635dd8da488ee37a752d5bf930b2
 test "$(git rev-parse HEAD:packages)" = 3d9f128f3197a4e267812f6b40bb64bd9a47bf58
-test "$(git rev-parse HEAD:scripts)" = b0c8c5458e29a60b958c9859a9cd1eab5478ae88
+test "$(git rev-parse HEAD:scripts)" = 561906992b75f484cd74785f94dd0a73f228d262
 git diff --exit-code
 git diff --cached --exit-code
 test -z "$(git ls-files --others --exclude-standard)"
@@ -149,6 +140,8 @@ bash scripts/qualification/local-baseline/provision-postgres.sh start \
 export MERI_REVIEW_SOURCE_ROOT=/work/meri
 export MERI_INSPECTION_TEST_SOCKET=/tmp/meri-prepared-kickoff-pg-20261014/socket
 export MERI_INSPECTION_TEST_DATABASE=meri_inspection_final
+export MERI_SEQUENCE_MIGRATION_TEST_ISOLATED=1
+export MERI_SEQUENCE_MIGRATION_TEST_DATA_DIRECTORY="$QUAL_DATA/kickoff"
 export MERI_PREPARED_LAUNCH_DATABASE=meri_prepared_launch
 export MERI_BROKER_TEST_SOCKET=/tmp/meri-broker-pg-socket-20261014
 export MERI_BROKER_TEST_DATABASE=postgres

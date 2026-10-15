@@ -15,8 +15,8 @@
   "historicalPublicationSource": "d741792b1672d6eac4c1c37835c3c3d1931e66a8"
  },
  "rule": "The historical manifest and its pins are preserved unchanged. Every row whose current bytes differ from the historical hash is enumerated in changedRows with both hashes, a reason and the recorded decision; every other row must equal its historical hash. No aggregate hash is replaced and no image acceptance transfers to the changed bytes: this candidate is unqualified until it is built, scanned and admitted by its owners.",
- "changedRowCount": 10,
- "unchangedRowCount": 35,
+ "changedRowCount": 12,
+ "unchangedRowCount": 33,
  "files": [
   {
    "path": "apps/control/conversations/execution-journal.mjs",
@@ -28,7 +28,7 @@
   },
   {
    "path": "apps/control/conversations/postgres-store.mjs",
-   "sha256": "335f0a1534256ce5a219e8bf41abbe3de218f2ddb8c9418a40360ae73fa663cc"
+   "sha256": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa"
   },
   {
    "path": "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
@@ -48,7 +48,7 @@
   },
   {
    "path": "apps/runtime/control.mjs",
-   "sha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52"
+   "sha256": "4e31ee7a6008785e043a26bf3188bc8d70024be21da1f88ce376f555fda88823"
   },
   {
    "path": "apps/runtime/conversation-runner.mjs",
@@ -168,7 +168,7 @@
   },
   {
    "path": "apps/runtime/test/prepared-candidate.test.mjs",
-   "sha256": "1e3b0ff5a884969f969c7dc44a9e30118caa3eee5d970ed769f3c8018ed8ce04"
+   "sha256": "e8b11f520ee37518916ae21c7860d9606e3d7ea0e17b58f44ed1153b2ed2826c"
   },
   {
    "path": "apps/runtime/test/prepared-temporal.test.mjs",
@@ -202,10 +202,17 @@
  "changedRows": [
   {
    "path": "apps/control/conversations/postgres-store.mjs",
-   "sha256": "335f0a1534256ce5a219e8bf41abbe3de218f2ddb8c9418a40360ae73fa663cc",
    "historicalSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
-   "reason": "Canonical completion journal, locked next-run selection and immutable conversation sequence ranges, with failed/cancelled and late event handling.",
-   "decision": "Root 2026-10-14 authorized source implementation of separate completion table, selector, per-run issuance and distinct next-prompt lineage. Candidate remains HOLD pending transition-authority review and real Linux/PostgreSQL verification; no image acceptance transfers."
+   "sha256": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa",
+   "reason": "Thread trusted transition current-authority and clock ports into the canonical lifecycle journal; terminal completion refusal remains preserved.",
+   "decision": "Root-authorized transition/source correction, source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/control.mjs",
+   "historicalSha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
+   "sha256": "4e31ee7a6008785e043a26bf3188bc8d70024be21da1f88ce376f555fda88823",
+   "reason": "Compose the reviewed internal session transition verifier with canonical journal/current target authority and dedicated native context-lineage resolver; pass effective Temporal operation limits.",
+   "decision": "Root-authorized transition/source correction, source review only; no image build, security admission or live acceptance transfers."
   },
   {
    "path": "apps/runtime/conversation-runner.mjs",
@@ -250,6 +257,13 @@
    "decision": "dot 2026-10-14 source review at 7f7ee02: ACCEPT separate credential verification"
   },
   {
+   "path": "apps/runtime/native-runner-gateway.mjs",
+   "sha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece",
+   "historicalSha256": "2b32a50bc77ff534fe351ca87b0f765117ecb66da67ace5f78e966d88c2468af",
+   "reason": "Carry the root-approved task-bound completion checkpoint operation through the existing fixed relay, preserving exact task bearer/bytes and upstream proof ownership.",
+   "decision": "Root authorized completion capture source; relay is source-only and candidate remains HOLD, with no new authority or deployment acceptance."
+  },
+  {
    "path": "apps/runtime/prepared-candidate.mjs",
    "sha256": "7fd1ee7257d627a7d17d83c611eef6de8c7cb1c9c09443249495d052e7cefd80",
    "historicalSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
@@ -264,16 +278,21 @@
    "decision": "Source implementation authorized by root 2026-10-14; independent integration review pending, no image or live acceptance."
   },
   {
-   "path": "apps/runtime/native-runner-gateway.mjs",
-   "sha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece",
-   "historicalSha256": "2b32a50bc77ff534fe351ca87b0f765117ecb66da67ace5f78e966d88c2468af",
-   "reason": "Carry the root-approved task-bound completion checkpoint operation through the existing fixed relay, preserving exact task bearer/bytes and upstream proof ownership.",
-   "decision": "Root authorized completion capture source; relay is source-only and candidate remains HOLD, with no new authority or deployment acceptance."
+   "path": "apps/runtime/test/prepared-candidate.test.mjs",
+   "historicalSha256": "1e3b0ff5a884969f969c7dc44a9e30118caa3eee5d970ed769f3c8018ed8ce04",
+   "sha256": "e8b11f520ee37518916ae21c7860d9606e3d7ea0e17b58f44ed1153b2ed2826c",
+   "reason": "Update only the synthetic Temporal connection scopes required by the now fail-closed dispatcher; retain original candidate assertions and zero real AWS operations.",
+   "decision": "Root-authorized transition/source correction, source review only; no image build, security admission or live acceptance transfers."
   }
  ],
  "pickupHead": "700f203e7b97b64207489d29e17e00014f7ff43b",
  "previousCandidate": {
   "path": "candidate-manifest-fable-20261014.json",
   "sha256": "dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627"
+ },
+ "priorPublishedDotManifest": {
+  "source": "454fb4020aa07c6d56cbabd02b78afe5ebdb9dcb",
+  "sha256": "441b057a622ed91adadc77dd6ad7b5d29d4fca1367530fc0b289b410ff75843a",
+  "status": "Historical candidate bytes remain at their exact published pin; this new candidate is unsealed and unadmitted."
  }
 }

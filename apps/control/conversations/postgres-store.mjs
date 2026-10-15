@@ -6,7 +6,7 @@ import {createExecutionJournal} from './execution-journal.mjs';
 import {createNativePreparationJournals} from './native-preparation-journal.mjs';
 import {createCompletionJournal} from './completion-journal.mjs';
 import {createNextRunJournal} from './next-run-journal.mjs';
-export function createPostgresConversationStore({pool}){
+export function createPostgresConversationStore({pool,transitionAuthority,now=Date.now}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
  async function tx(binding,check,body){let c,begun=false,committing=false,reusable=false,failure,result;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
@@ -54,5 +54,5 @@ export function createPostgresConversationStore({pool}){
  const read=(binding,cursor,check)=>readState(binding,cursor,check),readOptional=(binding,cursor,check)=>readState(binding,cursor,check,true);
  const append=(binding,input,check,expectedScopes)=>appendEvent(binding,input,check,expectedScopes);
  const preparation=createNativePreparationJournals({tx,rowRun});
- return Object.freeze({accept,append,read,readOptional,findRequest,nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
+ return Object.freeze({accept,append,read,readOptional,findRequest,nextRuns:createNextRunJournal({tx,rowRun}),completions:createCompletionJournal({tx,rowRun}),...preparation,executions:createExecutionJournal({tx,rowRun,verifyPreparedClaim:preparation.allocations.verifyExecutionClaim}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),lifecycle:createLifecycleJournal({tx,rowRun,transitionAuthority,now,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)})});
 }

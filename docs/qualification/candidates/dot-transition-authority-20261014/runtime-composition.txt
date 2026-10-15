@@ -1,0 +1,83 @@
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (4378.0501ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1215.4887ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (1112.2808ms)
+✖ actual process exits on SIGTERM after listener shutdown (1074.8684ms)
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (1414.4355ms)
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (1430.8226ms)
+✔ trusted transition authority is captured with its original receiver and refuses accessor injection (0.7663ms)
+✔ runtime missing current owners refuses fixed product routes without remote effects (3.3465ms)
+✔ compiled ports are captured inertly with original receiver and sources remain disabled (1.7406ms)
+✔ runner refuses missing observed registration before the single SDK query (84.0598ms)
+✔ runner preserves exact observed key, strips private selector and closes owned mirror (17.4701ms)
+✔ uncertain observed SDK mirror prevents durable completed status and releases no success (17.2248ms)
+✔ actual control mount and fixed loopback relay deliver snapshot to captured canonical port (102.9436ms)
+✔ snapshot remains 404 when no borrowed snapshot port is supplied (0.5427ms)
+✔ snapshot port getters and proxies refuse without invocation or transport (0.2113ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 12
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16150.6704
+
+✖ failing tests:
+
+test at apps\runtime\test\process.test.mjs:17:1
+✖ actual process exits on SIGTERM after listener shutdown (1074.8684ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  null !== 0
+
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/process.test.mjs:17:176)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\test\process.test.mjs:18:1
+✖ actual runner command composition consumes native-forwarded steering and acknowledges its immutable UUID (1414.4355ms)
+  AssertionError [ERR_ASSERTION]: {"type":"execution-error","code":"process.getuid is not a function"}
+  + actual - expected
+
+  + 'execution-error'
+  - 'sdk-running'
+
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/process.test.mjs:18:464)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'execution-error',
+    expected: 'sdk-running',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\runtime\test\process.test.mjs:19:1
+✖ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (1430.8226ms)
+  AssertionError [ERR_ASSERTION]: {"type":"execution-error","code":"process.getuid is not a function"}
+  + actual - expected
+
+  + 'execution-error'
+  - 'sdk-running'
+
+      at TestContext.<anonymous> (file:///<SOURCE>/apps/runtime/test/process.test.mjs:19:452)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'execution-error',
+    expected: 'sdk-running',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

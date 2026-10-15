@@ -5,6 +5,9 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 const hash=x=>createHash('sha256').update(x).digest('hex'),same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
+const transitionKeys=['controlId','intent','inputSha256','sourceBinding','targetBinding','scopes','selectedClientId','policyRevision','admissionReceiptId','retirementReceiptId','checkpointId','checkpointSha256','sourceRequestSha256','contextSha256','targetSessionId','resumeSessionAt'];
+const transitionFactKeys=[...transitionKeys,'state','admissionExpiresAtMs','retirementExpiresAtMs','targetExpiresAtMs','checkedAtMs','expiresAtMs'];
+const transitionHash=v=>canonicalSha256(Object.fromEntries(transitionKeys.map(k=>[k,v[k]])));
 const errors=new WeakSet();
 export class ActionSessionError extends Error{constructor(code){super(code);this.name='ActionSessionError';this.code=code;errors.add(this);}}
 const deny=(code='SESSION_REFUSED')=>{throw new ActionSessionError(code);};
@@ -15,9 +18,10 @@ export function assertActionSessionReceipt(value,at){
  return v;
 }
 export function createActionSessionOwner(configuration){
- const {mode,verifyIdentity,resolveContext,now=Date.now,limits}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now']);
+ const {mode,verifyIdentity,resolveContext,now=Date.now,limits,readTransition,resolveTransitionContext}=own(configuration,['mode','verifyIdentity','resolveContext','limits'],['now','readTransition','resolveTransitionContext']);
  const l=data(own(limits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
  if(mode!=='process-local'||typeof verifyIdentity!=='function'||typeof resolveContext!=='function'||typeof now!=='function'||Object.values(l).some(n=>!Number.isSafeInteger(n)||n<1)||l.maxSessions>1000||l.maxRequestMs>30000||l.maxTtlMs>300000||l.maxFactBytes>131072)deny('SESSION_CONFIGURATION');
+ if((readTransition!==undefined||resolveTransitionContext!==undefined)&&(typeof readTransition!=='function'||typeof resolveTransitionContext!=='function'))deny('SESSION_CONFIGURATION');
  const sessions=new Map(),ids=new Map();let closed=false;
  function active(signal){const at=now();if(closed||signal?.aborted||!Number.isSafeInteger(at)||at<0)deny();return at;}
  function remove(r){sessions.delete(r.digest);ids.delete(r.sessionId);r.nativeCredential='';r.receipts.clear();}
@@ -51,5 +55,41 @@ export function createActionSessionOwner(configuration){
  async function readCurrentState(value){const {authentication,signal,deadlineMs}=own(value,['authentication'],['signal','deadlineMs']),a=data(authentication);const r=ids.get(a.principal?.sessionId);valid(r,signal);if(!r.receipts.has(canonicalSha256(a)))deny();const t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
   try{const current=await resolve(r.nativeCredential,r.hints,t,r);valid(r,t.signal);r.expiresAtMs=current.expiresAtMs;t.check();const out=data({authenticationSha256:canonicalSha256(a),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});release(r,t);return out;}catch{remove(r);deny();}finally{t.close();}
  }
- return Object.freeze({issue,authenticateSession,readCurrentState,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
+ async function verifyTransition(value){
+  let t,r;try{
+   const v=own(value,['credential','controlId','sourceBinding','targetBinding','admissionReceiptId','retirementReceiptId','purpose'],['signal','deadlineMs']),{credential,signal,deadlineMs,...raw}=v,input=data(raw);
+   nativeSignal(signal);if(deadlineMs!==undefined&&!Number.isSafeInteger(deadlineMs))deny();
+   if(!readTransition||typeof credential!=='string'||!/^action_session_[A-Za-z0-9_-]{43}$/u.test(credential)||!['dispatch-start','dispatch-continued','commit-applied','receipt-readback'].includes(input.purpose))deny();
+   validateShape('RunBinding',input.sourceBinding);validateShape('RunBinding',input.targetBinding);
+   for(const id of [input.controlId,input.admissionReceiptId,...(input.retirementReceiptId===null?[]:[input.retirementReceiptId])])if(typeof id!=='string'||!uuid.test(id))deny();
+   r=sessions.get(hash(credential));valid(r,signal);if(!same(input.sourceBinding,r.context.binding))deny();
+   const revision=r.sessionRevision,sourceContext=r.context,originalIdentity=r.identity,nativeCredential=r.nativeCredential;
+   t=life(Math.min(deadlineMs??r.expiresAtMs,r.expiresAtMs),signal);
+   const check=()=>{valid(r,t.signal);if(r.sessionRevision!==revision||r.context!==sourceContext||r.identity!==originalIdentity||r.nativeCredential!==nativeCredential)deny();t.limitDeadline(r.expiresAtMs);t.check();};
+   let identity;try{
+    const started=active(t.signal);identity=fact(await t.run(signal=>verifyIdentity({credential:nativeCredential,signal,deadlineMs:t.deadline()})),['principal','identityRevision','checkedAtMs','expiresAtMs'],started,t);check();
+    own(identity.principal,['tenantId','actorId']);if(!same(identity.principal,originalIdentity.principal)||identity.identityRevision!==originalIdentity.identityRevision)deny();
+   }catch{if(!t.signal.aborted)remove(r);else try{valid(r);}catch{}deny();}
+   async function transition(){
+    const started=active(t.signal),p=fact(await t.run(signal=>readTransition({sourceBinding:sourceContext.binding,controlId:input.controlId,signal,deadlineMs:t.deadline()})),transitionFactKeys,started,t);check();
+    validateShape('RunBinding',p.sourceBinding);validateShape('RunBinding',p.targetBinding);
+    if(!same(p.sourceBinding,input.sourceBinding)||!same(p.targetBinding,input.targetBinding)||p.controlId!==input.controlId||p.admissionReceiptId!==input.admissionReceiptId||p.retirementReceiptId!==input.retirementReceiptId||!['resume','fork'].includes(p.intent)||p.state!==(input.purpose==='receipt-readback'?'APPLIED':'DISPATCHING')||input.purpose==='dispatch-continued'&&p.intent!=='resume')deny();
+    const b=p.targetBinding,s=p.sourceBinding;
+    if(b.tenantId!==s.tenantId||b.actorId!==s.actorId||b.runId===s.runId||b.attemptId===s.attemptId||b.workerId===s.workerId||p.intent==='resume'&&(b.conversationId!==s.conversationId||b.writerFence<=s.writerFence)||p.intent==='fork'&&b.conversationId===s.conversationId||!same(p.scopes,sourceContext.scopes)||p.selectedClientId!==sourceContext.selectedClientId||p.scopes.some(scope=>scope.policyRevision!==p.policyRevision))deny();
+    for(const id of [p.controlId,p.admissionReceiptId,p.checkpointId,...(p.resumeSessionAt===null?[]:[p.resumeSessionAt])])if(typeof id!=='string'||!uuid.test(id))deny();
+    for(const digest of [p.inputSha256,p.checkpointSha256,p.sourceRequestSha256,p.contextSha256])if(typeof digest!=='string'||!/^[a-f0-9]{64}$/u.test(digest))deny();
+    if(p.intent==='resume'?(p.targetSessionId!==null||typeof p.retirementReceiptId!=='string'||!uuid.test(p.retirementReceiptId)):(p.retirementReceiptId!==null||p.retirementExpiresAtMs!==null||typeof p.targetSessionId!=='string'||!uuid.test(p.targetSessionId)))deny();
+    for(const deadline of [p.admissionExpiresAtMs,p.targetExpiresAtMs,...(p.intent==='resume'?[p.retirementExpiresAtMs]:[])]){if(!Number.isSafeInteger(deadline)||deadline<=active(t.signal))deny();t.limitDeadline(deadline);}
+    check();return p;
+   }
+   const before=await transition(),started=active(t.signal);
+   let current;try{
+    current=fact(await t.run(signal=>resolveTransitionContext({identityCredential:nativeCredential,identity,identitySha256:canonicalSha256(identity),sourceContext,transition:before,signal,deadlineMs:t.deadline()})),['identitySha256','binding','scopes','selectedClientId','contextRevision','checkedAtMs','expiresAtMs'],started,t);check();
+    validateShape('RunBinding',current.binding);if(current.identitySha256!==canonicalSha256(identity)||!same(current.binding,before.targetBinding)||!same(current.scopes,sourceContext.scopes)||current.selectedClientId!==sourceContext.selectedClientId||typeof current.contextRevision!=='string'||!current.contextRevision||current.contextRevision.length>256)deny();
+   }catch{if(!t.signal.aborted)remove(r);else try{valid(r);}catch{}deny();}
+   const after=await transition();if(transitionHash(before)!==transitionHash(after))deny();check();
+   const result=data({checkedAtMs:active(t.signal),expiresAtMs:t.deadline(),transitionSha256:transitionHash(after)});release(r,t);return result;
+  }catch{deny();}finally{t?.close();}
+ }
+ return Object.freeze({issue,authenticateSession,readCurrentState,verifyTransition,revoke(credential){if(typeof credential!=='string')deny();const r=sessions.get(hash(credential));if(r)remove(r);},close(){closed=true;for(const r of sessions.values())remove(r);},status:()=>data({mode,closed,sessions:sessions.size})});
 }

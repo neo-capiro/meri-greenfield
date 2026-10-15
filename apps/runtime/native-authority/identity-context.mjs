@@ -12,5 +12,6 @@ export function createNativeIdentityContext(configuration){
  return Object.freeze({
   async verifyIdentity(call){if(!enabled)unavailable();try{return await mapped.verifyIdentity(call);}catch{unavailable();}},
   async resolveContext(call){if(!enabled)unavailable();try{return await mapped.resolveContext(call);}catch{unavailable();}},
+  async resolveTransitionContext(call){if(!enabled)unavailable();try{return await mapped.resolveTransitionContext(call);}catch{unavailable();}},
  });
 }

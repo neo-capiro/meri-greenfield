@@ -12,7 +12,7 @@ export function createApplicationActionHost(configuration){
  const sessionBounds=data(own(sessionLimits,['maxSessions','maxRequestMs','maxTtlMs','maxFactBytes']));
  const ports=own(hostPorts,['reserveLookup','issueLookupCredential','issueExecution']);if(typeof enabled!=='boolean')throw Error('APPLICATION_CONFIGURATION');
  const adapters=createApplicationContextAdapters({client,currentRun,commandContext:options.commandContext,now,limits:{maxRequestMs:sessionBounds.maxRequestMs,maxFactBytes:sessionBounds.maxFactBytes}});
- const owner=createActionSessionOwner({mode:'process-local',...adapters,now,limits:sessionBounds});let app,issuance,closed=false;
+ const owner=createActionSessionOwner({mode:'process-local',verifyIdentity:adapters.verifyIdentity,resolveContext:adapters.resolveContext,now,limits:sessionBounds});let app,issuance,closed=false;
  try{app=createActionHostApplication({services,...ports,authenticateSession:owner.authenticateSession,readCurrentState:owner.readCurrentState,now,limits});issuance=createActionSessionApplication({owner,now,maxRequestMs:sessionBounds.maxRequestMs});}catch(error){owner.close();throw error;}
  const mounted=Object.freeze({async handle(request){
   if(!enabled||closed)return response({error:{code:'UNAVAILABLE',outcome:'NOT_DISPATCHED'}},503);
