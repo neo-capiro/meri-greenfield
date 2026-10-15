@@ -1,0 +1,366 @@
+
+> @capiro/meri-contracts@0.1.5 check
+> npm run check:generated && npm run typecheck && npm run test:public
+
+
+> @capiro/meri-contracts@0.1.5 check:generated
+> node generate.mjs --check && node generate-actions.mjs --check && node generate-documents.mjs --check && node generate-conversations.mjs --check && node generate-lifecycle.mjs --check
+
+{"schema":"meri-contract-distribution/1","check":true,"records":[{"path":"browser.mjs","bytes":466002,"sha256":"3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83"},{"path":"contracts.d.ts","bytes":4090,"sha256":"e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd"},{"path":"index.d.ts","bytes":85,"sha256":"b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642"},{"path":"browser.d.ts","bytes":166,"sha256":"638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30"},{"path":"metadata.mjs","bytes":533,"sha256":"63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"},{"path":"metadata.d.ts","bytes":485,"sha256":"63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087"}]}
+[{"path":"action-application.mjs","bytes":1480808,"sha256":"9e824b7f814561ec46aa63b0c31057a8292515a9f0186707bc838fed98eb3534"},{"path":"action-application.d.ts","bytes":17721,"sha256":"007880126ba782888b0a8411e3c90acd64d1cc0eb530ecb0cb41ff590bd6d762"},{"path":"action-application.schema.json","bytes":67726,"sha256":"a44e403281e8404462be8d06ddbb369e175b61e6501e16c8007646d9e74a803c"},{"path":"action-application.metadata.json","bytes":1980,"sha256":"9909cec1f8008a69415d5cca842230eb27e1bb70f419563be3da0da0b9514355"}]
+[{"path":"document-application.mjs","bytes":498894,"sha256":"4979699706346dc7fe3661ee1fafdc975e041e38a1f59873ea0b4f1795f9efde"},{"path":"document-application.d.ts","bytes":23960,"sha256":"1ce1f8f0f8967cbb705732bd9fd0396149cb4266fa0aec26d225d2f7e2a01d31"},{"path":"document-application.schema.json","bytes":34642,"sha256":"712348c7758e7c99c77f2e50d35397038a651a5a312bb9439bdda5bbd44f5c51"},{"path":"document-application.metadata.json","bytes":1996,"sha256":"60a01c9a1221a3b5ee49b4b06fbd1ec0a3e9f94217de5855088672ddf9a9270e"}]
+[{"path":"conversation-application.mjs","bytes":1587179,"sha256":"94465895c6a063536cd4de3ce84d6f736e8475890a663ef80e9c5d748992cea1"},{"path":"conversation-application.d.ts","bytes":14179,"sha256":"f7e961446b69049cda1b054c695daffc45486da46b3ebf67c6b3a56e875916fe"},{"path":"conversation-application.schema.json","bytes":39210,"sha256":"76f8a5a12958fcbcc6842f870a22a7ccba1675dd8b19359c2344f5ef2b06ad1b"},{"path":"conversation-application.metadata.json","bytes":2375,"sha256":"5bf91bef62e92fbb3f2db936c02986b76926ff108f6908b3bf4e670635d44858"}]
+[{"path":"conversation-lifecycle.mjs","bytes":134169,"sha256":"b283901e0006f9a06f4b63f957133cce57914e791fb07bec8c1017a1d4ae149e"},{"path":"conversation-lifecycle.d.ts","bytes":6339,"sha256":"1e9ff1c99e8b0d7d7a8ac86fdd275e2785adb5a6d300c095c783317d2c0ff523"},{"path":"conversation-lifecycle.schema.json","bytes":9259,"sha256":"9ff87dc22a4fb144c1ad48d9b818f829a65053aac7937b83fdabdbff6f11ad4e"},{"path":"conversation-lifecycle.metadata.json","bytes":2237,"sha256":"19a9288f085940ac8360ba008e4fe301c0a2db1c4ee4bd5db6f4b6f4d97a1ea5"}]
+
+> @capiro/meri-contracts@0.1.5 typecheck
+> tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts test/action-application-public-types.ts test/document-application-public-types.ts test/conversation-application-public-types.ts test/conversation-lifecycle-public-types.ts
+
+
+> @capiro/meri-contracts@0.1.5 test:public
+> node --test test/public-package.test.mjs test/action-application-public.test.mjs test/document-application-public.test.mjs test/conversation-application-public.test.mjs test/conversation-lifecycle-public.test.mjs
+
+✔ actual PR42 wire 0 query 200 (21.8366ms)
+✔ actual PR42 wire 1 draft 200 (1.7957ms)
+✔ actual PR42 wire 2 prepare 200 (3.8198ms)
+✔ actual PR42 wire 3 execute 409 (0.4501ms)
+✔ actual PR42 wire 4 execute 200 (1.5948ms)
+✔ actual PR42 wire 5 execute 200 (0.2228ms)
+✔ preserve uncertainty UNKNOWN (0.1885ms)
+✔ preserve uncertainty STORED_NOT_RELEASED (0.0931ms)
+✔ reject success/error status interchange query (0.6964ms)
+✔ reject success/error status interchange draft (0.3433ms)
+✔ reject success/error status interchange prepare (0.276ms)
+✔ reject success/error status interchange execute (0.8092ms)
+✔ closed/correlated negative 0 (0.4123ms)
+✔ closed/correlated negative 1 (0.1723ms)
+✔ closed/correlated negative 2 (3.0501ms)
+✔ closed/correlated negative 3 (2.3636ms)
+✔ closed/correlated negative 4 (1.8704ms)
+✔ closed/correlated negative 5 (1.1014ms)
+✔ closed/correlated negative 6 (0.732ms)
+✔ closed/correlated negative 7 (0.2964ms)
+✔ closed/correlated negative 8 (0.8491ms)
+✔ closed/correlated negative 9 (0.3336ms)
+✔ closed/correlated negative 10 (0.2213ms)
+✔ Proxy, accessor, revoked proxy rejected without traps (0.241ms)
+✔ bounded primitive JSON (0.3243ms)
+✔ route coercion never occurs (0.1066ms)
+✔ deep immutable parsed output (2.2354ms)
+✔ execute pending outcome retained without claimed result (0.2363ms)
+✔ interleaved events retain increasing sequence (2.0576ms)
+✔ public closed submit request (4.9178ms)
+✔ public closed history request (0.4056ms)
+✔ public closed cancel request (0.3228ms)
+✔ public closed events request (0.394ms)
+✔ submit receipt is immutable, matched to exact request, and admits a view cursor (1.6467ms)
+✔ history page binds exact current view and contiguous acknowledged sequence (21.1431ms)
+✔ terminal cancel receipt means the existing durable run state (1.0091ms)
+✔ history refuses binding tenant against the selected admitted view (0.4738ms)
+✔ history refuses binding actor against the selected admitted view (0.4046ms)
+✔ history refuses conversation against the selected admitted view (0.7403ms)
+✔ history refuses run against the selected admitted view (0.5323ms)
+✔ history refuses attempt against the selected admitted view (0.6115ms)
+✔ history refuses worker against the selected admitted view (0.7601ms)
+✔ history refuses fence against the selected admitted view (0.5664ms)
+✔ history refuses scope against the selected admitted view (0.4529ms)
+✔ history refuses request against the selected admitted view (0.4301ms)
+✔ history refuses policy against the selected admitted view (0.621ms)
+✔ history refuses event binding against the selected admitted view (0.4538ms)
+✔ history refuses event scope against the selected admitted view (0.5493ms)
+✔ history refuses gap against the selected admitted view (0.4991ms)
+✔ history refuses next sequence against the selected admitted view (0.4602ms)
+✔ history refuses last sequence against the selected admitted view (0.4005ms)
+✔ history refuses has more against the selected admitted view (0.3643ms)
+✔ history refuses unknown field against the selected admitted view (0.2234ms)
+✔ history pages require complete bounded page and consistent continuation flags (0.6211ms)
+✔ duplicate immutable event ids and historical cursor regression are rejected (0.7589ms)
+✔ history window presence/basis mismatch is rejected without inferring source truth (0.7252ms)
+✔ request receipt identity, shape-only view and cursor reconstruction cannot bypass provenance (0.4405ms)
+✔ event refuses tenant before cursor advances (0.4594ms)
+✔ event refuses actor before cursor advances (0.3388ms)
+✔ event refuses conversation before cursor advances (0.346ms)
+✔ event refuses run before cursor advances (1.5528ms)
+✔ event refuses attempt before cursor advances (0.4872ms)
+✔ event refuses worker before cursor advances (0.3909ms)
+✔ event refuses fence before cursor advances (0.3682ms)
+✔ event refuses scope before cursor advances (0.3671ms)
+✔ event refuses gap before cursor advances (0.3593ms)
+✔ event refuses repeat before cursor advances (0.5976ms)
+✔ event refuses protocol before cursor advances (0.4332ms)
+✔ event refuses extra before cursor advances (0.423ms)
+✔ consumed cursor cannot branch/replay and repeated event identity at a new sequence is refused (0.5309ms)
+✔ history acknowledged event identities cannot be reused by a later stream event (0.5027ms)
+✔ safe sequence bounds, closed commands and typed skill identity (0.3871ms)
+✔ all actual error/status pairs are strict and return content-free immutable errors (0.5582ms)
+✔ byte receivers enforce UTF8, dangerous keys, Unicode, depth and size without user hooks (0.5048ms)
+✔ response and event byte caps reject before releasing content (0.2319ms)
+✔ submit cursors begin at zero and partial history cannot skip unseen events (0.3995ms)
+✔ cursor retained event identities have a finite cap and fresh history provides a checkpoint (330.9202ms)
+✔ immutable saved prompt and explicit window survive history receiving and cannot be substituted (2.0917ms)
+✔ fiscal stage/version and relative anchor/duration must match original window specification (0.9923ms)
+✖ browser ESM executes without Node globals, builtins or external imports (54.5588ms)
+✔ isolated distribution imports public receiving/schema exports without private source (131.8109ms)
+✖ conversation generator help and invalid options exit before generation (46.0903ms)
+✔ source evidence retains exact supplied provenance and nested scopes remain within the admitted view (1.833ms)
+✔ canonical private/public steer command and exact receipt agree (14.7897ms)
+✔ canonical private/public pause command and exact receipt agree (1.7312ms)
+✔ canonical private/public approval.wait command and exact receipt agree (2.9887ms)
+✔ canonical private/public resume command and exact receipt agree (1.2113ms)
+✔ canonical private/public fork command and exact receipt agree (0.7866ms)
+✔ inspection selector/response preserve ID/hash and current source binding only (2.0005ms)
+✔ control receipt refuses tenant substitution (0.4786ms)
+✔ control receipt refuses worker substitution (0.3171ms)
+✔ control receipt refuses fence substitution (0.3273ms)
+✔ control receipt refuses controlId substitution (0.3585ms)
+✔ control receipt refuses intent substitution (0.3123ms)
+✔ control receipt refuses input hash substitution (1.3551ms)
+✔ resume exact checkpoint and fresh target receipt semantics (1.9154ms)
+✔ fork exact checkpoint and fresh target receipt semantics (1.5415ms)
+✔ request/view provenance cannot be recreated or caller-controlled; bytes stay inert (0.9254ms)
+✔ closed status/error disposition preserves UNKNOWN and rejects false success/status (0.9401ms)
+✔ inspection refuses ID/sequence/binding mismatch against admitted current history (0.8489ms)
+✖ browser module loads only the preserved public sibling and uses its actual view provenance (58.1822ms)
+✔ installed offline package exposes additive lifecycle/schema without private source (131.5522ms)
+✖ metadata and generator help/invalid options remain inert and finite (47.4067ms)
+✔ public txt request/receipt/verified binary (28.8068ms)
+✔ public docx request/receipt/verified binary (2.9945ms)
+✔ public xlsx request/receipt/verified binary (2.215ms)
+✔ revision parent and inspect current-byte receipt (1.9322ms)
+✔ refuse receipt extra (0.6651ms)
+✔ refuse receipt hash (0.3439ms)
+✔ refuse receipt bytes (0.2899ms)
+✔ refuse receipt mime (0.2125ms)
+✔ refuse receipt filename (0.2204ms)
+✔ refuse receipt parent (1.0897ms)
+✔ refuse receipt native (0.2345ms)
+✔ refuse receipt recalc (0.1832ms)
+✔ refuse receipt preview (0.1958ms)
+✔ refuse receipt scope (0.1755ms)
+✔ refuse receipt tenant (0.2394ms)
+✔ refuse receipt size (0.2066ms)
+✔ strict UTF8, JSON bounds and inert bytes (0.4941ms)
+✔ typed-array overrides are not observed (0.1635ms)
+✔ PDF/deck/general and caller authority are outside public admission (0.1546ms)
+✔ local request and version provenance cannot be reconstructed by shape (0.5904ms)
+✔ download header content-type refuses (0.2982ms)
+✔ download header content-length refuses (0.2345ms)
+✔ download header content-disposition refuses (0.3273ms)
+✔ download header cache-control refuses (0.3104ms)
+✔ download header x-content-type-options refuses (0.3718ms)
+✔ download header content-encoding refuses (0.305ms)
+✔ overflow, short, hash mismatch and no EOF cannot release bytes (20.7019ms)
+✔ preabort/native Response brands and own getters (1.6491ms)
+✔ error status and uncertainty preserved without version or bytes (0.8326ms)
+✔ download JSON path accepts errors only (0.4289ms)
+✖ browser ESM has no Node globals/external imports and verifies real bytes (71.2439ms)
+✔ isolated package consumer exposes document export without private files/dependencies (167.7129ms)
+✔ canonical 125-character docx filename remains usable (1.1006ms)
+✔ canonical 125-character xlsx filename remains usable (0.9035ms)
+✖ native followed redirect with exact final bytes remains refused (16.7653ms)
+✔ all ten frozen variants agree through deliberate browser and Node exports (71.0705ms)
+✔ closed fields, dates, scopes, payloads and safe integer bounds retain strict rejection (9.7262ms)
+✔ structural validation deliberately grants no tenant authorization (0.4705ms)
+✔ public metadata binds the exact unchanged schema and cannot mutate its vocabulary (1.1458ms)
+✔ generated browser ESM evaluates without Node globals, builtins or external imports (82.1689ms)
+✔ generator help and invalid arguments exit before generation (210.1865ms)
+✔ generated distribution check is independent of caller working directory (911.6458ms)
+ℹ tests 145
+ℹ suites 0
+ℹ pass 139
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1533.1373
+
+✖ failing tests:
+
+test at test\conversation-application-public.test.mjs:64:1
+✖ browser ESM executes without Node globals, builtins or external imports (54.5588ms)
+  AssertionError [ERR_ASSERTION]: node:fs:484
+      return binding.readFileUtf8(path, stringToFlags(options.flag));
+                     ^
+
+  Error: ENOENT: no such file or directory, open 'C:\<checkout>\packages\contracts\dist\conversation-application.mjs'
+      at readFileSync (node:fs:484:20)
+      at file:///<checkout>/packages/contracts/[eval1]:1:171
+      at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+      at async node:internal/modules/esm/loader:224:26
+      at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\<checkout>\\packages\\contracts\\dist\\conversation-application.mjs'
+  }
+
+  Node.js v24.19.0
+
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///<checkout>/packages/contracts/test/conversation-application-public.test.mjs:64:1075)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\conversation-application-public.test.mjs:68:1
+✖ conversation generator help and invalid options exit before generation (46.0903ms)
+  AssertionError [ERR_ASSERTION]: node:internal/modules/cjs/loader:1520
+    throw err;
+    ^
+
+  Error: Cannot find module 'C:\<checkout>\packages\contracts\generate-conversations.mjs'
+      at Module._resolveFilename (node:internal/modules/cjs/loader:1517:15)
+      at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+      at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+      at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+      at Module._load (node:internal/modules/cjs/loader:1294:5)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+      at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+      at node:internal/main/run_main_module:33:47 {
+    code: 'MODULE_NOT_FOUND',
+    requireStack: []
+  }
+
+  Node.js v24.19.0
+
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///<checkout>/packages/contracts/test/conversation-application-public.test.mjs:68:266)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\conversation-lifecycle-public.test.mjs:17:1
+✖ browser module loads only the preserved public sibling and uses its actual view provenance (58.1822ms)
+  AssertionError [ERR_ASSERTION]: node:fs:484
+      return binding.readFileUtf8(path, stringToFlags(options.flag));
+                     ^
+
+  Error: ENOENT: no such file or directory, open 'C:\<checkout>\packages\contracts\dist\conversation-application.mjs'
+      at readFileSync (node:fs:484:20)
+      at file:///<checkout>/packages/contracts/[eval1]:1:213
+      at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+      at async node:internal/modules/esm/loader:224:26
+      at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\<checkout>\\packages\\contracts\\dist\\conversation-application.mjs'
+  }
+
+  Node.js v24.19.0
+
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///<checkout>/packages/contracts/test/conversation-lifecycle-public.test.mjs:17:1440)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\conversation-lifecycle-public.test.mjs:19:1
+✖ metadata and generator help/invalid options remain inert and finite (47.4067ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///<checkout>/packages/contracts/test/conversation-lifecycle-public.test.mjs:19:439)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\document-application-public.test.mjs:36:1
+✖ browser ESM has no Node globals/external imports and verifies real bytes (71.2439ms)
+  AssertionError [ERR_ASSERTION]: node:fs:484
+      return binding.readFileUtf8(path, stringToFlags(options.flag));
+                     ^
+
+  Error: ENOENT: no such file or directory, open 'C:\<checkout>\packages\contracts\dist\document-application.mjs'
+      at readFileSync (node:fs:484:20)
+      at file:///<checkout>/packages/contracts/[eval1]:1:325
+      at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+      at async node:internal/modules/esm/loader:224:26
+      at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:221:20)
+      at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\<checkout>\\packages\\contracts\\dist\\document-application.mjs'
+  }
+
+  Node.js v24.19.0
+
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///<checkout>/packages/contracts/test/document-application-public.test.mjs:36:1260)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test\document-application-public.test.mjs:39:1
+✖ native followed redirect with exact final bytes remains refused (16.7653ms)
+  [TypeError: fetch failed] {
+    [cause]: Error: connect EACCES 127.0.0.1:61558
+        at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1864:16) {
+      errno: -4092,
+      code: 'EACCES',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 61558
+    }
+  }

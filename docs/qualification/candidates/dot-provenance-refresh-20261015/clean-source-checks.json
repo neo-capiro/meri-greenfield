@@ -1,0 +1,50 @@
+{
+  "sourceHead": "c83b7cf859fcb9a920766828303f6190ae1b70c5",
+  "sourceTree": "dded6f1a55877d78eb38182d20168b1f190dfdd9",
+  "cleanBeforeChecks": true,
+  "platform": "Windows",
+  "node": "24.19.0",
+  "python": "3.11.15",
+  "checks": [
+    {
+      "command": [
+        "npm.cmd",
+        "--prefix",
+        "packages/contracts",
+        "run",
+        "check"
+      ],
+      "exit": 1,
+      "log": "clean-contracts-check.log.txt",
+      "logBytes": 21654,
+      "logSha256": "36fe2bb3e9e250d879dd33017923486b1603f9acc027332406fe16c8bf799680"
+    },
+    {
+      "command": [
+        "python",
+        "-B",
+        "scripts/qualification/worker_source_pins.py",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "clean-worker-pin-check.log.txt",
+      "logBytes": 69,
+      "logSha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465"
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "scripts/qualification/assembled-image/source-proof.test.mjs"
+      ],
+      "exit": 0,
+      "log": "clean-runtime-source-proof.log.txt",
+      "logBytes": 741,
+      "logSha256": "9befb7ccc824f374970312e4043084d03dcb98062f5fc942435e98c87a7d7fa9"
+    }
+  ],
+  "qualification": "HOLD: contracts public tests139/145;5Windows URL pathname failures and1sandbox localhost EACCES. No assertions changed.",
+  "logNormalization": "Workstation paths scrubbed and trailing whitespace removed; raw local receipts retained outside Git."
+}
