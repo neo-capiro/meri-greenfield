@@ -9,8 +9,8 @@
  "files": [
   {
    "path": "CLEANUP-RECEIPT.json",
-   "bytes": 1134,
-   "sha256": "4a8ce2a7c259172cf056ed22fcbd46ab6288feb053e60c36b91dbf92505044ca"
+   "bytes": 1349,
+   "sha256": "cbd2027cabc398529c072d01cf9474039cfa6fb6d462cc8a727f42dcee994faa"
   },
   {
    "path": "DENIED-OPERATIONS.md",
@@ -19,8 +19,8 @@
   },
   {
    "path": "README.md",
-   "bytes": 16925,
-   "sha256": "0eaaa81576a536524c7a88afb5926de12023d9e3c96856590652dd85f29d37ad"
+   "bytes": 17109,
+   "sha256": "6b649765dc22bda9856e451a6837fa936823229d2bc2352499a1a3567e342b84"
   },
   {
    "path": "artifact/pip-install-host.log",

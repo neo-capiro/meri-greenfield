@@ -1,15 +1,27 @@
 {
  "schema": "meri.cleanup-receipt.v1",
- "at": "2026-10-15T02:24:23Z",
+ "at": "2026-10-15T02:25:22Z",
  "clusters": {
   "dataDirectory": "/tmp/meri-resume-pg-20261015",
   "stopCommand": "provision-postgres.sh stop --data /tmp/meri-resume-pg-20261015",
-  "brokerSocketEntries": "0",
-  "kickoffSocketEntries": "0",
-  "postgresProcesses": "2"
+  "brokerSocketEntries": 0,
+  "kickoffSocketEntries": 0,
+  "postgresProcesses": 0,
+  "note": "an earlier capture seconds after the stop counted two exiting postgres processes; they were gone on recapture"
  },
- "testUserProcesses": "0",
- "privateTmpEntries": "meri-lifecycle-test-097Em4\nmeri-lifecycle-test-2QV3g5\nmeri-lifecycle-test-6q0oqI\nmeri-lifecycle-test-7m4EYE\nmeri-lifecycle-test-GslDH1\nmeri-lifecycle-test-NAtxVY\nmeri-lifecycle-test-P3acZV\nmeri-lifecycle-test-as4Pp8\nmeri-lifecycle-test-eZtzJ1\nmeri-lifecycle-test-j7WGW6\nmeri-lifecycle-test-nO57hm\nmeri-lifecycle-test-pmgys9\nmeri-lifecycle-test-wqZcW5\nmeri-r2-reconciliation-GrHX2d\nmeri-r2-reconciliation-xx0YqE\nmeri-ws-QVYFGl\nnode-compile-cache",
+ "testUserProcesses": 0,
+ "privateTmp": {
+  "path": "/home/meri/resume-tmp",
+  "entries": 17,
+  "byPrefix": {
+   "meri-lifecycle-test": 13,
+   "meri-r2-reconciliation": 2,
+   "meri-ws": 1,
+   "node-compile": 1
+  },
+  "note": "directories left by test suites during the full baseline (lifecycle, r2 reconciliation, workspace, node compile cache); no process, socket or credential; retained as a test-cleanup observation"
+ },
+ "worktreeResidueRemoved": "apps/control/document-application/selected-output/test/artifacts-runs/ (untracked test output of the full run, removed with git clean before this receipt)",
  "codexShim": {
   "python3": "/usr/bin/python3",
   "soffice": "/usr/bin/soffice",
@@ -17,8 +29,8 @@
  },
  "hostTrust": {
   "extraCaInstalled": false,
-  "hostsMapping": "0"
+  "hostsMappingLines": 0
  },
  "scratch": "session scratchpad holds the untrusted wheelhouse and the host-profile venv only",
- "worktreeClean": false
+ "worktreeClean": true
 }
