@@ -1,0 +1,46 @@
+✔ local CLI independent: inherited native admission refuses ambient PGOPTIONS before driver/pool access (31.628743ms)
+✔ local CLI independent: missing private input cannot touch existing output or disclose its supplied path (97.081977ms)
+✔ local CLI independent: help and malformed argv finish without an admitted fixture (239.216046ms)
+✔ private exact source-bound fixture input yields a nonsecret descriptor without opening a pool (23.996069ms)
+✔ native parseable server time retains its instant in the canonical runner descriptor (8.705115ms)
+✔ admission refuses remote host (7.513764ms)
+✔ admission refuses another database (9.8418ms)
+✔ admission refuses stale lifetime (7.698608ms)
+✔ admission refuses source migration substitution (5.501562ms)
+✔ admission refuses driver lock substitution (5.540251ms)
+✔ admission refuses extra wrapper field (7.459531ms)
+✔ admission refuses wrong input digest, public modes, symlinks and oversized files (7.43965ms)
+✔ CLI help and missing/bad arguments are inert bounded outcomes with no private path disclosure (263.679297ms)
+✔ CLI requires every named persistence case and explicit known cleanup before reporting success (1.53491ms)
+✔ research brief CLI help/import/invalid paths allocate no fixture or change source-root environment (1.57487ms)
+✔ research brief CLI preserves existing output and refuses before resource allocation (11.866512ms)
+✔ secret env values are hashed, undefined values are marked, ordinary values pass through (3.203967ms)
+✔ a descriptor with undefined env values fails the inert-JSON gate; a string-only descriptor passes it and compiles once directories are injected (11.460214ms)
+✔ the stand-in answers GET /api/hello and POST /v1/messages with or without a query string, and refuses everything else (405.655729ms)
+✔ the contract is all-or-nothing, binds the harness CA to NODE_EXTRA_CA_CERTS, requires owned private material, refuses signer material, a shared or unowned cluster and a dirty source; absent entirely it is the product route (1249.433265ms)
+✔ preflight against a real stand-in: trusted through the CA passes, no CA is classified as TLS-untrusted (not unreachable), a closed port is unreachable, a wrong reply is refused; the real negative control shape (630.529632ms)
+✔ spec summary counts and failing names with first error line are parsed (3.527329ms)
+✔ file-level failures without timing and crashes without a summary are retained (0.907447ms)
+✔ ambient credentials and host overrides are scrubbed; canonical fixture selectors are supplied, never overridden (2.87288ms)
+✔ arguments: --out is required, unknown flags and names refuse, help is available (0.996799ms)
+✔ CLI help exits 0 and missing --out exits 2 before any suite runs (159.012286ms)
+fatal: detected dubious ownership in repository at '/home/user/meri-fable-complete'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-fable-complete
+fatal: detected dubious ownership in repository at '/home/user/meri-fable-complete'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/user/meri-fable-complete
+✔ agreeing synthetic ledgers and source produce no drift and exact counts (5.329664ms)
+✔ every drift class is detected and nothing is invented to hide it (0.81212ms)
+✔ repository run reproduces the recorded R2 counts and writes both outputs (696.486808ms)
+✔ arguments refuse without --out and reject unknown flags (1.124528ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2457.074113

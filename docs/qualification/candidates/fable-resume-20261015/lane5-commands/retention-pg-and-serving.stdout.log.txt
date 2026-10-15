@@ -1,0 +1,16 @@
+✔ an independent PostgreSQL connection suppresses the conversation between the owner's read and its release: refused; a recovery pass on another connection blocks the gate (4333.755253ms)
+✔ the PostgreSQL journal round-trips suppression and release for conversation and artifact subjects, refuses stale and corrupt projections, and a purge executes storage, SDK mirror rows and the purge projection end to end (258.916115ms)
+✔ finding 3: two connections that both observed an absent row cannot both create it; concurrent suppressions of one subject leave exactly one row and a consistent generation after reconciliation (94.847449ms)
+✔ finding 5: a SDK mirror row is deleted only by the transaction that recorded its exact target under the current serialized plan while the subject is SUPPRESSED; wrong class, run, session or entry, a released subject, a stale plan or generation, and UPDATE are refused; a failed transaction rolls everything back (196.84953ms)
+✔ finding 6: database artifact versions keep their identity end to end: several versions sharing one storage object are each carried, deleted with the retired head in one transaction, projected per version, rebuilt from the ledger alone, and a revived version is re-planned (431.708092ms)
+✔ recovery over the PostgreSQL journal: a restore that predates a suppression is re-applied from the ledger behind the barrier; a restore that revives a purged SDK mirror row is re-planned (252.939055ms)
+✔ claim is an atomic absent-row insert from two connections; the same run with a different binding collides; a different intent for the key is refused; the fence binds completion; identity and facts are immutable in the adapter and the trigger (311.340695ms)
+✔ the issuer over the durable adapter: concurrent callers share one generation; restart replays without generating; a separate OS process that claimed and completed is recognized; a lost completion stays UNKNOWN until the authority answers; no raw material reaches the row (3422.032849ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11863.741261

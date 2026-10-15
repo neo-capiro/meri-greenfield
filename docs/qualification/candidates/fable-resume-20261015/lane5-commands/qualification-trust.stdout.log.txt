@@ -1,0 +1,13 @@
+✔ secret env values are hashed, undefined values are marked, ordinary values pass through (2.584203ms)
+✔ a descriptor with undefined env values fails the inert-JSON gate; a string-only descriptor passes it and compiles once directories are injected (9.462324ms)
+✔ the stand-in answers GET /api/hello and POST /v1/messages with or without a query string, and refuses everything else (774.043952ms)
+✔ the contract is all-or-nothing, binds the harness CA to NODE_EXTRA_CA_CERTS, requires owned private material, refuses signer material, a shared or unowned cluster and a dirty source; absent entirely it is the product route (1979.911202ms)
+✔ preflight against a real stand-in: trusted through the CA passes, no CA is classified as TLS-untrusted (not unreachable), a closed port is unreachable, a wrong reply is refused; the real negative control shape (659.170223ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3901.842171

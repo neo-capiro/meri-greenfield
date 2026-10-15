@@ -1,0 +1,2 @@
+Error: Generated drift: document-application.metadata.json
+    at generateDocumentContracts (file:///home/user/meri-fable-complete/packages/contracts/generate-documents.mjs:56:116)

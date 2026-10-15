@@ -1,0 +1,2 @@
+ M docs/coordination/reports/FABLE-COMPLETION-RETURN-20261015.md
+?? docs/qualification/candidates/fable-resume-20261015/lane5-commands/

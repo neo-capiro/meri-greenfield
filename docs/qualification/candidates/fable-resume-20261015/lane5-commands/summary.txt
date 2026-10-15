@@ -1,0 +1,8 @@
+qualification-trust exit=0 stdout_sha=5fd64fbb469fde61 stderr_sha=e3b0c44298fc1c14 tests=5  pass=5  fail=0 
+rehearsal-syntax exit=0 stdout_sha=e3b0c44298fc1c14 stderr_sha=e3b0c44298fc1c14 tests= pass= fail=
+broker-fixture-consumers-1 exit=0 stdout_sha=da448c6dbb833c33 stderr_sha=e3b0c44298fc1c14 tests=7  pass=7  fail=0 
+broker-fixture-consumers-2 exit=0 stdout_sha=77f5ce63c23ab714 stderr_sha=e3b0c44298fc1c14 tests=7  pass=7  fail=0 
+retention-pg-and-serving exit=0 stdout_sha=b35e139d33d44021 stderr_sha=e3b0c44298fc1c14 tests=8  pass=8  fail=0 
+contracts-check exit=1 stdout_sha=d76b6452987eb481 stderr_sha=707024634f257692 tests= pass= fail=
+worker-source-pins-check exit=0 stdout_sha=c8d7c07562d4a07c stderr_sha=e3b0c44298fc1c14 tests= pass= fail=
+worker-pins-unittest exit=0 stdout_sha=e3b0c44298fc1c14 stderr_sha=3a85e049387b6cf1 tests= pass= fail=

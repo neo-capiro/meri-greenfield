@@ -1,0 +1,28 @@
+✔ the ledger appends in order with a verifiable durable acknowledgement and refuses to proceed without one (19.089902ms)
+✔ suppression by the owning actor is immediate and idempotent; a different actor is refused by default; an owner-mediated receipt admits it; release is refused during a purge (12.197468ms)
+✔ planning: refused without suppression or policy; cooling, holds, liabilities and shared references block; identities are deterministic and duplicates coalesce; row targets and artifact versions are carried (80.467001ms)
+✔ obligations: one exact object under several classes carries every one; a non-purgeable or longer-retained class blocks it; enumeration order never changes eligibility; shared holders need their own eligibility (37.587609ms)
+✔ execution: disabled by default fails closed before any effect; every effect is re-authorized against the current suppression generation and a recomputed canonical digest; ambiguity leaves UNKNOWN; replay is idempotent (111.936191ms)
+✔ finding 1: a plan computed under suppression S1 cannot execute after a release and a new suppression S2 (zero deletes); reconciliation never restores historical PLANNED targets without current eligibility (44.34173ms)
+✔ finding 2: recovery is serialized with transitions, writes with compare-and-set, verifies the ledger watermark, and reopens serving only after a settled pass; a suspended suppression cannot be overwritten (33.766882ms)
+✔ finding 2b: an acknowledged suppression whose projection write fails closes serving; executor and suppression owner require the gate; a stale purge after an accepted release and a delayed write across recovery are refused (12.615644ms)
+✔ findings 3 and 4 (in-process): total projection loss is rebuilt exactly from the ledger and a second pass changes nothing; every block reason is re-evaluated and clears only with all facts available (118.101694ms)
+✔ authorization before replay and trusted ownership: wrong-actor replay, altered ownership claim and unauthorized release refuse; authorized exact replay succeeds; ownership is re-read (1.820294ms)
+✔ a policy is explicit required configuration: every class, a positive cooling period and a version; nothing is defaulted (7.507298ms)
+✔ a missing policy blocks physical purge and is not consulted by suppression (3.770134ms)
+✔ the inventory enumerates exact object versions per class, deduplicates across classes, and a fork sharing a version is excluded as a shared reference (19.849767ms)
+✔ the PostgreSQL journal round-trips suppression and release for conversation and artifact subjects, refuses stale and corrupt projections, and a purge executes storage, SDK mirror rows and the purge projection end to end (306.305874ms)
+✔ finding 3: two connections that both observed an absent row cannot both create it; concurrent suppressions of one subject leave exactly one row and a consistent generation after reconciliation (136.923455ms)
+✔ finding 5: a SDK mirror row is deleted only by the transaction that recorded its exact target under the current serialized plan while the subject is SUPPRESSED; wrong class, run, session or entry, a released subject, a stale plan or generation, and UPDATE are refused; a failed transaction rolls everything back (192.957338ms)
+✔ finding 6: database artifact versions keep their identity end to end: several versions sharing one storage object are each carried, deleted with the retired head in one transaction, projected per version, rebuilt from the ledger alone, and a revived version is re-planned (318.721053ms)
+✔ recovery over the PostgreSQL journal: a restore that predates a suppression is re-applied from the ledger behind the barrier; a restore that revives a purged SDK mirror row is re-planned (273.005835ms)
+✔ version-specific absence: 404 is ABSENT only with the recorded list permission; 403, 405, delete markers, mismatches and ambiguity are UNKNOWN (3.912834ms)
+✔ the storage port times out to UNKNOWN, refuses deletes without the delete permission, and fails a version delete that produced a delete marker (37.806163ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1940.294317
