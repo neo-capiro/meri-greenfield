@@ -145,8 +145,11 @@ test('required product capabilities: all scope rows, browser on with destination
   assert.match(byId.get('memory-read-propose').currentState, /sourced corrections/);
   assert.match(byId.get('revocation-lifecycle').decision, /retention and deletion/);
   assert.equal(byId.get('mobile').decision, 'deferred relative to desktop');
-  for (const id of ['authenticated-browser-workflow', 'device-browser-bridge', 'live-browser-takeover', 'in-browser-office-editing'])
-    assert.match(byId.get(id).decision, /owner decision required/, id);
+  for (const id of ['authenticated-browser-workflow', 'device-browser-bridge', 'live-browser-takeover', 'in-browser-office-editing']) {
+    assert.match(byId.get(id).decision, /^required for the first shipment \(owner decision, Neo Martinez, 15 Oct 2026/, id);
+    assert.ok(byId.get(id).gates.includes('FEATURE-DESIGN-APPROVAL'), id);
+  }
+  assert.match(byId.get('full-139-workflow-parity').decision, /96 included capabilities and the 14 current skills replaces legacy 139-workflow parity; the 43 excluded tools stay excluded/);
 });
 
 test('ownership graph names the requested domains, verifies paths and states what is unowned today', () => {

@@ -80,6 +80,12 @@
       "requirement": "A scheduled firing is mounted into current authority, fresh run binding and capability issuance; an exact-provider reconciliation entry point resolves UNKNOWN without blind redispatch or a second scheduler; claim/generation/expiry/cancel/recovery and duplicate-effect controls pass.",
       "source": "lifecycle-report.md L6"
     },
+    "FEATURE-DESIGN-APPROVAL": {
+      "title": "Approved design for an owner-added first-shipment feature",
+      "owner": "Fable (proposal); Neo Martinez (approval of architecture, components and placement); dot (review)",
+      "requirement": "A written design names architecture, components (upstream first; no restrictive Office skill copies), placement, authority/approval path, isolation and qualification; the owner approves it before implementation.",
+      "source": "Owner decision of 15 Oct 2026 (FABLE-OWNER-DECISIONS-20261015.md); AGENTS.md change-approval rule"
+    },
     "DEPLOY-G1-G7": {
       "title": "Original deployment gates",
       "owner": "dot (acceptance); AWS shipping owner alone for separately authorized cloud actions",

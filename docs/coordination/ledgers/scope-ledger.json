@@ -7,8 +7,8 @@
     "docs/CAPABILITY-SCOPE.md": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
     "scripts/general-reads/product-routes.json": "7a567691cb67134747107c685ffe211233e646651b9e6da6643bf16235959854",
     "scripts/scope-ledger/owner-exclusion.json": "addf40ecae76800c648de960323093593b81ba2a0292f9b821016ff071e46dbd",
-    "scripts/scope-ledger/gates.json": "3b1c2e858831473ad925e310f6c1978e582dabd5abacbb5a17f65be8d65df277",
-    "scripts/scope-ledger/product-capabilities.json": "5742e76b7dd17bb89fdf331feb071ce14a5b2cb10fe3ef0f655bb1b0b76512cc",
+    "scripts/scope-ledger/gates.json": "da47ce86ac4240e0562e8e7d012c4e931e167bfca4b2c499a148633e6a49acce",
+    "scripts/scope-ledger/product-capabilities.json": "f9d080110037f0b7443c4580339d85d7cd1931513962dffa3fe01d5a61ef6c11",
     "scripts/scope-ledger/ownership-graph.json": "d12a573738d2f111b3132f94884dc6320f26eef2f8ef3e5ef6908079c87795f5"
   },
   "coverageOrigin": {
@@ -276,6 +276,14 @@
       "requirement": "A scheduled firing is mounted into current authority, fresh run binding and capability issuance; an exact-provider reconciliation entry point resolves UNKNOWN without blind redispatch or a second scheduler; claim/generation/expiry/cancel/recovery and duplicate-effect controls pass.",
       "source": "lifecycle-report.md L6",
       "capabilityRows": 3,
+      "state": "open"
+    },
+    "FEATURE-DESIGN-APPROVAL": {
+      "title": "Approved design for an owner-added first-shipment feature",
+      "owner": "Fable (proposal); Neo Martinez (approval of architecture, components and placement); dot (review)",
+      "requirement": "A written design names architecture, components (upstream first; no restrictive Office skill copies), placement, authority/approval path, isolation and qualification; the owner approves it before implementation.",
+      "source": "Owner decision of 15 Oct 2026 (FABLE-OWNER-DECISIONS-20261015.md); AGENTS.md change-approval rule",
+      "capabilityRows": 0,
       "state": "open"
     },
     "DEPLOY-G1-G7": {
@@ -869,15 +877,19 @@
       "id": "authenticated-browser-workflow",
       "scopeRow": "Authenticated browser workflow",
       "plannedOwner": "Deferred individually",
-      "decision": "historically deferred individually; not covered by the 15 Oct owner exclusion; owner decision required",
-      "canonicalOwner": "unassigned until Neo names a website/workflow",
-      "currentState": "Not started; the audit says it must be reconciled with 'complete it all', not silently dropped.",
+      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
+      "currentState": "Not started. Required for the first shipment; each website/workflow is still named, approved and tested individually, with credential ownership, approval and authentication/isolation/revocation qualification. This does not change authenticated Meri chat.",
       "gates": [
+        "FEATURE-DESIGN-APPROVAL",
+        "STARTUP-COMPOSITION",
         "DEPLOY-G1-G7"
       ],
       "acceptance": "Requires named website/workflow, credential ownership, approval and separate authentication/isolation/revocation qualification; no implicit v1 parity.",
+      "additionalAcceptance": "Approved design, then end-to-end and negative qualification per named website/workflow on the approved host and integrated candidate; no gate is lowered.",
       "auditRefs": [
-        "meri-audit-product-integration.md 'End-goal scope accounting'"
+        "meri-audit-product-integration.md 'End-goal scope accounting'",
+        "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md"
       ]
     },
     {
@@ -1003,60 +1015,76 @@
       "id": "device-browser-bridge",
       "title": "Device/browser bridge",
       "scopeRow": null,
-      "plannedOwner": "Deferred",
-      "decision": "historically deferred; not covered by the 15 Oct owner exclusion; owner decision required",
-      "canonicalOwner": "unassigned",
-      "currentState": "Not started.",
-      "gates": [],
-      "acceptance": "Separate estimate and owner direction.",
+      "plannedOwner": "Fable",
+      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
+      "currentState": "Not started. Required for the first shipment; design proposal pending.",
+      "gates": [
+        "FEATURE-DESIGN-APPROVAL",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Approved design, then end-to-end and negative qualification on the approved host and integrated candidate; no gate is lowered.",
       "auditRefs": [
         "docs/CAPABILITY-SCOPE.md paragraph after the required-capability table",
-        "meri-audit-product-integration.md 'End-goal scope accounting'"
+        "meri-audit-product-integration.md 'End-goal scope accounting'",
+        "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md"
       ]
     },
     {
       "id": "live-browser-takeover",
       "title": "Live browser takeover",
       "scopeRow": null,
-      "plannedOwner": "Deferred",
-      "decision": "historically deferred; not covered by the 15 Oct owner exclusion; owner decision required",
-      "canonicalOwner": "unassigned",
-      "currentState": "Not started.",
-      "gates": [],
-      "acceptance": "Separate estimate and owner direction.",
+      "plannedOwner": "Fable",
+      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
+      "currentState": "Not started. Required for the first shipment; design proposal pending.",
+      "gates": [
+        "FEATURE-DESIGN-APPROVAL",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Approved design, then end-to-end and negative qualification on the approved host and integrated candidate; no gate is lowered.",
       "auditRefs": [
         "docs/CAPABILITY-SCOPE.md paragraph after the required-capability table",
-        "meri-audit-product-integration.md 'End-goal scope accounting'"
+        "meri-audit-product-integration.md 'End-goal scope accounting'",
+        "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md"
       ]
     },
     {
       "id": "in-browser-office-editing",
       "title": "Full in-browser Office editing",
       "scopeRow": null,
-      "plannedOwner": "Deferred",
-      "decision": "historically deferred; not covered by the 15 Oct owner exclusion; owner decision required",
-      "canonicalOwner": "unassigned",
-      "currentState": "Not started; native artifacts and revisions remain required.",
-      "gates": [],
-      "acceptance": "Separate estimate and owner direction.",
+      "plannedOwner": "Fable",
+      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
+      "currentState": "Not started. Required for the first shipment alongside native artifact generation, revision, preview and download. Must not copy restrictive Office skill implementations (AGENTS.md); editor component choice needs owner approval.",
+      "gates": [
+        "FEATURE-DESIGN-APPROVAL",
+        "STARTUP-COMPOSITION",
+        "DEPLOY-G1-G7"
+      ],
+      "acceptance": "Approved design, then end-to-end and negative qualification on the approved host and integrated candidate; no gate is lowered.",
       "auditRefs": [
         "docs/CAPABILITY-SCOPE.md paragraph after the required-capability table",
-        "meri-audit-product-integration.md 'End-goal scope accounting'"
+        "meri-audit-product-integration.md 'End-goal scope accounting'",
+        "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md"
       ]
     },
     {
       "id": "full-139-workflow-parity",
       "title": "Full 139-workflow parity",
       "scopeRow": null,
-      "plannedOwner": "Deferred",
-      "decision": "superseded for the 43 excluded tools by the 15 Oct owner exclusion; parity for the 96 included capabilities is tracked per row; workflow-level parity beyond those rows needs an owner decision",
-      "canonicalOwner": "unassigned",
+      "plannedOwner": "Fable",
+      "decision": "replaced (owner decision, Neo Martinez, 15 Oct 2026): end-to-end coverage of the 96 included capabilities and the 14 current skills replaces legacy 139-workflow parity; the 43 excluded tools stay excluded",
+      "canonicalOwner": "Fable (coverage) with dot (acceptance)",
       "currentState": "All 139 workflow dispositions remain NOT_QUALIFIED.",
       "gates": [],
-      "acceptance": "Per-row gates in this ledger; no parity claim from counts.",
+      "acceptance": "End-to-end coverage of every included capability row and each of the 14 skills against the integrated candidate; counts alone are not coverage.",
       "auditRefs": [
         "meri-audit-product-integration.md 'End-goal scope accounting'",
-        "data-artifacts-report.md 'Selected tool exposure'"
+        "data-artifacts-report.md 'Selected tool exposure'",
+        "docs/coordination/reports/FABLE-OWNER-DECISIONS-20261015.md"
       ]
     }
   ],
