@@ -1,0 +1,133 @@
+{
+  "schema": "meri.handoff.context-manifest/1",
+  "status": "PUBLIC_SAFE_CONTEXT_ONLY_NO_RUNTIME_ADMISSION",
+  "codeCheckpoint": "1003f12d3d260807116ffc7b75288aaef0336397",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 281,
+      "sha256": "93c88e1ec32976285e4f7ccda86aea2517ef4cedd9615aefc4bd583e1ccd637b"
+    },
+    {
+      "path": "changed-file-inventory.json",
+      "bytes": 37499,
+      "sha256": "0dbd38284f12dae7c26ef293af6d8c1a523ccfc2c86729ddbf6a9bb6158ed69f"
+    },
+    {
+      "path": "image-base-source-candidates/bookworm-slim-base-argument-only.patch",
+      "bytes": 582,
+      "sha256": "537bf5d48226330f4fc770c1094e4fb375fd154d394b39f53eca61214adc3f17"
+    },
+    {
+      "path": "image-base-source-candidates/candidate-source-metadata.json",
+      "bytes": 1467,
+      "sha256": "540b18b0ee9321ec833392417d770be178156d07c4a687721debf08443f6dc7c"
+    },
+    {
+      "path": "image-base-source-candidates/README.md",
+      "bytes": 1373,
+      "sha256": "012b7c13a598949dd9f01879acf36a53cb6795854e18e47494f275f2879c0738"
+    },
+    {
+      "path": "image-base-source-candidates/trixie-slim-base-argument-only.patch",
+      "bytes": 582,
+      "sha256": "db6b96c2df2bbfb42da1da867d46f8c5d5fc0d528cd341726690dcc1f684a8e5"
+    },
+    {
+      "path": "image-base-source-candidates/VALIDATION.json",
+      "bytes": 398,
+      "sha256": "355313270c91b581e4f5ee0d057818a8d275a0b715a2a652c3e6eb4e0ee493a2"
+    },
+    {
+      "path": "image-runtime-source-proposal/apps/runtime/build/materialize-runtime-root.mjs",
+      "bytes": 25076,
+      "sha256": "e26107528b8b11aeb924b57800749cef3abbe93067dd622f40ebaf2a999ab211"
+    },
+    {
+      "path": "image-runtime-source-proposal/apps/runtime/build/runtime-root-policy.json",
+      "bytes": 7642,
+      "sha256": "9ac1dd79ed0652c5bf73069d140ecfec9dbb87e05429ec72f33541cd9bbb8b13"
+    },
+    {
+      "path": "image-runtime-source-proposal/apps/runtime/build/test/materialize-runtime-root.test.mjs",
+      "bytes": 4594,
+      "sha256": "9011612cc1bd0c044e87a16add3688f47df3a9ec0ab535147c061f5df8afb750"
+    },
+    {
+      "path": "image-runtime-source-proposal/Dockerfile.proposed",
+      "bytes": 2567,
+      "sha256": "d58a499460f8e77154a28275cef5765975dc01b47a0d1e95730f05e32c1f0582"
+    },
+    {
+      "path": "image-runtime-source-proposal/PROOF-IMPACT.json",
+      "bytes": 1453,
+      "sha256": "b25a2b03e969a0ff1140d636cd160993da169bde19ce6a5aae59dcb77bdbce4a"
+    },
+    {
+      "path": "image-runtime-source-proposal/PROPOSAL-MANIFEST.json",
+      "bytes": 1771,
+      "sha256": "59afa503988a8db27d0b1aab039cbedc13681e8ce115a464b9ca36397654fa25"
+    },
+    {
+      "path": "image-runtime-source-proposal/REVIEW.md",
+      "bytes": 7946,
+      "sha256": "807505d74372d2323c1abc4be3d5f00a60b006e11aa519b78ae6b78a360bb728"
+    },
+    {
+      "path": "image-runtime-source-proposal/runtime-and-base-source.patch",
+      "bytes": 40237,
+      "sha256": "c937549d9a17b26d90ef4643ca2136534a39895b2f79841bced155b6436d88e5"
+    },
+    {
+      "path": "image-runtime-source-proposal/runtime-final-stage.patch",
+      "bytes": 1519,
+      "sha256": "ba605e64f30a8ff259808bca17fd18218b7314e8a51dc13bbae658c53ed9db51"
+    },
+    {
+      "path": "image-runtime-source-proposal/VALIDATION.json",
+      "bytes": 1338,
+      "sha256": "610d0a112b8d9abee8d76559dc95c133b4dd3febe874af4484922492fbbd76e4"
+    },
+    {
+      "path": "NODE-BUNDLED-ZLIB.md",
+      "bytes": 3736,
+      "sha256": "54a5c3e18ad599268914d529fb88fb3a5391d43cece48d553d980257abbcc4e1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6598,
+      "sha256": "503c5b604abafb435a3b6576d4a37c44addb5506ea5c616fcc16460f473b2a07"
+    },
+    {
+      "path": "readonly-node-probe.mjs",
+      "bytes": 789,
+      "sha256": "347513cc7c343fad6405bfaaa5e5a82e4cc4b1b4c61d99c4607f20e29e1ae9a8"
+    },
+    {
+      "path": "repository-pins.json",
+      "bytes": 5866,
+      "sha256": "ae214739238bfe4ebb695fcfbf989848cf012f971db1f7b4de30baa50c4276f9"
+    },
+    {
+      "path": "SCAN-AGGREGATE.md",
+      "bytes": 4188,
+      "sha256": "8d2e74741d0d2af37e20dee0e9370717daa3436629655bf559c5e7dcbf0dc1b0"
+    },
+    {
+      "path": "SUPPORT-AND-PLACEMENT.md",
+      "bytes": 4935,
+      "sha256": "909a0781ded973d8bc2bf33b17505dbbbaa47e521a9749b03cd97682336e7c2a"
+    },
+    {
+      "path": "support-profile/PROFILE.json",
+      "bytes": 40676,
+      "sha256": "d8c0710d76c59e2beb0e239a9111b62bbca2a527f7a552050d84c722bb4fef0a"
+    },
+    {
+      "path": "VALIDATION-353-RELAY.json",
+      "bytes": 2217,
+      "sha256": "2238bfb1f06eb421833d63be28a529d40069cfd6b91cbcc6eb78309489834d81"
+    }
+  ],
+  "excluded": "Self/audit receipt to avoid circular hashes; private scan/AWS/credentials/proprietary extraction/binaries are not publication inputs."
+}

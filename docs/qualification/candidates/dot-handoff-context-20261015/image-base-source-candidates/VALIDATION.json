@@ -1,0 +1,21 @@
+{
+  "status": "SOURCE_ONLY_UNBUILT",
+  "gitApplyCheck": [
+    "git",
+    "apply",
+    "--check",
+    "--unidiff-zero"
+  ],
+  "results": [
+    {
+      "candidate": "bookworm-slim",
+      "onlyNodeAstChanged": true,
+      "proofFileRowsUnchanged": 45
+    },
+    {
+      "candidate": "trixie-slim",
+      "onlyNodeAstChanged": true,
+      "proofFileRowsUnchanged": 45
+    }
+  ]
+}

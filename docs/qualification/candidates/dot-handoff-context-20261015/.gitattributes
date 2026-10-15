@@ -1,0 +1,3 @@
+# Preserve exact reviewed draft bytes and their historical manifest hashes.
+image-base-source-candidates/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+image-runtime-source-proposal/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

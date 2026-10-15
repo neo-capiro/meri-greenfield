@@ -1,0 +1,26 @@
+{
+  "status": "UNBUILT_UNADMITTED_SOURCE_REVIEW_ONLY",
+  "baseSource": "454fb4020aa07c6d56cbabd02b78afe5ebdb9dcb",
+  "patches": [
+    {
+      "candidate": "bookworm-slim",
+      "patch": "bookworm-slim-base-argument-only.patch",
+      "sha256": "537bf5d48226330f4fc770c1094e4fb375fd154d394b39f53eca61214adc3f17",
+      "nodeVersion": "24.21.0",
+      "indexDigest": "sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20",
+      "amd64Manifest": "sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd",
+      "config": "sha256:470015c1ab1577c19efce2e80cdad4afd9c682cf8f4dcf3dccae5abfd9113397"
+    },
+    {
+      "candidate": "trixie-slim",
+      "patch": "trixie-slim-base-argument-only.patch",
+      "sha256": "db6b96c2df2bbfb42da1da867d46f8c5d5fc0d528cd341726690dcc1f684a8e5",
+      "nodeVersion": "24.21.0",
+      "indexDigest": "sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+      "amd64Manifest": "sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+      "config": "sha256:04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f"
+    }
+  ],
+  "mutations": "Only producer NODE build-argument value. No Dockerfile/package/lock/proof-manifest change. No build or infrastructure operation authorized.",
+  "registryNote": "Digests/configs verified directly at official Docker registry. Do not rewrite to an unverified mirror or floating tag."
+}

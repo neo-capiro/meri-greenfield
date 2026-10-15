@@ -1,0 +1,32 @@
+{
+  "scope": "Standalone source proposal outside the preserved repository",
+  "qualification": "HOLD_UNBUILT_UNSCANNED",
+  "checks": [
+    {
+      "argv": ["node", "--check", "apps/runtime/build/materialize-runtime-root.mjs"],
+      "result": "PASS"
+    },
+    {
+      "argv": ["node", "--test", "apps/runtime/build/test/materialize-runtime-root.test.mjs"],
+      "result": "PASS",
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "method": "Pure synthetic ELF metadata and source-policy tests. No inspected native binary executed."
+    }
+  ],
+  "not_run": [
+    "Materialization or image build",
+    "Linux startup, SDK, DNS, NSS, TLS or helper smoke tests",
+    "Vulnerability scan or admission",
+    "Cloud, model or PostgreSQL operations"
+  ],
+  "remaining_holds": [
+    "Draft dlopenReview.status is HOLD; materializer deliberately refuses it until explicitly reviewed.",
+    "Shell/NSS/dlopen/TLS/locale/timezone support requires runtime qualification; base system CA bundle was absent.",
+    "No-zlib dynamic dependency closure does not mean zlib-free: Node bundled components remain unqualified.",
+    "Copyleft/common-license/source-offer closure requires owner review.",
+    "Scanner must positively identify retained Debian 13 metadata; unknown-OS zero findings cannot pass admission."
+  ]
+}

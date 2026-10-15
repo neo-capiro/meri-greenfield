@@ -1,0 +1,28 @@
+{
+  "status": "SOURCE_PROPOSAL_ONLY_UNBUILT_UNADMITTED",
+  "preservedSource": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+  "baseImage": "docker.io/library/node@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+  "platformManifest": "sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+  "existingProofRows": 45,
+  "imageChangeRows": [
+    {
+      "path": "apps/runtime/Dockerfile",
+      "beforeSha256": "8d4ac642bee442691b2857c58ae89cc84c16f52e054386c0ecb7ab9a0ead7e69",
+      "proposedSha256": "d58a499460f8e77154a28275cef5765975dc01b47a0d1e95730f05e32c1f0582",
+      "reason": "separate minimal final-stage with audited native dependency closure and truthful package/file inventory; omit unused OS package payloads"
+    }
+  ],
+  "otherHistoricalProofRowsPreserved": 44,
+  "ifCombinedWithTransitionCandidate": {
+    "changedRows": 13,
+    "unchangedRows": 32
+  },
+  "newSourceFilesOutsideExisting45": [
+    "apps/runtime/build/materialize-runtime-root.mjs",
+    "apps/runtime/build/test/materialize-runtime-root.test.mjs",
+    "apps/runtime/build/runtime-root-policy.json"
+  ],
+  "producerNodeArgumentOnlyPatch": "../image-base-source-candidates/trixie-slim-base-argument-only.patch",
+  "manifestMutation": "NONE; historical/Fable/Dot manifests remain unchanged; new candidate inventory must enumerate source additions and only this new proof-row change",
+  "noBuild": true
+}

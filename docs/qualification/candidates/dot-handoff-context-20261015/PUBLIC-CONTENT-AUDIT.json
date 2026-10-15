@@ -1,0 +1,543 @@
+{
+  "schema": "meri.handoff.public-content-audit/1",
+  "status": "PASS_BOUNDED_SOURCE_CONTEXT_AUDIT",
+  "auditedAtUtc": "2026-10-15T01:20:02.350578+00:00",
+  "basePublicHead": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+  "preservedSourceCommits": [
+    "1003f12d3d260807116ffc7b75288aaef0336397",
+    "e6bbd5ad7b7ea70926b30a07c5aee88512e320cd",
+    "ab5bae9d29e2eb1e20e95426fe601d5681a09c5a"
+  ],
+  "newContextFiles": 25,
+  "uniqueNewBlobVersionsAndWorkingPayloadsChecked": 40,
+  "utf8DecodeFailures": 0,
+  "credentialPrivatePathOrPrivateScanHashPatternFindings": 0,
+  "markdownLinksChecked": 88,
+  "brokenRepositoryOrImmutableMeriLinks": 0,
+  "historicalImageDraftManifestFilesVerified": 9,
+  "runtimeProofRowsUnchanged": 45,
+  "checks": {
+    "imageDraftPureTestsPassed": 12,
+    "nativeBinaryExecuted": false,
+    "imageMaterializedOrBuilt": false
+  },
+  "manualReview": "New public inputs are reviewed source drafts, public OCI/package metadata, sanitized aggregates and owner-held binding/status summaries. No raw private scan/AWS receipt/credentials/native binary/proprietary CLI source copied. Explicit synthetic fixture credentials remain clearly labelled. Source/handoff ownership and evidence levels independently reviewed.",
+  "limits": [
+    "External primary-source links and cross-repository serving/runtime state are not requalified by this link audit. Repository visibility/current source metadata was separately read through GitHub.",
+    "Pattern checks do not constitute a general security scan, legal review, image admission or live acceptance.",
+    "The audit receipt and context manifest avoid self-referential hashes; final committed-byte/readback verification is returned by source owner."
+  ],
+  "linkChecks": [
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "target": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "target": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/deps/zlib/gzwrite.c",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "target": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/deps/zlib/zlib.h",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "target": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/deps/zlib/BUILD.gn",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "target": "https://raw.githubusercontent.com/nodejs/node/v24.21.0/deps/zlib/README.chromium",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "target": "readonly-node-probe.mjs",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "../../../coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "repository-pins.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "changed-file-inventory.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "VALIDATION-353-RELAY.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "SCAN-AGGREGATE.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "NODE-BUNDLED-ZLIB.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "readonly-node-probe.mjs",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "SUPPORT-AND-PLACEMENT.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "support-profile/PROFILE.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-base-source-candidates/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-base-source-candidates/candidate-source-metadata.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-base-source-candidates/VALIDATION.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-base-source-candidates/bookworm-slim-base-argument-only.patch",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-base-source-candidates/trixie-slim-base-argument-only.patch",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/REVIEW.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/PROPOSAL-MANIFEST.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/PROOF-IMPACT.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/VALIDATION.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/runtime-and-base-source.patch",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/runtime-final-stage.patch",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/Dockerfile.proposed",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/apps/runtime/build/materialize-runtime-root.mjs",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/apps/runtime/build/runtime-root-policy.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "image-runtime-source-proposal/apps/runtime/build/test/materialize-runtime-root.test.mjs",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "CONTEXT-MANIFEST.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "PUBLIC-CONTENT-AUDIT.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "../dot-artifact-lock-20261015/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/README.md",
+      "target": "../dot-runtime-completion-fixture-20261015/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/SCAN-AGGREGATE.md",
+      "target": "image-base-source-candidates/candidate-source-metadata.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/SCAN-AGGREGATE.md",
+      "target": "https://security-tracker.debian.org/tracker/data/json",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/SCAN-AGGREGATE.md",
+      "target": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/SCAN-AGGREGATE.md",
+      "target": "support-profile/PROFILE.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/SCAN-AGGREGATE.md",
+      "target": "NODE-BUNDLED-ZLIB.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/qualification/candidates/dot-handoff-context-20261015/SUPPORT-AND-PLACEMENT.md",
+      "target": "support-profile/PROFILE.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/commit/1003f12d3d260807116ffc7b75288aaef0336397",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/commit/700f203e7b97b64207489d29e17e00014f7ff43b",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/commit/454fb4020aa07c6d56cbabd02b78afe5ebdb9dcb",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/commit/3532541665c62940cd83d98503b3d1d4a0ae718b",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/commit/ab5bae9d29e2eb1e20e95426fe601d5681a09c5a",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/commit/e6bbd5ad7b7ea70926b30a07c5aee88512e320cd",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/repository-pins.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/capiro-backend",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/capiro-frontend",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/capirov2",
+      "check": "EXTERNAL_PRIMARY_OR_REPOSITORY_REFERENCE_NOT_REFETCHED_BY_LINK_AUDIT"
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../../AGENTS.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../IMPLEMENTATION-STANDARDS.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/blob/aa09dd28d4a98252233090a20457f644cade279d/docs/handover/20261014-fable/HANDOFF.md",
+      "check": "IMMUTABLE_MERI_GIT_OBJECT",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/blob/aa09dd28d4a98252233090a20457f644cade279d/docs/handover/20261014-fable/CONTEXT-INDEX.md",
+      "check": "IMMUTABLE_MERI_GIT_OBJECT",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/blob/aa09dd28d4a98252233090a20457f644cade279d/docs/handover/20261014-fable/CONTEXT-MANIFEST.json",
+      "check": "IMMUTABLE_MERI_GIT_OBJECT",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/blob/aa09dd28d4a98252233090a20457f644cade279d/docs/handover/20261014-fable/SCAN-STATUS.md",
+      "check": "IMMUTABLE_MERI_GIT_OBJECT",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "https://github.com/neo-capiro/meri-greenfield/blob/aa09dd28d4a98252233090a20457f644cade279d/docs/handover/20261014-fable/SHIPPING-APPENDIX.md",
+      "check": "IMMUTABLE_MERI_GIT_OBJECT",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-HANDOFF-TO-DOT-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-RETURN-PACKET-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-FOLLOWUP-TURNS-PROPOSAL-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-DURABILITY-COVERAGE-MAP-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-DOCUMENT-COVERAGE-MAP-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-RETENTION-DELETION-PROPOSAL-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-RG-FREEZE-DRAFT-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "FABLE-W03-BINDINGS-PACKET-DRAFT-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "DOT-NEXT-TURN-SOURCE-RETURN-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "DOT-TRANSITION-AUTHORITY-REVIEW-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "DOT-NEXT-TURN-CONTRACT-PROPOSALS-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-transition-authority-20261014/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-next-turn-source-20261014/LINUX-PG-QUALIFICATION-PLAN.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-artifact-lock-20261015/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-runtime-completion-fixture-20261015/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/README.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "CODEX-FIRST-RUN-BINDINGS-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "CODEX-FIRST-RUN-CONVERGENCE-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "CODEX-FRONTEND-CONVERSATION-BINDING-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "CODEX-CAPIRO-BACKEND-INTEGRATION-BOUNDARY-20261014.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../DECISIONS.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../COMPONENTS.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/PROXY-TEMPORAL-DECISIONS.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/changed-file-inventory.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/VALIDATION-353-RELAY.json",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/SCAN-AGGREGATE.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/NODE-BUNDLED-ZLIB.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-artifact-lock-20261015/LINUX-VALIDATION.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    },
+    {
+      "source": "docs/coordination/reports/DOT-HANDOFF-TO-FABLE-20261015.md",
+      "target": "../../qualification/candidates/dot-handoff-context-20261015/SUPPORT-AND-PLACEMENT.md",
+      "check": "REPOSITORY_FILE",
+      "exists": true
+    }
+  ]
+}

@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "sourceImage": "docker.io/library/node@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+  "platform": "linux/amd64",
+  "files": [
+    {
+      "path": "/usr/local/bin/node",
+      "role": "node",
+      "owner": "upstream:node",
+      "sha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "9792e3cbb541c8f44c7acf5f14f4022ea62998ecc787d326bed4d8b6547dfd92"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "295fa521a03cd2faa99974f378c9e23dd622021ec7d32bcad4f8ea61aec8a872"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "role": "library",
+      "owner": "debian:libgcc-s1",
+      "sha256": "30c61ab012a4241bed033725a09b61f5fdd3bb7df95ee852d0b096520524c7af"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "6d567d53e895273ca14a1f9dc164fc6c8d39aed2f60aa46a733c2784228915f3"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "85e21f7dba0394411d00959176fd18b470e575b0b05f1f4f41e5636802ce0500"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "7b7b84d1aedda0e0b2bdfc68844362782132180b8f02be1300e21e77572e514b"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "role": "library",
+      "owner": "debian:libstdc++6",
+      "sha256": "972bb2a18b71140dab0240f8a1f68ab3fb1d56bcd4c4f824a91b70888faf5a00"
+    },
+    {
+      "path": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+      "role": "library",
+      "owner": "debian:libstdc++6",
+      "symlink": "libstdc++.so.6.0.33"
+    },
+    {
+      "path": "/lib64/ld-linux-x86-64.so.2",
+      "role": "library",
+      "owner": "debian:libc6",
+      "symlink": "../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "role": "library",
+      "owner": "debian:libc6",
+      "sha256": "c8438e4fde1934e61c88311633f00949ff645d5c04cdb8671fa3d78164d2f307"
+    },
+    {
+      "path": "/usr/local/LICENSE",
+      "role": "license",
+      "owner": "upstream:node",
+      "sha256": "5888dbb9a1d2b18f2c3e6c5f6af1b39de658372b402a0577b002777f14c62ace"
+    },
+    {
+      "path": "/usr/share/doc/libc6/copyright",
+      "role": "license",
+      "owner": "debian:libc6",
+      "sha256": "f5788886720a2605a946e81d571e6c8162b09f58d2e2ceb8d36e5768fccd850d"
+    },
+    {
+      "path": "/usr/share/doc/gcc-14-base/copyright",
+      "role": "license",
+      "owner": "debian:gcc-14-base",
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    {
+      "path": "/var/lib/dpkg/status",
+      "role": "inventory",
+      "owner": "source-inventory",
+      "sha256": "9314411148a5aa63a380b30c34d26c74f45a5d5605f12c4605209b340723dede"
+    },
+    {
+      "path": "/etc/passwd",
+      "role": "support",
+      "owner": "image-generated:node-account-files",
+      "sha256": "bad4a17cc56d0e63db7b8d9b41b3ec2e96cde8a4eb0621858121af45093c5d82"
+    },
+    {
+      "path": "/etc/group",
+      "role": "support",
+      "owner": "image-generated:node-account-files",
+      "sha256": "1c62e04bd86ed22507b78191fa78470bed4193e3d1526ba24b549a6400424c60"
+    },
+    {
+      "path": "/usr/lib/os-release",
+      "role": "support",
+      "owner": "debian:base-files",
+      "sha256": "e249e69c32d81350fdd6b05ac5575255f14e380ba14b8454acea14e49f088bfa"
+    },
+    {
+      "path": "/etc/os-release",
+      "role": "support",
+      "owner": "debian:base-files",
+      "symlink": "../usr/lib/os-release"
+    },
+    {
+      "path": "/etc/debian_version",
+      "role": "support",
+      "owner": "debian:base-files",
+      "sha256": "dba3470eb84e6f4891a6ce11d6eb010af7ab6ee30544e8ccd1ad9fe5f1ff7ee3"
+    },
+    {
+      "path": "/usr/share/doc/base-files/copyright",
+      "role": "license",
+      "owner": "debian:base-files",
+      "sha256": "c84c664bce3a83eaa327bb9e354c0df588bc535b5e95474aab7ca3cce74937cd"
+    },
+    {
+      "path": "/usr/share/common-licenses/GPL-2",
+      "role": "license",
+      "owner": "debian:base-files",
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    }
+  ],
+  "libraries": {
+    "libdl.so.2": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+    "libstdc++.so.6": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+    "libm.so.6": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+    "libgcc_s.so.1": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+    "libpthread.so.0": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+    "libc.so.6": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "librt.so.1": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+    "ld-linux-x86-64.so.2": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+  },
+  "packages": [
+    {
+      "name": "libc6",
+      "version": "2.41-12+deb13u4",
+      "architecture": "amd64",
+      "licenseFiles": [
+        "/usr/share/doc/libc6/copyright"
+      ]
+    },
+    {
+      "name": "libgcc-s1",
+      "version": "14.2.0-19",
+      "architecture": "amd64",
+      "licenseFiles": [
+        "/usr/share/doc/gcc-14-base/copyright"
+      ]
+    },
+    {
+      "name": "libstdc++6",
+      "version": "14.2.0-19",
+      "architecture": "amd64",
+      "licenseFiles": [
+        "/usr/share/doc/gcc-14-base/copyright"
+      ]
+    },
+    {
+      "name": "gcc-14-base",
+      "version": "14.2.0-19",
+      "architecture": "amd64",
+      "licenseFiles": [
+        "/usr/share/doc/gcc-14-base/copyright"
+      ]
+    },
+    {
+      "name": "base-files",
+      "version": "13.8+deb13u7",
+      "architecture": "amd64",
+      "licenseFiles": [
+        "/usr/share/doc/base-files/copyright",
+        "/usr/share/common-licenses/GPL-2"
+      ]
+    }
+  ],
+  "upstreamNode": {
+    "version": "24.21.0",
+    "licenseFiles": [
+      "/usr/local/LICENSE"
+    ],
+    "bundledComponents": [
+      {
+        "name": "Node-bundled-components-including-zlib",
+        "status": "REVIEW_REQUIRED",
+        "note": "DT_NEEDED does not inventory statically bundled components or establish zero vulnerabilities."
+      }
+    ]
+  },
+  "dlopenReview": {
+    "status": "HOLD",
+    "supportFiles": [
+      "/etc/passwd",
+      "/etc/group"
+    ],
+    "notes": "Core DT_NEEDED only. Shell compatibility, NSS/dlopen, users/home, DNS, TLS trust (base CA bundle absent), locale/timezone and common-license/source-offer closure require explicit review and Linux smoke before status can change. No Python/LibreOffice scope claimed."
+  },
+  "packagePolicy": {
+    "status": "HOLD",
+    "notes": "Unbuilt, unscanned conditional proposal. Exact source file ownership is verified against source dpkg file lists; selected packages remain visible at standard status with partial-file scope, full original source status is a build-stage sidecar. Node bundled zlib and copyleft/common-license/source-offer requirements remain unresolved."
+  }
+}

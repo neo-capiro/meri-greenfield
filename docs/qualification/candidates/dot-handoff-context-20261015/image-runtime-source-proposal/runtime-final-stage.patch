@@ -1,0 +1,27 @@
+diff --git a/apps/runtime/Dockerfile b/apps/runtime/Dockerfile
+--- a/apps/runtime/Dockerfile
++++ b/apps/runtime/Dockerfile
+@@ -1,6 +1,7 @@
+ # Build from a separately reviewed Node 24 image digest. No floating default.
+ ARG NODE_IMAGE
+-FROM ${NODE_IMAGE}
++FROM ${NODE_IMAGE} AS runtime-build
++ARG NODE_IMAGE
+ WORKDIR /opt/meri
+ COPY package.json package-lock.json ./
+ RUN npm ci --ignore-scripts --no-audit --no-fund
+@@ -23,6 +24,13 @@
+ # Runtime retains the read-only root and non-executable temporary mount.
+ RUN --network=none node apps/runtime/build/materialize-swc.mjs
+ RUN mkdir -p node_modules/@capiro node_modules/@anthropic-ai node_modules/@aws-sdk && ln -s ../../packages/contracts node_modules/@capiro/meri-contracts && ln -s ../../apps/worker/conversation/node_modules/@anthropic-ai/claude-agent-sdk node_modules/@anthropic-ai/claude-agent-sdk && ln -s ../../apps/artifacts/storage/node_modules/@aws-sdk/client-s3 node_modules/@aws-sdk/client-s3
+-USER node
++# Policy and materializer are reviewed source; no package fetch or execution here.
++RUN --network=none node apps/runtime/build/materialize-runtime-root.mjs --policy apps/runtime/build/runtime-root-policy.json --source-image "$NODE_IMAGE" --output /runtime-root
++FROM scratch AS runtime
++COPY --from=runtime-build /runtime-root/ /
++COPY --from=runtime-build /opt/meri/ /opt/meri/
++WORKDIR /opt/meri
++ENV PATH=/usr/local/bin:/usr/bin:/bin HOME=/home/node LANG=C.UTF-8 TZ=UTC
++USER 1000:1000
+ ENTRYPOINT ["node", "apps/runtime/cli.mjs"]
+ CMD ["--help"]

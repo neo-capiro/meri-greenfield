@@ -1,0 +1,128 @@
+{
+  "schema": "meri.handoff.repository-pins/1",
+  "readAtUtc": "2026-10-15T01:10:34.394413+00:00",
+  "method": "Read-only authenticated GitHub repository metadata and exact commit identities via existing gh; no private source/receipt body copied.",
+  "limit": "Branch heads are point-in-time source metadata, not serving/deployment confirmation. Coordinate separate owners before integration.",
+  "repositories": [
+    {
+      "repository": "neo-capiro/meri-greenfield",
+      "url": "https://github.com/neo-capiro/meri-greenfield",
+      "private": false,
+      "defaultBranch": "main",
+      "role": "Public standalone Meri runtime/control; implementation hands back to Fable",
+      "refs": [
+        {
+          "ref": "main",
+          "sha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+          "tree": "f1133b2190cf67acd782c00debfa82501fa71c43",
+          "url": "https://github.com/neo-capiro/meri-greenfield/commit/8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+        },
+        {
+          "ref": "fable/meri-first-chat",
+          "sha": "700f203e7b97b64207489d29e17e00014f7ff43b",
+          "tree": "ffbcfe3da380439ec73aa5d4c4a2243759791f92",
+          "url": "https://github.com/neo-capiro/meri-greenfield/commit/700f203e7b97b64207489d29e17e00014f7ff43b"
+        },
+        {
+          "ref": "dot/meri-slice-b-review",
+          "sha": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+          "tree": "a6a2155dba18415ec8a778322a2da08c0d73f264",
+          "url": "https://github.com/neo-capiro/meri-greenfield/commit/3532541665c62940cd83d98503b3d1d4a0ae718b"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-backend",
+      "url": "https://github.com/neo-capiro/capiro-backend",
+      "private": true,
+      "defaultBranch": "backend-import",
+      "role": "Private production-derived domain/auth/API successor; separate backend/shipping owners",
+      "refs": [
+        {
+          "ref": "backend-import",
+          "sha": "c76f5fc0df6688743afeec274211afd2e67fe8f1",
+          "tree": "3bae0d1a303662260673ecb0c5ac0a8bfe551829",
+          "url": "https://github.com/neo-capiro/capiro-backend/commit/c76f5fc0df6688743afeec274211afd2e67fe8f1"
+        },
+        {
+          "ref": "codex/backend-runtime-candidate-20261014",
+          "sha": "f4f9e1361d92ac0afadd67c1cae3f5faefa829ec",
+          "tree": "4f6fb8c221670cfb141856b57ad82b20a75a37ee",
+          "url": "https://github.com/neo-capiro/capiro-backend/commit/f4f9e1361d92ac0afadd67c1cae3f5faefa829ec"
+        },
+        {
+          "ref": "fix/preview-core-existing-database",
+          "sha": "6949c5ab27e0c47dcc365d8af678d3a65c2c9c4e",
+          "tree": "8ababe1ab2eaaf5935ecf50f0b0fb9bf8f6f6515",
+          "url": "https://github.com/neo-capiro/capiro-backend/commit/6949c5ab27e0c47dcc365d8af678d3a65c2c9c4e"
+        },
+        {
+          "ref": "codex/qualification-native-evidence-collection",
+          "sha": "ae47e74f7b34c447f92d05d425940369731aaba9",
+          "tree": "63212633d101a6ae26d46bcf1f9e7bf1ef4215f5",
+          "url": "https://github.com/neo-capiro/capiro-backend/commit/ae47e74f7b34c447f92d05d425940369731aaba9"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capiro-frontend",
+      "url": "https://github.com/neo-capiro/capiro-frontend",
+      "private": false,
+      "defaultBranch": "main",
+      "role": "Public unified Next/React apps/web; separate frontend owner",
+      "refs": [
+        {
+          "ref": "main",
+          "sha": "02c02d95bdf3949662b9123f425271c6491ffdab",
+          "tree": "776883e3f3b529650f9e9f01595bff34607d551a",
+          "url": "https://github.com/neo-capiro/capiro-frontend/commit/02c02d95bdf3949662b9123f425271c6491ffdab"
+        },
+        {
+          "ref": "repair/capiro-strategy-proposal-compatibility-20261014",
+          "sha": "038ee79e93e9b4d1a371a5d38e17dd339b1af859",
+          "tree": "a044d1b380c1b64502f973d84ce1162e1f78162a",
+          "url": "https://github.com/neo-capiro/capiro-frontend/commit/038ee79e93e9b4d1a371a5d38e17dd339b1af859"
+        },
+        {
+          "ref": "integration/capiro-unified-desktop-20261014",
+          "sha": "cc73ead8f591b31b2f2cfc8bb008913408d7a5e0",
+          "tree": "ab895121141bd25a47508d91070573699b14728f",
+          "url": "https://github.com/neo-capiro/capiro-frontend/commit/cc73ead8f591b31b2f2cfc8bb008913408d7a5e0"
+        },
+        {
+          "ref": "fix/planner-canonical-request-origin",
+          "sha": "0a73dd87d0430f07ac67d66e96457a4df304720c",
+          "tree": "ec3a01b71588893b1fb1db5c36888b665a6219c0",
+          "url": "https://github.com/neo-capiro/capiro-frontend/commit/0a73dd87d0430f07ac67d66e96457a4df304720c"
+        },
+        {
+          "ref": "repair/capiro-desktop-closeout-20261014",
+          "sha": "0b6c7ecf2c3f0f66dee5a0e88cb67528a6cc5fc2",
+          "tree": "4d0b84e84fa378187975b07080484a8df55fafc1",
+          "url": "https://github.com/neo-capiro/capiro-frontend/commit/0b6c7ecf2c3f0f66dee5a0e88cb67528a6cc5fc2"
+        }
+      ]
+    },
+    {
+      "repository": "neo-capiro/capirov2",
+      "url": "https://github.com/neo-capiro/capirov2",
+      "private": true,
+      "defaultBranch": "main",
+      "role": "Private legacy/live production reference only; preserve existing production",
+      "refs": [
+        {
+          "ref": "main",
+          "sha": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "tree": "8368240d188d726f635807858bc0a8d2435a113d",
+          "url": "https://github.com/neo-capiro/capirov2/commit/4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace"
+        },
+        {
+          "ref": "60cf2e51129f8358e6afe5fc600ffcdb6de01759",
+          "sha": "60cf2e51129f8358e6afe5fc600ffcdb6de01759",
+          "tree": "1b2c9f6e975a47397f08d34563087455ed1c2242",
+          "url": "https://github.com/neo-capiro/capirov2/commit/60cf2e51129f8358e6afe5fc600ffcdb6de01759"
+        }
+      ]
+    }
+  ]
+}

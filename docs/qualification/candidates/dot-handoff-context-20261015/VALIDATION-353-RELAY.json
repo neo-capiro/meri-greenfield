@@ -1,0 +1,28 @@
+{
+  "schema": "meri.handoff.independent-validation-relay/1",
+  "sourceHead": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+  "sourceTree": "a6a2155dba18415ec8a778322a2da08c0d73f264",
+  "provenance": "Independent Linux validator results relayed by the parent on 2026-10-15. This file is the sanitized report, not raw logs or a new run by this Windows executor.",
+  "environment": "Separate approved isolated Linux/non-root/private PostgreSQL16 validator, Node24.21.0; actual source/provider/Temporal deployment not bound here.",
+  "groups": {
+    "priorPostgres": {"passed": 43, "failed": 0},
+    "sequenceMigration": {"passed": 40, "failed": 0},
+    "backfill": {"passed": 16, "failed": 0},
+    "completionPostgres": {"passed": 9, "failed": 0},
+    "realPostgresTransition": {"passed": 6, "failed": 0},
+    "sourceComposition": {"passed": 31, "failed": 0},
+    "sessionContext": {"passed": 170, "failed": 0},
+    "control": {"passed": 104, "failed": 0},
+    "runtimeNextTurn": {"passed": 135, "failed": 0},
+    "worker": {"passed": 138, "failed": 0},
+    "context": {"passed": 95, "failed": 0},
+    "candidate": {"passed": 33, "failed": 0},
+    "sourceProof": {"passed": 5, "failed": 0},
+    "broaderRuntimeComposition": {"passed": 19, "failed": 1, "failure": "Runtime process fixture lacked /v1/runner/checkpoint/complete and returned404. Separate e6bbd5ad source repair reviewed; modified Linux process suite not rerun here."}
+  },
+  "skipped": 0,
+  "bothTypechecks": "PASS (preserve their existing limited scope)",
+  "proofHashes": {"verified": 45, "mismatches": 0},
+  "observedCases": ["range-closure race", "real-PG resume and fork", "APPLIED acknowledgement loss", "deadline and abort", "UNKNOWN without redispatch"],
+  "limits": ["Overlapping groups must not be summed into an independent acceptance denominator.", "Scripted authority/native/provider/dispatch ports remain explicitly synthetic where used.", "Actual Temporal server/provider calls and live Meri chat remain unrun.", "Disposable database migration tests do not centrally allocate or authorize product migration0009.", "Raw validator logs/environment receipts remain with its owner for secure readback; do not fabricate them from these counts."]
+}

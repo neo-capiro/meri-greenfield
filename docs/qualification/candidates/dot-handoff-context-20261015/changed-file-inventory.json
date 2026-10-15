@@ -1,0 +1,1089 @@
+{
+  "scope": "Immutable commit-by-commit path inventory; not runtime acceptance",
+  "stages": [
+    {
+      "stage": "fable700",
+      "base": "c6053e24b465be677cc5980533009b4aab03beab",
+      "head": "700f203e7b97b64207489d29e17e00014f7ff43b",
+      "tree": "ffbcfe3da380439ec73aa5d4c4a2243759791f92",
+      "files": [
+        {
+          "status": "M",
+          "path": "apps/control/admitted-runs/independent/owner-independent.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/migrations/0009_next_runs.sql"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/next-run-journal.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/next-run.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/postgres-store.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/service.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/skills/admission.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/next-run-pg.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/store-fixture.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/store-pg.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/conversation-runner.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/broker-stack.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/preparation-intent.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/prepared-runtime.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/remote-composition.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/sdk-option-projection.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/native-authority/test/preparation-intent.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/test/sdk-configuration-directories.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/worker/conversation/options.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/worker/conversation/test/activity.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-DOCUMENT-COVERAGE-MAP-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-DURABILITY-COVERAGE-MAP-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-FIRST-CHAT-RECONCILIATION-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-FOLLOWUP-TURNS-PROPOSAL-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-HANDOFF-TO-DOT-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-IMAGE-DEPENDENCY-TRACE-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-REMOTE-LAUNCH-DESCRIPTOR-FINDING-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-RETENTION-DELETION-PROPOSAL-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-RETURN-PACKET-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-RG-FREEZE-DRAFT-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/FABLE-W03-BINDINGS-PACKET-DRAFT-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-durability-controls-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-durability-controls-20261014/RESULTS-conversations-tests.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/checks/RESULTS-final-head.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/checks/RESULTS-gap2-gap3-source.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/checks/RESULTS-touched-suites-clusters-stopped.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/checks/RESULTS-touched-suites-worker-directories.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/checks/RESULTS-touched-suites.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/attempts/attempt-1.stdout.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/attempts/attempt-2-first-pass-script-v1.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/attempts/attempt-3-control-script-v1.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/control-pr86-runner-cancellation.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/control-pr86-runner.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/control-pr86-runner.stdout.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/source-gap2-gap3-cancellation.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/source-gap2-gap3.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/source-gap2-gap3.stdout.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/with-proposal-cancellation.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/with-proposal.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/composed/with-proposal.stdout.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/proposals/gap2-runner-sdk-directories.patch"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/sdk-descriptor-capture-pr86-options.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/sdk-descriptor-capture-with-proposed-directories.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-first-chat-rehearsal-20261014/sdk-descriptor-capture.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/attempt-1-initial/RESULTS.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/attempt-1-initial/run-log.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final-office-rerun/RESULTS.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final-office-rerun/artifacts.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final-office-rerun/control-document-application.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final-office-rerun/conversations-skills.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final-office-rerun/gateway.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/RESULTS.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/artifacts.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/contracts-package-check.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-action-application.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-action-followthrough.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-action-host.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-admitted-runs.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-commands.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-core.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-document-application.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-qualification-sdk-fixture.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-qualification-temporal.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-qualified-application.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-schedules.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-staging-e2e.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/control-task-lookup.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/conversations-skills.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/conversations-tests.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/conversations-typecheck.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/evals.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/gateway-budget.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/gateway-local-action.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/gateway-selected-skills.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/gateway-sources.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/gateway.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/native-authority.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/proxy-qualification.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/root-check.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/run-log.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/runtime-artifacts.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/runtime-selected.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/runtime-tests.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/runtime-typecheck.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/scripts-local.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/sdk-evidence.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/skills.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/source-proof.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/stall-report-recovery-independent-pid15954.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/window-resolution.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-local-baseline-20261014/author/final/worker-conversation.stdout.txt.gz"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-next-turn-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-next-turn-20261014/RESULTS-touched-suites.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-r2-reconciliation-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-r2-reconciliation-20261014/RECONCILIATION.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/fable-r2-reconciliation-20261014/REPORT.md"
+        },
+        {
+          "status": "M",
+          "path": "scripts/qualification/assembled-image/README.md"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261014.json"
+        },
+        {
+          "status": "M",
+          "path": "scripts/qualification/assembled-image/source-proof.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/first-chat-rehearsal/README.md"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/first-chat-rehearsal/composed-rehearsal.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/README.md"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/link-dependencies.sh"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/provision-postgres.sh"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/run-suites.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/run-suites.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/subreaper.py"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/local-baseline/suites.json"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/r2-reconciliation/README.md"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/r2-reconciliation/reconcile.mjs"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/r2-reconciliation/reconcile.test.mjs"
+        }
+      ]
+    },
+    {
+      "stage": "dot454",
+      "base": "700f203e7b97b64207489d29e17e00014f7ff43b",
+      "head": "454fb4020aa07c6d56cbabd02b78afe5ebdb9dcb",
+      "tree": "ff8c8017391100227046dada615337b132623f0d",
+      "files": [
+        {
+          "status": "M",
+          "path": "apps/control/action-host/application-adapters/context-adapter.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/action-host/application-adapters/context-independent.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/completion-journal.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/lifecycle/journal.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/lifecycle/service.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/migrations/0009_next_runs.sql"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/next-run-journal.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/next-run.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/postgres-store.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/sequence-ranges.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/service.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/application-fixture.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/completion.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/next-run-owner.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/next-run-pg.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/slice-b-evidence/README.md"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/slice-b-evidence/local-controls.tap"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/slice-b-evidence/typecheck.txt"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/store-fixture.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/checkpoint-session-factory.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/conversation-runner.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/checkpoint-capture.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/checkpoint-http.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/native-authority/checkpoint-publication.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/native-authority/completion-capture.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/continuation-runtime.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/execution-http.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/identity-context.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/native-restorer.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/prepared-runtime.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/remote-composition.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/runtime-provider.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/native-authority/test/completion-capture.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/test/identity-context.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/native-authority/test/next-turn-restore.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-runner-gateway.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/prepared-candidate.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/prepared-next-run.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/prepared-run-issuance.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/prepared-run-registry.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/sdk-continuation-session.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/sdk-session-runtime.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/selected/task.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/selected/test/next-turn.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/task-bootstrap.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/test/lifecycle.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/test/native-runner-gateway.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/test/next-turn-wiring.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/test/prepared-run-issuance.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/runtime/test/prepared-run-registry.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/worker/conversation/activity.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/worker/conversation/continuation/activity-lifecycle.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/worker/conversation/continuation/next-turn-options.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/worker/conversation/options.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/worker/conversation/test/completion-activity.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/DOT-NEXT-TURN-CONTRACT-PROPOSALS-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/DOT-NEXT-TURN-SOURCE-RETURN-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/coordination/reports/DOT-TRANSITION-AUTHORITY-REVIEW-20261014.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/LINUX-PG-QUALIFICATION-PLAN.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/PUBLICATION-AND-ENVIRONMENT-REVIEW.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/RESULTS-control-followup.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/RESULTS-final.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/RESULTS-followup.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/RESULTS-initial-integration.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/RESULTS-relay-proof.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/RESULTS-supplemental.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/candidate-platform-compatibility.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/capture-posix-compatibility.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/completion-terminal-proof-followup.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/context-final.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/control-local.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/control-no-pg-followup.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/conversations-typecheck.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/relay-proof-final.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/runtime-final.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/runtime-targeted.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/runtime-typecheck.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/selected-platform-compatibility.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/source-proof-final.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/source-proof.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/supplemental-final.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/worker-conversation.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/worker-full-final.txt"
+        },
+        {
+          "status": "A",
+          "path": "scripts/qualification/assembled-image/candidate-manifest-dot-20261014.json"
+        },
+        {
+          "status": "M",
+          "path": "scripts/qualification/assembled-image/source-proof.test.mjs"
+        }
+      ]
+    },
+    {
+      "stage": "dot353",
+      "base": "454fb4020aa07c6d56cbabd02b78afe5ebdb9dcb",
+      "head": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+      "tree": "a6a2155dba18415ec8a778322a2da08c0d73f264",
+      "files": [
+        {
+          "status": "M",
+          "path": "apps/control/action-host/application-adapters/context-adapter.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/action-host/application-adapters/context-independent.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/action-host/application-adapters/mount.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/action-host/session/http.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/action-host/session/owner.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/action-host/session/transition-owner.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/lifecycle/journal.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/lifecycle/service.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/migrations/0009_next_runs.sql"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/postgres-store.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/temporal-dispatch.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/application-fixture.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/application.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/lifecycle-fixture.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/lifecycle-transition.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/lifecycle.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/next-run-owner.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/control/conversations/test/next-run-pg.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/sequence-range-migration-pg.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "apps/control/conversations/test/temporal-dispatch.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/control.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/identity-context.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/native-authority/test/identity-context.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/product-applications.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/test/prepared-candidate.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/test/process-fixture.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/test/product-mount.test.mjs"
+        },
+        {
+          "status": "M",
+          "path": "docs/coordination/reports/DOT-TRANSITION-AUTHORITY-REVIEW-20261014.md"
+        },
+        {
+          "status": "M",
+          "path": "docs/qualification/candidates/dot-next-turn-source-20261014/LINUX-PG-QUALIFICATION-PLAN.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-transition-authority-20261014/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-transition-authority-20261014/composed-temporal.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-transition-authority-20261014/first-run-mount-corrected.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-transition-authority-20261014/first-run-mount.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-transition-authority-20261014/runtime-composition.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-transition-authority-20261014/session-context.txt"
+        },
+        {
+          "status": "M",
+          "path": "scripts/qualification/assembled-image/candidate-manifest-dot-20261014.json"
+        }
+      ]
+    },
+    {
+      "stage": "artifact-lock",
+      "base": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+      "head": "ab5bae9d29e2eb1e20e95426fe601d5681a09c5a",
+      "tree": "090dc4403e295d54d2fcafb0873ec957195bb309",
+      "files": [
+        {
+          "status": "M",
+          "path": "apps/worker/qualification/component-pins.json"
+        },
+        {
+          "status": "M",
+          "path": "apps/worker/qualification/requirements.lock.txt"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-artifact-lock-20261015/LINUX-VALIDATION.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-artifact-lock-20261015/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-artifact-lock-20261015/REVIEW.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-artifact-lock-20261015/metadata-verification.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-artifact-lock-20261015/source-proof.json"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-artifact-lock-20261015/wheel-inventory.json"
+        }
+      ]
+    },
+    {
+      "stage": "runtime-fixture",
+      "base": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+      "head": "e6bbd5ad7b7ea70926b30a07c5aee88512e320cd",
+      "tree": "edddfc68692090fcc137bd0219bf0719b86e5def",
+      "files": [
+        {
+          "status": "M",
+          "path": "apps/runtime/test/process-fixture.mjs"
+        },
+        {
+          "status": "M",
+          "path": "apps/runtime/test/process.test.mjs"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-runtime-completion-fixture-20261015/README.md"
+        },
+        {
+          "status": "A",
+          "path": "docs/qualification/candidates/dot-runtime-completion-fixture-20261015/source-proof.json"
+        }
+      ]
+    }
+  ]
+}

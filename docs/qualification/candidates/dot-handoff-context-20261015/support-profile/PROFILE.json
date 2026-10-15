@@ -1,0 +1,1287 @@
+{
+  "status": "REVIEW_ONLY_NO_MATERIALIZATION_OR_ADMISSION",
+  "publishedSource": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+  "sourceTree": "a6a2155dba18415ec8a778322a2da08c0d73f264",
+  "baseImage": "docker.io/library/node@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+  "baseConfig": "sha256:04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f",
+  "baselinePolicy": {
+    "path": "../image-runtime-source-proposal/apps/runtime/build/runtime-root-policy.json",
+    "sha256": "9ac1dd79ed0652c5bf73069d140ecfec9dbb87e05429ec72f33541cd9bbb8b13",
+    "status": "HOLD_UNCHANGED"
+  },
+  "proposedCoreAdditions": {
+    "/usr/bin/bash": {
+      "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+      "owners": [
+        "bash"
+      ]
+    },
+    "/usr/bin/dash": {
+      "sha256": "a6f559e00b69a4aa4d8cb607be18d9386c5aee55c509e2c075549dcf00e00fc7",
+      "owners": [
+        "dash"
+      ]
+    },
+    "/usr/bin/cat": {
+      "kind": "file",
+      "mode": "0755",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 47592,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "8a5c20c3400a4058a487cd806111cc5138ef4d0fbc6714ff67c9432e38c2705a",
+      "owners": [
+        "coreutils"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "coreutils",
+          "binaryVersion": "9.7-3",
+          "source": "coreutils",
+          "sourceVersion": "9.7-3",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "/usr/bin/env": {
+      "kind": "file",
+      "mode": "0755",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 56144,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "eb1c64bbc9908afcdf8cb48524f17112d8dd76a249f80dee2f01da14747b3b6e",
+      "owners": [
+        "coreutils"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "coreutils",
+          "binaryVersion": "9.7-3",
+          "source": "coreutils",
+          "sourceVersion": "9.7-3",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.5": {
+      "sha256": "4013e7651ac68f547d8333517def25b2366c97eec7de7f06e105dbf3444ffebf",
+      "owners": [
+        "libtinfo6"
+      ]
+    },
+    "/usr/lib/x86_64-linux-gnu/libtinfo.so.6": {
+      "mode": 511,
+      "bytes": 0,
+      "kind": "symlink",
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "target": "libtinfo.so.6.5"
+    },
+    "/usr/lib/x86_64-linux-gnu/libnss_dns.so.2": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 14336,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "d6ff05b8003825fbef5ad779b5e2f870f179953e4fb560697b6f261010efe8d4",
+      "owners": [
+        "libc6:amd64"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc6",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/x86_64-linux-gnu/libnss_files.so.2": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 14336,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "8c93b2ae43dac3c2d688d227609d713f71620d3f0980ebf6bbb371c6eb542108",
+      "owners": [
+        "libc6:amd64"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc6",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/x86_64-linux-gnu/libresolv.so.2": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 63936,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "d41dd4adacf5a35df426461dd8a92d7bdd5ba29bb61a1c3531bec0ada386f8dd",
+      "owners": [
+        "libc6:amd64"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc6",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/etc/nsswitch.conf": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 494,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "eec30745bade42a3f3f792e4d4192e57d2bcfe8e472433b1de426fe39a39cddb",
+      "owners": [],
+      "packageOrigins": []
+    },
+    "/etc/localtime": {
+      "kind": "symlink",
+      "mode": "0777",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 0,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "target": "/usr/share/zoneinfo/Etc/UTC",
+      "owners": [],
+      "packageOrigins": []
+    },
+    "/usr/share/zoneinfo/Etc/UTC": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 114,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "8b85846791ab2c8a5463c83a5be3c043e2570d7448434d41398969ed47e3e6f2",
+      "owners": [
+        "tzdata"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "tzdata",
+          "binaryVersion": "2026c-0+deb13u1",
+          "source": "tzdata",
+          "sourceVersion": "2026c-0+deb13u1",
+          "architecture": "all",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8": {
+      "kind": "directory",
+      "mode": "0755",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 0,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_ADDRESS": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 127,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "26e2800affab801cb36d4ff9625a95c3abceeda2b6553a7aecd0cfcf34c98099",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_COLLATE": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1406,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "47a5f5359a8f324abc39d69a7f6241a2ac0e2fbbeae5b9c3a756e682b75d087b",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_CTYPE": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 367708,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "1257597210f43630e7c8a745ae95127e96b93a43515ac5163cab459ddc1664b3",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_IDENTIFICATION": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 258,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "38a1d8e5271c86f48910d9c684f64271955335736e71cec35eeac942f90eb091",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_MEASUREMENT": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 23,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "bb14a6f2cbd5092a755e8f272079822d3e842620dd4542a8dfa1e5e72fc6115b",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_MESSAGES": {
+      "kind": "directory",
+      "mode": "0755",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 0,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 48,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f9ad02f1d8eba721d4cbd50c365b5c681c39aec008f90bfc2be2dc80bfbaddcb",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_MONETARY": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 270,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "bfd9e9975443b834582493fe9a8d7aefcd989376789c17470a1e548aee76fd55",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_NAME": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 62,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "14507aad9f806112e464b9ca94c93b2e4d759ddc612b5f87922d7cac7170697d",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_NUMERIC": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 50,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f5976e6b3e6b24dfe03caad6a5b98d894d8110d8bd15507e690fd60fd3e04ab2",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_PAPER": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 34,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "cde048b81e2a026517cc707c906aebbd50f5ee3957b6f0c1c04699dffcb7c015",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_TELEPHONE": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 47,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f4caf0d12844219b65ba42edc7ec2f5ac1b2fc36a3c88c28887457275daca1ee",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "/usr/lib/locale/C.utf8/LC_TIME": {
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3360,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "0910b595d1d5d4e52cc0f415bbb1ff07c015d6860d34aae02505dd9973a63154",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    }
+  },
+  "generatedAliases": {
+    "/bin/bash": "../usr/bin/bash",
+    "/bin/dash": "../usr/bin/dash",
+    "/bin/sh": "dash"
+  },
+  "environmentThroughTrustedLaunchOwner": {
+    "HOME": "/home/node",
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8",
+    "TZ": "Etc/UTC",
+    "TMPDIR": "<canonical admitted per-run private temp path>",
+    "CA": "UNRESOLVED: retain verification; explicit approved PEM mount/hash if private proxy requires it; startup environment bound by owner"
+  },
+  "environmentStatus": "PROPOSED_NOT_IMPLEMENTED_OR_REBOUND; Docker ENV alone is insufficient; do not mutate an admitted descriptor",
+  "mountProfile": [
+    "readonly root and /opt/meri",
+    "UID/GID1000; no added capabilities/no-new-privileges",
+    "isolated task-owned writable HOME/config/secure-storage/workspace/temp with existing private permissions, quotas, deadlines and cleanup",
+    "runtime-provided hosts/resolv.conf under existing network policy; no workstation copies",
+    "no user rc/profile; no new model Bash permission"
+  ],
+  "packageOrigins": {
+    "bash": {
+      "binary": "bash",
+      "binaryVersion": "5.2.37-2+b10",
+      "source": "bash",
+      "sourceVersion": "5.2.37-2",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "bash (5.2.37-2)"
+    },
+    "coreutils": {
+      "binary": "coreutils",
+      "binaryVersion": "9.7-3",
+      "source": "coreutils",
+      "sourceVersion": "9.7-3",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": null
+    },
+    "dash": {
+      "binary": "dash",
+      "binaryVersion": "0.5.12-12",
+      "source": "dash",
+      "sourceVersion": "0.5.12-12",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": null
+    },
+    "gcc-14-base": {
+      "binary": "gcc-14-base",
+      "binaryVersion": "14.2.0-19",
+      "source": "gcc-14",
+      "sourceVersion": "14.2.0-19",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "gcc-14"
+    },
+    "libc-bin": {
+      "binary": "libc-bin",
+      "binaryVersion": "2.41-12+deb13u4",
+      "source": "glibc",
+      "sourceVersion": "2.41-12+deb13u4",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "glibc"
+    },
+    "libc6": {
+      "binary": "libc6",
+      "binaryVersion": "2.41-12+deb13u4",
+      "source": "glibc",
+      "sourceVersion": "2.41-12+deb13u4",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "glibc"
+    },
+    "libgcc-s1": {
+      "binary": "libgcc-s1",
+      "binaryVersion": "14.2.0-19",
+      "source": "gcc-14",
+      "sourceVersion": "14.2.0-19",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "gcc-14"
+    },
+    "libstdc++6": {
+      "binary": "libstdc++6",
+      "binaryVersion": "14.2.0-19",
+      "source": "gcc-14",
+      "sourceVersion": "14.2.0-19",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "gcc-14"
+    },
+    "libtinfo6": {
+      "binary": "libtinfo6",
+      "binaryVersion": "6.5+20250216-2",
+      "source": "ncurses",
+      "sourceVersion": "6.5+20250216-2",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "ncurses"
+    },
+    "ncurses-base": {
+      "binary": "ncurses-base",
+      "binaryVersion": "6.5+20250216-2",
+      "source": "ncurses",
+      "sourceVersion": "6.5+20250216-2",
+      "architecture": "all",
+      "status": "install ok installed",
+      "sourceField": "ncurses"
+    },
+    "ncurses-bin": {
+      "binary": "ncurses-bin",
+      "binaryVersion": "6.5+20250216-2",
+      "source": "ncurses",
+      "sourceVersion": "6.5+20250216-2",
+      "architecture": "amd64",
+      "status": "install ok installed",
+      "sourceField": "ncurses"
+    },
+    "tzdata": {
+      "binary": "tzdata",
+      "binaryVersion": "2026c-0+deb13u1",
+      "source": "tzdata",
+      "sourceVersion": "2026c-0+deb13u1",
+      "architecture": "all",
+      "status": "install ok installed",
+      "sourceField": null
+    }
+  },
+  "licenseFileMetadata": {
+    "usr/share/doc/bash/copyright": {
+      "path": "usr/share/doc/bash/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 9764,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "06319d84c3e5ed096036f6a9310a030c7e84e50dff2b8a6792285c83ec0ada73",
+      "owners": [
+        "bash"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "bash",
+          "binaryVersion": "5.2.37-2+b10",
+          "source": "bash",
+          "sourceVersion": "5.2.37-2",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "bash (5.2.37-2)"
+        }
+      ]
+    },
+    "usr/share/doc/coreutils/copyright": {
+      "path": "usr/share/doc/coreutils/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5572,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "3a63d4b11a7ba4c1c17175072ea28e07b0f80c7bc1ca042b27431fe65a14755b",
+      "owners": [
+        "coreutils"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "coreutils",
+          "binaryVersion": "9.7-3",
+          "source": "coreutils",
+          "sourceVersion": "9.7-3",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/doc/dash/copyright": {
+      "path": "usr/share/doc/dash/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3878,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "d98c53f281321baad38164aa9ae6e368a9253be6ec51bd26a759b5e72b326f4a",
+      "owners": [
+        "dash"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "dash",
+          "binaryVersion": "0.5.12-12",
+          "source": "dash",
+          "sourceVersion": "0.5.12-12",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/doc/gcc-14-base/copyright": {
+      "path": "usr/share/doc/gcc-14-base/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 69004,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79",
+      "owners": [
+        "gcc-14-base:amd64"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "gcc-14-base",
+          "binaryVersion": "14.2.0-19",
+          "source": "gcc-14",
+          "sourceVersion": "14.2.0-19",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "gcc-14"
+        }
+      ]
+    },
+    "usr/share/doc/libc-bin/copyright": {
+      "path": "usr/share/doc/libc-bin/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 51200,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f5788886720a2605a946e81d571e6c8162b09f58d2e2ceb8d36e5768fccd850d",
+      "owners": [
+        "libc-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc-bin",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "usr/share/doc/libc6/copyright": {
+      "path": "usr/share/doc/libc6/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 51200,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f5788886720a2605a946e81d571e6c8162b09f58d2e2ceb8d36e5768fccd850d",
+      "owners": [
+        "libc6:amd64"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libc6",
+          "binaryVersion": "2.41-12+deb13u4",
+          "source": "glibc",
+          "sourceVersion": "2.41-12+deb13u4",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "glibc"
+        }
+      ]
+    },
+    "usr/share/doc/libtinfo6/copyright": {
+      "path": "usr/share/doc/libtinfo6/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4670,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f838d6048fbc59356b7e56c207a7cb32dc6bf4adea95514a002596bde8f6e1e7",
+      "owners": [
+        "libtinfo6:amd64"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "libtinfo6",
+          "binaryVersion": "6.5+20250216-2",
+          "source": "ncurses",
+          "sourceVersion": "6.5+20250216-2",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "ncurses"
+        }
+      ]
+    },
+    "usr/share/doc/ncurses-base/copyright": {
+      "path": "usr/share/doc/ncurses-base/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4670,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f838d6048fbc59356b7e56c207a7cb32dc6bf4adea95514a002596bde8f6e1e7",
+      "owners": [
+        "ncurses-base"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "ncurses-base",
+          "binaryVersion": "6.5+20250216-2",
+          "source": "ncurses",
+          "sourceVersion": "6.5+20250216-2",
+          "architecture": "all",
+          "status": "install ok installed",
+          "sourceField": "ncurses"
+        }
+      ]
+    },
+    "usr/share/doc/ncurses-bin/copyright": {
+      "path": "usr/share/doc/ncurses-bin/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4670,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "f838d6048fbc59356b7e56c207a7cb32dc6bf4adea95514a002596bde8f6e1e7",
+      "owners": [
+        "ncurses-bin"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "ncurses-bin",
+          "binaryVersion": "6.5+20250216-2",
+          "source": "ncurses",
+          "sourceVersion": "6.5+20250216-2",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": "ncurses"
+        }
+      ]
+    },
+    "usr/share/doc/tzdata/copyright": {
+      "path": "usr/share/doc/tzdata/copyright",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 375,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "cb61132bc0fc7b26ef5a82ee18b2fb644a1362f4f286ed980ff22e408471f59a",
+      "owners": [
+        "tzdata"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "tzdata",
+          "binaryVersion": "2026c-0+deb13u1",
+          "source": "tzdata",
+          "sourceVersion": "2026c-0+deb13u1",
+          "architecture": "all",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/Artistic": {
+      "path": "usr/share/common-licenses/Artistic",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 6321,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "dd90d4f42e4dcadf5a7c09eea0189d93c7b37ae560c91f0f6d5233ed3b9292a2",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/GFDL-1.2": {
+      "path": "usr/share/common-licenses/GFDL-1.2",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 20394,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "2652c22ba086f92e55ae4a9f9c890ad4766ffd7814a73d318e22a597edf857a4",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/GFDL-1.3": {
+      "path": "usr/share/common-licenses/GFDL-1.3",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 22955,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "110535522396708cea37c72a802c5e7e81391139f5f7985631c93ef242b206a4",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/GPL": {
+      "path": "usr/share/common-licenses/GPL",
+      "kind": "symlink",
+      "mode": "0777",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 0,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "target": "GPL-3",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/GPL-2": {
+      "path": "usr/share/common-licenses/GPL-2",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 17984,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/GPL-3": {
+      "path": "usr/share/common-licenses/GPL-3",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 35149,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/LGPL": {
+      "path": "usr/share/common-licenses/LGPL",
+      "kind": "symlink",
+      "mode": "0777",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 0,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "target": "LGPL-3",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/LGPL-2": {
+      "path": "usr/share/common-licenses/LGPL-2",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 25270,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "cc535c21133c895b56b374c8a1dc1eb948d99003ed2b47372069456b62f42b24",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/LGPL-2.1": {
+      "path": "usr/share/common-licenses/LGPL-2.1",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 26419,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    },
+    "usr/share/common-licenses/LGPL-3": {
+      "path": "usr/share/common-licenses/LGPL-3",
+      "kind": "file",
+      "mode": "0644",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 7652,
+      "layer": "sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e",
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "owners": [
+        "base-files"
+      ],
+      "packageOrigins": [
+        {
+          "binary": "base-files",
+          "binaryVersion": "13.8+deb13u7",
+          "source": "base-files",
+          "sourceVersion": "13.8+deb13u7",
+          "architecture": "amd64",
+          "status": "install ok installed",
+          "sourceField": null
+        }
+      ]
+    }
+  },
+  "licenseReferenceNames": {
+    "usr/share/doc/bash/copyright": [
+      "GFDL-1.3",
+      "GPL-2",
+      "GPL-3"
+    ],
+    "usr/share/doc/coreutils/copyright": [
+      "GFDL-1.3",
+      "GPL-3"
+    ],
+    "usr/share/doc/dash/copyright": [
+      "GPL-2"
+    ],
+    "usr/share/doc/gcc-14-base/copyright": [
+      "Artistic",
+      "GFDL-1.2",
+      "GPL",
+      "GPL-3",
+      "LGPL"
+    ],
+    "usr/share/doc/libc-bin/copyright": [
+      "GPL-2",
+      "GPL-3",
+      "LGPL-2",
+      "LGPL-2.1",
+      "LGPL-3"
+    ],
+    "usr/share/doc/libc6/copyright": [
+      "GPL-2",
+      "GPL-3",
+      "LGPL-2",
+      "LGPL-2.1",
+      "LGPL-3"
+    ],
+    "usr/share/doc/libtinfo6/copyright": [],
+    "usr/share/doc/ncurses-base/copyright": [],
+    "usr/share/doc/ncurses-bin/copyright": [],
+    "usr/share/doc/tzdata/copyright": []
+  },
+  "licenseClearance": false,
+  "artifactProfile": {
+    "status": "REQUIRED_PRODUCT_SCOPE_PRESERVED_BUT_PLACEMENT_AND_LOCK_INCOMPLETE",
+    "required": [
+      "absolute fixed Python executable and Linux process/resource controls",
+      "Pillow even TXT/PPTX asset validation",
+      "python-docx/lxml",
+      "XlsxWriter/openpyxl",
+      "pandas for typed analysis",
+      "matplotlib for charts",
+      "Node/PptxGenJS4.0.1",
+      "injected LibreOffice renderer/recalculator and fonts when requested",
+      "qualified browser and renderer on originally approved placement"
+    ],
+    "missingFromExistingSevenWheelLock": [
+      "Pillow",
+      "pandas",
+      "matplotlib"
+    ],
+    "noSilentRemovalOrRelocation": true
+  },
+  "bundledNode": {
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "sourceImage": "docker.io/library/node@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+    "localStaticReadOnly": true,
+    "independentLinuxParentReport": {
+      "exactBinaryHashVerified": true,
+      "processVersionsZlib": "1.3.2.1-motley-8002e91",
+      "fullGzWriteBytesDisassembled": 490,
+      "missingUpstreamErrorResetStores": true
+    },
+    "rawBinaryFunctionBytesIncluded": false,
+    "decision": "HOLD; see ../NODE-BUNDLED-ZLIB.md; no exploitability or equivalent-fix-elsewhere claim"
+  },
+  "officialBaseComparisons": [
+    {
+      "status": "READ_ONLY_COMPARISON_NOT_PROPOSED_OR_QUALIFIED",
+      "tagUsedForDiscoveryOnly": "24.21.0-alpine3.23",
+      "indexDigest": "sha256:9ec4a2e289874ed0d722e1772ec2de45d2801541db8612f3638b26f128c69ac2",
+      "amd64Manifest": "sha256:a01ebbfa28f5ac85e27044d661b4415d30508b2e64dc23eef236493b7a99f916",
+      "configDigest": "sha256:851259a82425d133289f03363f1ecec726bc9540212c2219315151a8045d6aa2",
+      "verifiedSourceImage": "docker.io/library/node@sha256:9ec4a2e289874ed0d722e1772ec2de45d2801541db8612f3638b26f128c69ac2",
+      "nodeVersion": "24.21.0",
+      "zlibPackages": [
+        {
+          "binary": "zlib",
+          "version": "1.3.2-r0",
+          "source": "zlib",
+          "architecture": "x86_64"
+        }
+      ],
+      "utilLinuxPackages": [],
+      "layerHashesVerified": true,
+      "noExecutionOrBuild": true,
+      "limits": [
+        "OS package absence/fixed version does not establish Node or CLI bundled-code clearance.",
+        "Musl changes the existing glibc/GNU SWC/runtime qualification pipeline.",
+        "No complete final-image vulnerability scan or runtime smoke was performed."
+      ]
+    },
+    {
+      "status": "READ_ONLY_COMPARISON_NOT_PROPOSED_OR_QUALIFIED",
+      "tagUsedForDiscoveryOnly": "24.22.0-alpine3.23",
+      "indexDigest": "sha256:e44c87c7dd212720eb00469aeac89504ca2be77b8f0d6dbffb30665d5fcc59e1",
+      "amd64Manifest": "sha256:a9263c62d71322a8eb002544e5a65189ec0ef20c6c0c6f52ce9d1b353cc73792",
+      "configDigest": "sha256:c39f3d6bf01e9ff0d62d382c0d992ed005bbc7fd804e6ea89b078c4088dd206d",
+      "verifiedSourceImage": "docker.io/library/node@sha256:e44c87c7dd212720eb00469aeac89504ca2be77b8f0d6dbffb30665d5fcc59e1",
+      "nodeVersion": "24.22.0",
+      "zlibPackages": [
+        {
+          "binary": "zlib",
+          "version": "1.3.2-r0",
+          "source": "zlib",
+          "architecture": "x86_64"
+        }
+      ],
+      "utilLinuxPackages": [],
+      "layerHashesVerified": true,
+      "noExecutionOrBuild": true,
+      "limits": [
+        "OS package absence/fixed version does not establish Node or CLI bundled-code clearance.",
+        "Musl changes the existing glibc/GNU SWC/runtime qualification pipeline.",
+        "No complete final-image vulnerability scan or runtime smoke was performed."
+      ]
+    },
+    {
+      "status": "READ_ONLY_COMPARISON_NOT_PROPOSED_OR_QUALIFIED",
+      "tagUsedForDiscoveryOnly": "24.22.0-alpine3.24",
+      "indexDigest": "sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f",
+      "amd64Manifest": "sha256:429bdfbc204b4eabc6438e6d34e4e9d8dd2ca1df8289bcd78cdd3c5db387b7a5",
+      "configDigest": "sha256:b842533ff06352670de854fcbd6939f01dd0f1a0fe4fd40d8e60a943626ee58b",
+      "verifiedSourceImage": "docker.io/library/node@sha256:44fce696f38ba8c987c4db89954051000bbd05ffd8d8659ba15ed4a8602e937f",
+      "nodeVersion": "24.22.0",
+      "zlibPackages": [
+        {
+          "binary": "zlib",
+          "version": "1.3.2-r0",
+          "source": "zlib",
+          "architecture": "x86_64"
+        }
+      ],
+      "utilLinuxPackages": [],
+      "layerHashesVerified": true,
+      "noExecutionOrBuild": true,
+      "limits": [
+        "OS package absence/fixed version does not establish Node or CLI bundled-code clearance.",
+        "Musl changes the existing glibc/GNU SWC/runtime qualification pipeline.",
+        "No complete final-image vulnerability scan or runtime smoke was performed."
+      ]
+    }
+  ],
+  "existingProposalCodeStatus": "UNCHANGED; finite helper/SONAME/ownership profile must be separately reviewed before any status change",
+  "zeroHighCriticalPolicy": "UNCHANGED_NO_EXCLUSIONS_OR_WAIVERS; complete actual-payload and bundled SBOM, positive OS attribution, fresh full scan required",
+  "smallestNextStep": "Resolve a reviewed official Node24 candidate containing the bundled fix; support policy remains HOLD and no materialization/build is authorized.",
+  "handoffPublicationNote": "Rebased baselinePolicy reference for committed layout and replaced raw Node function bytes with public-safe evidence summary; all support choices remain unapplied."
+}

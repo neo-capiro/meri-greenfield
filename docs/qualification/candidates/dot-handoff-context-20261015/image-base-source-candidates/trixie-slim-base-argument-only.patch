@@ -1,0 +1,7 @@
+diff --git a/scripts/qualification/assembled-image/meri_image_build.py b/scripts/qualification/assembled-image/meri_image_build.py
+--- a/scripts/qualification/assembled-image/meri_image_build.py
++++ b/scripts/qualification/assembled-image/meri_image_build.py
+@@ -12,2 +12,2 @@
+ MANIFEST_SHA = 'eb1956ca385e1ec79b694a4daef177c512bbc9c3b126d8c8df2c88ee0a1fe764'
+-NODE = 'public.ecr.aws/docker/library/node@sha256:9af606de2e947cfb3f276633b7c5130c4cd22365aa10f5a647b7675d5cfce0c0'
++NODE = 'docker.io/library/node@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66'

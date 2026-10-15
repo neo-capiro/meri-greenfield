@@ -1,0 +1,54 @@
+{
+  "status": "OUTSIDE_GIT_SOURCE_REVIEW_ONLY_UNBUILT_UNADMITTED",
+  "preservedSource": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+  "preservedTree": "a6a2155dba18415ec8a778322a2da08c0d73f264",
+  "files": [
+    {
+      "path": "apps/runtime/build/materialize-runtime-root.mjs",
+      "bytes": 25076,
+      "sha256": "e26107528b8b11aeb924b57800749cef3abbe93067dd622f40ebaf2a999ab211"
+    },
+    {
+      "path": "apps/runtime/build/runtime-root-policy.json",
+      "bytes": 7642,
+      "sha256": "9ac1dd79ed0652c5bf73069d140ecfec9dbb87e05429ec72f33541cd9bbb8b13"
+    },
+    {
+      "path": "apps/runtime/build/test/materialize-runtime-root.test.mjs",
+      "bytes": 4594,
+      "sha256": "9011612cc1bd0c044e87a16add3688f47df3a9ec0ab535147c061f5df8afb750"
+    },
+    {
+      "path": "Dockerfile.proposed",
+      "bytes": 2567,
+      "sha256": "d58a499460f8e77154a28275cef5765975dc01b47a0d1e95730f05e32c1f0582"
+    },
+    {
+      "path": "PROOF-IMPACT.json",
+      "bytes": 1453,
+      "sha256": "b25a2b03e969a0ff1140d636cd160993da169bde19ce6a5aae59dcb77bdbce4a"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 7946,
+      "sha256": "807505d74372d2323c1abc4be3d5f00a60b006e11aa519b78ae6b78a360bb728"
+    },
+    {
+      "path": "runtime-and-base-source.patch",
+      "bytes": 40237,
+      "sha256": "c937549d9a17b26d90ef4643ca2136534a39895b2f79841bced155b6436d88e5"
+    },
+    {
+      "path": "runtime-final-stage.patch",
+      "bytes": 1519,
+      "sha256": "ba605e64f30a8ff259808bca17fd18218b7314e8a51dc13bbae658c53ed9db51"
+    },
+    {
+      "path": "VALIDATION.json",
+      "bytes": 1338,
+      "sha256": "610d0a112b8d9abee8d76559dc95c133b4dd3febe874af4484922492fbbd76e4"
+    }
+  ],
+  "privateFindingRowsIncluded": false,
+  "buildOrPublicationAuthorized": false
+}
