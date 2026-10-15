@@ -1,6 +1,6 @@
 /** Concrete bounded first-run composition over existing canonical owners. */
 import {ECSClient} from '@aws-sdk/client-ecs';
-import {S3Client} from '@aws-sdk/client-s3';
+import {S3Client} from '../artifacts/storage/s3-sdk.mjs';
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
