@@ -1,6 +1,6 @@
 /** Retention composition: policy, inventory, ledger, suppression, storage absence semantics, purge planning (execution disabled by default) and recovery reconciliation. */
 export {parseRetentionPolicy,requirePurgePolicy,purgeEligibility} from './policy.mjs';
-export {classes,externalClasses,rowClasses,enumerateReferences,createReferenceIndex,sharedReferences} from './inventory.mjs';
+export {classes,externalClasses,rowClasses,rowClassSubjectKind,enumerateReferences,createReferenceIndex,sharedReferences} from './inventory.mjs';
 export {createRetentionLedger,createMemoryLedgerSink,transitions} from './ledger.mjs';
 export {createMemoryRetentionJournal,createRecoveryLock,projectionToken} from './memory-journal.mjs';
 export {createPostgresRetentionJournal} from './postgres-journal.mjs';

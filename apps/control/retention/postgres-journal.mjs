@@ -4,7 +4,8 @@
  * consult together with the subject's current SUPPRESSED state. Every write takes the subject's advisory lock inside its transaction
  * (so an absent-row compare-and-set is atomic), the shared side of the recovery advisory lock, and compares the projection hash the
  * caller read. Recovery takes the exclusive side on a dedicated session. Borrowed pg-compatible pool; no connection on import. */
-import {fail,hash,subject as parseSubject,subjectKey} from './boundary.mjs';
+import {fail,hash,uuid,text,subject as parseSubject,subjectKey} from './boundary.mjs';
+import {rowClassSubjectKind} from './inventory.mjs';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
 function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST');const parts=key.split(':');if(parts.length<3)fail('RETENTION_INVALID_REQUEST');const kind=parts.at(-2),subjectId=parts.at(-1),tenantId=parts.slice(0,-2).join(':');if(!tables[kind])fail('RETENTION_INVALID_REQUEST');return {tenantId,kind,subjectId};}
@@ -62,14 +63,17 @@ export function createPostgresRetentionJournal({pool}){
   else{for(const st of plan.rowSteps??[]){if(st.className!=='artifactVersions')continue;const versionId=st.target.artifactVersionId;const step=(plan.steps??[]).find(x=>x.artifactVersionIds?.includes(versionId));
     await c.query('INSERT INTO meri_artifacts.retention_purges(workflow_id,tenant_id,artifact_id,version_id,object_id,object_version_id,sha256,plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,\'PLANNED\',NULL,NULL,$9) ON CONFLICT (workflow_id) DO UPDATE SET state=\'PLANNED\',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence',[st.workflowId,k.tenantId,k.subjectId,versionId,step?.objectId??'00000000-0000-4000-8000-000000000000',step?.versionId??'none',step?.sha256??'0'.repeat(64),plan.planSha256,current.purge.ledgerSequence]);}}
  }
- const rowWhere={sdkSession:{table:'meri_conversations.sdk_session_entries',kind:'conversation',where:'tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND sequence=$6',args:(k,g)=>[k.tenantId,k.subjectId,g.runId,g.sessionId,g.subpath,g.sequence]},
-  artifactVersions:{table:'meri_artifacts.versions',kind:'artifact',where:'tenant_id=$1 AND artifact_id=$2 AND version_id=$3',args:(k,g)=>[k.tenantId,k.subjectId,g.artifactVersionId]}};
- const rowTarget=(k,st)=>{const w=rowWhere[st?.className];if(!w||w.kind!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');return w;};
+ const rowWhere={sdkSession:{table:'meri_conversations.sdk_session_entries',where:'tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND session_id=$4 AND subpath=$5 AND sequence=$6',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.runId),uuid(g.sessionId),text(g.subpath,1024),Number.isSafeInteger(g.sequence)&&g.sequence>0?g.sequence:fail('RETENTION_INVALID_REQUEST')]},
+  artifactVersions:{table:'meri_artifacts.versions',where:'tenant_id=$1 AND artifact_id=$2 AND version_id=$3',args:(k,g)=>[k.tenantId,k.subjectId,uuid(g.artifactVersionId)]}};
+ /** Routing for one row target: the class must belong to this subject kind and the exact target must be well formed. */
+ const rowTarget=(k,st)=>{const w=rowWhere[st?.className];if(!w||rowClassSubjectKind[st.className]!==k.kind||!st.target||typeof st.target!=='object')fail('RETENTION_INVALID_REQUEST');w.args(k,st.target);return w;};
+ /** Validates every row target of a plan against this routing with no database access, so a purge refuses before any effect. */
+ async function preflightRows(key,plan){const k=parseKey(key);if(!Array.isArray(plan?.rowSteps))fail('RETENTION_INVALID_REQUEST');for(const st of plan.rowSteps)rowTarget(k,st);return true;}
  /** The database-row purge port. `purge` deletes every row target of the plan in one transaction that first records the exact targets
   * under the subject lock (planRows), so the trigger amendments admit exactly these rows and nothing else; a head still bound to an
   * artifact version under purge is retired in the same transaction. A row still present afterwards is reported UNKNOWN. Any failure
   * rolls the whole transaction back: targets, head retirement and deletions together. */
- async function purgeRows(key,plan){const k=parseKey(key);
+ async function purgeRows(key,plan){const k=parseKey(key);await preflightRows(key,plan);
   return tx(async c=>{await planRows(c,key,plan);const out=[];
    if(k.kind==='artifact'){const versions=(plan.rowSteps??[]).filter(st=>st.className==='artifactVersions').map(st=>st.target.artifactVersionId);if(versions.length)await c.query('DELETE FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2 AND version_id=ANY($3::uuid[])',[k.tenantId,k.subjectId,versions]);}
    for(const st of plan.rowSteps??[]){const w=rowTarget(k,st),args=w.args(k,st.target);
@@ -79,7 +83,7 @@ export function createPostgresRetentionJournal({pool}){
    return out;});}
  /** Whether an exact row target still exists (recovery re-verification). */
  async function rowPresent(key,st){const k=parseKey(key),w=rowTarget(k,st);try{return (await pool.query(`SELECT 1 FROM ${w.table} WHERE ${w.where}`,w.args(k,st.target))).rowCount>0;}catch(e){throw wrap(e);}}
- const rows=Object.freeze({purge:purgeRows,present:rowPresent});
+ const rows=Object.freeze({preflight:preflightRows,purge:purgeRows,present:rowPresent});
  /** Trusted ownership reader for the suppression owner: the application's own record of the subject's owner. */
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;

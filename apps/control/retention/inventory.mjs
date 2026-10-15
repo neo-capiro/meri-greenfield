@@ -8,6 +8,9 @@ export const classes=Object.freeze(['conversation','events','lifecycle','complet
 export const externalClasses=Object.freeze(['logs']);
 /** Classes whose purge is a database row deletion admitted by the trigger amendments (exact row identity required). */
 export const rowClasses=Object.freeze(['sdkSession','artifactVersions']);
+/** The one subject kind whose database rows each row class may delete: SDK mirror entries belong to a conversation, artifact version
+ * rows to an artifact. A row target of any other kind is a different subject's obligation and must be purged under that subject. */
+export const rowClassSubjectKind=Object.freeze({sdkSession:'conversation',artifactVersions:'artifact'});
 const object=o=>{const v=own(o,['objectId','versionId','sha256']);uuid(v.objectId);text(v.versionId,1024);digest(v.sha256);return v;};
 const refKey=o=>`${o.objectId}@${o.versionId}`;
 const sdkTarget=e=>{const v=own(e,['entryId','runId','sessionId','subpath','sequence']);uuid(v.runId);uuid(v.sessionId);text(v.subpath,1024);if(!Number.isSafeInteger(v.sequence)||v.sequence<1)fail('RETENTION_INVALID_REQUEST');return Object.freeze({className:'sdkSession',runId:v.runId,sessionId:v.sessionId,subpath:v.subpath,sequence:v.sequence});};
