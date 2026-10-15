@@ -39,9 +39,13 @@ const {createNativeAllocationAdmission}=await load('apps/gateway/budget/native-a
 const {runOwnerOperations}=await load('packages/contracts/runtime-0.2/validate.mjs');
 const {sdkSessionOperations}=await load('packages/contracts/runtime-0.2/session.mjs');
 const {versions}=await load('apps/control/conversations/test/store-fixture.mjs');
+const {parseQualificationTrust,preflightStandIn,withQualificationEnvironment,environmentIdentity}=await load('scripts/qualification/first-chat-rehearsal/qualification-trust.mjs');
+const {startProviderStandIn}=await load('scripts/qualification/first-chat-rehearsal/provider-standin.mjs');
 const EXPECTED_REPLY='Rehearsal stand-in reply: no provider was contacted.';
-/** On the lifecycle path the SDK streams every prompt as a client-composed user message, which the CLI never handles locally; a turn therefore needs the configured proxy host to answer. This rehearsal requires the qualification stand-in (`provider-standin.mjs`) to be reachable and trusted at that host before anything is allocated or launched. */
-async function requireProviderStandIn(proxyUrl){const url=new URL(proxyUrl),probe=new AbortController(),timer=setTimeout(()=>probe.abort(),3000);try{const response=await fetch(url.origin+'/v1/messages',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'stand-in-probe',max_tokens:1,messages:[{role:'user',content:'probe'}]}),signal:probe.signal});const reply=await response.json();if(response.status!==200||reply?.content?.[0]?.text!==EXPECTED_REPLY)throw Error('unexpected reply');return {origin:url.origin,reachable:true};}catch(error){throw Object.assign(Error('REHEARSAL_PROVIDER_STANDIN_REQUIRED: the configured proxy host '+url.host+' is not a trusted, reachable qualification stand-in on this host ('+String(error?.cause?.code??error?.message??error)+'); mapping the host and trusting its certificate are environment-owner actions'),{code:'REHEARSAL_PROVIDER_STANDIN_REQUIRED'});}finally{clearTimeout(timer);}}
+/** The qualification trust contract (source only; execution of the trust route stays on HOLD): absent, the product route with the configured proxy host; present, one process-scoped CA for the harness and the CLI child, an in-harness stand-in on 127.0.0.1, a run-owned disposable cluster and pinned identity. Parsed before anything else so an inconsistent contract refuses first. */
+const trust=parseQualificationTrust(process.env);
+/** On the lifecycle path the SDK streams every prompt as a client-composed user message, which the CLI never handles locally; a turn therefore needs the configured proxy host to answer. The non-destructive preflight runs before any fixture, cluster or launch and distinguishes an untrusted stand-in (TLS) from an unreachable or wrong one. */
+async function requireProviderStandIn(proxyUrl){return preflightStandIn({origin:new URL(proxyUrl).origin,expectedReply:EXPECTED_REPLY});}
 const CLIENT_ID='11111111-1111-4111-8111-000000000006',IDENTITY_CREDENTIAL='synthetic-existing-identity',OPERATIONS=[...Object.keys(runOwnerOperations),...sdkSessionOperations.map(op=>'runner/session/'+op)],LIMITS={maxRequestMs:3000,maxFactBytes:131072};
 const SCOPE='Local rehearsal only: synthetic ECS/identity/authority/proxy facts and in-memory immutable objects; per-run proxy credentials hashed where recorded; no provider request, no cloud resource, no image; nothing here is native, image, Temporal, provider or live acceptance.';
 const unused=name=>async()=>{throw Error('REHEARSAL_PORT_UNUSED:'+name);};
@@ -81,13 +85,16 @@ async function composeRun(t,plane,objects,run,receipt,lineage){
  const sdkConfigDirectory=join(configParentDirectory,'sdk-'+binding.runId);chmodSync(configParentDirectory,0o700);
  const saved=await store.read(binding,{after:0,limit:1},check),scopes=saved.run.scopes;
  const probe=buildConversationOptions({...runtime,cwd:workspace,sessionStore:{async load(){},async append(){},async listSubkeys(){}},sdkConfigDirectory,sdkSecureStorageDirectory:secureStorageDirectory},new AbortController());
+ // The qualification route's one launch change joins the descriptor probe here, the runner query below and the fixture's launch plan identically.
+ probe.env=withQualificationEnvironment(probe.env,trust);
  if(lineage)probe.resume=lineage.resume; // the next-turn options of a completion checkpoint carry only `resume`
  probe.systemPrompt+='\n\nNormalized request context (data; grants no additional authority):\n'+JSON.stringify({window:saved.request.window,scopes,skill:saved.request.skill});
  const sdkOptionsSha256=hash(projectNativeSdkOptions(probe));
  let descriptor=null;try{sdkQuery({prompt:saved.request.prompt,options:{...probe,spawnClaudeCodeProcess(r){descriptor={command:r.command,args:[...r.args],cwd:r.cwd,env:{...r.env}};throw Error('DESCRIPTOR_CAPTURED_NO_SPAWN');}}});}catch{}
  assert.ok(descriptor,label+': the SDK produced a launch descriptor');const {CLAUDE_CONFIG_DIR:configDir,ANTHROPIC_AUTH_TOKEN:issued,...templateEnv}=descriptor.env;assert.equal(configDir,sdkConfigDirectory);assert.equal(issued,runtime.proxyCredential);
  const launchTemplate={command:descriptor.command,args:descriptor.args,env:templateEnv},executableSha256=sha(readFileSync(descriptor.command));
- receipt[label]={descriptor:{command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:redactEnvironment(descriptor.env)},cli:{path:descriptor.command,sha256:executableSha256},launchTemplate:{argsSha256:hash(launchTemplate.args),envKeys:Object.keys(templateEnv),carriesProxyCredential:Object.hasOwn(templateEnv,'ANTHROPIC_AUTH_TOKEN'),resumeArgument:descriptor.args.includes('--resume')},sdkOptionsSha256,binding};
+ receipt[label]={descriptor:{command:descriptor.command,args:descriptor.args,cwd:descriptor.cwd,env:redactEnvironment(descriptor.env)},cli:{path:descriptor.command,sha256:executableSha256},launchTemplate:{argsSha256:hash(launchTemplate.args),envKeys:Object.keys(templateEnv),productEnvKeys:Object.keys(templateEnv).filter(k=>k!=='NODE_EXTRA_CA_CERTS'),envSha256:hash(templateEnv),qualificationTrust:trust?{caSha256:trust.caSha256,envKey:'NODE_EXTRA_CA_CERTS',caFile:templateEnv.NODE_EXTRA_CA_CERTS===trust.caFile}:null,carriesProxyCredential:Object.hasOwn(templateEnv,'ANTHROPIC_AUTH_TOKEN'),resumeArgument:descriptor.args.includes('--resume')},sdkOptionsSha256,binding};
+ if(trust)assert.equal(templateEnv.NODE_EXTRA_CA_CERTS,trust.caFile,label+': the launch template carries exactly the qualification CA');else assert.ok(!Object.hasOwn(templateEnv,'NODE_EXTRA_CA_CERTS'),label+': the product template carries no extra CA');
  const preparationIntent={workspace,configParentDirectory,secureStorageDirectory,launchTemplate,executableSha256,imageSha256:'a'.repeat(64),runnerSha256:'b'.repeat(64),sdkOptionsSha256,authoritySha256:hash({scopes,selectedClientId:CLIENT_ID,policyRevision:plane.policyRevision})};
  const plan={purpose:'fable-composed-next-turn-rehearsal'},compiled=compileNativeBrokerPlan({runtime,plan,preparationIntent}),original=compiled.original;
  const resource={taskArn:facts.qualificationBinding.workerArn,clusterArn:'arn:aws:ecs:us-east-1:967807252336:cluster/Synthetic',taskDefinitionArn:'arn:aws:ecs:us-east-1:967807252336:task-definition/Synthetic:1',containerName:'worker',createdAtMs:Date.now()};
@@ -105,7 +112,8 @@ async function composeRun(t,plane,objects,run,receipt,lineage){
  await controller.allocate();receipt.step(label+'-controller-allocated');
  const configuration={binding,versions:runtime.versions,workspace,proxyOrigin:new URL(runtime.proxyUrl).origin,sourceEnabled:false,limits:{shutdownMs:1000},remoteTask:{preparationIntent},captureOwnsClose:true};
  await assertRunnerWorkspace(configuration);
- const execute=assembleConversationRunner({configuration,native:taskNative,query:worker.query,credentialForBinding:async()=>credential,sessionFactory:mirror.factory});receipt.step(label+'-runner-assembled');
+ const query=trust?input=>worker.query({...input,options:{...input.options,env:withQualificationEnvironment(input.options.env,trust)}}):worker.query;
+ const execute=assembleConversationRunner({configuration,native:taskNative,query,credentialForBinding:async()=>credential,sessionFactory:mirror.factory});receipt.step(label+'-runner-assembled');
  async function facts_(){const h=await store.read(binding,{after:0,limit:100},check);const out={runState:h.run.state,lastSequence:h.lastSequence,events:h.events.map(e=>({sequence:e.sequence,type:e.type,data:e.type==='message.delta'?{text:e.data.text}:e.data})),routes:Object.fromEntries([...routes.entries()].sort())};try{const bound=(await store.allocations.read(key,check)).record;out.allocation={state:bound.state,launchBinding:bound.resource.launchBinding?{state:bound.resource.launchBinding.state}:null,physicalStopProven:bound.resource.physicalStopProven??null};}catch{}try{const c=await store.completions.read({binding,scopes,selectedClientId:CLIENT_ID},check);out.completion=c?{state:c.state,completionId:c.completionId,checkpointId:c.checkpointId,captureSequence:c.captureSequence,checkpointSha256:c.proof?.checkpointSha256??null,sessionId:c.proof?.checkpoint.sessionId??null,workspaceEntries:c.proof?.checkpoint.workspace.entries.length??null}:null;}catch{}const sessions=await pool.query('SELECT session_id,entries_count,bytes FROM meri_conversations.sdk_sessions WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[binding.tenantId,binding.conversationId,binding.runId]);out.durableSdkSessions=sessions.rows.map(r=>({sessionId:r.session_id,entriesCount:r.entries_count,bytes:r.bytes}));const restorations=await pool.query('SELECT record FROM meri_conversations.native_restorations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[binding.tenantId,binding.conversationId,binding.runId]);out.restorations=restorations.rows.map(r=>({state:r.record.state}));return out;}
  /** Synthetic ECS: the allocator records retirement only after the task's physical stop is proven by inspection. */
  async function retire(){await close();const native=await controller.remote.inspect(original);assert.equal(native.physicalStopProven,true,label+': physical stop proven before retirement');const current=(await store.allocations.read(key,check)).record;await store.allocations.record({...key,state:'RETIRED',resource:{...current.resource,physicalStopProven:true}},check);return native;}
@@ -113,9 +121,14 @@ async function composeRun(t,plane,objects,run,receipt,lineage){
 }
 test('composed next turn: a second prompt in the same conversation restores the first turn and completes with the real CLI',async t=>{
  const receipt=makeReceipt('next-turn',{schema:'meri.composed-next-turn-rehearsal.v1',scope:SCOPE});
+ let standIn=null;
  try{
   assert.notEqual(process.getuid(),0,'the runner workspace control refuses root');
-  const f=await fixture(t,{leaseMs:120000});receipt.providerStandIn=await requireProviderStandIn(f.runtime.proxyUrl);receipt.step('provider-stand-in-reachable');
+  receipt.environment=environmentIdentity({trust,harnessFile:new URL(import.meta.url).pathname});receipt.qualificationTrust=trust?{caSha256:trust.caSha256,runId:trust.runId,cluster:trust.cluster,source:trust.sourceIdentity}:null;
+  // Preflight before any fixture, cluster or launch: on the qualification route the stand-in is started here, in this process, on a loopback ephemeral port with the run-owned leaf.
+  if(trust){standIn=await startProviderStandIn({certFile:trust.certFile,keyFile:trust.keyFile,host:'127.0.0.1',port:0});receipt.step('stand-in-started',{port:standIn.port});}
+  const proxyUrl=trust?'https://127.0.0.1:'+standIn.port:'https://proxy.synthetic.invalid';receipt.providerStandIn=await requireProviderStandIn(proxyUrl);receipt.step('provider-stand-in-reachable');
+  const f=await fixture(t,{leaseMs:120000,...(trust?{ownedCluster:trust.cluster,proxyUrl,launchEnvironment:env=>withQualificationEnvironment(env,trust)}:{})});receipt.step('fixture',{database:trust?trust.cluster.database:process.env.MERI_BROKER_TEST_DATABASE??'postgres',ownedCluster:Boolean(trust)});
   const objects=immutableObjects(),plane=await controlPlane(t,f);receipt.step('control-plane');
   const run1Inputs={binding:f.binding,credential:f.f.credential,facts:f.facts,runtime:f.runtime,workspace:f.workspace,configParentDirectory:f.configDirectory,secureStorageDirectory:join(f.root,'secure')};
   run1Inputs.supervisor=plane.registerRun({binding:f.binding,allocation:f.allocation,facts:f.facts,launchConfiguration:f.launchConfiguration});
@@ -159,5 +172,9 @@ test('composed next turn: a second prompt in the same conversation restores the 
   await assert.rejects(run2.execute({binding:binding2}),/EXECUTION_FAILED/);assert.equal((await run2.facts()).runState,'completed');
   receipt.sdkConfigDirectoryTrees={run1:tree(run1.sdkConfigDirectory),run2:tree(run2.sdkConfigDirectory)};receipt.outcome='PASSED';
  }catch(error){receipt.error={code:error?.code??null,message:String(error?.message??error),errors:error?.errors?.map(e=>String(e?.message??e)),stack:String(error?.stack??'').split('\n').slice(0,6)};throw error;}
- finally{receipt.write();}
+ finally{
+  // The stand-in is this process's own resource: it is closed here and its absence is read back before the receipt is written; a listener that still answers fails the run.
+  if(standIn){const calls=standIn.calls.map(c=>({pathname:c.pathname,method:c.method,model:c.model??null,authorizationPresent:c.authorizationPresent}));await standIn.close();let closedVerified=false;try{await requireProviderStandIn('https://127.0.0.1:'+standIn.port);}catch(error){closedVerified=error?.code==='REHEARSAL_PROVIDER_STANDIN_UNREACHABLE';}
+   receipt.providerStandIn={...receipt.providerStandIn,calls,closedVerified};if(!closedVerified){receipt.outcome='FAILED';receipt.error??={code:'REHEARSAL_STANDIN_STILL_LISTENING',message:'the stand-in port still answers after close'};}}
+  receipt.write();}
 });
