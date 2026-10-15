@@ -7,6 +7,7 @@ import {gradeFactualClaims} from '../graders/factual-claims.mjs';
 import {gradeUsableFile} from '../graders/usable-file.mjs';
 import {gradePermissions} from '../graders/permissions.mjs';
 import {gradeOutputFormat} from '../graders/output-format.mjs';
+import {ooxml} from '../../../apps/artifacts/structure/test/fixtures.mjs';
 const cases=loadCases(),get=id=>cases.find(c=>c.caseId===id);
 /** Independently written expected outputs: built from the frozen expectations, not from the provider. */
 const answerFor=c=>({caseId:c.caseId,kind:c.outputFormat.kind,refusal:null,files:[],
@@ -24,7 +25,7 @@ test('factual claims pass only when every claim cites matching expected evidence
  const partial=structuredClone(good);partial.claims=partial.claims.slice(0,2);r=gradeFactualClaims(partial,c);assert.equal(r.pass,false);assert.match(r.reason,/GI-01-E3: REQUIRED_EVIDENCE_UNSUPPORTED/);
  assert.match(gradeFactualClaims({...good,claims:[]},c).reason,/NO_CLAIMS/);
 });
-test('usable-file checks count, name, canonical MIME, encoding, size, checksum, opening and required text',()=>{
+test('usable-file checks count, name, canonical MIME, encoding, size, checksum, structural validity and required text',()=>{
  const c=get('DL-01'),file=textFile('Synthetic briefing memo.txt','Synthetic briefing memo\nPurpose: synthetic evaluation only\n');
  assert.equal(gradeUsableFile({files:[file]},c).pass,true);
  const fails=(files,pattern)=>{const r=gradeUsableFile({files},c);assert.equal(r.pass,false);assert.match(r.reason,pattern);};
@@ -35,7 +36,11 @@ test('usable-file checks count, name, canonical MIME, encoding, size, checksum, 
  fails([textFile('Synthetic briefing memo.txt','Synthetic briefing memo only\n')],/REQUIRED_TEXT_MISSING/);
  fails([textFile('Synthetic briefing memo.txt','x'.repeat(65537))],/SIZE/);
  const docx={...c,outputFormat:{...c.outputFormat,fileFormat:'docx'}},zip=Buffer.from('PK\x03\x04rest','latin1'),docxFile={filename:'a.docx',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',bytes:zip.length,sha256:createHash('sha256').update(zip).digest('hex'),base64:zip.toString('base64')};
- assert.equal(gradeUsableFile({files:[docxFile]},{...docx,outputFormat:{...docx.outputFormat,requiredText:[]}}).pass,true);
+ const noText={...docx,outputFormat:{...docx.outputFormat,requiredText:[]}};
+ assert.match(gradeUsableFile({files:[docxFile]},noText).reason,/DOES_NOT_OPEN/,'a ZIP signature alone is not a usable DOCX (dot HOLD p1c item 3)');
+ const real=ooxml('docx'),realFile={...docxFile,bytes:real.length,sha256:createHash('sha256').update(real).digest('hex'),base64:real.toString('base64')};
+ const passed=gradeUsableFile({files:[realFile]},noText);assert.equal(passed.pass,true);assert.match(passed.reason,/structurally valid docx file\(s\); native open UNRUN/);
+ assert.match(gradeUsableFile({files:[realFile]},docx).reason,/REQUIRED_TEXT_UNVERIFIED/,'office text requirements fail closed');
  const notZip=Buffer.from('plain');assert.match(gradeUsableFile({files:[{...docxFile,bytes:5,sha256:createHash('sha256').update(notZip).digest('hex'),base64:notZip.toString('base64')}]},{...docx,outputFormat:{...docx.outputFormat,requiredText:[]}}).reason,/DOES_NOT_OPEN/);
 });
 test('permissions require the exact canonical refusal and no forbidden marker anywhere',()=>{

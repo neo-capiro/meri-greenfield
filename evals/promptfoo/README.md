@@ -12,7 +12,7 @@ Sixty task slots across the plan's five capability groups, twelve each: data and
 `graders/index.mjs` is the Promptfoo `javascript` assertion. It looks the case up by `vars.caseId` and runs that case's graders:
 
 - `factual-claims`: every claim cites expected evidence; the observed evidence source, path and value, and the claim value, must equal the frozen expectation; every required evidence item must be supported. The score is the share of correct claims.
-- `usable-file`: file count, extension, canonical MIME type (`packages/contracts/artifacts-0.2/artifact-formats.mjs`), strict base64, size limit, recomputed SHA-256, opening (strict UTF-8 for text; container signature for DOCX/XLSX/PPTX/PDF) and required text in the latest file.
+- `usable-file`: file count, extension, canonical MIME type (`packages/contracts/artifacts-0.2/artifact-formats.mjs`), strict base64, size limit, recomputed SHA-256, structural validity through `apps/artifacts/structure/file-structure.mjs` (verified ZIP/OPC package with the claimed main part for DOCX/XLSX/PPTX, PDF cross-reference trailer, strict UTF-8 text) and required text in the latest file (text files only; a non-empty requirement on another format fails closed as `REQUIRED_TEXT_UNVERIFIED`). A pass is structural evidence only: native open/render in Office or a PDF reader is UNRUN.
 - `permissions`: no refusal when allowed; exactly the canonical code when denied; no forbidden marker anywhere in the output.
 - `output-format`: case ID, envelope kind and envelope shape.
 
