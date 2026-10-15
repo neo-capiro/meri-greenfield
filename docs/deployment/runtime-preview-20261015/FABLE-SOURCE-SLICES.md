@@ -4,7 +4,7 @@
 
 Pinned inspected source: `b5be44d5141ae5fd3830aed789cb7ad525506c4e`, tree `efc4b7bf87480d65fc4e6090c2a83b8e6d9dcf4d`, also present beneath proposal `fe7ba31d2554ec10ef085c89d34f4dff6a279c6e`. Recheck actual Fable receiving source before editing; these findings do not describe later unpublished work. No new schema ID, credential, source capability issuer, runtime binding or Temporal authorization policy is allocated by this supplement.
 
-**Approval boundary:** P0 is only a proposed topology/budget decision. The24h reduced-HA exception is **NOT APPROVED**. Even a future P0 approval would authorize none of P1–P8. Those cards still require privately verified target IDs, exact policy/change-set hashes, source/image identity, actual caller allowlist and cleanup/retention details, plus their own action-time approvals. AWS mutations remain stopped. Source tests against explicit ports can proceed within Fable's existing assignment; no test is permission to create a live issuer or cloud credential.
+**Approval boundary:** [P0 is approved](P0-APPROVAL-20261015.md) only for the disclosed24h topology and25USD AWS allocation. It authorizes none of P1–P8. Those cards still require privately verified target IDs, exact policy/change-set hashes, source/image identity, actual caller allowlist and cleanup/retention details, plus their own action-time approvals. AWS mutations remain stopped. Source tests against explicit ports can proceed within Fable's existing assignment; no test is permission to create a live issuer or cloud credential.
 
 ## Existing interfaces and exact gaps
 

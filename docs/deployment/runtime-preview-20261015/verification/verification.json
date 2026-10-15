@@ -1,0 +1,61 @@
+{
+  "schema": "meri.preview.source-verification/1",
+  "observedUTC": "2026-10-15T08:36:56.788887+00:00",
+  "sourceOnly": true,
+  "awsWrites": false,
+  "secretValuesRead": false,
+  "productRuntimeTestsRun": false,
+  "securityTests": {
+    "exit": 0,
+    "passed": 10,
+    "failed": 0,
+    "logSha256": "b1ffc43d0fbd97990d2184b9c691a6f44e8e5fff5399c122ce9746e5ce5b7829"
+  },
+  "cli": {
+    "helpExit": 0,
+    "invalidArgumentsExit": 2,
+    "existingOutputExit": 2,
+    "existingOutputBytesUnchanged": true
+  },
+  "templates": [
+    {
+      "path": "MeriRuntime-Preview-Foundations.json",
+      "bytes": 24527,
+      "sha256": "0794b7095aa6e09718d79a5e516f2acbc2df7dfd514512ea32ab67fc445a342c",
+      "readOnlyValidation": "CloudFormation ValidateTemplate",
+      "exit": 0,
+      "observedUTC": "2026-10-15T08:33:41.568154+00:00",
+      "receiptSha256": "22af3728345598ebcb637471067e1d9cc9e078eeed09ea94b7aa3c635eeb5371"
+    },
+    {
+      "path": "MeriRuntime-Preview-Data.json",
+      "bytes": 6439,
+      "sha256": "90812e958ec080cff225a0714063ac96b3d749e304f4804ff0891be3d9f0953d",
+      "readOnlyValidation": "CloudFormation ValidateTemplate",
+      "exit": 0,
+      "observedUTC": "2026-10-15T08:33:41.568154+00:00",
+      "receiptSha256": "3b606a9c4a13404219a1d7dc492e295c51c54957e43deed595b187da00c2fff8"
+    },
+    {
+      "path": "MeriRuntime-Preview-Services.json",
+      "bytes": 51125,
+      "sha256": "412a60a62c16ef3c3743b2336fab5895fbb55cdae210c0463e41f3549fb23a6a",
+      "readOnlyValidation": "CloudFormation ValidateTemplate",
+      "exit": 0,
+      "observedUTC": "2026-10-15T08:33:41.757743+00:00",
+      "receiptSha256": "2249c27f6f7be654fbe76b52f4b821cf43929ea0956a0f9e7a19d35debaccfad"
+    }
+  ],
+  "independentReview": {
+    "reviewer": "control_slice",
+    "scope": "root-authored IaC; reviewer authored pricing only",
+    "materialFinding": "nonroot fresh-volume ownership not established by current images",
+    "disposition": "explicit required volumeOwnershipSha256 plus source/image proof; deployment HOLD; no root workaround",
+    "otherMaterialFindings": 0
+  },
+  "limitations": [
+    "ValidateTemplate is syntax validation, not cloud creation or effective IAM/runtime/TLS qualification.",
+    "Earlier oversized templates and path-normalization refusal were corrected; old outputs retained.",
+    "Execution packet remains HOLD; exact source/image/issuer/bootstrap/volume/Temporal/TLS/caller/stop bindings and P1-P8 approvals missing."
+  ]
+}

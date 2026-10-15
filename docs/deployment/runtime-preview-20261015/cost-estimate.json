@@ -1,5 +1,5 @@
 {
-  "status": "PROPOSAL_NOT_APPROVED",
+  "status": "HISTORICAL_PROPOSAL_SUPERSEDED_BY_FRESH_PRICING",
   "asOfUTC": "2026-10-15",
   "currency": "USD",
   "region": "us-east-1",
@@ -148,5 +148,7 @@
       "url": "https://aws.amazon.com/secrets-manager/pricing/",
       "basis": "0.40USD/secret-month and0.05USD/10000API calls included in ancillary reserve."
     }
-  ]
+  ],
+  "supersededBy": "pricing/pilot-recalculation.json",
+  "approvalRecord": "P0-APPROVAL-20261015.md"
 }

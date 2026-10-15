@@ -1,0 +1,49 @@
+{
+  "schema": "meri.preview.sanitized-inventory/1",
+  "metadataOnly": true,
+  "awsWrites": false,
+  "secretValuesRead": false,
+  "observedUTC": "2026-10-15T08:10:35.941292+00:00",
+  "receiptSha256": "c387f38d1df422fb874922f2ae892e521d21fb8cbdb181907caaee213e73261f",
+  "dedicatedVpcCidr": "10.80.0.0/16",
+  "subnetCount": 2,
+  "occupiedCidrs": [
+    "10.80.1.0/24",
+    "10.80.0.0/24"
+  ],
+  "newPublicSubnetCandidates": [
+    "10.80.240.0/24",
+    "10.80.241.0/24"
+  ],
+  "existingInterfaceEndpointGroupCount": 1,
+  "endpointServiceSuffixes": [
+    "s3",
+    "logs",
+    "dkr",
+    "api"
+  ],
+  "runningTasks": 0,
+  "services": 0,
+  "proposedDatabaseAbsent": true,
+  "dnsFailOpen": "DISABLED",
+  "existingFirewallAssociationPriorities": [
+    101
+  ],
+  "policyProposals": [
+    {
+      "target": "checkpoint-bucket-policy",
+      "baselineSha256": "2bda98855083498c22b182f4839928ddab983aed70dc979dc822c9c8835f2f32",
+      "proposedSha256": "864660eebcb2b0e3c0409bef75759d57e6c926beb1d5f2f2cabf097c18277313",
+      "status": "PROPOSED_NOT_APPLIED"
+    },
+    {
+      "target": "s3-endpoint-policy",
+      "baselineSha256": "44a2759ed444953b380a1eb1c4cc4a2d71c1956a677a853c9e727e28dbb086f5",
+      "proposedSha256": "e8e42fc33953e32f1210b53b0a535c1a930458e05b65c6e9b5098147bda258be",
+      "status": "PROPOSED_NOT_APPLIED"
+    }
+  ],
+  "callerAllowlist": "UNBOUND",
+  "publicZoneNameVerified": true,
+  "inventoryMustBeRepeatedAtActionTime": true
+}

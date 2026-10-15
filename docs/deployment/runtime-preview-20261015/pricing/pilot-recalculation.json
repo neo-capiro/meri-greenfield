@@ -1,0 +1,106 @@
+{
+  "status": "CONDITIONAL_ESTIMATE_NOT_HARD_INVOICE_CAP",
+  "rateReceipt": "normalized-rates.json",
+  "monthlyProrationHours": 730,
+  "pilot24h": {
+    "quantities": "existing5services total3.25vCPU/6.5GiB; runner0.5task-hour at2vCPU/8GiB/50GiB storage; RDS20GiB; ALB1LCU;3IPv4;3endpoints x2AZ; onebuildreserve3USD and ancillaryreserve3USD",
+    "lineItemsUSD": {
+      "serviceCompute": "3.8508600",
+      "runnerComputeExtraEphemeral": "0.0599250",
+      "rdsCompute": "0.768",
+      "rds20GiBStorage": "0.07561643835616438356164383562",
+      "albAtOneLCU": "0.7320",
+      "publicIPv4ThreeAddresses": "0.360",
+      "threeInterfaceServicesTwoAZ": "1.44",
+      "oneBuildReserve": "3",
+      "ancillaryReserve": "3"
+    },
+    "totalUSD": "13.28640143835616438356164384",
+    "roundedUSD": 13.29,
+    "allocationUSD": "25",
+    "planningHeadroomUSD": "11.71359856164383561643835616"
+  },
+  "oneCodeBuild30min": {
+    "verifiedCompute": "Linux x86 OnDemand-EC2 build.general1.small",
+    "quoteKey": "codeBuildLinuxGeneral1Small",
+    "quoteSku": "4Z79XP69AGHXE3C7",
+    "minutes": 30,
+    "USDPerMinute": ".005",
+    "estimatedComputeUSD": ".15",
+    "withinExistingBuildReserve": true,
+    "actualProjectBindingVerified": true,
+    "sanitizedProjectMetadata": {
+      "observedAtUTC": "2026-10-15T08:10:41.030912+00:00",
+      "receiptSha256": "6e06c78028860a3b6db0e1334019cffb4fb892d7ed42c61c7a285d3f2682f75b",
+      "environmentType": "LINUX_CONTAINER",
+      "computeType": "BUILD_GENERAL1_SMALL",
+      "timeoutInMinutes": 30
+    },
+    "limits": "Metadata confirms current compute binding only; no project identifiers, ARN, or environment values published. Build execution remains separately gated; timeout is not a cost cap."
+  },
+  "ancillaryIllustrationWithin3USDReserve": {
+    "note": "Illustrative quantities only, not measured usage; do not add twice to the reserve",
+    "logsIngestionGB": 1,
+    "s3GB": 1,
+    "s3PUTs": 1000,
+    "s3GETs": 1000,
+    "kmsRequests": 10000,
+    "secrets": 8,
+    "secretAPICalls": 1000,
+    "newHostedZones": 2,
+    "dnsFirewallQueries": 100000,
+    "dnsFirewallDomains": 10,
+    "privateLinkGB": 1,
+    "notAssumed": "NewResolver endpoints,Profiles,AdvancedDNSFirewall,PrivateCA,NAT,ACMexported cert,modelspend"
+  },
+  "retainedSevenDaysAfterPilotIllustration": {
+    "condition": "Hypothetical only: separately approved P8 removal of NEW paid network resources and irreversible DB deletion after encrypted final snapshot. P0 approval of25USD does not approve this deletion or any P1-P8 mutation.",
+    "lineItemsUSD": {
+      "snapshot20GB7days": "0.4372602739726027397260273973",
+      "eightSecrets7days": "0.7364383561643835616438356164",
+      "oneNewKmsKey7days": "0.2301369863013698630136986301",
+      "logsOneGB7days": "0.006904109589041095890410958904",
+      "s3OneGB7days": "0.005293150684931506849315068493"
+    },
+    "totalAdditionalUSD": "1.416032876712328767123287671",
+    "combinedWithPilotUSD": "14.70243431506849315068493151",
+    "limits": "New hosted-zone fees are nonprorated;2zones1USD must fit pilot ancillaryreserve. New month boundary or additional zones add fees. Exact snapshot sizes/secret/key counts and lifecycle require binding; shared existing key cost is baseline.",
+    "approvalStatus": "NOT_APPROVED_DB_DELETION_REQUIRES_FINAL_HUMAN_CONFIRMATION"
+  },
+  "failedCleanupExample": {
+    "condition": "NEW6interfaceAZbindings,ALBat1LCU and3IPv4 retained for an additional7days; excludes RDSstate,storage,allservices,andothercharges",
+    "additionalNetworkUSD": "17.7240",
+    "pilotPlusRetainedNetworkUSD": "31.01040143835616438356164384",
+    "exceeds25USD": true
+  },
+  "remainingHolds": [
+    "No exact remaining projectaccount allowance read here.",
+    "Source/issuer/bootstrap/trust/IAM/network/actiontimeapprovals remain separate;P0 alone permits noP1P8 mutation.",
+    "Modelbudgetunapproved.",
+    "Burstcredits,transfer,unmeasuredusage,extraresources,retentionpastwindow or cleanupfailure can exceed25USD."
+  ],
+  "retainedStoppedDBSevenDaysAfterPilotIllustration": {
+    "approvalStatus": "COST_ALTERNATIVE_ONLY_ACTION_TIME_APPROVAL_REQUIRED",
+    "condition": "Retain DB rather than delete; assumes separately authorized stop has reached stopped, and separately authorized cleanup of NEW paid network resources has completed. No existing shared/production resources deleted. Seven days counted from stopped, not from request.",
+    "lineItemsUSD": {
+      "eightSecrets7days": "0.7364383561643835616438356164",
+      "oneNewKmsKey7days": "0.2301369863013698630136986301",
+      "logsOneGB7days": "0.006904109589041095890410958904",
+      "s3OneGB7days": "0.005293150684931506849315068493",
+      "rds20GiBProvisionedStorage7days": "0.5293150684931506849315068493"
+    },
+    "totalAdditionalUSDExcludingChargeableBackup": "1.508087671232876712328767123",
+    "combinedWithPilotUSDExcludingChargeableBackup": "14.79448910958904109589041096",
+    "optionalChargeable20GBBackup7daysUSD": "0.4372602739726027397260273973",
+    "combinedWithPilotIncluding20GBChargeableBackupUSD": "15.23174938356164383561643836",
+    "backupLimit": "Applicable free backup allocation, actual sizes and retention must be checked; the20GB chargeable illustration is not a claim that all backups are charged.",
+    "automaticRestart": {
+      "afterConsecutiveStoppedDays": 7,
+      "dbComputeUSDPerHourAfterRestart": ".032",
+      "dbComputeUSDPer24hAfterRestart": ".768",
+      "source": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_StopInstance.html",
+      "observedDateUTC": "2026-10-15",
+      "limit": "Automatic restart prevents indefinite compute-free retention. Stop transitions, ongoing storage/backup, public IPv4 if present, maintenance and other resources may add costs. No automatic re-stop loop or deletion authorized."
+    }
+  }
+}

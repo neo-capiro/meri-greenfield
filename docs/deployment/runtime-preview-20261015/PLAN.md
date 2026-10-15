@@ -1,6 +1,8 @@
 # Small dedicated Meri preview shipping proposal
 
-15 October 2026 UTC. **PROPOSAL ONLY; no infrastructure or product-source mutation.** Owner of AWS execution: the existing shipping owner. Parent integration coordinator owns source review/acceptance and records decisions; **Neo's explicit human approval is required for deployment-plan departures and the proposed new cost/model allocations**. Shipping acts only within exact action-time approvals. This branch owns only `docs/deployment/runtime-preview-20261015/`. It neither competes with Fable's product work nor authorizes deployment.
+15 October 2026 UTC. **PROPOSAL ONLY; no infrastructure or product-source mutation.** Owner of AWS execution: the existing shipping owner. Parent integration coordinator owns source review/acceptance and records decisions; **Neo's explicit human approval is required for deployment-plan departures and the proposed new cost/model allocations**. Shipping acts only within exact action-time approvals. This source branch owns `infra/runtime-preview/` and `docs/deployment/runtime-preview-20261015/`. It neither competes with Fable's product work nor authorizes deployment.
+
+Current decision: [P0 approved](P0-APPROVAL-20261015.md) for24h/25USD and the disclosed Single-AZ/one-Temporal topology only. P1-P8 remain unapproved. The [source implementation and verification](IMPLEMENTATION-REVIEW.md) and [fresh pricing](pricing/README.md) supersede historical approval status and estimates below; historical resource proposals are not action permissions.
 
 ## Exact inputs and reuse
 

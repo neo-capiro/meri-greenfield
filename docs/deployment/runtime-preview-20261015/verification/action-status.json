@@ -1,0 +1,145 @@
+{
+  "schema": "meri.preview.action-review/1",
+  "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+  "P0": "APPROVED_24H_25USD_ONLY",
+  "P1P8Authorized": false,
+  "cloudWritesPerformed": false,
+  "source": {
+    "infrastructureCommit": "UNCOMMITTED"
+  },
+  "templates": [
+    {
+      "name": "MeriRuntime-Preview-Foundations",
+      "bytes": 24527,
+      "sha256": "0794b7095aa6e09718d79a5e516f2acbc2df7dfd514512ea32ab67fc445a342c"
+    },
+    {
+      "name": "MeriRuntime-Preview-Data",
+      "bytes": 6439,
+      "sha256": "90812e958ec080cff225a0714063ac96b3d749e304f4804ff0891be3d9f0953d"
+    },
+    {
+      "name": "MeriRuntime-Preview-Services",
+      "bytes": 51125,
+      "sha256": "412a60a62c16ef3c3743b2336fab5895fbb55cdae210c0463e41f3549fb23a6a"
+    }
+  ],
+  "evidence": {
+    "freshInventorySha256": "c387f38d1df422fb874922f2ae892e521d21fb8cbdb181907caaee213e73261f",
+    "observedAtMs": 1792051835941
+  },
+  "pricing": {
+    "currentQuotes": true,
+    "receiptSha256": "94227d7b6f5967f26510ea6882f950eed793097bb3da0cab0872aac16a07c1f1",
+    "totalAwsUSD": 13.286401438356163,
+    "windowHours": 24
+  },
+  "owners": {
+    "shipping": "01a1383e-0c6b-778e-8893-2359c0da802e"
+  },
+  "existingPolicyPatches": [
+    {
+      "target": "checkpoint-bucket-policy",
+      "baselineSha256": "2bda98855083498c22b182f4839928ddab983aed70dc979dc822c9c8835f2f32",
+      "proposedSha256": "864660eebcb2b0e3c0409bef75759d57e6c926beb1d5f2f2cabf097c18277313",
+      "status": "PROPOSED_NOT_APPLIED"
+    },
+    {
+      "target": "s3-endpoint-policy",
+      "baselineSha256": "44a2759ed444953b380a1eb1c4cc4a2d71c1956a677a853c9e727e28dbb086f5",
+      "proposedSha256": "e8e42fc33953e32f1210b53b0a535c1a930458e05b65c6e9b5098147bda258be",
+      "status": "PROPOSED_NOT_APPLIED"
+    }
+  ],
+  "phases": [
+    {
+      "id": "P1",
+      "scope": "New Foundations template and exact existing ECR/log SG plus DNS policy patches; no production/shared routes.",
+      "template": "MeriRuntime-Preview-Foundations",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": "0794b7095aa6e09718d79a5e516f2acbc2df7dfd514512ea32ab67fc445a342c",
+      "approvalRequired": true
+    },
+    {
+      "id": "P2",
+      "scope": "Exact service/execution/control/proxy policies, one source-emitted original execution tuple; roleless runner.",
+      "template": "MeriRuntime-Preview-Services",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": "412a60a62c16ef3c3743b2336fab5895fbb55cdae210c0463e41f3549fb23a6a",
+      "approvalRequired": true
+    },
+    {
+      "id": "P3",
+      "scope": "CAS-reviewed checkpoint bucket/S3 endpoint policy additions; exact key/prefix/control role; no deletes.",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": null,
+      "approvalRequired": true
+    },
+    {
+      "id": "P4",
+      "scope": "Data template and separately hash-reviewed trusted SQL/Temporal initialization; no SQL executes from template.",
+      "template": "MeriRuntime-Preview-Data",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": "90812e958ec080cff225a0714063ac96b3d749e304f4804ff0891be3d9f0953d",
+      "approvalRequired": true
+    },
+    {
+      "id": "P5",
+      "scope": "Exact issuer/capsule/leaf/private DNS/bootstrap actions; no shared CA-store/hosts change.",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": null,
+      "approvalRequired": true
+    },
+    {
+      "id": "P6",
+      "scope": "One admitted source/image build and zero-count Services template; public certificate/host and actual caller binding.",
+      "template": "MeriRuntime-Preview-Services",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": "412a60a62c16ef3c3743b2336fab5895fbb55cdae210c0463e41f3549fb23a6a",
+      "approvalRequired": true
+    },
+    {
+      "id": "P7",
+      "scope": "Separate source-qualified service activation and bounded authentic runs/model allocation; not emitted by synthesis.",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": null,
+      "approvalRequired": true
+    },
+    {
+      "id": "P8",
+      "scope": "Exact newly owned service/task stop and paid-network withdrawal at24h; retain data. Final irreversible deletion needs fresh confirmation.",
+      "status": "HOLD_MISSING_EXECUTION_BINDINGS",
+      "templateSha256": null,
+      "approvalRequired": true
+    }
+  ],
+  "blockedBy": [
+    "MeriRuntime-Preview-Foundations:private-parameters-unbound",
+    "MeriRuntime-Preview-Data:private-parameters-unbound",
+    "MeriRuntime-Preview-Services:private-parameters-unbound",
+    "infrastructure-source-pin",
+    "runtimeSourceCommit",
+    "runtimeImageDigest",
+    "bootstrapImageDigest",
+    "tlsImageDigest",
+    "temporalImageDigest",
+    "proxyImageDigest",
+    "relayImageDigest",
+    "volumeOwnershipSha256",
+    "migrationManifestSha256",
+    "issuerBindingSha256",
+    "bootstrapBindingSha256",
+    "temporalAuthorizationSha256",
+    "backendBindingSha256",
+    "frontendBindingSha256",
+    "publicCallerAllowlistSha256",
+    "sourceImageAdmissionSha256",
+    "publicPrivateTlsReadbackSha256",
+    "exactExistingPolicyReadbacksSha256",
+    "owner:watchdog",
+    "owner:retentionDecision",
+    "separate-model-budget",
+    "exact-paid-resource-stop-plan"
+  ],
+  "irreversibleDeletionAuthorized": false
+}

@@ -1,0 +1,187 @@
+{
+  "status": "INITIAL_TRANSPORT_FAILURE_RESOLVED_BY_SEPARATELY_APPROVED_READ",
+  "observedAtUTC": "2026-10-15T08:11:45.152016+00:00",
+  "scope": "Read-only quote research; no resource/credential/provider mutation",
+  "region": "us-east-1",
+  "currency": "USD",
+  "attempt": {
+    "operation": "Pricing.GetProducts",
+    "serviceCode": "AmazonRDS",
+    "selection": {
+      "regionCode": "us-east-1",
+      "instanceType": "db.t4g.small",
+      "databaseEngine": "PostgreSQL",
+      "deploymentOption": "Single-AZ"
+    },
+    "requestSha256": "810c6a60c7959df2f63093261a7d990679626d037804692ebde6afbf82b8ee78",
+    "responseBytes": 0,
+    "responseSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exitCode": 255,
+    "outcome": "Could not connect to the AWS Pricing endpoint; no AWS quote response",
+    "endpoint": "https://api.pricing.us-east-1.amazonaws.com/",
+    "retriedAfterConnectionFailure": false,
+    "alternateRouteUsed": false
+  },
+  "resolution": {
+    "authorizedByParent": true,
+    "outcome": "Normal read approval for the original query succeeded; no approval denial occurred",
+    "freshRates": "normalized-rates.json",
+    "noAWSWrites": true,
+    "noNewCredentials": true
+  },
+  "requiredQuotesAtInitialFailure": [
+    {
+      "item": "Fargate Linux x86 vCPU-hour",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "Fargate Linux x86 GiB-hour",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "Fargate extra ephemeral GiB-hour above20GiB",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "RDS PostgreSQL16 db.t4g.small Single-AZ instance-hour",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "RDS PostgreSQL Single-AZ gp3 GB-month at20GiB",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "ALB-hour",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "ALB LCU-hour",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "Public IPv4 address-hour",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "PrivateLink endpoint AZ-hour and data processing for3services x2AZs",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "CloudWatch Logs ingestion and retained storage",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "S3 standard storage and low-use requests",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "KMS key-month and low-use requests",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "Secrets Manager secret-month and API calls",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "Route53 hosted zones, DNS queries and DNS Firewall",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "CodeBuild one30minute build selected compute type",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    },
+    {
+      "item": "RDS backup/snapshot retained storage and idle residual costs",
+      "status": "MISSING_FRESH_QUOTE",
+      "sku": null,
+      "dimension": null,
+      "rate": null,
+      "unit": null,
+      "currency": "USD"
+    }
+  ],
+  "currentQuoteReceipt": "normalized-rates.json",
+  "currentStatus": "28 selected public on-demand product quotes obtained, including metadata-bound Linux x86 OnDemand-EC2 general1.small; resource availability and usage quantities remain unbound",
+  "limitsAtInitialFailure": [
+    "Initial local Windows file URI syntax was corrected before the connection attempt; this was not an AWS denial or quote.",
+    "No SKU, rate dimension, effective date or fresh rate was obtained.",
+    "The existing .032/hour RDS and .115/GiB-month inputs remain historical, not a current quote.",
+    "No model budget is approved by P0; the25USD AWS allocation is not a hard invoice cap.",
+    "Retained private raw request/error is outside Git; public receipt contains no credential/account/resource identifiers."
+  ]
+}
