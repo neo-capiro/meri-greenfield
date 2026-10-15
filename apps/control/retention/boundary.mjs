@@ -10,5 +10,5 @@ export function text(value,max=256){if(typeof value!=='string'||!value||value.le
 export function instant(value){const n=Date.parse(value);if(typeof value!=='string'||!Number.isSafeInteger(n)||new Date(n).toISOString()!==value)fail('RETENTION_INVALID_REQUEST');return n;}
 export function clock(now){if(typeof now!=='function')fail('RETENTION_CONFIGURATION');return ()=>{const t=now();if(!Number.isSafeInteger(t)||t<0)fail('RETENTION_CONFIGURATION');return t;};}
 /** A subject is one conversation or one artifact of one tenant, owned by one actor. */
-export function subject(value){const s=own(data(value),['tenantId','kind','subjectId','ownerActorId']);text(s.tenantId);text(s.ownerActorId);uuid(s.subjectId);if(!['conversation','artifact'].includes(s.kind))fail('RETENTION_INVALID_REQUEST');return s;}
+export function subject(value){const s=own(data(value),['tenantId','kind','subjectId'],['ownerActorId']);text(s.tenantId);if(s.ownerActorId!==undefined)text(s.ownerActorId);uuid(s.subjectId);if(!['conversation','artifact'].includes(s.kind))fail('RETENTION_INVALID_REQUEST');return s;}
 export const subjectKey=s=>`${s.tenantId}:${s.kind}:${s.subjectId}`;

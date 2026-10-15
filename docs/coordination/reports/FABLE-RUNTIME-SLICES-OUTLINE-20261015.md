@@ -32,3 +32,7 @@ Each slice: focused `apps/runtime/test/*.test.mjs` with the supplement's accepta
 
 - Allocation for the issuance store schema (S1) before the PostgreSQL adapter is written.
 - Shipping: the token issuer for Temporal (S4), the capsule/DNS/certificate delivery (S3) and the secret-store reference model for capability material (S1).
+
+## 5. Implementation returned (commit `eb4869737d793edf546a0c95e54d415792770aaf`)
+
+S4, S1, S2 and S3 are implemented as outlined, with the controls listed in the candidate README (`fable-resume-20261015/README.md`, lane 3) and the clean-commit receipts in `lane3/` and `lane3-commands/`. Deviations from the outline: none in module placement; the S3 registry wiring (per-entry transport from `runnerBindingForRun`) is deferred until dot reviews the frozen port, because it changes the fact hash of every registry entry and the supplement asks for that effect to be explicit before integration. The S1 PostgreSQL adapter waits on its allocation; the store contract and disposable adapter are what the controls prove.

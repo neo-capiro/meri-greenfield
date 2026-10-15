@@ -13,11 +13,11 @@ test('purge planning: refused without suppression or policy; cooling, holds, lia
  const js=await suppressed(f,s);assert.throws(()=>planFor(f,s,inv,{journalState:js,policy:null}),/RETENTION_POLICY_REQUIRED/);
  const early={...js,suppressedAtMs:f.clock.now()-1000};assert.equal(planFor(f,s,inv,{journalState:early}).state,'BLOCKED');assert.ok(planFor(f,s,inv,{journalState:early}).blocks.every(b=>b.reason==='COOLING_PERIOD'));
  const plan=planFor(f,s,inv,{journalState:js});assert.equal(plan.state,'PLANNED');assert.equal(plan.steps.length,inv.objects.length);assert.equal(plan.planSha256,planFor(f,s,inv,{journalState:js}).planSha256,'same inputs, same plan');
- assert.equal(plan.steps[0].workflowId,workflowIdentity({tenantId:s.tenantId,className:plan.steps[0].className,objectId:plan.steps[0].objectId,versionId:plan.steps[0].versionId,policyVersion:3}));
+ assert.equal(plan.steps[0].workflowId,workflowIdentity({tenantId:s.tenantId,classes:plan.steps[0].classes,objectId:plan.steps[0].objectId,versionId:plan.steps[0].versionId,policyVersion:3}));
  const held=inv.objects[0];const withHold=planFor(f,s,inv,{journalState:js,holds:o=>o.objectId===held.objectId?{objectLockRetainUntilMs:f.clock.now()+day,legalHold:false}:noHold()});assert.equal(withHold.state,'BLOCKED');assert.deepEqual(withHold.blocks.map(b=>b.reason),['OBJECT_LOCK']);
  assert.deepEqual(planFor(f,s,inv,{journalState:js,liabilities:[{runId:'r',kind:'UNKNOWN_LAUNCH'}]}).blocks.map(b=>b.reason),['UNKNOWN_LIABILITY']);
  const shared=object(),a=subjectOf(),b=subjectOf(),invA=enumerateReferences(snapshot(a,{shared:[shared]})),invB=enumerateReferences(snapshot(b,{shared:[shared]})),index=createReferenceIndex();index.record(subjectKey(a),invA);index.record(subjectKey(b),invB);
- const jsA=await suppressed(f,a),sharedA=sharedReferences(invA,index,subjectKey(a),()=>false),planA=planFor(f,a,invA,{journalState:jsA,shared:sharedA});
+ const jsA=await suppressed(f,a),sharedA=sharedReferences(invA,index,subjectKey(a),()=>({eligible:false,reasons:['HOLDER_NOT_SUPPRESSED']})),planA=planFor(f,a,invA,{journalState:jsA,shared:sharedA});
  assert.equal(planA.state,'BLOCKED');assert.deepEqual(planA.blocks.map(x=>x.reason),['SHARED_REFERENCE']);assert.equal(planA.steps.length,invA.objects.length-1,'the shared version is excluded from the steps');
 });
 test('the executor is disabled by default and fails closed before any effect; enabled against the injected store it deletes exact versions, marks a step executed only after an ABSENT readback, replays idempotently, and leaves UNKNOWN on ambiguity',async()=>{
@@ -38,23 +38,24 @@ test('the executor is disabled by default and fails closed before any effect; en
 });
 test('recovery: a restore predating a suppression with no purge receipt is re-suppressed from the ledger behind the serving barrier; revived versions are re-planned; a cleared block returns to PLANNED; reconciliation is idempotent',async()=>{
  const f=compose(),s=subjectOf();const holds={legalHold:false,objectLockRetainUntilMs:null};
- const reconciler=createRecoveryReconciler({ledger:f.ledger,journal:f.journal,storage:f.storage,serving:f.serving,keyFor:f.keyFor,holds:()=>holds,liabilities:async()=>[],now:f.clock.now});
+ const inventories=new Map();const reconciler=createRecoveryReconciler({ledger:f.ledger,journal:f.journal,storage:f.storage,serving:f.serving,keyFor:f.keyFor,holds:()=>holds,liabilities:async()=>[],policy:async()=>policy(),inventoryFor:async sub=>inventories.get(subjectKey(sub)),lastActivityFor:async()=>f.clock.now()-30*day,now:f.clock.now});
  const backup=f.journal.snapshot();await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});assert.equal(await f.suppression.isSuppressed(s),true);
  f.journal.restore(backup);assert.equal(await f.journal.get(subjectKey(s)),null,'the restored database has forgotten the suppression');assert.equal(f.sink.size(),1,'the ledger outside the rollback boundary has not');
  f.serving.disable();await assert.rejects(f.suppression.isSuppressed(s),/RETENTION_RECOVERY_BARRIER/,'reads are refused until reconciliation completes');
  const report=await reconciler.reconcile();assert.deepEqual(report.reapplied,[subjectKey(s)]);assert.equal(report.servingEnabled,true);assert.equal(await f.suppression.isSuppressed(s),true);assert.equal((await f.journal.get(subjectKey(s))).ledgerSequence,1);
  const second=await reconciler.reconcile();assert.deepEqual(second.reapplied,[]);assert.equal(f.sink.size(),1,'idempotent: no new ledger entry');
  // Purge, then a bucket restore revives the versions: the executed receipt is re-verified and the subject is re-planned, never trusted.
- f.clock.advance(2*day);const inv=enumerateReferences(snapshot(s)),js=await f.journal.get(subjectKey(s)),plan=planFor(f,s,inv,{journalState:js});for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
+ f.clock.advance(2*day);const inv=enumerateReferences(snapshot(s));inventories.set(subjectKey(s),inv);const js=await f.journal.get(subjectKey(s)),plan=planFor(f,s,inv,{journalState:js});for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);
  const exec=createPurgeExecutor({storage:f.storage,ledger:f.ledger,journal:f.journal,keyFor:f.keyFor,enabled:true,now:f.clock.now});assert.equal((await exec.execute(plan)).state,'EXECUTED');
  const afterPurge=f.journal.snapshot();assert.equal((await reconciler.reconcile()).verified.length,1,'absent versions verify as executed');
  f.store.put(f.keyFor(plan.steps[0]),plan.steps[0].versionId);const revived=await reconciler.reconcile();assert.deepEqual(revived.replanned,[subjectKey(s)]);assert.equal((await f.journal.get(subjectKey(s))).purge.state,'PLANNED');assert.equal((await f.sink.read()).at(-1).reason,'RESTORE_REVIVED_VERSION');
  f.journal.restore(afterPurge);
  // A blocked plan recorded before a restore is re-evaluated against the current holds.
- const h=subjectOf(),invH=enumerateReferences(snapshot(h));await f.suppression.suppress({principal:f.principal,subject:h,reason:'owner request'});f.clock.advance(2*day);const jsH=await f.journal.get(subjectKey(h));
+ const h=subjectOf(),invH=enumerateReferences(snapshot(h));inventories.set(subjectKey(h),invH);await f.suppression.suppress({principal:f.principal,subject:h,reason:'owner request'});f.clock.advance(2*day);const jsH=await f.journal.get(subjectKey(h));
  holds.legalHold=true;const blocked=planFor(f,h,invH,{journalState:jsH,holds:()=>holds});assert.equal(blocked.state,'BLOCKED');await exec.recordBlocked(blocked);assert.equal((await f.journal.get(subjectKey(h))).purge.state,'BLOCKED');
  f.journal.restore(backup);const stillHeld=await reconciler.reconcile();assert.equal((await f.journal.get(subjectKey(h))).purge.state,'BLOCKED');assert.equal(stillHeld.replanned.length,0);
- holds.legalHold=false;const cleared=await reconciler.reconcile();assert.ok(cleared.replanned.includes(subjectKey(h)));assert.equal((await f.journal.get(subjectKey(h))).purge.state,'PLANNED');assert.equal((await f.sink.read()).at(-1).reason,'RECONCILED_BLOCK_CLEARED');
+ holds.legalHold=false;const cleared=await reconciler.reconcile();assert.ok(cleared.replanned.includes(subjectKey(h)));const regenerated=await f.journal.get(subjectKey(h));assert.equal(regenerated.purge.state,'PLANNED');assert.equal((await f.sink.read()).at(-1).reason,'RECONCILED_BLOCK_CLEARED');
+ const usable=planFor(f,h,invH,{journalState:regenerated,holds:()=>holds});assert.equal(usable.state,'PLANNED');assert.equal(usable.planSha256,regenerated.purge.planSha256,'the regenerated plan is the ordinary current plan, not the blocked plan hash');
  // A release recorded after a suppression is honored by reconciliation: the subject is not re-suppressed.
  const r=subjectOf();await f.suppression.suppress({principal:f.principal,subject:r,reason:'x'});await f.suppression.release({principal:f.principal,subject:r,reason:'withdrawn'});f.journal.restore(backup);await reconciler.reconcile();assert.equal(await f.suppression.isSuppressed(r),false);assert.equal((await f.journal.get(subjectKey(r))).state,'RELEASED');
 });

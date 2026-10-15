@@ -8,7 +8,10 @@ import {createServingGate} from '../reconciliation.mjs';
 export const tenant='tenant-a',owner='actor-owner';
 export const policy=()=>({policyId:'policy-synthetic',version:3,coolingPeriodMs:86400000,classes:Object.fromEntries(['conversation','events','lifecycle','completionCheckpoints','nextRuns','sdkSession','selectedOutputs','nativeJournals','artifactVersions','uploads','logs'].map(c=>[c,{retentionMs:7*86400000,purgeable:c!=='logs'}]))});
 export const object=()=>({objectId:randomUUID(),versionId:'v-'+randomUUID().slice(0,8),sha256:'1'.repeat(64)});
-export const subjectOf=(kind='conversation',ownerActorId=owner)=>({tenantId:tenant,kind,subjectId:randomUUID(),ownerActorId});
+/** Trusted application ownership for tests: subjects are registered here when created; the suppression owner reads it, never the caller's claim. */
+export const owners=new Map();
+export const ownership={async ownerOf({tenantId,kind,subjectId}){return owners.get(`${tenantId}:${kind}:${subjectId}`)??null;}};
+export const subjectOf=(kind='conversation',ownerActorId=owner)=>{const s={tenantId:tenant,kind,subjectId:randomUUID()};owners.set(`${tenant}:${kind}:${s.subjectId}`,ownerActorId);return {...s,ownerActorId};};
 export function snapshot(subject,{checkpoints=1,outputs=1,shared=[]}={}){
  const checkpoint=()=>{const opaque=object(),entry=object();return {checkpointId:randomUUID(),checkpoint:{opaqueSession:opaque,workspace:{entries:[{object:entry}]}}};};
  const cps=Array.from({length:checkpoints},checkpoint);if(shared.length)cps[0].checkpoint.workspace.entries.push(...shared.map(o=>({object:o})));
@@ -28,7 +31,7 @@ export function bucket(){
 export function compose({ownerMediated,permissions={getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},maxRequestMs=200}={}){
  const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({sink,now:c.now}),journal=createMemoryRetentionJournal(),serving=createServingGate(),store=bucket();
  const authorization=ownerMediated?{ownerMediated}:undefined;
- const suppression=createSuppressionOwner({ledger,journal,authorization,serving,now:c.now});
+ const suppression=createSuppressionOwner({ledger,journal,ownership,authorization,serving,now:c.now});
  const storage=createVersionStorage({send:store.send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions,now:c.now,maxRequestMs});
  const keyFor=st=>`${tenant}/${st.objectId}/${st.sha256}`;
  return {clock:c,sink,ledger,journal,serving,store,suppression,storage,keyFor,principal:{tenantId:tenant,actorId:owner}};

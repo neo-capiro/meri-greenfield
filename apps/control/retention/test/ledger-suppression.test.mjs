@@ -22,6 +22,7 @@ test('suppression by the owning actor is immediate and idempotent; a different a
  const mediated=compose({ownerMediated:async({principal,subject,operation})=>{assert.equal(operation,'retention.suppress');assert.equal(subject.ownerActorId,'actor-other');return {receiptId:randomUUID()};}});
  const viaOwner=await mediated.suppression.suppress({principal:mediated.principal,subject:other,reason:'administrative'});assert.equal(viaOwner.authorization.mode,'owner-mediated');
  await assert.rejects(f.suppression.suppress({principal:{tenantId:'tenant-b',actorId:'actor-owner'},subject:subjectOf(),reason:'wrong tenant'}),/RETENTION_AUTHORIZATION_REFUSED/);
+ const unknown={tenantId:'tenant-a',kind:'conversation',subjectId:randomUUID()};await assert.rejects(f.suppression.suppress({principal:f.principal,subject:unknown,reason:'no trusted owner'}),/RETENTION_SUBJECT_UNKNOWN/);
  const released=await f.suppression.release({principal:f.principal,subject:s,reason:'owner withdrew'});assert.equal(released.state,'RELEASED');assert.equal(await f.suppression.isSuppressed(s),false);
  await assert.rejects(f.suppression.release({principal:f.principal,subject:s,reason:'twice'}),/RETENTION_NOT_SUPPRESSED/);
  const again2=await f.suppression.suppress({principal:f.principal,subject:s,reason:'re-suppress'});assert.equal(again2.replayed,false);await f.journal.set(subjectKey(s),{...(await f.journal.get(subjectKey(s))),purge:{state:'PLANNED',planSha256:'0'.repeat(64),ledgerSequence:9,steps:[]}});

@@ -19,7 +19,7 @@ async function fixture(t){
  await pool.query('TRUNCATE meri_conversations.retention_purges,meri_conversations.retention_subjects,meri_artifacts.retention_purges,meri_artifacts.retention_subjects CASCADE');
  await pool.query('TRUNCATE meri_conversations.conversations CASCADE');await pool.query('TRUNCATE meri_artifacts.versions,meri_artifacts.heads CASCADE');
  const c=clock(),sink=createMemoryLedgerSink(),ledger=createRetentionLedger({sink,now:c.now}),journal=createPostgresRetentionJournal({pool}),serving=createServingGate();
- const suppression=createSuppressionOwner({ledger,journal,serving,now:c.now});
+ const suppression=createSuppressionOwner({ledger,journal,ownership:journal,serving,now:c.now});
  async function conversation(){const conversationId=randomUUID(),projection={conversationId,owner:{tenantId:tenant,actorId:owner},scopes:[],createdAt:new Date(c.now()).toISOString(),policyRevision:'p'};
   await pool.query('INSERT INTO meri_conversations.conversations(tenant_id,conversation_id,owner_actor_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5)',[tenant,conversationId,owner,projection,hash(projection)]);
   return {tenantId:tenant,kind:'conversation',subjectId:conversationId,ownerActorId:owner};}
@@ -31,7 +31,11 @@ test('the PostgreSQL journal round-trips suppression and release for conversatio
  const row=await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});assert.equal(row.state,'SUPPRESSED');
  const saved=await f.journal.get(key);assert.equal(saved.state,'SUPPRESSED');assert.equal(saved.ledgerSequence,1);assert.equal(saved.entrySha256,row.entrySha256);
  const db=(await f.pool.query('SELECT state,owner_actor_id,suppressed_at,released_at FROM meri_conversations.retention_subjects WHERE conversation_id=$1',[s.subjectId])).rows[0];assert.equal(db.state,'SUPPRESSED');assert.equal(db.owner_actor_id,owner);assert.ok(db.suppressed_at);assert.equal(db.released_at,null);
- const a={tenantId:tenant,kind:'artifact',subjectId:randomUUID(),ownerActorId:owner};await f.suppression.suppress({principal:f.principal,subject:a,reason:'artifact'});assert.equal((await f.journal.get(subjectKey(a))).state,'SUPPRESSED');
+ const a={tenantId:tenant,kind:'artifact',subjectId:randomUUID(),ownerActorId:owner};await assert.rejects(f.suppression.suppress({principal:f.principal,subject:a,reason:'artifact'}),/RETENTION_SUBJECT_UNKNOWN/,'an artifact without a trusted head has no owner');
+ const headVersion=randomUUID(),record={v:0};await f.pool.query('INSERT INTO meri_artifacts.versions(version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[headVersion,a.subjectId,tenant,owner,s.subjectId,'9'.repeat(64),record,hash(record)]);await f.pool.query('INSERT INTO meri_artifacts.heads(artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[a.subjectId,headVersion,tenant,owner,s.subjectId,{h:1},hash({h:1})]);
+ await f.suppression.suppress({principal:f.principal,subject:a,reason:'artifact'});assert.equal((await f.journal.get(subjectKey(a))).state,'SUPPRESSED');
+ await assert.rejects(f.suppression.suppress({principal:f.principal,subject:{...a,ownerActorId:'actor-claimed'},reason:'altered claim'}),/RETENTION_OWNERSHIP_REFUSED/,'a caller-supplied ownership claim that differs from the application record is refused');
+ await assert.rejects(f.journal.set(key,{...(await f.journal.get(key)),state:'RELEASED'},{expected:'0'.repeat(64)}),/RETENTION_STALE_WRITE/,'compare-and-set refuses a stale token');
  assert.deepEqual(new Set(await f.journal.keys()),new Set([key,subjectKey(a)]));
  const released=await f.suppression.release({principal:f.principal,subject:s,reason:'withdrawn'});assert.equal(released.state,'RELEASED');assert.equal((await f.journal.get(key)).state,'RELEASED');
  assert.equal((await f.pool.query('SELECT suppressed_at FROM meri_conversations.retention_subjects WHERE conversation_id=$1',[s.subjectId])).rows[0].suppressed_at,null);
@@ -56,7 +60,7 @@ test('trigger amendments: SDK mirror rows and artifact versions stay immutable e
  await f.pool.query('INSERT INTO meri_conversations.sdk_session_entries(tenant_id,conversation_id,run_id,session_id,subpath,sequence,entry,entry_sha256) VALUES($1,$2,$3,$4,$5,1,$6,$7)',[tenant,s.subjectId,runId,sessionId,'main',{e:1},hash({e:1})]);
  await assert.rejects(f.pool.query('DELETE FROM meri_conversations.sdk_session_entries WHERE run_id=$1',[runId]),/SDK_MIRROR_IMMUTABLE/,'no purge row: refused');
  await assert.rejects(f.pool.query("UPDATE meri_conversations.sdk_session_entries SET entry='{}' WHERE run_id=$1",[runId]),/SDK_MIRROR_IMMUTABLE/,'update always refused');
- const plan={planSha256:'1'.repeat(64),ledgerSequence:1,steps:[{workflowId:'2'.repeat(64),className:'sdkSession',objectId:randomUUID(),versionId:'v1',sha256:'3'.repeat(64)}]};
+ const plan={planSha256:'1'.repeat(64),ledgerSequence:1,steps:[{workflowId:'2'.repeat(64),classes:['sdkSession'],objectId:randomUUID(),versionId:'v1',sha256:'3'.repeat(64)}]};
  // Rows recorded in a committed, separate transaction do not admit a later DELETE: the trigger requires the recording transaction itself.
  await f.journal.tx(c=>f.journal.planRows(c,key,plan));
  await assert.rejects(f.pool.query('DELETE FROM meri_conversations.sdk_session_entries WHERE run_id=$1',[runId]),/SDK_MIRROR_IMMUTABLE/,'planned in another transaction: still refused');
@@ -67,7 +71,9 @@ test('trigger amendments: SDK mirror rows and artifact versions stay immutable e
  const versionId=randomUUID(),artifactId=randomUUID(),record={v:1};
  await f.pool.query('INSERT INTO meri_artifacts.versions(version_id,artifact_id,tenant_id,actor_id,conversation_id,request_sha256,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8)',[versionId,artifactId,tenant,owner,s.subjectId,'4'.repeat(64),record,hash(record)]);
  await assert.rejects(f.pool.query('DELETE FROM meri_artifacts.versions WHERE version_id=$1',[versionId]),/MERI_ARTIFACT_VERSION_IMMUTABLE/);
+ await f.pool.query('INSERT INTO meri_artifacts.heads(artifact_id,version_id,tenant_id,actor_id,conversation_id,projection,projection_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[artifactId,versionId,tenant,owner,s.subjectId,{h:1},hash({h:1})]);
  const a={tenantId:tenant,kind:'artifact',subjectId:artifactId,ownerActorId:owner};await f.suppression.suppress({principal:f.principal,subject:a,reason:'artifact'});
+ await f.pool.query('DELETE FROM meri_artifacts.heads WHERE artifact_id=$1',[artifactId]);
  const aplan={planSha256:'5'.repeat(64),ledgerSequence:2,steps:[{workflowId:'6'.repeat(64),artifactVersionId:versionId,objectId:randomUUID(),versionId:'ov1',sha256:'7'.repeat(64)}]};
  const otherPlan={...aplan,steps:[{...aplan.steps[0],workflowId:'8'.repeat(64),artifactVersionId:randomUUID()}]};
  await assert.rejects(f.journal.tx(async c=>{await f.journal.planRows(c,subjectKey(a),otherPlan);await c.query('DELETE FROM meri_artifacts.versions WHERE version_id=$1',[versionId]);}),e=>e.code==='RETENTION_STORE_UNAVAILABLE'&&/MERI_ARTIFACT_VERSION_IMMUTABLE/.test(e.cause?.message),'a planned purge of a different version does not admit this one');

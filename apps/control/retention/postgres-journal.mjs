@@ -13,11 +13,13 @@ export function createPostgresRetentionJournal({pool}){
  async function get(key){const k=parseKey(key),t=tables[k.kind];return tx(async c=>{const rows=(await c.query(`SELECT * FROM ${t.schema}.retention_subjects WHERE tenant_id=$1 AND ${t.id}=$2`,[k.tenantId,k.subjectId])).rows;if(!rows.length)return null;const v=rowValue(rows[0]);if(v.state!==rows[0].state||Number(rows[0].ledger_sequence)!==v.ledgerSequence)fail('RETENTION_STORE_CORRUPT');return v;});}
  /** Replaces the subject projection and its purge rows atomically under the subject row lock. The caller (suppression owner,
   * executor, reconciler) has already appended the transition to the ledger. */
- async function set(key,value){
+ async function set(key,value,{expected}={}){
   const k=parseKey(key),t=tables[k.kind];if(!value||typeof value!=='object'||!['SUPPRESSED','RELEASED'].includes(value.state)||!Number.isSafeInteger(value.ledgerSequence)||typeof value.entrySha256!=='string')fail('RETENTION_INVALID_REQUEST');
   const owner=value.authorization?.principal?.actorId??value.ownerActorId??null;const projection=structuredClone(value);
   return tx(async c=>{
-   const existing=(await c.query(`SELECT owner_actor_id FROM ${t.schema}.retention_subjects WHERE tenant_id=$1 AND ${t.id}=$2 FOR UPDATE`,[k.tenantId,k.subjectId])).rows[0];
+   const existing=(await c.query(`SELECT owner_actor_id,projection_sha256 FROM ${t.schema}.retention_subjects WHERE tenant_id=$1 AND ${t.id}=$2 FOR UPDATE`,[k.tenantId,k.subjectId])).rows[0];
+   // Compare-and-set on the projection the caller read (null: the row must not exist); a stale decision never overwrites a newer one.
+   if(expected!==undefined&&(existing?.projection_sha256??null)!==expected)fail('RETENTION_STALE_WRITE');
    const ownerActorId=existing?.owner_actor_id??owner;if(typeof ownerActorId!=='string'||!ownerActorId)fail('RETENTION_INVALID_REQUEST');
    const suppressedAt=value.state==='SUPPRESSED'?new Date(value.suppressedAtMs).toISOString():null,releasedAt=value.state==='RELEASED'&&Number.isSafeInteger(value.releasedAtMs)?new Date(value.releasedAtMs).toISOString():null;
    await c.query(`INSERT INTO ${t.schema}.retention_subjects(tenant_id,${t.id},owner_actor_id,state,suppressed_at,released_at,ledger_sequence,entry_sha256,projection,projection_sha256) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
@@ -26,15 +28,19 @@ export function createPostgresRetentionJournal({pool}){
    await c.query(`DELETE FROM ${t.schema}.retention_purges WHERE tenant_id=$1 AND ${t.id}=$2`,[k.tenantId,k.subjectId]);
    const purge=value.purge;if(!purge)return projection;
    for(const st of purge.steps??[]){const stepState=st.state==='EXECUTED'?'EXECUTED':st.state==='UNKNOWN'?'UNKNOWN':purge.state==='BLOCKED'?'BLOCKED':'PLANNED';const receipt=st.requested||st.readback?{requested:st.requested??null,readback:st.readback??null}:null;
-    const columns=k.kind==='conversation'?[st.className,st.objectId,st.versionId,st.sha256]:[st.artifactVersionId??st.objectId,st.objectId,st.versionId,st.sha256];
+    const columns=k.kind==='conversation'?[(st.classes??[st.className]).join(','),st.objectId,st.versionId,st.sha256]:[st.artifactVersionId??st.objectId,st.objectId,st.versionId,st.sha256];
     await c.query(`INSERT INTO ${t.schema}.retention_purges(workflow_id,tenant_id,${t.id},${t.purgeColumns},plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
      [st.workflowId,k.tenantId,k.subjectId,...columns,purge.planSha256,stepState,receipt,receipt?hash(receipt):null,purge.ledgerSequence]);}
    return projection;});
  }
  async function keys(){const out=[];for(const [kind,t] of Object.entries(tables)){const rows=(await pool.query(`SELECT tenant_id,${t.id} AS subject_id FROM ${t.schema}.retention_subjects`)).rows;for(const r of rows)out.push(subjectKey({tenantId:r.tenant_id,kind,subjectId:r.subject_id}));}return out;}
  /** Records the planned purge rows that the immutability trigger amendments consult, inside the caller's transaction. */
- async function planRows(c,key,plan){const k=parseKey(key),t=tables[k.kind];for(const st of plan.steps){const columns=k.kind==='conversation'?[st.className,st.objectId,st.versionId,st.sha256]:[st.artifactVersionId??st.objectId,st.objectId,st.versionId,st.sha256];
+ async function planRows(c,key,plan){const k=parseKey(key),t=tables[k.kind];for(const st of plan.steps){const columns=k.kind==='conversation'?[(st.classes??[st.className]).join(','),st.objectId,st.versionId,st.sha256]:[st.artifactVersionId??st.objectId,st.objectId,st.versionId,st.sha256];
   await c.query(`INSERT INTO ${t.schema}.retention_purges(workflow_id,tenant_id,${t.id},${t.purgeColumns},plan_sha256,state,receipt,receipt_sha256,ledger_sequence) VALUES($1,$2,$3,$4,$5,$6,$7,$8,'PLANNED',NULL,NULL,$9) ON CONFLICT (workflow_id) DO UPDATE SET state='PLANNED',plan_sha256=EXCLUDED.plan_sha256,ledger_sequence=EXCLUDED.ledger_sequence`,[st.workflowId,k.tenantId,k.subjectId,...columns,plan.planSha256,plan.ledgerSequence]);}}
- return Object.freeze({get,set,keys,planRows,tx});
+ /** Trusted ownership reader for the suppression owner: the application's own record of the subject's owner. */
+ async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
+  const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
+  return rows[0]?.owner??null;}
+ return Object.freeze({get,set,keys,planRows,tx,ownerOf});
 }
 export {parseSubject};

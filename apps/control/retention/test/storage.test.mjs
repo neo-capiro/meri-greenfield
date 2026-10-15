@@ -4,8 +4,12 @@ import {compose,bucket} from './fixture.mjs';
 const full={getObjectVersion:true,listBucketVersions:true,deleteObjectVersion:true},noList={...full,listBucketVersions:false};
 const err=(status,name,headers)=>Object.assign(new Error(name),{name,$metadata:{httpStatusCode:status,httpHeaders:headers}});
 test('version-specific absence: 404 is ABSENT only with the recorded list permission; 403, 405, delete markers, mismatches and ambiguity are UNKNOWN',()=>{
- assert.equal(classifyHeadOutcome({error:err(404,'NotFound'),versionId:'v1',permissions:full}).outcome,'ABSENT');
- assert.deepEqual(classifyHeadOutcome({error:err(404,'NotFound'),versionId:'v1',permissions:noList}),{outcome:'UNKNOWN',reason:'NOT_FOUND_WITHOUT_LIST_PERMISSION',status:404,name:'NotFound'});
+ assert.equal(classifyHeadOutcome({error:err(404,'NotFound'),versionId:'v1',permissions:full,versioned:true}).outcome,'ABSENT');assert.equal(classifyHeadOutcome({error:err(404,'NotFound'),versionId:'v1',permissions:full}).reason,'UNVERSIONED_NOT_FOUND','a 404 to a request that did not name the version says nothing about it');
+ assert.deepEqual(classifyHeadOutcome({error:err(404,'NotFound'),versionId:'v1',permissions:noList,versioned:true}),{outcome:'UNKNOWN',reason:'NOT_FOUND_WITHOUT_LIST_PERMISSION',status:404,name:'NotFound'});
+ assert.equal(classifyHeadOutcome({error:err(403,'NotFound'),versionId:'v1',permissions:full,versioned:true}).reason,'ACCESS_DENIED_MAY_MASK_ABSENCE','403 wins over the NotFound name');
+ assert.equal(classifyHeadOutcome({error:err(500,'NoSuchKey'),versionId:'v1',permissions:full,versioned:true}).reason,'AMBIGUOUS_ERROR','500 wins over the NoSuchKey name');
+ assert.equal(classifyHeadOutcome({error:Object.assign(new Error('NoSuchVersion'),{name:'NoSuchVersion'}),versionId:'v1',permissions:full,versioned:true}).reason,'STATUSLESS_ERROR','a name alone is not evidence');
+ assert.equal(classifyHeadOutcome({response:{VersionId:'v1',$metadata:{httpStatusCode:206}},versionId:'v1',permissions:full}).reason,'AMBIGUOUS_STATUS');
  assert.equal(classifyHeadOutcome({error:err(403,'AccessDenied'),versionId:'v1',permissions:full}).reason,'ACCESS_DENIED_MAY_MASK_ABSENCE');
  assert.equal(classifyHeadOutcome({error:err(405,'MethodNotAllowed'),versionId:'v1',permissions:full}).reason,'DELETE_MARKER_NOT_PROOF');
  assert.equal(classifyHeadOutcome({error:err(404,'NotFound',{'x-amz-delete-marker':'true'}),versionId:'v1',permissions:full}).outcome,'UNKNOWN','a 404 carrying a delete-marker header is not absence of the historical version');

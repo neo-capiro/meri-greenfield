@@ -23,7 +23,8 @@ test('the inventory enumerates exact object versions per class, deduplicates acr
  assert.equal(inventoryA.rows.filter(r=>r.className==='lifecycle').length,2);assert.equal(inventoryA.objects.length,2*2+2+2+1,'two checkpoints (2 objects each), one completion checkpoint (2), two outputs, one shared entry');
  assert.ok(inventoryA.rows.find(r=>r.className==='logs')&&inventoryA.rows.find(r=>r.className==='logs').objects.length===0,'logs carry identifiers only');
  const index=createReferenceIndex();index.record(subjectKey(a),inventoryA);index.record(subjectKey(b),inventoryB);
- const sharedA=sharedReferences(inventoryA,index,subjectKey(a),()=>false);assert.equal(sharedA.length,1);assert.equal(sharedA[0].object.objectId,shared.objectId);assert.deepEqual(sharedA[0].heldBy,[subjectKey(b)]);
- assert.equal(sharedReferences(inventoryA,index,subjectKey(a),k=>k===subjectKey(b)).length,0,'once the fork is suppressed too the version is no longer shared with a live subject');
+ const sharedA=sharedReferences(inventoryA,index,subjectKey(a),()=>({eligible:false,reasons:['HOLDER_NOT_SUPPRESSED']}));assert.equal(sharedA.length,1);assert.equal(sharedA[0].object.objectId,shared.objectId);assert.deepEqual(sharedA[0].heldBy,[subjectKey(b)]);assert.deepEqual(sharedA[0].blocking,[{holder:subjectKey(b),reasons:['HOLDER_NOT_SUPPRESSED']}]);
+ assert.equal(sharedReferences(inventoryA,index,subjectKey(a),k=>({eligible:k===subjectKey(b),reasons:[]})).length,0,'once the fork holder is itself purge-eligible the version is no longer shared-blocked');
+ assert.deepEqual(inventoryA.objects.find(o=>o.objectId===shared.objectId).classes,['lifecycle'],'classes are carried per exact object');
  assert.throws(()=>enumerateReferences({...snapshot(a),checkpoints:[{checkpointId:'x',checkpoint:{opaqueSession:{objectId:'bad',versionId:'v',sha256:'1'.repeat(64)},workspace:{entries:[]}}}]}),/RETENTION_INVALID_REQUEST/);
 });
