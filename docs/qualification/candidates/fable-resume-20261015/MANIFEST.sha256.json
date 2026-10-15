@@ -1,12 +1,17 @@
 {
  "schema": "meri.candidate-file-manifest.v1",
- "commit": "fable/meri-resume-20261015",
+ "commit": "fable/meri-complete-20261015",
  "retrieval": {
   "route": "public repository, no credential needed",
-  "urlPrefix": "https://raw.githubusercontent.com/neo-capiro/meri-greenfield/fable/meri-resume-20261015/docs/qualification/candidates/fable-resume-20261015/",
+  "urlPrefix": "https://raw.githubusercontent.com/neo-capiro/meri-greenfield/fable/meri-complete-20261015/docs/qualification/candidates/fable-resume-20261015/",
   "verify": "sha256sum of the fetched file must equal sha256 below"
  },
  "files": [
+  {
+   "path": "CLEANUP-RECEIPT-complete.json",
+   "bytes": 1482,
+   "sha256": "4b536e61095684742cc145314d1d46ca8bfbb59458b64af90362f23147691f17"
+  },
   {
    "path": "CLEANUP-RECEIPT-gap5.json",
    "bytes": 1458,
@@ -24,8 +29,8 @@
   },
   {
    "path": "README.md",
-   "bytes": 22809,
-   "sha256": "53b7a51b0ec68318a7d7be937aa90736e7187fbf23675729ee5b8ff9fde613d8"
+   "bytes": 26550,
+   "sha256": "98266ba2f0eaa8ed9e797ff03761e27499ed91e2493bf871f2cec1fd84a7ebac"
   },
   {
    "path": "artifact/pip-install-host.log.txt",
@@ -151,6 +156,66 @@
    "path": "gap5/worker-conversation.stdout.log.txt",
    "bytes": 12487,
    "sha256": "2798c8463bd614e55d05193401010e303802cf57bf31b1de52adcfc7e4192548"
+  },
+  {
+   "path": "lane1/RESULTS.json",
+   "bytes": 8660,
+   "sha256": "85a26c2cdb0855db5ded4c4e6638769235e959b5d031403d822c270ab5b1ea25"
+  },
+  {
+   "path": "lane1/conversations-tests.stdout.log.txt",
+   "bytes": 23637,
+   "sha256": "28e597cc55ae9dc3b5ef9ce4ae381ee29523e61626750632ddf960efd9f86b5a"
+  },
+  {
+   "path": "lane1/native-authority.stdout.log.txt",
+   "bytes": 37132,
+   "sha256": "2e820822f97200c3e75ecdda7e626e4e288197dc0e5387f63a59a9141dec680b"
+  },
+  {
+   "path": "lane1/runner.log.txt",
+   "bytes": 442,
+   "sha256": "1264e4c327c3651f94f436526f49cd0df1c7b58922023c8ec8305b45d38aada6"
+  },
+  {
+   "path": "lane1/source-proof.stdout.log.txt",
+   "bytes": 754,
+   "sha256": "2f0f212b2284986aa1070dfe946bd4f289cb0e3005b1ac20e7ed7b44d6d5aed2"
+  },
+  {
+   "path": "lane2/RESULTS.json",
+   "bytes": 6237,
+   "sha256": "43891e3e6e2baf35c176163db2971c96e2a0ef988b4da66262f8cd8ab23ea854"
+  },
+  {
+   "path": "lane2/control-core.stdout.log.txt",
+   "bytes": 23668,
+   "sha256": "65ae14e509a9fd9cd64ced2f05c1dc83c7ed519f7c8ea972faf890b47e9fba1b"
+  },
+  {
+   "path": "lane2/control-retention.stdout.log.txt",
+   "bytes": 1832,
+   "sha256": "55791024ab03e1bba05b8ad431feeda1caa2bf459b99bbe917844b3430c808cb"
+  },
+  {
+   "path": "lane2/rerun-clean/RESULTS.json",
+   "bytes": 3380,
+   "sha256": "e6eba5ab73e24380d9117c46a50c63e3eb0ce83b5c123a5d2804563d0828d61e"
+  },
+  {
+   "path": "lane2/rerun-clean/control-retention.stdout.log.txt",
+   "bytes": 1835,
+   "sha256": "e9b09a80bbaa70d6d3aa4820a5c885203995cce589d00fdb88556fe72ff8bac4"
+  },
+  {
+   "path": "lane2/runner.log.txt",
+   "bytes": 432,
+   "sha256": "93fce3dcd0c2a3782fa6770b2c6d1394abca9d0fa11a624ed9d3b2b0caf68995"
+  },
+  {
+   "path": "lane2/scripts-local.stdout.log.txt",
+   "bytes": 3046,
+   "sha256": "7135ed9b916116ed6918567da069de262e91f465cda1f13cfce07b6adc85ac62"
   },
   {
    "path": "manifest.mjs",
