@@ -1,0 +1,132 @@
+{
+  "schema": "meri-general-reads-product-routes/1",
+  "note": "Proposed conversational routes for selected product operations and governed writes. 'owner' files exist at the pinned base (verified by inventory.test.mjs); 'status' states source wiring only. No route is live, enabled or qualified. Intent tool names are proposals for review, not registered tools.",
+  "routes": {
+    "create_word": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__request_document",
+      "owner": "apps/control/document-application/index.mjs",
+      "entry": "createDocumentApplication POST /api/documents/create with canonical WordRequest (operation create_word)",
+      "authority": "trusted artifact capability (artifact.publish) bound by control; session fresh check; current binding/scopes/selected client",
+      "approval": "none for creating an immutable draft version; filing to a client is a separate artifact.file proposal",
+      "status": "source-wired: document application admits create_word"
+    },
+    "create_excel": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__request_document",
+      "owner": "apps/control/document-application/index.mjs",
+      "entry": "createDocumentApplication POST /api/documents/create with canonical ExcelRequest (operation create_excel)",
+      "authority": "trusted artifact capability (artifact.publish) bound by control; session fresh check; current binding/scopes/selected client",
+      "approval": "none for creating an immutable draft version; filing is a separate artifact.file proposal",
+      "status": "source-wired: document application admits create_excel"
+    },
+    "create_powerpoint": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__request_document",
+      "owner": "apps/control/document-application/index.mjs",
+      "entry": "artifact-execution/1 contract (PowerpointRequest) exists; document application refuses PowerPoint today",
+      "authority": "trusted artifact capability (artifact.publish)",
+      "approval": "none for draft version; filing separate",
+      "status": "route-gap: document application does not admit create_powerpoint"
+    },
+    "run_analysis": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__request_analysis",
+      "owner": "apps/control/document-application/index.mjs",
+      "entry": "artifact-execution/1 contract (AnalysisRequest): typed pandas mode; general program mode needs a separately admitted sandbox boundary",
+      "authority": "trusted artifact capability (artifact.publish) plus analysis admission",
+      "approval": "none for draft outputs; results remain pending inspection; filing separate",
+      "status": "route-gap: document application does not admit run_analysis"
+    },
+    "schedule_task": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_schedule",
+      "owner": "apps/control/schedules/tool-interface.mjs",
+      "entry": "createScheduleToolInterface.execute({operation:'schedule_task'}) returns the immutable proposal while context.approval is null; after approval the lifecycle mutates the Temporal Schedule",
+      "authority": "trusted scheduleContext (callerIdentity, deadline, approval) from control; per-execution reauthorization",
+      "approval": "immutable proposal approved through the conversation approval control",
+      "status": "source-wired"
+    },
+    "update_scheduled_task": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_schedule_change",
+      "owner": "apps/control/schedules/tool-interface.mjs",
+      "entry": "createScheduleToolInterface.execute({operation:'update_scheduled_task'})",
+      "authority": "trusted scheduleContext from control",
+      "approval": "immutable proposal",
+      "status": "source-wired"
+    },
+    "cancel_scheduled_task": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_schedule_change",
+      "owner": "apps/control/schedules/tool-interface.mjs",
+      "entry": "createScheduleToolInterface.execute({operation:'cancel_scheduled_task'})",
+      "authority": "trusted scheduleContext from control",
+      "approval": "immutable proposal",
+      "status": "source-wired"
+    },
+    "list_scheduled_tasks": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__list_schedules",
+      "owner": "apps/control/schedules/tool-interface.mjs",
+      "entry": "createScheduleToolInterface.execute({operation:'list_scheduled_tasks'}) lists owned schedules; no mutation",
+      "authority": "trusted scheduleContext from control",
+      "approval": "none (read of the user's own Meri schedules)",
+      "status": "source-wired"
+    },
+    "create_task": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_task",
+      "owner": "apps/control/commands/tool-interface.mjs",
+      "entry": "createCommandToolInterface(action task.create).prepare -> approval_required ApprovalProposal; execute after approval through the durable command executor (/clio/tools/create_task). apps/control/action-followthrough already prepares task drafts from action items.",
+      "authority": "command.execute via createCommandAuthority; trusted commandContext; requiredApprover",
+      "approval": "immutable proposal (action-application approve or conversation approval.wait)",
+      "status": "source-wired"
+    },
+    "update_task": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_task_update",
+      "owner": "apps/control/commands/tool-interface.mjs",
+      "entry": "createCommandToolInterface(action task.update).prepare -> approval_required; unconditional 0.2 patch, no compare-and-swap",
+      "authority": "command.execute; trusted commandContext",
+      "approval": "immutable proposal",
+      "status": "source-wired"
+    },
+    "save_memory": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_memory",
+      "owner": "apps/control/commands/tool-interface.mjs",
+      "entry": "createCommandToolInterface(action memory.propose).prepare -> approval_required; firm/client success creates a pending candidate only; personal scope refused PENDING_PRODUCER_UNAVAILABLE before effects",
+      "authority": "command.execute; trusted commandContext",
+      "approval": "immutable proposal; canonical memory review remains authoritative",
+      "status": "source-wired (personal scope blocked by producer)"
+    },
+    "save_chat_attachments": {
+      "route": "governed-intent",
+      "intentTool": "mcp__meri_intents__propose_attachment_filing",
+      "owner": "apps/control/commands/tool-interface.mjs",
+      "entry": "createCommandToolInterface(action artifact.file).prepare -> approval_required; source call resolves exact attachment objects through the trusted resolveAttachments broker",
+      "authority": "command.execute; trusted commandContext and destination",
+      "approval": "immutable proposal for the exact destination",
+      "status": "source-wired"
+    },
+    "read_chat_attachments": {
+      "route": "general-read-server",
+      "intentTool": null,
+      "owner": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "entry": "gateway read path (tool.read); needs a conversation-attachment adapter and a trusted dispatch context for contextKeys asOf/scope",
+      "authority": "gateway current tool authority",
+      "approval": "none (read)",
+      "status": "adapter missing"
+    },
+    "list_memory_proposals": {
+      "route": "general-read-server",
+      "intentTool": null,
+      "owner": "apps/gateway/sources/memory-proposals/handler.mjs",
+      "entry": "gateway read path (tool.read) for memory.list_own_proposals with dispatch profile memory-proposals/1",
+      "authority": "gateway current tool authority; personal or client subject",
+      "approval": "none (read of own proposals)",
+      "status": "adapter present (unqualified)"
+    }
+  }
+}
