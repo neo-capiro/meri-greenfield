@@ -1,18 +1,22 @@
 // @ts-check
 /** Shape of the additive Options fragment and its merge with the mounted selected-skill options.
- * Own-keys only, no unknown keys, bounded lists; hooks merge by event name and permission callbacks chain. */
+ * Own-keys only, no unknown keys, bounded lists; hooks merge by event name and permission callbacks chain.
+ * Invariant: `Bash` appears in `tools` only together with the locked SDK `sandbox`, its policy-tier locks and the
+ * subprocess credential scrub, so a fragment can never carry an unsandboxed Bash. */
 import {isAbsolute} from 'node:path';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {SUBAGENT_TYPES} from './policy.mjs';
+import {assertSandboxSettings,assertSandboxLocks,BASH_SANDBOX_ENV,BASH_TOOL} from './bash-sandbox.mjs';
+import {assertWorkspacePermissions} from './workspace-tools.mjs';
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
-export const FRAGMENT_KEYS=Object.freeze(['tools','allowedTools','disallowedTools','canUseTool','hooks','agents','plugins','skills','agentProgressSummaries']);
+export const FRAGMENT_KEYS=Object.freeze(['tools','allowedTools','disallowedTools','canUseTool','hooks','agents','plugins','skills','agentProgressSummaries','settings','managedSettings','sandbox','env']);
 export const CAPABILITY_HOOK_EVENTS=Object.freeze(['PreToolUse','PostToolUse','PostToolUseFailure','PreCompact','PostCompact','SubagentStart','SubagentStop']);
 /** @param {unknown} v @param {number} max @param {RegExp} pattern */
 const names=(v,max,pattern=/^[A-Za-z][A-Za-z0-9_]{0,63}$/u)=>Array.isArray(v)&&v.length<=max&&new Set(v).size===v.length&&v.every(t=>typeof t==='string'&&pattern.test(t));
 /** @typedef {import('@anthropic-ai/claude-agent-sdk').HookCallbackMatcher} HookCallbackMatcher */
 /** @typedef {import('@anthropic-ai/claude-agent-sdk').CanUseTool} CanUseTool */
-/** @typedef {{tools?:string[],allowedTools?:string[],disallowedTools?:string[],canUseTool?:CanUseTool,hooks?:Record<string,HookCallbackMatcher[]>,agents?:Record<string,import('@anthropic-ai/claude-agent-sdk').AgentDefinition>,plugins?:import('@anthropic-ai/claude-agent-sdk').SdkPluginConfig[],skills?:string[],agentProgressSummaries?:boolean}} CapabilityFragment */
+/** @typedef {{tools?:string[],allowedTools?:string[],disallowedTools?:string[],canUseTool?:CanUseTool,hooks?:Record<string,HookCallbackMatcher[]>,agents?:Record<string,import('@anthropic-ai/claude-agent-sdk').AgentDefinition>,plugins?:import('@anthropic-ai/claude-agent-sdk').SdkPluginConfig[],skills?:string[],agentProgressSummaries?:boolean,settings?:Record<string,unknown>,managedSettings?:Record<string,unknown>,sandbox?:import('@anthropic-ai/claude-agent-sdk').SandboxSettings,env?:Record<string,string>}} CapabilityFragment */
 /** @param {unknown} value @returns {CapabilityFragment} */
 export function assertCapabilityFragment(value){
  const f=own(value,[],[...FRAGMENT_KEYS]);
@@ -26,7 +30,24 @@ export function assertCapabilityFragment(value){
   if(typeof a.description!=='string'||!a.description||typeof a.prompt!=='string'||!a.prompt||!names(a.tools,16)||!names(a.disallowedTools,64)||a.model!=='inherit'||!Number.isSafeInteger(a.maxTurns)||a.maxTurns<1||a.maxTurns>100||a.omitClaudeMd!==true)fail('CAPABILITY_FRAGMENT_REFUSED');}
  if(f.plugins!==undefined){if(!Array.isArray(f.plugins)||f.plugins.length!==1)fail('CAPABILITY_FRAGMENT_REFUSED');const p=own(f.plugins[0],['type','path','skipMcpDiscovery']);
   if(p.type!=='local'||typeof p.path!=='string'||!isAbsolute(p.path)||p.path.includes('/../')||p.path.endsWith('/')||p.skipMcpDiscovery!==true)fail('CAPABILITY_FRAGMENT_REFUSED');}
+ if(f.settings!==undefined)assertWorkspacePermissions(own(f.settings,['permissions']).permissions,{withRules:true});
+ if(f.managedSettings!==undefined){const m=own(f.managedSettings,[],['permissions','sandbox']);if(m.permissions===undefined&&m.sandbox===undefined)fail('CAPABILITY_FRAGMENT_REFUSED');
+  if(m.permissions!==undefined)assertWorkspacePermissions(m.permissions,{withRules:false});if(m.sandbox!==undefined)assertSandboxLocks(m.sandbox);}
+ if(f.sandbox!==undefined)assertSandboxSettings(f.sandbox);
+ if(f.env!==undefined){const e=own(f.env,Object.keys(BASH_SANDBOX_ENV));for(const [k,v] of Object.entries(BASH_SANDBOX_ENV))if(e[k]!==v)fail('CAPABILITY_FRAGMENT_REFUSED');}
+ const bash=Array.isArray(f.tools)&&f.tools.includes(BASH_TOOL),sandboxed=[f.sandbox,f.env,/** @type {{sandbox?:unknown}|undefined} */(f.managedSettings)?.sandbox].map(v=>v!==undefined);
+ if(sandboxed.some(v=>v!==bash)||f.tools!==undefined&&!bash&&!(Array.isArray(f.disallowedTools)&&f.disallowedTools.includes(BASH_TOOL)))fail('CAPABILITY_FRAGMENT_REFUSED');
  return /** @type {CapabilityFragment} */(f);
+}
+/** Deep merge of plain settings objects: later scalars win, arrays union in order. @param {Record<string,any>[]} sets */
+export function mergeSettings(sets){
+ /** @type {Record<string,any>} */
+ const out={};
+ for(const set of sets)for(const [key,value] of Object.entries(set)){
+  const prior=out[key];
+  out[key]=Array.isArray(value)&&Array.isArray(prior)?[...new Set([...prior,...value])]:value&&typeof value==='object'&&!Array.isArray(value)&&prior&&typeof prior==='object'&&!Array.isArray(prior)?mergeSettings([prior,value]):value;
+ }
+ return out;
 }
 /** Hook matcher sets merged by event name, preserving order. @param {Record<string,HookCallbackMatcher[]>[]} sets */
 export function mergeHookSets(sets){
