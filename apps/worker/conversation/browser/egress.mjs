@@ -3,9 +3,12 @@
  * It applies the platform security limits and then the run's effective allowlist (`checkBrowserUrl`) to each
  * connection kind; WebSocket URLs are compared by their http/https origin. Pure and synchronous: it does not resolve
  * DNS, so the resolved-address and rebinding requirements still apply at the host in addition. This is not a network
- * control and proves nothing about the real browser; it fixes the expected decisions for host qualification. */
+ * control and proves nothing about the real browser; it fixes the expected decisions for host qualification. The
+ * run-bound component the host proxy runs is `egress-control.mjs`. */
 import {checkBrowserUrl} from './policy.mjs';
-export const EGRESS_CONNECTION_KINDS=Object.freeze(['navigation','redirect','subresource','fetch','websocket','download']);
+/** `tunnel` is a forward-proxy CONNECT tunnel (https, or ws over port 80) whose request kind the proxy cannot see; it
+ * is decided by the same origin rule as every other kind. */
+export const EGRESS_CONNECTION_KINDS=Object.freeze(['navigation','redirect','subresource','fetch','websocket','download','tunnel']);
 const WEBSOCKET_ORIGIN_SCHEME=Object.freeze({'ws:':'http:','wss:':'https:'});
 /** `{ok:true,origin}` when `policy` (a `validateBrowserPolicy` result) admits a connection of `kind` to `url`,
  * otherwise `{ok:false,code}`. */

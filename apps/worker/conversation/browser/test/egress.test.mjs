@@ -35,7 +35,7 @@ test('H3: unlisted sub-resource, fetch, download and WebSocket origins are refus
  assert.equal(egressDecision(p,{kind:'websocket',url:'https://records.example/socket'}).code,'BROWSER_URL_SCHEME');
  assert.equal(egressDecision(p,{kind:'subresource',url:'wss://records.example/'}).code,'BROWSER_URL_SCHEME');
  assert.equal(egressDecision(p,{kind:'prefetch',url:`${APPROVED[0]}/`}).code,'BROWSER_EGRESS_KIND');
- assert.deepEqual(EGRESS_CONNECTION_KINDS,['navigation','redirect','subresource','fetch','websocket','download']);
+ assert.deepEqual(EGRESS_CONNECTION_KINDS,['navigation','redirect','subresource','fetch','websocket','download','tunnel']);
 });
 test('H3: the egress decision uses the effective tenant/role-narrowed list, never the platform-approved maximum',()=>{
  const role=(over={})=>({...DEFAULT_BROWSER_POLICY,allowedOrigins:APPROVED,...over});
@@ -49,4 +49,13 @@ test('H3: the egress decision uses the effective tenant/role-narrowed list, neve
  assert.equal(egressDecision(tenantRole,{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_ORIGIN_NOT_ALLOWED','tenant role narrowing');
  assert.equal(egressDecision(validateBrowserPolicy(),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_NO_ALLOWED_DESTINATIONS','empty effective list admits nothing');
  assert.equal(egressDecision(resolveBrowserPolicy({platform,tenant:{browser:{enabled:false}},role:'member'}),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_DISABLED');
+});
+test('the activation checklist names every egress requirement, the proxy route and connection coalescing are required, and the gate stays held',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const checklist=await readFile(new URL('../ACTIVATION-CHECKLIST.md',import.meta.url),'utf8');
+ for(const id of EGRESS_REQUIREMENTS.map(r=>r.slice(0,r.indexOf(':'))).filter(id=>id!=='evidence'))assert.ok(checklist.includes(`| ${id}`)||checklist.includes(`${id}, `)||checklist.includes(`, ${id} |`),id);
+ assert.match(requirement('proxy-route'),/--proxy-server.*no --proxy-bypass.*createEgressControl.*policySha256.*revoked or expired/su);
+ assert.match(requirement('connection-coalescing'),/coalescing/u);
+ for(const probe of ['proxied-loopback probe','coalescing probe','WebRTC/QUIC UDP probe','request after grant revocation'])assert.ok(requirement('evidence').includes(probe),probe);
+ assert.equal(BROWSER_ACTIVATION.state,'held');assert.equal(BROWSER_ACTIVATION.evidence,null);assert.equal(activationOpen(),false);
 });

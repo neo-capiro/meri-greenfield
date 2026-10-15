@@ -1,7 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,rm,realpath,symlink,access} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
 import {DEFAULT_BROWSER_POLICY} from '../policy.mjs';
-import {binding,enabledPolicy,recorders,openFragment,sourceScopes,APPROVED} from './fixtures.mjs';
+import {binding,enabledPolicy,recorders,openFragment,sourceScopes,APPROVED,clock} from './fixtures.mjs';
+import {downloadIdempotencyKey} from '../downloads.mjs';
 import {ooxml,pdf,zip} from '../../../../artifacts/structure/test/fixtures.mjs';
 import {REVIEW_PROBES} from '../../../../artifacts/structure/test/review-probes.mjs';
 const workspace=async()=>{const root=await realpath(await mkdtemp(join(tmpdir(),'meri-browser-dl-')));const cwd=join(root,binding.conversationId);await mkdir(join(cwd,'.browser','output'),{recursive:true});return {root,cwd,output:join(cwd,'.browser','output')};};
@@ -12,7 +13,8 @@ test('downloads reach the artifact owner with canonical MIME, checksum and sourc
  const stored=await cap.downloads.accept({filename:'notice.pdf',url:`${src('notice.pdf')}?token=SECRET`});
  assert.equal(stored.mimeType,'application/pdf');assert.equal(stored.bytes,bytes.length);assert.match(stored.versionId,/^00000099-/);
  assert.equal(r.ingested.length,1);const request=r.ingested[0];
- assert.deepEqual(request.scopes,sourceScopes);assert.deepEqual(request.binding,binding);assert.equal(request.format,'pdf');assert.equal(request.sha256,stored.sha256);assert.deepEqual(request.source,{kind:'browser-download',urlHost:'notices.example'});
+ assert.deepEqual(request.scopes,sourceScopes);assert.deepEqual(request.binding,binding);assert.equal(request.format,'pdf');assert.equal(request.sha256,stored.sha256);assert.deepEqual(request.source,{kind:'browser-download',origin:'https://notices.example',urlHost:'notices.example',acquiredAtMs:clock(),policySha256:cap.policySha256});
+ assert.equal(request.idempotencyKey,downloadIdempotencyKey(binding,'notice.pdf',stored.sha256));
  assert.equal(r.receipts.at(-1).kind,'browser.download');assert.equal(r.receipts.at(-1).reference,stored.versionId);assert.ok(!JSON.stringify(r.receipts).includes('SECRET'));
  await assert.rejects(access(join(output,'notice.pdf')));
 }));

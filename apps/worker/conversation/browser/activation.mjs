@@ -9,7 +9,9 @@
  *
  * The effective destination allowlist is MANDATORY at egress (dot corrected browser review H3, 15 Oct 2026): blocking
  * non-public addresses alone would still let an allowlisted public origin redirect to, or load from, an unlisted
- * public origin. `egress.mjs` is the executable reference decision the host control must reproduce. */
+ * public origin. `egress.mjs` is the executable reference decision the host control must reproduce, and
+ * `egress-control.mjs` is the run-bound component the host proxy runs. ACTIVATION-CHECKLIST.md lists every
+ * measurement, egress and non-egress, that the opening change must cite. */
 export const EGRESS_REQUIREMENTS=Object.freeze([
  'deny-non-public-destinations: the host egress path denies every destination address in 0.0.0.0/8, 10/8, 100.64/10, 127/8, 169.254/16 (including 169.254.169.254 and 169.254.170.2), 172.16/12, 192.0.0/24, 192.0.2/24, 192.88.99/24, 192.168/16, 198.18/15, 198.51.100/24, 203.0.113/24, 224/4, 240/4, and every IPv6 address outside 2000::/3 or inside 2001::/23, 2001:db8::/32, 2002::/16, 3fff::/20 and 5f00::/16 (covers ::1, fc00::/7 including fd00:ec2::254, fe80::/10, ff00::/8, ::ffff:0:0/96 and 64:ff9b::/96)',
  'enforce-on-resolved-address: the decision is made on the address actually connected to, after DNS resolution, for every connection the browser makes (navigations, redirects, sub-resources, WebSocket, fetch/XHR, downloads), so a public name resolving to a denied address is refused',
@@ -18,8 +20,10 @@ export const EGRESS_REQUIREMENTS=Object.freeze([
  'redirects: every redirect hop is subject to the same effective-allowlist and destination-address checks as the first request',
  'web-ports-only: outbound destinations are limited to TCP 80 and 443 (plus the controlled resolver); no UDP/QUIC egress except the resolver, unless separately qualified',
  'no-proxy-bypass: no direct route that bypasses the egress control; host instance metadata and container credential endpoints are unreachable from the browser user',
+ 'proxy-route: the browser is launched with --proxy-server set to the host egress control and no --proxy-bypass, so loopback is proxied too; the control admits each request through createEgressControl (egress-control.mjs) under this run\'s grant, whose policySha256 equals the fragment\'s effective policy digest, connects only to the checked address it returns, and refuses every request once the grant is revoked or expired',
+ 'connection-coalescing: no unlisted origin reaches the network over a connection or tunnel opened for an allowlisted origin (HTTP/2 or HTTP/3 connection coalescing, ORIGIN frames, Alt-Svc, connection reuse after redirect)',
  'per-conversation-host: the browser host or task is never reused across conversations or tenants and is destroyed with verified cleanup',
- 'evidence: measured negative probes from the real non-root sandboxed browser for each denied class, a redirect to a denied address, a rebinding name, an allowlisted-to-unlisted public redirect, an unlisted public sub-resource, an unlisted public WebSocket and a platform-approved origin narrowed away by tenant or role, plus a positive allowlisted-origin probe, recorded on the approved host',
+ 'evidence: measured negative probes from the real non-root sandboxed browser for each denied class, a redirect to a denied address, a rebinding name, an allowlisted-to-unlisted public redirect, an unlisted public sub-resource, an unlisted public WebSocket and a platform-approved origin narrowed away by tenant or role, a proxied-loopback probe, a coalescing probe (an unlisted name sharing an allowlisted origin\'s address and certificate), a WebRTC/QUIC UDP probe and a request after grant revocation, plus a positive allowlisted-origin probe, recorded on the approved host',
 ]);
 export const BROWSER_ACTIVATION=Object.freeze({state:'held',reason:'BROWSER_EGRESS_UNQUALIFIED',evidence:null,requirements:EGRESS_REQUIREMENTS});
 /** True only when the gate is open with a recorded evidence reference. Kept a pure function of the record so tests can
