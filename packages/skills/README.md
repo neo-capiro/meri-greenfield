@@ -14,6 +14,8 @@ This is a bounded evidence/extraction implementation. Extracted semantic classif
 
 Targeted verification: `node --test packages/skills/test/assets.test.mjs packages/skills/test/commitments.test.mjs`. It checks all original identities, source/rubric coverage, exact Bill Watch preservation, fixed hash pins including coordinated prose/self-hash tampering, immutable explicit selection, unavailable runtime refusal and Commitments isolation/evidence/Monday/semantic counterexamples. Synthetic local evidence only; no provider, native database, cloud, credentials or private artifacts.
 
+`plugin.mjs` projects the same originals as one native SDK plugin. `describeSkillPlugin()` derives each plugin skill name from the immutable index and the SKILL.md frontmatter (assets without SDK frontmatter are listed as excluded), and `materializeSkillPlugin({directory})` writes `.claude-plugin/plugin.json` plus byte-exact `skills/<name>/SKILL.md` files into a fresh owner-only directory for the runtime image; it refuses an existing target and removes what it created on failure. No prose is duplicated in Git and model invocation stays disabled by the original frontmatter. Verification: `node --test packages/skills/test/plugin.test.mjs`.
+
 Native skill format reference: [Claude Agent SDK skills documentation](https://code.claude.com/docs/en/agent-sdk/skills), checked 2026-10-13. No upstream skill implementation was copied and no dependencies were added.
 
 Bounded counts: missing original asset recipes 13 → 0; indexed original identities 1 → 14; fully runtime-qualified original workflows remain 0. All 51 pending whole-plan requirements remain open until their full original acceptance criteria are satisfied.
