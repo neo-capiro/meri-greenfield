@@ -64,3 +64,28 @@ test('composed with the canonical issuance owner: prepare issues once, binds fac
  assert.equal(capabilityDigest(await spy.resolve(bound)),issued.issuance.capabilitySha256);
  assert.deepEqual(calls.map(([m])=>m),['read','issue','bindFacts','resolve']);assert.equal(typeof createPreparedRunIssuance,'function');assert.equal(stats.compile,0);void facts;
 });
+test('full equality and shape validation: bindFacts and resolve refuse an altered request hash or expiry, resolve refuses a facts mismatch on either side, reconcile stays UNKNOWN on a half-shaped authority answer, and a malformed store row is refused',async()=>{
+ const c=clock(),store=createMemoryIssuanceStore(),a=authority(),issuer=createPreparedRunIssuer({store,authority:a,now:c.now}),b=binding(),intent=intentFor(b,c);
+ const issued=(await issuer.issue(intent)).issuance,bindArgs={...intent,capabilitySha256:issued.capabilitySha256,grantId:issued.grantId,factsSha256:'f'.repeat(64)};
+ await assert.rejects(issuer.bindFacts({...bindArgs,requestSha256:hash({prompt:'other'})}),/PREPARED_RUN_ISSUER_INTENT_CONFLICT/,'bindFacts: altered request hash');
+ await assert.rejects(issuer.bindFacts({...bindArgs,expiresAtMs:bindArgs.expiresAtMs+1}),/PREPARED_RUN_ISSUER_INTENT_CONFLICT/,'bindFacts: altered expiry');
+ await assert.rejects(issuer.bindFacts({...bindArgs,factsSha256:'not-a-hash'}),/PREPARED_RUN_ISSUER_REFUSED/);
+ assert.equal(capabilityDigest(await issuer.resolve({...issued})),issued.capabilitySha256,'before binding, the row has no facts and a receipt without facts resolves');
+ await assert.rejects(issuer.resolve({...issued,factsSha256:'f'.repeat(64)}),/PREPARED_RUN_ISSUER_REFUSED/,'before binding, a receipt claiming facts is refused');
+ const bound=await issuer.bindFacts(bindArgs);assert.equal(bound.factsSha256,'f'.repeat(64));
+ await assert.rejects(issuer.resolve({...issued}),/PREPARED_RUN_ISSUER_REFUSED/,'resolve: a receipt without the bound facts hash');
+ await assert.rejects(issuer.resolve({...bound,factsSha256:'e'.repeat(64)}),/PREPARED_RUN_ISSUER_REFUSED/,'resolve: a different facts hash');
+ await assert.rejects(issuer.resolve({...bound,requestSha256:hash({prompt:'other'})}),/PREPARED_RUN_ISSUER_INTENT_CONFLICT/,'resolve: altered request hash');
+ await assert.rejects(issuer.resolve({...bound,expiresAtMs:bound.expiresAtMs-1}),/PREPARED_RUN_ISSUER_INTENT_CONFLICT/,'resolve: altered expiry');
+ assert.equal(capabilityDigest(await issuer.resolve(bound)),issued.capabilitySha256);
+ // reconcile over a lost completion with a half-shaped PRESENT answer stays UNKNOWN and completes nothing.
+ const crashing=createMemoryIssuanceStore({crashAt:'before-complete'}),a2=authority(),b2=binding(),intent2=intentFor(b2,c);await assert.rejects(createPreparedRunIssuer({store:crashing,authority:a2,now:c.now,maxRequestMs:300}).issue(intent2));
+ const halfShaped={...a2,async status(){return {state:'PRESENT',grantId:'not-a-uuid',capabilitySha256:'x',materialRef:''};}};
+ assert.deepEqual(await createPreparedRunIssuer({store:crashing,authority:halfShaped,now:c.now}).reconcile(intent2),{state:'UNKNOWN'});assert.equal((await crashing.read({issuanceKey:intent2.issuanceKey})).state,'CLAIMED');
+ await assert.rejects(createPreparedRunIssuer({store:crashing,authority:a2,now:c.now}).reconcile({...intent2,requestSha256:hash({prompt:'other'})}),/PREPARED_RUN_ISSUER_INTENT_CONFLICT/,'reconcile: full intent equality');
+ assert.equal((await createPreparedRunIssuer({store:crashing,authority:a2,now:c.now}).reconcile(intent2)).state,'ISSUED','the real authority answer completes');
+ // A store that answers with a malformed row is refused by shape, never trusted.
+ const malformed={...store,async read({issuanceKey}){const r=await store.read({issuanceKey});return r?{...r,grantId:'forged'}:r;}};
+ await assert.rejects(createPreparedRunIssuer({store:malformed,authority:a,now:c.now}).read(intent),/PREPARED_RUN_ISSUER_STORE_SHAPE/);
+ await assert.rejects(createPreparedRunIssuer({store:{...store,async read({issuanceKey}){const r=await store.read({issuanceKey});return {...r,binding:{...r.binding,actorId:'foreign'}};}},authority:a,now:c.now}).read(intent),/PREPARED_RUN_ISSUER_STORE_SHAPE/,'a binding whose hash is not the key');
+});

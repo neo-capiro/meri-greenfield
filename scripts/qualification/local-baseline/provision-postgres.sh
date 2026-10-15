@@ -25,6 +25,7 @@ MIGRATIONS=(
  apps/control/conversations/migrations/0008_native_prepared_launch.sql
  apps/control/conversations/migrations/0009_next_runs.sql
  apps/control/conversations/migrations/0010_retention.sql
+ apps/control/conversations/migrations/0011_run_issuance.sql
  apps/gateway/budget/migrations/0001_product_budget.sql
  apps/artifacts/migrations/0001_versions.sql
  apps/artifacts/migrations/0002_retention.sql
