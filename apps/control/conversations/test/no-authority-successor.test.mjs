@@ -12,10 +12,11 @@ const history=x=>x.f.store.read(binding,{after:0,limit:100},check);
 const reserveFacts=(x,source,facts,n=1)=>x.f.store.nextRuns.reserve({source,target:{...source,runId:id(960+n),attemptId:id(970+n),workerId:id(980+n),writerFence:source.writerFence+1},facts,scopes,versions,policyRevision:'policy1',reservedAt:at},check);
 const turns=async n=>{for(let i=0;i<n;i++)await new Promise(resolve=>setImmediate(resolve));};
 async function admittedOnEvidence(x,terminal){
- const evidence=row(x,binding),events=(await history(x)).events,last=events.at(-1);
+ // Before the repair this selection failed NEXT_RUN_RETIREMENT_REQUIRED and a later claim NATIVE_PREPARATION_STATE_REFUSED.
+ const selected=await x.select();assert.equal(selected.reserved,true);assert.equal(selected.binding.writerFence,2);
+ const evidence=row(x,binding),last=(await history(x)).events.at(-1);
  assert.equal(evidence.record.state,'FORECLOSED','the terminal transition recorded the no-authority evidence');assert.deepEqual(evidence.record.foreclosure,{eventId:last.eventId,eventSha256:hash(last),state:terminal});
  await assert.rejects(x.f.store.allocations.record({binding,allocationKey:hash(binding),state:'RETIRED',resource:null},check),/NATIVE_PREPARATION_REFUSED/,'the evidence is immutable');
- const selected=await x.select();assert.equal(selected.reserved,true);assert.equal(selected.binding.writerFence,2);
  assert.deepEqual([...x.f.state.nextRuns.values()][0].reservation.facts,{checkpoint:null,noAuthority:{foreclosureSha256:evidence.record_sha256}});
  assert.equal((await x.accept(selected.binding,'try again')).replayed,false);assert.equal(await x.lineage(selected.binding),null,'a fresh SDK session; earlier model context is not restored');
  await assert.rejects(x.allocate(binding),/NATIVE_PREPARATION_STATE_REFUSED/,'the foreclosed attempt can never be claimed');
