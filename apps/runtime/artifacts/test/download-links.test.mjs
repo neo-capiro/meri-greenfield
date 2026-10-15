@@ -133,3 +133,46 @@ test('real canonical owners: a link issued for a generated workbook redeems its 
   const revoked=await post('links/redeem',{token:issued.token});assert.equal(revoked.status,410);assert.equal(await code(revoked),'DOWNLOAD_LINK_REVOKED');
  }finally{await x.close();}
 });
+
+// Linearization point (download-links.mjs module comment): the final authority read, bracketed by the pre-download generation and the
+// final generation read. `authority.onRead(n)` fires on each current-authority read; issue and redeem each read authority twice (at
+// the start and at the final read), so read 2 after the download is the final authority read.
+const duringFinalAuthorityRead=(h,change)=>{h.calls.onDownload=()=>{h.calls.armed=true;};h.authority.onRead=n=>{if(h.calls.armed&&n===2)change(h);};};
+const artifactRow=(h,row)=>h.journal.rows.set(`${tenantId}:artifact:${artifactId}`,row);
+const finalReadCases=[
+ ['suppression committed during the final authority read',h=>artifactRow(h,{state:'SUPPRESSED',ledgerSequence:11}),410,'RETENTION_SUPPRESSED'],
+ ['suppression and release committed during the final authority read',h=>artifactRow(h,{state:'RELEASED',ledgerSequence:12}),410,'DOWNLOAD_LINK_REVOKED'],
+ ['recovery barrier closed during the final authority read',h=>h.serving.disable(),503,'RETENTION_RECOVERY_BARRIER'],
+];
+test('a suppression or barrier closure committed during the final authority read releases no bytes',async()=>{
+ for(const [label,change,status,expected] of finalReadCases){
+  const h=harness(),{token}=await h.issue();h.calls.length=0;h.authority.reads=0;duringFinalAuthorityRead(h,change);
+  const r=await h.post('links/redeem',{token});assert.equal(r.status,status,label);hardened(r);assert.equal(r.headers.get('content-type'),'application/json; charset=utf-8',label);
+  assert.equal(await code(r),expected,label);assert.equal(h.authority.reads,2,label+': the change landed during the final authority read');assert.equal(download(h.calls),1,label+': the canonical download ran, its bytes were withheld');
+ }
+});
+test('a suppression or barrier closure committed during the final authority read signs no link',async()=>{
+ for(const [label,change,status,expected] of finalReadCases){
+  const h=harness();duringFinalAuthorityRead(h,change);const r=await h.post('links/issue',{versionId});assert.equal(r.status,status,label);hardened(r);
+  const body=await r.json();assert.equal(body.error.code,expected,label);assert.equal(Object.hasOwn(body,'token'),false,label);assert.equal(h.authority.reads,2,label);
+ }
+});
+test('authority revoked during the post-body generation read signs and releases nothing',async()=>{
+ // The generation read that precedes the final authority read (the last generation read at the previous pin).
+ const armed=h=>{h.calls.onDownload=()=>{h.calls.armed=true;};h.journal.rows.onGet=()=>{if(h.calls.armed&&!h.authority.revoked){h.authority.revoked=true;}};};
+ const issuing=harness();armed(issuing);let r=await issuing.post('links/issue',{versionId});assert.equal(r.status,403);const body=await r.json();assert.equal(body.error.code,'SESSION_REFUSED');assert.equal(Object.hasOwn(body,'token'),false);
+ const redeeming=harness(),{token}=await redeeming.issue();redeeming.calls.length=0;armed(redeeming);r=await redeeming.post('links/redeem',{token});assert.equal(r.status,403);assert.equal(await code(r),'SESSION_REFUSED');assert.equal(download(redeeming.calls),1);
+});
+test('linearization order: the final generation read is the last awaited read and follows the final authority read',async()=>{
+ // Pins the documented order. A suppression committed after the final authority read is still observed (tests above); an authority
+ // change committed after the final authority read, while the final generation read is pending, is ordered after the read, exactly
+ // like a revocation committed just after a completed download. Session expiry is still checked synchronously after that read.
+ const order=[],h=harness(),{token}=await h.issue();h.calls.length=0;h.authority.reads=0;
+ h.calls.onDownload=()=>{h.calls.armed=true;};h.authority.onRead=n=>{if(h.calls.armed)order.push('authority:'+n);};
+ h.journal.rows.onGet=()=>{if(!h.calls.armed)return;order.push('generation');if(h.authority.reads===2)h.authority.revoked=true;};
+ let r=await h.post('links/redeem',{token});assert.equal(r.status,200);assert.deepEqual(Buffer.from(await r.arrayBuffer()),h.bytes);
+ assert.deepEqual(order,['generation','generation','authority:2','generation','generation'],'two subjects (conversation, artifact): post-body generation, final authority, final generation');
+ const expiring=harness({sessionExpiresAtMs:T+3000}),issued=await expiring.issue();expiring.calls.length=0;expiring.authority.reads=0;
+ expiring.calls.onDownload=()=>{expiring.calls.armed=true;};expiring.journal.rows.onGet=()=>{if(expiring.calls.armed&&expiring.authority.reads===2)expiring.clock.t=T+3000;};
+ r=await expiring.post('links/redeem',{token:issued.token});assert.equal(r.status,403);assert.equal(await code(r),'SESSION_REFUSED');
+});

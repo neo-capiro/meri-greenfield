@@ -29,11 +29,22 @@ including canonical refusals passed through and gate refusals, carries `Cache-Co
 **Authorization.** Issuance and redemption run one authorized read under the caller's own session (`download-links.mjs`): canonical
 inspect (version-scoped `artifact.inspect` authorization, scope/conversation binding, retention gate, current bytes), the suppression
 generation, then the canonical download (version-scoped `artifact.download` authorization for that exact `versionId`, retention gate,
-exact bytes), the bytes hash against the version record and the generation again, and finally a fresh current-authority read (same
-actor, same scope digest, unexpired session) after the last asynchronous body and suppression reads. Issuance signs only after all of
-that passes, so a link is never issued for a version the caller could not download now. Redemption authenticates before parsing the
-token, verifies the MAC and expiry, requires the signed actor, scope digest, sha256 and generation, runs the same read, then rechecks
-link expiry with no further await before releasing bytes. The token (`../../artifacts/storage/signed-download.mjs`) is an HMAC-SHA256
+exact bytes), the bytes hash against the version record and the generation again, then a fresh current-authority read (same actor,
+same scope digest, unexpired session) and a final generation read. Issuance signs only after all of that passes, so a link is never
+issued for a version the caller could not download now. Redemption authenticates before parsing the token, verifies the MAC and
+expiry, requires the signed actor, scope digest, sha256 and generation, runs the same read, then rechecks link expiry with no further
+await before releasing bytes.
+
+**Linearization point.** Each issue or redeem takes effect at its final authority read. The final generation read follows it and must
+return the generation read before the bytes were fetched, with the recovery barrier open and every subject RELEASED or absent; since
+the generation is a strictly increasing retention ledger sequence, equality proves no suppression or release committed in between.
+Nothing is awaited after the final generation read; the actor, scope, session-expiry, link-expiry and request-lifetime checks and the
+release or signature are synchronous. A suppression, release or barrier closure committed before the final generation read (including
+during the final authority read), or an authority change committed before the final authority read, refuses with nothing released or
+signed. One committed later is ordered after the read, as if it had committed just after a completed download. That matches the
+retention owner: suppression revokes access from its commit onwards and records issued access it cannot recall, and purge requires the
+subject to remain suppressed for the policy's positive cooling period, so released bytes were servable to this caller at the
+linearization point. A previously signed link is still revoked by a later suppression, because its redemption is a new read. The token (`../../artifacts/storage/signed-download.mjs`) is an HMAC-SHA256
 over `{versionId, sha256, scopeDigest, actorId, expiresAtMs, suppressionGeneration}`. Lifetime: `ttlMs` (default 60 s, at most 5 min),
 never beyond the session's current expiry. A token is useless without the same actor's current session. No token is stored anywhere.
 
@@ -76,7 +87,8 @@ that true (no body logging).
 
 Tests: `test/download-links.test.mjs` (scripted ports plus one case through the real canonical owners and generator: happy path,
 wrong actor, revoked and suppressed versions, expiry, tampering, changed bytes, download-authority refusal at issue, revocation, scope
-change, session expiry and suppression during the final reads, token placement, lifetime bounds), `test/download-links-redaction.test.mjs`
+change, session expiry and suppression during the final reads, suppression, release or barrier closure during the final authority
+read, the documented linearization order, token placement, lifetime bounds), `test/download-links-redaction.test.mjs`
 (real loopback listener plus telemetry: no link in process output, spans, metrics or refusal bodies), `../test/download-links-mount.test.mjs`
 (startup gate through `startControl`), `../../artifacts/storage/test/signed-download.test.mjs` and
 `../../artifacts/storage/test/s3-private-bucket.test.mjs`.

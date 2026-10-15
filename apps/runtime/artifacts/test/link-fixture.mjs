@@ -16,7 +16,7 @@ export function harness({bytes=Buffer.from('synthetic workbook bytes'),servedByt
   return Response.json({error:{code:'NOT_FOUND'}},{status:404});}};
  const actors={'action_session_a':'actor-a','action_session_b':'actor-b'};
  const sessions={async authenticateSession({credential}){if(!actors[credential]||authority.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});return {credential};},
-  async readCurrentState({authentication}){if(authority.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});return {binding:binding(actors[authentication.credential]),scopes:[{kind:'client',tenantId,resourceId:'client-1',policyRevision:authority.policyRevision}],selectedClientId:'client-1',expiresAtMs:authority.expiresAtMs};}};
+  async readCurrentState({authentication}){authority.reads=(authority.reads??0)+1;authority.onRead?.(authority.reads);if(authority.revoked)throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});return {binding:binding(actors[authentication.credential]),scopes:[{kind:'client',tenantId,resourceId:'client-1',policyRevision:authority.policyRevision}],selectedClientId:'client-1',expiresAtMs:authority.expiresAtMs};}};
  const app=createDownloadLinkApplication({documents,sessions,key,generation:createSuppressionGeneration({journal,serving}),now:()=>clock.t,ttlMs,maxRequestMs:5000});
  const post=(route,body,credential='action_session_a')=>app.handle(new Request('https://control.synthetic.invalid/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body:JSON.stringify(body)}));
  const issue=async()=>{const r=await post('links/issue',{versionId});assert.equal(r.status,200,await r.clone().text());return r.json();};

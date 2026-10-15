@@ -7,11 +7,29 @@
  * reach request-line access logs, URL telemetry or a Referer. Issuance and redemption run the same authorized read: canonical inspect
  * (version-scoped `artifact.inspect` authorization, retention gate, current bytes), the suppression generation, then the canonical
  * download (version-scoped `artifact.download` authorization for that exact version and its bytes), the exact bytes hash and the
- * generation again. Issuance signs the version's sha256, the current actor, scope digest and generation; it never signs a link the
- * caller could not download now. Redemption authenticates first, verifies the MAC and expiry, requires the same current actor and
- * scope digest, the signed sha256 and generation before any byte read. After the final body and suppression reads both paths re-read
- * current authority (same actor, scope digest, unexpired session) and redemption rechecks link expiry, synchronously before release. Every response on these
- * routes is `no-store`, `no-referrer` and `nosniff`; refusals carry closed codes only and never echo a token. */
+ * generation again, then the final authority read (same actor, scope digest, unexpired session) and a final suppression generation
+ * read. Issuance signs the version's sha256, the current actor, scope digest and generation; it never signs a link the caller could
+ * not download now. Redemption authenticates first, verifies the MAC and expiry, requires the same current actor and scope digest, the
+ * signed sha256 and generation before any byte read, and rechecks link expiry synchronously before release.
+ *
+ * Linearization point. A read (issue or redeem) takes effect at the final authority read. At that instant the caller's session was
+ * observed current with the same actor and scope digest, and retention was servable throughout: the final generation read that
+ * follows it re-runs the canonical journal check (barrier open before and after, no subject in a non-RELEASED state) and returns the
+ * same generation as the read taken before the bytes were fetched. The generation is the highest acknowledged retention ledger
+ * sequence of the subjects, strictly increasing on any suppression or release, so equality proves that no suppression or release of
+ * any subject committed between those two reads. Nothing is awaited after the final generation read: the remaining actor, scope,
+ * session-expiry, link-expiry and request-lifetime checks and the release or signature are synchronous. Consequently:
+ *  - a suppression, release or barrier closure that commits before the final generation read is observed, and nothing is released or
+ *    signed (this includes one that lands during the final authority read);
+ *  - an authority change that commits before the final authority read is observed, and nothing is released or signed;
+ *  - a suppression or barrier closure that commits after the final generation read, or an authority change that commits after the
+ *    final authority read, is ordered after this read: it is equivalent to that change committing just after a download that had
+ *    already completed. That is the retention owner's model: suppression revokes access from its commit onwards and records issued
+ *    access it cannot recall (`cannotRecall`), and physical purge is a separate step that requires the subject to stay suppressed for
+ *    the policy's positive cooling period, so the released bytes were servable to this caller at the linearization point and no read
+ *    linearized before a suppression can observe a purge. A link signed before a later suppression is revoked by that suppression,
+ *    because its redemption is a new read that observes the advanced generation.
+ * Every response on these routes is `no-store`, `no-referrer` and `nosniff`; refusals carry closed codes only and never echo a token. */
 import {createHash} from 'node:crypto';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {own,data,CommandError} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -46,7 +64,8 @@ export function createDownloadLinkApplication({documents,sessions,key,generation
   const authentication=await life.run(signal=>sessions.authenticateSession({credential,signal})),c=data(await life.run(signal=>sessions.readCurrentState({authentication,signal})));
   return {binding:c.binding,actorId:c.binding.actorId,expiresAtMs:c.expiresAtMs,scopeDigest:canonicalSha256({tenantId:c.binding.tenantId,conversationId:c.binding.conversationId,selectedClientId:c.selectedClientId,scopes:c.scopes})};
  }
- /** Canonical inspect, generation, canonical download, exact bytes and unchanged generation, all under the caller's own session.
+ /** Canonical inspect, generation, canonical download, exact bytes, unchanged generation, final authority and final generation, all
+  * under the caller's own session.
   * With `expected` (redemption) the signed sha256 and generation must match before the download is attempted. A canonical refusal is
   * returned as `{refused}` unchanged. */
  async function authorizedRead(request,versionId,who,life,expected=null){
@@ -57,11 +76,13 @@ export function createDownloadLinkApplication({documents,sessions,key,generation
   if(expected&&suppressionGeneration!==expected.suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');
   const downloaded=await life.run(signal=>forward(request,'download',{versionId},signal));if(downloaded.status!==200)return {refused:downloaded};
   const bytes=Buffer.from(await life.run(()=>downloaded.arrayBuffer()));if(sha256(bytes)!==version.object.sha256)fail('DOWNLOAD_LINK_BYTES');
+  // Early refusal of a suppression that landed during the body read, before spending an authority read.
   if(await read()!==suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');
-  // Final authority read after the last asynchronous body and suppression reads: the same actor and scope digest under a session that
-  // is still current and unexpired. Nothing is awaited between this check and the caller's release or signature.
+  // The linearization point (module comment): the final authority read, then the final generation read, which brackets it with the
+  // pre-download generation. These are the last awaited operations; every check after them is synchronous up to release or signature.
   const latest=await current(request,life);if(latest.actorId!==who.actorId||latest.scopeDigest!==who.scopeDigest)fail('DOWNLOAD_LINK_ACTOR');
-  if(now()>=latest.expiresAtMs)fail('SESSION_REFUSED');life.check();
+  const confirmed=await read();
+  if(confirmed!==suppressionGeneration)fail('DOWNLOAD_LINK_REVOKED');if(now()>=latest.expiresAtMs)fail('SESSION_REFUSED');life.check();
   return {version,bytes,headers:downloaded.headers,suppressionGeneration,sessionExpiresAtMs:latest.expiresAtMs};
  }
  async function issue(request,body,life){
