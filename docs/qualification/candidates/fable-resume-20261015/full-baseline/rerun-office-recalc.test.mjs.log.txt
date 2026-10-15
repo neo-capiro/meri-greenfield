@@ -1,0 +1,49 @@
+✖ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (1378.445776ms)
+✖ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (1481.591536ms)
+✔ Word argument contract remains exact and unsupported transform is rejected (1.790032ms)
+✔ xlsx profile configuration stays fixed and isolated from the borrowed temp root (50.759693ms)
+✔ docx profile configuration stays fixed and isolated from the borrowed temp root (44.447311ms)
+✔ child failure removes owned XLSX profile/input/output and preserves borrowed root (36.940172ms)
+✔ pre-cancelled XLSX conversion cleans prepared profile without starting a child (5.586553ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3075.19751
+
+✖ failing tests:
+
+test at apps/artifacts/test/office-recalc.test.mjs:20:49
+✖ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (1378.445776ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.transform (file:///home/user/meri-fable-resume/apps/artifacts/office-transform.mjs:33:17)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/artifacts/test/office-recalc.test.mjs:23:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 16502, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 226, stderrBytes: 68, stdoutRetainedBytes: 226, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: '8fb1a3227f0a708bf7be9b9b7eb38d361d9addf9be2c6bd2d05c69d41a089294', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 6f 66 66 69 63 65 2d 72 65 63 61 6c 63 2d 62 ... 176 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }
+
+test at apps/artifacts/test/office-recalc.test.mjs:20:49
+✖ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (1481.591536ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.transform (file:///home/user/meri-fable-resume/apps/artifacts/office-transform.mjs:33:17)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/artifacts/test/office-recalc.test.mjs:23:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 16550, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 226, stderrBytes: 68, stdoutRetainedBytes: 226, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: '5b4b19d36ab7841f4b8c16687def34152036ed2a9482c2848dbc96958c72fe9a', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 6f 66 66 69 63 65 2d 72 65 63 61 6c 63 2d 71 ... 176 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }

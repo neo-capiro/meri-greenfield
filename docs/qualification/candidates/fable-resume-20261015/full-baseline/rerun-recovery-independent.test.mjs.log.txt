@@ -1,0 +1,15 @@
+✔ independent: runner total deadline settles while approve ignores cancellation (102.952888ms)
+✔ independent: runner total deadline settles while revoke ignores cancellation (101.659866ms)
+✔ independent: unaccelerated thirty-second cutoff closes listeners and settles parked approve (30001.517836ms)
+✔ independent actual graph: same retained selection and proposal across three HTTP hosts, one effect and fresh revocation (1108.109029ms)
+✔ independent actual runner closes all three owned sockets and reports only synthetic recovery (207.087722ms)
+✔ independent runner failure closes listener without retrying or changing proposals (16.355384ms)
+✔ independent CLI import/help/invalid are inert and explicit run is finite and secret-free (1357.422121ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33047.011646

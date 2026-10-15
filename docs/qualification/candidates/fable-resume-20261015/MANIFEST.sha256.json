@@ -19,11 +19,11 @@
   },
   {
    "path": "README.md",
-   "bytes": 17109,
-   "sha256": "6b649765dc22bda9856e451a6837fa936823229d2bc2352499a1a3567e342b84"
+   "bytes": 17328,
+   "sha256": "beee693e2df53f54b24e0cd1b4d07d2fe9b192d4cf04f0424192bd2df0792ec1"
   },
   {
-   "path": "artifact/pip-install-host.log",
+   "path": "artifact/pip-install-host.log.txt",
    "bytes": 5748,
    "sha256": "177e7ee046f1f91956bda9392c91634787fce308b696c6a76ccc3916406d44fb"
   },
@@ -53,17 +53,17 @@
    "sha256": "5939aa10476b34e8551fe70a097ae6444ac92669a590e2431e5cf33685a94a50"
   },
   {
-   "path": "checks/process.test.log",
+   "path": "checks/process.test.log.txt",
    "bytes": 856,
    "sha256": "3fc0d6370802b75ac4a399d55c191b9d0d369e4af47fe81c9c8c25513a82b03d"
   },
   {
-   "path": "checks/runtime-process.test.log",
+   "path": "checks/runtime-process.test.log.txt",
    "bytes": 1706,
    "sha256": "d05e8246fdf335e7c253ec9007398041609ec59eeb92b4bfdc27f88305d366ee"
   },
   {
-   "path": "checks/source-proof.test.log",
+   "path": "checks/source-proof.test.log.txt",
    "bytes": 747,
    "sha256": "128fa1326dcb7d0d6b059807a3a59b6cb9a82bd20146c5cc111830681debf7d0"
   },
@@ -93,12 +93,12 @@
    "sha256": "eb1f4b699c32e59abf829b0572d86b1d2711fe591222752311a1987737a26c64"
   },
   {
-   "path": "full-baseline/rerun-office-recalc.test.mjs.log",
+   "path": "full-baseline/rerun-office-recalc.test.mjs.log.txt",
    "bytes": 4403,
    "sha256": "0e6248503322791cab4efb9ee0b3d0d4bed50e54e8c4b5af16d1be16bb4ed70c"
   },
   {
-   "path": "full-baseline/rerun-recovery-independent.test.mjs.log",
+   "path": "full-baseline/rerun-recovery-independent.test.mjs.log.txt",
    "bytes": 884,
    "sha256": "465d7592365d327199f0759ab31682fcc158e44ef224525fe9ca0951456a0d53"
   },

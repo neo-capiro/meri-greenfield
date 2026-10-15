@@ -1,0 +1,15 @@
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (4510.453629ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (2229.706529ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (2104.199573ms)
+✔ actual process exits on SIGTERM after listener shutdown (1519.126235ms)
+✔ actual runner command composition consumes steering and canonically captures completed checkpoint (3043.343479ms)
+✔ actual runner completion route refuses current authority instead of fabricating completion (2305.883106ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2565.4529ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18711.938048

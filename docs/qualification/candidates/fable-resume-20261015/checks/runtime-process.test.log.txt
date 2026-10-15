@@ -1,0 +1,23 @@
+✔ actual control listener mounts canonical opaque issuance, submit/history and task-authorized RPC (2780.169319ms)
+✔ actual listener rejects cross-origin and incorrect methods; dependency loss changes readiness (1814.924276ms)
+✔ actual CLI help and invalid configuration exit before dependency allocation (1984.334427ms)
+✔ actual process exits on SIGTERM after listener shutdown (1810.612673ms)
+✔ actual runner command composition consumes steering and canonically captures completed checkpoint (3137.063695ms)
+✔ actual runner completion route refuses current authority instead of fabricating completion (2166.144646ms)
+✔ actual runner native capture refusal leaves pause unverified and retains UNKNOWN control (2597.084342ms)
+✔ configuration refuses sources, production profile, unknown fields and shared task workspace (10.458252ms)
+✔ isolated runner refuses ambient provider, database, cloud and Temporal credentials (0.702739ms)
+✔ trusted Temporal registration uses both canonical workflow definitions and broker activity (0.582944ms)
+✔ broker accepts exact native task identity and propagates completion without an SDK loop (2.063524ms)
+✔ broker refuses a response from another writer fence (0.416086ms)
+✔ isolated runner invokes canonical activity and one scripted SDK query, preserving durable events (139.849194ms)
+✔ runner and container boundaries exclude legacy proxies and arbitrary injected config modules (3.909172ms)
+✔ remote role config binds exact original workspace/image and requires capture ownership without new credentials (2.407548ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18026.127591
