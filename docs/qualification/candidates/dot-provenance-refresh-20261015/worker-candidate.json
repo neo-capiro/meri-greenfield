@@ -1,0 +1,302 @@
+{
+  "schema": "meri.worker-provenance-source-candidate/1",
+  "status": "SOURCE_ONLY_UNQUALIFIED",
+  "base": "b5be44d5141ae5fd3830aed789cb7ad525506c4e",
+  "baseTree": "efc4b7bf87480d65fc4e6090c2a83b8e6d9dcf4d",
+  "sourceHead": null,
+  "sourceHeadNote": "Resolve this candidate from its enclosing Git commit; never self-seal or infer image admission.",
+  "parentDecision": "e32353f source-only accepted; Fable candidate accepted as record; qualification open",
+  "imageDigest": null,
+  "buildPerformed": false,
+  "runtimeAdmission": false,
+  "inputs": [
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 43960,
+      "sha256": "c6c473754136fb0e0642db644b04a34cffb5d99329a7807821e5b3a41fabe528"
+    },
+    {
+      "path": "apps/worker/qualification/package.json",
+      "bytes": 1240,
+      "sha256": "c14736fe666c6f1674d96794f8b55011501aa0b430f29b8ed23772d79cabea5b"
+    },
+    {
+      "path": "apps/worker/qualification/package-lock.json",
+      "bytes": 68705,
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a"
+    },
+    {
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "bytes": 3016,
+      "sha256": "ddd1fdba54cae43c9aef1c56f4a8e1f81fafd466acd6f88203c63c89e2f1e02a"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3606,
+      "sha256": "bc72b4cbc240e133742350d3dcc7dcd995a426d9dc85439f1886b49aa41c0605"
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11867,
+      "sha256": "e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765"
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins.py",
+      "bytes": 4310,
+      "sha256": "1708650ce0e347a974bd8621018c8ad8723985d68ecb1f707a98b40a57df2a6a"
+    }
+  ],
+  "contextManifest": {
+    "path": "worker-context-manifest.json",
+    "bytes": 12022,
+    "sha256": "07c33da6af30859aab93ac3345d148c03bccf1e30914e4ca50d2000cbf385ca8",
+    "members": 57
+  },
+  "preservedRuntimeProofAndManifests": [
+    {
+      "path": "apps/control/conversations/execution-journal.mjs",
+      "bytes": 4349,
+      "sha256": "122ef5348260c4706b9eaf3488fe3c7d3585236a1cf54dbe21419214e796f0cd"
+    },
+    {
+      "path": "apps/control/conversations/native-preparation-journal.mjs",
+      "bytes": 12249,
+      "sha256": "b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9"
+    },
+    {
+      "path": "apps/control/conversations/postgres-store.mjs",
+      "bytes": 10186,
+      "sha256": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa"
+    },
+    {
+      "path": "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
+      "bytes": 5220,
+      "sha256": "e2191c500fec93d00aafd045fc3c39b1934e6daa30de6edc072e2fb900c2f5d1"
+    },
+    {
+      "path": "apps/control/conversations/test/read-optional-pg.test.mjs",
+      "bytes": 3053,
+      "sha256": "56fc34b258fbe8ca9e3c45301508ba294077d86ccd156e6799df803bf1cc4b1f"
+    },
+    {
+      "path": "apps/runtime/Dockerfile",
+      "bytes": 2063,
+      "sha256": "8d4ac642bee442691b2857c58ae89cc84c16f52e054386c0ecb7ab9a0ead7e69"
+    },
+    {
+      "path": "apps/runtime/config.mjs",
+      "bytes": 6730,
+      "sha256": "a786efc5a3eb046fe4ada7439c314d456ab11d81353b2137eebc47d683624e1d"
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "bytes": 9951,
+      "sha256": "4e31ee7a6008785e043a26bf3188bc8d70024be21da1f88ce376f555fda88823"
+    },
+    {
+      "path": "apps/runtime/conversation-runner.mjs",
+      "bytes": 9816,
+      "sha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-capture.mjs",
+      "bytes": 8078,
+      "sha256": "13eae4bbce5c2b747417625279d8852ff0b44412fb72b06b73c8bf14354eb0e2"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+      "bytes": 3443,
+      "sha256": "bf2c9a066e20be402e9ebf41483f03515e7c358f49beadc5315e23e61cfc8776"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-inspection.mjs",
+      "bytes": 5003,
+      "sha256": "1fe4a0af8b2a5153453f81891de1e7dacbd56112c01d7eb1105806d94727d443"
+    },
+    {
+      "path": "apps/runtime/native-authority/checkpoint-readback.mjs",
+      "bytes": 1675,
+      "sha256": "f8072c0d5cb70ff5f8634dbd9d217afb58eda56d788e29d542824492594d4319"
+    },
+    {
+      "path": "apps/runtime/native-authority/prepared-kickoff-http.mjs",
+      "bytes": 4701,
+      "sha256": "74b523647a3a433fbfce031a91a96a37d5ddec2a86cd88ba5d2b18c4ace03b08"
+    },
+    {
+      "path": "apps/runtime/native-authority/prepared-kickoff.mjs",
+      "bytes": 9703,
+      "sha256": "b8623c6b9c78b92a81a858756073dace0fd47a4646c12eadb9f403a80dfcf875"
+    },
+    {
+      "path": "apps/runtime/native-authority/prepared-runtime.mjs",
+      "bytes": 11233,
+      "sha256": "e3e3629d370f81f0b71e6b2e6d2f2a8b19b3fd277c111a8db1c7be82f2e47e3b"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-composition.mjs",
+      "bytes": 14967,
+      "sha256": "b1e3c3e92e40103edc48c42779be55fcc51c89fe9e2ce7f4bbecc7888d0c982a"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-task-client.mjs",
+      "bytes": 10900,
+      "sha256": "9ac6ec22f3542bd38ec471a4ea7a75edec2f7d9c9eee1388a8e8bb2c6ced6905"
+    },
+    {
+      "path": "apps/runtime/native-authority/remote-task-http.mjs",
+      "bytes": 15697,
+      "sha256": "f57dfa5f3ad23387f23770d5394d20dc0d54864c45d17663aace7b2f2774d00d"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs",
+      "bytes": 7170,
+      "sha256": "1d8a6c8fad032bc7554d21e1ebf5db27020791dbf385d51adc0b0b5f9d5833a5"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+      "bytes": 4473,
+      "sha256": "f4062fe1e12b3a399d9a138645cedfb83750972aecf8aa60eda69e772508f319"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+      "bytes": 11628,
+      "sha256": "502834fae51c3c02be0600175aad8eac2e98efdc000bc235a938a09c204c2214"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs",
+      "bytes": 3563,
+      "sha256": "f8618e4efb2768ab107cf5204babae9f76add89c62c3255e0fcb998a77a77fec"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+      "bytes": 11030,
+      "sha256": "d64265e70259968f9514b26b55dd10c6548adb8b1791fe8118d89f02f6dc881a"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+      "bytes": 6516,
+      "sha256": "bbb281d13032b357b11ba0bed60bf5d388fc690fdd9bca0a7d673c952ca8e87b"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+      "bytes": 5585,
+      "sha256": "735df1cf1624c01e99cf5a77dbbade43120487df5134c081f8cb2e4fab54ade6"
+    },
+    {
+      "path": "apps/runtime/native-authority/test/remote-task.test.mjs",
+      "bytes": 28125,
+      "sha256": "9b60f23c2dd542b27cd23d4ffea4ad9cc8c402b9e9281d53beb033a88d3e16ed"
+    },
+    {
+      "path": "apps/runtime/native-runner-gateway.mjs",
+      "bytes": 7042,
+      "sha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate-config.mjs",
+      "bytes": 5018,
+      "sha256": "8cc1bf393f78ee182077c03c313af4b53826f3e8842e6116fd0b42266afbc156"
+    },
+    {
+      "path": "apps/runtime/prepared-candidate.mjs",
+      "bytes": 14934,
+      "sha256": "7fd1ee7257d627a7d17d83c611eef6de8c7cb1c9c09443249495d052e7cefd80"
+    },
+    {
+      "path": "apps/runtime/remote-conversation-runner.mjs",
+      "bytes": 6326,
+      "sha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec"
+    },
+    {
+      "path": "apps/runtime/task-bootstrap.mjs",
+      "bytes": 3359,
+      "sha256": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc"
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "bytes": 5858,
+      "sha256": "7e309e52b3fd6e0b5ebb74b91f82d2953fef48425936d13953d472e2633ffb9b"
+    },
+    {
+      "path": "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
+      "bytes": 8717,
+      "sha256": "9e0fb1afa1445abed9f0837e64a74ba116825eee54cbb551cedcfa6a919e199c"
+    },
+    {
+      "path": "apps/runtime/test/prepared-candidate-config.test.mjs",
+      "bytes": 5668,
+      "sha256": "8ba96067d9b9c486dce498a13ed1b9a14ed259089426e8e054ae14b2f3c1a153"
+    },
+    {
+      "path": "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+      "bytes": 2872,
+      "sha256": "f543fcb65bc9be8c45e53b1a379b97700b8a19b3e44ee4e3ea0d1b81849a3cda"
+    },
+    {
+      "path": "apps/runtime/test/prepared-candidate-fixture.mjs",
+      "bytes": 5040,
+      "sha256": "5e3039c3ed672fbd5102156ce35e0017f1f93497ba9ba3b3fe14d6fb7682e701"
+    },
+    {
+      "path": "apps/runtime/test/prepared-candidate.test.mjs",
+      "bytes": 6153,
+      "sha256": "e8b11f520ee37518916ae21c7860d9606e3d7ea0e17b58f44ed1153b2ed2826c"
+    },
+    {
+      "path": "apps/runtime/test/prepared-temporal.test.mjs",
+      "bytes": 3913,
+      "sha256": "654ba8b9c9b00dc6e83dd92cc561c374e68839179055e006c98cb43f95b8d5ba"
+    },
+    {
+      "path": "packages/skills/evidence/typed-reads.mjs",
+      "bytes": 7564,
+      "sha256": "a47afe97f9db2bb3c2b730fbef68988c0391c191897339f2d8535a75c222905d"
+    },
+    {
+      "path": "packages/skills/evidence/material-records.mjs",
+      "bytes": 4049,
+      "sha256": "8e50b8be68b9a23781c413f4c425539cfa700ca66533ee029f93429b808576f9"
+    },
+    {
+      "path": "packages/skills/evidence/record-pages.mjs",
+      "bytes": 4220,
+      "sha256": "1f03ce6acf69f8f29d0a31fe7e5daadac41908514d89704fcd77f00b53e35b0d"
+    },
+    {
+      "path": "apps/gateway/qualification/action-gateway.mjs",
+      "bytes": 600,
+      "sha256": "67403b3cbb823857980cd90c8dbf3a708efb59e50bc49124cc4f5539f52e0c6f"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+      "bytes": 2887,
+      "sha256": "bdfac290cea0157676d6949c31a7bc7b546312eedd25849f26fad4d626c4d53a"
+    },
+    {
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "bytes": 5402,
+      "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/source-manifest.json",
+      "bytes": 7835,
+      "sha256": "d7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261014.json",
+      "bytes": 11150,
+      "sha256": "dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-dot-20261014.json",
+      "bytes": 16102,
+      "sha256": "fb97f11639d173fd15781df776ea8c49d9c2c53cc868dc9e8512e957195b310b"
+    },
+    {
+      "path": "scripts/qualification/assembled-image/candidate-manifest-fable-20261015.json",
+      "bytes": 16987,
+      "sha256": "59a67fa2d8685f743f1b1a1e4a46360632c30bfead683b119ebccfa424b3c6a4"
+    }
+  ]
+}
