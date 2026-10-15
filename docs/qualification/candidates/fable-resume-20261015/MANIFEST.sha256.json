@@ -14,13 +14,13 @@
   },
   {
    "path": "DENIED-OPERATIONS.md",
-   "bytes": 8863,
-   "sha256": "9f98950c8935ec5e51fccfcd7c2837d78948dc4d1e4df399a1a63cb54d514246"
+   "bytes": 12997,
+   "sha256": "55952d4166875861a7a20b6bdbb6f2e7a4ae08d8fd23b9f9582c32a3fab35b65"
   },
   {
    "path": "README.md",
-   "bytes": 17328,
-   "sha256": "beee693e2df53f54b24e0cd1b4d07d2fe9b192d4cf04f0424192bd2df0792ec1"
+   "bytes": 17517,
+   "sha256": "7925d73684eab1f4d2c1459d648359c6dbacc1dbdda8c4aa890363e16262643b"
   },
   {
    "path": "artifact/pip-install-host.log.txt",
@@ -104,13 +104,18 @@
   },
   {
    "path": "manifest.mjs",
-   "bytes": 1231,
-   "sha256": "183cf5255db3ff76dda637229b396ab11a4e3bf9d24a56c564ff22ff1acb5d05"
+   "bytes": 1446,
+   "sha256": "52be41b51e583e03734fabd4dcf23ae51e5d696f5d54a25ed98b002e57def2ce"
   },
   {
    "path": "node-zlib/node24-gzwrite-comparison.json",
    "bytes": 3195,
    "sha256": "7089c10677ba37b5f7d3fa47bf93def2ead82edea8f641f678d607c0c52d018c"
+  },
+  {
+   "path": "rehearsal/composed-at-pin-cancellation.json",
+   "bytes": 5229,
+   "sha256": "c504d89c038395b2162719602ec551e7e34bbfe6c6df1ad04e524652f3ad492f"
   },
   {
    "path": "rehearsal/composed-at-pin.json",
@@ -121,6 +126,11 @@
    "path": "rehearsal/composed-at-pin.stdout.txt",
    "bytes": 537,
    "sha256": "20ee701274abc19987638aaf54ef648fbcca3dc8e6f3a9d50074515ac2d9d078"
+  },
+  {
+   "path": "rehearsal/composed-refactored-cancellation.json",
+   "bytes": 5225,
+   "sha256": "16469ab4b189c0bcda42609585657d2623d300e0a0b9d16597cc0f56a499cfeb"
   },
   {
    "path": "rehearsal/composed-refactored.json",
