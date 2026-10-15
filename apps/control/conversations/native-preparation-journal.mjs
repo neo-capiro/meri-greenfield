@@ -39,6 +39,15 @@ function restorationReceipt(value,i,state){
  if(state!=='RESTORED')denied();const v=own(value,['workspaceSha256','opaqueSessionSha256']);
  if(v.workspaceSha256!==i.workspaceSha256||v.opaqueSessionSha256!==i.opaqueSessionSha256)denied();
 }
+/** No-authority evidence for an attempt that never acquired native authority: the run turned failed or cancelled while still queued
+ * and no allocation was claimed. The store writes it in the same transaction (under the conversation lock) as that terminal transition,
+ * into the run's own allocation row, so the primary key and the claim's queued-state check both refuse any later claim: no task,
+ * admission or budget grant can exist for that attempt. No transition leaves it (the database trigger refuses any update of it).
+ * A missing row is never this evidence. */
+export const FORECLOSED='FORECLOSED';
+export function foreclosureRecord(value,b){const r=data(value);own(r,['binding','allocationKey','state','foreclosure']);validateShape('RunBinding',r.binding);const f=own(r.foreclosure,['eventId','eventSha256','state']);uuid(f.eventId);digest(f.eventSha256);
+ if(r.state!==FORECLOSED||r.allocationKey!==hash(r.binding)||!['failed','cancelled'].includes(f.state)||b!==undefined&&!same(r.binding,b))denied();return r;}
+export function foreclosed(value,b){try{foreclosureRecord(value,b);return true;}catch{return false;}}
 const allocationTransitions={CLAIMED:['ALLOCATED','UNKNOWN','RETIRED'],ALLOCATED:['ALLOCATED','ADMITTED','UNKNOWN','RETIRED'],UNKNOWN:['UNKNOWN','ALLOCATED','ADMITTED','RETIRED'],ADMITTED:['ADMITTED','UNKNOWN','RETIRED'],RETIRED:['RETIRED']};
 const restorationTransitions={CLAIMED:['UNKNOWN','RESTORED'],UNKNOWN:['UNKNOWN'],RESTORED:['RESTORED']};
 export function createNativePreparationJournals({tx,rowRun}){
@@ -46,7 +55,7 @@ export function createNativePreparationJournals({tx,rowRun}){
  function slot({table,key,fields,validateIntent,validateProof,transitions,proofKey,completed}){
   function intent(value){const i=data(value);own(i,['binding',key,...fields,'expiresAtMs']);validateShape('RunBinding',i.binding);digest(i[key]);positive(i.expiresAtMs);validateIntent(i);return i;}
   function recordValue(value){const r=data(value);own(r,['binding',key,...fields,'expiresAtMs','state',proofKey]);const {state,[proofKey]:proof,...original}=r;intent(original);if(!Object.hasOwn(transitions,state))denied();validateProof(proof,original,state);return r;}
-  function decode(row,b,k){try{if(!row||row.record_sha256!==hash(row.record))denied();const r=recordValue(row.record);
+  function decode(row,b,k){try{if(!row||row.record_sha256!==hash(row.record))denied();const r=proofKey==='resource'&&row.record?.state===FORECLOSED?foreclosureRecord(row.record):recordValue(row.record);
    if(!same(r.binding,b)||row.tenant_id!==b.tenantId||row.conversation_id!==b.conversationId||row.run_id!==b.runId||row.intent_key!==r[key]||r[key]!==k)denied();return r;
   }catch{fail('NATIVE_PREPARATION_CORRUPT');}}
   function lookup(value){const v=data(value);own(v,['binding',key]);validateShape('RunBinding',v.binding);digest(v[key]);return v;}
@@ -80,22 +89,29 @@ export function createNativePreparationJournals({tx,rowRun}){
    });
   }
   return Object.freeze({
-   ...(proofKey==='resource'?{async verifyExecutionClaim(c,original,versions,check){const saved=await load(c,original.binding,original.executionKey,check),r=saved.record;if(!r||r.state!=='ADMITTED'||r.resource.launchBinding?.state!=='CLAIMED'||!same(r.original,{...original,versions}))denied();return true;},prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
+   ...(proofKey==='resource'?{
+    /** In the caller's terminal-transition transaction: records the no-authority evidence when no allocation row exists. An existing
+     * claim is left untouched and still needs retirement and revocation. */
+    async foreclose(c,b,event,check){const rows=(await c.query('SELECT * FROM '+table+' WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',tuple(b))).rows;check();if(rows.length)return null;
+     const record=foreclosureRecord({binding:b,allocationKey:hash(b),state:FORECLOSED,foreclosure:{eventId:event.eventId,eventSha256:hash(event),state:event.data.state}});
+     await c.query('INSERT INTO '+table+'(tenant_id,conversation_id,run_id,intent_key,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6)',[...tuple(b),record.allocationKey,record,hash(record)]);check();return record;},
+    async verifyExecutionClaim(c,original,versions,check){const saved=await load(c,original.binding,original.executionKey,check),r=saved.record;if(!r||r.state!=='ADMITTED'||r.resource.launchBinding?.state!=='CLAIMED'||!same(r.original,{...original,versions}))denied();return true;},prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
    async claim(value,check){const i=intent(value);return tx(i.binding,check,async c=>{
-    const saved=await load(c,i.binding,i[key],check);if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
+    const saved=await load(c,i.binding,i[key],check);if(saved.record?.state===FORECLOSED)fail('NATIVE_PREPARATION_STATE_REFUSED');if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
     if(saved.run.state!=='queued')fail('NATIVE_PREPARATION_STATE_REFUSED');
     // Conversation exclusion: a replacement allocation is refused while any other allocation of the same tenant and conversation is live
     // or unresolved (not RETIRED with its physical stop proven). Exact replay of an existing claim returns above without redispatch; a fork
     // into another conversation is unaffected. Grant revocation is verified separately by the next-run and issuance owners.
     if(proofKey==='resource'){const others=(await c.query('SELECT * FROM '+table+' WHERE tenant_id=$1 AND conversation_id=$2 AND run_id<>$3 FOR UPDATE',tuple(i.binding))).rows;check();
-     for(const row of others){if(row.record_sha256!==hash(row.record))fail('NATIVE_PREPARATION_CORRUPT');if(row.record.state!=='RETIRED'||row.record.resource?.physicalStopProven!==true)fail('NATIVE_PREPARATION_CONVERSATION_BUSY');}}
+     // A foreclosed attempt never held authority, so it does not keep the conversation busy.
+     for(const row of others){if(row.record_sha256!==hash(row.record))fail('NATIVE_PREPARATION_CORRUPT');if(row.record.state===FORECLOSED){if(!foreclosed(row.record))fail('NATIVE_PREPARATION_CORRUPT');continue;}if(row.record.state!=='RETIRED'||row.record.resource?.physicalStopProven!==true)fail('NATIVE_PREPARATION_CONVERSATION_BUSY');}}
     const record=recordValue({...i,state:'CLAIMED',[proofKey]:null});
     await c.query('INSERT INTO '+table+'(tenant_id,conversation_id,run_id,intent_key,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6)',[...tuple(i.binding),i[key],record,hash(record)]);check();return {...saved,record,dispatch:true};
    });},
    async read(value,check){const v=lookup(value);return tx(v.binding,check,c=>load(c,v.binding,v[key],check));},
    async record(value,check){const v=data(value);own(v,['binding',key,'state',proofKey]);lookup({binding:v.binding,[key]:v[key]});
     if(!Object.hasOwn(transitions,v.state))denied();return tx(v.binding,check,async c=>{
-     const saved=await load(c,v.binding,v[key],check),old=saved.record;if(!old||!transitions[old.state].includes(v.state))denied();
+     const saved=await load(c,v.binding,v[key],check),old=saved.record;if(!old||!Object.hasOwn(transitions,old.state)||!transitions[old.state].includes(v.state))denied();
      const proof=v[proofKey]??(v.state==='UNKNOWN'?old[proofKey]:null),record=recordValue({...old,state:v.state,[proofKey]:proof});
      if(proofKey==='resource'&&(old.resource?.launchBinding!==undefined||proof?.launchBinding!==undefined)&&!same(old.resource?.launchBinding??null,proof?.launchBinding??null))denied();
      if(old.state===completed&&!same(old,record))denied();

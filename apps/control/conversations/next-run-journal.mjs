@@ -4,13 +4,17 @@
 import {assertRun,bounded,hash,same,fail,validateShape,uuid,own} from './boundary.mjs';
 import {validateCompletionProof} from './completion-journal.mjs';
 import {closeSequenceRange} from './sequence-ranges.mjs';
+import {FORECLOSED,foreclosed} from './native-preparation-journal.mjs';
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
 /** Terminal states that may admit a next prompt once the original is retired and its grants revoked. */
 export const admitsNextRun=state=>state==='completed'||state==='failed'||state==='cancelled';
 export function createNextRunJournal({tx,rowRun}){
  const row=r=>{if(!r||hash(r.reservation)!==r.reservation_sha256)fail('STORE_CORRUPT');const v=r.reservation;if(r.source_run_id!==v.source.runId||r.target_run_id!==v.target.runId||r.tenant_id!==v.target.tenantId||r.conversation_id!==v.target.conversationId||!['RESERVED','ACCEPTED'].includes(r.state))fail('STORE_CORRUPT');return {...v,state:r.state};};
  const key=value=>{const k=bounded(value);own(k,['tenantId','conversationId']);uuid(k.conversationId);if(typeof k.tenantId!=='string'||!k.tenantId||k.tenantId.length>256)fail('INVALID_REQUEST');return k;};
- function facts(value){const f=bounded(value);own(f,['checkpoint','retirement','revocation']);own(f.retirement,['physicalStopProven']);own(f.revocation,['receiptSha256','grantIds']);if(f.checkpoint!==null){own(f.checkpoint,['checkpointId','proofSha256']);uuid(f.checkpoint.checkpointId);}
+ /** Either retirement plus revocation of an allocation that existed, or (failed/cancelled source only) the store's explicit
+  * no-authority evidence that the attempt never claimed one; the journal verifies whichever is named against the row itself. */
+ function facts(value){const f=bounded(value);if(f&&typeof f==='object'&&Object.hasOwn(f,'noAuthority')){own(f,['checkpoint','noAuthority']);own(f.noAuthority,['foreclosureSha256']);if(f.checkpoint!==null||!digest(f.noAuthority.foreclosureSha256))fail('NEXT_RUN_FACTS_REFUSED');return f;}
+  own(f,['checkpoint','retirement','revocation']);own(f.retirement,['physicalStopProven']);own(f.revocation,['receiptSha256','grantIds']);if(f.checkpoint!==null){own(f.checkpoint,['checkpointId','proofSha256']);uuid(f.checkpoint.checkpointId);}
   if(f.checkpoint!==null&&!digest(f.checkpoint.proofSha256)||f.retirement.physicalStopProven!==true||!digest(f.revocation.receiptSha256)||!Array.isArray(f.revocation.grantIds)||!f.revocation.grantIds.length||f.revocation.grantIds.length>64||f.revocation.grantIds.some(g=>typeof g!=='string'||!g||g.length>256))fail('NEXT_RUN_FACTS_REFUSED');return f;}
  function completion(r,source){if(!r||hash(r.identity)!==r.identity_sha256||r.tenant_id!==source.tenant_id||r.conversation_id!==source.conversation_id||r.run_id!==source.run_id||!same(r.identity.binding,source.projection.binding)||r.completion_id!==r.identity.completionId||r.checkpoint_id!==r.identity.checkpointId||!same(r.identity.sourceRequest,source.request)||r.identity.sourceRequestSha256!==source.request_sha256||r.identity.contextSha256!==hash({window:source.request.window,skill:source.request.skill,scopes:source.projection.scopes})||!same(r.identity.scopes,source.projection.scopes)||!same(r.identity.versions,source.projection.versions))fail('STORE_CORRUPT');if(r.state==='PUBLISHED'){if(hash(r.proof)!==r.proof_sha256)fail('STORE_CORRUPT');validateCompletionProof(r.proof,r.identity);}return r;}
  const projected=r=>({binding:r.projection.binding,state:r.projection.state,requestId:r.request_id,sequenceBase:Number(r.sequence_base),lastSequence:Number(r.last_sequence),sequenceEnd:r.sequence_end==null?null:Number(r.sequence_end),scopes:r.projection.scopes,policyRevision:r.projection.policyRevision,versions:r.projection.versions,createdAt:r.projection.createdAt});
@@ -21,8 +25,8 @@ export function createNextRunJournal({tx,rowRun}){
  async function listRuns(value,check){const k=key(value);return tx(k,check,async c=>{const runs=await conversationRuns(c,k,check);const reservations=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2',[k.tenantId,k.conversationId])).rows.map(row);check();return {runs,reservations:reservations.map(r=>({source:r.source,target:r.target,state:r.state}))};});}
  /** Only a genuine atomically published completion checkpoint can seed a new prompt. */
  async function latestCheckpoint(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.completion_checkpoints WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const source=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0]);check();const r=completion(rows[0],source);if(!same(source.projection.binding,b))fail('STALE_WRITER');if(r.state!=='PUBLISHED')return null;return {checkpointId:r.checkpoint_id,proofSha256:r.proof_sha256};});}
- /** Under the conversation lock: the source must be the latest run and terminal with a retired allocation and revoked grants; a completed
-  * source also needs its captured checkpoint, a failed/cancelled one must carry none. One reservation per source, recovered unchanged after a lost acknowledgement. */
+ /** Under the conversation lock: the source must be the latest run and terminal with a retired allocation and revoked grants (or, failed or
+  * cancelled before any claim, its no-authority evidence); a completed source also needs its captured checkpoint, a failed/cancelled one must carry none. One reservation per source, recovered unchanged after a lost acknowledgement. */
  async function reserve({source,target,facts:rawFacts,scopes,versions,policyRevision,reservedAt},check){
   source=bounded(source);target=bounded(target);validateShape('RunBinding',source);validateShape('RunBinding',target);validateShape('RuntimeVersions',versions);scopes=bounded(scopes);
   if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||target.runId===source.runId||target.attemptId===source.attemptId||target.workerId===source.workerId||target.writerFence!==source.writerFence+1)fail('NEXT_RUN_TARGET_REFUSED');
@@ -38,8 +42,11 @@ export function createNextRunJournal({tx,rowRun}){
     if(checkpoint.length!==1||checkpoint[0].state!=='PUBLISHED'||hash(checkpoint[0].identity)!==checkpoint[0].identity_sha256||!same(checkpoint[0].identity.binding,source)||checkpoint[0].proof_sha256!==f.checkpoint.proofSha256||hash(checkpoint[0].proof)!==checkpoint[0].proof_sha256)fail('NEXT_RUN_CHECKPOINT_REQUIRED');
     const sourceRow=rowRun((await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows[0]);check();completion(checkpoint[0],sourceRow);}
    const allocation=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[source.tenantId,source.conversationId,source.runId])).rows;check();
-   if(allocation.length!==1||hash(allocation[0].record)!==allocation[0].record_sha256||allocation[0].record.state!=='RETIRED'||allocation[0].record.resource?.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');
-   if(!same([...f.revocation.grantIds].sort(),allocation[0].record.grantIntents.map(g=>g.grantId).sort()))fail('NEXT_RUN_REVOCATION_REQUIRED');
+   if(allocation.length!==1||hash(allocation[0].record)!==allocation[0].record_sha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');const a=allocation[0].record;
+   // A missing row is never safe: no-authority admission needs the foreclosure row written with the source's own terminal transition.
+   if(f.noAuthority){if(a.state!==FORECLOSED||!foreclosed(a,source)||a.foreclosure.state!==latest.state||allocation[0].record_sha256!==f.noAuthority.foreclosureSha256)fail('NEXT_RUN_RETIREMENT_REQUIRED');}
+   else{if(a.state!=='RETIRED'||a.resource?.physicalStopProven!==true)fail('NEXT_RUN_RETIREMENT_REQUIRED');
+    if(!same([...f.revocation.grantIds].sort(),a.grantIntents.map(g=>g.grantId).sort()))fail('NEXT_RUN_REVOCATION_REQUIRED');}
    const reservation={source,target,facts:f,scopes,versions:bounded(versions),policyRevision,reservedAt};
    await c.query('INSERT INTO meri_conversations.next_runs(tenant_id,conversation_id,source_run_id,target_run_id,reservation,reservation_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7)',[source.tenantId,source.conversationId,source.runId,target.runId,reservation,hash(reservation),'RESERVED']);check();
    return {target,state:'RESERVED',replayed:false};
@@ -54,6 +61,9 @@ export function createNextRunJournal({tx,rowRun}){
   if(!latest||!same(latest.binding,b))fail('NEXT_RUN_NOT_LATEST');
   return {binding:latest.binding,reserved:false,policyRevision:latest.policyRevision,scopes:latest.scopes};
  });}
+ /** The store's no-authority evidence for this run ({foreclosureSha256}), or null when its allocation row is absent or anything else. */
+ async function foreclosure(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();
+  if(rows.length!==1||hash(rows[0].record)!==rows[0].record_sha256||!foreclosed(rows[0].record,b))return null;return {foreclosureSha256:rows[0].record_sha256};});}
  /** The reservation whose target is this binding, or null. A stale binding of the conversation is a stale writer. */
  async function readTarget(binding,check){const b=bounded(binding);validateShape('RunBinding',b);return tx(b,check,async c=>{const rows=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3',[b.tenantId,b.conversationId,b.runId])).rows;check();if(!rows.length)return null;if(rows.length!==1)fail('STORE_CORRUPT');const r=row(rows[0]);if(!same(r.target,b))fail('STALE_WRITER');return r;});}
  /** Accepts the new prompt for a reserved target: same conversation row, continued conversation-wide sequence base, per-run wire sequence restarting at 1. */
@@ -91,5 +101,5 @@ export function createNextRunJournal({tx,rowRun}){
   completion(cp,source);
   return {nextTurn:{checkpoint:p.checkpoint,checkpointSha256:p.checkpointSha256,sourceRequestSha256:p.sourceRequestSha256,contextSha256:p.contextSha256,sourceRequest:source.request,targetBinding:b,resumeSessionAt:p.resumeSessionAt}};
  });}
- return Object.freeze({listRuns,latestCheckpoint,reserve,readTarget,current,accept,execution});
+ return Object.freeze({listRuns,latestCheckpoint,foreclosure,reserve,readTarget,current,accept,execution});
 }

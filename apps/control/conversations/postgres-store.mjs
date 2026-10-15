@@ -45,6 +45,8 @@ export function createPostgresConversationStore({pool,transitionAuthority,now=Da
    if(r.hold_completion_id&&!(i.type==='run.status'&&['failed','cancelled'].includes(i.data?.state)))fail('RUN_HELD');
    const projection={...r.projection,state:nextState(r.projection.state,event)};if(!Number.isSafeInteger(event.sequence))fail('EVENT_LIMIT');
    if(holdFailure)await lifecycle.failUncheckpointedHold(c,b,r,check);
+   // A queued run that turns terminal before any allocation claim records its no-authority evidence in this same transaction.
+   if(r.projection.state==='queued'&&['failed','cancelled'].includes(projection.state))await preparation.allocations.foreclose(c,b,event,check);
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,event.sequence,event.eventId,event,hash(event)]);check();
    await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),event.sequence]);check();return event;});
  }

@@ -9,7 +9,9 @@ const {reconcileConversation}=proxyActivities<RecoveryActivities>({startToCloseT
 export async function reconcileAfterFailure<T>(input:{binding:Binding},execute:()=>Promise<T>):Promise<T>{
  try{return await execute();}
  catch(error){
-  // Runs even when the workflow itself was cancelled (user Stop), so cleanup is never skipped; its own failure leaves the run for an operator.
+  // Runs even when the workflow itself was cancelled (user Stop), so cleanup is never skipped. When its finite budget is exhausted the run
+  // stays nonterminal behind an unretired original (a barrier, never a redispatch); any later stop, or the operator's one-shot
+  // apps/runtime/reconcile-run.mjs, resumes settlement from that durable state. No background loop is scheduled here.
   try{await CancellationScope.nonCancellable(()=>reconcileConversation(input));}catch{}
   throw error;
  }
