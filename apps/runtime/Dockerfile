@@ -1,33 +1,6 @@
 # Build from a separately reviewed Node 24 image digest. No floating default.
 ARG NODE_IMAGE
 FROM ${NODE_IMAGE}
-# Claude Agent SDK Bash sandbox dependencies (bubblewrap, socat) for the disposable conversation worker.
-# Same convention as apps/worker/qualification/Dockerfile: the fixed, signed Debian snapshot 20261009T000000Z
-# with Signed-By keyring verification and exact versions read from that snapshot's trixie Packages index.
-# Plain HTTP is used only because the slim base has no CA bundle; apt still verifies the signed InRelease.
-# Requires a Debian 13 (trixie) NODE_IMAGE; any other base fails here rather than resolving other packages.
-# Presence is not qualification: sandbox-readiness/cli.mjs must attest SDK sandbox startup on the actual host.
-RUN set -eux; \
-    rm -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list; \
-    printf '%s\n' \
-      'Types: deb' \
-      'URIs: http://snapshot.debian.org/archive/debian/20261009T000000Z' \
-      'Suites: trixie' \
-      'Components: main' \
-      'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
-      'Check-Valid-Until: no' \
-      '' \
-      'Types: deb' \
-      'URIs: http://snapshot.debian.org/archive/debian-security/20261009T000000Z' \
-      'Suites: trixie-security' \
-      'Components: main' \
-      'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
-      'Check-Valid-Until: no' \
-      > /etc/apt/sources.list.d/meri-snapshot.sources; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends --no-remove bubblewrap=0.12.0-1~deb13u1 socat=1.8.0.3-1+deb13u1; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*
 WORKDIR /opt/meri
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts --no-audit --no-fund

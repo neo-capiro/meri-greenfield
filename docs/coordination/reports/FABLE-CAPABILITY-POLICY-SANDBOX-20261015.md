@@ -1,6 +1,6 @@
 # Fable lane P2a: capability policy, SDK-native confinement and sandboxed Bash (15 October 2026)
 
-Branch `fable/p2a-capability-policy-sandbox-20261015`, based on `6d9bb39` (P1a). Owned paths are `apps/worker/conversation/**` and this report. There is one deliberate recipe edit in `apps/runtime/Dockerfile`, kept in its own commit (see "Runtime image recipe"). No contracts, lockfiles, migrations, credentials, deployment, paid build or cloud action were touched or used.
+Branch `fable/p2a-capability-policy-sandbox-20261015`, based on `6d9bb39` (P1a). Owned paths are `apps/worker/conversation/**` and this report. The runtime image recipe change was authored in commit `c509ca1d` and then reverted at the final pin, so `apps/runtime/Dockerfile` is unchanged; the packages are a proposal for the image owner (see "Runtime image recipe"). No contracts, lockfiles, migrations, credentials, deployment, paid build or cloud action were touched or used.
 
 Pinned versions: SDK `@anthropic-ai/claude-agent-sdk` 0.3.295 and CLI 2.1.295. Every option used was checked in `sdk.d.ts`:
 - `Options.sandbox`, `Options.settings` and `Options.managedSettings` (around lines 2155–2240);
@@ -188,7 +188,7 @@ Proposed: a separately versioned telemetry receiver, `CapabilityTelemetry` 0.1.0
 
 Until dot accepts one of these, the hooks fail closed and should stay off in real runs.
 
-## Runtime image recipe (separate commit)
+## Runtime image recipe (proposal; commit reverted at the final pin)
 
 The worker runtime recipe is `apps/runtime/Dockerfile`, which builds the image that contains `apps/worker/conversation` and the SDK. It had no OS-package convention of its own. This lane follows `apps/worker/qualification/Dockerfile`:
 - the fixed signed Debian snapshot `20261009T000000Z` with Signed-By keyring verification and `Check-Valid-Until: no`;
@@ -197,7 +197,7 @@ The worker runtime recipe is `apps/runtime/Dockerfile`, which builds the image t
 
 Nothing was built.
 
-- **Visible failure.** `scripts/qualification/assembled-image/source-proof.test.mjs` asserts that the proof row `apps/runtime/Dockerfile` is unchanged, and it now fails 1 of 5 tests. On the parent commit it passes 5/5. Fixing it requires a new candidate manifest from the shipping or candidate owner. This lane does not rewrite proof manifests. Drop commit `c509ca1d` if the recipe change should wait.
+- **Reverted, not dropped from history.** Commit `c509ca1d` changed `apps/runtime/Dockerfile` and made `scripts/qualification/assembled-image/source-proof.test.mjs` fail 1 of 5 (the recipe is a frozen proof row). The image recipe belongs to the shipping/candidate owner and must be reconciled with dot's minimal `FROM scratch` proposal, so the lead reverted it at the final pin; source-proof passes 5/5 again. Proposal for the image owner: add `bubblewrap=0.12.0-1~deb13u1` and `socat=1.8.0.3-1+deb13u1` from the fixed snapshot above (diff available in `c509ca1d`), then issue a new candidate manifest. Until the worker image carries them, the readiness check reports not ready and Bash stays disabled.
 - **Coordination.** dot's unpublished minimal `FROM scratch` runtime proposal would need bwrap, socat and their ELF closure in `runtime-root-policy.json`.
 
 ## Checks (Node v24.21.0)
