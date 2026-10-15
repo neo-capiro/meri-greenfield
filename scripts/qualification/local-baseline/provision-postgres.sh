@@ -24,8 +24,10 @@ MIGRATIONS=(
  apps/control/conversations/migrations/0007_native_preparation.sql
  apps/control/conversations/migrations/0008_native_prepared_launch.sql
  apps/control/conversations/migrations/0009_next_runs.sql
+ apps/control/conversations/migrations/0010_retention.sql
  apps/gateway/budget/migrations/0001_product_budget.sql
  apps/artifacts/migrations/0001_versions.sql
+ apps/artifacts/migrations/0002_retention.sql
 )
 for m in "${MIGRATIONS[@]}"; do [ -f "$REPO/$m" ] || { echo "missing migration source: $REPO/$m" >&2; exit 2; }; done
 # PostgreSQL refuses to run as root; delegate to the postgres account when invoked by root.

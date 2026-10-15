@@ -18,7 +18,7 @@ export function createSuppressionOwner({ledger,journal,authorization=refusingOwn
   const current=await journal.get(key);if(current&&current.state!=='RELEASED')return Object.freeze({...current,replayed:true});
   const auth=await authorize(p,s,'retention.suppress');
   const entry=await ledger.append({subject:s,state:'SUPPRESSED',reason,facts:{principal:p,authorization:auth,outstandingAccess:access,revokes:['read','replay','restore','continuation','reservation','allocationClaim'],cannotRecall:['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']}});
-  const row={state:'SUPPRESSED',suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,purge:null};
+  const row={state:'SUPPRESSED',ownerActorId:s.ownerActorId,suppressedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,outstandingAccess:access,purge:null};
   await journal.set(key,row);return Object.freeze({...row,replayed:false});
  }
  async function release({principal,subject:rawSubject,reason}){
@@ -26,7 +26,7 @@ export function createSuppressionOwner({ledger,journal,authorization=refusingOwn
   const current=await journal.get(key);if(!current||current.state!=='SUPPRESSED')fail('RETENTION_NOT_SUPPRESSED');if(current.purge)fail('RETENTION_PURGE_IN_PROGRESS');
   const auth=await authorize(p,s,'retention.release');
   const entry=await ledger.append({subject:s,state:'RELEASED',reason,facts:{principal:p,authorization:auth}});
-  const row={state:'RELEASED',releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,purge:null};
+  const row={state:'RELEASED',ownerActorId:s.ownerActorId,releasedAtMs:entry.atMs,ledgerSequence:entry.sequence,entrySha256:entry.entrySha256,authorization:auth,purge:null};
   await journal.set(key,row);return Object.freeze({...row,replayed:false});
  }
  /** The read-path check every owner consults: refused while the recovery barrier is closed. */

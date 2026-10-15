@@ -5,7 +5,7 @@ import {Context} from '@temporalio/activity';
 import {validateShape,canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
-import {temporalTls} from './control.mjs';
+import {temporalTls,temporalAuthorization} from './control.mjs';
 import {readSecret,fault} from './config.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {listenRuntime} from './http-server.mjs';
@@ -24,9 +24,9 @@ export function createBrokerActivity({native,context=()=>Context.current(),now=D
 }
 export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native,preparedKickoff:configuration.native?.preparedKickoff??false})},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
 export async function startTemporalWorker(configuration,{signal}={}){
- let connection,worker,listener,run,closing;const close=()=>closing??=(async()=>{await listener?.close();if(worker?.getState()==='RUNNING')worker.shutdown();await run?.catch(()=>{});await connection?.close();})();
+ let connection,worker,listener,run,closing,authorization;const close=()=>closing??=(async()=>{await listener?.close();if(worker?.getState()==='RUNNING')worker.shutdown();await run?.catch(()=>{});await connection?.close();await authorization?.close();})();
  try{signal?.throwIfAborted();const [tls,bytes]=await Promise.all([temporalTls(configuration.temporal.tls),readSecret(configuration.native.capabilityFile)]);signal?.throwIfAborted();const native=createNativeCapabilityClient({configuration:configuration.native,credential:bytes.toString('utf8').trim()});await native.readiness({signal});signal?.throwIfAborted();
-  connection=await NativeConnection.connect({address:configuration.temporal.address,tls});worker=await Worker.create(workerOptions({configuration,connection,native}));run=worker.run();run.catch(()=>{});
+  authorization=await temporalAuthorization(configuration,{signal});connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);worker=await Worker.create(workerOptions({configuration,connection,native}));run=worker.run();run.catch(()=>{});
   listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:async()=>{if(worker.getState()!=='RUNNING')throw fault('WORKER_NOT_RUNNING');},signal});return Object.freeze({address:listener.address,close,completion:run});
  }catch{await close();throw fault('WORKER_STARTUP_FAILED');}
 }

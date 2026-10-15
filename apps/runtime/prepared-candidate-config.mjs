@@ -12,7 +12,10 @@ const refuse=()=>{throw Error('PREPARED_CANDIDATE_CONFIGURATION');};
 const file=value=>{if(typeof value!=='string'||!isAbsolute(value)||value.includes('/../')||value.length>4096)refuse();};
 const origin=value=>{let u;try{u=new URL(value);}catch{refuse();}if(u.protocol!=='https:'||u.username||u.password||u.search||u.hash||u.pathname!=='/'||u.origin!==value)refuse();};
 export function compilePreparedCandidateConfiguration(value,versions){
- const c=data(own(value,['identity','runtime','proxyCredentialFile','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskCapabilityFile','controlCapabilityFile','taskRequest','containerName','taskOrigin','taskHttp','objects']));
+ const c=data(own(value,['identity','runtime','proxyCredentialFile','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskCapabilityFile','controlCapabilityFile','taskRequest','containerName','taskOrigin','taskHttp','objects'],['multiRun']));
+ // Multi-run mode (S2) is a closed declaration of reviewed static bounds; the durable issuer, capability authority and admission owners are
+ // supplied as ports by startup, never named in configuration. Declaring it without those ports fails readiness instead of first-run fallback.
+ if(c.multiRun!==undefined){const m=own(c.multiRun,['runWindowMs']);if(!Number.isSafeInteger(m.runWindowMs)||m.runWindowMs<60000||m.runWindowMs>86400000)refuse();}
  const i=own(c.identity,['origin','credentialFile','commandContext']);origin(i.origin);file(i.credentialFile);own(i.commandContext,['binding','clientResolution']);own(i.commandContext.clientResolution,['reference','clientId']);if(i.commandContext.clientResolution.reference!==i.commandContext.clientResolution.clientId)refuse();
  own(c.runtime,['binding','versions','proxyUrl','model','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],['sdkSessionKey']);
  const compiled=compileNativeBrokerPlan({runtime:{...c.runtime,proxyCredential:'configuration-validation-only'},plan:c.plan,preparationIntent:c.preparationIntent});

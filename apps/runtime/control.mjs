@@ -9,6 +9,7 @@ import {createActionSessionOwner} from '../control/action-host/session/owner.mjs
 import {createActionSessionApplication} from '../control/action-host/session/http.mjs';
 import {createNativeCapabilityClient} from './native-client.mjs';
 import {readSecret,fault} from './config.mjs';
+import {createTemporalAuthorization,createTemporalTokenFileReader} from './temporal-authorization.mjs';
 import {listenRuntime} from './http-server.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createConversationLifecycleService} from '../control/conversations/lifecycle/service.mjs';
@@ -25,6 +26,8 @@ function productBinding(options){
  if(factory!==undefined&&(typeof factory!=='function'||types.isProxy(factory)||types.isAsyncFunction(factory)||types.isGeneratorFunction(factory)))throw fault('PRODUCT_PORTS_CONFIGURATION');
  return factory===undefined?{ports:captureRuntimePorts(c.productPorts)}:{factory};
 }
+/** Optional trusted-client authorization (S4): one token provider for the client (apiKey callback) and the worker (setApiKey). */
+export async function temporalAuthorization(configuration,{signal}={}){if(configuration.temporal.authorization===undefined)return null;const c=configuration.temporal.authorization,authorization=createTemporalAuthorization({configuration:c,reader:createTemporalTokenFileReader({tokenFile:c.tokenFile})});await authorization.refresh({signal});return authorization;}
 export async function temporalTls(config){const [serverRootCACertificate,crt,key]=await Promise.all([readSecret(config.caFile),readSecret(config.certFile),readSecret(config.keyFile)]);return {serverRootCACertificate,clientCertPair:{crt,key}};}
 export function assembleControl(options){
  const {configuration,pool,client,native,now=Date.now,...binding}=own(options,['configuration','pool','client','native'],['now','productPorts','productPortsFactory']);
@@ -57,17 +60,17 @@ export async function startControl(configuration,options={}){
  const {signal,...binding}=own(options,[],['signal','productPorts','productPortsFactory']);nativeSignal(signal);const compiled=productBinding(binding);
  if(configuration.nativeCandidate!==undefined){compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);if(configuration.native.capabilityFile!==configuration.nativeCandidate.controlCapabilityFile)throw fault('PREPARED_CANDIDATE_CONFIGURATION');if(binding.productPorts!==undefined||binding.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');}
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
- let pool,connection,listener,assembly,candidate,closing;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>candidate?.close(),()=>listener?.close(),()=>assembly?.close(),()=>connection?.close(),()=>pool?.end()])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
+ let pool,connection,listener,assembly,candidate,closing,authorization;const close=()=>closing??=(async()=>{const errors=[];for(const method of [()=>candidate?.close(),()=>listener?.close(),()=>assembly?.close(),()=>connection?.close(),()=>authorization?.close(),()=>pool?.end()])try{await method();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'CONTROL_CLEANUP_UNKNOWN');})();
  try{
   signal?.throwIfAborted();
-  const [connectionBytes,capabilityBytes,tls]=await Promise.all([readSecret(configuration.database.connectionFile),readSecret(configuration.native.capabilityFile),temporalTls(configuration.temporal.tls)]);
+  const [connectionBytes,capabilityBytes,tls]=await Promise.all([readSecret(configuration.database.connectionFile),readSecret(configuration.native.capabilityFile),temporalTls(configuration.temporal.tls)]);authorization=await temporalAuthorization(configuration,{signal});
   signal?.throwIfAborted();
   const connectionString=connectionBytes.toString('utf8').trim();let u;try{u=new URL(connectionString);}catch{throw fault('DATABASE_CONFIGURATION');}
   // URL.get() selects the first duplicate; pg's adopted parser selects the
   // last. Accept one closed TLS parameter before either client is allocated.
   if(!['postgres:','postgresql:'].includes(u.protocol)||u.hash||u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='verify-full'||[...u.searchParams.keys()].some(key=>key!=='sslmode'))throw fault('DATABASE_CONFIGURATION');
   pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
-  connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
+  connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
   let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(candidate?{productPorts:{identityContext:candidate.identityContext}}:mounted)});candidate?.bindApplication(assembly.application);const application=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
   async function readiness({signal}){signal?.throwIfAborted();await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs").then(result=>{if(!result.rows[0]||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();}
   await readiness({signal});listener=await listenRuntime({configuration,application,readiness,...(candidate?{}:{signal})});return Object.freeze({address:listener.address,close});

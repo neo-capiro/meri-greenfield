@@ -7,6 +7,7 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {remoteOriginal} from './native-authority/remote-task-boundary.mjs';
 import {compileNativePreparationIntent} from './native-authority/preparation-intent.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
+import {parseTemporalAuthorizationConfiguration} from './temporal-authorization.mjs';
 export const fault=code=>Object.assign(new Error(code),{code});
 const requireValue=(condition,code='RUNTIME_CONFIGURATION')=>{if(!condition)throw fault(code);};
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -23,7 +24,7 @@ export function validateConfiguration(raw,role){
  own(c.native,['origin','capabilityFile','loopback','maxResponseBytes'],role==='temporal-worker'?['preparedKickoff']:[]);if(c.native.preparedKickoff!==undefined)requireValue(c.native.preparedKickoff===true,'PREPARED_KICKOFF_CONFIGURATION');requireValue(typeof c.native.loopback==='boolean'&&integer(c.native.maxResponseBytes,1024,2097152)&&c.native.origin===endpoint(c.native.origin,c.native.loopback));file(c.native.capabilityFile);
  if(role!=='conversation-runner'){
   own(c.http,['hostname','port','frontendOrigin']);requireValue(['127.0.0.1','0.0.0.0','::1','::'].includes(c.http.hostname)&&integer(c.http.port,0,65535)&&c.http.frontendOrigin===endpoint(c.http.frontendOrigin,c.native.loopback));
-  own(c.temporal,['address','namespace','taskQueue','tls']);requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
+  own(c.temporal,['address','namespace','taskQueue','tls'],['authorization']);if(c.temporal.authorization!==undefined)parseTemporalAuthorizationConfiguration(c.temporal.authorization);requireValue(typeof c.temporal.address==='string'&&/^[a-zA-Z0-9.\-]+:[1-9][0-9]{0,4}$/u.test(c.temporal.address)&&Number(c.temporal.address.split(':').at(-1))<=65535);for(const k of ['namespace','taskQueue'])requireValue(typeof c.temporal[k]==='string'&&/^[a-zA-Z0-9._\-]{1,128}$/u.test(c.temporal[k]));own(c.temporal.tls,['caFile','certFile','keyFile']);Object.values(c.temporal.tls).forEach(file);
  }
  if(role==='control'){
   own(c.database,['connectionFile']);file(c.database.connectionFile);own(c.sessions,['mode','replicas','maxSessions','maxTtlMs']);requireValue(c.sessions.mode==='process-local'&&c.sessions.replicas===1&&integer(c.sessions.maxSessions,1,1000)&&integer(c.sessions.maxTtlMs,1,300000));validateShape('RuntimeVersions',c.versions);

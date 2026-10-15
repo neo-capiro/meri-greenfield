@@ -10,6 +10,7 @@ import {jsonBody} from '../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
 import {readSecret} from './config.mjs';
+import {createPreparedRunBindings} from './prepared-run-bindings.mjs';
 import {compileNativeBrokerPlan} from './native-authority/broker-stack.mjs';
 import {allocateRemoteNativeController} from './native-authority/remote-composition.mjs';
 import {createNativeIdentityContext} from './native-authority/identity-context.mjs';
@@ -55,10 +56,13 @@ export function assemblePreparedCandidate(options){
  return Object.freeze({original,controlCapabilitySha256:controlDigest,identityContext,native:localNative,application,bindApplication(application){if(outerApplication)refuse();outerApplication=application;},readiness:localNative.readiness,async close(){try{await runRegistry?.close();}finally{await kickoff.close();}}});
 }
 /** CLI-owned clients use the approved control workload role; task receives no AWS credentials. */
-export async function startPreparedCandidate({configuration,pool,signal}){
+export async function startPreparedCandidate({configuration,pool,signal,issuanceStore,capabilityAuthority}){
  const config=compilePreparedCandidateConfiguration(configuration.nativeCandidate,configuration.versions);signal?.throwIfAborted();
  const [identity,task,control,proxy]=await Promise.all([config.identity.credentialFile,config.taskCapabilityFile,config.controlCapabilityFile,config.proxyCredentialFile].map(readSecret));signal?.throwIfAborted();
+ // Multi-run mode (S2): the three ports are composed from startup-supplied owners; a declared multi-run mode without them fails startup
+ // here instead of advertising the fixed first-run path.
+ const bindings=config.multiRun===undefined?{}:(()=>{const b=createPreparedRunBindings({configuration,pool,store:createPostgresConversationStore({pool}),credentials:{proxy:proxy.toString('utf8').trim(),control:control.toString('utf8').trim()},issuanceStore,capabilityAuthority,limits:{maxRequestMs:configuration.limits.requestMs,maxFactBytes:131072}});return {runIssuance:b.runIssuance,issuanceIntent:b.issuanceIntent,admissionForBinding:b.admissionForBinding};})();
  // Approved control workload role is resolved by the adopted SDK at future effects.
  const ecs=new ECSClient({region:'us-east-1',maxAttempts:1}),s3=new S3Client({region:'us-east-1',maxAttempts:1});let candidate;
- try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()}});return Object.freeze({...candidate,async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
+ try{const objects=createS3ArtifactObjects({client:s3,...config.objects,now:Date.now,maxRequestMs:configuration.limits.requestMs});candidate=assemblePreparedCandidate({configuration,pool,ecs,objects,credentials:{identity:identity.toString('utf8').trim(),task:task.toString('utf8').trim(),control:control.toString('utf8').trim(),proxy:proxy.toString('utf8').trim()},...bindings});return Object.freeze({...candidate,async close(){try{await candidate.close();}finally{ecs.destroy();s3.destroy();}}});}catch(error){ecs.destroy();s3.destroy();throw error;}
 }
