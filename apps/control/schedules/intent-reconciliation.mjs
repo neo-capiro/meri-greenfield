@@ -1,7 +1,9 @@
 /** Exact provider reconciliation of a schedule intent left DISPATCHING or UNKNOWN by a dropped acknowledgement. It reads the stored
  * intent, observes the provider state of the intent's own Temporal schedule ID (and, for request_cancel, its own listed workflow
- * runs) and acknowledges only when that exact effect is present: the schedule action carries this intent's generation, projection
- * and task; a pause carries this intent's note; a delete is the SDK's typed not-found. Nothing is re-sent, retried or replaced.
+ * runs) and acknowledges only when that exact effect is present: for create/update, the complete provider-normalized schedule
+ * (schedule-effect.mjs: spec, action with its argument/timeouts/retry, policies and state) equals the approved one; a pause
+ * carries this intent's note; a delete is the SDK's typed not-found. A create/update whose approved effect describe cannot
+ * return faithfully stays UNRESOLVED (SCHEDULE_INTENT_EFFECT_NOT_COMPARABLE). Nothing is re-sent, retried or replaced.
  * Absent or unreadable evidence leaves the durable barrier in place (UNRESOLVED). Recording a proven never-applied intent needs a
  * terminal state the reviewed schema lacks (proposal P-L6-1); until then it, too, stays UNRESOLVED and keeps blocking edits.
  * A trusted reconciliation entry point: it records evidence of an already-approved effect and adds no new authority or effect. */
@@ -9,6 +11,7 @@ import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {assertScheduleIntent,canonicalSha256,frozenScheduleData,denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {sdkMethod,exactHandle} from './temporal-schedule-mutations.mjs';
+import {approvedScheduleEffect,describedScheduleEffect} from './schedule-effect.mjs';
 
 const OPTIONS=['scheduleClient','workflowClient','scheduleOwner','scheduleNotFoundError','clock','maxRequestMs'];
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u;
@@ -38,7 +41,7 @@ export function createScheduleIntentReconciler(options) {
   const deadline=clock()+maxRequestMs,life=createOperationLifetime({deadlineMs:deadline,now:clock,signal,errorFactory:code=>Object.assign(Error(code),{code})});
   const rpc=(connection,action)=>life.run(rpcSignal=>sdkMethod(connection,'withDeadline')(deadline,()=>{life.check();return sdkMethod(connection,'withAbortSignal')(rpcSignal,()=>{life.check();return action();});}));
   const describeSchedule=id=>rpc(scheduleConnection,()=>{const h=exactHandle(o.scheduleClient,id,life),describe=sdkMethod(h,'describe');life.check();return describe();});
-  async function scheduleStatePresent(i) {
+  async function scheduleStatePresent(i,approved) {
    const id=i.projection.temporalScheduleId;
    if(i.operation==='cancel_scheduled_task') {
     const c=i.cancel;
@@ -56,10 +59,12 @@ export function createScheduleIntentReconciler(options) {
     return true;
    }
    let d;try{d=await describeSchedule(id);}catch(error){if(error instanceof NotFound)return false;throw error;}
-   const action=field(d,'action'),w=i.configuration.workflow,args=field(action,'args');
-   if(field(d,'scheduleId')!==id||field(action,'type')!=='startWorkflow'||field(action,'workflowType')!==w.workflowType||field(action,'workflowId')!==w.workflowId||field(action,'taskQueue')!==w.taskQueue||!Array.isArray(args)||args.length!==1)return false;
-   const a=frozenScheduleData(args[0]);
-   return Object.keys(a).length===3&&a.generation===i.generation&&canonicalSha256(a.projection)===canonicalSha256(i.projection)&&canonicalSha256(a.task)===canonicalSha256(i.configuration.task);
+   return canonicalSha256(describedScheduleEffect(d))===canonicalSha256(approved);
+  }
+  // The complete approved create/update effect, derived before any provider read; null for a cancel.
+  function approvedEffect(i) {
+   if(i.operation==='cancel_scheduled_task')return null;
+   try{return approvedScheduleEffect(i);}catch(error){if(scheduleErrorCode(error)==='SCHEDULE_EFFECT_NOT_COMPARABLE')return undefined;throw error;}
   }
   const outcome=(i,value,code,reconciled)=>frozenScheduleData({intentId,operation:i.operation,generation:i.generation,outcome:value,code,reconciled});
   try {
@@ -70,7 +75,9 @@ export function createScheduleIntentReconciler(options) {
    if(row.state==='ACKNOWLEDGED')return outcome(i,'ACKNOWLEDGED',null,false);
    // CLAIMED never reached DISPATCHING, so no provider effect was attempted; that proof cannot be recorded yet (P-L6-1).
    if(row.state==='CLAIMED')return outcome(i,'UNRESOLVED','SCHEDULE_INTENT_NEVER_DISPATCHED',false);
-   if(!await scheduleStatePresent(i))return outcome(i,'UNRESOLVED','SCHEDULE_INTENT_EFFECT_NOT_OBSERVED',false);
+   const approved=approvedEffect(i);
+   if(approved===undefined)return outcome(i,'UNRESOLVED','SCHEDULE_INTENT_EFFECT_NOT_COMPARABLE',false);
+   if(!await scheduleStatePresent(i,approved))return outcome(i,'UNRESOLVED','SCHEDULE_INTENT_EFFECT_NOT_OBSERVED',false);
    const receipt=frozenScheduleData(await life.run(()=>acknowledge({tenantId,intentId,intentSha256:row.intentSha256},life.check)));
    if(receipt.intentId!==intentId||receipt.state!=='ACKNOWLEDGED')denySchedule('SCHEDULE_OWNER_RECEIPT');
    return outcome(i,'ACKNOWLEDGED',null,true);

@@ -89,6 +89,44 @@ export function createPostgresScheduleOwner({pool}) {
       return {intentId:s.intentId,state:'ACKNOWLEDGED'};
     },check);
   }
+  /** Durable occurrence barrier (proposed table meri_schedules.occurrences, migration request P-R4-1): one row per scheduled
+   * occurrence, written before its first effect, binds the occurrence to the exact conversation run and native workflow it may
+   * issue. While any occurrence of a schedule is OPEN, no other occurrence of that schedule may open; this outlives the dispatch
+   * workflow's run timeout. Only the dispatch's own evidence settles a row (DISPATCHED: its run's start observed; REFUSED). */
+  const OCCURRENCE_COLUMNS='SELECT occurrence_key,schedule_id,occurrence,effect,effect_sha256,state FROM meri_schedules.occurrences';
+  function storedOccurrence(row) {
+    if(!row||canonicalSha256(row.effect)!==row.effect_sha256||!['OPEN','DISPATCHED','REFUSED'].includes(row.state))denySchedule('SCHEDULE_CORRUPT');
+    return frozenScheduleData({occurrenceKey:row.occurrence_key,scheduleId:row.schedule_id,occurrence:row.occurrence,effect:row.effect,effectSha256:row.effect_sha256,state:row.state});
+  }
+  async function openOccurrence(record,check) {
+    const r=frozenScheduleData(record),effectSha256=canonicalSha256(r.effect);
+    return transaction(async c=>{
+      // The same transaction lock as intent claims for this schedule serializes concurrent openers.
+      await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${r.tenantId}:${r.scheduleId}`]);check();
+      const same=(await c.query(`${OCCURRENCE_COLUMNS} WHERE tenant_id=$1 AND occurrence_key=$2 FOR UPDATE`,[r.tenantId,r.occurrenceKey])).rows[0];check();
+      if(same){const o=storedOccurrence(same);if(o.scheduleId!==r.scheduleId||o.effectSha256!==effectSha256)denySchedule('SCHEDULE_OCCURRENCE_CONFLICT');return frozenScheduleData({state:o.state,blocking:null});}
+      const open=(await c.query(`${OCCURRENCE_COLUMNS} WHERE tenant_id=$1 AND schedule_id=$2 AND state='OPEN' LIMIT 1`,[r.tenantId,r.scheduleId])).rows[0];check();
+      if(open)return frozenScheduleData({state:'BLOCKED',blocking:storedOccurrence(open)});
+      await c.query("INSERT INTO meri_schedules.occurrences(tenant_id,occurrence_key,schedule_id,generation,occurrence,effect,effect_sha256,state) VALUES($1,$2,$3,$4,$5,$6,$7,'OPEN')",[r.tenantId,r.occurrenceKey,r.scheduleId,r.generation,r.occurrence,r.effect,effectSha256]);check();
+      return frozenScheduleData({state:'OPEN',blocking:null});
+    },check);
+  }
+  // OPEN settles to DISPATCHED or REFUSED; a refused occurrence whose run is later observed started becomes DISPATCHED. Nothing
+  // reopens. A missing row (no barrier was ever written) is reported, not created.
+  async function settleOccurrence(selection,check) {
+    const s=frozenScheduleData(selection);
+    if(!['DISPATCHED','REFUSED'].includes(s.state))denySchedule('SCHEDULE_TRANSITION');
+    return transaction(async c=>{
+      const row=(await c.query(`${OCCURRENCE_COLUMNS} WHERE tenant_id=$1 AND occurrence_key=$2 FOR UPDATE`,[s.tenantId,s.occurrenceKey])).rows[0];check();
+      if(!row)return frozenScheduleData({state:'ABSENT'});
+      const o=storedOccurrence(row);
+      if(o.effectSha256!==s.effectSha256)denySchedule('SCHEDULE_OCCURRENCE_CONFLICT');
+      if(o.state===s.state)return frozenScheduleData({state:o.state});
+      if(o.state!=='OPEN'&&!(o.state==='REFUSED'&&s.state==='DISPATCHED'))denySchedule('SCHEDULE_TRANSITION');
+      await c.query('UPDATE meri_schedules.occurrences SET state=$3,updated_at=clock_timestamp() WHERE tenant_id=$1 AND occurrence_key=$2',[s.tenantId,s.occurrenceKey,s.state]);check();
+      return frozenScheduleData({state:s.state});
+    },check);
+  }
   async function list(selection,check) {
     const s=frozenScheduleData(selection);
     return transaction(async c=>{
@@ -96,5 +134,5 @@ export function createPostgresScheduleOwner({pool}) {
       return frozenScheduleData({rows:rows.slice(0,s.limit).map(r=>({projection:r.projection,generation:Number(r.generation),unresolved:r.active_intent!==null})),hasMore:rows.length>s.limit});
     },check);
   }
-  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled});
+  return Object.freeze({claim,markDispatching:(b,c)=>transition(b,'DISPATCHING',c),commitKnown:(b,c)=>transition(b,'ACKNOWLEDGED',c),markUnknown:(b,c)=>transition(b,'UNKNOWN',c),list,readFiring,readIntent,acknowledgeReconciled,openOccurrence,settleOccurrence});
 }

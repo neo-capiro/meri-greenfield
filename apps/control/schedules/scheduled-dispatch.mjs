@@ -4,13 +4,20 @@
  * identity. Outcomes: DISPATCHED (run admitted and its workflow start acknowledged or observed), REFUSED (fenced or denied with
  * evidence; `admitted` says whether an earlier attempt already admitted the run), UNKNOWN (no evidence; blocks until reconciled).
  * Reconciliation additionally answers ADMITTED (run admitted, workflow proven never started) or NOT_DISPATCHED (run proven absent);
- * either may be completed only by dispatching the same immutable occurrence again, with every fence re-checked. */
+ * either may be completed only by dispatching the same immutable occurrence again, with every fence re-checked.
+ *
+ * Before its first effect an occurrence opens a durable barrier row in the schedule owner that names its exact conversation run
+ * and native workflow. The row stays OPEN through UNKNOWN, so it outlives the dispatch workflow's run timeout: no later occurrence
+ * of the schedule is admitted while it is open. Only evidence settles it: the run's start observed (DISPATCHED) or a fenced
+ * refusal of this occurrence (REFUSED). A later firing may settle a blocking predecessor only by observing the predecessor's own
+ * started run through that row; absence or an admitted-but-unstarted run keeps the barrier. */
 import {types} from 'node:util';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {canonicalSha256,frozenScheduleData,denySchedule,scheduleErrorCode} from '../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {sdkMethod} from './temporal-schedule-mutations.mjs';
 import {snapshotOccurrence,occurrenceIdentity} from './scheduled-occurrence.mjs';
+import {workflowId} from '../conversations/temporal-dispatch.mjs';
 
 const PORTS=['scheduleOwner','store','dispatcher','runs','authority','taskInstructions','versions','now','maxRequestMs'];
 function optionsData(value,allowed,required=allowed) {
@@ -24,7 +31,7 @@ const exposed=code=>typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(code)
 
 export function createScheduledDispatch(options) {
  const o=optionsData(options,PORTS,PORTS.slice(0,7)),now=o.now??Date.now,maxRequestMs=o.maxRequestMs??10000;
- const readFiring=sdkMethod(o.scheduleOwner,'readFiring'),accept=sdkMethod(o.store,'accept'),readOptional=sdkMethod(o.store,'readOptional');
+ const readFiring=sdkMethod(o.scheduleOwner,'readFiring'),openOccurrence=sdkMethod(o.scheduleOwner,'openOccurrence'),settleOccurrence=sdkMethod(o.scheduleOwner,'settleOccurrence'),accept=sdkMethod(o.store,'accept'),readOptional=sdkMethod(o.store,'readOptional');
  const start=sdkMethod(o.dispatcher,'start'),describeRun=sdkMethod(o.runs,'describe'),authorize=sdkMethod(o.authority,'authorize'),readInstruction=sdkMethod(o.taskInstructions,'read');
  try{validateShape('RuntimeVersions',o.versions);}catch{denySchedule('SCHEDULE_DISPATCH_OPTIONS');}
  const versions=frozenScheduleData(o.versions);
@@ -35,11 +42,13 @@ export function createScheduledDispatch(options) {
   if(signal!==undefined&&(types.isProxy(signal)||!(signal instanceof AbortSignal)))denySchedule('SCHEDULE_DISPATCH_OPTIONS');
   const occ=snapshotOccurrence(occurrence);return {occ,id:occurrenceIdentity(occ),signal};
  }
+ // The occurrence's actual effect identity: its conversation run, request, first event and the native workflow that runs it.
+ const effectOf=id=>frozenScheduleData({binding:id.binding,requestId:id.requestId,eventId:id.eventId,workflowId:workflowId(id.binding)});
  function begin({occ,id,signal}) {
   let deadline=now()+maxRequestMs;
   const life=createOperationLifetime({deadlineMs:deadline,now,signal,errorFactory:code=>Object.assign(Error(`SCHEDULE_DISPATCH_${code}`),{code:`SCHEDULE_DISPATCH_${code}`})});
   const limit=ms=>{life.limitDeadline(ms);deadline=Math.min(deadline,ms);};
-  return {occ,id,life,limit,deadline:()=>deadline};
+  return {occ,id,effect:effectOf(id),life,limit,deadline:()=>deadline};
  }
  const result=(outcome,id,code,admitted)=>frozenScheduleData({outcome,occurrenceKey:id.occurrenceKey,binding:id.binding,code,admitted});
  // A malformed firing has no identity to dispatch or reconcile: refused with no run, never retried into an effect.
@@ -95,6 +104,31 @@ export function createScheduledDispatch(options) {
   if(!v||Object.keys(v).length!==1||typeof v.instruction!=='string'||!v.instruction.trim()||v.instruction.length>100000)denySchedule('SCHEDULE_INSTRUCTION');
   return canonicalSha256(v.instruction)===i.taskInstructionSha256?v.instruction:null;
  }
+ /** Settle this occurrence's barrier row on evidence, then report. A failed settlement is UNKNOWN: the barrier stays. */
+ async function settled(c,state,admitted,code=null) {
+  const r=frozenScheduleData(await c.life.run(()=>settleOccurrence({tenantId:c.id.binding.tenantId,occurrenceKey:c.id.occurrenceKey,effectSha256:canonicalSha256(c.effect),state},c.life.check)));
+  if(r?.state!==state&&r?.state!=='ABSENT')denySchedule('SCHEDULE_OCCURRENCE_RECEIPT');
+  return result(state,c.id,code,admitted);
+ }
+ /** A blocking predecessor is settled only by its own started run, found through the run its durable row names. */
+ async function predecessorStarted(c,blocking) {
+  const occ=snapshotOccurrence(blocking.occurrence),id=occurrenceIdentity(occ),p={...c,occ,id,effect:effectOf(id)};
+  if(occ.projection.scheduleId!==c.occ.projection.scheduleId||id.binding.tenantId!==c.id.binding.tenantId||canonicalSha256(p.effect)!==blocking.effectSha256)denySchedule('SCHEDULE_OCCURRENCE_CONFLICT');
+  const saved=await existing(p);
+  if(saved===null||!await started(p,saved))return false;
+  await settled(p,'DISPATCHED',true);return true;
+ }
+ /** Open (or resume) this occurrence's durable barrier before any effect. Returns null when this occurrence holds it. */
+ async function barrier(c) {
+  for(let attempt=0;attempt<2;attempt++) {
+   const r=frozenScheduleData(await c.life.run(()=>openOccurrence({tenantId:c.id.binding.tenantId,scheduleId:c.occ.projection.scheduleId,generation:c.occ.generation,occurrenceKey:c.id.occurrenceKey,occurrence:c.occ,effect:c.effect},c.life.check)));
+   if(r?.state==='OPEN')return null;
+   if(r?.state==='DISPATCHED'||r?.state==='REFUSED')return 'SCHEDULE_OCCURRENCE_SETTLED';
+   if(r?.state!=='BLOCKED')denySchedule('SCHEDULE_OCCURRENCE_RECEIPT');
+   if(!await predecessorStarted(c,r.blocking))break;
+  }
+  return 'SCHEDULE_OCCURRENCE_UNRESOLVED';
+ }
  function admission(c,scopes,prompt) {
   const b=c.id.binding,createdAt=new Date(now()).toISOString(),policyRevision=scopes[0].policyRevision;
   return {conversation:{conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes,createdAt,policyRevision},
@@ -108,21 +142,24 @@ export function createScheduledDispatch(options) {
   try {
    const saved=await existing(c);admitted=saved!==null;
    // A run past queued, or the exact workflow observed, is evidence the start happened; replay never adds an effect.
-   if(saved&&await started(c,saved))return result('DISPATCHED',c.id,null,true);
+   if(saved&&await started(c,saved))return await settled(c,'DISPATCHED',true);
    const firing=await c.life.run(()=>readFiring({tenantId:c.id.binding.tenantId,scheduleId:c.occ.projection.scheduleId},c.life.check));
    const refusal=fence(c.occ,firing)??(admitted?null:missed(c.occ,firing));
-   if(refusal)return result('REFUSED',c.id,refusal,admitted);
+   if(refusal)return await settled(c,'REFUSED',admitted,refusal);
+   let receipt=null,prompt=null;
    if(!admitted) {
-    const prompt=await instruction(c,firing);
-    if(prompt===null)return result('REFUSED',c.id,'SCHEDULE_INSTRUCTION_MISMATCH',false);
-    const receipt=await current(c,'before_admission');
-    if(receipt===null)return result('REFUSED',c.id,'SCHEDULE_AUTHORITY_REFUSED',false);
-    admitted=null;await c.life.run(()=>accept(admission(c,receipt.scopes,prompt),c.life.check));admitted=true;
+    prompt=await instruction(c,firing);
+    if(prompt===null)return await settled(c,'REFUSED',false,'SCHEDULE_INSTRUCTION_MISMATCH');
+    receipt=await current(c,'before_admission');
+    if(receipt===null)return await settled(c,'REFUSED',false,'SCHEDULE_AUTHORITY_REFUSED');
    }
-   if(await current(c,'before_start')===null)return result('REFUSED',c.id,'SCHEDULE_AUTHORITY_REFUSED',true);
+   const blocked=await barrier(c);
+   if(blocked)return result('REFUSED',c.id,blocked,admitted);
+   if(!admitted){admitted=null;await c.life.run(()=>accept(admission(c,receipt.scopes,prompt),c.life.check));admitted=true;}
+   if(await current(c,'before_start')===null)return await settled(c,'REFUSED',true,'SCHEDULE_AUTHORITY_REFUSED');
    // The canonical dispatcher starts the exact workflow ID with REJECT_DUPLICATE/USE_EXISTING; a lost acknowledgement is UNKNOWN.
    await c.life.run(signal=>start({binding:c.id.binding,signal,deadlineMs:c.deadline()}));
-   return result('DISPATCHED',c.id,null,true);
+   return await settled(c,'DISPATCHED',true);
   } catch(error) {return result('UNKNOWN',c.id,exposed(scheduleErrorCode(error)),admitted);}
   finally {c.life.close();}
  }
@@ -132,7 +169,7 @@ export function createScheduledDispatch(options) {
    const saved=await existing(c);
    if(saved===null)return result('NOT_DISPATCHED',c.id,null,false);
    admitted=true;
-   return result(await started(c,saved)?'DISPATCHED':'ADMITTED',c.id,null,true);
+   return await started(c,saved)?await settled(c,'DISPATCHED',true):result('ADMITTED',c.id,null,true);
   } catch(error) {return result('UNKNOWN',c.id,exposed(scheduleErrorCode(error)),admitted);}
   finally {c.life.close();}
  }
