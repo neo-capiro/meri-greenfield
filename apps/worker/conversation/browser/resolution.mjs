@@ -31,7 +31,7 @@ function fieldWithin(key,c,m){
 }
 /** First key of `candidate` (restricted to `keys`) that exceeds `ceiling`, or undefined. */
 export function browserWideningField(candidate,ceiling,keys=BROWSER_POLICY_KEYS){return keys.find(k=>!fieldWithin(k,candidate,ceiling));}
-/** Narrowing-only normalization: a flag is on only while what it scopes is non-empty. */
+/** Narrowing-only normalization of an already type-valid record: a flag is on only while what it scopes is non-empty. */
 function normalize(raw){
  const n={...raw,downloads:{...raw.downloads}};
  n.enabled=n.enabled===true&&n.tools.length>0;
@@ -64,11 +64,31 @@ export function assertPlatformBrowserLimits(value){
  for(const [role,ceiling] of Object.entries(raw)){const c=full(ceiling,'BROWSER_PLATFORM_LIMITS_REFUSED',`roleCeilings.${role}`),field=browserWideningField(c,maximum);if(field)fail('BROWSER_PLATFORM_LIMITS_REFUSED',`roleCeilings.${role}.${field}`);roleCeilings[role]=c;}
  return Object.freeze({maximum,defaults,roleCeilings:Object.freeze(roleCeilings)});
 }
-/** Applies a partial tenant override to `base`; `timeouts`/`downloads` merge field by field. Every overridden key must
- * stay within `ceiling`. */
+/** Raw field types a partial tenant/role record may carry, checked BEFORE any merge or normalization so that a value
+ * of the wrong type (for example `enabled:'yes'`) refuses instead of being coerced. Value ranges, vocabularies and
+ * widening are checked afterwards on the merged complete record. */
+const PARTIAL_TYPES=Object.freeze({enabled:v=>typeof v==='boolean',tools:Array.isArray,allowedOrigins:Array.isArray});
+const NESTED_TYPES=Object.freeze({
+ timeouts:Object.freeze({actionMs:Number.isSafeInteger,navigationMs:Number.isSafeInteger}),
+ downloads:Object.freeze({enabled:v=>typeof v==='boolean',formats:Array.isArray,maxBytes:Number.isSafeInteger,maxFiles:Number.isSafeInteger})});
+/** Returns the partial with nested records copied as own data, or refuses with the first mistyped field. */
+function typedPartial(fields){
+ const typed={};
+ for(const [key,value] of Object.entries(fields)){
+  if(Object.hasOwn(PARTIAL_TYPES,key)){if(!PARTIAL_TYPES[key](value))fail('BROWSER_TENANT_SETTINGS_REFUSED',key);typed[key]=value;continue;}
+  let nested;try{nested=own(value,[],Object.keys(NESTED_TYPES[key]));}catch{fail('BROWSER_TENANT_SETTINGS_REFUSED',key);}
+  for(const [name,v] of Object.entries(nested))if(!NESTED_TYPES[key][name](v))fail('BROWSER_TENANT_SETTINGS_REFUSED',`${key}.${name}`);
+  typed[key]=nested;
+ }
+ return typed;
+}
+/** Applies a partial tenant override to `base`; `timeouts`/`downloads` merge field by field. Raw field types are
+ * validated first (`typedPartial`); only then are values merged and normalized. Every overridden key must stay
+ * within `ceiling`. */
 function override(base,partial,ceiling,code){
- let fields;try{fields=own(partial,[],[...BROWSER_POLICY_KEYS]);}catch{fail('BROWSER_TENANT_SETTINGS_REFUSED');}
- const nested=key=>{if(fields[key]===undefined)return base[key];try{return {...base[key],...own(fields[key],[],Object.keys(base[key]))};}catch{fail('BROWSER_TENANT_SETTINGS_REFUSED',key);}};
+ let raw;try{raw=own(partial,[],[...BROWSER_POLICY_KEYS]);}catch{fail('BROWSER_TENANT_SETTINGS_REFUSED');}
+ const fields=typedPartial(raw);
+ const nested=key=>fields[key]===undefined?base[key]:{...base[key],...fields[key]};
  const merged=full(()=>normalize({...base,...fields,timeouts:nested('timeouts'),downloads:nested('downloads')}),'BROWSER_TENANT_SETTINGS_REFUSED');
  const field=browserWideningField(merged,ceiling,Object.keys(fields));if(field)fail(code,field);
  return merged;

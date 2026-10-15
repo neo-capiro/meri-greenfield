@@ -82,3 +82,18 @@ test('resolution: tenant and role widening attempts refuse with stable codes, pl
  assert.throws(()=>resolveBrowserPolicy({platform:platform({roleCeilings:{}}),role:'member'}),code('BROWSER_PLATFORM_LIMITS_REFUSED'));
  assert.throws(()=>resolveBrowserPolicy({platform:platform(),role:'member',extra:1}),code('BROWSER_POLICY_INPUT_REFUSED'));
 });
+test('H4: mistyped tenant and role settings refuse at write time and at run time instead of being coerced',()=>{
+ const p=platform(),limits=assertPlatformBrowserLimits(p);
+ const cases=[[{browser:{enabled:'yes'}},'enabled'],[{browser:{downloads:{enabled:'yes'}}},'downloads.enabled'],[{browser:{enabled:1}},'enabled'],[{browser:{enabled:null}},'enabled'],
+  [{browser:{tools:'browser_navigate'}},'tools'],[{browser:{allowedOrigins:APPROVED[0]}},'allowedOrigins'],[{browser:{timeouts:{actionMs:'5000'}}},'timeouts.actionMs'],
+  [{browser:{downloads:{maxFiles:'3'}}},'downloads.maxFiles'],[{browser:{downloads:{formats:'pdf'}}},'downloads.formats'],[{browser:{downloads:{enabled:0}}},'downloads.enabled'],
+  [{roles:{member:{enabled:'yes'}}},'enabled'],[{roles:{member:{downloads:{enabled:'yes'}}}},'downloads.enabled'],[{roles:{viewer:{enabled:'false'}}},'enabled']];
+ for(const [tenant,field] of cases){
+  const label=JSON.stringify(tenant),refused=e=>e.code==='BROWSER_TENANT_SETTINGS_REFUSED'&&e.field===field;
+  assert.throws(()=>assertTenantBrowserSettings(tenant,limits),refused,`write time ${label}`);
+  for(const role of ['member','viewer'])assert.throws(()=>resolveBrowserPolicy({platform:p,tenant,role}),refused,`run time ${role} ${label}`);
+ }
+ assert.equal(resolveBrowserPolicy({platform:p,tenant:{browser:{downloads:{enabled:false}}},role:'member'}).downloads.enabled,false,'a real boolean false still narrows');
+ assert.deepEqual(resolveBrowserPolicy({platform:p,tenant:{browser:{enabled:false}},role:'member'}),{enabled:false});
+ assert.equal(resolveBrowserPolicy({platform:p,tenant:{browser:{enabled:true,tools:[]}},role:'member'}).enabled,false,'normalization still turns off a valid flag whose scope is empty');
+});
