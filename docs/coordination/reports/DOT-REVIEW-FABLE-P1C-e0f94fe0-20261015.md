@@ -25,3 +25,9 @@ The central coordinator's independent reviewers supplied and reproduced the diag
 Fable must return reviewed corrections at a new exact commit with focused regression evidence for every finding, keeping failed/skipped checks visible. Any separately proposed contract, migration or integration requires its existing owner review. No synthetic or scripted outcome supplies native, isolation, live authority or release proof.
 
 The stopped discovery candidate and prior source-only/proposal-only checkpoints retain their original scopes. No product source is changed by this record.
+
+## Subsequent explicit product direction — 18:39 UTC
+
+Neo directs that the **browser capability be enabled by default as the desired product behavior**. Fable owns the implementation of that direction. This is separate from **network destinations being denied by default** and **pre-execution controls for consequential actions**.
+
+The immutable p1c source reviewed above is currently default disabled and uncomposed; that source description is historical at its exact pin, not the newly desired default. The default-enabled product direction does not accept the p1c source defects, authorize live infrastructure activation or credentials, waive security/host/egress qualification, or permit consequential actions to bypass their controls. The source and live-qualification HOLD decisions remain for the reviewed commit. No product source changes or activation are performed by this decision record.
