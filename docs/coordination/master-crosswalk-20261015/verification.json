@@ -12,6 +12,7 @@
   "operationDescriptors": 97,
   "allDescriptorHandlersUnavailable": true,
   "skillManifestProsePairsVerified": 14,
+  "manifestVerificationBoundary": "Exact Git bytes, ID/version pairing and prose digests checked; canonical manifest digest not independently recomputed by this Python-only doc audit.",
   "runtimePromotions": 0,
   "sourceUnitFileHashesVerified": 14,
   "crosswalkSha256": "f134f9d5634c02cafab43d5e6460af8c35868a22a311b69f38d977f4f6a54fdb",
