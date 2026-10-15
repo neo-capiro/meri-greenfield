@@ -1,0 +1,626 @@
+{
+  "status": "INSPECTION_ONLY_ALLOCATION_PROPOSED_NOT_RESERVED_SOURCE_HOLD",
+  "observedUTC": "2026-10-15T10:49:01.369075+00:00",
+  "repository": "https://github.com/neo-capiro/meri-greenfield.git",
+  "sourceHead": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+  "sourceTree": "fb58adeccde7c5c7c48a5562ac3108b888a6d17e",
+  "registryHead": "cc4917ddc53c61b156eae612a8aa5a0e2d8cebd4",
+  "registryPath": "docs/coordination/tasks/CODEX-CENTRAL-MIGRATION-ALLOCATION-20261015.md",
+  "registrySha256": "c38d39b73cd3de86053e7c4f49ee8830d6707688473a2df9008b6733c2dbff61",
+  "centralAllocationCommit": "764d8a9d0784450f10f3c9de3212e20c74663bec",
+  "manifest": {
+    "path": "docs/qualification/candidates/fable-resume-20261015/MANIFEST.sha256.json",
+    "sha256": "25b6266f9580b2cc5ec105081127d5faba7d1fc78a443d71d95ea09d1bdf7ab4",
+    "entries": 82,
+    "bytesVerified": 845746,
+    "retrieval": "Git objects from fetched exact head; independent HTTP fetch-back not performed",
+    "allMatch": true
+  },
+  "migrationPathsAtSourceHead": [
+    "apps/artifacts/migrations/0001_versions.sql",
+    "apps/artifacts/migrations/0002_retention.sql",
+    "apps/control/commands/approval-metadata/migrations/0001_approval_metadata.sql",
+    "apps/control/commands/migrations/0001_commands.sql",
+    "apps/control/conversations/migrations/0001_conversations.sql",
+    "apps/control/conversations/migrations/0002_lifecycle.sql",
+    "apps/control/conversations/migrations/0003_selected_outputs.sql",
+    "apps/control/conversations/migrations/0004_sdk_sessions.sql",
+    "apps/control/conversations/migrations/0005_selected_reads.sql",
+    "apps/control/conversations/migrations/0006_native_executions.sql",
+    "apps/control/conversations/migrations/0007_native_preparation.sql",
+    "apps/control/conversations/migrations/0008_native_prepared_launch.sql",
+    "apps/control/conversations/migrations/0009_next_runs.sql",
+    "apps/control/conversations/migrations/0010_retention.sql",
+    "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+    "apps/control/schedules/migrations/0001_schedule_owner.sql",
+    "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+    "apps/gateway/budget/migrations/0001_product_budget.sql",
+    "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+    "apps/proxy/qualification/state/migrations/0002_tool_budget.sql",
+    "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql"
+  ],
+  "proposedOnly": {
+    "namespace": "meri_conversations",
+    "path": "apps/control/conversations/migrations/0011_run_issuance.sql",
+    "competingPathAtInspectedHead": false,
+    "competingReservationInInspectedCentralRegistry": false,
+    "allocatorDecisionRequired": true
+  },
+  "inspectedSources": [
+    {
+      "path": "apps/runtime/prepared-run-issuance-store.mjs",
+      "bytes": 2955,
+      "sha256": "b57b52075d9ebf22bd6823e16f97e31f0ee3cfd9ffd65453c325c83b49e49ed8",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/runtime/prepared-run-issuer.mjs",
+      "bytes": 8306,
+      "sha256": "a793683b2318773eb2dd1ab0c435693da34e0828512a227d8ce85b2651144d35",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/control/retention/reconciliation.mjs",
+      "bytes": 6137,
+      "sha256": "dd4a199ffbf42dc357be9396b65cc39c158d58d182602db104132c75e524d5be",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/control/retention/postgres-journal.mjs",
+      "bytes": 7196,
+      "sha256": "eca9f3c25a83d1fae5ba32f20eac855d6be170cc17aead24f2134e48af4473f8",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/control/conversations/service.mjs",
+      "bytes": 11129,
+      "sha256": "e888dceb510694333e580a54392fa3b79f92acdbab939b30b93ccf83da7587e3",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/control/conversations/lifecycle/service.mjs",
+      "bytes": 19757,
+      "sha256": "b505c4d9848e2cd4ce0e184642bb0199fbfb84c8a80964c12b094f5011959f0c",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/artifacts/service.mjs",
+      "bytes": 12319,
+      "sha256": "353f9f58d58ce625cb927dff31effc317c8a219287c64c2b8b6240db5a3f0d04",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/artifacts/recovery.mjs",
+      "bytes": 4180,
+      "sha256": "abc8864fde912a049c4c3e86471069423e403e79d649ccab04587b36ad1617dc",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/artifacts/postgres-service.mjs",
+      "bytes": 14262,
+      "sha256": "51f947cc028d133b71f58b3aee0275f5e292ac9ecbc1a44e37fe82a99e36933c",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/control/document-application/index.mjs",
+      "bytes": 6764,
+      "sha256": "9950e014929cf416a256d9398fa632e46bb2dd3831ae09168205c71a6aaa9dc5",
+      "historical45ProofRow": false,
+      "currentCandidateProofRow": false
+    },
+    {
+      "path": "apps/runtime/control.mjs",
+      "bytes": 10715,
+      "sha256": "590580ac53688dbb1586faf7bfae49a0d5435e1b56cc9c00a42abb4189a86783",
+      "historical45ProofRow": true,
+      "currentCandidateProofRow": true
+    }
+  ],
+  "runtimeTestsRun": false,
+  "sqlExecuted": false,
+  "awsActions": false,
+  "credentialsOrTrustChanged": false,
+  "manifestEntries": [
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/CLEANUP-RECEIPT-complete.json",
+      "bytes": 1482,
+      "sha256": "4b536e61095684742cc145314d1d46ca8bfbb59458b64af90362f23147691f17",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/CLEANUP-RECEIPT-gap5.json",
+      "bytes": 1458,
+      "sha256": "3b96c8bff03dc0e9a879d88b96f702d0e67c5a21ffedc24650db38f2f55f99b7",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/CLEANUP-RECEIPT-lane3-4.json",
+      "bytes": 1682,
+      "sha256": "5a0dfe7af37203d13ed026d70081486e66179c2dbf57cbe2c3ae609a8f1fdca5",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/CLEANUP-RECEIPT.json",
+      "bytes": 1349,
+      "sha256": "cbd2027cabc398529c072d01cf9474039cfa6fb6d462cc8a727f42dcee994faa",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/DENIED-OPERATIONS.md",
+      "bytes": 15426,
+      "sha256": "84e48f489e3c41be76bd6bca977a3975bd061922b0f3c1715b39a839ec66d1e9",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/README.md",
+      "bytes": 35920,
+      "sha256": "063f698beefa4fb2edbc776fe48c2cc44e46c23a5773acab80f25a242e460304",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/artifact/pip-install-host.log.txt",
+      "bytes": 5748,
+      "sha256": "177e7ee046f1f91956bda9392c91634787fce308b696c6a76ccc3916406d44fb",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/artifact/python-readback-host.json",
+      "bytes": 2311,
+      "sha256": "a0e036e4a9b61cd13472f0008d21cd5e343e06531954962377f9c5e5bce3f530",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/artifact/wheel-payload-verification.json",
+      "bytes": 7671,
+      "sha256": "82bdce58f8841bd6d35ee80315b55cfc12f142bdcb4e4d5dd2754a35aaa3a5e1",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/checks/RESULTS-baseline-first-run.json",
+      "bytes": 19925,
+      "sha256": "76deb487cf635b6cce69f792e398ddde131e68a88d0d290eb2cf768f2cd934f0",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/checks/RESULTS-conversations-isolated.json",
+      "bytes": 4038,
+      "sha256": "5e70b8448fcc0bc082356134b1d490534f25cd3c1fb2a181f79cb3872949639f",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/checks/RESULTS-worker-control-rerun.json",
+      "bytes": 5112,
+      "sha256": "5939aa10476b34e8551fe70a097ae6444ac92669a590e2431e5cf33685a94a50",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/checks/process.test.log.txt",
+      "bytes": 856,
+      "sha256": "3fc0d6370802b75ac4a399d55c191b9d0d369e4af47fe81c9c8c25513a82b03d",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/checks/runtime-process.test.log.txt",
+      "bytes": 1706,
+      "sha256": "d05e8246fdf335e7c253ec9007398041609ec59eeb92b4bfdc27f88305d366ee",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/checks/source-proof.test.log.txt",
+      "bytes": 747,
+      "sha256": "128fa1326dcb7d0d6b059807a3a59b6cb9a82bd20146c5cc111830681debf7d0",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/RESULTS.json",
+      "bytes": 88237,
+      "sha256": "5f825b65f41b65a758e3e4106b711c8ed6ad3d8bdd66fc510ccecf991d93eeed",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/artifacts.stdout.txt",
+      "bytes": 42069,
+      "sha256": "02a0d4cbc95e935eb7ae8d8faa8219afa3ff62cded0081940923f4cc00a43b34",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/contracts-package-check.stdout.txt",
+      "bytes": 1785,
+      "sha256": "d2f31c1bca4f90e05ee4a464a662b7e34250fdf6210ad0397f63bb7a6542e4af",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/control-action-host.stdout.txt",
+      "bytes": 138693,
+      "sha256": "c9fd8f4104939ca70d2b046a34db700b16f5e6de80b27d0fb2b5ae75a71a3dec",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/native-authority.stdout.txt",
+      "bytes": 37863,
+      "sha256": "eb1f4b699c32e59abf829b0572d86b1d2711fe591222752311a1987737a26c64",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/rerun-office-recalc.test.mjs.log.txt",
+      "bytes": 4403,
+      "sha256": "0e6248503322791cab4efb9ee0b3d0d4bed50e54e8c4b5af16d1be16bb4ed70c",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/full-baseline/rerun-recovery-independent.test.mjs.log.txt",
+      "bytes": 884,
+      "sha256": "465d7592365d327199f0759ab31682fcc158e44ef224525fe9ca0951456a0d53",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/RESULTS-source-proof-rerun.json",
+      "bytes": 3122,
+      "sha256": "0541459d8633a00f2a4c326da03423fb1717ca3c99aa50c11c7390e8d1ab029d",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/RESULTS.json",
+      "bytes": 11813,
+      "sha256": "bfb27bf86abf216d8e1716bc821603ac184edaf81cf1ad257c1a38ae5a572bf9",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/control-core.stdout.log.txt",
+      "bytes": 23660,
+      "sha256": "b1a64f0316b7b50019d20c4698bac01fe3b5a3bdbbea9af346dea4ac50ae91a1",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/conversations-tests.stdout.log.txt",
+      "bytes": 23633,
+      "sha256": "12ee42691cd25d083d3c035666998c648d96e4267ed3b73de8fb560030971c7e",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/native-authority.stdout.log.txt",
+      "bytes": 36950,
+      "sha256": "70289a560f2ed848f0eab2ed62d0edcfd0803a3320cdc06cea0a1d51678dad5d",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/runner.log.txt",
+      "bytes": 641,
+      "sha256": "210d35c6653bb0254b09ff733a3c80257ce043404144ce16f7c8683390227a9f",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/source-proof-rerun.stdout.log.txt",
+      "bytes": 753,
+      "sha256": "0625fada20a0a309be3499a0870184f89eacc6423d8f957fc95af75d1b6fa790",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/source-proof.stdout.log.txt",
+      "bytes": 2104,
+      "sha256": "72ecd03bfe1a0e322a67b0876461d44e4ba2774c9a8a4eec5ebb2b24aa8dcd37",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/gap5/worker-conversation.stdout.log.txt",
+      "bytes": 12487,
+      "sha256": "2798c8463bd614e55d05193401010e303802cf57bf31b1de52adcfc7e4192548",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane1/RESULTS.json",
+      "bytes": 8660,
+      "sha256": "85a26c2cdb0855db5ded4c4e6638769235e959b5d031403d822c270ab5b1ea25",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane1/conversations-tests.stdout.log.txt",
+      "bytes": 23637,
+      "sha256": "28e597cc55ae9dc3b5ef9ce4ae381ee29523e61626750632ddf960efd9f86b5a",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane1/native-authority.stdout.log.txt",
+      "bytes": 37132,
+      "sha256": "2e820822f97200c3e75ecdda7e626e4e288197dc0e5387f63a59a9141dec680b",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane1/runner.log.txt",
+      "bytes": 442,
+      "sha256": "1264e4c327c3651f94f436526f49cd0df1c7b58922023c8ec8305b45d38aada6",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane1/source-proof.stdout.log.txt",
+      "bytes": 754,
+      "sha256": "2f0f212b2284986aa1070dfe946bd4f289cb0e3005b1ac20e7ed7b44d6d5aed2",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/RESULTS.json",
+      "bytes": 6237,
+      "sha256": "43891e3e6e2baf35c176163db2971c96e2a0ef988b4da66262f8cd8ab23ea854",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/control-core.stdout.log.txt",
+      "bytes": 23668,
+      "sha256": "65ae14e509a9fd9cd64ced2f05c1dc83c7ed519f7c8ea972faf890b47e9fba1b",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/control-retention.stdout.log.txt",
+      "bytes": 1832,
+      "sha256": "55791024ab03e1bba05b8ad431feeda1caa2bf459b99bbe917844b3430c808cb",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/rerun-clean/RESULTS.json",
+      "bytes": 3380,
+      "sha256": "e6eba5ab73e24380d9117c46a50c63e3eb0ce83b5c123a5d2804563d0828d61e",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/rerun-clean/control-retention.stdout.log.txt",
+      "bytes": 1835,
+      "sha256": "e9b09a80bbaa70d6d3aa4820a5c885203995cce589d00fdb88556fe72ff8bac4",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/runner.log.txt",
+      "bytes": 432,
+      "sha256": "93fce3dcd0c2a3782fa6770b2c6d1394abca9d0fa11a624ed9d3b2b0caf68995",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane2/scripts-local.stdout.log.txt",
+      "bytes": 3046,
+      "sha256": "7135ed9b916116ed6918567da069de262e91f465cda1f13cfce07b6adc85ac62",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/contracts-check.stdout.log.txt",
+      "bytes": 14012,
+      "sha256": "49307f1b5abc36c89bf55555d47f01a107532f9743d0ad2072162925804144c5",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/env.txt",
+      "bytes": 44,
+      "sha256": "6b86f9f49575e8b926d2b240a6ab24daa941996f87268456a479d6f8d75ef80c",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/new-slice-tests.stdout.log.txt",
+      "bytes": 2069,
+      "sha256": "fad20871f79a7cfd3108bb03504818d7ade901e188e8b3b26ba7fcb22001142d",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/run.sh",
+      "bytes": 2297,
+      "sha256": "2573485d2cf786e14a6f52be7f6ccf92f30d9aa48ac5f0abe1a5fb2743dbde92",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/source-proof-isolation-none.stdout.log.txt",
+      "bytes": 780,
+      "sha256": "396b09ef93f1c259269aed47d639f013464d9c6a4f279a6cd2e3eda96c68b436",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/summary.txt",
+      "bytes": 758,
+      "sha256": "0a7b3ccb857e8b2310db69264f9b5fcc3fbfef53f4ba05e78b928b936b10b170",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/supplement-regression-isolated.stdout.log.txt",
+      "bytes": 7886,
+      "sha256": "6554b5f817cc89ff2664e750d1e5cd7b5a8a274801877ab052153eed64de0732",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/supplement-regression.stderr.log.txt",
+      "bytes": 288,
+      "sha256": "1c1c73ba61e1f7df10bf26f6f8e2925e33c02efb6a0e6dc9f0e31964ca3fd2d3",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/supplement-regression.stdout.log.txt",
+      "bytes": 8470,
+      "sha256": "f606d226575a77ec164e7a3516d118a1f012f240ca4cb7cf265e31493baadd68",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/worker-pins-unittest.stderr.log.txt",
+      "bytes": 120,
+      "sha256": "e23854bc4ac6a5098886c87fb23b4eb4095ea5bb2f29090f418170b8037e989c",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3-commands/worker-source-pins-check.stdout.log.txt",
+      "bytes": 69,
+      "sha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/RESULTS.json",
+      "bytes": 14205,
+      "sha256": "b3cba057854a5095848ce2fa27f35e4eef440c51e5fcdd02f7ae7aad85338850",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/control-retention.stdout.log.txt",
+      "bytes": 2330,
+      "sha256": "dc57a6d1ff56cfb264026be6a9f8883f1f3840f2084e3f2bd270f35d109f3ac8",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/conversations-tests.stdout.log.txt",
+      "bytes": 23663,
+      "sha256": "2c36c1618b269b2f292d882a35b020ff577146c09b8285056e6a29c36874d373",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/native-authority.stdout.log.txt",
+      "bytes": 37157,
+      "sha256": "b190725e7a61d71e6251780e84e669c8ece58a21551ab95ebf6cfab4feccc679",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/runner.log.txt",
+      "bytes": 835,
+      "sha256": "ba4aad7af7ef77e0b83c67d6f21a9ce4c9e78e6340366dd628d1ed6dbccf262d",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/runtime-tests.stdout.log.txt",
+      "bytes": 22703,
+      "sha256": "09e75e7130537737fa6cef25b0ac17ea1bd3a4538d0103925c28c091abf0b126",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/runtime-typecheck.stdout.log.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/scripts-local.stdout.log.txt",
+      "bytes": 3184,
+      "sha256": "9f8b30bd16d7ce633a7c18803a9a08a9ddba5ce98bd1e0392020f26d5dd348ac",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane3/source-proof.stdout.log.txt",
+      "bytes": 783,
+      "sha256": "56cecdbc37e3d41ad04ab123862f3018e0d628557a17f144b8baee359edd3e42",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane4/RESULTS.json",
+      "bytes": 4316,
+      "sha256": "f5e370d8a2c9297a68afa3b2b1a40c381590d2f78c4ba4fe01412ca09d761c31",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane4/control-retention.stdout.log.txt",
+      "bytes": 3548,
+      "sha256": "16c8d7aced1ea4c8f9a6249dd10cafb092d3228862edf322914fc63c4f2a5946",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/lane4/source-proof.stdout.log.txt",
+      "bytes": 783,
+      "sha256": "14580bfe0ab7dd1a15ae0b0834f4f95be6c503111c0444a2c3406858e4c9b62c",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/manifest.mjs",
+      "bytes": 1446,
+      "sha256": "52be41b51e583e03734fabd4dcf23ae51e5d696f5d54a25ed98b002e57def2ce",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/node-zlib/node24-gzwrite-comparison.json",
+      "bytes": 3195,
+      "sha256": "7089c10677ba37b5f7d3fa47bf93def2ead82edea8f641f678d607c0c52d018c",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/provenance-linux/env.txt",
+      "bytes": 674,
+      "sha256": "110c4d3895bde8e9d56f20cc8b1380d15a97c217aec6760df866775b2bd34bd0",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/provenance-linux/git-diff-check.stderr.log.txt",
+      "bytes": 7357,
+      "sha256": "0525c897e8613905aefb175ca49b62357d08b35100d3aef32a7a4de1f68c3b51",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/provenance-linux/summary.txt",
+      "bytes": 487,
+      "sha256": "8087b9ed0c9319f212da177f1b06b92a8f802665efeedd810101ba69fd94c2e2",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/composed-at-pin-cancellation.json",
+      "bytes": 5229,
+      "sha256": "c504d89c038395b2162719602ec551e7e34bbfe6c6df1ad04e524652f3ad492f",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/composed-at-pin.json",
+      "bytes": 6468,
+      "sha256": "7c1f1372ba92bf62ab5a24dc57869adf7250839fb319bf75bb9a42b51ce9d401",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/composed-at-pin.stdout.txt",
+      "bytes": 537,
+      "sha256": "20ee701274abc19987638aaf54ef648fbcca3dc8e6f3a9d50074515ac2d9d078",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/composed-refactored-cancellation.json",
+      "bytes": 5225,
+      "sha256": "16469ab4b189c0bcda42609585657d2623d300e0a0b9d16597cc0f56a499cfeb",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/composed-refactored.json",
+      "bytes": 6467,
+      "sha256": "1d93c7f6ce96773c935cf150c39485243185dbbd25c93cbe1352f90d0de73029",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/composed-refactored.stdout.txt",
+      "bytes": 545,
+      "sha256": "1e91ff3e6e3bcc49fd11d08f62ab37820f424c3bcff4edb16ab97a3e5ab0b67e",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/next-turn-1.json",
+      "bytes": 3942,
+      "sha256": "0834658ac55de7dee20467937ceacfea0627d0a0da20dea665435620accdfbfb",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/next-turn-1.stdout.txt",
+      "bytes": 1348,
+      "sha256": "6d31fffdda3b50e8b1852df9daf8f26379dcc5498987243bcae15ca0d80676ed",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/next-turn-preflight.json",
+      "bytes": 1855,
+      "sha256": "1c52d6aa84649022eac17d4b7ea8dd55934fd233c7891aab835a48c05de79995",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/next-turn-preflight.stdout.txt",
+      "bytes": 1424,
+      "sha256": "87052aad24561d561af57cf8c389e55932e8aee51ea78c70d323e8f4d3e63244",
+      "matches": true
+    },
+    {
+      "path": "docs/qualification/candidates/fable-resume-20261015/rehearsal/standin-probes-20261015.json",
+      "bytes": 3664,
+      "sha256": "ec8604bef39e8b82be62a0cb7e6f2a8e2bfd853497cb444afdf487f430349d98",
+      "matches": true
+    }
+  ]
+}
