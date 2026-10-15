@@ -1,0 +1,19 @@
+{
+  "status": "PASS_DOCUMENT_CONSISTENCY_ONLY",
+  "mainPin": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "fablePin": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+  "preservedRequirementRows": 53,
+  "rowHashesVerified": 53,
+  "preservedReleaseCriteria": 18,
+  "nativeIDs": 139,
+  "selected": 96,
+  "deferred": 43,
+  "selectedRefsVerified": 96,
+  "operationDescriptors": 97,
+  "allDescriptorHandlersUnavailable": true,
+  "skillManifestProsePairsVerified": 14,
+  "runtimePromotions": 0,
+  "sourceUnitFileHashesVerified": 14,
+  "crosswalkSha256": "f134f9d5634c02cafab43d5e6460af8c35868a22a311b69f38d977f4f6a54fdb",
+  "notRun": "No runtime,model,AWS,SQL,source activation or qualification suite."
+}

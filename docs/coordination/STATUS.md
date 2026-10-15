@@ -1,5 +1,11 @@
 # Meri kickoff status
 
+## 15 October2026: master scope and source tracking reconciliation
+
+The [current master crosswalk](master-crosswalk-20261015/README.md) preserves all53 W/G/R/REL/RG rows and original quantitative gates. The full master remains in Git; first chat/continuation and retention corrections are child milestones. G0 is historically accepted, G1 OPEN and G2-G7 unaccepted.
+
+Verified Fable candidate metadata now records96 selected descriptor references and14 original manifest/prose pairs, with43 native capabilities deferred. These facts repair stale null mappings/version labels; they do not integrate source, qualify complete workflows or promote any `NOT_QUALIFIED` runtime state. PR86 coverage maps remain historical. The queue now distinguishes central0009/0010/artifacts0002/0011 source allocations from SQL application and0012's unreserved proposal. Current UI consolidation/mobile deferral/development ownership are recorded without changing96/43 scope or release thresholds. This is documentation only; no current cloud/resource/security or deployed runtime acceptance is inferred.
+
 Current continuation, 11 October 2026 11:30 UTC: **G0 accepted / G1 OPEN.
 Eight gates total; G2-G7 remain unentered.** Substantial runtime, capability,
 measurement and security work remains. No reliable completion estimate is

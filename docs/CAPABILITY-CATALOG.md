@@ -1,5 +1,13 @@
 # Capability catalog contract foundation 0.2.0
 
+## 15 October2026 source-progress overlay
+
+The [current master crosswalk](coordination/master-crosswalk-20261015/README.md) separates descriptor/manifest source from implementation and runtime qualification. At Fable candidate `f0befe1e486cfda644f1f6170cf3d9d671e5158f`, [catalog0.2.15](https://github.com/neo-capiro/meri-greenfield/blob/f0befe1e486cfda644f1f6170cf3d9d671e5158f/packages/contracts/retrieval-0.2/catalog.json) preserves139 original IDs: all96 selected IDs have exact registered replacement references;43 remain deferred. Its97 operation descriptors still declare `handler:null` and `availability:unimplemented`. This is candidate descriptor coverage, not integration into this main-based branch, callable handler acceptance, native source access or parity. Separate installed handlers/source adapters require their own evidence; null preservation-catalog fields do not prove that source is absent.
+
+The R2 capability/skill ledgers now link those verified source descriptors and all14 indexed1.0.0 manifest/prose pairs with immutable pins. `runtimeParity` remains `NOT_QUALIFIED`; every selected behavior/policy/runtime gate remains open. Full skill workflow completion, including Bill Watch's wider federal/state promise, is not established by an asset. Original D01296/43 scope and R2 thresholds are unchanged. The foundation narrative below is retained as historical context, not a current claim that no later source exists.
+
+## Historical foundation narrative
+
 Status: additive R2 foundation prepared for independent review. **REL-02 is incomplete.** The schemas and local checks define the catalog boundary; they do not publish a qualified tool catalog, implement handlers or grant source access. D012's 139 native IDs retain exactly 96 selected and 43 deferred classifications. Every selected operation still needs an independently written domain input/output contract, handler, policy fixtures and acceptance. The fourteen R2 skill intents are separately selected but unqualified.
 
 The authoritative scope inputs are [the accepted scope](CAPABILITY-SCOPE.md) and [the R2 preservation ledger](coordination/r2/capabilities.json), derived from `neo-capiro/capirov2@fd8765ec01d292013758606204f2c9d886cd31c1`. Workbook family/unselected descriptions do not override D012. Source coverage is not workflow parity. No current Capiro implementation is imported, no deployed flags are inferred, and no deferred operation is silently enabled.

@@ -55,8 +55,18 @@
         "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_research_portfolio",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 10,
@@ -105,8 +115,18 @@
         "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_research_portfolio_changes",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 12,
@@ -505,8 +525,18 @@
         "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_research_evidence",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 28,
@@ -530,15 +560,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "read_chat_attachments",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 29,
       "fields": {
         "ID": "read_monday_client_boards",
         "Category": "Operational client context and tasks",
-        "Current capability": "Read the selected client\u2019s explicitly mapped Monday.com boards, or exact authorized board IDs/links supplied in this request. Returns board/item/subitem identities, columns, workflow state, owners, deadlines, updates, and explicit connection/pagination coverage. A board selector is a scope hint, never an access grant; disconnected, unavailable, partial, and not-mapped outcomes remain distinct.",
+        "Current capability": "Read the selected client’s explicitly mapped Monday.com boards, or exact authorized board IDs/links supplied in this request. Returns board/item/subitem identities, columns, workflow state, owners, deadlines, updates, and explicit connection/pagination coverage. A board selector is a scope hint, never an access grant; disconnected, unavailable, partial, and not-mapped outcomes remain distinct.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -555,8 +595,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "read_monday_client_boards",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 30,
@@ -580,8 +630,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_capiro_data",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 31,
@@ -605,8 +665,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_client_context",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 32,
@@ -614,7 +684,7 @@
         "ID": "search_research_sources",
         "Category": "Unified and public source retrieval",
         "Current capability": "Search authorized Capiro clients, meetings, mail, notes, and directory notes.",
-        "Current code evidence": "Six-kind literal contains search. Source cap 1\u201325 (default 8), recency sort and 360-character previews. No exhaustive total/cursor/coverage envelope. Code presence is proven. Deployed flags, traces and live quality remain unverified.",
+        "Current code evidence": "Six-kind literal contains search. Source cap 1–25 (default 8), recency sort and 360-character previews. No exhaustive total/cursor/coverage envelope. Code presence is proven. Deployed flags, traces and live quality remain unverified.",
         "New Meri coverage": "Retain the business behavior in the new typed gateway. Shared retrieval infrastructure may consolidate wrappers, while search, exact query and source reading remain distinct contracts.",
         "Coverage status": "Covered family; exact contract qualification pending",
         "Action to retain parity": "R-01/R-04/R-05. Qualify each original ID against a typed replacement and oracle fixture. Preserve authority, pagination and lifecycle. Search snippets do not establish authoritative facts or absence.",
@@ -630,8 +700,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_research_sources",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 33,
@@ -655,8 +735,18 @@
         "boundary": "New reproducible analysis over authorized inputs; verify referenced values and outputs using adopted Python libraries; no source mutations."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "run_analysis",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 34,
@@ -664,7 +754,7 @@
         "ID": "search_client_knowledge",
         "Category": "Operational client context and tasks",
         "Current capability": "Semantic search over one client's knowledge base: profile/overview facts, key people (titles, roles, contact history), facilities (locations, congressional districts, headcount), and uploaded document contents. Use this FIRST for questions about a specific client (\"who at X handles Y\", \"summarize the uploaded doc\", \"which districts have X facilities\"). Returns typed, citable knowledge-base entries.",
-        "Current code evidence": "Four-kind client-KB pgvector search. top-k 1\u201320, similarity>0.2 and 280-character previews. Embedding outage returns an empty list with fallback note. Code presence is proven. Deployed flags, traces and live quality remain unverified.",
+        "Current code evidence": "Four-kind client-KB pgvector search. top-k 1–20, similarity>0.2 and 280-character previews. Embedding outage returns an empty list with fallback note. Code presence is proven. Deployed flags, traces and live quality remain unverified.",
         "New Meri coverage": "Retain the business behavior in the new typed gateway. Shared retrieval infrastructure may consolidate wrappers, while search, exact query and source reading remain distinct contracts.",
         "Coverage status": "Covered family; exact contract qualification pending",
         "Action to retain parity": "R-01/R-04/R-05. Qualify each original ID against a typed replacement and oracle fixture. Preserve authority, pagination and lifecycle. Search snippets do not establish authoritative facts or absence.",
@@ -680,8 +770,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_client_knowledge",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 35,
@@ -705,8 +805,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_intelligence",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 36,
@@ -730,8 +840,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_knowledge_graph",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 37,
@@ -780,8 +900,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_memory",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 39,
@@ -805,8 +935,18 @@
         "boundary": "Current-authority read of canonical proposal status and provenance; candidate visibility cannot grant publish/review authority."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "memory.list_own_proposals",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 40,
@@ -830,15 +970,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_congress_bills",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 41,
       "fields": {
         "ID": "get_bill_status",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Get the authoritative legislative status of ONE bill (by id \"119-hr-8800\" or designation \"H.R. 8800\"): its canonical status, recent action timeline, roll-call VOTES on the bill (with tallies + party splits), and \u2014 critically \u2014 the outcome of any RULE that governs its floor consideration. Use this to answer \"did it pass / advance / stall / what happened to it\". A bill whose latest action is only \"rule reported\" but whose rule FAILED is reported as stalled, not advancing. Explicitly states when there is NO recorded vote (never infers passage from silence).",
+        "Current capability": "Get the authoritative legislative status of ONE bill (by id \"119-hr-8800\" or designation \"H.R. 8800\"): its canonical status, recent action timeline, roll-call VOTES on the bill (with tallies + party splits), and — critically — the outcome of any RULE that governs its floor consideration. Use this to answer \"did it pass / advance / stall / what happened to it\". A bill whose latest action is only \"rule reported\" but whose rule FAILED is reported as stalled, not advancing. Explicitly states when there is NO recorded vote (never infers passage from silence).",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -855,8 +1005,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_bill_status",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 42,
@@ -880,8 +1040,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "read_bill_text",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 43,
@@ -905,15 +1075,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_certification_status",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 44,
       "fields": {
         "ID": "search_floor_votes",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Search congressional roll-call votes (House + Senate) in the Capiro database. Filter by bill (id/designation), keyword over the vote question/title, chamber, congress, or a specific member (Bioguide id or name). Returns each vote's question, result, yea/nay/present tally, party splits, date, and source link \u2014 and the member's own position when a member is given. Explicitly reports when NO matching roll call exists; never infer a vote outcome.",
+        "Current capability": "Search congressional roll-call votes (House + Senate) in the Capiro database. Filter by bill (id/designation), keyword over the vote question/title, chamber, congress, or a specific member (Bioguide id or name). Returns each vote's question, result, yea/nay/present tally, party splits, date, and source link — and the member's own position when a member is given. Explicitly reports when NO matching roll call exists; never infer a vote outcome.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -930,15 +1110,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_floor_votes",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 45,
       "fields": {
         "ID": "search_cbo_cost_estimates",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Look up CBO cost estimates (budget scores) for congressional bills in the Capiro database. Filter by bill id (\"119-hr-8800\") or keyword. Returns the estimate title, publication date, and cbo.gov link. Explicitly reports when NO estimate exists for a bill \u2014 never guess a score.",
+        "Current capability": "Look up CBO cost estimates (budget scores) for congressional bills in the Capiro database. Filter by bill id (\"119-hr-8800\") or keyword. Returns the estimate title, publication date, and cbo.gov link. Explicitly reports when NO estimate exists for a bill — never guess a score.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -955,15 +1145,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_cbo_cost_estimates",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 46,
       "fields": {
         "ID": "resolve_entity",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Resolve a member of Congress, congressional committee, or bill to its CANONICAL identity in the Capiro registry (Bioguide ID, committee systemCode, or bill id like \"119-hr-8800\"). Accepts a canonical id, an external id (LIS, FEC, OpenSecrets, GovTrack), a bill designation (\"H.R. 8800\"), or a name. Use this BEFORE citing any member, committee, or bill to ground the reference \u2014 it explicitly reports when NO entity matches; never fabricate an identifier.",
+        "Current capability": "Resolve a member of Congress, congressional committee, or bill to its CANONICAL identity in the Capiro registry (Bioguide ID, committee systemCode, or bill id like \"119-hr-8800\"). Accepts a canonical id, an external id (LIS, FEC, OpenSecrets, GovTrack), a bill designation (\"H.R. 8800\"), or a name. Use this BEFORE citing any member, committee, or bill to ground the reference — it explicitly reports when NO entity matches; never fabricate an identifier.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -980,8 +1180,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "resolve_entity",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 47,
@@ -1005,15 +1215,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_lda_filings",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 48,
       "fields": {
         "ID": "list_global_datasets",
         "Category": "Government intelligence and public aggregates",
-        "Current capability": "List the global (public-domain, non-tenant) reference datasets query_global_data can aggregate over \u2014 LDA lobbying registrations, SEC filings, FARA registrations, congressional and state bills, federal grants and contract opportunities, federal awards, GAO/CRS reports, FEC committees, and news. For each dataset: its queryable fields, their types, and whether they can be filtered/grouped/aggregated. Call this BEFORE query_global_data if you are not already certain of a dataset's exact field names \u2014 do not guess them.",
+        "Current capability": "List the global (public-domain, non-tenant) reference datasets query_global_data can aggregate over — LDA lobbying registrations, SEC filings, FARA registrations, congressional and state bills, federal grants and contract opportunities, federal awards, GAO/CRS reports, FEC committees, and news. For each dataset: its queryable fields, their types, and whether they can be filtered/grouped/aggregated. Call this BEFORE query_global_data if you are not already certain of a dataset's exact field names — do not guess them.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1030,15 +1250,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "list_global_datasets",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 49,
       "fields": {
         "ID": "query_global_data",
         "Category": "Government intelligence and public aggregates",
-        "Current capability": "Run an aggregate query (counts, distinct counts, sums, group-bys) over one global reference dataset \u2014 the tool for questions like \"how many active LDA registrations do we have\" or \"which agency posted the most grants this year\" that a fixed search_X tool cannot answer. Structured only: pick a dataset from list_global_datasets, a `select` list of raw fields and/or aggregates (count, count_distinct, sum, avg, min, max \u2014 max 12 entries), optional `filters`, `groupBy`, `orderBy`, and `limit`. Every field name must come from that dataset's field list; unknown fields are rejected before anything runs. `lda_registrations` additionally accepts `asOfDate` (default: now) to ask what registration status looked like as of a given date, e.g. year-end. This tool never writes anything and never touches tenant-private data \u2014 it only reaches the reviewed global-dataset allowlist.",
+        "Current capability": "Run an aggregate query (counts, distinct counts, sums, group-bys) over one global reference dataset — the tool for questions like \"how many active LDA registrations do we have\" or \"which agency posted the most grants this year\" that a fixed search_X tool cannot answer. Structured only: pick a dataset from list_global_datasets, a `select` list of raw fields and/or aggregates (count, count_distinct, sum, avg, min, max — max 12 entries), optional `filters`, `groupBy`, `orderBy`, and `limit`. Every field name must come from that dataset's field list; unknown fields are rejected before anything runs. `lda_registrations` additionally accepts `asOfDate` (default: now) to ask what registration status looked like as of a given date, e.g. year-end. This tool never writes anything and never touches tenant-private data — it only reaches the reviewed global-dataset allowlist.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1055,8 +1285,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_global_data",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 50,
@@ -1080,8 +1320,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_sec_filings",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 51,
@@ -1105,8 +1355,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_fara_registrations",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 52,
@@ -1130,15 +1390,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_federal_grants",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 53,
       "fields": {
         "ID": "search_federal_awards",
         "Category": "Federal market awarded and future rails",
-        "Current capability": "Search federal contract awards/obligations (USAspending) the firm has synced. Filter by keyword, awarding agency, or Program Element (PE) code. Returns contractor, agency, amount, description, PE code, and place-of-performance \u2014 useful for defense-contracting and PE-linked questions.",
+        "Current capability": "Search federal contract awards/obligations (USAspending) the firm has synced. Filter by keyword, awarding agency, or Program Element (PE) code. Returns contractor, agency, amount, description, PE code, and place-of-performance — useful for defense-contracting and PE-linked questions.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1155,8 +1425,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_federal_awards",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 54,
@@ -1180,8 +1460,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_gao_reports",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 55,
@@ -1205,15 +1495,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_state_bills",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 56,
       "fields": {
         "ID": "get_state_bill_status",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Get the authoritative legislative status of ONE state bill (by canonical id \"tx-2025-hb1234\" or a designation like \"TX HB 1234\" \u2014 state required if not embedded in the designation): its canonical status (introduced/committee/reported/floor/passed_chamber/resolving/to_governor/enacted/vetoed/veto_overridden/failed/dead_by_deadline), recent action timeline, roll-call votes, and companion-bill links with their status. Explicitly states when there is NO recorded vote (never infer passage) and when the bill is dead_by_deadline (session adjourned sine die \u2014 dead absent a special session).",
+        "Current capability": "Get the authoritative legislative status of ONE state bill (by canonical id \"tx-2025-hb1234\" or a designation like \"TX HB 1234\" — state required if not embedded in the designation): its canonical status (introduced/committee/reported/floor/passed_chamber/resolving/to_governor/enacted/vetoed/veto_overridden/failed/dead_by_deadline), recent action timeline, roll-call votes, and companion-bill links with their status. Explicitly states when there is NO recorded vote (never infer passage) and when the bill is dead_by_deadline (session adjourned sine die — dead absent a special session).",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1230,15 +1530,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_state_bill_status",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 57,
       "fields": {
         "ID": "search_state_floor_votes",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Search state legislature roll-call votes. Filter by bill (canonical id or designation), keyword over the motion text, state, chamber, or limit. Returns each vote's motion, tally, passed/failed result, date, and source link. Member-level filtering is not yet available for state votes (crosswalk hardening in progress) \u2014 never promise a member-scoped result. Explicitly reports when NO matching vote exists.",
+        "Current capability": "Search state legislature roll-call votes. Filter by bill (canonical id or designation), keyword over the motion text, state, chamber, or limit. Returns each vote's motion, tally, passed/failed result, date, and source link. Member-level filtering is not yet available for state votes (crosswalk hardening in progress) — never promise a member-scoped result. Explicitly reports when NO matching vote exists.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1255,15 +1565,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_state_floor_votes",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 58,
       "fields": {
         "ID": "get_state_legislator",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Look up a state legislator by name + state, or by an OpenStates/LegiScan external id. Returns chamber, district, party, and committee memberships. Explicitly reports ambiguous name matches (asks which one) and NO-match cases \u2014 never fabricates a legislator.",
+        "Current capability": "Look up a state legislator by name + state, or by an OpenStates/LegiScan external id. Returns chamber, district, party, and committee memberships. Explicitly reports ambiguous name matches (asks which one) and NO-match cases — never fabricates a legislator.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1280,15 +1600,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_state_legislator",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 59,
       "fields": {
         "ID": "get_committee_roster",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Get the full roster of ONE committee: chair, vice chair, ranking member, and every member (grouped by side/rank for federal; role for state \u2014 state chambers do not share a minority-leadership vocabulary). `jurisdiction` is required (federal and state committees are separate namespaces \u2014 never guessed from the committee string alone); `state` is required when jurisdiction=state. Matches by exact systemCode/committee id first, then by name \u2014 reports \"committee referral unmatched\" rather than guessing when the name matches zero or more than one committee.",
+        "Current capability": "Get the full roster of ONE committee: chair, vice chair, ranking member, and every member (grouped by side/rank for federal; role for state — state chambers do not share a minority-leadership vocabulary). `jurisdiction` is required (federal and state committees are separate namespaces — never guessed from the committee string alone); `state` is required when jurisdiction=state. Matches by exact systemCode/committee id first, then by name — reports \"committee referral unmatched\" rather than guessing when the name matches zero or more than one committee.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1305,15 +1635,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_committee_roster",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 60,
       "fields": {
         "ID": "get_representation",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Who represents a client's facility footprint \u2014 the federal House member + both senators and the state upper/lower legislators for each of the client's geocoded facilities (optionally filtered to one state). Deterministic join over the geocoded district (District Impact Engine) \u2014 never a language-model guess at which district contains an address. Explicitly reports an ungeocoded facility rather than guessing its representative.",
+        "Current capability": "Who represents a client's facility footprint — the federal House member + both senators and the state upper/lower legislators for each of the client's geocoded facilities (optionally filtered to one state). Deterministic join over the geocoded district (District Impact Engine) — never a language-model guess at which district contains an address. Explicitly reports an ungeocoded facility rather than guessing its representative.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1330,15 +1670,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_representation",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 61,
       "fields": {
         "ID": "list_members",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "List CURRENT members of Congress by state and/or chamber \u2014 the direct roster lookup for questions like \"who are the senators from Virginia?\" or \"which representatives are from Florida?\". `state` accepts a full name (\"Virginia\") or 2-letter code (\"VA\"); `chamber` is \"house\" or \"senate\"; at least one of the two is required. Returns each member: name, party, state, district (House only), and chamber. This is the authoritative federal member roster \u2014 use it instead of resolve_entity (a name resolver) for by-state or by-chamber listings. Explicitly reports when NO members match; never fabricate a member.",
+        "Current capability": "List CURRENT members of Congress by state and/or chamber — the direct roster lookup for questions like \"who are the senators from Virginia?\" or \"which representatives are from Florida?\". `state` accepts a full name (\"Virginia\") or 2-letter code (\"VA\"); `chamber` is \"house\" or \"senate\"; at least one of the two is required. Returns each member: name, party, state, district (House only), and chamber. This is the authoritative federal member roster — use it instead of resolve_entity (a name resolver) for by-state or by-chamber listings. Explicitly reports when NO members match; never fabricate a member.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1355,15 +1705,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "list_members",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 62,
       "fields": {
         "ID": "get_state_rule_status",
         "Category": "Legislation, status and representation truth",
-        "Current capability": "Look up ONE rule/notice's status and lifecycle stage \u2014 state agency register or Federal Register, whichever matches. Accepts an exact id (\"FL-31100933\", or a Federal Register document number like \"2026-01234\") or a title keyword; `state` scopes a keyword search to that state's register (omit to also search federal + other states). Stage (notice/nprm/comment_closed/final/effective) is derived deterministically from the rule's type and comment/effective dates \u2014 never guessed. Explicitly reports ambiguous keyword matches (asks which one) and NO-match cases \u2014 never fabricates a rule's status.",
+        "Current capability": "Look up ONE rule/notice's status and lifecycle stage — state agency register or Federal Register, whichever matches. Accepts an exact id (\"FL-31100933\", or a Federal Register document number like \"2026-01234\") or a title keyword; `state` scopes a keyword search to that state's register (omit to also search federal + other states). Stage (notice/nprm/comment_closed/final/effective) is derived deterministically from the rule's type and comment/effective dates — never guessed. Explicitly reports ambiguous keyword matches (asks which one) and NO-match cases — never fabricates a rule's status.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1380,8 +1740,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_state_rule_status",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 63,
@@ -1405,8 +1775,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_intel_articles",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 64,
@@ -1430,8 +1810,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_committee_hearings",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 65,
@@ -1480,8 +1870,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_legiwatch_news",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 67,
@@ -1505,8 +1905,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_florida_budget_project",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 68,
@@ -1580,8 +1990,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_legislative_research",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 71,
@@ -1605,8 +2025,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_legal_reference",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 72,
@@ -1755,8 +2185,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_crs_reports",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 78,
@@ -1780,15 +2220,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_economic_data",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 79,
       "fields": {
         "ID": "get_district_nexus_context",
         "Category": "Government intelligence and public aggregates",
-        "Current capability": "Read client-scoped District Nexus facts and gaps for a state and district; cite each fact\u2019s source, date and funding stage, and state gaps rather than refusing.",
+        "Current capability": "Read client-scoped District Nexus facts and gaps for a state and district; cite each fact’s source, date and funding stage, and state gaps rather than refusing.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -1805,8 +2255,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_district_nexus_context",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 80,
@@ -1830,8 +2290,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_district_nexus_changes",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 81,
@@ -1855,8 +2325,18 @@
         "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_public_web",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 82,
@@ -1880,8 +2360,18 @@
         "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "scrape_web_page",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 83,
@@ -1980,8 +2470,18 @@
         "boundary": "Initial artifact filing only; verified exact version and source scopes preserved; no arbitrary attachment or folder access expansion."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "save_chat_attachments",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 87,
@@ -2030,8 +2530,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "mail.list_messages",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 89,
@@ -2055,8 +2565,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "mail.search_messages",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 90,
@@ -2080,15 +2600,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "mail.read_thread",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 91,
       "fields": {
         "ID": "list_upcoming_meetings",
         "Category": "Mail, calendars and meetings",
-        "Current capability": "List the user's upcoming meetings from the connected calendar (synced Microsoft 365/Google events), soonest first \u2014 the source of truth for which meetings exist and when. Returns each meeting's id (pass to create_meeting_brief), subject, start/end, attendees, and client. Optionally filter by client or a lookahead window.",
+        "Current capability": "List the user's upcoming meetings from the connected calendar (synced Microsoft 365/Google events), soonest first — the source of truth for which meetings exist and when. Returns each meeting's id (pass to create_meeting_brief), subject, start/end, attendees, and client. Optionally filter by client or a lookahead window.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2105,8 +2635,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "meeting.list_upcoming_meetings",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 92,
@@ -2155,8 +2695,18 @@
         "boundary": "Candidate proposal only through new memory.propose; no direct publication, confirmation, correction or deletion parity is accepted."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "save_memory",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 94,
@@ -2238,7 +2788,7 @@
       "fields": {
         "ID": "search_program_elements",
         "Category": "Defense budget and acquisition",
-        "Current capability": "Search DoD budget lines from the Pentagon J-books. NOTE: this table holds BOTH R-1/R-2 RDT&E Program Elements AND P-1/P-40 procurement line items \u2014 each row's `budgetExhibitType` / `appropriationType` tells you which; a procurement line is NOT a \"Program Element\", so state its exhibit type accordingly. Filter by military service, budget activity, or title keyword. Returns code, title, service, budget activity, appropriation type, exhibit type, and whether it has budget/award/bill data. For near-identical sibling titles (e.g. multiple \"Target Systems Development\" lines) prefer scoped filters (service + budget activity) over a single keyword sweep, and raise the limit \u2014 the default may truncate. Use get_program_element / get_pe_budget_timeline for detail.",
+        "Current capability": "Search DoD budget lines from the Pentagon J-books. NOTE: this table holds BOTH R-1/R-2 RDT&E Program Elements AND P-1/P-40 procurement line items — each row's `budgetExhibitType` / `appropriationType` tells you which; a procurement line is NOT a \"Program Element\", so state its exhibit type accordingly. Filter by military service, budget activity, or title keyword. Returns code, title, service, budget activity, appropriation type, exhibit type, and whether it has budget/award/bill data. For near-identical sibling titles (e.g. multiple \"Target Systems Development\" lines) prefer scoped filters (service + budget activity) over a single keyword sweep, and raise the limit — the default may truncate. Use get_program_element / get_pe_budget_timeline for detail.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2255,8 +2805,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_program_elements",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 98,
@@ -2280,8 +2840,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_program_element",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 99,
@@ -2305,8 +2875,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_pe_budget_timeline",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 100,
@@ -2338,7 +2918,7 @@
       "fields": {
         "ID": "get_pe_contractors",
         "Category": "Defense budget and acquisition",
-        "Current capability": "Get the top contractors linked to a Program Element over the last ~24 months, by direct PE tag or DoD acquisition-program code. Note: PE-to-contractor linkage is sparse \u2014 many PEs return no contractors.",
+        "Current capability": "Get the top contractors linked to a Program Element over the last ~24 months, by direct PE tag or DoD acquisition-program code. Note: PE-to-contractor linkage is sparse — many PEs return no contractors.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2355,8 +2935,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_pe_contractors",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 102,
@@ -2380,15 +2970,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_pe_bills",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 103,
       "fields": {
         "ID": "get_pe_report_language",
         "Category": "Defense budget and acquisition",
-        "Current capability": "Get the VERBATIM congressional committee report language linked to a budget line (by code): the committee, fiscal year, heading, provision text, action type, and source URL. This is the ONLY source that explains WHY a mark was added/cut. If it returns no provisions, the justification is NOT in Capiro's data \u2014 say so; do NOT infer or invent a reason for a mark change from the PE's title or the dollar delta alone.",
+        "Current capability": "Get the VERBATIM congressional committee report language linked to a budget line (by code): the committee, fiscal year, heading, provision text, action type, and source URL. This is the ONLY source that explains WHY a mark was added/cut. If it returns no provisions, the justification is NOT in Capiro's data — say so; do NOT infer or invent a reason for a mark change from the PE's title or the dollar delta alone.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2405,15 +3005,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_pe_report_language",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 104,
       "fields": {
         "ID": "search_acquisition_personnel",
         "Category": "Defense budget and acquisition",
-        "Current capability": "Search DoD acquisition personnel \u2014 the program managers, contracting officers, PEOs, and program leads who run defense programs. Filter by name (query), military service, organization, role, or linked Program Element (peCode). Returns name, service, organization, title, role, linked PE(s), and source count.",
+        "Current capability": "Search DoD acquisition personnel — the program managers, contracting officers, PEOs, and program leads who run defense programs. Filter by name (query), military service, organization, role, or linked Program Element (peCode). Returns name, service, organization, title, role, linked PE(s), and source count.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2430,8 +3040,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_acquisition_personnel",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 105,
@@ -2455,8 +3075,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_acquisition_person",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 106,
@@ -2480,8 +3110,18 @@
         "boundary": "New local native Word artifact generation and revisions with byte and render validation; Capiro source writes require separate filing approval."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "create_word",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 107,
@@ -2505,8 +3145,18 @@
         "boundary": "New native spreadsheet generation and supported revisions; originals, formulas, recalculation limits and reference totals verified."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "create_excel",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 108,
@@ -2530,15 +3180,25 @@
         "boundary": "New editable slide generation and revisions with per-slide render validation and immutable versions."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "create_powerpoint",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 109,
       "fields": {
         "ID": "schedule_task",
         "Category": "Schedules",
-        "Current capability": "Schedule a recurring task for Meri to run automatically on a cadence (e.g. a weekly research brief). Requires a name, an instruction prompt, and intervalMinutes (>=60). Scheduled runs are READ-ONLY research only \u2014 they cannot send email or write data. Use when the user asks Meri to do something \"every week / daily / on a schedule\".",
+        "Current capability": "Schedule a recurring task for Meri to run automatically on a cadence (e.g. a weekly research brief). Requires a name, an instruction prompt, and intervalMinutes (>=60). Scheduled runs are READ-ONLY research only — they cannot send email or write data. Use when the user asks Meri to do something \"every week / daily / on a schedule\".",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
         "Coverage status": "Covered family; exact contract qualification pending",
@@ -2555,8 +3215,18 @@
         "boundary": "New application Temporal Schedule only, bound to initiating actor, scope, timezone and budget; existing Capiro schedule parity is not accepted."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "schedule_task",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 110,
@@ -2580,8 +3250,18 @@
         "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "list_scheduled_tasks",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 111,
@@ -2605,8 +3285,18 @@
         "boundary": "New application Temporal Schedule cancellation; cancellation and run-history fixtures required."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "cancel_scheduled_task",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 112,
@@ -2630,15 +3320,25 @@
         "boundary": "New application schedule update and pause controls; recheck authority; no arbitrary external action expansion."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "update_scheduled_task",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 113,
       "fields": {
         "ID": "query_tasks",
         "Category": "Operational client context and tasks",
-        "Current capability": "List engagement tasks/to-dos for the firm or a client \u2014 filter by status and due date. Use for \"what is due, overdue, or open\".",
+        "Current capability": "List engagement tasks/to-dos for the firm or a client — filter by status and due date. Use for \"what is due, overdue, or open\".",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2655,15 +3355,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_tasks",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 114,
       "fields": {
         "ID": "query_action_items",
         "Category": "Operational client context and tasks",
-        "Current capability": "List the firm's \"Needs Attention\" action recommendations for a client or across all clients \u2014 each card says what changed, why it matters, and the recommended action with deadline and priority.",
+        "Current capability": "List the firm's \"Needs Attention\" action recommendations for a client or across all clients — each card says what changed, why it matters, and the recommended action with deadline and priority.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2680,8 +3390,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "actions.query",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 115,
@@ -2705,8 +3425,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_tracked_bills",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 116,
@@ -2730,8 +3460,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_regulatory_dockets",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 117,
@@ -2755,15 +3495,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_sam_opportunities",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 118,
       "fields": {
         "ID": "query_debriefs",
         "Category": "Mail, calendars and meetings",
-        "Current capability": "List post-meeting debriefs for a client \u2014 outcomes, follow-ups, and commitments captured after meetings. Restricted (confidential) debrief bodies are withheld.",
+        "Current capability": "List post-meeting debriefs for a client — outcomes, follow-ups, and commitments captured after meetings. Restricted (confidential) debrief bodies are withheld.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2780,15 +3530,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "meeting.query_debriefs",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 119,
       "fields": {
         "ID": "read_client_meetings",
         "Category": "Mail, calendars and meetings",
-        "Current capability": "Read the selected client\u2019s authorized historical meetings and exact persisted meeting-note or transcript source text. Lists explicit source availability and paginates both meeting inventory and exact source bodies; a calendar event alone is never treated as a transcript.",
+        "Current capability": "Read the selected client’s authorized historical meetings and exact persisted meeting-note or transcript source text. Lists explicit source availability and paginates both meeting inventory and exact source bodies; a calendar event alone is never treated as a transcript.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2805,8 +3565,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "meeting.read_client_meetings",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 120,
@@ -2830,8 +3600,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "query_outreach",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 121,
@@ -2855,15 +3635,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "read_client_documents",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 122,
       "fields": {
         "ID": "lookup_client_registry",
         "Category": "Operational client context and tasks",
-        "Current capability": "Pre-create check for a prospective client name \u2014 ALWAYS call this BEFORE proposing create_client. Reports (1) whether a client with that name already exists in the firm's book of business, (2) the LDA lobbying-disclosure registry's exact match if any (create_client will link it automatically), and (3) close LDA candidates otherwise \u2014 relay those to the user and ask which registered entity applies (pass the chosen id as create_client's `ldaClientId`) or none (`skipLdaCheck: true`). Read-only; creates nothing.",
+        "Current capability": "Pre-create check for a prospective client name — ALWAYS call this BEFORE proposing create_client. Reports (1) whether a client with that name already exists in the firm's book of business, (2) the LDA lobbying-disclosure registry's exact match if any (create_client will link it automatically), and (3) close LDA candidates otherwise — relay those to the user and ask which registered entity applies (pass the chosen id as create_client's `ldaClientId`) or none (`skipLdaCheck: true`). Read-only; creates nothing.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -2880,15 +3670,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "lookup_client_registry",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 123,
       "fields": {
         "ID": "create_client",
         "Category": "Operational client context and tasks",
-        "Current capability": "Create a NEW client record in the firm's book of business. Requires user approval. Call lookup_client_registry FIRST and resolve its findings with the user, then propose this with the resolved inputs: `ldaClientId` for a confirmed LDA registry entity, `skipLdaCheck: true` if the user said none apply, or neither when the name matched exactly / wasn't in the registry. The same checks are re-enforced here as backstops \u2014 the action FAILS VISIBLY (creating nothing) on a duplicate client, an unresolved close-match LDA ambiguity, an unknown `ldaClientId`, or the plan's client-slot limit. Required: `name`. Optional: `website`, `description`, `sectorTag`, `primaryContactName`/`primaryContactEmail`/`primaryContactPhone`. When you propose it, ask IN THE SAME MESSAGE whether \u2014 once approved \u2014 the user also wants the full profile filled via web research and internal data (their website via scrape_web_page, LDA filings, federal awards \u2192 update_client_profile).",
+        "Current capability": "Create a NEW client record in the firm's book of business. Requires user approval. Call lookup_client_registry FIRST and resolve its findings with the user, then propose this with the resolved inputs: `ldaClientId` for a confirmed LDA registry entity, `skipLdaCheck: true` if the user said none apply, or neither when the name matched exactly / wasn't in the registry. The same checks are re-enforced here as backstops — the action FAILS VISIBLY (creating nothing) on a duplicate client, an unresolved close-match LDA ambiguity, an unknown `ldaClientId`, or the plan's client-slot limit. Required: `name`. Optional: `website`, `description`, `sectorTag`, `primaryContactName`/`primaryContactEmail`/`primaryContactPhone`. When you propose it, ask IN THE SAME MESSAGE whether — once approved — the user also wants the full profile filled via web research and internal data (their website via scrape_web_page, LDA filings, federal awards → update_client_profile).",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
         "Coverage status": "Deferred by initial command scope",
@@ -2930,8 +3730,18 @@
         "boundary": "Initial task command; immutable approval, current authority, source invariants, idempotency and receipt required after G3-G5."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "create_task",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 125,
@@ -2955,15 +3765,25 @@
         "boundary": "Initial task command; existing task ownership and field invariants require fixtures; repeated delivery must produce one outcome."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "update_task",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 126,
       "fields": {
         "ID": "update_client_profile",
         "Category": "Operational client context and tasks",
-        "Current capability": "Write approved values into a client profile (the Documents/Overview tab fields): name, website, description, productDescription, primaryContactName, primaryContactEmail, primaryContactPhone, sectorTag, issueCodes, uei, cageCode, naicsCodes, pscCodes. You may ALSO append facilities (locations: name, address, city, state, ZIP, congressionalDistrict, employeeCount), capabilities (products/technologies the organization offers: name, type, description, sector), and people (key contacts / personnel: name, title, email, phone, role, lastContact, notes) discovered on the client's website or in filings -- pass them as the facilities[], capabilities[], and people[] arrays. These arrays are MERGED, never used to delete existing rows: a person already on the profile (matched on email, else exact name) is updated in place \u2014 blank fields are filled and lastContact advances, but values already there are left alone \u2014 and a facility/capability whose name is already present is skipped. Re-running enrichment is therefore safe and will NOT duplicate rows; the result reports peopleCreated, peopleUpdated, and skipped separately, so report what actually changed rather than assuming every row you sent was new. Only call this AFTER you have shown the user the proposed values (ideally with a source for each, e.g. from search_public_web / scrape_web_page / LDA filings) and they have approved them. Pass only the fields/rows you are changing. Requires user approval.",
+        "Current capability": "Write approved values into a client profile (the Documents/Overview tab fields): name, website, description, productDescription, primaryContactName, primaryContactEmail, primaryContactPhone, sectorTag, issueCodes, uei, cageCode, naicsCodes, pscCodes. You may ALSO append facilities (locations: name, address, city, state, ZIP, congressionalDistrict, employeeCount), capabilities (products/technologies the organization offers: name, type, description, sector), and people (key contacts / personnel: name, title, email, phone, role, lastContact, notes) discovered on the client's website or in filings -- pass them as the facilities[], capabilities[], and people[] arrays. These arrays are MERGED, never used to delete existing rows: a person already on the profile (matched on email, else exact name) is updated in place — blank fields are filled and lastContact advances, but values already there are left alone — and a facility/capability whose name is already present is skipped. Re-running enrichment is therefore safe and will NOT duplicate rows; the result reports peopleCreated, peopleUpdated, and skipped separately, so report what actually changed rather than assuming every row you sent was new. Only call this AFTER you have shown the user the proposed values (ideally with a source for each, e.g. from search_public_web / scrape_web_page / LDA filings) and they have approved them. Pass only the fields/rows you are changing. Requires user approval.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
         "Coverage status": "Deferred by initial command scope",
@@ -2988,7 +3808,7 @@
       "fields": {
         "ID": "find_contacts",
         "Category": "Operational client context and tasks",
-        "Current capability": "Find REAL people the firm actually corresponds with, harvested from the connected Outlook/Gmail mailboxes and calendars \u2014 name, email address, organization, when they were last in contact, and how many messages. Use this INSTEAD of reading names out of list_emails / search_emails previews when you need contacts for a client profile: those previews give you display names with no addresses and no history, which is guesswork. Filter by `clientId` (returns everyone whose email domain matches that client's website, plus anyone already linked to them), by `domain`, or by `query` (name/email substring). `onProfile` tells you who is ALREADY on the client's People tab, so you only propose the ones who are missing. Read-only.",
+        "Current capability": "Find REAL people the firm actually corresponds with, harvested from the connected Outlook/Gmail mailboxes and calendars — name, email address, organization, when they were last in contact, and how many messages. Use this INSTEAD of reading names out of list_emails / search_emails previews when you need contacts for a client profile: those previews give you display names with no addresses and no history, which is guesswork. Filter by `clientId` (returns everyone whose email domain matches that client's website, plus anyone already linked to them), by `domain`, or by `query` (name/email substring). `onProfile` tells you who is ALREADY on the client's People tab, so you only propose the ones who are missing. Read-only.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3005,15 +3825,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "find_contacts",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 128,
       "fields": {
         "ID": "search_funding_opportunities",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Discover paginated grants and contracts for the selected client using Funding Opportunities\u2019 canonical eligibility and matching service. Returns applicant types, capability and geography evidence, deadlines, conditions, explicit eligibility disqualifiers, recommendation confidence, source freshness and scan limits. Use this for client funding recommendations; raw grant/SAM search does not assess client fit. pageSize is 1\u20135; follow nextPage and disclose totalIsCapped. Procurement forecasts use the separately gated search_procurement_forecasts tool and are never open solicitations.",
+        "Current capability": "Discover paginated grants and contracts for the selected client using Funding Opportunities’ canonical eligibility and matching service. Returns applicant types, capability and geography evidence, deadlines, conditions, explicit eligibility disqualifiers, recommendation confidence, source freshness and scan limits. Use this for client funding recommendations; raw grant/SAM search does not assess client fit. pageSize is 1–5; follow nextPage and disclose totalIsCapped. Procurement forecasts use the separately gated search_procurement_forecasts tool and are never open solicitations.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3030,15 +3860,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_funding_opportunities",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 129,
       "fields": {
         "ID": "get_funding_opportunity_requirements",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Read the canonical extracted requirements from SAM.gov solicitation documents for one authorized client, with exact excerpts, attachment IDs, page/character spans, extraction confidence, supersession and the tenant\u2019s review status. Requires the Funding Opportunities document capability. Follow pagination.nextOffset; pending, rejected or superseded extractions are not verified mandatory conditions. For Grants.gov use get_funding_opportunity and summaryOffset/summaryLimit to read the full held notice text.",
+        "Current capability": "Read the canonical extracted requirements from SAM.gov solicitation documents for one authorized client, with exact excerpts, attachment IDs, page/character spans, extraction confidence, supersession and the tenant’s review status. Requires the Funding Opportunities document capability. Follow pagination.nextOffset; pending, rejected or superseded extractions are not verified mandatory conditions. For Grants.gov use get_funding_opportunity and summaryOffset/summaryLimit to read the full held notice text.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3055,15 +3895,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_funding_opportunity_requirements",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 130,
       "fields": {
         "ID": "get_funding_opportunity",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Load one federal funding opportunity (Grants.gov NOFO or SAM.gov contract notice) as Capiro holds it, scored for one client: source facts, deadlines, NAICS/PSC, set-aside, place of performance, the deterministic recommendation, eligibility, and the team's own recorded decision. Grant funding and contract value are separate fields and must never be added together. Requires clientId, source ('grants_gov' or 'sam_gov') and sourceRecordId. Continue the held notice body using summaryOffset and summaryLimit (up to 12000 characters); summaryRead reports exact bounds and nextOffset. Reads local data only \u2014 it never calls an external provider, so an absent field means Capiro has not synced it, not that the notice lacks it.",
+        "Current capability": "Load one federal funding opportunity (Grants.gov NOFO or SAM.gov contract notice) as Capiro holds it, scored for one client: source facts, deadlines, NAICS/PSC, set-aside, place of performance, the deterministic recommendation, eligibility, and the team's own recorded decision. Grant funding and contract value are separate fields and must never be added together. Requires clientId, source ('grants_gov' or 'sam_gov') and sourceRecordId. Continue the held notice body using summaryOffset and summaryLimit (up to 12000 characters); summaryRead reports exact bounds and nextOffset. Reads local data only — it never calls an external provider, so an absent field means Capiro has not synced it, not that the notice lacks it.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3080,15 +3930,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_funding_opportunity",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 131,
       "fields": {
         "ID": "explain_opportunity_match",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Explain WHY an opportunity matched a client: every matched signal with its strength and the exact value it matched on, the overall fit band, and the four separate judgements Capiro keeps apart \u2014 relevance (capability/agency fit), eligibility (can they bid), the machine recommendation (pursue/monitor/pass/needs_review), and the human decision if one has been made. Use this instead of guessing from a score. Also names the client profile fields Capiro is missing, so a weak match can be reported as unassessable rather than as a poor fit.",
+        "Current capability": "Explain WHY an opportunity matched a client: every matched signal with its strength and the exact value it matched on, the overall fit band, and the four separate judgements Capiro keeps apart — relevance (capability/agency fit), eligibility (can they bid), the machine recommendation (pursue/monitor/pass/needs_review), and the human decision if one has been made. Use this instead of guessing from a score. Also names the client profile fields Capiro is missing, so a weak match can be reported as unassessable rather than as a poor fit.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3113,7 +3973,7 @@
       "fields": {
         "ID": "get_opportunity_client_context",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Load one client's federal-opportunity posture: counts by rail, the next deadline, top-ranked grants and contracts, per-source data freshness, and \u2014 importantly \u2014 which client profile fields Capiro is missing. Use this FIRST when asked how a client is doing on federal opportunities, and to distinguish 'no matches' from 'the catalog has not synced' from 'the profile is too thin to score'.",
+        "Current capability": "Load one client's federal-opportunity posture: counts by rail, the next deadline, top-ranked grants and contracts, per-source data freshness, and — importantly — which client profile fields Capiro is missing. Use this FIRST when asked how a client is doing on federal opportunities, and to distinguish 'no matches' from 'the catalog has not synced' from 'the profile is too thin to score'.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3130,15 +3990,25 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_opportunity_client_context",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 133,
       "fields": {
         "ID": "get_opportunity_government_landscape",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Load the government-affairs context Capiro can evidence for a SAM.gov contract opportunity: reviewed Program Element links (only an ACCEPTED review counts as source-backed; an unreviewed match is labelled inferred and is not evidence of a link), the client\u2019s recorded facilities, and state-level place-of-performance overlap. Reports coverage and which context sources are not yet wired \u2014 an unwired source means Capiro cannot look, never that nothing is there. SAM.gov only.",
+        "Current capability": "Load the government-affairs context Capiro can evidence for a SAM.gov contract opportunity: reviewed Program Element links (only an ACCEPTED review counts as source-backed; an unreviewed match is labelled inferred and is not evidence of a link), the client’s recorded facilities, and state-level place-of-performance overlap. Reports coverage and which context sources are not yet wired — an unwired source means Capiro cannot look, never that nothing is there. SAM.gov only.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3155,8 +4025,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_opportunity_government_landscape",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 134,
@@ -3188,7 +4068,7 @@
       "fields": {
         "ID": "build_opportunity_action_plan",
         "Category": "Funding opportunity decision workflows",
-        "Current capability": "Get the deterministic, stage-aware action plan for an opportunity \u2014 what a capture team should do next given where the acquisition actually is (forecast, sources sought, presolicitation, solicitation, amendment, grant, or closed). Returns PROPOSALS ONLY: nothing is committed, no task is created, no workflow moves. A person accepts an action in Capiro, which then creates the task and records the decision in one transaction. A closed or informational notice never proposes a pursuit.",
+        "Current capability": "Get the deterministic, stage-aware action plan for an opportunity — what a capture team should do next given where the acquisition actually is (forecast, sources sought, presolicitation, solicitation, amendment, grant, or closed). Returns PROPOSALS ONLY: nothing is committed, no task is created, no workflow moves. A person accepts an action in Capiro, which then creates the task and records the decision in one transaction. A closed or informational notice never proposes a pursuit.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3213,7 +4093,7 @@
       "fields": {
         "ID": "search_federal_contract_awards",
         "Category": "Federal market awarded and future rails",
-        "Current capability": "Search Capiro\u2019s locally synchronized federal contract awards. Returns recipient, UEI, awarding agency, obligated amount, action date, place-of-performance district, source freshness and USAspending provenance. Pass clientId to restrict results to that client\u2019s reviewed federal identities. Read-only; never calls MakeGov.",
+        "Current capability": "Search Capiro’s locally synchronized federal contract awards. Returns recipient, UEI, awarding agency, obligated amount, action date, place-of-performance district, source freshness and USAspending provenance. Pass clientId to restrict results to that client’s reviewed federal identities. Read-only; never calls MakeGov.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3230,8 +4110,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_federal_contract_awards",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 137,
@@ -3255,8 +4145,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_federal_subawards",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 138,
@@ -3280,8 +4180,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_contract_vehicles",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 139,
@@ -3305,8 +4215,18 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "search_procurement_forecasts",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 140,
@@ -3330,15 +4250,25 @@
         "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_business_development_context",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 141,
       "fields": {
         "ID": "get_business_development_evidence",
         "Category": "Prospect business development",
-        "Current capability": "Read the locally synchronized dossier evidence for the prospect this chat is scoped to: identity basis, per-section source status, and up to 24 flattened evidence records with stable source ids, locators, relationship strength, factual fields and event/effective/source-update/retrieval dates. Truthfully reports total, truncated and partial coverage; an absent or partial section is not proof of absence. Reads local data only \u2014 never calls an external provider.",
+        "Current capability": "Read the locally synchronized dossier evidence for the prospect this chat is scoped to: identity basis, per-section source status, and up to 24 flattened evidence records with stable source ids, locators, relationship strength, factual fields and event/effective/source-update/retrieval dates. Truthfully reports total, truncated and partial coverage; an absent or partial section is not proof of absence. Reads local data only — never calls an external provider.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
         "Coverage status": "Data access intent; scope and workflow unselected",
@@ -3355,8 +4285,18 @@
         "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_business_development_evidence",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 142,
@@ -3413,7 +4353,7 @@
       "fields": {
         "ID": "save_business_development_brief",
         "Category": "Prospect business development",
-        "Current capability": "Save a new version of the prospect brief this chat is scoped to, from the current version. Accepts the expected version number, an optional bounded title, and exactly five sections (companyAndFirmImplication, verifiedEvidence, judgment, practicalAction, missingInformation), each with text and existing citation indexes only \u2014 section provenance is forced to generated and citation records cannot be submitted. Deterministically idempotent per conversation, version and content; a stale version number conflicts rather than overwriting. Requires user approval. Never sends email or outreach.",
+        "Current capability": "Save a new version of the prospect brief this chat is scoped to, from the current version. Accepts the expected version number, an optional bounded title, and exactly five sections (companyAndFirmImplication, verifiedEvidence, judgment, practicalAction, missingInformation), each with text and existing citation indexes only — section provenance is forced to generated and citation records cannot be submitted. Deterministically idempotent per conversation, version and content; a stale version number conflicts rather than overwriting. Requires user approval. Never sends email or outreach.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Generic research/drafting, data access and governed proposals do not recreate this source-side command. Initial source commands are memory proposals/review, task creation and artifact filing.",
         "Coverage status": "Deferred by initial command scope",
@@ -3438,7 +4378,7 @@
       "fields": {
         "ID": "get_business_development_recent_changes",
         "Category": "Prospect business development",
-        "Current capability": "Summarize the already-ingested change alerts for the business-development prospect this chat is scoped to: up to 25 recent alerts, newest first, each with source family, category, title, summary, materiality, separated event/effective/publication/first-observed dates, the exact source locator, and the change diff's implication. The implication is an inference produced from the ingested diff \u2014 never a source fact \u2014 and its conditional or thematic language must be preserved, not sharpened. Read-only over locally synchronized data: never calls a source provider and never proves bid or win intent.",
+        "Current capability": "Summarize the already-ingested change alerts for the business-development prospect this chat is scoped to: up to 25 recent alerts, newest first, each with source family, category, title, summary, materiality, separated event/effective/publication/first-observed dates, the exact source locator, and the change diff's implication. The implication is an inference produced from the ingested diff — never a source fact — and its conditional or thematic language must be preserved, not sharpened. Read-only over locally synchronized data: never calls a source provider and never proves bid or win intent.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized source inventory is intended, but exact Research Portfolio or prospect conversation identity, grants, revision-bound reads and native workflow recipe are not selected in v1.",
         "Coverage status": "Data access intent; scope and workflow unselected",
@@ -3455,15 +4395,25 @@
         "boundary": "Proposed BizDev record/evidence/history read only, conditional on source agreement and tenant/provider entitlements; no scoring or brief-write parity."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_business_development_recent_changes",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     },
     {
       "row": 146,
       "fields": {
         "ID": "get_district_federal_market",
         "Category": "Federal market awarded and future rails",
-        "Current capability": "Get source-backed federal-market activity for a congressional geography. Contract obligations and explicitly district-resolved subawards are separate awarded-money rails. State-backed subawards that lack a district are returned separately and never attributed to the requested district. SAM opportunities and agency forecasts are future signals and never included in awarded totals. Optionally pass clientId to scope awarded activity to that client\u2019s reviewed federal identities.",
+        "Current capability": "Get source-backed federal-market activity for a congressional geography. Contract obligations and explicitly district-resolved subawards are separate awarded-money rails. State-backed subawards that lack a district are returned separately and never attributed to the requested district. SAM opportunities and agency forecasts are future signals and never included in awarded totals. Optionally pass clientId to scope awarded activity to that client’s reviewed federal identities.",
         "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
         "New Meri coverage": "Broad authorized data access is included. This exact domain lookup/aggregate/comparison/truth workflow is not itemized in the selected-v1 ledger and cannot be assumed from generic search.",
         "Coverage status": "Data access included; exact read workflow unselected",
@@ -3480,8 +4430,21 @@
         "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures."
       },
       "runtimeParity": "NOT_QUALIFIED",
-      "replacementOperation": null,
-      "replacementState": "REL-02_REQUIRED; no invented alias or handler"
+      "replacementOperation": {
+        "id": "get_district_federal_market",
+        "version": "0.2.0"
+      },
+      "replacementState": "CANDIDATE_DESCRIPTOR_MAPPED; NOT_INTEGRATED_OR_RUNTIME_QUALIFIED",
+      "replacementEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "path": "packages/contracts/retrieval-0.2/catalog.json",
+        "sha256": "17c2949080ebfcd3cc4653b8bcbdd4e9fd0cf1b4318f790e6ff5841ac46ca2e8",
+        "catalogVersion": "0.2.15",
+        "evidenceLevel": "DESCRIPTOR_SOURCE"
+      }
     }
-  ]
+  ],
+  "sourceProgressAsOf": "2026-10-15",
+  "sourceProgressCrosswalk": "../master-crosswalk-20261015/crosswalk.json",
+  "sourceProgressBoundary": "References describe exact Fable candidate source only; no candidate source is integrated into main or activated by this documentation."
 }

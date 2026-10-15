@@ -21,9 +21,18 @@
         "Current starter prompt": "Research [company name or domain] and build a comprehensive federal market strategy covering its capabilities, mission fit, Program Elements and procurement lines, contracts and OTAs, grants and innovation programs, partners, congressional opportunities, qualification gaps, capture strategy, a 90-day plan, and a long-range roadmap. Cite the supporting sources.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L34\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/research_company/1.0.0/manifest.json",
+        "manifestFileSha256": "dcede2f73f39ff28d36a71be430c4c3b44946b7280c0ff4d7f5fa33feb059153",
+        "prosePath": "packages/skills/originals/research_company/1.0.0/SKILL.md",
+        "proseFileSha256": "cbee7506868d65de5ef247add8390850de151398b074add2ce69d2aefd63b7ab",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 9,
@@ -38,9 +47,18 @@
         "Current starter prompt": "Tell me everything I should know about [person or organization]. Build a relationship brief across every authorized source that may contain relevant history, including email, meetings, contacts, notes, memory, documents, and commitments. Separate verified facts from inference and identify any incomplete source coverage.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L60\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/relationship_brief/1.0.0/manifest.json",
+        "manifestFileSha256": "a4ee2cd51cac83d82326439ec93baf4a50860bdbb110ec1c1f40daa0f1420ace",
+        "prosePath": "packages/skills/originals/relationship_brief/1.0.0/SKILL.md",
+        "proseFileSha256": "3b6a422d87c0a61562fbe2f2ba96b164b282f62d38058e7db0e15a97672d99ee",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 10,
@@ -55,9 +73,18 @@
         "Current starter prompt": "What changed this week for this client? Check every required authorized source, distinguish new dated events from carryover, identify partial coverage, and do not claim that nothing happened unless the coverage manifest supports that conclusion.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L77\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/client_changes/1.0.0/manifest.json",
+        "manifestFileSha256": "ea9b6fcb18bb51f3a5568f33bd515fda6adeea719d420aacce6a8b5a192ebcd7",
+        "prosePath": "packages/skills/originals/client_changes/1.0.0/SKILL.md",
+        "proseFileSha256": "e81c3692348c9bfc7f9655d703823e785c1b7eb0b77fb394cbecb4a062cd0ee8",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 11,
@@ -72,9 +99,18 @@
         "Current starter prompt": "What changed across my active client portfolio this week? Enumerate the full authorized active-client roster, inspect every required source for each client, preserve per-client coverage, identify partial or unavailable sources, and separate dated events from carryover.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L104\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/portfolio_changes/1.0.0/manifest.json",
+        "manifestFileSha256": "f81f58191ca1680f0cc9601dd5ca217f968ff7308c3b60b684c6583d20f33ec6",
+        "prosePath": "packages/skills/originals/portfolio_changes/1.0.0/SKILL.md",
+        "proseFileSha256": "3e76da17d5dc490944b7f5464065cee69742ac554ebe7ceb12f4e3e327ce67b5",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 12,
@@ -89,9 +125,18 @@
         "Current starter prompt": "Search across my clients for overlap with [external company or domain]. Research the external company and return evidence-backed overlap in capabilities, agencies, military services, missions, Program Elements, NAICS, PSC, contracts, people, and strategic priorities. Do not imply an existing relationship unless the evidence proves one.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L130\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/portfolio_overlap/1.0.0/manifest.json",
+        "manifestFileSha256": "d1e00e9218ca8f93c39785a272ca819602b7e5e2e50489c813061c7e6b1d2851",
+        "prosePath": "packages/skills/originals/portfolio_overlap/1.0.0/SKILL.md",
+        "proseFileSha256": "3abdb87f27d60fd7f8dd85083d8aad8b0413884f297e9ed7e5a143aa50e20e8b",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 13,
@@ -106,9 +151,18 @@
         "Current starter prompt": "Search my mailbox history with [person or organization] and produce a correspondence timeline. For each key thread: the subject, the dates, what was asked or promised, and any commitments or open items still outstanding. Cite message dates for every claim. Check every required authorized mail source before concluding; do not claim there is no correspondence unless the coverage manifest supports it.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L156\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/mail_history/1.0.0/manifest.json",
+        "manifestFileSha256": "bfa1a83dbfbe8fb55bb62018791575984dfba623d0dc198f8f79475ec8612b91",
+        "prosePath": "packages/skills/originals/mail_history/1.0.0/SKILL.md",
+        "proseFileSha256": "a6f2508d93e0c1b5f3c723b10038db37adc31f9a08b49a36944c8dcf55308ea4",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 14,
@@ -123,9 +177,18 @@
         "Current starter prompt": "Catch me up on [client, person, or issue] so I can prepare for my upcoming meeting. Cover: what has happened recently across every authorized source; the most important email exchanges; prior meetings and conversations; decisions already made; outstanding questions and unresolved issues; upcoming deadlines, meetings, and legislative developments; and everything we have committed to doing. Separate verified facts from inference, flag any incomplete source coverage, and end with a one-page pre-meeting checklist.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L172\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/meeting_prep/1.0.0/manifest.json",
+        "manifestFileSha256": "035f5af6dbc6765d0b300c19714a73fb47d3d25b5c4e0030c9f5617e925f933a",
+        "prosePath": "packages/skills/originals/meeting_prep/1.0.0/SKILL.md",
+        "proseFileSha256": "fe6f7c54e017e9f187344dd6968af7cb36c01a88c622cde868080ab118df3d7f",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 15,
@@ -137,12 +200,21 @@
         "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
         "Coverage status": "Proposed selected v1; qualification pending",
         "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved. Preserve promise versus suggestion, unknown owner/date, evidence-backed delivery status, deduplication and mapped Monday coverage.",
-        "Current starter prompt": "What has changed with the commitments and deliverables we owe this client? Audit every commitment we have made. List each commitment with: what was promised, when and where it was made, the internal owner, current status (completed, in progress, or no record of action), and what needs follow-up. Cross-check emails, meeting notes, debriefs, native tasks, action items, and monday.com work from boards explicitly mapped to this client or a board ID/link I supplied: explicitly flag any commitment found in an email or meeting summary that has no corresponding tracked task or action item. Do not treat unrelated personal monday.com work as this client\u2019s commitment, do not mark anything complete without evidence, cite the underlying records, and say whether monday.com was checked, disconnected, unavailable, or not mapped.",
+        "Current starter prompt": "What has changed with the commitments and deliverables we owe this client? Audit every commitment we have made. List each commitment with: what was promised, when and where it was made, the internal owner, current status (completed, in progress, or no record of action), and what needs follow-up. Cross-check emails, meeting notes, debriefs, native tasks, action items, and monday.com work from boards explicitly mapped to this client or a board ID/link I supplied: explicitly flag any commitment found in an email or meeting summary that has no corresponding tracked task or action item. Do not treat unrelated personal monday.com work as this client’s commitment, do not mark anything complete without evidence, cite the underlying records, and say whether monday.com was checked, disconnected, unavailable, or not mapped.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L199\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/skills/commitments-audit.procedure.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-procedure-runtime.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/commitments_audit/1.0.0/manifest.json",
+        "manifestFileSha256": "8e1d487efdfc71ce4858e081f4432f650dd0b9749bf859a9d9d9c6a5944ab955",
+        "prosePath": "packages/skills/originals/commitments_audit/1.0.0/SKILL.md",
+        "proseFileSha256": "892dc0dbd9105e88e0cb78097514437f9cb29c0323b9bad168c1999d02a4e3db",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 16,
@@ -154,12 +226,21 @@
         "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
         "Coverage status": "Proposed selected v1; qualification pending",
         "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
-        "Current starter prompt": "Find active funding opportunities for {{clientName}} and score how well each fits us. For each candidate: what it funds, how it aligns with our capabilities and past awards, the agency and program landscape, and a fit verdict with citations. Note any source you could not check \u2014 the match evidence is top-k, not exhaustive.",
+        "Current starter prompt": "Find active funding opportunities for {{clientName}} and score how well each fits us. For each candidate: what it funds, how it aligns with our capabilities and past awards, the agency and program landscape, and a fit verdict with citations. Note any source you could not check — the match evidence is top-k, not exhaustive.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L225\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/funding_opportunity_match/1.0.0/manifest.json",
+        "manifestFileSha256": "742dea892a575445ec2b63902cb07fb5f8b5029e24ef31e5bf3f6d29840dac2f",
+        "prosePath": "packages/skills/originals/funding_opportunity_match/1.0.0/SKILL.md",
+        "proseFileSha256": "e7211a21a883ec59e43f5d719fbf7e313630e57674667f99f4e875a14b8ce26d",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 17,
@@ -174,9 +255,18 @@
         "Current starter prompt": "Give me a complete brief on Program Element [PE number or name]: what it funds, the budget line over the FYDP, the report language Congress attached, who the contractors are, and any authorizing or appropriating bills touching it. If I did not give a PE number, resolve it first and confirm the match. Name any source you could not check.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L242\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/pe_deep_dive/1.0.0/manifest.json",
+        "manifestFileSha256": "0a7a626ea1e43de2b27b71ae1f3aba154c0d15c37ac9767d1ac154bc6ee109d6",
+        "prosePath": "packages/skills/originals/pe_deep_dive/1.0.0/SKILL.md",
+        "proseFileSha256": "8032b4dcdf812f0b8ba60de5c5f1c9cc2a633aff6f19b71dcf5feadba83b4d8e",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 18,
@@ -191,9 +281,18 @@
         "Current starter prompt": "What is the status of bills affecting [client name]? Include federal bills and any state legislation where we have a footprint.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L259\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "apps/control/document-application/research-brief/manifest.json",
+        "manifestFileSha256": "fbc7e2708ef41d5d28adec9dcb7f5dd7240b69567f996f676b576f68a0e4b64b",
+        "prosePath": "apps/control/document-application/research-brief/SKILL.md",
+        "proseFileSha256": "ab862a82247b4bef264f71298d7e4cfa68540d96f48c5e9d2871e769620d1f55",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 19,
@@ -208,9 +307,18 @@
         "Current starter prompt": "What committee hearings are coming up that [client name] should care about?",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L277\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/hearing_watch/1.0.0/manifest.json",
+        "manifestFileSha256": "d5492a00eba8e7b56854ed931fb0dea687f00f46861d87d1b0f28ff431b58f8f",
+        "prosePath": "packages/skills/originals/hearing_watch/1.0.0/SKILL.md",
+        "proseFileSha256": "d070a99280c30a38d29fa9f2fdc425faa735d30b43cd6ac80fc95cbb69626314",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 20,
@@ -225,9 +333,18 @@
         "Current starter prompt": "Who represents [state or district], and which of them touch [client name]?",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L294\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/representation_lookup/1.0.0/manifest.json",
+        "manifestFileSha256": "9fde84e2d5ff0a6174fd02eb4788bf0fb04cb2b226b624f149f424f38b73856b",
+        "prosePath": "packages/skills/originals/representation_lookup/1.0.0/SKILL.md",
+        "proseFileSha256": "232dec9783f0cec8001043fae72e3e6d38a5b2799c98302571d54bde0d4f6a76",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     },
     {
       "row": 21,
@@ -242,9 +359,21 @@
         "Current starter prompt": "Where does the rulemaking on [rule or docket keyword] stand? Cover the federal docket and any state register activity.",
         "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L311\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
       },
-      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "integrationDisposition": "Original manifest/prose source present; required-source completion, actual workflow and end-to-end runtime qualification pending.",
       "owner": "Codex under D010",
-      "manifestVersion": null
+      "manifestVersion": "1.0.0",
+      "sourceEvidence": {
+        "commit": "f0befe1e486cfda644f1f6170cf3d9d671e5158f",
+        "manifestPath": "packages/skills/originals/regulatory_docket_brief/1.0.0/manifest.json",
+        "manifestFileSha256": "a0f29652024a5d638224eee339c50170b5fac7890dcd172324b361b4201d2fb0",
+        "prosePath": "packages/skills/originals/regulatory_docket_brief/1.0.0/SKILL.md",
+        "proseFileSha256": "698a96dd6c6de443456a477a04d11e393487a38f8c82d34b68d97b01a7849da2",
+        "evidenceLevel": "MANIFEST_SOURCE",
+        "runtimeQualification": "NOT_QUALIFIED"
+      }
     }
-  ]
+  ],
+  "sourceProgressAsOf": "2026-10-15",
+  "sourceProgressCrosswalk": "../master-crosswalk-20261015/crosswalk.json",
+  "sourceProgressBoundary": "Versioned assets exist at the cited Fable candidate pin; no full workflow, integration or runtime qualification follows."
 }
