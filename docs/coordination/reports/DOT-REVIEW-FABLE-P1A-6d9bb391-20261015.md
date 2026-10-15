@@ -1,0 +1,23 @@
+# P1A independent review handoff — 15 October 2026
+
+Central coordinator decision: **HOLD source and HOLD contract freeze.** Fable owns implementation; Codex's current support is limited to independent review and documentation. This record does not authorize source edits by this lane, contract freeze, runtime activation, migration execution, AWS, model/provider calls or deployment.
+
+Exact source: [`6d9bb391005f73c8be6ec636c346a05381b5bd98`](https://github.com/neo-capiro/meri-greenfield/commit/6d9bb391005f73c8be6ec636c346a05381b5bd98), tree `1e22acc2889238a33ac1adbd4248e399a2a257a4`.
+
+The central coordinator's independent reviewers supplied and reproduced the diagnostics below. In this bounded documentation lane, the author inspected cited source and Git identities. The author did **not** rerun diagnostics, tests or qualification. Review requirements are not an approved replacement wire or implementation.
+
+## P1a: SDK capabilities and telemetry
+
+1. **Latch every hook failure before completion.** In [hooks.mjs, lines 12–16](https://github.com/neo-capiro/meri-greenfield/blob/6d9bb391005f73c8be6ec636c346a05381b5bd98/apps/worker/conversation/capabilities/hooks.mjs#L12), projection/validation exceptions can return deny/stop without reaching the publisher. [The shared failure state in index.mjs](https://github.com/neo-capiro/meri-greenfield/blob/6d9bb391005f73c8be6ec636c346a05381b5bd98/apps/worker/conversation/capabilities/index.mjs#L19) is set only in the publisher path, so `capabilities.check()` can still pass after those failures. Route all hook failures through the shared terminal latch. Add activity-level regressions proving no successful completion after projection, validation or publication failure. The coordinator's narrow probes reproduced the missing latch; no full SDK execution was independently qualified.
+
+2. **Bind the plugin to the trusted prepared location.** [skill-plugin.mjs, lines 12–18](https://github.com/neo-capiro/meri-greenfield/blob/6d9bb391005f73c8be6ec636c346a05381b5bd98/apps/worker/conversation/capabilities/skill-plugin.mjs#L12) relies on textual containment checks; a path such as `/workspace/conversations/./<id>/plugin` can evade the intended writable-workspace exclusion. [fragment.mjs, lines 27–28](https://github.com/neo-capiro/meri-greenfield/blob/6d9bb391005f73c8be6ec636c346a05381b5bd98/apps/worker/conversation/capabilities/fragment.mjs#L27) does not bind its accepted plugin path to the trusted prepared path and can accept the workspace itself. Canonicalize and compare the exact trusted location. Cover aliases, equality, ancestors, descendants and injected paths. Do not discover plugins from writable conversation content.
+
+3. **Make Bash separately eligible.** [policy.mjs](https://github.com/neo-capiro/meri-greenfield/blob/6d9bb391005f73c8be6ec636c346a05381b5bd98/apps/worker/conversation/capabilities/policy.mjs#L8) includes Bash in the default workspace tool list, so `workspaceTools:true` can enable it without a separate Bash choice. Require explicit Bash eligibility and the separately qualified isolated runtime. A textual command/path gate does not qualify an OS sandbox or authorize activation.
+
+4. **Resolve the telemetry receiver before wire freeze.** The coordinator's exact generated-validator probe rejected `tool.audit`. Actual [append storage validates the closed `UIEvent` contract with `contractVersion:'0.1.0'`](https://github.com/neo-capiro/meri-greenfield/blob/6d9bb391005f73c8be6ec636c346a05381b5bd98/apps/control/conversations/postgres-store.mjs#L38); a proposal calling this `RunEvent` does not change that receiver. Preserve the frozen schema and generator pinning. Allocate an explicitly versioned telemetry contract/receiver, or a reviewed new wire version with compatibility and cursor semantics. Require closed phase-discriminated audit, compaction and subagent shapes; bounded metadata; explicit RFC 8785 digest semantics; and trusted binding, fence, sequence, authorization and replay rules. No raw arguments, outputs, errors, summaries or transcript paths. Telemetry is not authority, billing, evidence or checkpoint proof. These are repair requirements, not a new approved schema.
+
+## Ownership and next evidence
+
+Fable must return reviewed corrections at a new exact commit with focused regression evidence for every finding, keeping failed/skipped checks visible. Any separately proposed contract, migration or integration requires its existing owner review. No synthetic or scripted outcome supplies native, isolation, live authority or release proof.
+
+The stopped discovery candidate and prior source-only/proposal-only checkpoints retain their original scopes. No product source is changed by this record.
