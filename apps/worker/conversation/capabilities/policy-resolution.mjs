@@ -45,6 +45,7 @@ function normalize(raw){
  const n={...raw},nonEmpty=(/** @type {unknown} */v)=>!Array.isArray(v)||v.length>0;
  n.subagents=n.subagents===true&&nonEmpty(n.subagentTypes);n.subagentProgress=n.subagentProgress===true&&n.subagents;
  n.workspaceTools=n.workspaceTools===true&&nonEmpty(n.workspaceToolNames);n.skillPlugin=n.skillPlugin===true&&nonEmpty(n.skillNames);
+ n.generalReads=n.generalReads===true&&nonEmpty(n.readFamilies);
  return n;
 }
 /** Intersection of two validated policies; list order follows the first operand, so `intersect(p,p)` is `p`.
@@ -54,7 +55,7 @@ export function intersectCapabilityPolicies(a,b){
  /** @type {Record<string,unknown>} */
  const raw=Object.fromEntries(POLICY_FLAGS.map(flag=>[flag,pa[/** @type {keyof CapabilityPolicy} */(flag)]===true&&pb[/** @type {keyof CapabilityPolicy} */(flag)]===true]));
  const both=(/** @type {readonly string[]} */x,/** @type {readonly string[]} */y)=>x.filter(v=>y.includes(v));
- raw.subagentTypes=both(pa.subagentTypes,pb.subagentTypes);raw.workspaceToolNames=both(pa.workspaceToolNames,pb.workspaceToolNames);
+ raw.subagentTypes=both(pa.subagentTypes,pb.subagentTypes);raw.workspaceToolNames=both(pa.workspaceToolNames,pb.workspaceToolNames);raw.readFamilies=both(pa.readFamilies,pb.readFamilies);
  raw.skillNames=pa.skillNames===null?pb.skillNames:pb.skillNames===null?pa.skillNames:both(pa.skillNames,pb.skillNames);
  const fromA=pa.sandboxNetworkDomains.filter(h=>pb.sandboxNetworkDomains.some(p=>covers(p,h)));
  raw.sandboxNetworkDomains=[...fromA,...pb.sandboxNetworkDomains.filter(h=>!fromA.includes(h)&&pa.sandboxNetworkDomains.some(p=>covers(p,h)))];
