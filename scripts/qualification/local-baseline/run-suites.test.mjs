@@ -22,7 +22,7 @@ test('ambient credentials and host overrides are scrubbed; canonical fixture sel
  assert.deepEqual(Object.keys(env).sort(),['HOME','MERI_INSPECTION_TEST_DATABASE','MERI_INSPECTION_TEST_SOCKET','MERI_PREPARED_LAUNCH_DATABASE','MERI_REVIEW_SOURCE_ROOT','PATH']);
  assert.equal(env.MERI_REVIEW_SOURCE_ROOT,'/repo');assert.equal(env.MERI_INSPECTION_TEST_DATABASE,'custom');assert.equal(env.MERI_INSPECTION_TEST_SOCKET,'/tmp/meri-prepared-kickoff-pg-20261014/socket');
  const scratch=scrubbedEnvironment({MERI_PIPELINE_ARTIFACT_ROOT:'/keep',MERI_SOFFICE:'/my/soffice'},'/repo',{scratchRoot:'/out/scratch',python3:'/usr/bin/python3',soffice:'/usr/bin/soffice'});
- assert.equal(scratch.MERI_PIPELINE_ARTIFACT_ROOT,'/keep');assert.equal(scratch.MERI_ASSOCIATION_ARTIFACT_ROOT,'/out/scratch/meri_association_artifact_root');assert.equal(scratch.MERI_DOCUMENT_PYTHON,'/usr/bin/python3');assert.equal(scratch.MERI_PYTHON,'/usr/bin/python3');assert.equal(scratch.MERI_SOFFICE,'/my/soffice');
+ assert.equal(scratch.MERI_PIPELINE_ARTIFACT_ROOT,'/keep');assert.equal(scratch.MERI_ASSOCIATION_ARTIFACT_ROOT,'/out/scratch/meri_association_artifact_root');assert.equal(scratch.MERI_SELECTED_OUTPUT_ARTIFACT_ROOT,'/out/scratch/meri_selected_output_artifact_root','selected-output runs never write into the checkout');assert.equal(scratch.MERI_DOCUMENT_PYTHON,'/usr/bin/python3');assert.equal(scratch.MERI_PYTHON,'/usr/bin/python3');assert.equal(scratch.MERI_SOFFICE,'/my/soffice');
 });
 test('arguments: --out is required, unknown flags and names refuse, help is available',()=>{
  assert.throws(()=>parseArguments([]),/--out is required/u);

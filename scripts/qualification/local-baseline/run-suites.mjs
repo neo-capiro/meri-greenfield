@@ -33,8 +33,9 @@ const scrubbedKeys=new Set(['DATABASE_URL','NODE_OPTIONS','NODE_PATH','NODE_EXTR
 // Any credential-shaped key is removed regardless of prefix; test processes receive no host tokens.
 const scrubbedSuffix=/(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$/iu;
 const isScrubbed=key=>scrubbedKeys.has(key)||scrubbedSuffix.test(key)||scrubbedPrefixes.some(p=>key.startsWith(p));
-/** Writable artifact roots the existing skill pipeline tests require without a default. */
-const scratchSelectors=['MERI_PIPELINE_ARTIFACT_ROOT','MERI_ASSOCIATION_ARTIFACT_ROOT'];
+/** Writable artifact roots: the skill pipeline tests require them without a default, and the selected-output lifecycle test
+ * otherwise writes run artifacts into the checkout (where the scope-ledger check later refuses them). */
+const scratchSelectors=['MERI_PIPELINE_ARTIFACT_ROOT','MERI_ASSOCIATION_ARTIFACT_ROOT','MERI_SELECTED_OUTPUT_ARTIFACT_ROOT'];
 const selectorKeys=['MERI_REVIEW_SOURCE_ROOT','MERI_INSPECTION_TEST_SOCKET','MERI_INSPECTION_TEST_DATABASE','MERI_PREPARED_LAUNCH_DATABASE',...scratchSelectors,'MERI_DOCUMENT_PYTHON','MERI_PYTHON','MERI_SOFFICE','MERI_TENANT_BUDGET_PG_SOCKET','MERI_PPTXGENJS'];
 export function scrubbedEnvironment(source,root,{scratchRoot,python3,soffice}={}){
  const env={};for(const [key,value] of Object.entries(source)){if(isScrubbed(key))continue;env[key]=value;}
