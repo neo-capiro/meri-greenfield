@@ -3,7 +3,7 @@
  "status": "CANDIDATE_HOLD_SOURCE_REVIEW",
  "author": "Fable",
  "date": "2026-10-15",
- "base": "f3a6407d4e62071f528f24faf5697edbc08bcc4a",
+ "base": "b0541cf778bb40376d3ab4765702af252c6c5d11",
  "sourceHead": null,
  "publicationSource": null,
  "historicalManifest": {
@@ -136,7 +136,7 @@
   },
   {
    "path": "apps/runtime/prepared-candidate.mjs",
-   "sha256": "ea0d464392a451160ea886896e6285f30509a9340882014e966d6c6bf9445f18"
+   "sha256": "a27377181aa678db1228c2f60832aad74084eb0cf39439125f86fad8639bb36e"
   },
   {
    "path": "apps/runtime/remote-conversation-runner.mjs",
@@ -292,9 +292,9 @@
   {
    "path": "apps/runtime/prepared-candidate.mjs",
    "historicalSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
-   "sha256": "ea0d464392a451160ea886896e6285f30509a9340882014e966d6c6bf9445f18",
+   "sha256": "a27377181aa678db1228c2f60832aad74084eb0cf39439125f86fad8639bb36e",
    "previousCandidateSha256": "b69fb73c10302cab199278b2318479f3f27074bd487d8bd8110195f1b7b7e8bb",
-   "reason": "First-run kickoff opts into stop-time reconciliation (audit L4 and L1 terminal settlement, fable/s3-l4-recovery-20261015).",
+   "reason": "First-run kickoff opts into stop-time reconciliation (audit L4 and L1 terminal settlement, fable/s3-l4-recovery-20261015); S3Client is imported through apps/artifacts/storage/s3-sdk.mjs, the storage package that pins and installs the S3 SDK, so a clean checkout resolves it (clean-checkout dependency ownership, fable/s4-clean-checkout-20261015).",
    "decision": "Source review only; no image build, security admission or live acceptance transfers. Candidate status stays CANDIDATE_HOLD_SOURCE_REVIEW."
   },
   {
