@@ -1,0 +1,216 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-15T03:35:32.324Z",
+ "finishedAt": "2026-10-15T03:35:39.244Z",
+ "repository": {
+  "root": "/home/user/meri-fable-complete",
+  "head": "746fc5bf63398da982fe76032afbf0a2bf92eced",
+  "tree": "60e19ae4c9d9f73968a1710121831fdb1f2c9ca4",
+  "branch": "fable/meri-complete-20261015",
+  "uncommittedPaths": 1
+ },
+ "environment": {
+  "node": "v24.21.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/complete-out/lane2/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-fable-complete",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/complete-out/lane2/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/complete-out/lane2/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 3,
+  "passedSuites": 3,
+  "tests": 297,
+  "pass": 297,
+  "fail": 0
+ },
+ "suites": [
+  {
+   "name": "control-core",
+   "purpose": "control application core",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "apps/control/test/commands-durable-budget.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-independent-durable.test.mjs",
+    "apps/control/test/commands-independent-journal.test.mjs",
+    "apps/control/test/commands-independent-pipeline.test.mjs",
+    "apps/control/test/commands-independent-transport-budget.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+    "apps/control/test/schedule-lifecycle.test.mjs",
+    "apps/control/test/schedule-tool-interface.test.mjs",
+    "apps/control/test/temporal-inspection.test.mjs",
+    "apps/control/test/tool-invocations.test.mjs",
+    "apps/control/test/vertical-command-registry.test.mjs",
+    "apps/control/test/vertical-schedule-registry.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 5377,
+   "counts": {
+    "tests": 260,
+    "suites": 0,
+    "pass": 260,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 23668,
+    "sha256": "65ae14e509a9fd9cd64ced2f05c1dc83c7ed519f7c8ea972faf890b47e9fba1b"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "control-retention",
+   "purpose": "retention policy, ledger, suppression, storage absence semantics, purge planning (disabled executor) and recovery reconciliation",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/retention/test/ledger-suppression.test.mjs",
+    "apps/control/retention/test/policy-inventory.test.mjs",
+    "apps/control/retention/test/purge-reconciliation.test.mjs",
+    "apps/control/retention/test/storage.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 471,
+   "counts": {
+    "tests": 10,
+    "suites": 0,
+    "pass": 10,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 1832,
+    "sha256": "55791024ab03e1bba05b8ad431feeda1caa2bf459b99bbe917844b3430c808cb"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "scripts-local",
+   "purpose": "local script checks outside the sdk-evidence set",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/local-action/admission-independent.test.mjs",
+    "scripts/local-action/admission.test.mjs",
+    "scripts/local-research-brief/cli.test.mjs",
+    "scripts/qualification/first-chat-rehearsal/capture-sdk-descriptor.test.mjs",
+    "scripts/qualification/local-baseline/run-suites.test.mjs",
+    "scripts/qualification/r2-reconciliation/reconcile.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 1058,
+   "counts": {
+    "tests": 27,
+    "suites": 0,
+    "pass": 27,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 3046,
+    "sha256": "7135ed9b916116ed6918567da069de262e91f465cda1f13cfce07b6adc85ac62"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  }
+ ]
+}

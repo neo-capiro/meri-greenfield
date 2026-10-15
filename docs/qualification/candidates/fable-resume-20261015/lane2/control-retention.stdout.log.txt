@@ -1,0 +1,18 @@
+✔ the ledger appends in order with a verifiable durable acknowledgement and refuses to proceed without one (5.97392ms)
+✔ suppression by the owning actor is immediate and idempotent; a different actor is refused by default; an owner-mediated receipt admits it; release is refused during a purge (3.44527ms)
+✔ a policy is explicit required configuration: every class, a positive cooling period and a version; nothing is defaulted (3.071593ms)
+✔ a missing policy blocks physical purge and is not consulted by suppression (2.447271ms)
+✔ the inventory enumerates exact object versions per class, deduplicates across classes, and a fork sharing a version is excluded as a shared reference (2.791777ms)
+✔ purge planning: refused without suppression or policy; cooling, holds, liabilities and shared fork references block; identities are deterministic and duplicates coalesce (22.019465ms)
+✔ the executor is disabled by default and fails closed before any effect; enabled against the injected store it deletes exact versions, marks a step executed only after an ABSENT readback, replays idempotently, and leaves UNKNOWN on ambiguity (8.091252ms)
+✔ recovery: a restore predating a suppression with no purge receipt is re-suppressed from the ledger behind the serving barrier; revived versions are re-planned; a cleared block returns to PLANNED; reconciliation is idempotent (11.30149ms)
+✔ version-specific absence: 404 is ABSENT only with the recorded list permission; 403, 405, delete markers, mismatches and ambiguity are UNKNOWN (2.574299ms)
+✔ the storage port times out to UNKNOWN, refuses deletes without the delete permission, and fails a version delete that produced a delete marker (33.511512ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 381.881106

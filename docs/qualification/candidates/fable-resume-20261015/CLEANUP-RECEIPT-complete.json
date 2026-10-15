@@ -1,0 +1,14 @@
+{
+ "schema": "meri.cleanup-receipt.v1",
+ "at": "2026-10-15T03:37:25Z",
+ "slice": "dot's completion packet of 15 October: lanes 1 and 2 on fable/meri-complete-20261015",
+ "worktree": {"path": "/home/user/meri-fable-complete", "createdFrom": "b5be44d5141ae5fd3830aed789cb7ad525506c4e", "dependencies": "hard-linked from the identical-lock resume worktree", "owner": "uid 30033"},
+ "clusters": {"dataDirectory": "/tmp/meri-resume-pg-20261015", "restartedForThisSlice": true, "stopCommand": "provision-postgres.sh stop --data /tmp/meri-resume-pg-20261015", "brokerSocketEntries": 0, "kickoffSocketEntries": 0, "postgresProcesses": 0},
+ "testUserProcesses": 0,
+ "privateTmp": {"path": "/home/meri/resume-tmp", "entries": 18, "byPrefix": {"meri-lifecycle-test": 13, "meri-r2-reconciliation": 3, "meri-ws": 1, "node-compile": 1}, "note": "one further r2-reconciliation directory left by scripts-local; no process, socket or credential"},
+ "hungTestRun": "the first retention test run hung on a storage-port call that awaited a handler ignoring its abort signal; it was stopped with pkill (uid 30033) before the fix; no process remains",
+ "codexShim": {"python3": "/usr/bin/python3", "nodeDirectoryExists": false},
+ "hostTrust": {"extraCaInstalled": false, "systemCaFiles": 6, "hostsMappingLines": 0},
+ "suiteOutputs": "/home/meri/complete-out/{lane1,lane2,lane2-rerun-clean}, copied into lane1/ and lane2/ with logs renamed .log.txt; stderr files were empty",
+ "worktreeResidue": "none"
+}
