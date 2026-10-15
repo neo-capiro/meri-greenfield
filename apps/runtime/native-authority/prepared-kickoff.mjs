@@ -26,10 +26,14 @@ export function createPreparedTaskKickoff(configuration){
  function input(value,field){const v=own(value,['binding',field],['signal']);nativeSignal(v.signal);if(!s.enabled||!same(v.binding,original.binding)||v[field]!==original[field]||v.signal?.aborted)throw fault();return v;}
  function check(signal){if(closed||signal?.aborted||s.now()>=original.expiresAtMs)throw fault();}
  // Stop is the broker's independent exit on every path. With reconciliation, a run the original left nonterminal (its own
- // terminal write unacknowledged) is settled once this close has retired the original; an unproven stop stays a barrier.
- if(c.reconcile!==undefined&&typeof c.reconcile!=='boolean')throw fault();
- const reconciler=c.reconcile?createRunReconciler({store:c.store,retirement:{retire:()=>close()},now:s.now,maxReconcileMs:s.cleanupMs}):null;
- async function stop(value){input(value,'executionId');await close();if(reconciler&&(await reconciler.reconcile({binding:original.binding})).outcome==='unknown')throw fault();return data(receipt);}
+ // terminal write unacknowledged) is settled once the original is retired; an unproven stop stays a barrier. After this process's own
+ // (memoized) close, a controller that offers a stop-only `retire` is asked again on every reconciliation: after a hard restart this
+ // process never held the original, and a later stop resumes from durable state after an earlier one gave up.
+ if(c.reconcile!==undefined&&typeof c.reconcile!=='boolean'||c.controller.retire!==undefined&&typeof c.controller.retire!=='function')throw fault();
+ const retirement={async retire({signal}={}){try{await close();}catch{}if(c.controller.retire)await c.controller.retire({signal});}};
+ const reconciler=c.reconcile?createRunReconciler({store:c.store,retirement,now:s.now,maxReconcileMs:s.cleanupMs}):null;
+ // With reconciliation the stop receipt rests on the journal's evidence (retired with physical-stop proof, or no authority), not on close.
+ async function stop(value){input(value,'executionId');if(!reconciler){await close();return data(receipt);}try{await close();}catch{}if((await reconciler.reconcile({binding:original.binding})).outcome==='unknown')throw fault();return data(receipt);}
  function close(){if(closing)return closing;closed=true;cancellation.abort(fault());closing=(async()=>{const life=createOperationLifetime({now:s.now,deadlineMs:s.now()+s.cleanupMs,errorFactory:fault});try{
    // Wait for a borrowed allocation that ignored cancellation before asking its
    // canonical owner to close. Late settlement repeats that same owner cleanup.
