@@ -45,6 +45,15 @@ node scripts/qualification/local-baseline/run-suites.mjs --out /path/to/receipt-
 scripts/qualification/local-baseline/provision-postgres.sh stop
 ```
 
-`run-suites.mjs --only name,name` runs a subset. Exit 0 means every suite exited 0; exit 1 means at least one suite failed and `RESULTS.json` plus per-suite `*.stdout.txt`/`*.stderr.txt` were still written; exit 2 is a usage or configuration refusal before any suite ran. `RESULTS.json` records the exact head/tree, host facts, each suite's command, exit code, Node summary counts, failing test names with their first error line, and output hashes.
+`run-suites.mjs --only name,name` runs a subset; `--name-pattern REGEX` adds `--test-name-pattern` to the selected node-test suites for a targeted rerun of failing tests (select the suites with `--only`; npm suites refuse it). `--source-commit SHA` records the commit an archive export was made from; a checkout without its own `.git` records no head, and the receipt marks the declared commit unverified. Exit 0 means every suite exited 0; exit 1 means at least one suite failed and the receipts were still written; exit 2 is a usage or configuration refusal before any suite ran.
+
+`--out` must be outside the checkout under test (the runner refuses otherwise), so receipts never change the inventory, hashes or status of what they describe. It receives:
+
+- `receipts/<suite>.json` (`meri.local-baseline-suite-receipt.v1`), one per suite: source root/head/tree/uncommitted count and declared commit; host Node version and executable, npm version, kernel, UID/GID/user; selectors (`--only`, `--name-pattern`, the exact file list, Node flags, concurrency or npm script, the `MERI_*` fixture selector values, and the names, never values, of scrubbed variables); the exact argv, subreaper-wrapped argv and absolute cwd; exit code, signal, timeout, duration, summed Node spec counts, every failing test name with its first error line; stdout/stderr paths, byte counts and SHA-256.
+- `<suite>.stdout.txt` / `<suite>.stderr.txt`, the raw outputs those hashes cover; `RESULTS.json`, the run summary with totals; `SHA256SUMS` over all of these (`sha256sum -c SHA256SUMS` from the receipt directory).
+
+## Inventory
+
+`suites.json` accounts for every test file in the checkout (`*.test.{mjs,js,cjs,ts,mts}`, `test_*.py`, `*_test.py`, outside `node_modules`). A file is covered by a node-test suite's `files` globs, or by an npm suite's `covers` list, each entry of which must occur in that package's scripts; otherwise one `exclusions` entry must match it and give the reason. `inventory.test.mjs` fails on any file that is neither, and on empty suites, stale covers, stale exclusions or a file both covered and excluded. Current exclusions: historical evidence under `docs/`, the Python qualification-tool tests (this recipe runs Node suites only), and `infra/qualification/checkpoint-security.test.mjs`, whose synthesized template no package script produces (separate command: `node infra/qualification/checkpoint-app.mjs && node --test infra/qualification/checkpoint-security.test.mjs`).
 
 The runner performs no network access, provider call, cloud action or migration against any product database. Provisioned clusters live under `/tmp/meri-local-baseline-pg` with `fsync=off` and trust authentication: disposable local evidence only.

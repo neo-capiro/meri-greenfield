@@ -2,12 +2,14 @@
 # Clean-checkout procedure: install every package lock exactly, in dependency order, with the image recipe's flags
 # (npm ci --ignore-scripts), then run the local baseline suites. No lock, package source or root link is changed;
 # run-suites.mjs sets MERI_REVIEW_SOURCE_ROOT to this checkout and scrubs ambient credentials from every suite.
-# Usage: clean-checkout.sh --out DIR [--allow-root] [--only name,name]
+# Usage: clean-checkout.sh --out DIR [--allow-root] [--only name,name] [--name-pattern REGEX] [--source-commit SHA] (DIR outside the checkout)
 # Exit: run-suites.mjs exit code (0 all suites passed, 1 a suite failed); 2 usage; 3 setup refused or an install failed.
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 [ "${1:-}" = --help ] && { sed -n '2,6p' "${BASH_SOURCE[0]}"; exit 0; }
 [ "${1:-}" = --out ] && [ -n "${2:-}" ] || { echo "usage: clean-checkout.sh --out DIR [run-suites options]" >&2; exit 2; }
+# Receipts stay outside the checkout (run-suites.mjs refuses too); refuse before any install.
+case "$(realpath -m "$2")/" in "$(realpath "$REPO")"/*) echo "refusing: --out must be outside the checkout" >&2; exit 2;; esac
 # contracts before ui-stream (file:../contracts), the root before the packages that resolve its tools, then the
 # image recipe's order (apps/runtime/Dockerfile), then the qualification packages.
 LOCKS=(packages/contracts . apps/runtime apps/worker/conversation packages/ui-stream packages/window-resolution
