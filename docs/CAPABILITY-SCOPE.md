@@ -36,9 +36,9 @@ A device/browser bridge, full in-browser Office editing, live browser takeover, 
 
 ## Registry disposition ledger
 
-Registry totals: 139 unique entries, 104 read-only and 35 writes; 134 meri and 5 federal_market; 139 full_chat and 25 in_editor. Proposed disposition: 96 selected, 43 deferred. Accepted parity: 0. All dispositions remain provisional.
+Registry totals: 139 unique entries, 104 read-only and 35 writes; 134 meri and 5 federal_market; 139 full_chat and 25 in_editor. Human-accepted D012 scope disposition: 96 selected, 43 deferred. Runtime-qualified parity remains 0; scope selection is accepted, implementation and runtime qualification are separate.
 
-| Capability | Source metadata | Proposal | Owner | Reserved fixture key | Rationale and boundary |
+| Capability | Source metadata | Accepted scope | Owner | Reserved fixture key | Rationale and boundary |
 | --- | --- | --- | --- | --- | --- |
 | manage_research_portfolio | write; meri; full_chat | deferred | B | not selected | Specialized Research Portfolio or LegiWatch source workflow is outside initial commands; exact authorization, side effects and fixture scope require separate acceptance. |
 | get_research_portfolio | read; meri; full_chat | selected | B | capability/get_research_portfolio | Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred. |
