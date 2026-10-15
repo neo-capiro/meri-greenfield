@@ -1,22 +1,26 @@
-/** Composable browser fragment for the conversation's single SDK query: MCP server, tool allowlist, receipt hook and download port. Default disabled. */
+/** Composable browser fragment for the conversation's single SDK query. The capability is on by default and its
+ * destinations are denied by default (policy.mjs), but the activation gate (activation.mjs) is held until real egress
+ * controls are qualified, so today every call returns a held fragment that contributes no server, tool, hook or
+ * download path. Every fragment carries a UI-facing `status`. */
 import {isAbsolute} from 'node:path';
 import {validateShape} from '../../../../packages/contracts/validate.mjs';
-import {validateBrowserPolicy,DEFAULT_BROWSER_POLICY} from './policy.mjs';
-import {BROWSER_SERVER_NAME,browserPaths,playwrightServerConfig} from './server.mjs';
-import {createReceiptHook} from './receipts.mjs';
-import {createDownloadPort,disabledDownloads} from './downloads.mjs';
+import {validateBrowserPolicy,browserStatus,DEFAULT_BROWSER_POLICY} from './policy.mjs';
+import {BROWSER_ACTIVATION,activationOpen} from './activation.mjs';
+import {browserPaths,disposeBrowserState} from './workspace.mjs';
+import {buildOpenBrowserFragment} from './fragment.mjs';
+export {disposeBrowserState,browserPaths};
 const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});};
-const DISABLED=Object.freeze({enabled:false,mcpServers:Object.freeze({}),allowedTools:Object.freeze([]),hooks:Object.freeze({}),downloads:disabledDownloads});
-export function createBrowserCapability({binding,cwd,policy=DEFAULT_BROWSER_POLICY,artifacts,receipts,now}){
+const refusing=code=>Object.freeze({async accept(){throw Object.assign(new Error(code),{code});}});
+const inert=(fields,code)=>Object.freeze({enabled:false,...fields,mcpServers:Object.freeze({}),allowedTools:Object.freeze([]),disallowedTools:Object.freeze([]),hooks:Object.freeze({}),downloads:refusing(code)});
+/** Validates the trusted context, then returns: a disabled fragment for a disabled policy, a held fragment while the
+ * shipped activation record is held (there is no argument that opens it), otherwise the composed fragment.
+ * Nothing is created or launched here. */
+export function createBrowserCapability(context){
+ const {binding,cwd,policy=DEFAULT_BROWSER_POLICY,now}=context??{};
  try{validateShape('RunBinding',binding);}catch{fail();}
  if(typeof cwd!=='string'||!isAbsolute(cwd)||!cwd.endsWith(`/${binding.conversationId}`)||cwd.includes('/../')||cwd.includes('\0')||typeof now!=='function')fail();
- const p=validateBrowserPolicy(policy,binding);
- if(!p.enabled)return DISABLED;
- if(typeof receipts?.record!=='function'||p.downloads.enabled&&typeof artifacts?.ingest!=='function')fail();
- const paths=browserPaths(cwd),tools=p.tools;
- return Object.freeze({enabled:true,paths,
-  mcpServers:Object.freeze({[BROWSER_SERVER_NAME]:playwrightServerConfig(p,paths)}),
-  allowedTools:Object.freeze(tools.map(t=>`mcp__${BROWSER_SERVER_NAME}__${t}`)),
-  hooks:Object.freeze({PostToolUse:Object.freeze([Object.freeze({matcher:`mcp__${BROWSER_SERVER_NAME}__.*`,hooks:Object.freeze([createReceiptHook({binding,paths,cwd,server:BROWSER_SERVER_NAME,tools,receipts,now})])})])}),
-  downloads:createDownloadPort({binding,policy:p,paths,artifacts,receipts,now})});
+ const p=validateBrowserPolicy(policy);
+ if(!p.enabled)return inert({activation:'not-applicable',policy:p,status:Object.freeze({...browserStatus(p),activation:'not-applicable'})},'BROWSER_DOWNLOADS_DISABLED');
+ if(!activationOpen(BROWSER_ACTIVATION))return inert({activation:'held',reason:BROWSER_ACTIVATION.reason,policy:p,status:Object.freeze({...browserStatus(p),activation:'held'})},'BROWSER_ACTIVATION_HELD');
+ return buildOpenBrowserFragment({...context,policy:p});
 }
