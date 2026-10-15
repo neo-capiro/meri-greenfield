@@ -8,7 +8,7 @@
     "scripts/general-reads/product-routes.json": "7a567691cb67134747107c685ffe211233e646651b9e6da6643bf16235959854",
     "scripts/scope-ledger/owner-exclusion.json": "addf40ecae76800c648de960323093593b81ba2a0292f9b821016ff071e46dbd",
     "scripts/scope-ledger/gates.json": "da47ce86ac4240e0562e8e7d012c4e931e167bfca4b2c499a148633e6a49acce",
-    "scripts/scope-ledger/product-capabilities.json": "f9d080110037f0b7443c4580339d85d7cd1931513962dffa3fe01d5a61ef6c11",
+    "scripts/scope-ledger/product-capabilities.json": "629cd089a8a5b13250d4675e82ab8470201b0bd6cd774c50e1bd490a968daa33",
     "scripts/scope-ledger/ownership-graph.json": "d12a573738d2f111b3132f94884dc6320f26eef2f8ef3e5ef6908079c87795f5"
   },
   "coverageOrigin": {
@@ -877,9 +877,9 @@
       "id": "authenticated-browser-workflow",
       "scopeRow": "Authenticated browser workflow",
       "plannedOwner": "Deferred individually",
-      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "decision": "required, not blocking the initial live version (owner decisions, Neo Martinez, 15 Oct 2026: required; 'we need to ship a live version first'); follows the approved order: prerequisites, test spike, takeover, first authenticated site",
       "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
-      "currentState": "Not started. Required for the first shipment; each website/workflow is still named, approved and tested individually, with credential ownership, approval and authentication/isolation/revocation qualification. This does not change authenticated Meri chat.",
+      "currentState": "Not started. Required after the initial live version; each website/workflow is still named, approved and tested individually, with credential ownership, approval and authentication/isolation/revocation qualification. This does not change authenticated Meri chat.",
       "gates": [
         "FEATURE-DESIGN-APPROVAL",
         "STARTUP-COMPOSITION",
@@ -1016,9 +1016,9 @@
       "title": "Device/browser bridge",
       "scopeRow": null,
       "plannedOwner": "Fable",
-      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "decision": "required, not blocking the initial live version (owner decisions, Neo Martinez, 15 Oct 2026: required; 'we need to ship a live version first'); follows the approved order: prerequisites, test spike, takeover, first authenticated site",
       "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
-      "currentState": "Not started. Required for the first shipment; design proposal pending.",
+      "currentState": "Not started. Required after the initial live version; design proposal pending.",
       "gates": [
         "FEATURE-DESIGN-APPROVAL",
         "STARTUP-COMPOSITION",
@@ -1036,9 +1036,9 @@
       "title": "Live browser takeover",
       "scopeRow": null,
       "plannedOwner": "Fable",
-      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "decision": "required, not blocking the initial live version (owner decisions, Neo Martinez, 15 Oct 2026: required; 'we need to ship a live version first'); follows the approved order: prerequisites, test spike, takeover, first authenticated site",
       "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
-      "currentState": "Not started. Required for the first shipment; design proposal pending.",
+      "currentState": "Not started. Required after the initial live version; design proposal pending.",
       "gates": [
         "FEATURE-DESIGN-APPROVAL",
         "STARTUP-COMPOSITION",
@@ -1056,9 +1056,9 @@
       "title": "Full in-browser Office editing",
       "scopeRow": null,
       "plannedOwner": "Fable",
-      "decision": "required for the first shipment (owner decision, Neo Martinez, 15 Oct 2026: include in the first shipment)",
+      "decision": "required, not blocking the initial live version (owner decisions, Neo Martinez, 15 Oct 2026: required; 'we need to ship a live version first'); follows the approved order: prerequisites, test spike, takeover, first authenticated site",
       "canonicalOwner": "Fable implementation; architecture, component and placement choices recorded as a design proposal for owner approval before build (AGENTS.md: approval before changing architecture, component choices, scope or placement)",
-      "currentState": "Not started. Required for the first shipment alongside native artifact generation, revision, preview and download. Must not copy restrictive Office skill implementations (AGENTS.md); editor component choice needs owner approval.",
+      "currentState": "Not started. Required after the initial live version alongside native artifact generation, revision, preview and download. Must not copy restrictive Office skill implementations (AGENTS.md); editor component choice needs owner approval.",
       "gates": [
         "FEATURE-DESIGN-APPROVAL",
         "STARTUP-COMPOSITION",
