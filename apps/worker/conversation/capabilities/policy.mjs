@@ -1,32 +1,50 @@
 // @ts-check
 /** Validated, default-off SDK capability policy. The policy is trusted run data read by the activity;
- * it names which supported SDK features this run may use and never carries paths, credentials or authority. */
+ * it names which supported SDK features this run may use and never carries paths, credentials or authority.
+ * The effective policy is computed by `policy-resolution.mjs` (platform ∧ tenant ∧ role) before it reaches a run. */
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 /** @param {string} code @returns {never} */
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export const SUBAGENT_TYPES=Object.freeze(['research','analysis','artifact_production','verification']);
-export const WORKSPACE_TOOLS=Object.freeze(['Read','Write','Edit','Glob','Grep','Bash']);
+/** Built-in file tools. Bash is not among them: it needs its own explicit `bash` flag (and, at run time, the SDK
+ * sandbox attestation), so enabling `workspaceTools` never makes Bash eligible. */
+export const WORKSPACE_TOOLS=Object.freeze(['Read','Write','Edit','Glob','Grep']);
 export const MAX_PARALLEL_SUBAGENTS=4;
-const FLAGS=Object.freeze(['subagents','auditHooks','compactionHooks','skillPlugin','workspaceTools','subagentProgress']);
-const LISTS=Object.freeze(['subagentTypes','workspaceToolNames','skillNames']);
+export const MAX_SANDBOX_NETWORK_DOMAINS=32;
+export const POLICY_FLAGS=Object.freeze(['subagents','auditHooks','compactionHooks','skillPlugin','workspaceTools','subagentProgress','bash']);
+export const POLICY_LISTS=Object.freeze(['subagentTypes','workspaceToolNames','skillNames','sandboxNetworkDomains']);
+export const POLICY_KEYS=Object.freeze([...POLICY_FLAGS,...POLICY_LISTS,'maxParallelSubagents']);
 const SKILL_NAME=/^[a-z0-9][a-z0-9-]{0,63}$/u;
-/** @param {unknown} value @param {readonly string[]|null} universe @param {number} max */
-function allowlist(value,universe,max){
- if(!Array.isArray(value)||value.length<1||value.length>max||new Set(value).size!==value.length||value.some(v=>typeof v!=='string'||(universe?!universe.includes(v):!SKILL_NAME.test(v))))fail('CAPABILITY_POLICY_REFUSED');
- return Object.freeze([...value]);
+// Lower-case DNS names with an alphabetic TLD, optionally one leading `*.` label. IP literals, ports, schemes,
+// `localhost`, `.local` and `.internal` names (cloud metadata) are refused: the allowlist names public hosts only.
+const DOMAIN=/^(?:\*\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/u;
+/** @param {unknown} v @returns {v is string} */
+export const isSandboxNetworkDomain=v=>typeof v==='string'&&v.length<=253&&DOMAIN.test(v)&&!/(?:^|\.)(?:localhost|internal|local)$/u.test(v);
+/** @param {unknown} value @param {(v:unknown)=>boolean} member @param {number} max @returns {readonly string[]} */
+function allowlist(value,member,max){
+ if(!Array.isArray(value)||value.length>max||new Set(value).size!==value.length||value.some(v=>!member(v)))fail('CAPABILITY_POLICY_REFUSED');
+ return Object.freeze([.../** @type {string[]} */(value)]);
 }
-/** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null}} CapabilityPolicy */
-/** Every flag defaults to false; every allowlist defaults to the bounded catalog (`skillNames: null` = every original).
+/** @param {readonly string[]} universe */
+const among=universe=>(/** @type {unknown} */v)=>typeof v==='string'&&universe.includes(v);
+/** @typedef {{subagents:boolean,auditHooks:boolean,compactionHooks:boolean,skillPlugin:boolean,workspaceTools:boolean,subagentProgress:boolean,bash:boolean,subagentTypes:readonly string[],maxParallelSubagents:number,workspaceToolNames:readonly string[],skillNames:readonly string[]|null,sandboxNetworkDomains:readonly string[]}} CapabilityPolicy */
+/** Every flag defaults to false (`bash` is explicit eligibility for sandboxed Bash; `sandboxNetworkDomains` is the
+ * sandboxed commands' network allowlist); every capability allowlist defaults to the bounded catalog (`skillNames: null` =
+ * every original) and `sandboxNetworkDomains` defaults to none. An allowlist may be empty only while the flag it
+ * scopes is off, so an empty platform/tenant/role intersection is representable without enabling anything.
  * Idempotent: a validated policy validates to itself. @param {unknown} value @returns {CapabilityPolicy} */
 export function assertCapabilityPolicy(value){
- const p=own(value,[],[...FLAGS,...LISTS,'maxParallelSubagents']);
- for(const flag of FLAGS)if(p[flag]!==undefined&&typeof p[flag]!=='boolean')fail('CAPABILITY_POLICY_REFUSED');
+ const p=own(value,[],[...POLICY_KEYS]);
+ for(const flag of POLICY_FLAGS)if(p[flag]!==undefined&&typeof p[flag]!=='boolean')fail('CAPABILITY_POLICY_REFUSED');
  const parallel=p.maxParallelSubagents??2;if(!Number.isSafeInteger(parallel)||parallel<1||parallel>MAX_PARALLEL_SUBAGENTS)fail('CAPABILITY_POLICY_REFUSED');
- const policy={subagents:p.subagents===true,auditHooks:p.auditHooks===true,compactionHooks:p.compactionHooks===true,skillPlugin:p.skillPlugin===true,workspaceTools:p.workspaceTools===true,subagentProgress:p.subagentProgress===true,
-  subagentTypes:p.subagentTypes===undefined?SUBAGENT_TYPES:allowlist(p.subagentTypes,SUBAGENT_TYPES,SUBAGENT_TYPES.length),maxParallelSubagents:parallel,
-  workspaceToolNames:p.workspaceToolNames===undefined?WORKSPACE_TOOLS:allowlist(p.workspaceToolNames,WORKSPACE_TOOLS,WORKSPACE_TOOLS.length),
-  skillNames:p.skillNames===undefined||p.skillNames===null?null:allowlist(p.skillNames,null,32)};
+ /** @type {CapabilityPolicy} */
+ const policy={subagents:p.subagents===true,auditHooks:p.auditHooks===true,compactionHooks:p.compactionHooks===true,skillPlugin:p.skillPlugin===true,workspaceTools:p.workspaceTools===true,subagentProgress:p.subagentProgress===true,bash:p.bash===true,
+  subagentTypes:p.subagentTypes===undefined?SUBAGENT_TYPES:allowlist(p.subagentTypes,among(SUBAGENT_TYPES),SUBAGENT_TYPES.length),maxParallelSubagents:parallel,
+  workspaceToolNames:p.workspaceToolNames===undefined?WORKSPACE_TOOLS:allowlist(p.workspaceToolNames,among(WORKSPACE_TOOLS),WORKSPACE_TOOLS.length),
+  skillNames:p.skillNames===undefined||p.skillNames===null?null:allowlist(p.skillNames,v=>typeof v==='string'&&SKILL_NAME.test(v),32),
+  sandboxNetworkDomains:p.sandboxNetworkDomains===undefined?Object.freeze([]):allowlist(p.sandboxNetworkDomains,isSandboxNetworkDomain,MAX_SANDBOX_NETWORK_DOMAINS)};
  if(policy.subagentProgress&&!policy.subagents)fail('CAPABILITY_POLICY_REFUSED');
+ if(policy.subagents&&!policy.subagentTypes.length||policy.workspaceTools&&!policy.workspaceToolNames.length||policy.skillPlugin&&policy.skillNames?.length===0)fail('CAPABILITY_POLICY_REFUSED');
  return Object.freeze(policy);
 }
 /** Conservative reader: the saved execution record may carry `capabilities`; anything else means no capability.
