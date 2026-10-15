@@ -26,7 +26,7 @@ function fixture(){
  const facts={async compile({intent,issuance}){
   stats.compile++;const c=structuredClone(config),allocation=JSON.parse(c.allocationJson);
   allocation.run=Object.fromEntries(Object.keys(allocation.run).map(k=>[k,intent.binding[k]]));
-  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:f.secret.proxy},plan:{...c.plan,...(state.changeFacts?{changed:true}:{})},preparationIntent:c.preparationIntent,allocationJson:JSON.stringify(allocation),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:capabilityDigest(f.secret.control)};
+  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:f.secret.proxy},plan:{...c.plan,...(state.changeFacts?{changed:true}:{})},preparationIntent:c.preparationIntent,allocationJson:JSON.stringify(allocation),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:capabilityDigest(f.secret.control),transport:{origin:c.taskOrigin,http:c.taskHttp}};
  }};
  const original=compileNativeBrokerPlan({runtime:{...config.runtime,proxyCredential:f.secret.proxy},plan:config.plan,preparationIntent:config.preparationIntent}).original;
  const sourceRecord={state:'RETIRED',original,grantIntents:[{grantId:id(77),capabilitySha256:'a'.repeat(64),expiresAtMs:input.expiresAtMs}],resource:{taskArn:'synthetic-owned-task',physicalStopProven:true}};
@@ -93,7 +93,9 @@ for(const [name,mutate] of Object.entries({
  grant:c=>{c.grantIntents[0].capabilitySha256='d'.repeat(64);},
  expiry:c=>{c.grantIntents[0].expiresAtMs++;},
  request:c=>{c.taskRequest.overrides.containerOverrides[0].environment=[{name:'MERI_PASSWORD',value:'synthetic-forbidden'}];},
- control:c=>{c.controlCapabilitySha256=c.grantIntents[0].capabilitySha256;}
+ control:c=>{c.controlCapabilitySha256=c.grantIntents[0].capabilitySha256;},
+ transportOrigin:c=>{c.transport={...c.transport,origin:'http://plain.synthetic.invalid'};},
+ transportListener:c=>{c.transport={...c.transport,http:{...c.transport.http,frontendOrigin:'https://other.synthetic.invalid'}};}
 }))test('canonical compiler rejects substituted '+name,async()=>{
  const f=fixture(),compile=f.facts.compile;f.facts.compile=async input=>{const config=structuredClone(await compile(input));mutate(config);return config;};
  await assert.rejects(f.create().prepare(f.input));assert.equal(f.rows.get(hash(f.input.binding)).issuance.factsSha256,undefined);

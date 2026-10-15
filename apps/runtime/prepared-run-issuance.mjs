@@ -27,9 +27,17 @@ function receiptOf(value,intent){
  if(!same(Object.fromEntries(Object.keys(intent).map(k=>[k,r[k]])),intent)||!digest(r.capabilitySha256)||!/^([a-f0-9]{8}-){1}[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(r.grantId)||r.factsSha256!==undefined&&!digest(r.factsSha256))fail('ISSUER_REFUSED');
  return r;
 }
+/** The per-run delivery/transport contract: the exact origin the task's control traffic uses and the listener the runner binds. Frozen
+ * into the immutable facts of each entry (never shared registry state). */
+export function parseTransport(value){
+ const t=data(own(value,['origin','http']));let u;try{u=new URL(t.origin);}catch{fail('TRANSPORT_REFUSED');}
+ if(u.protocol!=='https:'||u.origin!==t.origin||u.username||u.password||u.search||u.hash||u.pathname!=='/')fail('TRANSPORT_REFUSED');
+ const h=own(t.http,['hostname','port','frontendOrigin']);if(!['127.0.0.1','0.0.0.0','::1','::'].includes(h.hostname)||!Number.isSafeInteger(h.port)||h.port<1||h.port>65535||h.frontendOrigin!==t.origin)fail('TRANSPORT_REFUSED');
+ return Object.freeze({origin:t.origin,http:Object.freeze({hostname:h.hostname,port:h.port,frontendOrigin:h.frontendOrigin})});
+}
 /** Inert fact compiler: calls no database/cloud/provider port and retains original expiry. */
 export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
- const i=intentOf(intent),r=receiptOf(issuance,i),c=data(own(value,['runtime','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskRequest','containerName','controlCapabilitySha256']));
+ const i=intentOf(intent),r=receiptOf(issuance,i),c=data(own(value,['runtime','plan','preparationIntent','allocationJson','qualification','grantIntents','grantId','operations','taskRequest','containerName','controlCapabilitySha256','transport'])),transport=parseTransport(c.transport);
  const compiled=compileNativeBrokerPlan({runtime:c.runtime,plan:c.plan,preparationIntent:c.preparationIntent}),a=allocation(c.allocationJson);
  if(!same(compiled.original.binding,i.binding)||compiled.original.expiresAtMs!==i.expiresAtMs||i.expiresAtMs<=now()||!digest(c.controlCapabilitySha256)||r.capabilitySha256===c.controlCapabilitySha256||c.grantId!==r.grantId||c.runtime.maxTurns>a.budgets.maxTurns||c.runtime.maxCostMicroUSD>a.budgets.maxCostMicroUSD||c.runtime.maxOutputBytes>a.budgets.maxOutputBytes||i.expiresAtMs>Date.parse(a.schedule.expiresAt))fail('FACTS_REFUSED');
  const taskGrant=c.grantIntents.find(g=>g.grantId===r.grantId);
@@ -38,7 +46,7 @@ export function compilePreparedRunFacts(value,{intent,issuance,now=Date.now}){
  const noEffect=()=>{fail('UNEXPECTED_EFFECT');},limits={maxRequestMs:3000,maxFactBytes:131072};
  createNativeAllocationAdmission({pool:{connect:noEffect},allocationJson:c.allocationJson,qualification:c.qualification,grantIntents:c.grantIntents,binding:i.binding,now,limits});
  const allocator=createNativeTaskAllocator({journal:{claim:noEffect,read:noEffect,record:noEffect},authority:{verify:noEffect},admission:{admit:noEffect,read:noEffect,revoke:noEffect},client:{send:noEffect},original:compiled.original,taskRequest:c.taskRequest,qualification:c.qualification,grantIntents:c.grantIntents,allocationSha256:hash(a),containerName:c.containerName});
- const facts=data({original:compiled.original,allocationSha256:hash(a),taskRequestSha256:allocator.intent.taskRequestSha256,qualification:c.qualification,grantIntents:c.grantIntents,grantId:c.grantId,operations:c.operations,controlCapabilitySha256:c.controlCapabilitySha256});
+ const facts=data({original:compiled.original,allocationSha256:hash(a),taskRequestSha256:allocator.intent.taskRequestSha256,qualification:c.qualification,grantIntents:c.grantIntents,grantId:c.grantId,operations:c.operations,controlCapabilitySha256:c.controlCapabilitySha256,transport});
  return data({...facts,factsSha256:hash(facts)});
 }
 export function createPreparedRunIssuance(configuration){

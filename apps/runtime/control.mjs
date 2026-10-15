@@ -17,6 +17,8 @@ import {createConversationLifecycleApplication} from '../control/conversations/l
 import {captureRuntimePorts,createRuntimeProductApplications} from './product-applications.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {compilePreparedCandidateConfiguration} from './prepared-candidate-config.mjs';
+import {createPostgresIssuanceStore} from './prepared-run-issuance-postgres.mjs';
+import {createFileCapabilityAuthority} from './capability-material-authority.mjs';
 import {types} from 'node:util';
 import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 function productBinding(options){
@@ -55,6 +57,13 @@ export function assembleControl(options){
  const products=createRuntimeProductApplications({configuration,sessions,ports,now});
  return Object.freeze({service,store,sessions,application:{handle:request=>{const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path==='/api/action-followthrough/session'?issuance.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);}},close:()=>sessions.close()});
 }
+/** Multi-run owners composed only by trusted startup (never named in configuration): the durable issuance store over the control
+ * database (migration 0011) and the file-backed capability-material authority under the configured owner-only directory. A declared
+ * multi-run mode without the material directory composes no authority, so the bindings refuse readiness (PREPARED_RUN_BINDINGS_UNAVAILABLE). */
+export function multiRunOwners(configuration,pool){
+ const multi=configuration.nativeCandidate?.multiRun;if(multi===undefined)return {};
+ return {issuanceStore:createPostgresIssuanceStore({pool}),...(multi.materialDirectory!==undefined?{capabilityAuthority:createFileCapabilityAuthority({directory:multi.materialDirectory})}:{})};
+}
 export async function startControl(configuration,options={}){
  // Validate compiled bindings before secret reads, connections or owned allocation.
  const {signal,...binding}=own(options,[],['signal','productPorts','productPortsFactory']);nativeSignal(signal);const compiled=productBinding(binding);
@@ -71,7 +80,7 @@ export async function startControl(configuration,options={}){
   if(!['postgres:','postgresql:'].includes(u.protocol)||u.hash||u.searchParams.getAll('sslmode').length!==1||u.searchParams.get('sslmode')!=='verify-full'||[...u.searchParams.keys()].some(key=>key!=='sslmode'))throw fault('DATABASE_CONFIGURATION');
   pool=new Pool({connectionString,max:10,connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
   connection=await Connection.connect({address:configuration.temporal.address,tls,connectTimeout:configuration.limits.startupMs,...(authorization?{apiKey:()=>authorization.apiKey()}:{})});signal?.throwIfAborted();const client=new Client({connection,namespace:configuration.temporal.namespace});
-  let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(candidate?{productPorts:{identityContext:candidate.identityContext}}:mounted)});candidate?.bindApplication(assembly.application);const application=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
+  let native=createNativeCapabilityClient({configuration:configuration.native,credential:capabilityBytes.toString('utf8').trim()});signal?.throwIfAborted();if(configuration.nativeCandidate!==undefined){const {startPreparedCandidate}=await import('./prepared-candidate.mjs');candidate=await startPreparedCandidate({configuration,pool,signal,...multiRunOwners(configuration,pool)});if(candidate.controlCapabilitySha256!==capabilityDigest(capabilityBytes.toString('utf8').trim()))throw fault('PREPARED_CANDIDATE_CONFIGURATION');native=candidate.native;}assembly=assembleControl({configuration,pool,client,native,...(candidate?{productPorts:{identityContext:candidate.identityContext}}:mounted)});candidate?.bindApplication(assembly.application);const application=candidate?{async handle(request){return (await candidate.application.handle(request))??assembly.application.handle(request);}}:assembly.application;
   async function readiness({signal}){signal?.throwIfAborted();if(authorization&&!authorization.healthy())throw fault('TEMPORAL_AUTHORIZATION_UNAVAILABLE');await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs").then(result=>{if(!result.rows[0]||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});await connection.withDeadline(Date.now()+configuration.limits.requestMs,()=>signal?connection.withAbortSignal(signal,()=>connection.workflowService.getSystemInfo({})):connection.workflowService.getSystemInfo({}));await native.readiness({signal});signal?.throwIfAborted();}
   await readiness({signal});listener=await listenRuntime({configuration,application,readiness,...(candidate?{}:{signal})});return Object.freeze({address:listener.address,close});
  }catch{await close();throw fault('CONTROL_STARTUP_FAILED');}

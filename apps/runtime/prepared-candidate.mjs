@@ -42,7 +42,7 @@ export function assemblePreparedCandidate(options){
  const controlDigest=capabilityDigest(secrets.control),taskDigest=capabilityDigest(secrets.task),multi=[c.runIssuance,c.issuanceIntent,c.admissionForBinding].some(v=>v!==undefined);
  if(multi&&(!c.runIssuance||typeof c.issuanceIntent!=='function'||typeof c.admissionForBinding!=='function'))refuse();
  const nextRunOwner=multi?createPreparedNextRunOwner({store,versions:c.configuration.versions,admissionForBinding:c.admissionForBinding,now}):undefined;
- const runRegistry=multi?createPreparedRunRegistry({issuance:c.runIssuance,issuanceIntent:c.issuanceIntent,store,pool:c.pool,client:c.ecs,identity,controlCapability:secrets.control,objects:c.objects,taskOrigin:config.taskOrigin,taskHttp:config.taskHttp,limits:{...limits,cleanupMs:c.configuration.limits.shutdownMs},now,...(c.allocate?{allocate:c.allocate}:{})}):null;
+ const runRegistry=multi?createPreparedRunRegistry({issuance:c.runIssuance,issuanceIntent:c.issuanceIntent,store,pool:c.pool,client:c.ecs,identity,controlCapability:secrets.control,objects:c.objects,limits:{...limits,cleanupMs:c.configuration.limits.shutdownMs},now,...(c.allocate?{allocate:c.allocate}:{})}):null;
  const identityContext=createPreparedCandidateIdentity({store,identity:{origin:identity.origin,commandContext:identity.commandContext,fetchImpl},qualification:config.qualification,now,limits,...(nextRunOwner?{nextRunOwner}:{})});
  if(!config.grantIntents.some(v=>v.grantId===config.grantId&&v.capabilitySha256===taskDigest)||config.grantIntents.some(v=>v.capabilitySha256===controlDigest))refuse();
  let controller,pending,closed=false,outerApplication;

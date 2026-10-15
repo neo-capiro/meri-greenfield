@@ -14,10 +14,14 @@ const fail=code=>{throw Object.assign(Error('PREPARED_RUN_BINDINGS_'+code),{code
 export function createPreparedRunBindings(options){
  const o=own(options,['configuration','pool','store','credentials'],['issuanceStore','capabilityAuthority','now','limits']),now=o.now??Date.now,limits=o.limits??{maxRequestMs:3000,maxFactBytes:131072};
  const config=compilePreparedCandidateConfiguration(o.configuration.nativeCandidate,o.configuration.versions);if(config.multiRun===undefined)fail('NOT_CONFIGURED');
- if(!o.issuanceStore||!o.capabilityAuthority)fail('UNAVAILABLE');if(typeof o.pool?.connect!=='function'||typeof o.store?.allocations?.read!=='function')fail('CONFIGURATION');
+ if(!o.issuanceStore||!o.capabilityAuthority)fail('UNAVAILABLE');if(typeof o.pool?.connect!=='function'||typeof o.store?.allocations?.read!=='function'||typeof o.store?.readOptional!=='function'||typeof o.issuanceStore.read!=='function')fail('CONFIGURATION');
  const secrets=own(o.credentials,['proxy','control']);if([secrets.proxy,secrets.control].some(v=>typeof v!=='string'||!/^\S{1,8192}$/u.test(v))||secrets.proxy===secrets.control)fail('CONFIGURATION');
  const controlDigest=capabilityDigest(secrets.control),a=allocation(config.allocationJson),scheduleExpiresAtMs=Date.parse(a.schedule.expiresAt);
- const admissionFor=(binding,record)=>createNativeAllocationAdmission({pool:o.pool,allocationJson:config.allocationJson,qualification:record?.qualification??config.qualification,grantIntents:record.grantIntents,binding,now,limits});
+ /** The authoritative allocation for a target binding: the reviewed static allocation retargeted to exactly that run. Its hash is what
+  * the issued facts and the retired record carry; a record naming a different allocation hash is refused rather than admitted. */
+ const retarget=binding=>{const alloc=JSON.parse(config.allocationJson);alloc.run=Object.fromEntries(Object.keys(alloc.run).map(k=>[k,binding[k]]));return JSON.stringify(alloc);};
+ const admissionFor=(binding,record)=>{const allocationJson=retarget(binding);if(record.allocationSha256!==undefined&&record.allocationSha256!==hash(allocation(allocationJson)))fail('ALLOCATION_MISMATCH');
+  return createNativeAllocationAdmission({pool:o.pool,allocationJson,qualification:record?.qualification??config.qualification,grantIntents:record.grantIntents,binding,now,limits});};
  /** Existing admission owner per target binding; the next-run owner calls its `revoke` with the retired task ARN. */
  async function admissionForBinding({binding,record}){const r=data(own(record,['state','original','grantIntents','resource'],['qualification','allocationSha256','taskRequestSha256','allocationKey']));return admissionFor(binding,r);}
  /** Source retirement facade for the issuance owner: the allocation record read for a source is remembered by task ARN so that the
@@ -25,12 +29,22 @@ export function createPreparedRunBindings(options){
  const sources=new Map();
  const sourceOwners={allocations:{async read(query,check){const saved=await o.store.allocations.read(query,check);if(saved?.record?.resource?.taskArn)sources.set(saved.record.resource.taskArn,{binding:query.binding,record:saved.record});return saved;}},
   admission:{async revoke({taskArn,signal}){const s=sources.get(taskArn);if(!s)fail('SOURCE_UNKNOWN');return admissionFor(s.binding,s.record).revoke({taskArn,signal});}}};
- /** Trusted fact producer: the reviewed static configuration retargeted to the intent's binding and the issued grant. */
- const facts={async compile({intent,issuance}){const c=structuredClone(config),alloc=JSON.parse(c.allocationJson);alloc.run=Object.fromEntries(Object.keys(alloc.run).map(k=>[k,intent.binding[k]]));
-  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:secrets.proxy},plan:c.plan,preparationIntent:c.preparationIntent,allocationJson:JSON.stringify(alloc),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest};}};
+ /** Trusted fact producer: the reviewed static configuration retargeted to the intent's binding and the issued grant, bound to the
+  * current durable run record (binding, versions, policy revision) when one exists; a later run must have one. The per-entry
+  * transport contract is part of the facts. */
+ const facts={async compile({intent,issuance,signal}){const c=structuredClone(config),check=()=>{if(signal?.aborted)fail('CANCELLED');};
+  const saved=await o.store.readOptional(intent.binding,{},check);
+  if(saved){if(hash(saved.run.binding)!==hash(intent.binding)||hash(saved.run.versions)!==hash(c.runtime.versions)||saved.run.policyRevision!==c.qualification.policyRevision)fail('RUN_RECORD_MISMATCH');}
+  else if(intent.binding.writerFence>1)fail('RUN_RECORD_REQUIRED');
+  return {runtime:{...c.runtime,binding:intent.binding,deadlineMs:intent.expiresAtMs,proxyCredential:secrets.proxy},plan:c.plan,preparationIntent:c.preparationIntent,allocationJson:retarget(intent.binding),qualification:c.qualification,grantIntents:[{grantId:issuance.grantId,capabilitySha256:issuance.capabilitySha256,expiresAtMs:intent.expiresAtMs}],grantId:issuance.grantId,operations:c.operations,taskRequest:c.taskRequest,containerName:c.containerName,controlCapabilitySha256:controlDigest,transport:{origin:c.taskOrigin,http:c.taskHttp}};}};
  const issuer=createPreparedRunIssuer({store:o.issuanceStore,authority:o.capabilityAuthority,now,maxRequestMs:limits.maxRequestMs});
  const runIssuance=createPreparedRunIssuance({issuer,facts,sourceOwners,now,maxRequestMs:limits.maxRequestMs});
- /** The next run's expiry: the reviewed window, never beyond the allocation schedule, never earlier than now. */
- async function issuanceIntent({binding,source,request}){own(data({binding,source,request}),['binding','source','request']);const expiresAtMs=Math.min(now()+config.multiRun.runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())fail('WINDOW_EXPIRED');return {expiresAtMs};}
- return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256:hash({multiRun:config.multiRun,allocationJson:config.allocationJson})});
+ /** The run's expiry. An issuance already recorded durably for this binding keeps its original expiry across process recreation
+  * (the window is never recomputed from a later clock); otherwise the reviewed window, never beyond the allocation schedule, never
+  * earlier than now. */
+ async function issuanceIntent({binding,source,request,signal}){own(data({binding,source,request}),['binding','source','request']);
+  const issuanceKey=hash(binding),existing=await o.issuanceStore.read({issuanceKey,signal});
+  if(existing){if(existing.issuanceKey!==issuanceKey||hash(existing.binding)!==issuanceKey||!Number.isSafeInteger(existing.expiresAtMs))fail('ISSUANCE_RECORD_REFUSED');return {expiresAtMs:existing.expiresAtMs,persisted:true};}
+  const expiresAtMs=Math.min(now()+config.multiRun.runWindowMs,scheduleExpiresAtMs);if(expiresAtMs<=now())fail('WINDOW_EXPIRED');return {expiresAtMs,persisted:false};}
+ return Object.freeze({runIssuance,issuanceIntent,admissionForBinding,issuer,facts,runWindowMs:config.multiRun.runWindowMs,controlCapabilitySha256:controlDigest,configurationSha256:hash({multiRun:config.multiRun,allocationJson:config.allocationJson})});
 }
