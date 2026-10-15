@@ -8,16 +8,18 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const proof=JSON.parse(fs.readFileSync(new URL('./source-manifest.json',import.meta.url),'utf8'));
-const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015b.json',import.meta.url),'utf8'));
+const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015c.json',import.meta.url),'utf8'));
 
-test('every preceding candidate (Fable 14 Oct, dot 14 Oct, Fable 15 Oct) is preserved byte-exact and the new candidate carries no image acceptance',()=>{
- const read=name=>fs.readFileSync(new URL('./'+name,import.meta.url)),fable14=hash(read('candidate-manifest-fable-20261014.json')),dot=JSON.parse(read('candidate-manifest-dot-20261014.json').toString('utf8')),dot14=hash(read('candidate-manifest-dot-20261014.json')),fable15=JSON.parse(read('candidate-manifest-fable-20261015.json').toString('utf8')),fable15Sha=hash(read('candidate-manifest-fable-20261015.json'));
+test('every preceding candidate (Fable 14 Oct, dot 14 Oct, Fable 15 Oct, Fable 15 Oct b) is preserved byte-exact and the new candidate carries no image acceptance',()=>{
+ const read=name=>fs.readFileSync(new URL('./'+name,import.meta.url)),fable14=hash(read('candidate-manifest-fable-20261014.json')),dot=JSON.parse(read('candidate-manifest-dot-20261014.json').toString('utf8')),dot14=hash(read('candidate-manifest-dot-20261014.json')),fable15=JSON.parse(read('candidate-manifest-fable-20261015.json').toString('utf8')),fable15Sha=hash(read('candidate-manifest-fable-20261015.json')),fable15b=JSON.parse(read('candidate-manifest-fable-20261015b.json').toString('utf8')),fable15bSha=hash(read('candidate-manifest-fable-20261015b.json'));
  assert.equal(fable14,'dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627');assert.equal(dot.previousCandidate.sha256,fable14);
  assert.equal(dot14,'fb97f11639d173fd15781df776ea8c49d9c2c53cc868dc9e8512e957195b310b');assert.equal(fable15.previousCandidate.sha256,dot14);assert.equal(fable15.pickupHead,'215930c8092577e84da563b1496d1cca9a4ad4d7');
- assert.equal(fable15Sha,'59a67fa2d8685f743f1b1a1e4a46360632c30bfead683b119ebccfa424b3c6a4');assert.equal(candidate.previousCandidate.sha256,fable15Sha);assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+ assert.equal(fable15Sha,'59a67fa2d8685f743f1b1a1e4a46360632c30bfead683b119ebccfa424b3c6a4');assert.equal(fable15b.previousCandidate.sha256,fable15Sha);assert.equal(fable15b.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+ assert.equal(fable15bSha,'6c2f692660ac879056b9c6854d1c43b7e085194e5db40e173510ef81a75f6842');assert.equal(candidate.previousCandidate.sha256,fable15bSha);assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');assert.equal(candidate.pickupHead,fable15b.pickupHead);
  assert.deepEqual(candidate.historicalManifest,dot.historicalManifest);assert.deepEqual(candidate.priorPublishedDotManifest,dot.priorPublishedDotManifest);
  for(const row of dot.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path+': the historical hash of every dot-enumerated change is carried unchanged');}
- for(const row of fable15.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);if(current.sha256!==row.sha256)assert.equal(current.previousCandidateSha256,row.sha256,row.path+': a row changed again names the bytes of the preceding candidate');}
+ for(const row of fable15.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);}
+ for(const row of fable15b.changedRows){const current=candidate.changedRows.find(r=>r.path===row.path);assert.ok(current,row.path);assert.equal(current.historicalSha256,row.historicalSha256,row.path);if(current.sha256!==row.sha256)assert.equal(current.previousCandidateSha256,row.sha256,row.path+': a row changed again names the bytes of the preceding candidate');}
 });
 
 test('all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest',()=>{

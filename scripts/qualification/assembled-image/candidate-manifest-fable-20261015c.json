@@ -1,0 +1,332 @@
+{
+ "schema": "meri.assembled-image.candidate-manifest/1",
+ "status": "CANDIDATE_HOLD_SOURCE_REVIEW",
+ "author": "Fable",
+ "date": "2026-10-15",
+ "base": "c6053e24b465be677cc5980533009b4aab03beab",
+ "sourceHead": null,
+ "publicationSource": null,
+ "historicalManifest": {
+  "path": "source-manifest.json",
+  "sha256": "d7f743dcf6b0514310ccf5b2b7bdcf2a5ed40d4359caac3d78add7310c74587f",
+  "status": "UNSEALED_REPAIR_CANDIDATE",
+  "base": "d0ff0928509edf46cdda211622eb0037e2c098fa",
+  "historicalSourceHead": "0898fadd077c61245fdb5c42365efacdb727d7c0",
+  "historicalPublicationSource": "d741792b1672d6eac4c1c37835c3c3d1931e66a8"
+ },
+ "rule": "The historical manifest and its pins are preserved unchanged. Every row whose current bytes differ from the historical hash is enumerated in changedRows with both hashes, a reason and the recorded decision; every other row must equal its historical hash. No aggregate hash is replaced and no image acceptance transfers to the changed bytes: this candidate is unqualified until it is built, scanned and admitted by its owners.",
+ "changedRowCount": 16,
+ "unchangedRowCount": 29,
+ "files": [
+  {
+   "path": "apps/control/conversations/execution-journal.mjs",
+   "sha256": "122ef5348260c4706b9eaf3488fe3c7d3585236a1cf54dbe21419214e796f0cd"
+  },
+  {
+   "path": "apps/control/conversations/native-preparation-journal.mjs",
+   "sha256": "b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9"
+  },
+  {
+   "path": "apps/control/conversations/postgres-store.mjs",
+   "sha256": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa"
+  },
+  {
+   "path": "apps/control/conversations/test/prepared-execution-claim-pg.test.mjs",
+   "sha256": "e2191c500fec93d00aafd045fc3c39b1934e6daa30de6edc072e2fb900c2f5d1"
+  },
+  {
+   "path": "apps/control/conversations/test/read-optional-pg.test.mjs",
+   "sha256": "56fc34b258fbe8ca9e3c45301508ba294077d86ccd156e6799df803bf1cc4b1f"
+  },
+  {
+   "path": "apps/runtime/Dockerfile",
+   "sha256": "8d4ac642bee442691b2857c58ae89cc84c16f52e054386c0ecb7ab9a0ead7e69"
+  },
+  {
+   "path": "apps/runtime/config.mjs",
+   "sha256": "3bec69435fae9157aeb3d7c5b3181828c5c345dbe25a7259550b39547efd8810"
+  },
+  {
+   "path": "apps/runtime/control.mjs",
+   "sha256": "ae032c58f380db2c0165af815ed0f94a6d5d1746ccc7527e81cd4e80e6a51b3c"
+  },
+  {
+   "path": "apps/runtime/conversation-runner.mjs",
+   "sha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d"
+  },
+  {
+   "path": "apps/runtime/native-authority/checkpoint-capture.mjs",
+   "sha256": "13eae4bbce5c2b747417625279d8852ff0b44412fb72b06b73c8bf14354eb0e2"
+  },
+  {
+   "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+   "sha256": "bf2c9a066e20be402e9ebf41483f03515e7c358f49beadc5315e23e61cfc8776"
+  },
+  {
+   "path": "apps/runtime/native-authority/checkpoint-inspection.mjs",
+   "sha256": "1fe4a0af8b2a5153453f81891de1e7dacbd56112c01d7eb1105806d94727d443"
+  },
+  {
+   "path": "apps/runtime/native-authority/checkpoint-readback.mjs",
+   "sha256": "f8072c0d5cb70ff5f8634dbd9d217afb58eda56d788e29d542824492594d4319"
+  },
+  {
+   "path": "apps/runtime/native-authority/prepared-kickoff-http.mjs",
+   "sha256": "74b523647a3a433fbfce031a91a96a37d5ddec2a86cd88ba5d2b18c4ace03b08"
+  },
+  {
+   "path": "apps/runtime/native-authority/prepared-kickoff.mjs",
+   "sha256": "b8623c6b9c78b92a81a858756073dace0fd47a4646c12eadb9f403a80dfcf875"
+  },
+  {
+   "path": "apps/runtime/native-authority/prepared-runtime.mjs",
+   "sha256": "e3e3629d370f81f0b71e6b2e6d2f2a8b19b3fd277c111a8db1c7be82f2e47e3b"
+  },
+  {
+   "path": "apps/runtime/native-authority/remote-composition.mjs",
+   "sha256": "b1e3c3e92e40103edc48c42779be55fcc51c89fe9e2ce7f4bbecc7888d0c982a"
+  },
+  {
+   "path": "apps/runtime/native-authority/remote-task-client.mjs",
+   "sha256": "9ac6ec22f3542bd38ec471a4ea7a75edec2f7d9c9eee1388a8e8bb2c6ced6905"
+  },
+  {
+   "path": "apps/runtime/native-authority/remote-task-http.mjs",
+   "sha256": "f57dfa5f3ad23387f23770d5394d20dc0d54864c45d17663aace7b2f2774d00d"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs",
+   "sha256": "8dbcd953faea355b2a6fbffbcfd165b05ce5fb120e10af4e5a31db25029a4f2b"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+   "sha256": "f4062fe1e12b3a399d9a138645cedfb83750972aecf8aa60eda69e772508f319"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+   "sha256": "502834fae51c3c02be0600175aad8eac2e98efdc000bc235a938a09c204c2214"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs",
+   "sha256": "f8618e4efb2768ab107cf5204babae9f76add89c62c3255e0fcb998a77a77fec"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+   "sha256": "d64265e70259968f9514b26b55dd10c6548adb8b1791fe8118d89f02f6dc881a"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+   "sha256": "bbb281d13032b357b11ba0bed60bf5d388fc690fdd9bca0a7d673c952ca8e87b"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+   "sha256": "735df1cf1624c01e99cf5a77dbbade43120487df5134c081f8cb2e4fab54ade6"
+  },
+  {
+   "path": "apps/runtime/native-authority/test/remote-task.test.mjs",
+   "sha256": "9b60f23c2dd542b27cd23d4ffea4ad9cc8c402b9e9281d53beb033a88d3e16ed"
+  },
+  {
+   "path": "apps/runtime/native-runner-gateway.mjs",
+   "sha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece"
+  },
+  {
+   "path": "apps/runtime/prepared-candidate-config.mjs",
+   "sha256": "2dd1963e3350948c3d7b93543e84f3bd1031545e94b74eca79db11ba59651bc7"
+  },
+  {
+   "path": "apps/runtime/prepared-candidate.mjs",
+   "sha256": "b69fb73c10302cab199278b2318479f3f27074bd487d8bd8110195f1b7b7e8bb"
+  },
+  {
+   "path": "apps/runtime/remote-conversation-runner.mjs",
+   "sha256": "830775231cd1a96bce6fc8c5d81a2092be883712080655163270149032dd45ec"
+  },
+  {
+   "path": "apps/runtime/task-bootstrap.mjs",
+   "sha256": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc"
+  },
+  {
+   "path": "apps/runtime/temporal-worker.mjs",
+   "sha256": "d070c8ec2d83857c5488f96326059cb49be1123b4d7ac955ee4100d79de21cea"
+  },
+  {
+   "path": "apps/runtime/test/prepared-candidate-bootstrap.test.mjs",
+   "sha256": "9e0fb1afa1445abed9f0837e64a74ba116825eee54cbb551cedcfa6a919e199c"
+  },
+  {
+   "path": "apps/runtime/test/prepared-candidate-config.test.mjs",
+   "sha256": "8ba96067d9b9c486dce498a13ed1b9a14ed259089426e8e054ae14b2f3c1a153"
+  },
+  {
+   "path": "apps/runtime/test/prepared-candidate-control-lifetime.test.mjs",
+   "sha256": "f543fcb65bc9be8c45e53b1a379b97700b8a19b3e44ee4e3ea0d1b81849a3cda"
+  },
+  {
+   "path": "apps/runtime/test/prepared-candidate-fixture.mjs",
+   "sha256": "5e3039c3ed672fbd5102156ce35e0017f1f93497ba9ba3b3fe14d6fb7682e701"
+  },
+  {
+   "path": "apps/runtime/test/prepared-candidate.test.mjs",
+   "sha256": "e8b11f520ee37518916ae21c7860d9606e3d7ea0e17b58f44ed1153b2ed2826c"
+  },
+  {
+   "path": "apps/runtime/test/prepared-temporal.test.mjs",
+   "sha256": "654ba8b9c9b00dc6e83dd92cc561c374e68839179055e006c98cb43f95b8d5ba"
+  },
+  {
+   "path": "packages/skills/evidence/typed-reads.mjs",
+   "sha256": "a47afe97f9db2bb3c2b730fbef68988c0391c191897339f2d8535a75c222905d"
+  },
+  {
+   "path": "packages/skills/evidence/material-records.mjs",
+   "sha256": "8e50b8be68b9a23781c413f4c425539cfa700ca66533ee029f93429b808576f9"
+  },
+  {
+   "path": "packages/skills/evidence/record-pages.mjs",
+   "sha256": "1f03ce6acf69f8f29d0a31fe7e5daadac41908514d89704fcd77f00b53e35b0d"
+  },
+  {
+   "path": "apps/gateway/qualification/action-gateway.mjs",
+   "sha256": "67403b3cbb823857980cd90c8dbf3a708efb59e50bc49124cc4f5539f52e0c6f"
+  },
+  {
+   "path": "apps/worker/qualification/checkpoint/verify-session-store.mjs",
+   "sha256": "bdfac290cea0157676d6949c31a7bc7b546312eedd25849f26fad4d626c4d53a"
+  },
+  {
+   "path": "apps/worker/qualification/sdk-options.mjs",
+   "sha256": "174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e"
+  }
+ ],
+ "changedRows": [
+  {
+   "path": "apps/control/conversations/native-preparation-journal.mjs",
+   "historicalSha256": "6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5",
+   "sha256": "b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9",
+   "reason": "Gap 5 conversation exclusion in the native allocation claim: under the existing per-conversation advisory lock, a replacement allocation of the same tenant and conversation is refused (NATIVE_PREPARATION_CONVERSATION_BUSY) while any other allocation row of that conversation is not RETIRED with its physical stop proven; exact replay still returns without redispatch and a fork in another conversation is unaffected.",
+   "decision": "Source review only (dot review 15 Oct, task 5). No image build, security admission or live acceptance transfers; grant revocation remains verified by the next-run and issuance owners."
+  },
+  {
+   "path": "apps/control/conversations/postgres-store.mjs",
+   "historicalSha256": "4b8ad2df837a2a7c7ae26d7d23ca60017b50a9b186193553093195d31e80a71f",
+   "sha256": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa",
+   "reason": "Thread trusted transition current-authority and clock ports into the canonical lifecycle journal; terminal completion refusal remains preserved.",
+   "decision": "Root-authorized transition/source correction, source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/config.mjs",
+   "historicalSha256": "a786efc5a3eb046fe4ada7439c314d456ab11d81353b2137eebc47d683624e1d",
+   "sha256": "3bec69435fae9157aeb3d7c5b3181828c5c345dbe25a7259550b39547efd8810",
+   "previousCandidateSha256": "2980c123e48de895b411c80786359a4b05a55b1494d1a16f00c0659c760bd044",
+   "reason": "Require authorization namespace equality with the Temporal namespace (S4) and accept the explicit control-role retention serving declaration (R1/R2).",
+   "decision": "Source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/control.mjs",
+   "historicalSha256": "904b12d08007bc9803b57f26afbf0e0763cfe80f7cb17aedc581ba77135c4e52",
+   "sha256": "ae032c58f380db2c0165af815ed0f94a6d5d1746ccc7527e81cd4e80e6a51b3c",
+   "previousCandidateSha256": "590580ac53688dbb1586faf7bfae49a0d5435e1b56cc9c00a42abb4189a86783",
+   "reason": "Compose the multi-run owners (durable issuance store over the control pool, file-backed capability-material authority) in trusted startup (S2), check Temporal authorization health at readiness (S4), and compose the canonical retention read gate with its readiness checks when retention serving is declared (R1/R2); startup failures carry their cause.",
+   "decision": "Source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/conversation-runner.mjs",
+   "historicalSha256": "ff9a037395eef3d89f62573e53c26c2c038dc5b5ffb59c37266a7c873cc48794",
+   "sha256": "9b6ac5506161513caab33a41c547b634dc314426b51e274f376340556a1ba26d",
+   "reason": "Task-bound completion capture before disposal and distinct next-prompt restore hints/session bootstrap; absent-directory import path avoids evaluating Linux uid on Windows.",
+   "decision": "Root 2026-10-14 authorized source implementation of separate completion table, selector, per-run issuance and distinct next-prompt lineage. Candidate remains HOLD pending transition-authority review and real Linux/PostgreSQL verification; no image acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/native-authority/checkpoint-capture.mjs",
+   "historicalSha256": "06e52b65ac5bef5666cde03b94ec819e1211853b31bdb4f6555de76dee1a7173",
+   "sha256": "13eae4bbce5c2b747417625279d8852ff0b44412fb72b06b73c8bf14354eb0e2",
+   "reason": "Share immutable captured-byte publication with completion capture while retaining lifecycle pause checks and object-port boundary validation.",
+   "decision": "Root 2026-10-14 authorized source implementation of separate completion table, selector, per-run issuance and distinct next-prompt lineage. Candidate remains HOLD pending transition-authority review and real Linux/PostgreSQL verification; no image acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/native-authority/checkpoint-http.mjs",
+   "historicalSha256": "5cd20e089ea176aa16ced1402f32be8c2803be179908c9b176bb190228c66fe6",
+   "sha256": "bf2c9a066e20be402e9ebf41483f03515e7c358f49beadc5315e23e61cfc8776",
+   "reason": "Separate strict task-capability completion route, without lifecycle contract changes.",
+   "decision": "Root 2026-10-14 authorized source implementation of separate completion table, selector, per-run issuance and distinct next-prompt lineage. Candidate remains HOLD pending transition-authority review and real Linux/PostgreSQL verification; no image acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/native-authority/prepared-runtime.mjs",
+   "historicalSha256": "14acba096a126400d4d3f1bd74492fc9d99e5650cc20ba1413305030829f1d5c",
+   "sha256": "e3e3629d370f81f0b71e6b2e6d2f2a8b19b3fd277c111a8db1c7be82f2e47e3b",
+   "reason": "gap 3: preparation and reconciliation verify the descriptor against the issuer's exact task credential (runtime.proxyCredential) and recompute the recovery descriptor with it; the static template no longer carries the secret; root-approved source next-turn work threads distinct nextTurn restoration hints through both parked and started runtime paths without changing lifecycle envelopes",
+   "decision": "dot 2026-10-14 source review at 7f7ee02: ACCEPT separate credential verification; root 2026-10-14 authorized distinct next-prompt lineage, source candidate remains HOLD"
+  },
+  {
+   "path": "apps/runtime/native-authority/remote-composition.mjs",
+   "historicalSha256": "eaa996c353a37cba9f0953f7997e759459a273b24cd8018ad1f855225ad44017",
+   "sha256": "b1e3c3e92e40103edc48c42779be55fcc51c89fe9e2ce7f4bbecc7888d0c982a",
+   "reason": "Compose canonical completion capture owner and task route while retaining exact descriptor verification.",
+   "decision": "Root 2026-10-14 authorized source implementation of separate completion table, selector, per-run issuance and distinct next-prompt lineage. Candidate remains HOLD pending transition-authority review and real Linux/PostgreSQL verification; no image acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/native-authority/test/broker-pg-fixture.mjs",
+   "historicalSha256": "fe7fa54367099a16bef76dd087a7993aaf6f94e3bba06b5c5839205980797d4c",
+   "sha256": "8dbcd953faea355b2a6fbffbcfd165b05ce5fb120e10af4e5a31db25029a4f2b",
+   "previousCandidateSha256": "1d8a6c8fad032bc7554d21e1ebf5db27020791dbf385d51adc0b0b5f9d5833a5",
+   "reason": "Accept a run-owned disposable cluster held exclusively, a proxy origin override and a launch-environment transform for the qualification trust route (Q); the shared-cluster path is unchanged.",
+   "decision": "dot 2026-10-14 source review at 7f7ee02: ACCEPT separate credential verification"
+  },
+  {
+   "path": "apps/runtime/native-runner-gateway.mjs",
+   "historicalSha256": "2b32a50bc77ff534fe351ca87b0f765117ecb66da67ace5f78e966d88c2468af",
+   "sha256": "9c4daaee94de339fe97cbd6d55654d0cc5890b58a12069500e8e877f889edece",
+   "reason": "Carry the root-approved task-bound completion checkpoint operation through the existing fixed relay, preserving exact task bearer/bytes and upstream proof ownership.",
+   "decision": "Root authorized completion capture source; relay is source-only and candidate remains HOLD, with no new authority or deployment acceptance."
+  },
+  {
+   "path": "apps/runtime/prepared-candidate-config.mjs",
+   "historicalSha256": "8cc1bf393f78ee182077c03c313af4b53826f3e8842e6116fd0b42266afbc156",
+   "sha256": "2dd1963e3350948c3d7b93543e84f3bd1031545e94b74eca79db11ba59651bc7",
+   "previousCandidateSha256": "3b2d43f79d98d8f3622621a54cb95980321d9ab8c48f368af12bcd49e5ceb866",
+   "reason": "Accept the optional multi-run material directory that names the owner-only directory of the file-backed capability-material authority (S2).",
+   "decision": "Source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/prepared-candidate.mjs",
+   "historicalSha256": "698f9adbb5ebda2e4e964c4c7f6d8425932141dcd803716b43372e26d7625d5a",
+   "sha256": "b69fb73c10302cab199278b2318479f3f27074bd487d8bd8110195f1b7b7e8bb",
+   "previousCandidateSha256": "806d56bfe797d8536643e5d85cf474f1e804a2a8f5fcc60b84dc55a9e5a0582c",
+   "reason": "Stop handing a shared task origin and listener to the run registry; each entry carries the transport frozen in its own issued facts (S2).",
+   "decision": "Source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/task-bootstrap.mjs",
+   "historicalSha256": "17e639caffbc321cc923c24d9871583f4aced5741282f09c57ed8f183337d9b1",
+   "sha256": "1a44df48814c509f5cf7826847f3990a7179035474014119e39eef51eb8880dc",
+   "reason": "Root-approved distinct next-prompt lineage forwarded through pre-admission task readiness; refuses ambiguous resume and nextTurn hints before runtime startup.",
+   "decision": "Source implementation authorized by root 2026-10-14; independent integration review pending, no image or live acceptance."
+  },
+  {
+   "path": "apps/runtime/temporal-worker.mjs",
+   "historicalSha256": "7e309e52b3fd6e0b5ebb74b91f82d2953fef48425936d13953d472e2633ffb9b",
+   "sha256": "d070c8ec2d83857c5488f96326059cb49be1123b4d7ac955ee4100d79de21cea",
+   "previousCandidateSha256": "ae1afafa7bdd6393dba7b1ecad27d86e718f286b11d7a481e1efbefd1fd0ba27",
+   "reason": "Fail readiness on unhealthy authorization, stop the poller on a fail-closed authorization transition and aggregate cleanup failures (S4).",
+   "decision": "Source review only; no image build, security admission or live acceptance transfers."
+  },
+  {
+   "path": "apps/runtime/test/prepared-candidate.test.mjs",
+   "historicalSha256": "1e3b0ff5a884969f969c7dc44a9e30118caa3eee5d970ed769f3c8018ed8ce04",
+   "sha256": "e8b11f520ee37518916ae21c7860d9606e3d7ea0e17b58f44ed1153b2ed2826c",
+   "reason": "Update only the synthetic Temporal connection scopes required by the now fail-closed dispatcher; retain original candidate assertions and zero real AWS operations.",
+   "decision": "Root-authorized transition/source correction, source review only; no image build, security admission or live acceptance transfers."
+  }
+ ],
+ "pickupHead": "7fbf232425fbcb9172e03e561720722154b9efbf",
+ "previousCandidate": {
+  "path": "candidate-manifest-fable-20261015b.json",
+  "sha256": "6c2f692660ac879056b9c6854d1c43b7e085194e5db40e173510ef81a75f6842"
+ },
+ "priorPublishedDotManifest": {
+  "source": "454fb4020aa07c6d56cbabd02b78afe5ebdb9dcb",
+  "sha256": "441b057a622ed91adadc77dd6ad7b5d29d4fca1367530fc0b289b410ff75843a",
+  "status": "Historical candidate bytes remain at their exact published pin; this new candidate is unsealed and unadmitted."
+ }
+}
