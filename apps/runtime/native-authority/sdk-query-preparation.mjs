@@ -10,7 +10,7 @@ export async function prepareNativeSdkQuery(configuration){
  const descriptors=Object.getOwnPropertyDescriptors(c.options);
  if(Object.values(descriptors).some(d=>!Object.hasOwn(d,'value'))||Object.hasOwn(descriptors,'spawnClaudeCodeProcess'))throw executionFault('SDK_PREPARATION_CONFIGURATION');
  const options=Object.fromEntries(Object.entries(descriptors).map(([key,descriptor])=>[key,descriptor.value]));
- const {query}=await import('@anthropic-ai/claude-agent-sdk'),captured=Promise.withResolvers();captured.promise.catch(()=>{});
+ const {query}=await import('../../worker/conversation/agent-sdk.mjs'),captured=Promise.withResolvers();captured.promise.catch(()=>{});
  let bound,stream,iterator,first,closed=false,spawned=false,closing,lateBinding;
  function close(){
   if(closing)return closing;closed=true;
