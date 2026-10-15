@@ -8,11 +8,14 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const proof=JSON.parse(fs.readFileSync(new URL('./source-manifest.json',import.meta.url),'utf8'));
-const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-dot-20261014.json',import.meta.url),'utf8'));
+const candidate=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-fable-20261015.json',import.meta.url),'utf8'));
 
-test('the preceding Fable candidate is preserved byte-exact and the new candidate carries no image acceptance',()=>{
- const previous=hash(fs.readFileSync(new URL('./candidate-manifest-fable-20261014.json',import.meta.url)));
- assert.equal(previous,'dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627');assert.equal(candidate.previousCandidate.sha256,previous);assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+test('the preceding Fable and dot candidates are preserved byte-exact and the new candidate carries no image acceptance',()=>{
+ const fable=hash(fs.readFileSync(new URL('./candidate-manifest-fable-20261014.json',import.meta.url))),dot=JSON.parse(fs.readFileSync(new URL('./candidate-manifest-dot-20261014.json',import.meta.url),'utf8')),previous=hash(fs.readFileSync(new URL('./candidate-manifest-dot-20261014.json',import.meta.url)));
+ assert.equal(fable,'dc425cffa60a5a6bffc2d089cdf421be33694c3682d99d7c6b2b7818d3e1c627');assert.equal(dot.previousCandidate.sha256,fable);
+ assert.equal(previous,'fb97f11639d173fd15781df776ea8c49d9c2c53cc868dc9e8512e957195b310b');assert.equal(candidate.previousCandidate.sha256,previous);assert.equal(candidate.status,'CANDIDATE_HOLD_SOURCE_REVIEW');
+ assert.equal(candidate.pickupHead,'215930c8092577e84da563b1496d1cca9a4ad4d7');assert.deepEqual(candidate.historicalManifest,dot.historicalManifest);assert.deepEqual(candidate.priorPublishedDotManifest,dot.priorPublishedDotManifest);
+ for(const row of dot.changedRows)assert.deepEqual(candidate.changedRows.find(r=>r.path===row.path),row,row.path+': every dot-enumerated change is carried unchanged');
 });
 
 test('all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest',()=>{

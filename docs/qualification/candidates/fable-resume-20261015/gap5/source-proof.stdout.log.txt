@@ -1,0 +1,38 @@
+✔ the preceding Fable candidate is preserved byte-exact and the new candidate carries no image acceptance (2.421967ms)
+✔ all45 historical proof paths and44 non-recipe hashes remain in the preserved historical manifest (11.829315ms)
+✖ the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged (3.970645ms)
+✔ exact16 proof-test files are allowlisted with parent reopening and sibling denial (2.719735ms)
+✔ exact observed Linux helper bytes and network-isolated build recipe are promoted (1.10492ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 114.314735
+
+✖ failing tests:
+
+test at scripts/qualification/assembled-image/source-proof.test.mjs:26:1
+✖ the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged (3.970645ms)
+  AssertionError [ERR_ASSERTION]: apps/control/conversations/native-preparation-journal.mjs
+  + actual - expected
+  
+  + 'b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9'
+  - '6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5'
+  
+      at TestContext.<anonymous> (file:///home/user/meri-fable-resume/scripts/qualification/assembled-image/source-proof.test.mjs:33:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'b8aadcb9ca7b06cb5ad9571da5b72b1134827b7c949498a949a54dcbafb439c9',
+    expected: '6f0d34c67d179af93f15dd6179c56a4ae437f1ca63250baf637a836df8dd63a5',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

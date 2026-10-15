@@ -83,7 +83,13 @@ export function createNativePreparationJournals({tx,rowRun}){
    ...(proofKey==='resource'?{async verifyExecutionClaim(c,original,versions,check){const saved=await load(c,original.binding,original.executionKey,check),r=saved.record;if(!r||r.state!=='ADMITTED'||r.resource.launchBinding?.state!=='CLAIMED'||!same(r.original,{...original,versions}))denied();return true;},prepareLaunch:(value,check)=>launch(value,check,'prepare'),consumeLaunch:(value,check)=>launch(value,check,'consume'),recordLaunch:(value,check)=>launch(value,check,'record')}:{}),
    async claim(value,check){const i=intent(value);return tx(i.binding,check,async c=>{
     const saved=await load(c,i.binding,i[key],check);if(saved.record){const {state,[proofKey]:proof,...old}=saved.record;if(!same(old,i))fail('NATIVE_PREPARATION_REPLAY_REFUSED');return {...saved,dispatch:false};}
-    if(saved.run.state!=='queued')fail('NATIVE_PREPARATION_STATE_REFUSED');const record=recordValue({...i,state:'CLAIMED',[proofKey]:null});
+    if(saved.run.state!=='queued')fail('NATIVE_PREPARATION_STATE_REFUSED');
+    // Conversation exclusion: a replacement allocation is refused while any other allocation of the same tenant and conversation is live
+    // or unresolved (not RETIRED with its physical stop proven). Exact replay of an existing claim returns above without redispatch; a fork
+    // into another conversation is unaffected. Grant revocation is verified separately by the next-run and issuance owners.
+    if(proofKey==='resource'){const others=(await c.query('SELECT * FROM '+table+' WHERE tenant_id=$1 AND conversation_id=$2 AND run_id<>$3 FOR UPDATE',tuple(i.binding))).rows;check();
+     for(const row of others){if(row.record_sha256!==hash(row.record))fail('NATIVE_PREPARATION_CORRUPT');if(row.record.state!=='RETIRED'||row.record.resource?.physicalStopProven!==true)fail('NATIVE_PREPARATION_CONVERSATION_BUSY');}}
+    const record=recordValue({...i,state:'CLAIMED',[proofKey]:null});
     await c.query('INSERT INTO '+table+'(tenant_id,conversation_id,run_id,intent_key,record,record_sha256) VALUES($1,$2,$3,$4,$5,$6)',[...tuple(i.binding),i[key],record,hash(record)]);check();return {...saved,record,dispatch:true};
    });},
    async read(value,check){const v=lookup(value);return tx(v.binding,check,c=>load(c,v.binding,v[key],check));},

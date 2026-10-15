@@ -8,6 +8,11 @@
  },
  "files": [
   {
+   "path": "CLEANUP-RECEIPT-gap5.json",
+   "bytes": 1458,
+   "sha256": "3b96c8bff03dc0e9a879d88b96f702d0e67c5a21ffedc24650db38f2f55f99b7"
+  },
+  {
    "path": "CLEANUP-RECEIPT.json",
    "bytes": 1349,
    "sha256": "cbd2027cabc398529c072d01cf9474039cfa6fb6d462cc8a727f42dcee994faa"
@@ -19,8 +24,8 @@
   },
   {
    "path": "README.md",
-   "bytes": 17517,
-   "sha256": "7925d73684eab1f4d2c1459d648359c6dbacc1dbdda8c4aa890363e16262643b"
+   "bytes": 22809,
+   "sha256": "53b7a51b0ec68318a7d7be937aa90736e7187fbf23675729ee5b8ff9fde613d8"
   },
   {
    "path": "artifact/pip-install-host.log.txt",
@@ -101,6 +106,51 @@
    "path": "full-baseline/rerun-recovery-independent.test.mjs.log.txt",
    "bytes": 884,
    "sha256": "465d7592365d327199f0759ab31682fcc158e44ef224525fe9ca0951456a0d53"
+  },
+  {
+   "path": "gap5/RESULTS-source-proof-rerun.json",
+   "bytes": 3122,
+   "sha256": "0541459d8633a00f2a4c326da03423fb1717ca3c99aa50c11c7390e8d1ab029d"
+  },
+  {
+   "path": "gap5/RESULTS.json",
+   "bytes": 11813,
+   "sha256": "bfb27bf86abf216d8e1716bc821603ac184edaf81cf1ad257c1a38ae5a572bf9"
+  },
+  {
+   "path": "gap5/control-core.stdout.log.txt",
+   "bytes": 23660,
+   "sha256": "b1a64f0316b7b50019d20c4698bac01fe3b5a3bdbbea9af346dea4ac50ae91a1"
+  },
+  {
+   "path": "gap5/conversations-tests.stdout.log.txt",
+   "bytes": 23633,
+   "sha256": "12ee42691cd25d083d3c035666998c648d96e4267ed3b73de8fb560030971c7e"
+  },
+  {
+   "path": "gap5/native-authority.stdout.log.txt",
+   "bytes": 36950,
+   "sha256": "70289a560f2ed848f0eab2ed62d0edcfd0803a3320cdc06cea0a1d51678dad5d"
+  },
+  {
+   "path": "gap5/runner.log.txt",
+   "bytes": 641,
+   "sha256": "210d35c6653bb0254b09ff733a3c80257ce043404144ce16f7c8683390227a9f"
+  },
+  {
+   "path": "gap5/source-proof-rerun.stdout.log.txt",
+   "bytes": 753,
+   "sha256": "0625fada20a0a309be3499a0870184f89eacc6423d8f957fc95af75d1b6fa790"
+  },
+  {
+   "path": "gap5/source-proof.stdout.log.txt",
+   "bytes": 2104,
+   "sha256": "72ecd03bfe1a0e322a67b0876461d44e4ba2774c9a8a4eec5ebb2b24aa8dcd37"
+  },
+  {
+   "path": "gap5/worker-conversation.stdout.log.txt",
+   "bytes": 12487,
+   "sha256": "2798c8463bd614e55d05193401010e303802cf57bf31b1de52adcfc7e4192548"
   },
   {
    "path": "manifest.mjs",

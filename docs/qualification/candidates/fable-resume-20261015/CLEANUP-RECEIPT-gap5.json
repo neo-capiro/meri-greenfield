@@ -1,0 +1,25 @@
+{
+ "schema": "meri.cleanup-receipt.v1",
+ "at": "2026-10-15T02:56:32Z",
+ "slice": "dot review 15 October: gap 5 exclusion, restorer reseed, new proof-row candidate",
+ "clusters": {
+  "dataDirectory": "/tmp/meri-resume-pg-20261015",
+  "startedForThisSlice": true,
+  "stopCommand": "provision-postgres.sh stop --data /tmp/meri-resume-pg-20261015",
+  "brokerSocketEntries": 0,
+  "kickoffSocketEntries": 0,
+  "postgresProcesses": 0
+ },
+ "testUserProcesses": 0,
+ "privateTmp": {
+  "path": "/home/meri/resume-tmp",
+  "entries": 17,
+  "byPrefix": {"meri-lifecycle-test": 13, "meri-r2-reconciliation": 2, "meri-ws": 1, "node-compile": 1},
+  "note": "unchanged from the full-baseline receipt; the two debug preload files Fable placed there for the STORE_UNAVAILABLE diagnosis were removed"
+ },
+ "temporaryStoreEdit": "apps/control/conversations/postgres-store.mjs received a one-line error log for one diagnostic run and was restored with git checkout; git diff --quiet confirmed the restore before any suite run",
+ "codexShim": {"python3": "/usr/bin/python3", "dependencyEntries": ["bin", "python"], "nodeDirectoryExists": false},
+ "hostTrust": {"extraCaInstalled": false, "systemCaFiles": 6, "hostsMappingLines": 0},
+ "suiteOutputs": "/home/meri/resume-out/gap5 and /home/meri/resume-out/gap5-source-proof-rerun, copied into gap5/ with logs renamed .log.txt; stderr files were empty",
+ "worktreeResidue": "none (git status shows only this slice's intended paths)"
+}

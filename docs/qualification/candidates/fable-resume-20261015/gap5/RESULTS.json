@@ -1,0 +1,359 @@
+{
+ "schema": "meri.local-baseline-results.v1",
+ "startedAt": "2026-10-15T02:50:08.032Z",
+ "finishedAt": "2026-10-15T02:51:56.206Z",
+ "repository": {
+  "root": "/home/user/meri-fable-resume",
+  "head": "4609faabcc6e879251d311e8923c91d16a804958",
+  "tree": "04d2fcffbce463ddd5caf50e136c4cf576308d4c",
+  "branch": "fable/meri-resume-20261015",
+  "uncommittedPaths": 7
+ },
+ "environment": {
+  "node": "v24.21.0",
+  "platform": "linux",
+  "kernel": "6.18.44-fc-v114",
+  "uid": 30033,
+  "user": "meri",
+  "postgres": "postgres (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+  "soffice": "LibreOffice 24.2.7.2 420(Build:2)",
+  "python3": "Python 3.13.16",
+  "docker": "Docker version 29.8.2, build 7fc2dff",
+  "subreaper": true,
+  "tools": {
+   "python3": "/usr/bin/python3",
+   "soffice": "/usr/bin/soffice"
+  },
+  "scratchRoot": "/home/meri/resume-out/gap5/scratch",
+  "scrubbed": {
+   "prefixes": [
+    "AWS_",
+    "ANTHROPIC_",
+    "CLAUDE",
+    "CCR_",
+    "TEMPORAL_",
+    "PG",
+    "NPM_CONFIG_",
+    "GH_",
+    "GITHUB_",
+    "CLOUDSDK_",
+    "GIT_CONFIG_",
+    "GIT_ASKPASS",
+    "GLOBAL_AGENT_"
+   ],
+   "keys": [
+    "DATABASE_URL",
+    "NODE_OPTIONS",
+    "NODE_PATH",
+    "NODE_EXTRA_CA_CERTS",
+    "MERI_NATIVE_ADMIN_TOKEN",
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "http_proxy",
+    "https_proxy",
+    "ALL_PROXY",
+    "all_proxy",
+    "NO_PROXY",
+    "no_proxy"
+   ],
+   "suffixPattern": "(TOKEN|SECRET|PASSWORD|PASSPHRASE|CREDENTIALS?|API_KEY|ACCESS_KEY|_PROXY)$"
+  },
+  "supplied": {
+   "MERI_REVIEW_SOURCE_ROOT": "/home/user/meri-fable-resume",
+   "MERI_INSPECTION_TEST_SOCKET": "/tmp/meri-prepared-kickoff-pg-20261014/socket",
+   "MERI_INSPECTION_TEST_DATABASE": "meri_inspection_final",
+   "MERI_PREPARED_LAUNCH_DATABASE": "meri_prepared_launch",
+   "MERI_PIPELINE_ARTIFACT_ROOT": "/home/meri/resume-out/gap5/scratch/meri_pipeline_artifact_root",
+   "MERI_ASSOCIATION_ARTIFACT_ROOT": "/home/meri/resume-out/gap5/scratch/meri_association_artifact_root",
+   "MERI_DOCUMENT_PYTHON": "/usr/bin/python3",
+   "MERI_PYTHON": "/usr/bin/python3",
+   "MERI_SOFFICE": "/usr/bin/soffice"
+  }
+ },
+ "totals": {
+  "suites": 5,
+  "passedSuites": 4,
+  "tests": 997,
+  "pass": 996,
+  "fail": 1
+ },
+ "suites": [
+  {
+   "name": "source-proof",
+   "purpose": "45-row runtime proof hashes and recipe promotion",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "scripts/qualification/assembled-image/source-proof.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 1,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 208,
+   "counts": {
+    "tests": 5,
+    "suites": 0,
+    "pass": 4,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [
+    {
+     "name": "the candidate manifest enumerates every changed proof row with both hashes, a reason and the recorded decision; every other row equals its historical bytes; the recipe is unchanged",
+     "detail": "AssertionError [ERR_ASSERTION]: apps/control/conversations/native-preparation-journal.mjs"
+    }
+   ],
+   "stdout": {
+    "bytes": 2104,
+    "sha256": "72ecd03bfe1a0e322a67b0876461d44e4ba2774c9a8a4eec5ebb2b24aa8dcd37"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "conversations-tests",
+   "purpose": "conversation requests, durable events, lifecycle, native preparation journals over local PostgreSQL",
+   "kind": "node-test",
+   "cwd": "apps/control/conversations",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-concurrency=1",
+    "test/application.test.mjs",
+    "test/completion.test.mjs",
+    "test/conversation-public-integration.test.mjs",
+    "test/lifecycle-inspection.test.mjs",
+    "test/lifecycle-transition.test.mjs",
+    "test/lifecycle-workflow.test.mjs",
+    "test/lifecycle.test.mjs",
+    "test/native-preparation.test.mjs",
+    "test/native-prepared-launch-pg.test.mjs",
+    "test/native-prepared-launch.test.mjs",
+    "test/next-run-owner.test.mjs",
+    "test/next-run-pg.test.mjs",
+    "test/prepared-execution-claim-pg.test.mjs",
+    "test/read-optional-pg.test.mjs",
+    "test/sequence-range-migration-pg.test.mjs",
+    "test/store-pg.test.mjs",
+    "test/store.test.mjs",
+    "test/stream.test.mjs",
+    "test/temporal-dispatch.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 27245,
+   "counts": {
+    "tests": 246,
+    "suites": 0,
+    "pass": 246,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 23633,
+    "sha256": "12ee42691cd25d083d3c035666998c648d96e4267ed3b73de8fb560030971c7e"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "local PostgreSQL 16 clusters from provision-postgres.sh",
+    "root node_modules/pg test link from link-dependencies.sh"
+   ]
+  },
+  {
+   "name": "worker-conversation",
+   "purpose": "Claude Agent SDK conversation activity, skills and continuation",
+   "kind": "node-test",
+   "cwd": "apps/worker/conversation",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "continuation/test/continuation.test.mjs",
+    "skills/test/mcp.test.mjs",
+    "skills/test/selected-runtime.test.mjs",
+    "test/activity.test.mjs",
+    "test/completion-activity.test.mjs",
+    "test/control-application.test.mjs",
+    "test/lifecycle-activity.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 4152,
+   "counts": {
+    "tests": 138,
+    "suites": 0,
+    "pass": 138,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 12487,
+    "sha256": "2798c8463bd614e55d05193401010e303802cf57bf31b1de52adcfc7e4192548"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  },
+  {
+   "name": "native-authority",
+   "purpose": "native identity/context, task verifier, broker, supervisor, session owner, kickoff and checkpoint owners",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "--test-concurrency=1",
+    "apps/runtime/native-authority/test/allocation-exclusion-pg.test.mjs",
+    "apps/runtime/native-authority/test/broker-stack.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-capture.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-http.test.mjs",
+    "apps/runtime/native-authority/test/checkpoint-inspection-pg.test.mjs",
+    "apps/runtime/native-authority/test/completion-capture.test.mjs",
+    "apps/runtime/native-authority/test/continuation-runtime.test.mjs",
+    "apps/runtime/native-authority/test/deferred-process-independent.test.mjs",
+    "apps/runtime/native-authority/test/ecs-prepared-task-proof.test.mjs",
+    "apps/runtime/native-authority/test/ecs-recovery-pg.test.mjs",
+    "apps/runtime/native-authority/test/ecs-task-owner.test.mjs",
+    "apps/runtime/native-authority/test/ecs-workspace.test.mjs",
+    "apps/runtime/native-authority/test/execution-broker.test.mjs",
+    "apps/runtime/native-authority/test/first-run-ports.test.mjs",
+    "apps/runtime/native-authority/test/identity-context.test.mjs",
+    "apps/runtime/native-authority/test/native-restorer-pg.test.mjs",
+    "apps/runtime/native-authority/test/native-restorer.test.mjs",
+    "apps/runtime/native-authority/test/next-turn-restore.test.mjs",
+    "apps/runtime/native-authority/test/preparation-intent.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-http.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff-pg.test.mjs",
+    "apps/runtime/native-authority/test/prepared-kickoff.test.mjs",
+    "apps/runtime/native-authority/test/prepared-runtime-pg.test.mjs",
+    "apps/runtime/native-authority/test/recovered-controller-pg.test.mjs",
+    "apps/runtime/native-authority/test/remote-allocation-preflight.test.mjs",
+    "apps/runtime/native-authority/test/remote-task.test.mjs",
+    "apps/runtime/native-authority/test/runnable-runtime.test.mjs",
+    "apps/runtime/native-authority/test/runner-query.test.mjs",
+    "apps/runtime/native-authority/test/sdk-config-transfer.test.mjs",
+    "apps/runtime/native-authority/test/sdk-continuation-bootstrap.test.mjs",
+    "apps/runtime/native-authority/test/session-http.test.mjs",
+    "apps/runtime/native-authority/test/session-integrity.test.mjs",
+    "apps/runtime/native-authority/test/session-launcher.test.mjs",
+    "apps/runtime/native-authority/test/session-owner.test.mjs",
+    "apps/runtime/native-authority/test/session-registration.test.mjs",
+    "apps/runtime/native-authority/test/supervisor-workspace.test.mjs",
+    "apps/runtime/native-authority/test/task-authority.test.mjs",
+    "apps/runtime/native-authority/test/task-checkpoint-source.test.mjs",
+    "apps/runtime/native-authority/test/task-verifier.test.mjs",
+    "apps/runtime/native-authority/test/workspace-capture.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 71747,
+   "counts": {
+    "tests": 348,
+    "suites": 0,
+    "pass": 348,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 36950,
+    "sha256": "70289a560f2ed848f0eab2ed62d0edcfd0803a3320cdc06cea0a1d51678dad5d"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": [
+    "local PostgreSQL 16 clusters from provision-postgres.sh",
+    "non-root UID"
+   ]
+  },
+  {
+   "name": "control-core",
+   "purpose": "control application core",
+   "kind": "node-test",
+   "cwd": ".",
+   "command": [
+    "node",
+    "--test",
+    "--test-reporter=spec",
+    "--test-reporter-destination=stdout",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "apps/control/test/commands-durable-budget.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-independent-durable.test.mjs",
+    "apps/control/test/commands-independent-journal.test.mjs",
+    "apps/control/test/commands-independent-pipeline.test.mjs",
+    "apps/control/test/commands-independent-transport-budget.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "apps/control/test/schedule-lifecycle-postgres.test.mjs",
+    "apps/control/test/schedule-lifecycle.test.mjs",
+    "apps/control/test/schedule-tool-interface.test.mjs",
+    "apps/control/test/temporal-inspection.test.mjs",
+    "apps/control/test/tool-invocations.test.mjs",
+    "apps/control/test/vertical-command-registry.test.mjs",
+    "apps/control/test/vertical-schedule-registry.test.mjs"
+   ],
+   "subreaper": true,
+   "exitCode": 0,
+   "signal": null,
+   "timedOut": false,
+   "durationMs": 4805,
+   "counts": {
+    "tests": 260,
+    "suites": 0,
+    "pass": 260,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+   },
+   "failures": [],
+   "stdout": {
+    "bytes": 23660,
+    "sha256": "b1a64f0316b7b50019d20c4698bac01fe3b5a3bdbbea9af346dea4ac50ae91a1"
+   },
+   "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+   },
+   "knownHostRequirements": []
+  }
+ ]
+}

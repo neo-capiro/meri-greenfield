@@ -34,12 +34,27 @@ All 37 suites were run at the pin (`fable-resume-20261015/full-baseline/`): 27/3
 
 Corrections requested by dot: the first-chat rehearsal at the pin does not exercise completion capture (it runs off the lifecycle path); the claim is corrected in the README. The exact denied commands and denial texts for the stand-in trust and the Codex path, with their scope (this disposable cloud container; no shared host; the Codex path is Fable's own baseline shim, unchanged), are in `DENIED-OPERATIONS.md`; those operations stay stopped. The artifact proposal keeps the committed disposable-environment runbook; no installed Codex runtime is replaced. Logs are public in the candidate directory with `MANIFEST.sha256.json` as the retrieval and verification route; `CLEANUP-RECEIPT.json` is the cleanup receipt.
 
+## 3c. Dot's review of 15 October (reviewed head `dbe53bb`): responses per forwardable task
+
+| Dot task | Done | Where | Left with its owner |
+| --- | --- | --- | --- |
+| 1 Evidence publication | six missing logs published as `.log.txt`, cancellation receipts recovered, manifest rebuilt from tracked deliverables, every remote file verified at the final SHA (31/31 at `4609faa`); re-verified at the head of this return | `MANIFEST.sha256.json`, README cleanup section | — |
+| 2 Claims | native-authority corrected to 342/344 at the pin; Node claims narrowed to the inspected v24.21.0 and v24.22.0; `df84af25`'s resets distinguished from the other upstream differences; reruns kept distinct | README, `node-zlib/` | — |
+| 3 Contracts and worker pin | metadata-only regeneration request recorded with the proof that bundle, declarations and schema are byte-identical; worker validator pin facts recorded (`c2449fd5…` 3,311 bytes at `d5207dc` versus `bc72b4cb…` 3,606 bytes at `de599e4`) | README (this slice) | contracts owner regenerates; worker qualification owner issues the new candidate record |
+| 4 Restorer fixture | `NEXT_RUN_NOT_RESERVED` preserved; fixture reseeded through the canonical lifecycle continuation (resume at fence 2 in the same conversation; fork at fence 1 in a new conversation with a fresh session); inode-preserving replay and UNKNOWN assertions kept; 3/3 | `lifecycle-seed.mjs`, `native-restorer-pg.test.mjs`, `gap5/` | — |
+| 5 Gap 5 invariant | focused implementation in the allocation claim under the conversation lock; composed real-PostgreSQL controls for active (CLAIMED, ALLOCATED, ADMITTED, launch-claimed, STARTED) and UNKNOWN predecessors, retirement acknowledgement without physical proof, physical stop without revocation, successful retirement and revocation, concurrent attempts, exact replay and the separate-conversation fork; initial failures retained; the lifecycle journal's cross-run guard (`RUN_RANGE_CLOSED` on the retired source) reviewed and exercised | `native-preparation-journal.mjs`, `allocation-exclusion-pg.test.mjs`, new candidate manifest | dot's ACCEPT or HOLD on the source change and on the new proof-row candidate |
+| 6 Retention | revision 2 written: suppression versus purge, exact-version deletion with readback, rollback-safe reconciliation after restores, full reference inventory (completion checkpoints, next runs, selected outputs and reads included), fresh allocations requested (`0010`, artifacts `0002`), eight owner decisions, acceptance list | `FABLE-RETENTION-DELETION-PROPOSAL-V2-20261015.md` | dot and the named owners decide; no code written |
+| 7 Stopped operations | kept stopped; the one-time approval question for the stand-in trust binding is written with container identity, mount scope, read-only trust-path probes for Node and the pinned CLI, literal bounded commands with rollback, cleanup that removes only the created CA file, hosts line and key directory, and no blanket permission rule | `FABLE-STANDIN-APPROVAL-PACKET-20261015.md` | the owner approves once or declines |
+
 ## 4. Environment and cleanup at return
 
-Non-root uid 30033, private `TMPDIR`, scrubbed environment; clusters under `/tmp/meri-resume-pg-20261015` stopped at return; no test-owned process remains; the host Codex dependency shim is unchanged (`python3 -> /usr/bin/python3`); the scratch venv and wheelhouse live in the session scratchpad only. Receipts were scanned for credential patterns (0 hits).
+Non-root uid 30033, private `TMPDIR`, scrubbed environment; clusters under `/tmp/meri-resume-pg-20261015` stopped at return (restarted for this slice's suites and stopped again, `CLEANUP-RECEIPT-gap5.json`); no test-owned process remains; the host Codex dependency shim is unchanged (`python3 -> /usr/bin/python3`); the scratch venv and wheelhouse live in the session scratchpad only. Receipts were scanned for credential patterns (0 hits).
 
 ## 5. Decisions requested
 
 1. ACCEPT or HOLD on this return's commits (no product source changed).
 2. Whether an environment owner will bind `proxy.synthetic.invalid` to the qualification stand-in and trust its certificate in a disposable Linux environment so the two-turn rehearsal can run, or whether multi-turn qualification waits for the approved provider route.
 3. Whether the stale worker component pin should be reconciled by a new worker qualification candidate now.
+4. ACCEPT or HOLD on the gap 5 source change (`native-preparation-journal.mjs`) and the new proof-row candidate `candidate-manifest-fable-20261015.json` (13 changed rows, no image acceptance).
+5. ACCEPT, HOLD or edits on the retention revision 2 and its eight owner decisions.
+6. Approve once or decline the stand-in trust binding in the disposable container (section 7 of the packet).
