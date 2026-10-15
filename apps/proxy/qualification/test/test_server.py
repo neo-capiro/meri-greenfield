@@ -46,7 +46,7 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         calls = []
         async def upstream(*args):
             calls.append(1)
-        for field, value in (("scheme", "http"), ("path", "/key/generate"), ("query_string", b"beta=true"),
+        for field, value in (("scheme", "http"), ("path", "/key/generate"), ("query_string", b""), ("query_string", b"beta=true&x=1"),
                              ("client", ("10.77.0.10", 10)), ("headers", [(b"x-meri-task", b"forged")])):
             _, scope, app, _, sends, send = self.make(upstream)
             scope[field] = value

@@ -50,7 +50,7 @@ def fixture():
     authority = GrantAdmission(store, GRANT, BINDING, SHA)
     ingress = IngressAdmission(authority, PeerLease("10.77.0.9", time.monotonic(), BINDING, GRANT))
     scope = {"type": "http", "scheme": "https", "method": "POST", "path": "/v1/messages",
-             "raw_path": b"/v1/messages", "query_string": b"", "client": ("10.77.0.9", 4321),
+             "raw_path": b"/v1/messages", "query_string": b"beta=true", "client": ("10.77.0.9", 4321),
              "headers": [(b"authorization", b"Bearer " + KEY), (b"content-type", b"application/json")]}
     return store, ingress, scope
 
@@ -109,8 +109,45 @@ class IngressTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_admin_source_route_query_tls_denied_before_state(self):
         for change in ({"path": "/key/generate"}, {"path": "/sources"}, {"method": "GET"},
-                       {"scheme": "http"}, {"query_string": b"beta=true"},
+                       {"scheme": "http"}, {"query_string": b""},
                        {"raw_path": b"/v1/%6dessages"}, {"type": "websocket"}):
+            with self.subTest(change=change):
+                store, ingress, scope = fixture(); scope.update(change)
+                with self.assertRaises(StateDenied): await ingress.authorize(scope)
+                self.assertEqual(store.calls, 0)
+
+    async def test_pinned_cli_wire_shape_is_admitted_exactly(self):
+        # Observed pinned CLI 2.1.295 request (standin-probes-20261015.json, C1b):
+        # POST /v1/messages?beta=true over the direct-TLS ingress.
+        store, ingress, scope = fixture()
+        self.assertEqual((scope["method"], scope["path"], scope["raw_path"], scope["query_string"]),
+                         ("POST", "/v1/messages", b"/v1/messages", b"beta=true"))
+        await ingress.authorize(scope)
+        self.assertEqual(store.calls, 1)
+
+    async def test_query_contract_is_closed_including_empty_query(self):
+        queries = (b"", b"beta=false", b"beta=TRUE", b"Beta=true", b"beta", b"beta=",
+                   b"beta=true&beta=true", b"beta=true&", b"&beta=true", b"beta=true&x=1",
+                   b"x=1&beta=true", b"beta=true;x=1", b"beta=%74rue", b"%62eta=true",
+                   b"beta=true ", b" beta=true", b"beta=true#", b"beta=1",
+                   "beta=true", bytearray(b"beta=true"), None)
+        for query in queries:
+            with self.subTest(query=query):
+                store, ingress, scope = fixture(); scope["query_string"] = query
+                with self.assertRaises(StateDenied) as denied: await ingress.authorize(scope)
+                self.assertEqual(str(denied.exception), "INFERENCE_ROUTE_REQUIRED")
+                self.assertEqual(store.calls, 0)
+        store, ingress, scope = fixture(); del scope["query_string"]
+        with self.assertRaises(StateDenied): await ingress.authorize(scope)
+        self.assertEqual(store.calls, 0)
+
+    async def test_beta_query_admits_no_other_route_or_path_spelling(self):
+        for change in ({"path": "/v1/messages/count_tokens", "raw_path": b"/v1/messages/count_tokens"},
+                       {"path": "/v1/messages/", "raw_path": b"/v1/messages/"},
+                       {"path": "/v1/complete", "raw_path": b"/v1/complete"},
+                       {"raw_path": b"/v1/messages?beta=true"},
+                       {"raw_path": bytearray(b"/v1/messages")},
+                       {"method": "GET"}, {"scheme": "http"}):
             with self.subTest(change=change):
                 store, ingress, scope = fixture(); scope.update(change)
                 with self.assertRaises(StateDenied): await ingress.authorize(scope)

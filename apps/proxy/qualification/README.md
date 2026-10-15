@@ -12,7 +12,7 @@ allocated base `08b5c33d6b53a3758ed6c1835d6e55825939c0cb`.
 
 - Upstream: LiteLLM `1.104.2`, source commit `fc3920bf403124ad075bc04990f999f7e0612e12`.
 - Client model alias `meri-sonnet-qualification` -> `bedrock/invoke/us.anthropic.claude-sonnet-4-6`, `aws_region_name: us-east-1` (normalized AWS model ID `us.anthropic.claude-sonnet-4-6`).
-- Route: Anthropic `POST /v1/messages`. No Converse/Mantle/platform route, no global profile, no client model_id/api_base/credential override, no fallback/passthrough/embeddings/proxy-MCP/UI/management ingress.
+- Route: Anthropic `POST /v1/messages?beta=true`, exactly the wire form the pinned Claude Code CLI 2.1.295 sends (stand-in probe C1b). The direct-TLS ingress (`runtime/ingress.py`) admits that one query only; an empty query, any other parameter/value/encoding and any other path are refused before state or body access. The offline policy reference below models the route without its query. No Converse/Mantle/platform route, no global profile, no client model_id/api_base/credential override, no fallback/passthrough/embeddings/proxy-MCP/UI/management ingress.
 - Budget: one non-resetting qualification team `max_budget=10`; authoritative ceiling is safe integer `10000000` microUSD.
 
 ## Layout
