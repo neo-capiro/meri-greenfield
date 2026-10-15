@@ -6,7 +6,8 @@
     "W02-08 Debian 13 / trixie worker image recipe candidate. Preparation only: nothing here is an accepted runtime, live qualification, waiver or proven fix.",
     "RECONCILIATION: the earlier W02-01 refreshed bookworm recipe WAS actually built (integration 8785118 -> image sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75, ECR basic scan 2 CRITICAL / 13 HIGH UNRESOLVED). The old 'NOT YET BUILT' wording was stale historical candidate wording and is corrected here. THIS trixie candidate is NOT built and has NO image digest; the 7327 digest/evidence/single-probe admission does NOT transfer to it.",
     "Exact version/integrity values were read from upstream npm/PyPI registry metadata, official Docker Hub registry manifest/config bytes, and downloaded package files retained in this session (see publicSourcesRetained).",
-    "Registry license labels are not a completed license audit, and package metadata is not a security audit; retain upstream notice files and installed-binary verification before bundling. Office debs were NOT downloaded and apt resolution was NOT run locally."
+    "Registry license labels are not a completed license audit, and package metadata is not a security audit; retain upstream notice files and installed-binary verification before bundling. Office debs were NOT downloaded and apt resolution was NOT run locally.",
+    "2026-10-15 source-only artifact dependency closure adds fourteen exact wheel pins while preserving all seven existing versions/hashes; current wheel metadata verified against official PyPI. Historical seven-wheel download evidence does not establish the new closure. No image build/admission or placement change."
   ],
   "assembledImageDigest": null,
   "assembledImageDigestNote": "null = this trixie candidate is NOT YET BUILT. Do NOT reuse the prior bookworm candidate digest (7327) for this recipe.",
@@ -277,6 +278,33 @@
       "license": "BSD-3-Clause",
       "wheel": "pypdf-6.20.0-py3-none-any.whl",
       "sha256": "f003fc2014814d264fe7dd3f9d435c158e23e1a85a2233f87a0a2d6d21c914ad"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.10.8",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "matplotlib-3.10.8-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "a0a7f52498f72f13d4a25ea70f35f4cb60642b466cbb0a9be951b5bc3f45a486",
+      "wheelBytes": 8718474,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "pandas",
+      "version": "2.2.3",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "pandas-2.2.3-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "f3a255b2c19987fbbe62a9dfd6cff7ff2aa9ccab3fc75218fd4b7530f01efa24",
+      "wheelBytes": 12711809,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0",
+      "license": "MIT-CMU",
+      "wheel": "pillow-12.3.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "0847a763afefb695bc912d7c131e7e0632d4edc1d8698f58ddabec8e46b8b6d3",
+      "wheelBytes": 6937129,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
     }
   ],
   "pypiTransitive": [
@@ -302,12 +330,112 @@
       "license": "PSF-2.0",
       "wheel": "typing_extensions-4.16.0-py3-none-any.whl",
       "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+    },
+    {
+      "name": "contourpy",
+      "version": "1.4.0",
+      "license": "BSD-3-Clause",
+      "wheel": "contourpy-1.4.0-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "f1219a8898523cba821085f2da8a1b962cc696325763f09d7f93538ba43b2d70",
+      "wheelBytes": 384707,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "cycler-0.12.1-py3-none-any.whl",
+      "sha256": "85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30",
+      "wheelBytes": 8321,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.67.0",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "fonttools-4.67.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "50c41e30aa2e0130b80d1a58ac0f3ea7c02a854a70dbea1ff8d88e0ce524806f",
+      "wheelBytes": 5382979,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "kiwisolver-1.5.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+      "sha256": "74ad5c3dad54a4641b4c28cd15ded70899d04459c6c7aeacafea716be97cce6d",
+      "wheelBytes": 1477992,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "numpy",
+      "version": "2.3.5",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "numpy-2.3.5-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "11e06aa0af8c0f05104d56450d6093ee639e15f24ecf62d417329d06e522e017",
+      "wheelBytes": 16597430,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "license": "Apache-2.0 OR BSD-2-Clause",
+      "wheel": "packaging-26.3-py3-none-any.whl",
+      "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+      "wheelBytes": 129956,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3",
+      "license": "MIT",
+      "wheel": "pyparsing-3.3.3-py3-none-any.whl",
+      "sha256": "ece8c00a69cf01b45d0b1dedabb469c90d8caf996d4fda40f147627a122849a4",
+      "wheelBytes": 126420,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "python_dateutil-2.9.0.post0-py2.py3-none-any.whl",
+      "sha256": "a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427",
+      "wheelBytes": 229892,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "pytz",
+      "version": "2026.5",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "pytz-2026.5-py2.py3-none-any.whl",
+      "sha256": "e658af3757f9e26a9d25dd2aff38335acd92bc9104f890a894b2c1ba28311b03",
+      "wheelBytes": 506342,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "six-1.17.0-py2.py3-none-any.whl",
+      "sha256": "4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+      "wheelBytes": 11050,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.5",
+      "license": "Upstream wheel metadata retained by SHA256; full license/bundled notice audit pending",
+      "wheel": "tzdata-2026.5-py2.py3-none-any.whl",
+      "sha256": "b683bd1b6659ddcd810ff02ad09ba821d4bf1065072805063eb35c49617905ac",
+      "wheelBytes": 347996,
+      "provenance": "Official PyPI index and PEP658 metadata verified 2026-10-15; wheel bytes not downloaded/installed; SOURCE_ONLY candidate"
     }
   ],
   "wheelHashVerification": {
     "method": "downloaded each exact wheel from files.pythonhosted.org and sha256-summed the bytes in this session",
     "verified": true,
-    "detail": "all 7 target wheels matched the pinned sha256 (lxml cp313 5232385 bytes; the six universal wheels unchanged from W02-01 and re-downloaded). Build-time --require-hashes install is still NOT RUN (no Linux/pip execution)."
+    "detail": "all 7 target wheels matched the pinned sha256 (lxml cp313 5232385 bytes; the six universal wheels unchanged from W02-01 and re-downloaded). Build-time --require-hashes install is still NOT RUN (no Linux/pip execution).",
+    "scope": "Historical original seven wheels ONLY; not byte verification of the new 21-wheel closure."
   },
   "osPackages": {
     "status": "RESOLVED-FROM-SNAPSHOT-TRIXIE-REFRESHED-UNBUILT",
@@ -599,5 +727,20 @@
       "canonicalize@5.1.0"
     ],
     "limitations": "No image build, installed-byte validation, native two-task run, grant revocation or G1 admission."
+  },
+  "artifactWheelClosure": {
+    "status": "SOURCE_ONLY_PENDING_LINUX_IMPORT_ARTIFACT_SECURITY_LICENSE_QUALIFICATION",
+    "preparedAt": "2026-10-15",
+    "sourceParent": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+    "inventory": "docs/qualification/candidates/dot-artifact-lock-20261015/wheel-inventory.json",
+    "requirementsSha256": "ddd1fdba54cae43c9aef1c56f4a8e1f81fafd466acd6f88203c63c89e2f1e02a",
+    "packages": 21,
+    "preservedPins": 7,
+    "newPins": 14,
+    "officialIndexAndPep658MetadataVerified": true,
+    "downloadedWheelBytes": false,
+    "installed": false,
+    "built": false,
+    "placement": "Qualification worker /opt/meri-venv only; existing fixed executor remains caller-local and requires explicit approved deployment binding; no minimal-Node-root or browser-host relocation."
   }
 }
