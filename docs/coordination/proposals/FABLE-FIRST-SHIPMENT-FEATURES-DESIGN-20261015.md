@@ -6,7 +6,7 @@ Date: 15 October 2026. Lane: Fable design. Branch `fable/design-first-shipment-f
 
 Why this exists: on 15 October 2026 the owner made all four previously deferred features required for the first shipment. AGENTS.md requires approval before any change to architecture, component choices, scope or placement. So each feature needs an approved design before anyone builds it.
 
-Coordination note: AGENTS.md still names OpenAI/Codex as the project's engineering owner. The ledger and the owner record name Fable as the implementer of these rows. This proposal does not decide who builds them.
+Coordination note: the AGENTS.md on this branch's base (inherited from ba40647c) still carries the older OpenAI/Codex-only text. The current handoff AGENTS.md (commit aa09dd28, 14 October 2026) assigns Meri implementation to Fable and independent validation/integration to dot, and supersedes that restriction. The integration branches have not yet merged aa09dd28; dot, as integration owner, decides when to merge it. No ownership question remains open for this proposal.
 
 ## 0. Decision summary
 
