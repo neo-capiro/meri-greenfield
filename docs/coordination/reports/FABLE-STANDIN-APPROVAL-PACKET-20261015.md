@@ -41,6 +41,20 @@ An untrusted-certificate failure alone does not say which store the client consu
 
 Read-only facts already collected (no trust change): the CLI binary contains the strings `NODE_EXTRA_CA_CERTS` (39), `use-system-ca` (8), `SSL_CERT_FILE` (16), `SSL_CERT_DIR` (5), `ca-certificates.crt` (5) and `/etc/ssl/certs` (12), so its embedded runtime carries both the system-bundle path and the extra-CA variable; whether the system store is consulted by default is exactly what probe C2 decides. Node v24.21.0 accepts `--use-system-ca`.
 
+### 3a. Measured results (15 October, receipt `rehearsal/standin-probes-20261015.json`)
+
+| Probe | Result |
+|---|---|
+| N1a Node, no extra CA | `UNABLE_TO_VERIFY_LEAF_SIGNATURE` |
+| N1b Node, `NODE_EXTRA_CA_CERTS` (harness only) | 200 |
+| N1c Node, `--use-system-ca`, CA not installed | `UNABLE_TO_VERIFY_LEAF_SIGNATURE` |
+| C1a pinned CLI, no extra CA | refused: `api_error: tls_untrusted_ca`; the CLI's message names `NODE_EXTRA_CA_CERTS` or the system certificate store as its trust routes; the stand-in received no request; cost 0 |
+| C1b pinned CLI, `NODE_EXTRA_CA_CERTS` (harness only) | TLS completed; the CLI sent `GET /api/hello` and `POST /v1/messages?beta=true`; the stand-in's exact-path routing answered 404, now corrected and covered by `provider-standin.test.mjs` (client-pinned throwaway CA, no trust change) |
+| C1b rerun against the corrected stand-in | denied by the permission classifier (`[TLS/Auth Weaken]`), recorded verbatim in `DENIED-OPERATIONS.md`, not retried |
+| C2 | not run; needs step 2 |
+
+What this changes in the question: the CLI verifies TLS and honors `NODE_EXTRA_CA_CERTS`, and its own error text says it also reads the system certificate store, so outcome A is now likely but still unproven. A second bounded route exists and is a decision for dot rather than Fable: run the rehearsal with `NODE_EXTRA_CA_CERTS` added to the harness launch template only. It avoids any container trust-store or hosts change, but it departs from the product launch environment of exactly five variables and the configured proxy host, so the rehearsal would no longer exercise the product descriptor byte-for-byte; and the classifier denied even the single-process form of it in this container. Both routes therefore wait on an explicit approval.
+
 ## 4. Bounded commands (not executed), absent-target checks and rollback limited to owned changes
 
 All paths are literal. Every command refuses when its target already exists. The script records the baseline first, installs with `trap` so cleanup runs on every exit path, and works from explicit directories with tracked process IDs.

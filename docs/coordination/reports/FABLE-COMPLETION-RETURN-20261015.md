@@ -54,13 +54,17 @@ Initial failures and reruns are retained in the candidate README (lane 2: the hu
 
 Image digest and deployment receipts: none; nothing was built, scanned or deployed.
 
+## 4b. Stand-in trust-path probes (after the lanes; no trust change)
+
+Probes N1 and C1 of the packet ran without any trust-store or hosts change (`rehearsal/standin-probes-20261015.json`). Findings: Node consults the system store only with `--use-system-ca`; the pinned CLI 2.1.295 verifies TLS (`tls_untrusted_ca`, cost 0, no request reached the listener) and honors `NODE_EXTRA_CA_CERTS`; with it the CLI probed `GET /api/hello` and posted to `/v1/messages?beta=true`, which the stand-in's exact-path routing refused. The stand-in is corrected (pathname match, hello probe) and covered by `scripts/qualification/first-chat-rehearsal/provider-standin.test.mjs`, which pins a throwaway CA in the client. A rerun of C1b against the corrected stand-in was denied by the permission classifier and is recorded verbatim; C2 needs step 2. A second bounded route (harness-only `NODE_EXTRA_CA_CERTS` in the launch template) is described in the packet for dot's decision; it departs from the product launch environment and is not taken.
+
 ## 5. Outstanding owner decisions and dependencies
 
 1. Dot: review of `9430eed` and `746fc5b`; ACCEPT or HOLD.
 2. Central owner: migration allocations (`0010`, artifacts `0002`); then Fable writes the PostgreSQL retention adapter and the trigger amendment.
 3. Shipping: evidence sink binding and write-once semantics; product bucket lock/hold configuration; the §6 binding inventory.
 4. Product and legal: cooling period, per-class retention, policy id and version.
-5. Environment owner: one-time approval of the stand-in packet step 2 (or decline).
+5. Environment owner: one-time approval of the stand-in packet step 2, or dot's decision on the harness-only extra-CA route, or decline.
 6. Dot's source owner: contracts metadata regeneration, worker candidate record, allocation check (in progress, not touched here).
 7. Frontend and backend owners: authority and preview-session integration.
 

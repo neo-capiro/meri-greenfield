@@ -13,7 +13,11 @@ export async function startProviderStandIn(configuration){
  const server=createServer({cert:readFileSync(c.certFile),key:readFileSync(c.keyFile)},async(req,res)=>{
   const chunks=[];for await(const part of req)chunks.push(part);const body=Buffer.concat(chunks).toString('utf8');
   const call={at:new Date().toISOString(),method:req.method,path:req.url,authorizationPresent:typeof req.headers.authorization==='string'||typeof req.headers['x-api-key']==='string',bytes:body.length};calls.push(call);
-  if(req.method!=='POST'||req.url!=='/v1/messages'){res.writeHead(404,{'content-type':'application/json'});res.end(JSON.stringify({type:'error',error:{type:'not_found_error',message:'stand-in serves only POST /v1/messages'}}));return;}
+  // The pinned CLI 2.1.295 probes GET /api/hello first and posts to /v1/messages?beta=true (measured 15 October); the path is matched
+  // without its query string and the hello probe is answered, everything else is refused.
+  const pathname=new URL(req.url,'https://stand-in.invalid').pathname;call.pathname=pathname;
+  if(req.method==='GET'&&pathname==='/api/hello'){res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({ok:true,standIn:true}));return;}
+  if(req.method!=='POST'||pathname!=='/v1/messages'){res.writeHead(404,{'content-type':'application/json'});res.end(JSON.stringify({type:'error',error:{type:'not_found_error',message:'stand-in serves only POST /v1/messages'}}));return;}
   let request;try{request=JSON.parse(body);}catch{res.writeHead(400,{'content-type':'application/json'});res.end(JSON.stringify({type:'error',error:{type:'invalid_request_error',message:'invalid JSON'}}));return;}
   call.model=request.model??null;call.messages=Array.isArray(request.messages)?request.messages.length:null;call.stream=request.stream===true;
   const id='msg_standin_'+calls.length,model=c.model??request.model??'stand-in',usage={input_tokens:0,output_tokens:0};
