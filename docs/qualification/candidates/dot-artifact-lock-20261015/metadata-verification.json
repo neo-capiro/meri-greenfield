@@ -1,0 +1,15 @@
+{
+  "status": "PASS_SOURCE_METADATA_ONLY",
+  "sourceParent": "3532541665c62940cd83d98503b3d1d4a0ae718b",
+  "originalPinsPreserved": 7,
+  "exactTargetWheels": 21,
+  "activeDependencyEdgesSatisfied": 18,
+  "officialWheelAndPep658MetadataHashesMatched": 21,
+  "runtimeProofRowsUnchanged": 45,
+  "qualificationInputsChanged": 2,
+  "wheelBytesDownloaded": false,
+  "packageInstallation": false,
+  "nativeImports": "NOT_RUN_REQUIRES_APPROVED_ISOLATED_LINUX",
+  "artifactExecution": "NOT_RUN_REQUIRES_APPROVED_ISOLATED_LINUX",
+  "imageBuild": false
+}
