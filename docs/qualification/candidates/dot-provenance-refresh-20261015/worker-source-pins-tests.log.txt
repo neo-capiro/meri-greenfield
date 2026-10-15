@@ -1,0 +1,233 @@
+EEEE
+======================================================================
+ERROR: test_check_refuses_earlier_source_change_during_later_reads (worker_source_pins_test.WorkerSourcePinsTests.test_check_refuses_earlier_source_change_during_later_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-vgksucoy\\apps\\worker\\qualification'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-vgksucoy\\apps\\worker'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<checkout>\scripts\qualification\worker_source_pins_test.py", line 16, in setUp
+    self.target.parent.mkdir(parents=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-vgksucoy\\apps'
+
+======================================================================
+ERROR: test_generation_refuses_linked_source_without_replacing_metadata (worker_source_pins_test.WorkerSourcePinsTests.test_generation_refuses_linked_source_without_replacing_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-bqpyaanc\\apps\\worker\\qualification'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-bqpyaanc\\apps\\worker'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<checkout>\scripts\qualification\worker_source_pins_test.py", line 16, in setUp
+    self.target.parent.mkdir(parents=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-bqpyaanc\\apps'
+
+======================================================================
+ERROR: test_reusable_package_import_has_no_generation_side_effect (worker_source_pins_test.WorkerSourcePinsTests.test_reusable_package_import_has_no_generation_side_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-tcnn5574\\apps\\worker\\qualification'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-tcnn5574\\apps\\worker'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<checkout>\scripts\qualification\worker_source_pins_test.py", line 16, in setUp
+    self.target.parent.mkdir(parents=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-tcnn5574\\apps'
+
+======================================================================
+ERROR: test_stale_check_has_no_write_and_generation_preserves_other_metadata (worker_source_pins_test.WorkerSourcePinsTests.test_stale_check_has_no_write_and_generation_preserves_other_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-q8wst931\\apps\\worker\\qualification'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+FileNotFoundError: [WinError 3] The system cannot find the path specified: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-q8wst931\\apps\\worker'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<checkout>\scripts\qualification\worker_source_pins_test.py", line 16, in setUp
+    self.target.parent.mkdir(parents=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1120, in mkdir
+    self.parent.mkdir(parents=True, exist_ok=True)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1116, in mkdir
+    os.mkdir(self, mode)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-q8wst931\\apps'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.011s
+
+FAILED (errors=4)
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 636, in _rmtree_unsafe
+    os.rmdir(path)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-q8wst931'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 666, in _exitfunc
+    f()
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 590, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 933, in _cleanup
+    cls._rmtree(name, ignore_errors=ignore_errors)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 929, in _rmtree
+    _shutil.rmtree(name, onerror=onerror)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 787, in rmtree
+    return _rmtree_unsafe(path, onerror)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 638, in _rmtree_unsafe
+    onerror(os.rmdir, path, sys.exc_info())
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 890, in onerror
+    _resetperms(path)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 287, in _resetperms
+    _dont_follow_symlinks(_os.chmod, path, 0o700)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 278, in _dont_follow_symlinks
+    func(path, *args)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-q8wst931'
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 636, in _rmtree_unsafe
+    os.rmdir(path)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-tcnn5574'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 666, in _exitfunc
+    f()
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 590, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 933, in _cleanup
+    cls._rmtree(name, ignore_errors=ignore_errors)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 929, in _rmtree
+    _shutil.rmtree(name, onerror=onerror)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 787, in rmtree
+    return _rmtree_unsafe(path, onerror)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 638, in _rmtree_unsafe
+    onerror(os.rmdir, path, sys.exc_info())
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 890, in onerror
+    _resetperms(path)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 287, in _resetperms
+    _dont_follow_symlinks(_os.chmod, path, 0o700)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 278, in _dont_follow_symlinks
+    func(path, *args)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-tcnn5574'
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 636, in _rmtree_unsafe
+    os.rmdir(path)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-bqpyaanc'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 666, in _exitfunc
+    f()
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 590, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 933, in _cleanup
+    cls._rmtree(name, ignore_errors=ignore_errors)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 929, in _rmtree
+    _shutil.rmtree(name, onerror=onerror)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 787, in rmtree
+    return _rmtree_unsafe(path, onerror)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 638, in _rmtree_unsafe
+    onerror(os.rmdir, path, sys.exc_info())
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 890, in onerror
+    _resetperms(path)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 287, in _resetperms
+    _dont_follow_symlinks(_os.chmod, path, 0o700)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 278, in _dont_follow_symlinks
+    func(path, *args)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-bqpyaanc'
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 636, in _rmtree_unsafe
+    os.rmdir(path)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-vgksucoy'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 666, in _exitfunc
+    f()
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\weakref.py", line 590, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 933, in _cleanup
+    cls._rmtree(name, ignore_errors=ignore_errors)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 929, in _rmtree
+    _shutil.rmtree(name, onerror=onerror)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 787, in rmtree
+    return _rmtree_unsafe(path, onerror)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\shutil.py", line 638, in _rmtree_unsafe
+    onerror(os.rmdir, path, sys.exc_info())
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 890, in onerror
+    _resetperms(path)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 287, in _resetperms
+    _dont_follow_symlinks(_os.chmod, path, 0o700)
+  File "<user>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\tempfile.py", line 278, in _dont_follow_symlinks
+    func(path, *args)
+PermissionError: [WinError 5] Access is denied: '<user>\\AppData\\Local\\Packages\\sandbox.<id>\\AC\\Temp\\meri-source-pins-vgksucoy'
