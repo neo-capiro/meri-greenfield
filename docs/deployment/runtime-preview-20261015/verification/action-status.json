@@ -5,7 +5,7 @@
   "P1P8Authorized": false,
   "cloudWritesPerformed": false,
   "source": {
-    "infrastructureCommit": "UNCOMMITTED"
+    "infrastructureCommit": "bb2983b8db32022ab3711383c976eca135dad761"
   },
   "templates": [
     {
@@ -30,7 +30,7 @@
   },
   "pricing": {
     "currentQuotes": true,
-    "receiptSha256": "94227d7b6f5967f26510ea6882f950eed793097bb3da0cab0872aac16a07c1f1",
+    "receiptSha256": "78ab54cb36f3d5b6cc00c5536694c1f69de361e8885a77439f3b131884c608e1",
     "totalAwsUSD": 13.286401438356163,
     "windowHours": 24
   },
@@ -117,7 +117,6 @@
     "MeriRuntime-Preview-Foundations:private-parameters-unbound",
     "MeriRuntime-Preview-Data:private-parameters-unbound",
     "MeriRuntime-Preview-Services:private-parameters-unbound",
-    "infrastructure-source-pin",
     "runtimeSourceCommit",
     "runtimeImageDigest",
     "bootstrapImageDigest",

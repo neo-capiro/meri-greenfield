@@ -1,6 +1,6 @@
 {
   "schema": "meri.preview.source-verification/1",
-  "observedUTC": "2026-10-15T08:36:56.788887+00:00",
+  "observedUTC": "2026-10-15T08:37:55.865791+00:00",
   "sourceOnly": true,
   "awsWrites": false,
   "secretValuesRead": false,
@@ -9,7 +9,7 @@
     "exit": 0,
     "passed": 10,
     "failed": 0,
-    "logSha256": "b1ffc43d0fbd97990d2184b9c691a6f44e8e5fff5399c122ce9746e5ce5b7829"
+    "logSha256": "0ddf18aa3b8b1a5d477b79b254b807d3c189fd372b89283b5c58aea1226d7a02"
   },
   "cli": {
     "helpExit": 0,

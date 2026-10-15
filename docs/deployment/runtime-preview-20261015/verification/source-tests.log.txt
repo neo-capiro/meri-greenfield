@@ -1,13 +1,13 @@
-âœ” synthesis is deterministic and contains no custom executor or production foundation replacement (3.0233ms)
-âœ” zero service activation, no runner service/schedule, original roleless task and explicit execution roles (0.2253ms)
-âœ” private runner cannot reach DB/Temporal/ECS/Bedrock or Internet through generated egress (0.1766ms)
-âœ” public HTTPS defaults deny; only canonical method/path families forward (0.1537ms)
-âœ” new DNS allow association precedes existing priority101 without editing it; discovery excludes runner (0.1121ms)
-âœ” database and credentials retain by default and no application SQL/autoscale/deletion task is emitted (0.0825ms)
-âœ” control IAM binds actual source-emitted tags, original tuple, runner definition and sole execution PassRole (0.1362ms)
-âœ” parameter boundary rejects outside/overlapping networks, broad caller and stale or unbound values (0.8866ms)
-âœ” policy proposals preserve all original statements and reject stale baselines or duplicate preview SIDs (0.8623ms)
-âœ” P0 and supplied hashes never grant execution; missing bindings and old inventory stay HOLD (0.7245ms)
+âœ” synthesis is deterministic and contains no custom executor or production foundation replacement (3.3137ms)
+âœ” zero service activation, no runner service/schedule, original roleless task and explicit execution roles (0.2569ms)
+âœ” private runner cannot reach DB/Temporal/ECS/Bedrock or Internet through generated egress (0.2123ms)
+âœ” public HTTPS defaults deny; only canonical method/path families forward (0.1805ms)
+âœ” new DNS allow association precedes existing priority101 without editing it; discovery excludes runner (0.1324ms)
+âœ” database and credentials retain by default and no application SQL/autoscale/deletion task is emitted (0.1042ms)
+âœ” control IAM binds actual source-emitted tags, original tuple, runner definition and sole execution PassRole (0.1671ms)
+âœ” parameter boundary rejects outside/overlapping networks, broad caller and stale or unbound values (1.026ms)
+âœ” policy proposals preserve all original statements and reject stale baselines or duplicate preview SIDs (1.0101ms)
+âœ” P0 and supplied hashes never grant execution; missing bindings and old inventory stay HOLD (0.874ms)
 â„¹ tests 10
 â„¹ suites 0
 â„¹ pass 10
@@ -15,4 +15,4 @@
 â„¹ cancelled 0
 â„¹ skipped 0
 â„¹ todo 0
-â„¹ duration_ms 87.6591
+â„¹ duration_ms 104.2069
