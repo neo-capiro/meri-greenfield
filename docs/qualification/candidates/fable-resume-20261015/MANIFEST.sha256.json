@@ -18,6 +18,11 @@
    "sha256": "3b96c8bff03dc0e9a879d88b96f702d0e67c5a21ffedc24650db38f2f55f99b7"
   },
   {
+   "path": "CLEANUP-RECEIPT-lane3-4.json",
+   "bytes": 1682,
+   "sha256": "5a0dfe7af37203d13ed026d70081486e66179c2dbf57cbe2c3ae609a8f1fdca5"
+  },
+  {
    "path": "CLEANUP-RECEIPT.json",
    "bytes": 1349,
    "sha256": "cbd2027cabc398529c072d01cf9474039cfa6fb6d462cc8a727f42dcee994faa"
@@ -29,8 +34,8 @@
   },
   {
    "path": "README.md",
-   "bytes": 26550,
-   "sha256": "98266ba2f0eaa8ed9e797ff03761e27499ed91e2493bf871f2cec1fd84a7ebac"
+   "bytes": 35920,
+   "sha256": "063f698beefa4fb2edbc776fe48c2cc44e46c23a5773acab80f25a242e460304"
   },
   {
    "path": "artifact/pip-install-host.log.txt",
@@ -218,6 +223,121 @@
    "sha256": "7135ed9b916116ed6918567da069de262e91f465cda1f13cfce07b6adc85ac62"
   },
   {
+   "path": "lane3-commands/contracts-check.stdout.log.txt",
+   "bytes": 14012,
+   "sha256": "49307f1b5abc36c89bf55555d47f01a107532f9743d0ad2072162925804144c5"
+  },
+  {
+   "path": "lane3-commands/env.txt",
+   "bytes": 44,
+   "sha256": "6b86f9f49575e8b926d2b240a6ab24daa941996f87268456a479d6f8d75ef80c"
+  },
+  {
+   "path": "lane3-commands/new-slice-tests.stdout.log.txt",
+   "bytes": 2069,
+   "sha256": "fad20871f79a7cfd3108bb03504818d7ade901e188e8b3b26ba7fcb22001142d"
+  },
+  {
+   "path": "lane3-commands/run.sh",
+   "bytes": 2297,
+   "sha256": "2573485d2cf786e14a6f52be7f6ccf92f30d9aa48ac5f0abe1a5fb2743dbde92"
+  },
+  {
+   "path": "lane3-commands/source-proof-isolation-none.stdout.log.txt",
+   "bytes": 780,
+   "sha256": "396b09ef93f1c259269aed47d639f013464d9c6a4f279a6cd2e3eda96c68b436"
+  },
+  {
+   "path": "lane3-commands/summary.txt",
+   "bytes": 758,
+   "sha256": "0a7b3ccb857e8b2310db69264f9b5fcc3fbfef53f4ba05e78b928b936b10b170"
+  },
+  {
+   "path": "lane3-commands/supplement-regression-isolated.stdout.log.txt",
+   "bytes": 7886,
+   "sha256": "6554b5f817cc89ff2664e750d1e5cd7b5a8a274801877ab052153eed64de0732"
+  },
+  {
+   "path": "lane3-commands/supplement-regression.stderr.log.txt",
+   "bytes": 288,
+   "sha256": "1c1c73ba61e1f7df10bf26f6f8e2925e33c02efb6a0e6dc9f0e31964ca3fd2d3"
+  },
+  {
+   "path": "lane3-commands/supplement-regression.stdout.log.txt",
+   "bytes": 8470,
+   "sha256": "f606d226575a77ec164e7a3516d118a1f012f240ca4cb7cf265e31493baadd68"
+  },
+  {
+   "path": "lane3-commands/worker-pins-unittest.stderr.log.txt",
+   "bytes": 120,
+   "sha256": "e23854bc4ac6a5098886c87fb23b4eb4095ea5bb2f29090f418170b8037e989c"
+  },
+  {
+   "path": "lane3-commands/worker-source-pins-check.stdout.log.txt",
+   "bytes": 69,
+   "sha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465"
+  },
+  {
+   "path": "lane3/RESULTS.json",
+   "bytes": 14205,
+   "sha256": "b3cba057854a5095848ce2fa27f35e4eef440c51e5fcdd02f7ae7aad85338850"
+  },
+  {
+   "path": "lane3/control-retention.stdout.log.txt",
+   "bytes": 2330,
+   "sha256": "dc57a6d1ff56cfb264026be6a9f8883f1f3840f2084e3f2bd270f35d109f3ac8"
+  },
+  {
+   "path": "lane3/conversations-tests.stdout.log.txt",
+   "bytes": 23663,
+   "sha256": "2c36c1618b269b2f292d882a35b020ff577146c09b8285056e6a29c36874d373"
+  },
+  {
+   "path": "lane3/native-authority.stdout.log.txt",
+   "bytes": 37157,
+   "sha256": "b190725e7a61d71e6251780e84e669c8ece58a21551ab95ebf6cfab4feccc679"
+  },
+  {
+   "path": "lane3/runner.log.txt",
+   "bytes": 835,
+   "sha256": "ba4aad7af7ef77e0b83c67d6f21a9ce4c9e78e6340366dd628d1ed6dbccf262d"
+  },
+  {
+   "path": "lane3/runtime-tests.stdout.log.txt",
+   "bytes": 22703,
+   "sha256": "09e75e7130537737fa6cef25b0ac17ea1bd3a4538d0103925c28c091abf0b126"
+  },
+  {
+   "path": "lane3/runtime-typecheck.stdout.log.txt",
+   "bytes": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "path": "lane3/scripts-local.stdout.log.txt",
+   "bytes": 3184,
+   "sha256": "9f8b30bd16d7ce633a7c18803a9a08a9ddba5ce98bd1e0392020f26d5dd348ac"
+  },
+  {
+   "path": "lane3/source-proof.stdout.log.txt",
+   "bytes": 783,
+   "sha256": "56cecdbc37e3d41ad04ab123862f3018e0d628557a17f144b8baee359edd3e42"
+  },
+  {
+   "path": "lane4/RESULTS.json",
+   "bytes": 4316,
+   "sha256": "f5e370d8a2c9297a68afa3b2b1a40c381590d2f78c4ba4fe01412ca09d761c31"
+  },
+  {
+   "path": "lane4/control-retention.stdout.log.txt",
+   "bytes": 3548,
+   "sha256": "16c8d7aced1ea4c8f9a6249dd10cafb092d3228862edf322914fc63c4f2a5946"
+  },
+  {
+   "path": "lane4/source-proof.stdout.log.txt",
+   "bytes": 783,
+   "sha256": "14580bfe0ab7dd1a15ae0b0834f4f95be6c503111c0444a2c3406858e4c9b62c"
+  },
+  {
    "path": "manifest.mjs",
    "bytes": 1446,
    "sha256": "52be41b51e583e03734fabd4dcf23ae51e5d696f5d54a25ed98b002e57def2ce"
@@ -226,6 +346,21 @@
    "path": "node-zlib/node24-gzwrite-comparison.json",
    "bytes": 3195,
    "sha256": "7089c10677ba37b5f7d3fa47bf93def2ead82edea8f641f678d607c0c52d018c"
+  },
+  {
+   "path": "provenance-linux/env.txt",
+   "bytes": 674,
+   "sha256": "110c4d3895bde8e9d56f20cc8b1380d15a97c217aec6760df866775b2bd34bd0"
+  },
+  {
+   "path": "provenance-linux/git-diff-check.stderr.log.txt",
+   "bytes": 7357,
+   "sha256": "0525c897e8613905aefb175ca49b62357d08b35100d3aef32a7a4de1f68c3b51"
+  },
+  {
+   "path": "provenance-linux/summary.txt",
+   "bytes": 487,
+   "sha256": "8087b9ed0c9319f212da177f1b06b92a8f802665efeedd810101ba69fd94c2e2"
   },
   {
    "path": "rehearsal/composed-at-pin-cancellation.json",
