@@ -9,7 +9,7 @@ import {selectSkill} from '../../../packages/skills/index.mjs';
 import {createTextProjector} from './text-projector.mjs';
 import {buildConversationOptions} from './options.mjs';
 import {createConversationInput} from './continuation/input.mjs';
-import {createActivityLifecycle,assertLifecycleConfiguration} from './continuation/activity-lifecycle.mjs';
+import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
 import {createSdkCapabilities} from './capabilities/index.mjs';
 import {createProgressProjector} from './capabilities/progress.mjs';
@@ -50,14 +50,22 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     if(m?.type==='system'&&m.subtype==='mirror_error')throw fault('SESSION_PERSISTENCE_FAILED');
     await controls?.observe(m);if(controls?.isHeld())continue;
     if(m?.parent_tool_use_id)continue; // Subagent/internal content is never a display event; only policy-admitted progress summaries are.
-    for(const part of [...textParts(m),...progressParts(m)]){bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();await publish('message.delta',part);}
+    // A refused display publication may be a committed pause/approval hold the control reader has not yet
+    // claimed: the lifecycle fences output and settles it through the checkpoint, never a generic close.
+    for(const part of [...textParts(m),...progressParts(m)]){if(controls?.isHeld())break;bytes+=Buffer.byteLength(part.text);if(bytes>runtime.maxOutputBytes)throw fault('OUTPUT_LIMIT');capabilities?.check();try{await publish('message.delta',part);}catch(error){if(!controls?.fence())throw error;}}
+    if(controls?.isHeld())continue;
     if(m?.type==='result'){if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();if(controls||skillRuntime){if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
    capabilities?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}if(controls?.canCaptureCompletion())await controls.captureCompletion();else await publish('run.status',{state:'completed',reasonCode:null});return {state:'completed',...(skillOutput===undefined?{}:{output:skillOutput})};
   }catch(error){failure=error;controller.abort();clearInterval(heartbeatTimer);try{await closeQuery();}catch{}const cancelled=signal?.aborted||life?.signal.aborted;life?.close();preparation?.close();
    // A denied/unknown starting claimant cannot terminalize another admitted activity.
-   if(claimed&&!controls?.isHeld()){const cleanup=createOperationLifetime({deadlineMs:now()+30,now,errorFactory:fault});try{await cleanup.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data:{state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'}},signal}));}catch{}finally{cleanup.close();}}
+   // A held run refuses the ordinary terminal event and admits only the explicit uncheckpointed-hold failure, which
+   // the store verifies against this run's unapplied pause/approval control (and refuses without one). The local
+   // hold view only orders the two attempts; the durable owner decides which one is true.
+   if(claimed){const terminal=async data=>{const cleanup=createOperationLifetime({deadlineMs:now()+30,now,errorFactory:fault});try{await cleanup.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data},signal}));return true;}catch{return false;}finally{cleanup.close();}};
+    const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},[first,second]=controls?.isHeld()?[hold,ordinary]:[ordinary,hold];
+    if(!await terminal(first))await terminal(second);}
    throw fault(cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED');
   }finally{clearInterval(heartbeatTimer);controller.abort(failure);try{await skillRuntime?.close();await controls?.finish();controls?.close();input?.close();await closeQuery();}catch{throw fault('SDK_CLEANUP_UNKNOWN');}finally{life?.close();preparation?.close();}}
  };
