@@ -19,6 +19,17 @@ The behavior follows upstream [PutObject](https://docs.aws.amazon.com/AmazonS3/l
 
 Apply `../migrations/0001_versions.sql` only through an explicitly approved migration owner against an isolated product database. This source phase did not apply it. The `meri_artifacts` schema stores canonical immutable JSON records, native object references, owner/session tuples, request/spec/inspection hashes, and one CAS head per artifact. A trigger prevents version UPDATE/DELETE. Creation/revision acquire an advisory transaction lock and compare the exact expected head, preserving tenant, actor, conversation, scopes, operation and format. Lost COMMIT acknowledgement quarantines the lease and returns UNKNOWN. Exact replay uses the existing bounded `readLocalReplay` kernel and publication lineage; a request hash alone cannot discover unrelated legacy random IDs. The store retains original run/attempt/fence provenance; the unchanged service checks current access. Statement and lock timeouts plus bounded rollback cleanup prevent a caller deadline from holding a reusable lease indefinitely.
 
+## Bucket privacy proof
+
+`createPrivateBucketVerifier({client,bucket,expectedBucketOwner,now,maxRequestMs?}).verifyPrivate({signal})` (`s3-private-bucket.mjs`)
+performs four read-only bucket requests with `ExpectedBucketOwner`: every Block Public Access setting must be true, the bucket policy
+status must not be public (no policy is not public), object ownership must be `BucketOwnerEnforced` (ACLs grant nothing) and versioning
+must be Enabled. A missing setting is `ARTIFACT_S3_NOT_PRIVATE`; an unreadable one is `ARTIFACT_S3_PRIVACY_UNVERIFIED`, never assumed
+private. It lists and reads no object and writes nothing. The account-level Block Public Access setting is an S3 Control read and is not
+claimed. The runtime download-link gate requires this proof before serving links. The control role needs
+`s3:GetBucketPublicAccessBlock`, `s3:GetBucketPolicyStatus`, `s3:GetBucketOwnershipControls` and `s3:GetBucketVersioning`; granting them is
+the shipping owner's decision. The `bucketIdentity` check in `boundary.mjs` is shared with `createS3ArtifactObjects`.
+
 ## Source checks and remaining native gates
 
 `node --test test/*.test.mjs` checks actual SDK command and S3Client serialization, actual pg Pool/Client wire serialization using an injected inert stream, SQL transaction/CAS/replay/tamper/cleanup fixtures, and the unchanged artifact service using both ports. All synthetic replies are explicitly fixtures. They prove source integration and failure handling, not AWS or PostgreSQL deployment qualification. The Linux capture helper records raw streams, exit status and owned process-group absence.

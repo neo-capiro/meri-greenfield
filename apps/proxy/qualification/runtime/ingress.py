@@ -19,6 +19,14 @@ from ..state.pricing import StateDenied
 PEER_LEASE_SECONDS = 30.0
 STATE_TIMEOUT_SECONDS = 5.0
 POLL_SECONDS = 5.0
+# Closed inference route contract. The pinned Claude Code CLI 2.1.295, which the
+# Agent SDK drives, sends exactly POST /v1/messages?beta=true (receipt
+# docs/qualification/candidates/fable-resume-20261015/rehearsal/
+# standin-probes-20261015.json, probe C1b). Exactly that one query is admitted:
+# an empty query (the unobserved, ambiguous non-beta form), another parameter,
+# value, case, order, repetition, separator or percent-encoding is refused.
+INFERENCE_PATH = "/v1/messages"
+INFERENCE_QUERY = b"beta=true"
 _PRIVATE = tuple(ipaddress.ip_network(x) for x in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"))
 
 
@@ -61,8 +69,11 @@ class IngressAdmission:
         """Validate only routing/credential metadata, before upstream body parsing."""
         if (type(scope) is not dict or scope.get("type") != "http"
             or scope.get("scheme") != "https" or scope.get("method") != "POST"
-            or scope.get("path") != "/v1/messages"
-            or scope.get("raw_path") != b"/v1/messages" or scope.get("query_string") != b""):
+            or scope.get("path") != INFERENCE_PATH
+            or type(scope.get("raw_path")) is not bytes
+            or scope.get("raw_path") != INFERENCE_PATH.encode()
+            or type(scope.get("query_string")) is not bytes
+            or scope.get("query_string") != INFERENCE_QUERY):
             raise StateDenied("INFERENCE_ROUTE_REQUIRED")
         client = scope.get("client")
         if (type(client) not in (tuple, list) or len(client) != 2
