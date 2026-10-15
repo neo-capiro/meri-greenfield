@@ -210,6 +210,13 @@
       "integrity": "sha512-bab9+WefZljqQ8jT0qRwVmTyzAUU63K97QIQD3agynIBrb6sa5M2eAy8Hv8K3p4V9+ONVYZKtGYl4Dg+/5Gumw==",
       "license": "Apache-2.0",
       "role": "exact private fixture wire and receipt hashes"
+    },
+    {
+      "name": "zod",
+      "version": "4.6.5",
+      "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
+      "license": "MIT",
+      "role": "schema library imported directly by probes/sdk-capture.mjs and probes/sdk-discovery-tools.test.mjs; declared at its already locked version (coordinator dependency decision, 15 Oct 2026), no new resolution"
     }
   ],
   "chromium": {

@@ -57,6 +57,7 @@ test('package.json pins the exact qualification dependency versions', () => {
     playwright: '1.64.0-alpha-1790635538000',
     'playwright-core': '1.64.0-alpha-1790635538000',
     pptxgenjs: '4.0.1',
+    zod: '4.6.5',
   });
   assert.equal(pkg.private, true);
   assert.equal(pkg.type, 'module');
