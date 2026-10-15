@@ -11,9 +11,12 @@
  *  4. the SDK's own sandbox startup with `failIfUnavailable: true`, WITHOUT any model call: the prompt stream never
  *     yields a user message, the base URL is a closed loopback port and the token is a non-secret placeholder. The
  *     SDK emits an error result instead of starting when the sandbox cannot start; otherwise initialisation
- *     completes. The query is then closed and its consumer awaited. */
+ *     completes. A short quiet window follows, then the query is deliberately closed and its consumer awaited. Every
+ *     frame and failure observed before, during and after initialisation (including the shutdown) is accounted by
+ *     `startup-observation.mjs`; any contrary evidence outranks an earlier initialisation. */
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {buildBashSandboxSettings,buildBashSandboxLocks,assertBashSandboxAttestation,BASH_TOOL,BASH_SANDBOX_ENV} from '../capabilities/bash-sandbox.mjs';
+import {createStartupObservation} from './startup-observation.mjs';
 export const READINESS_SCHEMA='meri.worker-sandbox-readiness/0.1-proposal';
 export const SDK_VERSION='0.3.295',CLI_VERSION='2.1.295';
 export const MANAGED_SETTINGS_PATH='/etc/claude-code/managed-settings.json';
@@ -24,54 +27,71 @@ const NAMESPACE_BASE=Object.freeze(['--ro-bind','/','/','--dev','/dev','--unshar
  * @param {boolean} freshProc @param {string} node */
 export const namespaceProbeArgs=(freshProc,node)=>[...NAMESPACE_BASE,...(freshProc?['--proc','/proc']:[]),'--',node,'-e','0'];
 /** @typedef {{findExecutable:(name:string)=>string|undefined,runProbe:(command:string,args:string[])=>Promise<boolean>,exists:(path:string)=>boolean,makeTempDir:(label:string)=>string,removeDir:(path:string)=>void,query:(args:any)=>any,sdkVersion:string,nodePath:string,pathEnv:string}} ReadinessPorts */
-/** @param {string} text */
-// Measured on CLI 2.1.295: with the sandbox enabled the CLI refuses to start when bwrap/socat are missing, and with
-// CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 it exits even earlier because the scrub itself requires bubblewrap.
-const reasonOf=text=>/dependencies are missing|bubblewrap is required|not installed/iu.test(text)?'SANDBOX_DEPENDENCIES_MISSING':/sandbox required but unavailable/iu.test(text)?'SANDBOX_UNAVAILABLE':'SDK_STARTUP_FAILED';
+/** Quiet window after initialisation in which any contrary frame still refuses; bounded cleanup wait after close. */
+export const OBSERVE_MS=1000,CLEANUP_MS=5000;
 /** @param {number} ms @param {string} code */
 const timeout=(ms,code)=>{
  /** @type {ReturnType<typeof setTimeout>|undefined} */
  let timer;
  const promise=new Promise((_,reject)=>{timer=setTimeout(()=>reject(Object.assign(Error(code),{code})),ms);});
+ promise.catch(()=>{});
  return {promise,cancel:()=>clearTimeout(timer)};
 };
-/** SDK sandbox startup with the product settings and no user message. Owns and closes everything it creates.
- * @param {ReadinessPorts} ports @param {{weakerNestedSandbox:boolean,protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs:number}} input */
-export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protectedPaths,deadlineMs}){
+/** @param {number} ms */
+const pause=ms=>{
+ /** @type {ReturnType<typeof setTimeout>|undefined} */
+ let timer;
+ const promise=new Promise(resolve=>{timer=setTimeout(resolve,ms);});
+ return {promise,cancel:()=>clearTimeout(timer)};
+};
+/** SDK sandbox startup with the product settings and no user message. Owns and closes everything it creates, and
+ * returns only after the consumer has finished (or the bounded cleanup wait expired), so the verdict covers every
+ * frame and failure observed, including those during the deliberate shutdown (`startup-observation.mjs`).
+ * @param {ReadinessPorts} ports @param {{weakerNestedSandbox:boolean,protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs:number,observeMs?:number,cleanupMs?:number}} input
+ * @returns {Promise<import('./startup-observation.mjs').StartupVerdict>} */
+export async function probeSdkSandboxStartup(ports,{weakerNestedSandbox,protectedPaths,deadlineMs,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS}){
  const workspace=ports.makeTempDir('workspace'),config=ports.makeTempDir('config');
- const controller=new AbortController();/** @type {()=>void} */let release=()=>{};const hold=new Promise(resolve=>{release=()=>resolve(undefined);});
- /** @type {{subtype?:string,is_error?:boolean,num_turns?:number,total_cost_usd?:number}|undefined} */let errorResult;let messages=0;let consumer;
- /** @type {string[]} */
- const errorTexts=[];
+ const controller=new AbortController(),seen=createStartupObservation();
+ /** @type {()=>void} */let release=()=>{};const hold=new Promise(resolve=>{release=()=>resolve(undefined);});
+ /** @type {()=>void} */let stop=()=>{};const stopped=new Promise(resolve=>{stop=()=>resolve('stopped');});
+ /** @type {any} */let q;/** @type {Promise<void>|undefined} */let consumer;
  try{
-  const q=ports.query({prompt:(async function*(){await hold;})(),options:{cwd:workspace,abortController:controller,settingSources:[],settings:{autoMemoryEnabled:false},tools:[BASH_TOOL],allowedTools:[],permissionMode:'default',
-   canUseTool:async()=>({behavior:'deny',message:'Readiness check runs no tool'}),maxTurns:1,
-   sandbox:buildBashSandboxSettings({cwd:workspace,domains:[],weakerNestedSandbox,...(protectedPaths===undefined?{}:{protectedPaths})}),managedSettings:{sandbox:buildBashSandboxLocks(weakerNestedSandbox)},
-   env:{...READINESS_MODEL_ENV,...BASH_SANDBOX_ENV,CLAUDE_CONFIG_DIR:config,HOME:config,PATH:ports.pathEnv}}});
-  /** @type {(message:any)=>void} */let onError=()=>{};const errored=new Promise(resolve=>{onError=resolve;});
-  consumer=(async()=>{try{for await(const m of q){messages++;if(m?.type==='result'&&m.is_error!==false){errorResult=m;errorTexts.push(...[m.result,...(Array.isArray(m.errors)?m.errors:[])].filter(t=>typeof t==='string'));onError(m);}}}catch(error){errorTexts.push(String(/** @type {Error} */(error)?.message??''));onError(error);}})();
-  const limit=timeout(deadlineMs,'SDK_STARTUP_TIMEOUT');
-  /** @type {{status:'ready'|'refused'|'timeout',reasonCode:string|null}} */let outcome;
-  try{const first=await Promise.race([q.initializationResult().then(()=>'init',(/** @type {any} */error)=>{errorTexts.push(String(error?.message??''));return 'init-refused';}),errored.then(()=>'error'),limit.promise]);
-   if(first==='init')outcome={status:'ready',reasonCode:null};
-   else{await Promise.race([errored,limit.promise]).catch(()=>{});await Promise.race([consumer,new Promise(resolve=>setTimeout(resolve,1000).unref())]);
-    outcome={status:'refused',reasonCode:reasonOf(errorTexts.join(' '))};} // Only a bounded code leaves this module, never the SDK's text.
-  }catch(error){outcome={status:'timeout',reasonCode:/** @type {{code?:string}} */(error).code??'SDK_STARTUP_TIMEOUT'};}finally{limit.cancel();}
-  release();try{q.close?.();}catch{}controller.abort();
-  const settle=timeout(5000,'SDK_CLEANUP_TIMEOUT');try{await Promise.race([consumer,settle.promise]);}finally{settle.cancel();}
-  // No user message was ever yielded; a startup error result must also show that no model turn ran.
-  const modelTurns=errorResult?.num_turns??0,costUsd=errorResult?.total_cost_usd??0;if(modelTurns!==0||costUsd!==0)throw Object.assign(Error('READINESS_MODEL_TURN_OBSERVED'),{code:'READINESS_MODEL_TURN_OBSERVED'});
-  return {...outcome,userMessagesSent:0,modelTurns,messagesObserved:messages};
- }finally{release();controller.abort();ports.removeDir(workspace);ports.removeDir(config);}
+  try{
+   q=ports.query({prompt:(async function*(){await hold;})(),options:{cwd:workspace,abortController:controller,settingSources:[],settings:{autoMemoryEnabled:false},tools:[BASH_TOOL],allowedTools:[],permissionMode:'default',
+    canUseTool:async()=>({behavior:'deny',message:'Readiness check runs no tool'}),maxTurns:1,
+    sandbox:buildBashSandboxSettings({cwd:workspace,domains:[],weakerNestedSandbox,...(protectedPaths===undefined?{}:{protectedPaths})}),managedSettings:{sandbox:buildBashSandboxLocks(weakerNestedSandbox)},
+    env:{...READINESS_MODEL_ENV,...BASH_SANDBOX_ENV,CLAUDE_CONFIG_DIR:config,HOME:config,PATH:ports.pathEnv}}});
+  }catch(error){seen.startupRefused(error);}
+  if(q){
+   const query=q;
+   consumer=(async()=>{try{for await(const m of query){seen.frame(m);if(seen.contrary)stop();}seen.streamEnded();}catch(error){seen.streamFailed(error);}finally{stop();}})();
+   const limit=timeout(deadlineMs,'SDK_STARTUP_TIMEOUT');
+   try{
+    const init=Promise.resolve().then(()=>query.initializationResult()).then(()=>'init',(/** @type {unknown} */error)=>{seen.startupRefused(error);return 'refused';});
+    const first=await Promise.race([init,stopped,limit.promise]);
+    // Initialisation is necessary, not sufficient: a contrary frame in the quiet window, or later, still refuses.
+    if(first==='init'){seen.initialized();if(!seen.contrary){const quiet=pause(observeMs);try{await Promise.race([stopped,quiet.promise]);}finally{quiet.cancel();}}}
+   }catch{seen.timedOut();}finally{limit.cancel();}
+  }
+ }finally{
+  // Deliberate shutdown: still observed, and a failure here is a failed shutdown, never `ready`.
+  seen.beginShutdown();release();
+  try{q?.close?.();}catch{seen.cleanupFailed('SDK_CLOSE_FAILED');}
+  controller.abort();
+  if(consumer){const settle=timeout(cleanupMs,'SDK_CLEANUP_TIMEOUT');try{await Promise.race([consumer,settle.promise]);}catch{seen.cleanupFailed('SDK_CLEANUP_TIMEOUT');}finally{settle.cancel();}}
+  for(const dir of [workspace,config])try{ports.removeDir(dir);}catch{seen.cleanupFailed('READINESS_CLEANUP_FAILED');}
+ }
+ return seen.verdict();
 }
-/** @param {ReadinessPorts} ports @param {{protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs?:number}} [options] */
-export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=30000}={}){
+/** @param {ReadinessPorts} ports @param {{protectedPaths?:import('../capabilities/bash-sandbox.mjs').ProtectedPaths,deadlineMs?:number,observeMs?:number,cleanupMs?:number}} [options] */
+export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=30000,observeMs=OBSERVE_MS,cleanupMs=CLEANUP_MS}={}){
  const bwrap=ports.findExecutable('bwrap'),socat=ports.findExecutable('socat');
  const freshProc=bwrap?await ports.runProbe(bwrap,namespaceProbeArgs(true,ports.nodePath)):false;
  const withoutProc=bwrap&&!freshProc?await ports.runProbe(bwrap,namespaceProbeArgs(false,ports.nodePath)):freshProc;
  const weakerNestedSandboxRequired=!freshProc&&withoutProc,managedSettingsTier=ports.exists(MANAGED_SETTINGS_PATH)?'present':'absent';
  const sdkVersionMatches=ports.sdkVersion===SDK_VERSION;
- const sdkStartup=sdkVersionMatches?await probeSdkSandboxStartup(ports,{weakerNestedSandbox:weakerNestedSandboxRequired,...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs}):{status:'refused',reasonCode:'SDK_VERSION_MISMATCH',userMessagesSent:0,modelTurns:0,messagesObserved:0};
+ const sdkStartup=sdkVersionMatches?await probeSdkSandboxStartup(ports,{weakerNestedSandbox:weakerNestedSandboxRequired,...(protectedPaths===undefined?{}:{protectedPaths}),deadlineMs,observeMs,cleanupMs})
+  :/** @type {import('./startup-observation.mjs').StartupVerdict} */({status:'refused',reasonCode:'SDK_VERSION_MISMATCH',userMessagesSent:0,modelTurns:0,costUsd:0,messagesObserved:0,resultsObserved:0,initialized:false,shutdown:'clean'});
  const ready=!!bwrap&&!!socat&&(freshProc||withoutProc)&&managedSettingsTier==='absent'&&sdkVersionMatches&&sdkStartup.status==='ready';
  return Object.freeze({schema:READINESS_SCHEMA,sdk:ports.sdkVersion,cli:CLI_VERSION,dependencies:{bwrap:!!bwrap,socat:!!socat},namespaces:{freshProc,withoutProc},
   managedSettingsTier,sdkStartup,weakerNestedSandboxRequired,ready,
@@ -79,9 +99,11 @@ export async function checkSandboxReadiness(ports,{protectedPaths,deadlineMs=300
 }
 /** Trusted runtime fact for the worker, derived by the runtime preparation owner. `outerIsolationBoundary` is that
  * owner's deployment assertion (the disposable per-conversation worker is the isolation boundary); the check cannot
- * measure it. A host that needs the weaker nested sandbox without that assertion is reported unavailable.
+ * measure it. A host that needs the weaker nested sandbox without that assertion is reported unavailable. Besides
+ * `ready`, the startup verdict itself must be clean (ready, initialised, no result, model turn or cost, clean shutdown).
  * @param {Awaited<ReturnType<typeof checkSandboxReadiness>>} report @param {{outerIsolationBoundary:boolean}} deployment */
 export function toBashSandboxAttestation(report,{outerIsolationBoundary}){
- const weaker=report.weakerNestedSandboxRequired===true,available=report.ready===true&&(!weaker||outerIsolationBoundary===true);
+ const s=report.sdkStartup,clean=s?.status==='ready'&&s.reasonCode===null&&s.initialized===true&&s.shutdown==='clean'&&s.resultsObserved===0&&s.modelTurns===0&&s.costUsd===0&&s.userMessagesSent===0;
+ const weaker=report.weakerNestedSandboxRequired===true,available=report.ready===true&&clean&&(!weaker||outerIsolationBoundary===true);
  return assertBashSandboxAttestation({available,sdk:SDK_VERSION,cli:CLI_VERSION,weakerNestedSandbox:available&&weaker,outerIsolationBoundary:outerIsolationBoundary===true,readinessSha256:canonicalSha256(report)});
 }

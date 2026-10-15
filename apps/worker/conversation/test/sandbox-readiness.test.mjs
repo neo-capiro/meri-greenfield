@@ -21,7 +21,7 @@ function ports({bwrap=true,socat=true,fresh=true,nested=true,managed=false,mode=
 
 test('a ready host runs the SDK startup with the exact product sandbox settings and never sends a user message',async()=>{
  const {ports:p,seen}=ports();const report=await checkSandboxReadiness(p,{deadlineMs:2000});
- assert.equal(report.ready,true);assert.deepEqual(report.sdkStartup,{status:'ready',reasonCode:null,userMessagesSent:0,modelTurns:0,messagesObserved:0});assert.equal(report.weakerNestedSandboxRequired,false);
+ assert.equal(report.ready,true);assert.deepEqual(report.sdkStartup,{status:'ready',reasonCode:null,userMessagesSent:0,modelTurns:0,costUsd:0,messagesObserved:0,resultsObserved:0,initialized:true,shutdown:'clean'});assert.equal(report.weakerNestedSandboxRequired,false);
  assert.match(report.scope,/^LOCAL_READINESS_ONLY/);assert.deepEqual(seen.probes,[['/usr/bin/bwrap',namespaceProbeArgs(true,'/usr/local/bin/node')]],'no second probe when a fresh /proc works');
  const o=seen.args.options,workspace=seen.dirs[0];
  assert.deepEqual(o.sandbox,buildBashSandboxSettings({cwd:workspace,domains:[],weakerNestedSandbox:false}));assert.equal(o.sandbox.failIfUnavailable,true);assert.deepEqual(o.settingSources,[]);assert.deepEqual(o.tools,['Bash']);
@@ -36,7 +36,7 @@ test('missing dependencies, a managed-settings file, an SDK refusal, a hang or a
   [{socat:false},r=>assert.equal(r.dependencies.socat,false)],
   [{fresh:false,nested:false},r=>assert.deepEqual(r.namespaces,{freshProc:false,withoutProc:false})],
   [{managed:true},r=>assert.equal(r.managedSettingsTier,'present')],
-  [{mode:'refused'},r=>assert.deepEqual(r.sdkStartup,{status:'refused',reasonCode:'SANDBOX_DEPENDENCIES_MISSING',userMessagesSent:0,modelTurns:0,messagesObserved:1})],
+  [{mode:'refused'},r=>assert.deepEqual(r.sdkStartup,{status:'refused',reasonCode:'SANDBOX_DEPENDENCIES_MISSING',userMessagesSent:0,modelTurns:0,costUsd:0,messagesObserved:1,resultsObserved:1,initialized:false,shutdown:'clean'})],
   [{mode:'hang'},r=>assert.equal(r.sdkStartup.status,'timeout')],
   [{sdkVersion:'0.3.296'},r=>assert.equal(r.sdkStartup.reasonCode,'SDK_VERSION_MISMATCH')]]){
   const {ports:p,seen}=ports(opts);const r=await checkSandboxReadiness(p,{deadlineMs:200});check(r);assert.equal(r.ready,false,JSON.stringify(opts));
