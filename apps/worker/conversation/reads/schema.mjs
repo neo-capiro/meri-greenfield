@@ -38,7 +38,7 @@ function inline(node,base,depth){
 /** The canonical input schema with refs inlined, verified against the descriptor hash.
  * @param {{id:string,sha256:string}} inputSchema @returns {Record<string,unknown>} */
 export function canonicalInputSchema(inputSchema){
- const [id,fragment]=inputSchema.id.split('#');if(!fragment)fail();
+ const [id='',fragment='']=inputSchema.id.split('#');if(!id||!fragment)fail();
  const {doc,sha256}=document(id);if(sha256!==inputSchema.sha256)fail();
  return /** @type {Record<string,unknown>} */(inline(pointer(doc,fragment),doc,0));
 }

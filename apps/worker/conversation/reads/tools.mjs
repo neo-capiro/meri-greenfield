@@ -11,7 +11,7 @@ export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
 const MAX_DESCRIPTION=2048,MAX_LIMITS=4;
 /** @param {{operation:{id:string,version:string}}} row */
 export const readToolName=row=>`${READ_TOOL_PREFIX}${sdkToolName(row.operation)}`;
-/** @param {any} d */
+/** @param {any} d @param {string} mode */
 function description(d,mode){
  const lines=[`${d.displayName}. ${d.whenToUse}`];
  if(d.limitations?.length)lines.push(`Limits: ${d.limitations.slice(0,MAX_LIMITS).join(' ')}`);
