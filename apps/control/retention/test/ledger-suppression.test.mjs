@@ -1,0 +1,31 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import {createRetentionLedger,createMemoryLedgerSink} from '../ledger.mjs';
+import {subjectKey} from '../boundary.mjs';
+import {compose,subjectOf,clock,tenant} from './fixture.mjs';
+test('the ledger appends in order with a verifiable durable acknowledgement and refuses to proceed without one',async()=>{
+ const sink=createMemoryLedgerSink(),c=clock(),ledger=createRetentionLedger({sink,now:c.now}),s=subjectOf();
+ const first=await ledger.append({subject:s,state:'SUPPRESSED',facts:{a:1}});c.advance(5);const second=await ledger.append({subject:s,state:'RELEASED',facts:{}});
+ assert.equal(first.sequence,1);assert.equal(second.sequence,2);assert.ok(second.atMs>first.atMs);
+ const replay=await ledger.replay();assert.deepEqual(replay.map(r=>r.state),['SUPPRESSED','RELEASED']);assert.equal((await ledger.latest()).get(subjectKey(s)).state,'RELEASED');
+ sink.silence(true);await assert.rejects(ledger.append({subject:s,state:'SUPPRESSED',facts:{}}),/RETENTION_LEDGER_UNACKNOWLEDGED/);assert.equal(sink.size(),2,'nothing was recorded without an acknowledgement');
+ const wrongAck={append:async()=>({sequence:1,receiptSha256:'0'.repeat(64)}),read:async()=>[]};await assert.rejects(createRetentionLedger({sink:wrongAck,now:c.now}).append({subject:s,state:'SUPPRESSED',facts:{}}),/RETENTION_LEDGER_UNACKNOWLEDGED/);
+ const corrupt={append:sink.append,read:async()=>(await sink.read()).map(r=>({...r,facts:{tampered:true}}))};await assert.rejects(createRetentionLedger({sink:corrupt,now:c.now}).replay(),/RETENTION_LEDGER_CORRUPT/);
+ assert.throws(()=>createRetentionLedger({sink:{},now:c.now}),/RETENTION_CONFIGURATION/);
+});
+test('suppression by the owning actor is immediate and idempotent; a different actor is refused by default; an owner-mediated receipt admits it; release is refused during a purge',async()=>{
+ const f=compose(),s=subjectOf();
+ const row=await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request',outstandingAccess:{signedUrlsExpireAtMs:f.clock.now()+3600000,inFlightRuns:[{runId:randomUUID()}]}});
+ assert.equal(row.state,'SUPPRESSED');assert.equal(row.ledgerSequence,1);assert.equal(row.authorization.mode,'owner');assert.equal(await f.suppression.isSuppressed(s),true);
+ const replay=await f.sink.read();assert.deepEqual(replay[0].facts.revokes,['read','replay','restore','continuation','reservation','allocationClaim']);assert.deepEqual(replay[0].facts.cannotRecall,['issuedSignedUrlsUntilExpiry','runningWorkerUntilOwnCleanup']);
+ const again=await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});assert.equal(again.replayed,true);assert.equal(f.sink.size(),1,'no second ledger entry for an idempotent suppression');
+ const other=subjectOf('conversation','actor-other');await assert.rejects(f.suppression.suppress({principal:f.principal,subject:other,reason:'cross-user'}),/RETENTION_AUTHORIZATION_REFUSED/);assert.equal(await f.suppression.isSuppressed(other),false);
+ const mediated=compose({ownerMediated:async({principal,subject,operation})=>{assert.equal(operation,'retention.suppress');assert.equal(subject.ownerActorId,'actor-other');return {receiptId:randomUUID()};}});
+ const viaOwner=await mediated.suppression.suppress({principal:mediated.principal,subject:other,reason:'administrative'});assert.equal(viaOwner.authorization.mode,'owner-mediated');
+ await assert.rejects(f.suppression.suppress({principal:{tenantId:'tenant-b',actorId:'actor-owner'},subject:subjectOf(),reason:'wrong tenant'}),/RETENTION_AUTHORIZATION_REFUSED/);
+ const released=await f.suppression.release({principal:f.principal,subject:s,reason:'owner withdrew'});assert.equal(released.state,'RELEASED');assert.equal(await f.suppression.isSuppressed(s),false);
+ await assert.rejects(f.suppression.release({principal:f.principal,subject:s,reason:'twice'}),/RETENTION_NOT_SUPPRESSED/);
+ const again2=await f.suppression.suppress({principal:f.principal,subject:s,reason:'re-suppress'});assert.equal(again2.replayed,false);await f.journal.set(subjectKey(s),{...(await f.journal.get(subjectKey(s))),purge:{state:'PLANNED',planSha256:'0'.repeat(64),ledgerSequence:9,steps:[]}});
+ await assert.rejects(f.suppression.release({principal:f.principal,subject:s,reason:'during purge'}),/RETENTION_PURGE_IN_PROGRESS/);
+ f.serving.disable();await assert.rejects(f.suppression.isSuppressed(s),/RETENTION_RECOVERY_BARRIER/);await assert.rejects(f.suppression.suppress({principal:f.principal,subject:subjectOf(),reason:'x'}),/RETENTION_RECOVERY_BARRIER/);
+ assert.equal(tenant,'tenant-a');
+});
