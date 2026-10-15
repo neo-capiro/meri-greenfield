@@ -1,0 +1,68 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.2",
+  "operation": "strategy.edit",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "principal": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "ownerActorId": "00000000-0000-4000-8000-000000000003"
+  },
+  "source": {
+    "kind": "manual",
+    "manualRequestId": "00000000-0000-4000-8000-00000000005b",
+    "goal": "Synthetic empty manual strategy"
+  },
+  "context": {
+    "packetId": "00000000-0000-4000-8000-000000000007",
+    "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
+    "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
+    "asOfMs": 1792065599000,
+    "evidence": [
+      {
+        "ref": "evidence:accepted",
+        "sourceId": "synthetic-source",
+        "asOfMs": 1792065598000,
+        "scope": "client",
+        "clientId": "00000000-0000-4000-8000-000000000004",
+        "reviewState": "accepted"
+      },
+      {
+        "ref": "evidence:pending",
+        "sourceId": "synthetic-candidate",
+        "asOfMs": 1792065598000,
+        "scope": "tenant-shared",
+        "clientId": null,
+        "reviewState": "pending"
+      }
+    ],
+    "ownerRefs": [
+      "owner:synthetic"
+    ],
+    "draft": null
+  },
+  "basis": {
+    "strategyId": "00000000-0000-4000-8000-000000000009",
+    "strategyVersionId": "00000000-0000-4000-8000-00000000000a",
+    "strategySha256": "f6da66bf4e56df238cf9c655921c0b27c8b191174089dbb9960c4b03e1d3fc50",
+    "nodes": []
+  },
+  "delegation": {
+    "ref": "00000000-0000-4000-8000-000000000008",
+    "revision": "synthetic-revision",
+    "issuedAtMs": 1792065599000,
+    "absoluteExpiresAtMs": 1792151999000
+  },
+  "requestedAtMs": 1792065600000,
+  "originalExpiresAtMs": 1792066500000,
+  "inputSha256": "8a265990d89c4749e2f5f93abc1bb582c9c7d0903671892a3964b5b324bb3b12",
+  "input": {
+    "scope": "strategy",
+    "nodeId": null,
+    "instruction": "Clarify the rationale",
+    "clientMessageId": "00000000-0000-4000-8000-00000000000b",
+    "attachmentIds": [],
+    "attachments": []
+  }
+}

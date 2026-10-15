@@ -1,5 +1,5 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.1",
+  "candidateVersion": "strategy-candidate/20261015.2",
   "operation": "strategy.step-document",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
@@ -25,7 +25,7 @@
   },
   "context": {
     "packetId": "00000000-0000-4000-8000-000000000007",
-    "contextSha256": "b125ceca63984735898ce92b3f96c0a7e586a6cd172bbdd8a6d4047b6f222a1b",
+    "contextSha256": "cbbb18b6474dbdef8dd3b39b1f634a2ba035d0d60c7df59687e41747be8058d4",
     "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
     "asOfMs": 1792065599000,
     "evidence": [
@@ -48,7 +48,8 @@
     ],
     "ownerRefs": [
       "owner:synthetic"
-    ]
+    ],
+    "draft": null
   },
   "basis": {
     "strategyId": "00000000-0000-4000-8000-000000000009",
@@ -81,7 +82,7 @@
   },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "896916dab20e2772b6a724a48d2a1751129db42a63795653f3a98d41d4383434",
+  "inputSha256": "b0855e231b3c8363626b7686db44dd8cc9c49a6018657ea343108ac78a5d9d73",
   "input": {
     "kind": "workspace_draft",
     "strategyType": "authorization",

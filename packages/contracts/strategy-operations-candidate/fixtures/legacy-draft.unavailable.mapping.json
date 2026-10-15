@@ -1,0 +1,109 @@
+{
+  "dto": {
+    "clientId": "00000000-0000-4000-8000-000000000004",
+    "type": "authorization",
+    "goal": "  Preserve the supplied goal  ",
+    "meriContext": "Keep the source caveat verbatim.",
+    "ownerUserId": "  synthetic-owner  ",
+    "targetDate": "2026-12-10",
+    "attachmentIds": [
+      "synthetic-doc-b",
+      "synthetic-doc-a",
+      "synthetic-doc-b",
+      ""
+    ]
+  },
+  "resolvedDocuments": [],
+  "request": {
+    "candidateVersion": "strategy-candidate/20261015.2",
+    "operation": "strategy.draft",
+    "requestId": "00000000-0000-4000-8000-000000000001",
+    "jobId": "00000000-0000-4000-8000-000000000002",
+    "principal": {
+      "tenantId": "synthetic-tenant",
+      "actorId": "00000000-0000-4000-8000-000000000003",
+      "clientId": "00000000-0000-4000-8000-000000000004",
+      "ownerActorId": "synthetic-owner"
+    },
+    "source": {
+      "kind": "manual",
+      "manualRequestId": "00000000-0000-4000-8000-00000000005b",
+      "goal": "Synthetic explicit manual draft"
+    },
+    "context": {
+      "packetId": "00000000-0000-4000-8000-000000000007",
+      "contextSha256": "50d26f689a107ed57b70a92acad8c1f8b9ced40d0fb6cd1b10547a03004115fa",
+      "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
+      "asOfMs": 1792065599000,
+      "evidence": [
+        {
+          "ref": "evidence:accepted",
+          "sourceId": "synthetic-source",
+          "asOfMs": 1792065598000,
+          "scope": "client",
+          "clientId": "00000000-0000-4000-8000-000000000004",
+          "reviewState": "accepted"
+        },
+        {
+          "ref": "evidence:pending",
+          "sourceId": "synthetic-candidate",
+          "asOfMs": 1792065598000,
+          "scope": "tenant-shared",
+          "clientId": null,
+          "reviewState": "pending"
+        }
+      ],
+      "ownerRefs": [
+        "owner:synthetic"
+      ],
+      "draft": {
+        "mappingVersion": "legacy-draft-observation/1",
+        "clientId": "00000000-0000-4000-8000-000000000004",
+        "input": {
+          "typeHint": "authorization",
+          "goal": "  Preserve the supplied goal  ",
+          "meriContext": "Keep the source caveat verbatim.",
+          "ownerUserId": "  synthetic-owner  ",
+          "targetDate": "2026-12-10",
+          "attachmentIds": [
+            "synthetic-doc-b",
+            "synthetic-doc-a",
+            "synthetic-doc-b",
+            ""
+          ]
+        },
+        "selectedOwnerActorId": "synthetic-owner",
+        "attachments": {
+          "correlation": "unattributed-legacy-bundle",
+          "coverage": "not-proven-by-legacy-resolver",
+          "state": "unavailable",
+          "documentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "documents": []
+        }
+      }
+    },
+    "basis": null,
+    "delegation": {
+      "ref": "00000000-0000-4000-8000-000000000008",
+      "revision": "synthetic-revision",
+      "issuedAtMs": 1792065599000,
+      "absoluteExpiresAtMs": 1792151999000
+    },
+    "requestedAtMs": 1792065600000,
+    "originalExpiresAtMs": 1792066500000,
+    "inputSha256": "673706cbd79780baa2cd55709e104a7946832df8f5dd838d41f86ba2badfffc3",
+    "input": {
+      "typeHint": "authorization",
+      "goal": "  Preserve the supplied goal  ",
+      "meriContext": "Keep the source caveat verbatim.",
+      "ownerUserId": "  synthetic-owner  ",
+      "targetDate": "2026-12-10",
+      "attachmentIds": [
+        "synthetic-doc-b",
+        "synthetic-doc-a",
+        "synthetic-doc-b",
+        ""
+      ]
+    }
+  }
+}

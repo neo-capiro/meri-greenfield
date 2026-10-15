@@ -1,5 +1,5 @@
 {
-  "candidateVersion": "strategy-candidate/20261015.1",
+  "candidateVersion": "strategy-candidate/20261015.2",
   "operation": "strategy.draft",
   "requestId": "00000000-0000-4000-8000-000000000001",
   "jobId": "00000000-0000-4000-8000-000000000002",
@@ -25,7 +25,7 @@
   },
   "context": {
     "packetId": "00000000-0000-4000-8000-000000000007",
-    "contextSha256": "b125ceca63984735898ce92b3f96c0a7e586a6cd172bbdd8a6d4047b6f222a1b",
+    "contextSha256": "415585f066c0448d6220402dcca39bc034a52b4bd318ab01175252e7a88d672a",
     "coverageSha256": "2faf869715a6a590a28796146c4ac3dc5acf0d64f268837dcba3fdaf7fc6dd03",
     "asOfMs": 1792065599000,
     "evidence": [
@@ -48,7 +48,27 @@
     ],
     "ownerRefs": [
       "owner:synthetic"
-    ]
+    ],
+    "draft": {
+      "mappingVersion": "legacy-draft-observation/1",
+      "clientId": "00000000-0000-4000-8000-000000000004",
+      "input": {
+        "typeHint": null,
+        "goal": null,
+        "meriContext": null,
+        "ownerUserId": null,
+        "targetDate": null,
+        "attachmentIds": []
+      },
+      "selectedOwnerActorId": "00000000-0000-4000-8000-000000000003",
+      "attachments": {
+        "correlation": "unattributed-legacy-bundle",
+        "coverage": "not-proven-by-legacy-resolver",
+        "state": "not-requested",
+        "documentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "documents": []
+      }
+    }
   },
   "basis": null,
   "delegation": {
@@ -59,8 +79,13 @@
   },
   "requestedAtMs": 1792065600000,
   "originalExpiresAtMs": 1792066500000,
-  "inputSha256": "530c8e3cd27cd7d977946c91a1bde644def5e6bd84c2f8babf15fd1ddfb47dcb",
+  "inputSha256": "c3ab140f34a06cba0563c713b6b3c2ff6cb2cee067d5fb479d4781629c42e8ac",
   "input": {
-    "typeHint": null
+    "typeHint": null,
+    "goal": null,
+    "meriContext": null,
+    "ownerUserId": null,
+    "targetDate": null,
+    "attachmentIds": []
   }
 }

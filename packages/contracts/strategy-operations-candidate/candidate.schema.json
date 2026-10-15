@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:meri:candidate:strategy-operations:20261015:1",
+  "$id": "urn:meri:candidate:strategy-operations:20261015:2",
   "title": "UNWIRED candidate; validation grants no authority",
   "$defs": {
     "Request": {
       "type": "object",
       "properties": {
         "candidateVersion": {
-          "const": "strategy-candidate/20261015.1"
+          "const": "strategy-candidate/20261015.2"
         },
         "operation": {
           "enum": [
@@ -254,6 +254,315 @@
               "minItems": 0,
               "maxItems": 100,
               "uniqueItems": true
+            },
+            "draft": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "mappingVersion": {
+                      "const": "legacy-draft-observation/1"
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                    },
+                    "input": {
+                      "type": "object",
+                      "properties": {
+                        "typeHint": {
+                          "anyOf": [
+                            {
+                              "enum": [
+                                "appropriations",
+                                "authorization",
+                                "regulatory",
+                                "coalition",
+                                "procurement",
+                                "earmark",
+                                "amendment"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "goal": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 4000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "meriContext": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 8000
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "ownerUserId": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "maxLength": 120
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "targetDate": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "attachmentIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          "minItems": 0,
+                          "maxItems": 10
+                        }
+                      },
+                      "required": [
+                        "typeHint",
+                        "goal",
+                        "meriContext",
+                        "ownerUserId",
+                        "targetDate",
+                        "attachmentIds"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "selectedOwnerActorId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "\\S"
+                    },
+                    "attachments": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "correlation": {
+                              "const": "unattributed-legacy-bundle"
+                            },
+                            "coverage": {
+                              "const": "not-proven-by-legacy-resolver"
+                            },
+                            "state": {
+                              "enum": [
+                                "not-requested",
+                                "observed",
+                                "unavailable"
+                              ]
+                            },
+                            "documentsSha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "documents": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "filename": {
+                                    "type": "string",
+                                    "maxLength": 4000
+                                  },
+                                  "textSha256": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "textUtf8Bytes": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 2097152
+                                  }
+                                },
+                                "required": [
+                                  "filename",
+                                  "textSha256",
+                                  "textUtf8Bytes"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "minItems": 0,
+                              "maxItems": 10
+                            }
+                          },
+                          "required": [
+                            "correlation",
+                            "coverage",
+                            "state",
+                            "documentsSha256",
+                            "documents"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "correlation": {
+                              "const": "explicit-core-document-id"
+                            },
+                            "coverage": {
+                              "const": "prompt-excerpt-only"
+                            },
+                            "responseSha256": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "unavailableAttachmentIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "maxLength": 200
+                              },
+                              "minItems": 0,
+                              "maxItems": 10,
+                              "uniqueItems": true
+                            },
+                            "documents": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                                  },
+                                  "filename": {
+                                    "type": "string",
+                                    "maxLength": 4000
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "\\S"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "\\S"
+                                  },
+                                  "truncated": {
+                                    "type": "boolean"
+                                  },
+                                  "reason": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "maxLength": 8000
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "promptTextSha256": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "promptTextUtf8Bytes": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 48128
+                                  },
+                                  "snapshotSha256": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "versionRef": {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "content-snapshot"
+                                      },
+                                      "sha256": {
+                                        "type": "string",
+                                        "pattern": "^[a-f0-9]{64}$"
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "sha256"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "fullExtractedTextSha256": {
+                                    "type": "null"
+                                  },
+                                  "originalFileSha256": {
+                                    "type": "null"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "filename",
+                                  "kind",
+                                  "status",
+                                  "truncated",
+                                  "reason",
+                                  "promptTextSha256",
+                                  "promptTextUtf8Bytes",
+                                  "snapshotSha256",
+                                  "versionRef",
+                                  "fullExtractedTextSha256",
+                                  "originalFileSha256"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "minItems": 0,
+                              "maxItems": 10
+                            }
+                          },
+                          "required": [
+                            "correlation",
+                            "coverage",
+                            "responseSha256",
+                            "unavailableAttachmentIds",
+                            "documents"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "mappingVersion",
+                    "clientId",
+                    "input",
+                    "selectedOwnerActorId",
+                    "attachments"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           "required": [
@@ -262,7 +571,8 @@
             "coverageSha256",
             "asOfMs",
             "evidence",
-            "ownerRefs"
+            "ownerRefs",
+            "draft"
           ],
           "additionalProperties": false
         },
@@ -338,7 +648,7 @@
                     ],
                     "additionalProperties": false
                   },
-                  "minItems": 1,
+                  "minItems": 0,
                   "maxItems": 60
                 }
               },
@@ -447,10 +757,68 @@
                       "type": "null"
                     }
                   ]
+                },
+                "goal": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 4000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "meriContext": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 8000
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "ownerUserId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 120
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "targetDate": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "attachmentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "minItems": 0,
+                  "maxItems": 10
                 }
               },
               "required": [
-                "typeHint"
+                "typeHint",
+                "goal",
+                "meriContext",
+                "ownerUserId",
+                "targetDate",
+                "attachmentIds"
               ],
               "additionalProperties": false
             },
@@ -623,7 +991,7 @@
                     ],
                     "additionalProperties": false
                   },
-                  "minItems": 1,
+                  "minItems": 0,
                   "maxItems": 60
                 }
               },
@@ -835,7 +1203,7 @@
                     ],
                     "additionalProperties": false
                   },
-                  "minItems": 1,
+                  "minItems": 0,
                   "maxItems": 60
                 }
               },
@@ -855,7 +1223,7 @@
       "type": "object",
       "properties": {
         "candidateVersion": {
-          "const": "strategy-candidate/20261015.1"
+          "const": "strategy-candidate/20261015.2"
         },
         "operation": {
           "enum": [
@@ -901,6 +1269,50 @@
         },
         "binding": {
           "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "execution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "\\S"
+                },
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "\\S"
+                },
+                "receiptRef": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                },
+                "receiptSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "bindingSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "provider",
+                "model",
+                "receiptRef",
+                "receiptSha256",
+                "bindingSha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "resultRef": {
           "type": "string",
@@ -1593,19 +2005,6 @@
                       "minItems": 1,
                       "maxItems": 60
                     },
-                    "model": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 128,
-                          "pattern": "\\S"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
                     "coverage": {
                       "type": "object",
                       "properties": {
@@ -1703,7 +2102,6 @@
                     "title",
                     "summary",
                     "sections",
-                    "model",
                     "coverage"
                   ],
                   "additionalProperties": false
@@ -1762,6 +2160,7 @@
         "contextSha256",
         "basisSha256",
         "binding",
+        "execution",
         "resultRef",
         "completedAtMs",
         "state",
@@ -2462,19 +2861,6 @@
                       "minItems": 1,
                       "maxItems": 60
                     },
-                    "model": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 128,
-                          "pattern": "\\S"
-                        },
-                        {
-                          "type": "null"
-                        }
-                      ]
-                    },
                     "coverage": {
                       "type": "object",
                       "properties": {
@@ -2572,7 +2958,6 @@
                     "title",
                     "summary",
                     "sections",
-                    "model",
                     "coverage"
                   ],
                   "additionalProperties": false
@@ -2624,7 +3009,7 @@
       "type": "object",
       "properties": {
         "candidateVersion": {
-          "const": "strategy-candidate/20261015.1"
+          "const": "strategy-candidate/20261015.2"
         },
         "audience": {
           "enum": [
@@ -2798,6 +3183,574 @@
         "cancelled",
         "allowedSources",
         "productWrites"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutionProvenance": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "\\S"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "\\S"
+        },
+        "receiptRef": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "receiptSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bindingSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "provider",
+        "model",
+        "receiptRef",
+        "receiptSha256",
+        "bindingSha256"
+      ],
+      "additionalProperties": false
+    },
+    "LegacyDraftDto": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "type": {
+          "enum": [
+            "appropriations",
+            "authorization",
+            "regulatory",
+            "coalition",
+            "procurement",
+            "earmark",
+            "amendment"
+          ]
+        },
+        "goal": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "meriContext": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 8000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownerUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 120
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attachmentIds": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "minItems": 0,
+              "maxItems": 10
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientId",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "ResolvedDocuments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2097152,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "filename",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 10
+    },
+    "CoreAttachmentResolution": {
+      "type": "object",
+      "properties": {
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              "filename": {
+                "type": "string",
+                "maxLength": 4000
+              },
+              "kind": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "\\S"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 12032,
+                "pattern": "\\S"
+              },
+              "status": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "\\S"
+              },
+              "truncated": {
+                "type": "boolean"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 8000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "filename",
+              "kind",
+              "text",
+              "status",
+              "truncated",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10
+        },
+        "unavailableAttachmentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "minItems": 0,
+          "maxItems": 10,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "documents"
+      ],
+      "additionalProperties": false
+    },
+    "LegacyDraftConformance": {
+      "type": "object",
+      "properties": {
+        "dto": {
+          "$ref": "#/$defs/LegacyDraftDto"
+        },
+        "resolvedDocuments": {
+          "$ref": "#/$defs/ResolvedDocuments"
+        },
+        "request": {
+          "$ref": "#/$defs/Request"
+        }
+      },
+      "required": [
+        "dto",
+        "resolvedDocuments",
+        "request"
+      ],
+      "additionalProperties": false
+    },
+    "CoreDraftConformance": {
+      "type": "object",
+      "properties": {
+        "dto": {
+          "$ref": "#/$defs/LegacyDraftDto"
+        },
+        "coreResolution": {
+          "$ref": "#/$defs/CoreAttachmentResolution"
+        },
+        "request": {
+          "$ref": "#/$defs/Request"
+        }
+      },
+      "required": [
+        "dto",
+        "coreResolution",
+        "request"
+      ],
+      "additionalProperties": false
+    },
+    "DraftContextPacket": {
+      "type": "object",
+      "properties": {
+        "mappingVersion": {
+          "const": "legacy-draft-observation/1"
+        },
+        "clientId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "input": {
+          "type": "object",
+          "properties": {
+            "typeHint": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "appropriations",
+                    "authorization",
+                    "regulatory",
+                    "coalition",
+                    "procurement",
+                    "earmark",
+                    "amendment"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "goal": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 4000
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "meriContext": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 8000
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ownerUserId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 120
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "targetDate": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "attachmentIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "minItems": 0,
+              "maxItems": 10
+            }
+          },
+          "required": [
+            "typeHint",
+            "goal",
+            "meriContext",
+            "ownerUserId",
+            "targetDate",
+            "attachmentIds"
+          ],
+          "additionalProperties": false
+        },
+        "selectedOwnerActorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "\\S"
+        },
+        "attachments": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "correlation": {
+                  "const": "unattributed-legacy-bundle"
+                },
+                "coverage": {
+                  "const": "not-proven-by-legacy-resolver"
+                },
+                "state": {
+                  "enum": [
+                    "not-requested",
+                    "observed",
+                    "unavailable"
+                  ]
+                },
+                "documentsSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "documents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "filename": {
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      "textSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "textUtf8Bytes": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 2097152
+                      }
+                    },
+                    "required": [
+                      "filename",
+                      "textSha256",
+                      "textUtf8Bytes"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10
+                }
+              },
+              "required": [
+                "correlation",
+                "coverage",
+                "state",
+                "documentsSha256",
+                "documents"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "correlation": {
+                  "const": "explicit-core-document-id"
+                },
+                "coverage": {
+                  "const": "prompt-excerpt-only"
+                },
+                "responseSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "unavailableAttachmentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "minItems": 0,
+                  "maxItems": 10,
+                  "uniqueItems": true
+                },
+                "documents": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+                      },
+                      "filename": {
+                        "type": "string",
+                        "maxLength": 4000
+                      },
+                      "kind": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "\\S"
+                      },
+                      "status": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "\\S"
+                      },
+                      "truncated": {
+                        "type": "boolean"
+                      },
+                      "reason": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 8000
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "promptTextSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "promptTextUtf8Bytes": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 48128
+                      },
+                      "snapshotSha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "versionRef": {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "const": "content-snapshot"
+                          },
+                          "sha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "sha256"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "fullExtractedTextSha256": {
+                        "type": "null"
+                      },
+                      "originalFileSha256": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "filename",
+                      "kind",
+                      "status",
+                      "truncated",
+                      "reason",
+                      "promptTextSha256",
+                      "promptTextUtf8Bytes",
+                      "snapshotSha256",
+                      "versionRef",
+                      "fullExtractedTextSha256",
+                      "originalFileSha256"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10
+                }
+              },
+              "required": [
+                "correlation",
+                "coverage",
+                "responseSha256",
+                "unavailableAttachmentIds",
+                "documents"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "mappingVersion",
+        "clientId",
+        "input",
+        "selectedOwnerActorId",
+        "attachments"
       ],
       "additionalProperties": false
     },
@@ -3470,19 +4423,6 @@
           "minItems": 1,
           "maxItems": 60
         },
-        "model": {
-          "anyOf": [
-            {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128,
-              "pattern": "\\S"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
         "coverage": {
           "type": "object",
           "properties": {
@@ -3580,7 +4520,6 @@
         "title",
         "summary",
         "sections",
-        "model",
         "coverage"
       ],
       "additionalProperties": false
