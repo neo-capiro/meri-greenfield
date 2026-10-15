@@ -8,8 +8,9 @@ import {extname,join} from 'node:path';
 import {ARTIFACT_MIME_TYPES} from '../../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
 import {validateShape} from '../../../../packages/contracts/validate.mjs';
 import {checkBrowserUrl} from './policy.mjs';
-import {structurallyValid} from '../../../artifacts/structure/file-structure.mjs';
-const fail=code=>{throw Object.assign(new Error(code),{code});};
+import {structureCheck} from '../../../artifacts/structure/file-structure.mjs';
+/** `detail` carries a closed structural refusal reason (STRUCTURE_REASONS) for BROWSER_DOWNLOAD_TYPE. */
+const fail=(code,detail)=>{throw Object.assign(new Error(code),{code,...(detail?{detail}:{})});};
 const NAME=/^[A-Za-z0-9][A-Za-z0-9._ -]{0,199}$/u;
 async function readBounded(path,maxBytes){
  const handle=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);
@@ -46,7 +47,7 @@ export function createDownloadPort({binding,policy,sourceScopes,paths,artifacts,
    const path=join(paths.output,filename);let stat;try{stat=await lstat(path);}catch{fail('BROWSER_DOWNLOAD_MISSING');}
    if(!stat.isFile()||stat.isSymbolicLink()||await realpath(paths.output)!==paths.output)fail('BROWSER_DOWNLOAD_PATH');
    if(stat.size<1||stat.size>limits.maxBytes)fail('BROWSER_DOWNLOAD_SIZE');
-   const bytes=await readBounded(path,limits.maxBytes);if(!bytes.length||!structurallyValid(bytes,format))fail('BROWSER_DOWNLOAD_TYPE');
+   const bytes=await readBounded(path,limits.maxBytes),structure=structureCheck(bytes,format);if(!bytes.length||!structure.valid)fail('BROWSER_DOWNLOAD_TYPE',structure.reason);
    if(signal?.aborted)fail('BROWSER_DOWNLOAD_CANCELLED');
    const sha256=createHash('sha256').update(bytes).digest('hex'),mimeType=ARTIFACT_MIME_TYPES[format];
    ingestAttempted=true;

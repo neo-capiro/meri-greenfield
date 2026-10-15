@@ -1,14 +1,17 @@
 /** A file passes when it decodes, matches its declared checksum, size and canonical MIME type, is STRUCTURALLY valid for
- * its format (`apps/artifacts/structure/file-structure.mjs`: verified ZIP/OPC package, PDF cross-reference trailer,
- * strict UTF-8 text) and carries the required text. Required text is checked only for text files; for other formats a
- * non-empty requirement fails closed as REQUIRED_TEXT_UNVERIFIED. Native open/render (Word, Excel, PowerPoint, PDF
- * reader) is NOT exercised here: that qualification is UNRUN and a pass is not a native usability claim. */
+ * its format (`apps/artifacts/structure/file-structure.mjs`: strict ZIP with central/local agreement and CRC-32 of every
+ * member, OPC package parsed as namespaced XML with the claimed main part, coherent PDF cross-reference/trailer/catalog,
+ * strict UTF-8 text) and carries the required text. A structural refusal is reported as `DOES_NOT_OPEN <reason>` with
+ * the validator's closed reason. Required text is checked only for text files; for other formats a non-empty
+ * requirement fails closed as REQUIRED_TEXT_UNVERIFIED. Native open/render (Word, Excel, PowerPoint, PDF reader) is NOT
+ * exercised here: that qualification is UNRUN and a pass is not a native usability claim. */
 import {createHash} from 'node:crypto';
 import {ARTIFACT_MIME_TYPES} from '../../../packages/contracts/artifacts-0.2/artifact-formats.mjs';
-import {structurallyValid} from '../../../apps/artifacts/structure/file-structure.mjs';
-/** Text content for text files, '' for other structurally valid files, null when the structure is invalid. */
+import {structureCheck} from '../../../apps/artifacts/structure/file-structure.mjs';
+/** Text content for text files, '' for other structurally valid files; `{refused:reason}` when the structure is invalid. */
 function opens(bytes,format){
- if(!structurallyValid(bytes,format))return null;
+ const check=structureCheck(bytes,format);
+ if(!check.valid)return {refused:check.reason};
  return format==='txt'?new TextDecoder('utf-8',{fatal:true}).decode(bytes):'';
 }
 function fileProblem(file,o){
@@ -19,7 +22,8 @@ function fileProblem(file,o){
  if(bytes.toString('base64')!==file.base64)return 'ENCODING';
  if(!bytes.length||bytes.length>o.maxBytes||file.bytes!==bytes.length)return 'SIZE';
  if(file.sha256!==createHash('sha256').update(bytes).digest('hex'))return 'CHECKSUM';
- return opens(bytes,o.fileFormat)===null?'DOES_NOT_OPEN':null;
+ const opened=opens(bytes,o.fileFormat);
+ return typeof opened==='string'?null:`DOES_NOT_OPEN ${opened.refused}`;
 }
 export function gradeUsableFile(output,c){
  const o=c.outputFormat,files=Array.isArray(output.files)?output.files:[];

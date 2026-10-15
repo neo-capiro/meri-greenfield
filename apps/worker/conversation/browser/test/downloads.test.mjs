@@ -3,6 +3,7 @@ import {mkdtemp,mkdir,writeFile,rm,realpath,symlink,access} from 'node:fs/promis
 import {DEFAULT_BROWSER_POLICY} from '../policy.mjs';
 import {binding,enabledPolicy,recorders,openFragment,sourceScopes,APPROVED} from './fixtures.mjs';
 import {ooxml,pdf,zip} from '../../../../artifacts/structure/test/fixtures.mjs';
+import {REVIEW_PROBES} from '../../../../artifacts/structure/test/review-probes.mjs';
 const workspace=async()=>{const root=await realpath(await mkdtemp(join(tmpdir(),'meri-browser-dl-')));const cwd=join(root,binding.conversationId);await mkdir(join(cwd,'.browser','output'),{recursive:true});return {root,cwd,output:join(cwd,'.browser','output')};};
 const within=async fn=>{const w=await workspace();try{await fn(w);}finally{await rm(w.root,{recursive:true,force:true});}};
 const src=name=>`${APPROVED[1]}/opp/${name}`;
@@ -34,6 +35,14 @@ test('downloads require structural validity: corrupt ZIP-prefix bytes are not a 
  const good={'a.docx':ooxml('docx'),'b.xlsx':ooxml('xlsx'),'c.pptx':ooxml('pptx'),'d.zip':zip({'x.txt':'x','y/z.txt':'z'}),'e.pdf':pdf(),'f.txt':Buffer.from('plain synthetic text\n')};
  for(const [name,bytes] of Object.entries(good)){await writeFile(join(output,name),bytes);await cap.downloads.accept({filename:name,url:src(name)});}
  assert.equal(r.ingested.length,6);
+}));
+test('the download port refuses every malformed probe from dot corrected review H1/H2 before ingest, with the closed structural reason',()=>within(async({cwd,output})=>{
+ const {cap,r}=openFragment({cwd,policy:enabledPolicy({downloads:{enabled:true,formats:['pdf','docx','zip'],maxBytes:8192,maxFiles:50}})});
+ for(const [i,probe] of REVIEW_PROBES.entries()){
+  const name=`probe-${i}.${probe.format}`;await writeFile(join(output,name),probe.bytes());
+  await assert.rejects(cap.downloads.accept({filename:name,url:src(name)}),e=>e.code==='BROWSER_DOWNLOAD_TYPE'&&e.detail===probe.reason,probe.id);
+ }
+ assert.equal(r.ingested.length,0);assert.equal(r.receipts.length,0);
 }));
 test('concurrent downloads cannot exceed maxFiles or ingest one filename twice; a refusal before ingest releases its slot',()=>within(async({cwd,output})=>{
  let release;const gate=new Promise(res=>{release=res;});const r=recorders(),slow={async ingest(request){await gate;return r.artifactPort.ingest(request);}};
