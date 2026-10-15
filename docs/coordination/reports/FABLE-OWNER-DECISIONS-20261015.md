@@ -18,7 +18,7 @@ Source: Neo Martinez (human owner), message to Fable on 15 October 2026, replyin
 
 ## Effect on current work
 
-- Decision 1 unblocks the `meri_intents` design in [FABLE-GENERAL-READ-TOOLS-20261015.md](FABLE-GENERAL-READ-TOOLS-20261015.md) (P10). Implementation follows the open HOLD repairs and still needs dot's review of the route and approval binding; it reuses the canonical approval owner, consistent with the browser approval-port binding list in the P2c report.
+- Decision 1 unblocks the `meri_intents` design in [FABLE-GENERAL-READ-TOOLS-20261015.md](../proposals/FABLE-GENERAL-READ-TOOLS-20261015.md) (P10). Implementation follows the open HOLD repairs and still needs dot's review of the route and approval binding; it reuses the canonical approval owner, consistent with the browser approval-port binding list in the P2c report.
 - Decision 3 matches the P2c policy shape (platform `maximum`, tenant/role intersections that cannot widen) and the now-mandatory `effective-origin-allowlist` egress requirement. Choosing the initial list remains open.
 - Decision 4 matches the P2a fail-closed Bash admission (Bash unavailable unless an available sandbox attestation exists). Qualifying a separate host is a placement step that needs its own authorization and evidence.
 - Decision 5 needs no ledger change: the three reads are already included rows; their adapters join the family-by-family read integration.
