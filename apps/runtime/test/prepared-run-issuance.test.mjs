@@ -125,3 +125,9 @@ test('aborted trusted materialization resolves neither capability nor controller
  const f=fixture(),prepared=await f.owner.prepare(f.input),compiled=f.stats.compile,signal=AbortSignal.abort();
  await assert.rejects(f.owner.resolveCapability(prepared.issuance,{signal}));await assert.rejects(f.owner.resolveFacts(prepared.issuance,{signal}));assert.equal(f.stats.resolve,0);assert.equal(f.stats.compile,compiled);
 });
+test('a source that never claimed an allocation is admitted only on its exact foreclosure evidence; nothing is revoked and a missing row refuses',async()=>{
+ const f=fixture(),source=f.input.binding,evidence={binding:source,allocationKey:hash(source),state:'FORECLOSED',foreclosure:{eventId:id(88),eventSha256:'e'.repeat(64),state:'cancelled'}};let revokes=0;
+ const owner=record=>createPreparedRunIssuance({issuer:f.issuer,facts:f.facts,sourceOwners:{allocations:{async read(query){assert.deepEqual(query,{binding:source,allocationKey:hash(source)});return {record};}},admission:{async revoke(){revokes++;throw Error('nothing to revoke');}}},now:()=>f.state.now,maxRequestMs:1000});
+ const issued=await owner(evidence).prepare({...f.next,source:{binding:source,foreclosureSha256:hash(evidence)}});assert.equal(issued.issuance.issuanceKey,hash(f.next.binding));assert.equal(revokes,0);
+ for(const [record,sha] of [[null,hash(evidence)],[evidence,'f'.repeat(64)],[{...evidence,state:'RETIRED'},hash(evidence)],[{...evidence,binding:f.next.binding},hash({...evidence,binding:f.next.binding})]]){const g=fixture();
+  await assert.rejects(createPreparedRunIssuance({issuer:g.issuer,facts:g.facts,sourceOwners:{allocations:{async read(){return {record};}},admission:{async revoke(){throw Error('unused');}}},now:()=>g.state.now,maxRequestMs:1000}).prepare({...g.next,source:{binding:record?.binding??source,foreclosureSha256:sha}}),/SOURCE_NOT_RETIRED|SOURCE_REFUSED/);assert.equal(g.stats.issue,0);}});

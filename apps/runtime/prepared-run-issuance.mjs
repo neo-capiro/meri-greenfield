@@ -55,12 +55,19 @@ export function createPreparedRunIssuance(configuration){
  const read=storageMethod(c.issuer,'read'),issue=storageMethod(c.issuer,'issue'),bindFacts=storageMethod(c.issuer,'bindFacts'),resolve=storageMethod(c.issuer,'resolve'),compile=storageMethod(c.facts,'compile'),uncertain=new Set();
  let readAllocation,revoke;
  if(c.sourceOwners){const s=own(c.sourceOwners,['allocations','admission']);readAllocation=storageMethod(s.allocations,'read');revoke=storageMethod(s.admission,'revoke');}
+ const earlier=(b,target)=>b.tenantId===target.tenantId&&b.actorId===target.actorId&&b.conversationId===target.conversationId&&b.runId!==target.runId&&b.attemptId!==target.attemptId&&b.workerId!==target.workerId&&b.writerFence<target.writerFence;
+ /** A source is either a retired original (its grants revoked again here) or, for a source that failed or was cancelled before any
+  * allocation claim, the store's no-authority evidence: its foreclosed allocation row, re-read and matched exactly. No task, admission
+  * or grant ever existed for such a source, so there is nothing to revoke. A missing row is never accepted. */
  async function retired(source,target,life){
   if(source===undefined)return;
   if(!readAllocation)fail('SOURCE_REQUIRED');
+  if(Object.hasOwn(source,'foreclosureSha256')){const s=data(own(source,['binding','foreclosureSha256'])),b=s.binding;validateShape('RunBinding',b);if(!digest(s.foreclosureSha256)||!earlier(b,target))fail('SOURCE_REFUSED');
+   const record=(await life.run(()=>readAllocation({binding:b,allocationKey:hash(b)},life.check)))?.record;life.check();
+   if(!record||record.state!=='FORECLOSED'||!same(record.binding,b)||hash(record)!==s.foreclosureSha256)fail('SOURCE_NOT_RETIRED');return;}
   const s=data(own(source,['original','grantIntents'])),o=own(s.original,['binding','executionKey','executionId','planSha256','expiresAtMs','versions']),b=o.binding;validateShape('RunBinding',b);validateShape('RuntimeVersions',o.versions);
   if(o.executionId!==o.executionKey||!digest(o.planSha256)||!Number.isSafeInteger(o.expiresAtMs)||o.expiresAtMs<1)fail('SOURCE_REFUSED');
-  if(b.tenantId!==target.tenantId||b.actorId!==target.actorId||b.conversationId!==target.conversationId||b.runId===target.runId||b.attemptId===target.attemptId||b.workerId===target.workerId||b.writerFence>=target.writerFence||s.original.executionKey!==hash(b)||!Array.isArray(s.grantIntents)||!s.grantIntents.length)fail('SOURCE_REFUSED');
+  if(!earlier(b,target)||s.original.executionKey!==hash(b)||!Array.isArray(s.grantIntents)||!s.grantIntents.length)fail('SOURCE_REFUSED');
   const saved=await life.run(()=>readAllocation({binding:b,allocationKey:s.original.executionKey},life.check));life.check();
   const record=saved?.record;
   if(!record||record.state!=='RETIRED'||!same(record.original,s.original)||!same(record.grantIntents,s.grantIntents)||record.resource?.physicalStopProven!==true||typeof record.resource.taskArn!=='string')fail('SOURCE_NOT_RETIRED');
@@ -69,7 +76,7 @@ export function createPreparedRunIssuance(configuration){
  }
  function stateOf(value,intent){const s=own(value,['state'],['issuance']);if(!['ABSENT','UNKNOWN','ISSUED'].includes(s.state)||s.state!=='ISSUED'&&s.issuance!==undefined)fail('ISSUER_REFUSED');return s.state==='ISSUED'?receiptOf(s.issuance,intent):null;}
  async function prepare(value){
-  const v=own(value,['binding','requestSha256','expiresAtMs'],['source','signal']);nativeSignal(v.signal);const intent=intentOf({binding:v.binding,requestSha256:v.requestSha256,expiresAtMs:v.expiresAtMs}),source=v.source===undefined?undefined:data(own(v.source,['original','grantIntents']));
+  const v=own(value,['binding','requestSha256','expiresAtMs'],['source','signal']);nativeSignal(v.signal);const intent=intentOf({binding:v.binding,requestSha256:v.requestSha256,expiresAtMs:v.expiresAtMs}),source=v.source===undefined?undefined:data(own(v.source,Object.hasOwn(v.source,'foreclosureSha256')?['binding','foreclosureSha256']:['original','grantIntents']));
   const life=createOperationLifetime({now,signal:v.signal,deadlineMs:Math.min(intent.expiresAtMs,now()+maxRequestMs),errorFactory:()=>Object.assign(Error('PREPARED_RUN_UNKNOWN'),{code:'PREPARED_RUN_UNKNOWN'})});
   try{
    life.check();if(intent.binding.writerFence>1&&source===undefined)fail('SOURCE_REQUIRED');await retired(source,intent.binding,life);
@@ -80,9 +87,9 @@ export function createPreparedRunIssuance(configuration){
     try{state=await life.run(signal=>issue({...intent,signal}));issuance=stateOf(state,intent);}catch{state=await life.run(signal=>read({...intent,signal}));issuance=stateOf(state,intent);}
     if(!issuance)fail('ISSUANCE_UNKNOWN');
    }
-   uncertain.delete(intent.issuanceKey);life.check();if(source?.grantIntents.some(g=>g.capabilitySha256===issuance.capabilitySha256||g.grantId===issuance.grantId))fail('SOURCE_CAPABILITY_REUSE');
+   uncertain.delete(intent.issuanceKey);life.check();if(source?.grantIntents?.some(g=>g.capabilitySha256===issuance.capabilitySha256||g.grantId===issuance.grantId))fail('SOURCE_CAPABILITY_REUSE');
    const raw=await life.run(signal=>compile({intent,issuance,signal})),facts=compilePreparedRunFacts(raw,{intent,issuance,now});life.check();
-   if(source&&facts.grantIntents.some(target=>source.grantIntents.some(prior=>target.grantId===prior.grantId||target.capabilitySha256===prior.capabilitySha256)))fail('SOURCE_CAPABILITY_REUSE');
+   if(source?.grantIntents&&facts.grantIntents.some(target=>source.grantIntents.some(prior=>target.grantId===prior.grantId||target.capabilitySha256===prior.capabilitySha256)))fail('SOURCE_CAPABILITY_REUSE');
    const bound=receiptOf(await life.run(signal=>bindFacts({...intent,capabilitySha256:issuance.capabilitySha256,grantId:issuance.grantId,factsSha256:facts.factsSha256,signal})),intent);
    if(bound.capabilitySha256!==issuance.capabilitySha256||bound.grantId!==issuance.grantId||bound.factsSha256!==facts.factsSha256||issuance.factsSha256!==undefined&&issuance.factsSha256!==facts.factsSha256)fail('FACTS_REPLAY_REFUSED');
    await retired(source,intent.binding,life);life.check();return data({issuance:bound,...facts});
