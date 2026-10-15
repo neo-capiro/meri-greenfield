@@ -23,10 +23,20 @@ export function createBrokerActivity({native,context=()=>Context.current(),now=D
  };
 }
 export function workerOptions({configuration,connection,native}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native,preparedKickoff:configuration.native?.preparedKickoff??false})},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
+/** Readiness fails when the poller is not running or when the trusted-client authorization is not healthy (expired, failed or closed). */
+export function createWorkerReadiness({worker,authorization=null}){
+ if(typeof worker?.getState!=='function'||authorization!==null&&typeof authorization?.healthy!=='function')throw fault('WORKER_CONFIGURATION');
+ return async function readiness(){if(authorization&&!authorization.healthy())throw fault('WORKER_AUTHORIZATION_UNAVAILABLE');if(worker.getState()!=='RUNNING')throw fault('WORKER_NOT_RUNNING');};
+}
+/** A fail-closed authorization transition stops the poller: the native connection cannot forget the key it last accepted, so the worker does not keep polling with it. */
+export function stopWorkerOnAuthorizationFailure({worker,authorization}){
+ if(typeof worker?.getState!=='function'||typeof worker?.shutdown!=='function'||typeof authorization?.watch!=='function')throw fault('WORKER_CONFIGURATION');
+ return authorization.watch(()=>{try{if(worker.getState()==='RUNNING')worker.shutdown();}catch{}});
+}
 export async function startTemporalWorker(configuration,{signal}={}){
- let connection,worker,listener,run,closing,authorization;const close=()=>closing??=(async()=>{await listener?.close();if(worker?.getState()==='RUNNING')worker.shutdown();await run?.catch(()=>{});await connection?.close();await authorization?.close();})();
+ let connection,worker,listener,run,closing,authorization,unwatch;const close=()=>closing??=(async()=>{const errors=[];for(const step of [()=>listener?.close(),()=>{unwatch?.();if(worker?.getState()==='RUNNING')worker.shutdown();},()=>run?.catch(()=>{}),()=>connection?.close(),()=>authorization?.close()])try{await step();}catch(error){errors.push(error);}if(errors.length)throw new AggregateError(errors,'WORKER_CLEANUP_UNKNOWN');})();
  try{signal?.throwIfAborted();const [tls,bytes]=await Promise.all([temporalTls(configuration.temporal.tls),readSecret(configuration.native.capabilityFile)]);signal?.throwIfAborted();const native=createNativeCapabilityClient({configuration:configuration.native,credential:bytes.toString('utf8').trim()});await native.readiness({signal});signal?.throwIfAborted();
-  authorization=await temporalAuthorization(configuration,{signal});connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);worker=await Worker.create(workerOptions({configuration,connection,native}));run=worker.run();run.catch(()=>{});
-  listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:async()=>{if(worker.getState()!=='RUNNING')throw fault('WORKER_NOT_RUNNING');},signal});return Object.freeze({address:listener.address,close,completion:run});
- }catch{await close();throw fault('WORKER_STARTUP_FAILED');}
+  authorization=await temporalAuthorization(configuration,{signal});connection=await NativeConnection.connect({address:configuration.temporal.address,tls,...(authorization?{apiKey:authorization.apiKey()}:{})});if(authorization)authorization.attach(connection);worker=await Worker.create(workerOptions({configuration,connection,native}));if(authorization)unwatch=stopWorkerOnAuthorizationFailure({worker,authorization});run=worker.run();run.catch(()=>{});
+  listener=await listenRuntime({configuration,application:{handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})},readiness:createWorkerReadiness({worker,authorization}),signal});return Object.freeze({address:listener.address,close,completion:run});
+ }catch{await close().catch(()=>{});throw fault('WORKER_STARTUP_FAILED');}
 }
