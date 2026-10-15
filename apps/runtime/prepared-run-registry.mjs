@@ -74,6 +74,10 @@ export function createPreparedRunRegistry(configuration){
    if(!entry){const reservation=await life.run(()=>readTarget(binding,life.check));life.check();if(!reservation)return null;entry=await life.run(signal=>ensure({binding,signal}));}
    return await life.run(()=>entry.kickoffHttp.handle(request));
   }
+  // The broker's independent stop (and the workflow's reconciliation) may reach a control process that has not seen this
+  // accepted target since a restart: the entry is rebuilt from the same issuance (exact replay, no allocation) so its stop
+  // reaches the canonical owners and the run reconciler. It never kicks off or allocates.
+  if(path==='/v1/execution/kickoff/stop'&&!entry){own(input,['binding','executionId']);if(input.executionId!==hash(binding))fail();const reservation=await life.run(()=>readTarget(binding,life.check));life.check();if(!reservation)return null;entry=await life.run(signal=>ensure({binding,signal}));}
   if(!entry)return null;if(!control&&!entry.matchesTaskCapability(credential))fail();
   if(kickoffRoute)return await life.run(()=>entry.kickoffHttp.handle(request));
   if(path==='/v1/runner/native/bootstrap'){
