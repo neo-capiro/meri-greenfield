@@ -50,7 +50,8 @@
         "fresh exact-pair read-only open before history/events",
         "terminal historical reads need distinct retained-read purpose",
         "client-only reconnect never reserves",
-        "foreign pair/session mismatch refused"
+        "foreign pair/session mismatch refused",
+        "open ready projection produces exact completion/source pins; run.status alone cannot produce them"
       ],
       "logicalOperations": [
         "openConversation"
@@ -80,6 +81,7 @@
       ],
       "checks": [
         "lost prepare ACK before ANY submit -> recorded same target -> explicit admitted-target open -> first-submit if unused/valid",
+        "unused-target open reports unsubmitted with null sequenceBase; does not seal predecessor range",
         "unknown initial target submit -> exact retained identity/bytes only",
         "lookup unavailable/cache absence404 never means not-committed",
         "same command changed input conflicts",

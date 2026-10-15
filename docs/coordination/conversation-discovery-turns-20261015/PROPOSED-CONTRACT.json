@@ -60,13 +60,62 @@
       }
     },
     "historyAnchor": {
-      "closed": true,
-      "required": {
-        "conversationId": "uuid",
-        "selectedRunId": "uuid",
-        "sequenceBase": "safe integer >=0 from existing run sequence owner",
-        "sourceRunId": "uuid or null; disclose only if currently authorized",
-        "coverage": "retained | unsubmitted | history-unavailable"
+      "closedTaggedAlternatives": {
+        "unsubmitted": {
+          "closed": true,
+          "required": {
+            "coverage": "unsubmitted",
+            "conversationId": "uuid",
+            "selectedRunId": "uuid",
+            "sequenceBase": "null: target has no recorded range before first submit",
+            "sourceRunId": "authorized source UUID or null"
+          }
+        },
+        "retained": {
+          "closed": true,
+          "required": {
+            "coverage": "retained",
+            "conversationId": "uuid",
+            "selectedRunId": "uuid",
+            "sequenceBase": "durably recorded safe integer >=0",
+            "sourceRunId": "authorized source UUID or null"
+          }
+        },
+        "history-unavailable": {
+          "closed": true,
+          "required": {
+            "coverage": "history-unavailable",
+            "conversationId": "uuid",
+            "selectedRunId": "uuid",
+            "sequenceBase": "null unless exact durable run metadata was actually authorized/read; otherwise its recorded integer",
+            "sourceRunId": "authorized source UUID or null"
+          }
+        }
+      }
+    },
+    "continuationReadiness": {
+      "closedTaggedAlternatives": {
+        "ready": {
+          "closed": true,
+          "required": {
+            "kind": "ready",
+            "source": "exact currently authorized source pin; pair and full binding hash equal opened target"
+          }
+        },
+        "not-ready": {
+          "closed": true,
+          "required": {
+            "kind": "not-ready",
+            "reason": "unsubmitted | source-active | checkpoint-pending | retirement-pending | revocation-pending"
+          }
+        },
+        "unsupported": {
+          "closed": true,
+          "required": {
+            "kind": "unsupported",
+            "reason": "source-not-current | unsupported-source-state | history-unavailable"
+          }
+        }
       }
     },
     "sessionProjection": {
@@ -160,19 +209,13 @@
             "openId": "exact input ID",
             "scope": "scope",
             "session": "existing issuer receipt, exact pair",
-            "projection": "sessionProjection"
-          }
-        },
-        "selection-required": {
-          "closed": true,
-          "required": {
-            "kind": "selection-required",
-            "openId": "exact input ID",
-            "scope": "scope"
+            "projection": "sessionProjection",
+            "continuation": "continuationReadiness"
           }
         },
         "error": "error"
       },
+      "compatibilityClientOnly": "separate compatibility bootstrap returns selection-required, never chooses/reserves a pair; no accepted legacy receiver change here",
       "crossFields": [
         "observe yields observe only, never submit/cancel",
         "admitted-target requires fresh exact immutable command/target mapping and original deadline",
@@ -180,7 +223,8 @@
         "existing/unknown target input yields same-submit only with original input identity/bytes",
         "expired/stale target cannot yield first-submit/same-submit",
         "inaccessible and nonexistent pair both denied with no metadata",
-        "client-only compatibility bootstrap can only selection-required or read-only existing pair, never reserve"
+        "readiness reads existing completion/retirement/revocation facts only; never captures/stops/revokes or seals history",
+        "ready source pins are produced here under current authority, not inferred from run.status or current public history"
       ],
       "currentReceiverChangeRequired": true
     },
@@ -312,8 +356,9 @@
     "Continuation ACK and target initial-submit ACK remain separate identities/receipts.",
     "Original full source and target RunBindings remain server-trusted; browser fields are selectors only.",
     "Source-completed is insufficient: published checkpoint, physical task retirement and complete grant revocation precede successor admission.",
-    "next-turn is not resume/fork; no old prompt replay, new grant, worker expiry renewal or automatic retry.",
+    "next-turn is not resume/fork; no old prompt replay or original worker expiry renewal. Read/lookup/reservation alone issues no grant. A genuinely new target may receive its own original per-run issuance only from the existing durable issuer after separate approved admission.",
     "Immutable receipt outcome + current eligibility are separate; exact same-command recovery precedes a new-command latest-source test.",
+    "Unsubmitted target has no sequence base: read/open never seals source range or fabricates target history.",
     "No capability or wire accepted by these design JSON bytes."
   ]
 }
