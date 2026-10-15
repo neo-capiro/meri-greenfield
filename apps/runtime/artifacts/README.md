@@ -13,3 +13,27 @@ Root owns shared control/config/Docker wiring, approved fixed Python/library/ima
 Six meaningful tests pass through actual loopback HTTP, existing opaque sessions/accounting, original congressional compiler, actual DOCX/XLSX generator/structural inspection and real S3/PG adapter code with explicitly synthetic current/SQL/S3 replies. They cover exact immutable parent/replacement, reconstructed inspect/download, compiler substitution, caller context/session substitution, boolean rejection, missing owner, post-generation revoke before publication and parked resolution deadlines. The first import failure is retained. The initial two DOCX were saved before offline rendering, though API inspect preceded their retention; the final test retains both downloads before API/offline inspection and keeps both bundles. Each original/revision is4 pages. Producer opened all pages; independent artifact review remains separately required. Generation/inspection stay draft/pending/nativeQualified=false.
 
 No native AWS/DB/model call, security setting change, new credential, private artifact transfer or publication retry occurred. Owned links/processes are removed after checks; donor dependencies and all previous files/failures are retained.
+
+## Short-lived revocable download links (additive, not mounted)
+
+`createDownloadLinkApplication({documents,sessions,key,generation,now,ttlMs?,maxRequestMs})` wraps the runtime artifact application:
+`POST /api/documents/links/issue {versionId}` and `POST /api/documents/links/redeem {token}` are served here and every other path,
+including the existing `/api/documents/download`, is delegated unchanged. Both routes require the caller's Bearer session.
+The token (`../../artifacts/storage/signed-download.mjs`) is an HMAC-SHA256 over `{versionId, sha256, scopeDigest, actorId,
+expiresAtMs, suppressionGeneration}`, at most five minutes and never beyond the session's current expiry. Issuance runs the canonical
+inspect and reads current authority; redemption verifies the MAC and expiry, requires the same current actor and scope digest
+(`canonicalSha256` of tenant, conversation, selected client and scopes), re-inspects, requires an unchanged suppression generation,
+runs the canonical download, requires the exact bytes hash and rechecks generation and expiry before release. Refusals:
+`DOWNLOAD_LINK_INVALID`, `DOWNLOAD_LINK_EXPIRED`, `DOWNLOAD_LINK_ACTOR`, `DOWNLOAD_LINK_REVOKED`, `DOWNLOAD_LINK_BYTES`, plus the
+retention gate's own codes; canonical refusals pass through unchanged.
+
+`createSuppressionGeneration({journal,serving})` reads the same retention journal rows and recovery barrier as the canonical read
+gate and returns the highest projected ledger sequence of the version's subjects (session conversation, version conversation,
+artifact). Any suppression or release of one of them advances it, so links are revoked without a token store.
+`readDownloadLinkKey(keyFile)` reads a key of at least 32 bytes through `readSecret`.
+
+Intended mount (a separate root change to `../product-applications.mjs`, `../config.mjs` and `../control.mjs`): when the control
+configuration declares retention serving and a link key file, read the key at startup and replace `documents` with
+`createDownloadLinkApplication({documents,sessions,key,generation:createSuppressionGeneration(retention),now,maxRequestMs})`.
+Redemption reads the version twice (inspect, then download). Tests: `test/download-links.test.mjs` (scripted ports plus one case
+through the real canonical owners and generator) and `../../artifacts/storage/test/signed-download.test.mjs`.
