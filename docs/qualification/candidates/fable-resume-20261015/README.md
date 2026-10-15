@@ -55,7 +55,7 @@ The committed runbook (`dot-artifact-lock-20261015/LINUX-VALIDATION.md`) require
 
 The SDK source-pin discrepancy is explained above (stale worker component pin against `de599e4`); it is not edited here.
 
-## Bundled-Node zlib blocker (dot task 4): the newest Node 24 release still lacks the upstream fix
+## Bundled-Node zlib blocker (dot task 4): neither inspected Node 24 release (v24.21.0, v24.22.0) carries the upstream fix
 
 `node-zlib/node24-gzwrite-comparison.json` records the public comparison made on 15 October, limited to the two inspected tags: the Node release index lists 30 Node 24 releases, the newest being v24.22.0 (14 October 2026), whose index entry reports bundled zlib `1.3.2.1-motley` like v24.19.0 through v24.21.0 (v24.18.x entries report 1.3.1). The tagged `deps/zlib/gzwrite.c` is byte-identical between v24.21.0 and v24.22.0 (sha `2ce78329…`, 22,721 bytes). Compared with the upstream file at madler/zlib `df84af25`, the inspected tags lack the two reset assignments (`avail_in = 0`, `next_in = state->in`) that commit `df84af25` introduces on the failed `gz_comp` path in `gz_write`; the file diff also shows a `next_in == NULL` guard and an early `return state->err` after the stalled-write error in `gzvprintf`, which belong to the wider upstream history between the two files and are not attributed to `df84af25` here. What this establishes: the current candidate's security HOLD remains justified by the two inspected sources; it does not prove that no fixed Node 24 base exists anywhere, and no binary, image, scan or admission was inspected or produced. Any remedy (an upstream Node release that carries the fix, or a vendor disposition) is outside this repository, and the root policy HOLD stands.
 

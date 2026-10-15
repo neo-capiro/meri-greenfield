@@ -6,7 +6,7 @@ Repository `neo-capiro/meri-greenfield`. Base: dot's handoff pin `215930c8092577
 
 - `docs/qualification/candidates/fable-resume-20261015/**` (receipts and README), `docs/coordination/reports/FABLE-RESUME-RETURN-20261015.md`.
 - `scripts/qualification/first-chat-rehearsal/{rehearsal-support.mjs,composed-next-turn-rehearsal.mjs,provider-standin.mjs}` (new) and `composed-rehearsal.mjs` (helpers moved to the support module; behavior unchanged, receipts prove it).
-- No product source, contract, lock, migration, Dockerfile, proof row or candidate manifest changed: `source-proof` 5/5 at every commit; all 45 runtime proof rows remain at their pinned bytes.
+- Through `4609faa` no product source, contract, lock, migration, Dockerfile, proof row or candidate manifest changed. From `e32353f` one product proof row changed (`apps/control/conversations/native-preparation-journal.mjs`, the gap 5 exclusion) and a new candidate manifest `candidate-manifest-fable-20261015.json` enumerates it; `source-proof` 5/5 against that candidate; the other 44 proof rows and the Dockerfile remain at their pinned bytes; no contract, lock or migration changed. Test-only additions: `lifecycle-seed.mjs`, `allocation-exclusion-pg.test.mjs`, the scripted store fixture and the restorer fixture.
 
 Complete diff: `git diff 215930c..<this head>`.
 
@@ -17,7 +17,7 @@ Complete diff: `git diff 215930c..<this head>`.
 | 1 Recover the pin | worktree at the pin, ancestry verified, subtree pins recorded, dependencies copied from the identical-lock PR86 worktree, fresh clusters with dot's migrations 0001–0009 | candidate README | — |
 | 2 Linux fixture rerun | repaired process suite 7/7, runtime+process 15/15, source-proof 5/5, typechecks pass, conversations 246/246 (with the migration isolation attestation), worker 138/138, control-core 260/260, scripts-local 27/27, runtime-tests 167/168 (Docker control, host fact); reruns and reasons retained; composed first-chat rehearsal 2/2 unchanged at the pin (corrected: it runs off the lifecycle path and does not exercise completion capture) | `checks/*`, `rehearsal/composed-at-pin.json` | native, image, live; completion capture with the real CLI |
 | 3 Artifact slice | 21/21 wheel payloads verified against the inventory; offline require-hashes install and full import readback on the host profile; SDK source-pin discrepancy traced to the stale worker pin at `d5207dc` versus `de599e4` | `artifact/*` | the agreed CPython 3.13.5 / glibc 2.41 gate and the four core artifact regressions (literal path rebinding refused here); renderer gate |
-| 4 Bundled-Node blocker | public comparison: newest Node 24 (v24.22.0, 14 Oct) ships the same unfixed `gzwrite.c` as v24.21.0; the three upstream changes are enumerated; no base selected, HOLD unchanged | `node-zlib/node24-gzwrite-comparison.json` | any remedy; shipping owns build and scan |
+| 4 Bundled-Node blocker | public comparison limited to two inspected tags: v24.22.0 (14 Oct, newest in the index) ships a `gzwrite.c` byte-identical to v24.21.0, lacking the two `df84af25` resets; the other differences from upstream are listed separately; no other release inspected; no base selected, HOLD unchanged | `node-zlib/node24-gzwrite-comparison.json` | any remedy; shipping owns build and scan |
 | 6 Multi-turn, local part | two-prompt rehearsal over the real control plane with the real CLI written; finding: lifecycle-path prompts are client-composed and always reach the provider, so the rehearsal fails closed before allocation without a trusted stand-in at the configured proxy host; stand-in module ready | `rehearsal/next-turn-1.json` (retained failure), `rehearsal/next-turn-preflight.json` | the two-turn run itself; needs an environment owner to bind and trust the stand-in, or an approved route |
 | 5, 7 | nothing bindable here | — | every owner-held binding; first usable chat remains UNRUN |
 
@@ -26,7 +26,7 @@ Complete diff: `git diff 215930c..<this head>`.
 1. Lifecycle-path prompts cannot be zero-turn: `createConversationInput` marks messages `client_composed`, and the CLI 2.1.295 sends them to the provider even when the text is a local slash command; the string-prompt path handles `/status` locally. Any local multi-turn qualification with the real CLI therefore needs a provider stand-in trusted by the CLI's bundled trust store, or the real route.
 2. The product launch environment is exactly five variables; a CA variable cannot be injected from a rehearsal, so stand-in trust is a host-level binding, not a script option.
 3. The worker component pin for `packages/contracts/validate.mjs` is stale against `de599e4`; a new worker candidate record is the fix, not an edit of either file.
-4. No Node 24 release carries the zlib `gz_write` error-path fix as of v24.22.0.
+4. Neither of the two inspected Node 24 releases (v24.21.0 and v24.22.0, the newest in the release index on 15 October) carries the upstream zlib `gz_write` error-path resets of `df84af25` in its tagged `deps/zlib/gzwrite.c`; no other release, binary or image was inspected, so nothing is concluded about them.
 
 ## 3b. Full baseline at the pin and corrections after dot's acceptance note
 
@@ -52,7 +52,7 @@ Non-root uid 30033, private `TMPDIR`, scrubbed environment; clusters under `/tmp
 
 ## 5. Decisions requested
 
-1. ACCEPT or HOLD on this return's commits (no product source changed).
+1. ACCEPT or HOLD on this return's commits (no product source changed through `4609faa`; from `e32353f` the gap 5 proof-row change and its candidate manifest, recorded by dot as ACCEPT SOURCE ONLY and ACCEPT CANDIDATE RECORD on 15 October).
 2. Whether an environment owner will bind `proxy.synthetic.invalid` to the qualification stand-in and trust its certificate in a disposable Linux environment so the two-turn rehearsal can run, or whether multi-turn qualification waits for the approved provider route.
 3. Whether the stale worker component pin should be reconciled by a new worker qualification candidate now.
 4. ACCEPT or HOLD on the gap 5 source change (`native-preparation-journal.mjs`) and the new proof-row candidate `candidate-manifest-fable-20261015.json` (13 changed rows, no image acceptance).

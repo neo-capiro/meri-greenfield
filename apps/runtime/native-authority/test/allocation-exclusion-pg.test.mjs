@@ -111,3 +111,34 @@ test('physical stop without grant revocation is refused by the next-run owner; r
  const selected=await owner.selectRun({principal,conversationId:binding.conversationId});assert.equal(selected.reserved,true);assert.equal(selected.binding.writerFence,2);
  assert.deepEqual((await f.pool.query('SELECT state FROM meri_product_budget.grants WHERE run_id=$1',[binding.runId])).rows.map(r=>r.state),['REVOKED']);
 });
+test('two distinct target runs racing for the same conversation allocation in separate transactions behind a start barrier: exactly one claims, the other receives the busy outcome',async t=>{
+ const f=await fixture(t,{leaseMs:120000}),c=await conversation(t,f),{store,source,policyRevision}=c,expiresAtMs=f.expiry,at=Date.now();
+ // Predecessor: claimed, allocated, then retired with its physical stop proven, so the conversation is free for exactly one successor.
+ const first=allocationIntent(source,expiresAtMs,policyRevision),key={binding:source,allocationKey:first.allocationKey};assert.equal((await store.allocations.claim(first,check)).dispatch,true);
+ const res=resource(at);await store.allocations.record({...key,state:'ALLOCATED',resource:res},check);await store.allocations.record({...key,state:'RETIRED',resource:{...res,physicalStopProven:true}},check);
+ // Target A is the canonical resume continuation (fence 2). The lifecycle and next-run journals admit one successor per source, so a
+ // second queued run in the same conversation cannot be produced canonically; target B (fence 3) is inserted directly with a
+ // hash-correct projection and request so that the allocation journal's own exclusion is what the race exercises.
+ const a={...source,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:2},b={...source,runId:randomUUID(),attemptId:randomUUID(),workerId:randomUUID(),writerFence:3};
+ const paused=await pauseSource(store,source,c.sourceSaved,c.checkpointFor(source));await continueFrom(store,source,c.sourceSaved,paused,{mode:'resume',target:a,expiresAtMs});
+ const savedA=await store.read(a,{},check),runB={...savedA.run,binding:b,state:'queued'},requestB={...savedA.request,requestId:randomUUID()},eventB={contractVersion:'0.1.0',eventId:randomUUID(),binding:b,sequence:1,createdAt:savedA.run.createdAt,scopes:savedA.run.scopes,type:'run.status',data:{state:'queued',reasonCode:null}};
+ const baseA=(await f.pool.query('SELECT sequence_base FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[a.tenantId,a.conversationId,a.runId])).rows[0].sequence_base;
+ await f.pool.query('INSERT INTO meri_conversations.runs(tenant_id,conversation_id,run_id,projection,projection_sha256,request_id,request,request_sha256,last_sequence,sequence_base) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9)',[b.tenantId,b.conversationId,b.runId,runB,hash(runB),requestB.requestId,requestB,hash(requestB),baseA]);
+ await f.pool.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,1,$4,$5,$6)',[b.tenantId,b.conversationId,b.runId,eventB.eventId,eventB,hash(eventB)]);
+ assert.equal((await store.read(b,{},check)).run.state,'queued','target B is readable through the store as a queued run');
+ // Start barrier at the pool: each claim obtains its own connection, and neither transaction begins until both hold one.
+ const intentA=allocationIntent(a,expiresAtMs,policyRevision),intentB=allocationIntent(b,expiresAtMs,policyRevision),connect=f.pool.connect.bind(f.pool);
+ let arrived=0,open;const barrier=new Promise(resolve=>{open=resolve;});const connections=[];
+ f.pool.connect=async()=>{const client=await connect();connections.push(client.processID);if(++arrived===2)open();await barrier;return client;};
+ let results;try{results=await Promise.allSettled([store.allocations.claim(intentA,check),store.allocations.claim(intentB,check)]);}finally{f.pool.connect=connect;}
+ assert.equal(connections.length,2);assert.notEqual(connections[0],connections[1],'two distinct backend connections, so two separate transactions');
+ const outcome=r=>r.status==='fulfilled'?'dispatch='+r.value.dispatch:String(r.reason?.code??r.reason?.message);
+ const winners=results.filter(r=>r.status==='fulfilled'&&r.value.dispatch===true),losers=results.filter(r=>r.status==='rejected'&&/NATIVE_PREPARATION_CONVERSATION_BUSY/.test(String(r.reason?.code)));
+ assert.equal(winners.length,1,'exactly one distinct target acquires a new claim: '+results.map(outcome).join(','));assert.equal(losers.length,1,'the other distinct target receives the documented busy outcome: '+results.map(outcome).join(','));
+ const winner=results[0].status==='fulfilled'?a:b,loser=winner===a?b:a,loserIntent=winner===a?intentB:intentA,winnerIntent=winner===a?intentA:intentB;
+ const rows=await f.pool.query('SELECT run_id,record->>\'state\' AS state FROM meri_conversations.native_allocations WHERE tenant_id=$1 AND conversation_id=$2',[source.tenantId,source.conversationId]);
+ assert.deepEqual(new Map(rows.rows.map(r=>[r.run_id,r.state])),new Map([[source.runId,'RETIRED'],[winner.runId,'CLAIMED']]),'no row was written for the loser');
+ await assert.rejects(store.allocations.claim(loserIntent,check),/NATIVE_PREPARATION_CONVERSATION_BUSY/,'the loser stays excluded by the live winner after the race');
+ assert.equal((await store.allocations.claim(winnerIntent,check)).dispatch,false,'the winner replays without redispatch');
+ assert.equal((await store.allocations.read({binding:loser,allocationKey:loserIntent.allocationKey},check)).record,null);
+});
