@@ -37,7 +37,7 @@ function payloadFor(v,r){
 }
 export function assertResult(value,{request,binding}={}){
  const r=assertRequest(request),v=shape('Result',value);validateShape('RunBinding',binding);
- if(!same(v.binding,binding)||binding.tenantId!==r.principal.tenantId||binding.actorId!==r.principal.actorId||v.operation!==r.operation||v.requestId!==r.requestId||v.jobId!==r.jobId||v.inputSha256!==r.inputSha256||v.requestSha256!==hash(r)||v.sourceSha256!==hash(r.source)||v.contextSha256!==r.context.contextSha256||v.basisSha256!==(r.basis===null?null:hash(r.basis))||v.payloadSha256!==hash(v.payload)||v.resultSha256!==hash(without(v,'resultSha256'))||v.completedAtMs<r.requestedAtMs||v.completedAtMs>=r.originalExpiresAtMs)fail();
+ if(!same(v.binding,binding)||binding.tenantId!==r.principal.tenantId||binding.actorId!==r.principal.actorId||v.operation!==r.operation||v.requestId!==r.requestId||v.jobId!==r.jobId||v.inputSha256!==r.inputSha256||v.requestSha256!==hash(r)||v.sourceSha256!==hash(r.source)||v.contextSha256!==r.context.contextSha256||v.basisSha256!==(r.basis===null?null:hash(r.basis))||v.payloadSha256!==hash(v.payload)||v.resultSha256!==hash(without(v,'resultSha256'))||v.completedAtMs<r.requestedAtMs||v.state==='succeeded'&&v.completedAtMs>=r.originalExpiresAtMs)fail();
  if(v.state==='succeeded'){if(v.payload===null||v.issues.length)fail();payloadFor(v.payload,r);}else if(v.payload!==null||!v.issues.length)fail();return v;
 }
 export function assertSdkPayload(raw,{request}={}){

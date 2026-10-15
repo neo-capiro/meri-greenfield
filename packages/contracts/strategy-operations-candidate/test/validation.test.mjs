@@ -72,6 +72,19 @@ test('retained lookup refuses rehashed altered payload and substituted result re
  const changed=structuredClone(v);changed.payload.summary='Changed after first receipt';rehashResult(changed);assert.throws(()=>assertRetainedResult(changed,expected));
  const other=structuredClone(v);other.resultRef=id(999);rehashResult(other);assert.throws(()=>assertRetainedResult(other,expected));
 });
+test('expiry fences successful effects without hiding correlated timeout/cancellation reports or exact retained reads',()=>{
+ const r=request(),verify=v=>assertResult(v,{request:r,binding:binding()});
+ for(const state of ['failed','cancelled'])for(const completedAtMs of [r.originalExpiresAtMs,r.originalExpiresAtMs+1000]){
+  const v=result(r);Object.assign(v,{state,completedAtMs,payload:null,issues:[{code:state==='failed'?'TIMEOUT':'CANCELLED',message:'Synthetic terminal report after worker expiry.'}]});rehashResult(v);verify(v);
+  const expected={request:r,binding:binding(),resultRef:v.resultRef,resultSha256:v.resultSha256};assertRetainedResult(v,expected);
+  const foreign=structuredClone(v);foreign.binding.attemptId=id(999);rehashResult(foreign);assert.throws(()=>verify(foreign));
+  const changed=structuredClone(v);changed.issues[0].message='Changed retained report';rehashResult(changed);assert.throws(()=>assertRetainedResult(changed,expected));
+  const read={...decision(),use:'retained-result-read',issuedAtMs:completedAtMs+1,expiresAtMs:completedAtMs+10000};assertWorkloadDecision(read,{expected:read,nowMs:completedAtMs+2});
+  for(const use of ['dispatch','resume','source-read','persist']){const effect={...read,use};assert.throws(()=>assertWorkloadDecision(effect,{expected:effect,nowMs:completedAtMs+2}));}
+ }
+ const success=result(r);success.completedAtMs=r.originalExpiresAtMs;assert.throws(()=>verify(rehashResult(success)));
+ const invalid=result(r);Object.assign(invalid,{state:'failed',completedAtMs:r.requestedAtMs-1,payload:null,issues:[{code:'TIMEOUT',message:'Invalid earlier timestamp'}]});assert.throws(()=>verify(rehashResult(invalid)));
+});
 test('proposed Core decision validates audience/purpose/current facts and hard expiry, never credentials',()=>{
  const v=decision(),check=x=>assertWorkloadDecision(x,{expected:v,nowMs:at+1000});check(v);
  refused(check,v,[x=>{x.audience='capiro:objective-planner-materialization:v1';},x=>{x.operation='strategy.edit';},x=>{x.productWrites=['planner.materialize'];},x=>{x.cancelled=true;},x=>{x.expiresAtMs++;},x=>{x.issuedAtMs=at+2000;},x=>{x.policyRevision='changed';},x=>{x.allowedSources.push('unapproved');},x=>{x.credential='synthetic';}]);
