@@ -10,6 +10,9 @@ import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 /** @typedef {{publish:PublishPort,latch:LatchPort}} HookPorts */
 /** @returns {HookPorts} */
 const ports=(/** @type {unknown} */value)=>{const p=/** @type {Partial<HookPorts>} */(value);if(typeof p?.publish!=='function'||typeof p?.latch!=='function')throw Object.assign(Error('CAPABILITY_CONFIGURATION'),{code:'CAPABILITY_CONFIGURATION'});return /** @type {HookPorts} */(p);};
+/** A string field the SDK hook type requires: a malformed value is refused (and latched), never digested as '' or null.
+ * @param {unknown} v @param {string} code @returns {string} */
+const required=(v,code)=>{if(typeof v!=='string')throw Error(code);return v;};
 const text=(/** @type {unknown} */v)=>typeof v==='string'?v:null,duration=(/** @type {unknown} */v)=>Number.isSafeInteger(v)&&/** @type {number} */(v)>=0?v:null;
 const STOP=Object.freeze({continue:false,stopReason:'AUDIT_UNAVAILABLE'}),DENY=Object.freeze({hookSpecificOutput:/** @type {const} */({hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:'Audit unavailable'})});
 /** @param {import('@anthropic-ai/claude-agent-sdk').HookInput} input */
@@ -26,7 +29,7 @@ export function createAuditHooks(/** @type {unknown} */value){
  return Object.freeze({
   PreToolUse:[{hooks:[hook(p,input=>['tool.audit',toolAudit(input,'requested')],DENY)]}],
   PostToolUse:[{hooks:[hook(p,input=>{const i=/** @type {import('@anthropic-ai/claude-agent-sdk').PostToolUseHookInput} */(input);return ['tool.audit',{...toolAudit(input,'completed'),responseSha256:canonicalSha256(i.tool_response??null),durationMs:duration(i.duration_ms)}];},STOP)]}],
-  PostToolUseFailure:[{hooks:[hook(p,input=>{const i=/** @type {import('@anthropic-ai/claude-agent-sdk').PostToolUseFailureHookInput} */(input);return ['tool.audit',{...toolAudit(input,'failed'),errorSha256:canonicalSha256(text(i.error)),interrupted:i.is_interrupt===true,durationMs:duration(i.duration_ms)}];},STOP)]}]});
+  PostToolUseFailure:[{hooks:[hook(p,input=>{const i=/** @type {import('@anthropic-ai/claude-agent-sdk').PostToolUseFailureHookInput} */(input);return ['tool.audit',{...toolAudit(input,'failed'),errorSha256:canonicalSha256(required(i.error,'AUDIT_INPUT_REFUSED')),interrupted:i.is_interrupt===true,durationMs:duration(i.duration_ms)}];},STOP)]}]});
 }
 /** PreCompact/PostCompact → `compaction.boundary`; the summary is hashed and measured, never published. @param {HookPorts} value */
 export function createCompactionHooks(/** @type {unknown} */value){
@@ -34,7 +37,7 @@ export function createCompactionHooks(/** @type {unknown} */value){
  const trigger=(/** @type {unknown} */v)=>{if(v!=='manual'&&v!=='auto')throw Error('COMPACTION_INPUT_REFUSED');return v;};
  return Object.freeze({
   PreCompact:[{hooks:[hook(p,input=>{const i=/** @type {import('@anthropic-ai/claude-agent-sdk').PreCompactHookInput} */(input);return ['compaction.boundary',{phase:'pre',trigger:trigger(i.trigger),...origin(input)}];},STOP)]}],
-  PostCompact:[{hooks:[hook(p,input=>{const i=/** @type {import('@anthropic-ai/claude-agent-sdk').PostCompactHookInput} */(input);const summary=text(i.compact_summary)??'';return ['compaction.boundary',{phase:'post',trigger:trigger(i.trigger),summarySha256:canonicalSha256(summary),summaryBytes:Buffer.byteLength(summary),...origin(input)}];},STOP)]}]});
+  PostCompact:[{hooks:[hook(p,input=>{const i=/** @type {import('@anthropic-ai/claude-agent-sdk').PostCompactHookInput} */(input);const summary=required(i.compact_summary,'COMPACTION_INPUT_REFUSED');return ['compaction.boundary',{phase:'post',trigger:trigger(i.trigger),summarySha256:canonicalSha256(summary),summaryBytes:Buffer.byteLength(summary),...origin(input)}];},STOP)]}]});
 }
 /** SubagentStart/SubagentStop → `subagent.lifecycle`; the last assistant message is never published. @param {HookPorts} value */
 export function createSubagentLifecycleHooks(/** @type {unknown} */value){
