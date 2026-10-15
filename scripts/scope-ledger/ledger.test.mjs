@@ -146,7 +146,7 @@ test('required product capabilities: all scope rows, browser on with destination
   assert.match(byId.get('revocation-lifecycle').decision, /retention and deletion/);
   assert.equal(byId.get('mobile').decision, 'deferred relative to desktop');
   for (const id of ['authenticated-browser-workflow', 'device-browser-bridge', 'live-browser-takeover', 'in-browser-office-editing']) {
-    assert.match(byId.get(id).decision, /^required for the first shipment \(owner decision, Neo Martinez, 15 Oct 2026/, id);
+    assert.match(byId.get(id).decision, /^required, not blocking the initial live version \(owner decisions, Neo Martinez, 15 Oct 2026/, id);
     assert.ok(byId.get(id).gates.includes('FEATURE-DESIGN-APPROVAL'), id);
   }
   assert.match(byId.get('full-139-workflow-parity').decision, /96 included capabilities and the 14 current skills replaces legacy 139-workflow parity; the 43 excluded tools stay excluded/);
