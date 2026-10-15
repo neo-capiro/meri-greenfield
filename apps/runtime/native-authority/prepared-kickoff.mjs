@@ -5,6 +5,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {remoteOriginal,exactOriginal} from './remote-task-boundary.mjs';
 import {executionFault} from './execution-broker.mjs';
+import {createRunReconciler} from '../../control/conversations/run-reconciler.mjs';
 const fault=()=>executionFault('KICKOFF_UNKNOWN'),same=(a,b)=>hash(a)===hash(b),taskArn=v=>typeof v==='string'&&/^arn:aws:ecs:us-east-1:967807252336:task\/[A-Za-z0-9_-]{1,255}\/[a-f0-9]{32}$/u.test(v);
 function settings(c){const now=c.now??Date.now,enabled=c.enabled??false,maxRequestMs=c.maxRequestMs??3000,maxWaitMs=c.maxWaitMs??30000,pollMs=c.pollMs??100,cleanupMs=c.cleanupMs??30000;if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxWaitMs)||maxWaitMs<1||maxWaitMs>1800000||!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000||!Number.isSafeInteger(cleanupMs)||cleanupMs<1||cleanupMs>30000)throw fault();return {now,enabled,maxRequestMs,maxWaitMs,pollMs,cleanupMs};}
 async function pause(life,ms){await life.run(signal=>new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(fault());},timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve();},ms);signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();}));}
@@ -20,11 +21,15 @@ export function createPreparedRunnerGate(configuration){
  return Object.freeze({wait,readiness,release,close});
 }
 export function createPreparedTaskKickoff(configuration){
- const c=own(configuration,['original','controller','store','runner'],['enabled','now','maxRequestMs','maxWaitMs','pollMs','cleanupMs']),original=remoteOriginal(c.original),s=settings(c),allocate=storageMethod(c.controller,'allocate'),closeController=storageMethod(c.controller,'close'),read=storageMethod(c.store.allocations,'read'),readiness=storageMethod(c.runner,'readiness'),release=storageMethod(c.runner,'release'),key={binding:original.binding,allocationKey:original.executionKey};
+ const c=own(configuration,['original','controller','store','runner'],['enabled','now','maxRequestMs','maxWaitMs','pollMs','cleanupMs','reconcile']),original=remoteOriginal(c.original),s=settings(c),allocate=storageMethod(c.controller,'allocate'),closeController=storageMethod(c.controller,'close'),read=storageMethod(c.store.allocations,'read'),readiness=storageMethod(c.runner,'readiness'),release=storageMethod(c.runner,'release'),key={binding:original.binding,allocationKey:original.executionKey};
  let dispatched=false,closed=false,attempt,allocationWork,closing,failure,waitingAllocation=false,attemptPending=false;const cancellation=new AbortController(),receipt={binding:original.binding,executionId:original.executionId,expiresAtMs:original.expiresAtMs};
  function input(value,field){const v=own(value,['binding',field],['signal']);nativeSignal(v.signal);if(!s.enabled||!same(v.binding,original.binding)||v[field]!==original[field]||v.signal?.aborted)throw fault();return v;}
  function check(signal){if(closed||signal?.aborted||s.now()>=original.expiresAtMs)throw fault();}
- async function stop(value){input(value,'executionId');await close();return data(receipt);}
+ // Stop is the broker's independent exit on every path. With reconciliation, a run the original left nonterminal (its own
+ // terminal write unacknowledged) is settled once this close has retired the original; an unproven stop stays a barrier.
+ if(c.reconcile!==undefined&&typeof c.reconcile!=='boolean')throw fault();
+ const reconciler=c.reconcile?createRunReconciler({store:c.store,retirement:{retire:()=>close()},now:s.now,maxReconcileMs:s.cleanupMs}):null;
+ async function stop(value){input(value,'executionId');await close();if(reconciler&&(await reconciler.reconcile({binding:original.binding})).outcome==='unknown')throw fault();return data(receipt);}
  function close(){if(closing)return closing;closed=true;cancellation.abort(fault());closing=(async()=>{const life=createOperationLifetime({now:s.now,deadlineMs:s.now()+s.cleanupMs,errorFactory:fault});try{
    // Wait for a borrowed allocation that ignored cancellation before asking its
    // canonical owner to close. Late settlement repeats that same owner cleanup.

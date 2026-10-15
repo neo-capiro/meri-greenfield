@@ -6,13 +6,13 @@ import {lifecycleFixture,binding as fixtureBinding,id,versions} from './lifecycl
 import {createLifecycleRunOwner} from '../lifecycle/worker-owner.mjs';
 import {createConversationActivity} from '../../../worker/conversation/activity.mjs';
 const SESSION_ID=id(223); // the session the fixture's native capture records
-export async function holdComposition({pool,binding=fixtureBinding,scopes,captureFails=false,captureCompletion}={}){
+export async function holdComposition({pool,binding=fixtureBinding,scopes,captureFails=false,captureCompletion,terminalAttemptMs}={}){
  const f=await lifecycleFixture(pool?{pool,binding,scopes}:{}),hooks={},counts={claims:0,captures:0,interrupts:0,closes:0,queries:0,reads:0},inputs=[],refusals=[];
  const owner=createLifecycleRunOwner({service:f.service,credentialForBinding:async()=>f.credential});
  const runOwner={...owner,
   async nextControls(args){const page=await owner.nextControls(args);counts.reads++;await hooks.afterRead?.(counts.reads,page);return page;},
   async claimControl(args){counts.claims++;const result=await owner.claimControl(args);await hooks.afterClaim?.(result);return result;},
-  async append(args){await hooks.beforeAppend?.(args.event);try{return await owner.append(args);}catch(error){refusals.push({type:args.event.type,data:args.event.data,code:error.code});hooks.refused?.(args.event,error);throw error;}}};
+  async append(args){await hooks.beforeAppend?.(args.event,args.signal);let result;try{result=await owner.append(args);}catch(error){refusals.push({type:args.event.type,data:args.event.data,code:error.code});hooks.refused?.(args.event,error);throw error;}await hooks.afterAppend?.(args.event,result);return result;}};
  async function captureCheckpoint({sessionId}){counts.captures++;if(captureFails)throw Error('synthetic native capture refusal');const proof=await f.capture(id(220)),cp=proof.checkpoint;
   return {checkpoint:cp,checkpointSha256:proof.checkpointSha256,sourceRequestSha256:proof.sourceRequestSha256,contextSha256:proof.contextSha256,sessionId,resumeSessionAt:null,verificationId:id(227),workspaceReadbackSha256:cp.workspaceSha256,opaqueSessionReadbackSha256:cp.opaqueSession.sha256,checkedAtMs:Date.now(),expiresAtMs:Date.now()+5000};}
  const prepareRuntime=async({binding:b})=>({binding:b,versions,cwd:`/workspace/conversations/${b.conversationId}`,proxyUrl:'https://trusted-proxy.invalid',proxyCredential:'synthetic-task',model:'qualified-model-pin',sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+4000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:4096});
@@ -22,7 +22,7 @@ export async function holdComposition({pool,binding=fixtureBinding,scopes,captur
    void (async()=>{for(;;){const next=await iterator.next();if(next.done)return;inputs.push(next.value);}})();yield* h.script({...api,stopped:stop.promise});},
   async interrupt(){counts.interrupts++;await hooks.interrupted?.();return {still_queued:[]};},close(){counts.closes++;stop.resolve();}};}
  const lifecycle={captureCheckpoint,pollMs:5,...(captureCompletion?{captureCompletion:input=>captureCompletion(h,input)}:{})};
- h.execute=async()=>{await f.service.submit({credential:f.credential,input:f.input});return createConversationActivity({runOwner,prepareRuntime,query,lifecycle})({binding});};
+ h.execute=async()=>{await f.service.submit({credential:f.credential,input:f.input});await hooks.afterSubmit?.();return createConversationActivity({runOwner,prepareRuntime,query,lifecycle,...(terminalAttemptMs?{terminalAttemptMs}:{})})({binding});};
  h.control=intent=>f.control(intent==='pause'?{controlId:id(231),intent}:{controlId:id(232),intent,proposalId:f.proposal.proposalId});
  h.controlId=intent=>intent==='pause'?id(231):id(232);
  h.history=async()=>f.store.read(binding,{after:0,limit:100},()=>{});

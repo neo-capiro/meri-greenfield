@@ -50,13 +50,13 @@ test('a pending reservation recovers the same target; changed facts refuse',asyn
  await assert.rejects(f.store.nextRuns.reserve({source:f.run1,target:other,facts,scopes:f.scopes,versions,policyRevision:f.policyRevision,reservedAt:new Date().toISOString()},check),/NEXT_RUN_REPLAY_REFUSED/);
  assert.equal((await f.pool.query('SELECT count(*)::int AS n FROM meri_conversations.next_runs WHERE tenant_id=$1',[f.run1.tenantId])).rows[0].n,1);
 });
-test('genuine completion, retirement and revoked original grants are mandatory; cancelled and failed runs cannot continue',async t=>{
+test('genuine completion, retirement and revoked original grants are mandatory; cancelled and failed runs cannot continue without a retired original',async t=>{
  const missing=await fixture(t);await missing.submit(await missing.session(missing.run1),'no checkpoint');for(const state of ['starting','running','completed'])await missing.store.append(missing.run1,{eventId:randomUUID(),createdAt:new Date().toISOString(),type:'run.status',data:{state,reasonCode:null}},check);await assert.rejects(missing.owner.selectRun({principal:missing.principal,conversationId:missing.conversationId}),/NEXT_RUN_CHECKPOINT_REQUIRED/);
  const f=await fixture(t);await f.submit(await f.session(f.run1),'first prompt');const allocation=await f.allocate(f.run1);await f.complete(f.run1);
  await assert.rejects(f.owner.selectRun({principal:f.principal,conversationId:f.conversationId}),/NEXT_RUN_RETIREMENT_REQUIRED/);
  await f.retire(allocation,{revoke:false});await assert.rejects(f.owner.selectRun({principal:f.principal,conversationId:f.conversationId}),/NEXT_RUN_REVOCATION_REQUIRED/);
  await f.retire(allocation);assert.equal((await f.owner.selectRun({principal:f.principal,conversationId:f.conversationId})).reserved,true);
- for(const final of ['cancelled','failed']){const g=await fixture(t);await g.submit(await g.session(g.run1),'unsuccessful turn');await g.complete(g.run1,final);await assert.rejects(g.owner.selectRun({principal:g.principal,conversationId:g.conversationId}),/NEXT_RUN_SOURCE_NOT_COMPLETED/);}
+ for(const final of ['cancelled','failed']){const g=await fixture(t);await g.submit(await g.session(g.run1),'unsuccessful turn');await g.complete(g.run1,final);await assert.rejects(g.owner.selectRun({principal:g.principal,conversationId:g.conversationId}),/NEXT_RUN_RETIREMENT_REQUIRED/);}
 });
 
 test('the old prompt cannot be recovered through the next run, a completed run takes no new prompt, and the stale session cannot write',async t=>{

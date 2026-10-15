@@ -17,8 +17,11 @@ const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=code=>Object.assign(new Error(code),{code});
 // Trusted runtime-preparation facts the capability layer consumes; run data never supplies them.
 const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbox','sdkConfigDirectory','sdkSecureStorageDirectory']);
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills}){
- if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function')throw fault('ACTIVITY_CONFIGURATION');
+/** Acknowledgement bound for one terminal publication attempt: the control service's default per-request bound. Terminal
+ * settlement makes at most two rounds over the (at most two) candidate events, so it is finite (here at most 12 s). */
+export const TERMINAL_ATTEMPT_MS=3000;
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,terminalAttemptMs=TERMINAL_ATTEMPT_MS}){
+ if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
  if(lifecycle!==undefined)assertLifecycleConfiguration(lifecycle,runOwner);
  if(selectedSkills!==undefined&&typeof selectedSkills.prepare!=='function')throw fault('SKILL_ACTIVITY_CONFIGURATION');
  return async function executeConversation({binding,signal}){
@@ -62,10 +65,13 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // A denied/unknown starting claimant cannot terminalize another admitted activity.
    // A held run refuses the ordinary terminal event and admits only the explicit uncheckpointed-hold failure, which
    // the store verifies against this run's unapplied pause/approval control (and refuses without one). The local
-   // hold view only orders the two attempts; the durable owner decides which one is true.
-   if(claimed){const terminal=async data=>{const cleanup=createOperationLifetime({deadlineMs:now()+30,now,errorFactory:fault});try{await cleanup.run(signal=>runOwner.append({binding,event:{eventId:newId(),createdAt:new Date(now()).toISOString(),type:'run.status',data},signal}));return true;}catch{return false;}finally{cleanup.close();}};
-    const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},[first,second]=controls?.isHeld()?[hold,ordinary]:[ordinary,hold];
-    if(!await terminal(first))await terminal(second);}
+   // hold view only orders the attempts; the durable owner decides which one is true. Each candidate keeps one event ID,
+   // so the second round is an idempotent replay that reads back a write whose acknowledgement was lost. When nothing
+   // is acknowledged the run stays nonterminal, and the run reconciler settles it after the original is retired.
+   if(claimed){const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},createdAt=new Date(now()).toISOString();
+    const candidates=(controls?.isHeld()?[hold,ordinary]:[ordinary,hold]).map(data=>({eventId:newId(),createdAt,type:'run.status',data}));
+    const terminal=async event=>{const attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});try{await attempt.run(signal=>runOwner.append({binding,event,signal}));return true;}catch{return false;}finally{attempt.close();}};
+    settle:for(let round=0;round<2;round++)for(const event of candidates)if(await terminal(event))break settle;}
    throw fault(cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED');
   }finally{clearInterval(heartbeatTimer);controller.abort(failure);try{await skillRuntime?.close();await controls?.finish();controls?.close();input?.close();await closeQuery();}catch{throw fault('SDK_CLEANUP_UNKNOWN');}finally{life?.close();preparation?.close();}}
  };
