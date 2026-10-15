@@ -154,3 +154,37 @@ test('recovery over the PostgreSQL journal: a restore that predates a suppressio
  const revived=await f.reconciler().reconcile();assert.deepEqual(revived.replanned,[key]);assert.equal((await f.journal.get(key)).purge.state,'PLANNED');
  const again=planFrom(f,s,await f.journal.get(key));assert.equal((await f.executor().execute(again)).state,'EXECUTED');assert.equal(await f.entryCount(e1),0);
 });
+/** Audit DA-1/DA-4 on the real cluster: a client wrapper drops one statement's reply (sent or not sent) so the real session is left in the
+ * state an uncertain reply would leave it; the adapter must retire that session (its backend ends, releasing its locks). */
+function faultyPool(base,{dropBeforeSend=[],dropAfterSend=[]}){const sessions=[];
+ return {sessions,async connect(){const c=await base.connect();const rec={pid:c.processID,releases:[]};sessions.push(rec);
+  return {async query(sql,values){if(dropBeforeSend.some(p=>sql.startsWith(p)))throw Object.assign(new Error('synthetic lost reply'),{code:'08006'});const r=await c.query(sql,values);if(dropAfterSend.some(p=>sql.startsWith(p)))throw Object.assign(new Error('synthetic lost reply'),{code:'08006'});return r;},
+   release(error){rec.releases.push(error);c.release(error);}};}};}
+async function sessionEnded(pool,pid){for(let i=0;i<60;i++){if((await pool.query('SELECT count(*)::int AS n FROM pg_stat_activity WHERE pid=$1',[pid])).rows[0].n===0)return true;await new Promise(r=>setTimeout(r,50));}return false;}
+const recoveryLockFree=async pool=>{const c=await pool.connect();try{const ok=(await c.query("SELECT pg_try_advisory_lock(hashtextextended('meri_retention_recovery',0)) AS ok")).rows[0].ok;if(ok)await c.query("SELECT pg_advisory_unlock(hashtextextended('meri_retention_recovery',0))");return ok;}finally{c.release();}};
+test('DA-1 on PostgreSQL: a conversation snapshot carrying a real artifact version is BLOCKED with zero deletes; a lost COMMIT acknowledgement of the row purge is recorded UNKNOWN per step, retires the session, and recovery verifies the committed deletion',async t=>{
+ const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);const [e1]=await f.sdkRows(s,[1]);const made=await f.artifact([object()],s.subjectId);
+ const mixed=planFrom(f,s,await f.suppressed(s,enumerateReferences(snapshot(s,{sdkEntries:[e1],artifactVersions:made.versions}))));f.seed(mixed);
+ assert.equal(mixed.state,'BLOCKED');assert.ok(mixed.blocks.some(b=>b.reason==='ROW_TARGET_SUBJECT_MISMATCH'));await assert.rejects(f.executor().execute(mixed),/RETENTION_PURGE_BLOCKED/);
+ assert.ok(mixed.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)),'zero storage deletes');assert.equal(await f.entryCount(e1),1);assert.equal(await f.versionCount(made.subject.subjectId),1);assert.deepEqual((await f.sink.read()).map(r=>r.state),['SUPPRESSED']);
+ f.current.inventories.set(key,enumerateReferences(snapshot(s,{sdkEntries:[e1]})));const plan=planFrom(f,s,await f.journal.get(key));f.seed(plan);assert.equal(plan.state,'PLANNED');
+ const lossy=faultyPool(f.pool,{dropAfterSend:['COMMIT']}),rowsOverLossy=createPostgresRetentionJournal({pool:lossy}).rows;
+ const exec=createPurgeExecutor({storage:f.storage,ledger:f.ledger,journal:f.journal,keyFor:f.keyFor,facts:f.facts,serving:f.serving,rows:rowsOverLossy,enabled:true,now:f.clock.now});
+ await assert.rejects(exec.execute(plan),e=>e.code==='RETENTION_COMMIT_UNKNOWN');assert.equal(await f.entryCount(e1),0,'the commit really happened; only its acknowledgement was lost');
+ const last=(await f.sink.read()).at(-1);assert.equal(last.state,'PURGE_UNKNOWN');assert.equal(last.reason,'RETENTION_COMMIT_UNKNOWN');assert.deepEqual(last.facts.rowSteps.map(r=>r.state),['UNKNOWN']);assert.ok(last.facts.steps.every(x=>x.state==='EXECUTED'));
+ assert.equal((await f.journal.get(key)).purge.state,'UNKNOWN');assert.equal((await f.pool.query('SELECT state FROM meri_conversations.retention_purge_targets WHERE workflow_id=$1',[plan.rowSteps[0].workflowId])).rows[0].state,'UNKNOWN','the projected row target is UNKNOWN, not EXECUTED');
+ assert.equal(lossy.sessions.length,1);assert.ok(lossy.sessions[0].releases[0] instanceof Error,'released with an error');assert.ok(await sessionEnded(f.pool,lossy.sessions[0].pid),'the uncertain session is destroyed, not pooled');
+ const report=await f.reconciler().reconcile();assert.deepEqual(report.verified,[key],'recovery re-verifies the committed deletion');assert.equal((await f.journal.get(key)).purge.state,'EXECUTED');
+});
+test('DA-4 on PostgreSQL: a ROLLBACK and an advisory unlock whose replies are lost retire the real session, so later borrowers are not blocked by its transaction or recovery lock',async t=>{
+ const f=await fixture(t),s=await f.conversation(),key=subjectKey(s);
+ const noRollback=faultyPool(f.pool,{dropBeforeSend:['ROLLBACK']}),j=createPostgresRetentionJournal({pool:noRollback});
+ const value={state:'SUPPRESSED',ownerActorId:owner,suppressedAtMs:f.clock.now(),ledgerSequence:1,entrySha256:'1'.repeat(64),purge:null};
+ await assert.rejects(j.set(key,value,{expected:'0'.repeat(64)}),/RETENTION_STALE_WRITE/,'the refusal holds the subject lock and the shared recovery lock in a transaction that was never rolled back');
+ assert.ok(noRollback.sessions[0].releases[0] instanceof Error);assert.ok(await sessionEnded(f.pool,noRollback.sessions[0].pid),'the open transaction is ended with its session');
+ assert.equal(await recoveryLockFree(f.pool),true,'recovery is not blocked by a leaked shared lock');assert.equal((await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'})).state,'SUPPRESSED','a later write on the same subject is not blocked');
+ const noUnlock=faultyPool(f.pool,{dropBeforeSend:['SELECT pg_advisory_unlock']}),j2=createPostgresRetentionJournal({pool:noUnlock});
+ await assert.rejects(j2.exclusive(async()=>'pass'),/RETENTION_STORE_UNAVAILABLE/,'the caller is told the unlock outcome is unknown');
+ assert.ok(noUnlock.sessions[0].releases[0] instanceof Error);assert.ok(await sessionEnded(f.pool,noUnlock.sessions[0].pid),'the session holding the exclusive recovery lock is ended');
+ assert.equal(await recoveryLockFree(f.pool),true);assert.equal((await f.suppression.release({principal:f.principal,subject:s,reason:'withdrawn'})).state,'RELEASED','transitions take the shared recovery lock again');
+});

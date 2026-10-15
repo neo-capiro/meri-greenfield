@@ -13,15 +13,17 @@ import {compose,subjectOf,snapshot,policy,object,ownership,owners,planFrom,sdkEn
 const day=86400000;
 async function suppressed(f,s,{inventory}={}){await f.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});f.clock.advance(2*day);if(inventory)f.current.inventories.set(subjectKey(s),inventory);return f.journal.get(subjectKey(s));}
 const seed=(f,plan)=>{for(const st of plan.steps)f.store.put(f.keyFor(st),st.versionId);};
-test('planning: refused without suppression or policy; cooling, holds, liabilities and shared references block; identities are deterministic and duplicates coalesce; row targets and artifact versions are carried',async()=>{
- const f=compose(),s=subjectOf(),artifact=object(),inv=enumerateReferences(snapshot(s,{artifactVersions:[{versionId:randomUUID(),object:artifact},{versionId:randomUUID(),object:artifact}]}));
+test('planning: refused without suppression or policy; cooling, holds, liabilities and shared references block; identities are deterministic and duplicates coalesce; row targets and artifact versions are carried under their own subject kind',async()=>{
+ const f=compose(),s=subjectOf(),inv=enumerateReferences(snapshot(s));
  assert.throws(()=>planFrom(f,s,null,{inventory:inv}),/RETENTION_NOT_SUPPRESSED/);
  const js=await suppressed(f,s,{inventory:inv});assert.throws(()=>planFrom(f,s,js,{policy:null}),/RETENTION_POLICY_REQUIRED/);
  assert.ok(planFrom(f,s,{...js,suppressedAtMs:f.clock.now()-1000}).blocks.every(b=>b.reason==='COOLING_PERIOD'));
  const plan=planFrom(f,s,js);assert.equal(plan.state,'PLANNED');assert.equal(plan.steps.length,inv.objects.length);assert.equal(plan.planSha256,planFrom(f,s,js).planSha256,'same inputs, same digest');assert.equal(planDigest(plan),plan.planSha256);
  assert.deepEqual(plan.suppression,{ledgerSequence:js.ledgerSequence,entrySha256:js.entrySha256},'the plan names its suppression generation');
- const sharedStep=plan.steps.find(st=>st.objectId===artifact.objectId);assert.equal(sharedStep.artifactVersionIds.length,2,'two database artifact versions sharing one storage object are both carried');
- assert.deepEqual(plan.rowSteps.map(r=>r.className).sort(),['artifactVersions','artifactVersions','sdkSession'],'row targets: both artifact versions and the SDK entry');
+ assert.deepEqual(plan.rowSteps.map(r=>r.className),['sdkSession'],'a conversation carries its SDK entry row target');
+ const a0=subjectOf('artifact'),artifact=object(),invA0=enumerateReferences(snapshot(a0,{sdkEntries:[],artifactVersions:[{versionId:randomUUID(),object:artifact},{versionId:randomUUID(),object:artifact}]})),planA0=planFrom(f,a0,await suppressed(f,a0,{inventory:invA0}));assert.equal(planA0.state,'PLANNED');
+ const sharedStep=planA0.steps.find(st=>st.objectId===artifact.objectId);assert.equal(sharedStep.artifactVersionIds.length,2,'two database artifact versions sharing one storage object are both carried');
+ assert.deepEqual(planA0.rowSteps.map(r=>r.className),['artifactVersions','artifactVersions'],'row targets: both artifact versions of the artifact subject');
  assert.deepEqual(inv.rowTargets.find(t=>t.className==='sdkSession'),{...inv.rowTargets.find(t=>t.className==='sdkSession')},'the SDK entry target carries run, session, subpath and sequence');
  const held=inv.objects[0];f.current.holds.set(held.objectId+'@'+held.versionId,{objectLockRetainUntilMs:f.clock.now()+day,legalHold:false});assert.deepEqual(planFrom(f,s,js).blocks.map(b=>b.reason),['OBJECT_LOCK']);f.current.holds.clear();
  f.current.liabilities.set(subjectKey(s),[{runId:'r',kind:'UNKNOWN_LAUNCH'}]);assert.deepEqual(planFrom(f,s,js).blocks.map(b=>b.reason),['UNKNOWN_LIABILITY']);f.current.liabilities.clear();
@@ -56,10 +58,10 @@ test('execution: disabled by default fails closed before any effect; every effec
  f.current.liabilities.set(subjectKey(s),[{runId:'r',kind:'UNKNOWN_LAUNCH'}]);await assert.rejects(exec.execute(plan),/RETENTION_PURGE_BLOCKED/,'a liability that appeared after planning blocks the effect');f.current.liabilities.clear();
  f.current.unavailable.add('holds');await assert.rejects(exec.execute(plan),/RETENTION_AUTHORITY_UNAVAILABLE/,'missing authority refuses, never clears');f.current.unavailable.clear();
  assert.ok(plan.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)),'zero deletes through every refusal');
- const done=await exec.execute(plan);assert.equal(done.state,'EXECUTED');assert.ok(plan.steps.every(st=>!f.store.has(f.keyFor(st),st.versionId)));assert.deepEqual((await f.sink.read()).map(r=>r.state),['SUPPRESSED','PURGE_PLANNED','PURGE_EXECUTED']);
+ const done=await exec.execute(plan);assert.equal(done.state,'EXECUTED');assert.ok(plan.steps.every(st=>!f.store.has(f.keyFor(st),st.versionId)));assert.deepEqual((await f.sink.read()).map(r=>[r.state,r.reason]),[['SUPPRESSED','owner request'],['PURGE_PLANNED',undefined],['PURGE_UNKNOWN','EFFECTS_STARTED'],['PURGE_EXECUTED',undefined]],'effects are durably marked as begun before the first delete');
  const facts=(await f.sink.read()).at(-1).facts;assert.ok(facts.steps.every(x=>x.objectId&&x.versionId&&x.sha256&&x.classes.length&&Array.isArray(x.artifactVersionIds)&&x.state==='EXECUTED'));assert.deepEqual(facts.suppression,plan.suppression);assert.equal(facts.rowSteps.length,plan.rowSteps.length);
  assert.ok(facts.rowSteps.every(x=>x.state==='EXECUTED'&&x.target),'every database row target is recorded as deleted');assert.equal(done.rowSteps.length,plan.rowSteps.length);for(const st of plan.rowSteps)assert.equal(await f.rows.present(subjectKey(s),st),false,'the row is gone');
- const again=await exec.execute(plan);assert.equal(again.replayed,true);assert.equal(f.sink.size(),3);
+ const again=await exec.execute(plan);assert.equal(again.replayed,true);assert.equal(f.sink.size(),4);
  const noRows=subjectOf(),invNoRows=enumerateReferences(snapshot(noRows)),jsNoRows=await suppressed(f,noRows,{inventory:invNoRows}),planNoRows=planFrom(f,noRows,jsNoRows);seed(f,planNoRows);
  await assert.rejects(createPurgeExecutor({storage:f.storage,ledger:f.ledger,journal:f.journal,keyFor:f.keyFor,facts:f.facts,serving:f.serving,enabled:true,now:f.clock.now}).execute(planNoRows),/RETENTION_ROW_PURGE_UNAVAILABLE/,'row targets without a row purge port refuse before any effect');assert.ok(planNoRows.steps.every(st=>f.store.has(f.keyFor(st),st.versionId)));
  const other=planFrom(f,s,await f.journal.get(subjectKey(s)),{policy:{...policy(),version:4}});f.current.policy={...policy(),version:4};await assert.rejects(exec.execute(other),/RETENTION_PURGE_PLAN_MISMATCH/,'EXECUTED replay with a different plan hash refuses');f.current.policy=policy();

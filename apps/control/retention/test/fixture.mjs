@@ -7,6 +7,7 @@ import {createVersionStorage} from '../storage-port.mjs';
 import {createServingGate,createRecoveryReconciler} from '../reconciliation.mjs';
 import {createPurgeExecutor,planPurge} from '../purge.mjs';
 import {subjectKey} from '../boundary.mjs';
+import {rowClassSubjectKind} from '../inventory.mjs';
 export const tenant='tenant-a',owner='actor-owner';
 export const policy=()=>({policyId:'policy-synthetic',version:3,coolingPeriodMs:86400000,classes:Object.fromEntries(['conversation','events','lifecycle','completionCheckpoints','nextRuns','sdkSession','selectedOutputs','nativeJournals','artifactVersions','uploads','logs'].map(c=>[c,{retentionMs:7*86400000,purgeable:c!=='logs'}]))});
 export const object=()=>({objectId:randomUUID(),versionId:'v-'+randomUUID().slice(0,8),sha256:'1'.repeat(64)});
@@ -43,11 +44,14 @@ export function currentFacts(c){
   lastActivityFor:async s=>{if(current.unavailable.has('lastActivity'))throw new Error('unavailable');return current.lastActivity.get(subjectKey(s))??c.now()-30*86400000;}};
  return {current,facts};
 }
-/** In-process database-row purge port: the rows that exist per subject (seeded from the inventory's row targets) and their deletion. */
+/** In-process database-row purge port: the rows that exist per subject (seeded from the inventory's row targets) and their deletion.
+ * Like the SQL row owner it routes each class to one subject kind and refuses any other, in preflight and inside purge. */
 export function memoryRows(){
  const present=new Map();const id=t=>JSON.stringify(t);
+ const route=(key,plan)=>{const kind=key.split(':').at(-2);for(const st of plan.rowSteps)if(rowClassSubjectKind[st.className]!==kind)throw Object.assign(new Error('RETENTION_INVALID_REQUEST'),{code:'RETENTION_INVALID_REQUEST'});};
  return {present,seed(key,inventory){present.set(key,new Set(inventory.rowTargets.map(id)));},
-  async purge(key,plan){const rows=present.get(key)??new Set();return plan.rowSteps.map(st=>{const had=rows.delete(id(st.target));return {workflowId:st.workflowId,state:'EXECUTED',deleted:had?1:0};});},
+  async preflight(key,plan){route(key,plan);return true;},
+  async purge(key,plan){route(key,plan);const rows=present.get(key)??new Set();return plan.rowSteps.map(st=>{const had=rows.delete(id(st.target));return {workflowId:st.workflowId,state:'EXECUTED',deleted:had?1:0};});},
   async present(key,fact){return (present.get(key)??new Set()).has(id(fact.target));},
   revive(key,target){present.get(key)?.add(id(target));}};
 }
