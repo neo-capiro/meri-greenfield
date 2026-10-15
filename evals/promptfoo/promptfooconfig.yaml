@@ -1,0 +1,14 @@
+# Meri representative-task suite: 60 slots across the plan's five capability groups.
+# Only SYNTHETIC_RUNNABLE slots are generated as tests; AWAITING_APPROVED_REAL_REQUEST_SOURCE slots never run.
+# The provider is a deterministic scripted runtime over offline targets: no model, SDK query, network or database.
+# Results are LOCAL_FIXTURE observations and never satisfy the plan's real-work release criterion.
+description: Meri synthetic representative-task grading (LOCAL_FIXTURE; not the 60 real-task release gate)
+prompts:
+  - '{{prompt}}'
+providers:
+  - id: file://provider.mjs
+    label: meri-synthetic-deterministic
+tests: file://cases/index.mjs
+evaluateOptions:
+  maxConcurrency: 1
+  cache: false

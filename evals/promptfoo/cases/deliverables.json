@@ -1,0 +1,558 @@
+{
+ "schema": "meri-promptfoo-cases/1",
+ "group": "deliverables",
+ "cases": [
+  {
+   "caseId": "DL-01",
+   "group": "deliverables",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Plain-text briefing memo is created and downloadable",
+   "capability": "artifact.create",
+   "prompt": "SYNTHETIC: Draft a short synthetic briefing memo as a file.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-01-E1",
+     "source": "artifact-service",
+     "path": "version.filename",
+     "value": "Synthetic briefing memo.txt",
+     "required": true,
+     "describes": "filename derived from the request title"
+    },
+    {
+     "evidenceId": "DL-01-E2",
+     "source": "artifact-service",
+     "path": "version.generationStatus",
+     "value": "draft",
+     "required": true,
+     "describes": "new versions start as drafts"
+    },
+    {
+     "evidenceId": "DL-01-E3",
+     "source": "artifact-service",
+     "path": "execution.nativeQualified",
+     "value": false,
+     "required": true,
+     "describes": "plain-text executor is not native Office qualification"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-dl actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "txt",
+    "files": 1,
+    "requiredText": [
+     "Synthetic briefing memo",
+     "Purpose: synthetic evaluation only"
+    ],
+    "maxBytes": 65536
+   },
+   "successCriteria": [
+    "File opens as UTF-8 text with the requested headings",
+    "Checksum and size match the committed version"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "usable-file",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "artifact-text-create",
+    "tenantId": "tenant-synthetic-dl",
+    "tag": "d1a1",
+    "title": "Synthetic briefing memo",
+    "text": "Synthetic briefing memo\nPurpose: synthetic evaluation only\n"
+   }
+  },
+  {
+   "caseId": "DL-02",
+   "group": "deliverables",
+   "status": "SYNTHETIC_RUNNABLE",
+   "synthetic": true,
+   "title": "Revision creates a new version and preserves the original",
+   "capability": "artifact.revise",
+   "prompt": "SYNTHETIC: Revise the synthetic memo and keep the original.",
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-02-E1",
+     "source": "artifact-service",
+     "path": "revisionLinksParent",
+     "value": true,
+     "required": true,
+     "describes": "revised version names the original as parent"
+    },
+    {
+     "evidenceId": "DL-02-E2",
+     "source": "artifact-service",
+     "path": "originalPreserved",
+     "value": true,
+     "required": true,
+     "describes": "original bytes unchanged after revision"
+    },
+    {
+     "evidenceId": "DL-02-E3",
+     "source": "artifact-service",
+     "path": "distinctVersions",
+     "value": true,
+     "required": true,
+     "describes": "revision has its own version ID"
+    }
+   ],
+   "permissions": {
+    "principal": "synthetic tenant-synthetic-dl actor",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "txt",
+    "files": 2,
+    "requiredText": [
+     "Synthetic memo revision 2"
+    ],
+    "maxBytes": 65536
+   },
+   "successCriteria": [
+    "Both versions download with matching checksums",
+    "Original version is unchanged"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "usable-file",
+    "factual-claims"
+   ],
+   "scenario": {
+    "kind": "artifact-text-revise",
+    "tenantId": "tenant-synthetic-dl",
+    "tag": "d1a2",
+    "title": "Synthetic memo",
+    "text": "Synthetic memo revision 1\n",
+    "revisedText": "Synthetic memo revision 2\n"
+   }
+  },
+  {
+   "caseId": "DL-03",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Native DOCX brief from authorized evidence",
+   "capability": "create_word",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-03-E1",
+     "source": "create_word",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "cited evidence for the brief"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "docx",
+    "files": 1,
+    "requiredText": [],
+    "maxBytes": 10485760
+   },
+   "successCriteria": [
+    "DOCX opens natively and renders without clipping",
+    "Citations map to evidence"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims",
+    "usable-file"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-04",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Spreadsheet with recalculated totals",
+   "capability": "create_excel",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-04-E1",
+     "source": "create_excel",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "source rows for the totals"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "xlsx",
+    "files": 1,
+    "requiredText": [],
+    "maxBytes": 10485760
+   },
+   "successCriteria": [
+    "Formulas recalculate to reference totals"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims",
+    "usable-file"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-05",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Slide deck summarizing a hearing",
+   "capability": "create_powerpoint",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-05-E1",
+     "source": "create_powerpoint",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "hearing records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client",
+     "public"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "pptx",
+    "files": 1,
+    "requiredText": [],
+    "maxBytes": 10485760
+   },
+   "successCriteria": [
+    "Slides open natively; no critical clipping"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims",
+    "usable-file"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-06",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "PDF one-pager for a client meeting",
+   "capability": "artifact.pdf",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-06-E1",
+     "source": "artifact.pdf",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "meeting and client records"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "pdf",
+    "files": 1,
+    "requiredText": [],
+    "maxBytes": 10485760
+   },
+   "successCriteria": [
+    "PDF renders all pages; text extractable"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims",
+    "usable-file"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-07",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Reproducible analysis over authorized inputs",
+   "capability": "run_analysis",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-07-E1",
+     "source": "run_analysis",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "input datasets and computed values"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Referenced values reproduce from inputs"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-08",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Revise a native document while preserving the original",
+   "capability": "artifact.revise",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-08-E1",
+     "source": "artifact.revise",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "original version and change request"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "docx",
+    "files": 1,
+    "requiredText": [],
+    "maxBytes": 10485760
+   },
+   "successCriteria": [
+    "New immutable version; original bytes unchanged"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims",
+    "usable-file"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-09",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Exact-version download after authorization recheck",
+   "capability": "artifact.download",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-09-E1",
+     "source": "artifact.download",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "version ID and checksum"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "file",
+    "fileFormat": "docx",
+    "files": 1,
+    "requiredText": [],
+    "maxBytes": 10485760
+   },
+   "successCriteria": [
+    "Downloads the exact requested version under current authority"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims",
+    "usable-file"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-10",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "File a verified artifact to the approved client destination",
+   "capability": "artifact.file",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-10-E1",
+     "source": "artifact.file",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "filing receipt and destination"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client",
+     "document"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Exact approved destination only",
+    "No widened source access"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-11",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Preview of a generated version",
+   "capability": "artifact.preview",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-11-E1",
+     "source": "artifact.preview",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "preview record and version checksum"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "allowed"
+   },
+   "outputFormat": {
+    "kind": "answer"
+   },
+   "successCriteria": [
+    "Preview corresponds to the exact version checksum"
+   ],
+   "graders": [
+    "output-format",
+    "permissions",
+    "factual-claims"
+   ],
+   "scenario": null
+  },
+  {
+   "caseId": "DL-12",
+   "group": "deliverables",
+   "status": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+   "synthetic": false,
+   "title": "Revoked actor cannot download a prior artifact",
+   "capability": "create_excel",
+   "prompt": null,
+   "expectedEvidence": [
+    {
+     "evidenceId": "DL-12-E1",
+     "source": "create_excel",
+     "path": null,
+     "value": null,
+     "required": true,
+     "describes": "revocation fixture"
+    }
+   ],
+   "permissions": {
+    "principal": "approved real-request actor (pending)",
+    "scopes": [
+     "client"
+    ],
+    "expected": "denied",
+    "refusalCode": "ACCESS_DENIED"
+   },
+   "outputFormat": {
+    "kind": "refusal"
+   },
+   "successCriteria": [
+    "Revocation denies old file and preview access"
+   ],
+   "graders": [
+    "output-format",
+    "permissions"
+   ],
+   "scenario": null
+  }
+ ]
+}
