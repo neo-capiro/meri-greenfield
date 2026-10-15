@@ -16,7 +16,9 @@ CREATE TABLE meri_artifacts.retention_subjects (
 CREATE TABLE meri_artifacts.retention_purges (
  workflow_id text PRIMARY KEY CHECK (workflow_id ~ '^[a-f0-9]{64}$'),
  tenant_id text NOT NULL, artifact_id uuid NOT NULL,
- version_id uuid NOT NULL, object_id uuid NOT NULL, object_version_id text NOT NULL CHECK (length(object_version_id) BETWEEN 1 AND 1024),
+ -- version_id names the database artifact version a row purge targets; NULL for a storage-only step not bound to any database version
+ -- (such a row never admits a version DELETE: the trigger requires an exact version match).
+ version_id uuid, object_id uuid NOT NULL, object_version_id text NOT NULL CHECK (length(object_version_id) BETWEEN 1 AND 1024),
  sha256 text NOT NULL CHECK (sha256 ~ '^[a-f0-9]{64}$'),
  plan_sha256 text NOT NULL CHECK (plan_sha256 ~ '^[a-f0-9]{64}$'),
  state text NOT NULL CHECK (state IN ('PLANNED','BLOCKED','UNKNOWN','EXECUTED')),
@@ -34,8 +36,9 @@ LANGUAGE plpgsql AS $$
 BEGIN
  IF TG_OP = 'DELETE' AND EXISTS (
   SELECT 1 FROM meri_artifacts.retention_purges p
+  JOIN meri_artifacts.retention_subjects s ON s.tenant_id = p.tenant_id AND s.artifact_id = p.artifact_id
   WHERE p.tenant_id = OLD.tenant_id AND p.artifact_id = OLD.artifact_id AND p.version_id = OLD.version_id AND p.state = 'PLANNED'
-    AND p.xmin = pg_current_xact_id()::xid
+    AND p.xmin = pg_current_xact_id()::xid AND s.state = 'SUPPRESSED'
  ) THEN RETURN OLD; END IF;
  RAISE EXCEPTION 'MERI_ARTIFACT_VERSION_IMMUTABLE';
 END $$;
