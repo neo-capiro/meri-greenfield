@@ -1,0 +1,462 @@
+✔ create_word: retained bytes/version/ticket survive reconstructed and concurrent completed repeats (500.234241ms)
+✔ create_excel: retained bytes/version/ticket survive reconstructed and concurrent completed repeats (421.512607ms)
+✔ new invocation UUID overrides only validated version allocation, retaining original artifact/object allocation (278.692795ms)
+✔ completed revision remains published in descendant ancestry and never rewrites original or later head (693.082955ms)
+✔ lost marker ACK recovers only original immutable commit and charge (304.198419ms)
+✔ lost settle ACK recovers only original immutable commit and charge (275.718411ms)
+✔ published premarker interruption recovers while an orphan record remains UNKNOWN (447.815497ms)
+✔ consistent accounting argument corruption is rejected (completed) (228.414643ms)
+✔ consistent accounting argument corruption is rejected (premarker) (242.801275ms)
+✔ legacy complete digest supports exact random version while alias filename and markerless legacy fail closed (598.876627ms)
+✔ identical requests on separate deliveries cannot borrow or erase each others completion (478.468926ms)
+✔ retained parent corruption cannot release or re-execute (240.50746ms)
+✔ retained scope corruption cannot release or re-execute (317.220969ms)
+✔ retained record corruption cannot release or re-execute (244.855531ms)
+✔ retained object corruption cannot release or re-execute (186.154884ms)
+✔ retained head corruption cannot release or re-execute (504.02537ms)
+✔ retained completion corruption cannot release or re-execute (317.704412ms)
+✔ revoked current authority and a narrower current byte ceiling withhold a charged result (226.183685ms)
+✔ revocation after exact object read still withholds release without new effects (199.791942ms)
+✔ original invocation deadline is not renewed by a fresh owner or completed replay (232.051276ms)
+✔ cancellation during replay lookup releases no result and performs no new effect (201.183505ms)
+✔ one generator wins while concurrent uncompleted replay stays UNKNOWN and later returns its result (224.135884ms)
+✔ published concurrent recovery uses identical original completion before first commit ACK resumes (254.413552ms)
+✔ unchanged canonical HTTP returns exact replay200 while other sessions/stores and revocation deny release (382.435801ms)
+✔ private observation never reconciles a marked UNKNOWN hold before current release authority (209.583033ms)
+✔ canonical database grant revocation denies replay even when business/resource ports still allow (212.459832ms)
+✔ canonical expired-grant denies completed replay independently of permissive resource ports (220.500166ms)
+✔ canonical stale-run-fence denies completed replay independently of permissive resource ports (273.243156ms)
+✔ canonical missing-run denies completed replay independently of permissive resource ports (203.341959ms)
+✔ canonical quarantined-budget denies completed replay independently of permissive resource ports (225.262513ms)
+✔ canonical capability-mismatch denies completed replay independently of permissive resource ports (180.940738ms)
+✔ canonical grant revoked after replay bytes prevents marker mutation and release (201.915091ms)
+✔ canonical grant revoked while completion ACK is parked still withholds final replay release (220.90536ms)
+✔ canonical database time beyond original invocation deadline denies despite unexpired host-time lease (256.949163ms)
+✔ publication ancestry accepts exactly1024 nodes with cached target read; longer and cyclic chains fail (16.001173ms)
+✔ legacy scan bounds entries and actual accumulated raw bytes, accepting exact16MiB only (2.392537ms)
+✔ local lookup rejects file/version alias even when its claimed record and digest appear complete (0.266865ms)
+✔ postgres constructor refuses getter method without executing it (1.501002ms)
+✔ postgres constructor refuses proxy method without executing it (0.178028ms)
+✔ s3 constructor refuses getter method without executing it (0.257969ms)
+✔ s3 constructor refuses proxy method without executing it (0.119402ms)
+✔ postgres constructor refuses inherited getter without executing it (0.410002ms)
+✔ postgres constructor refuses inherited proxy without executing it (0.094995ms)
+✔ s3 constructor refuses inherited getter without executing it (0.081102ms)
+✔ s3 constructor refuses inherited proxy without executing it (0.072087ms)
+✔ native Pool/S3Client prototype methods remain valid and constructors perform no IO (5.202614ms)
+✔ postgres retains the admitted bound method if configured connect is later replaced by an accessor (4.437639ms)
+✔ s3 retains the admitted prototype method if configured send is later replaced by an accessor (6.007648ms)
+✔ upstream pg Pool performs parameterized JSON/UUID queries and releases borrowed transaction leases without network (159.087407ms)
+✔ canonical record/head atomically commit, fresh adapter reads and exact replay remains idempotent after newer head (143.560341ms)
+✔ stale parent rejects with rollback and no immutable row or changed head (11.068721ms)
+✔ same immutable version cannot change request/spec/source object/binding; parent preserves owner/scopes (32.082106ms)
+✔ retained result hash supports only exact published lineage; request hash alone cannot find random old IDs (8.927593ms)
+✔ record/projection relational columns and hashes reject corruption (14.941586ms)
+✔ lost commit acknowledgement is UNKNOWN, retained exact record then recovers without writing twice (8.720951ms)
+✔ late borrowed acquisition is quarantined, and parked rollback is bounded (62.085646ms)
+✔ cancel before connection has no SQL and cancellation after insert rolls back (2.290456ms)
+✔ native SDK command objects use immutable key/full checksum/KMS/account and exact native version head/get (16.313771ms)
+✔ conditional replay verifies current native head/request metadata then the exact native version (2.787612ms)
+✔ bucket suspended/unversioned and missing/native-null/checksum/composite/KMS/identity metadata fail closed (8.026837ms)
+✔ get byte corruption/overflow and cancellation retire actual stream bodies (6.763925ms)
+✔ parked send deadlines have no late reads and acquired late bodies are destroyed (20.557813ms)
+✔ constructor/import are inert; credentials required explicitly and borrowed client never disposed (4.895231ms)
+✔ actual installed S3Client serialization/deserialization runs through an injected handler without network (24.459051ms)
+✔ unchanged artifact service creates/revises/downloads with durable ports and retained original lineage/bytes (197.816062ms)
+✔ current canonical authorization controls release and generation while storage retains only integrity facts (4.791329ms)
+node:internal/modules/cjs/loader:1564
+  const err = new Error(message);
+              ^
+
+Error: Cannot find module 'jszip'
+Require stack:
+- /opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs/package.json
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at file:///home/user/meri-fable-resume/apps/artifacts/test/artifact-adapters-independent.test.mjs:10:63
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs/package.json'
+  ]
+}
+
+Node.js v24.21.0
+✖ apps/artifacts/test/artifact-adapters-independent.test.mjs (44.003441ms)
+node:internal/modules/cjs/loader:1564
+  const err = new Error(message);
+              ^
+
+Error: Cannot find module 'jszip'
+Require stack:
+- /opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs/package.json
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1564:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1118:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1142:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1169:12)
+    at Module._load (node:internal/modules/cjs/loader:1341:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at file:///home/user/meri-fable-resume/apps/artifacts/test/artifact-execution.test.mjs:37:61 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs/package.json'
+  ]
+}
+
+Node.js v24.21.0
+✖ apps/artifacts/test/artifact-execution.test.mjs (206.174559ms)
+✔ concrete boundary plus canonical owner returns exact pending result and one conservative charge (297.815435ms)
+✔ disabled/typed/code requests and borrowed executor injection refuse without I/O (10.194918ms)
+✔ no exposed kernel, legacy invocation, pool disposal or native callback selection (6.897153ms)
+✔ request/context/program snapshots cannot be rebound by caller mutation after submission (23.731439ms)
+✔ same delivery rejects changed immutable program without a second dispatch (17.170937ms)
+✔ changed admission manifest conflicts with same owned delivery identity (15.418658ms)
+✔ foreign program scope and changed trusted binding refuse before pool (4.129431ms)
+✔ credential mismatch and revoked first authority execute no native port (9.725758ms)
+✔ immutable maximum exceeding current capability is refused rather than rewritten (7.139039ms)
+✔ immutable deadline exceeding fresh authority is refused before reservation (27.321857ms)
+✔ shorter persisted allocation window is detected during preparation without native dispatch or reservation (11.783744ms)
+✔ invalid admission receiptSha256 cannot dispatch or fake settlement (11.616804ms)
+✔ invalid admission manifestSha256 cannot dispatch or fake settlement (11.127455ms)
+✔ invalid admission imageDigest cannot dispatch or fake settlement (14.476348ms)
+✔ native port rejection retains exact invocation uncertainty without refund/retry (22.27783ms)
+✔ invalid produced hash retains uncertainty and never publishes (12.669115ms)
+✔ invalid produced output retains uncertainty and never publishes (14.288453ms)
+✔ invalid produced scope retains uncertainty and never publishes (11.287391ms)
+✔ invalid produced bytes retains uncertainty and never publishes (11.877128ms)
+✔ validated output snapshot survives borrowed receipt mutation during later authority await (15.595788ms)
+✔ authority refusal at check3 retains known immutable outputs and pending state (17.42032ms)
+✔ authority refusal at check4 retains known immutable outputs and pending state (8.173105ms)
+✔ lost prepare ACK keeps canonical identity and explicit accounting reconciliation (8.156131ms)
+✔ lost reserve ACK keeps canonical identity and explicit accounting reconciliation (21.899908ms)
+✔ lost marker ACK keeps canonical identity and explicit accounting reconciliation (16.731293ms)
+✔ lost settle ACK keeps canonical identity and explicit accounting reconciliation (18.399419ms)
+✔ admission expiry while completion ACK is parked prevents live settlement but permits explicit reconciliation (9.984658ms)
+✔ cancellation during reserve ACK executes no native port and preserves original UNKNOWN (30.372477ms)
+✔ metadata response overflow preserves produced outputs but no fake settlement/publication (10.919502ms)
+✔ outer cancellation during sandbox dispatch retains explicit output uncertainty (11.354199ms)
+✔ outer cancellation during reserve preserves known output/accounting state (10.023927ms)
+✔ outer cancellation during marker preserves known output/accounting state (11.015673ms)
+✔ outer cancellation during settle preserves known output/accounting state (11.768859ms)
+✔ fresh revocation after parked reserve refuses native dispatch (10.264133ms)
+✔ fresh revocation after parked admission refuses native dispatch (11.069506ms)
+✔ changed run-deadline during admission refuses unchanged intent before dispatch (10.391702ms)
+✔ changed capability-expiry during admission refuses unchanged intent before dispatch (9.678516ms)
+✔ changed output-bytes during admission refuses unchanged intent before dispatch (10.374043ms)
+✔ shorter independent admission expiry permits original intent within current authority (8.191451ms)
+✔ create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay (266.071346ms)
+✔ create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay (26.025867ms)
+✔ create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay (23.17401ms)
+✔ run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay (33.280599ms)
+✔ revision consumes exact prior version, charges a distinct delivery and preserves original (38.917736ms)
+✔ default disabled and sandbox refusal precede all pool/executor ports (10.050557ms)
+✔ factory never closes borrowed pool and does not expose kernel bypasses (4.022491ms)
+✔ mutation of factory inputs cannot substitute current request context or scopes (14.848911ms)
+✔ same delivery with changed request conflicts before generation (14.89303ms)
+✔ same delivery with changed trusted evidence conflicts before generation (15.071154ms)
+✔ credential mismatch and current authority denial cause no generation/reservation (9.936638ms)
+✔ unrelated operation and foreign producer binding fail before I/O (4.162132ms)
+✔ canonical allocation/capability ceilings reach actual executor and forbid oversized publication (10.281901ms)
+✔ lower current output ceiling before publication refuses with retained liability (8.901326ms)
+✔ generator failure retains explicit UNKNOWN without marker, refund or retry (16.037612ms)
+✔ lost prepare ACK preserves actual owner identity and only explicit reconciliation (9.189864ms)
+✔ lost reserve ACK preserves actual owner identity and only explicit reconciliation (18.257875ms)
+✔ lost marker ACK preserves actual owner identity and only explicit reconciliation (20.016028ms)
+✔ lost settle ACK preserves actual owner identity and only explicit reconciliation (27.72232ms)
+✔ cancelled preparation at connect cannot start generator or later accounting (26.135285ms)
+✔ cancelled preparation at BEGIN cannot start generator or later accounting (7.784155ms)
+✔ cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting (5.478956ms)
+✔ short artifact release deadline survives parked completion ACK and needs historical reconciliation (12.250543ms)
+✔ post-settlement revocation prevents result release without refund or regeneration (16.339925ms)
+✔ borrowed version read keeps its original receiver for revision (21.124604ms)
+✔ oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure (16.545733ms)
+✔ outer cancellation during put preserves version/effect identity (11.074713ms)
+✔ outer cancellation during commit preserves version/effect identity (14.940753ms)
+✔ outer cancellation during reserve discloses accounting uncertainty without retry (14.418265ms)
+✔ outer cancellation during marker discloses accounting uncertainty without retry (15.756444ms)
+✔ outer cancellation during settle discloses accounting uncertainty without retry (16.121337ms)
+✔ outer cancellation during marker preserves confirmed version acknowledgement (18.317158ms)
+✔ outer cancellation during settle preserves confirmed version acknowledgement (16.340805ms)
+✔ independent process success binds EOF and retained byte hashes (64.311198ms)
+✔ independent process stdout overflow retains truthful bytes and closes group (42.046907ms)
+✔ independent process stderr overflow retains truthful bytes and closes group (34.250042ms)
+✔ independent process nonzero retains exact error and closure (52.191695ms)
+✔ independent process deadline closes exact owned group (108.235629ms)
+✔ independent process cancelled admission starts no child (2.711258ms)
+✔ independent service creates, inspects and downloads exact detached version (188.242025ms)
+✔ independent revision preserves original and uses explicit parent lineage (23.939652ms)
+✔ independent historical provenance survives current resumed binding (4.55637ms)
+✔ independent wrong authority requestSha256 blocks every execution effect (0.846864ms)
+✔ independent wrong authority scopesSha256 blocks every execution effect (0.59704ms)
+✔ independent wrong authority resourceSha256 blocks every execution effect (0.450594ms)
+✔ independent wrong authority binding blocks every execution effect (0.480907ms)
+✔ independent wrong authority decision blocks every execution effect (0.470072ms)
+✔ independent revoke after generation leaves no committed object or version (1.609651ms)
+✔ independent output inspection hash mismatch cannot publish (1.351543ms)
+✔ independent wrong storage tuple becomes explicit unknown effect (1.376197ms)
+✔ independent wrong commit receipt cannot report success (1.630186ms)
+✔ independent late returned authority stops next port (0.56732ms)
+✔ independent late returned object commit preserves uncertainty (2.672476ms)
+✔ independent abort before start allocates no ports (0.406548ms)
+✔ independent intent binds exact asset tuples and evidence (5.249743ms)
+✔ independent read refuses changed stored inspection format (2.703961ms)
+✔ independent download refuses mime inconsistent with original spec (2.011652ms)
+✔ independent invalid ID allocation releases lifetime timer (0.529421ms)
+✔ independent failed budget settlement is disclosed even before storage (0.92561ms)
+✔ independent late budget reservation is uncertain and admits no executor (0.728788ms)
+✔ independent mismatched reservation never settles an untrusted ticket (0.616728ms)
+✔ independent late settlement after commit keeps effect and budget uncertainty (1.821248ms)
+✔ independent canonical created output validates and detaches service result (61.944259ms)
+✔ independent canonical created output refuses unrelated provenance tuples (6.63142ms)
+✔ independent canonical created output binds original request and operation (2.345541ms)
+✔ create_word completed create replay reconstructs owner and returns identical immutable result (535.089458ms)
+✔ create_excel completed create replay reconstructs owner and returns identical immutable result (382.099857ms)
+✔ completed exact revision replays after a newer head and preserves original bytes (1050.519172ms)
+✔ lost prepare acknowledgement uses retained evidence without duplicate effects (368.979352ms)
+✔ lost reserve acknowledgement uses retained evidence without duplicate effects (30.327304ms)
+✔ lost marker acknowledgement uses retained evidence without duplicate effects (207.34815ms)
+✔ lost settle acknowledgement uses retained evidence without duplicate effects (237.74143ms)
+✔ generator interruption remains UNKNOWN with no repeat effects (27.969337ms)
+✔ object interruption remains UNKNOWN with no repeat effects (255.413597ms)
+✔ version-before-write interruption remains UNKNOWN with no repeat effects (212.94157ms)
+✔ unpublished-version interruption remains UNKNOWN with no repeat effects (202.746118ms)
+✔ lost-commit-ack after publication recovers exact server-correlated version before completion marker (230.283937ms)
+✔ malformed-commit-ack after publication recovers exact server-correlated version before completion marker (232.83661ms)
+✔ cancel after published version before ACK can be recovered with same original lease (265.064171ms)
+✔ concurrent completed repeats return one immutable version and one charge (301.999282ms)
+✔ concurrent first repeats yield one physical generation; unresolved waiter later recovers (232.188007ms)
+✔ concurrent repeat after publication settles the same original marker while original ACK is parked (246.887007ms)
+✔ distinct deliveries with identical input are distinct artifacts and never borrow completion (492.967872ms)
+✔ request/base/context/credential substitution cannot recover a completed result (302.089772ms)
+✔ new revision against stale immutable base remains UNKNOWN; completed original replay succeeds (694.558301ms)
+✔ current revocation denies replay and retained reads while historical accounting remains available (224.691831ms)
+✔ missing or conflicting object evidence cannot release or re-execute (222.685181ms)
+✔ missing or conflicting record evidence cannot release or re-execute (223.915961ms)
+✔ missing or conflicting publication evidence cannot release or re-execute (219.695304ms)
+✔ missing or conflicting marker evidence cannot release or re-execute (246.446191ms)
+✔ legacy random version uses full retained completion digest; markerless legacy stays UNKNOWN (250.368563ms)
+✔ replay retains exact byte hash and fresh release receipt (266.553576ms)
+✔ original persisted deadline cannot be extended by a later replay (225.270298ms)
+✔ durable revoked authority blocks replay even when other current ports allow (293.21816ms)
+✔ durable expired authority blocks replay even when other current ports allow (271.462386ms)
+✔ durable run-fence authority blocks replay even when other current ports allow (272.71665ms)
+✔ durable quarantined authority blocks replay even when other current ports allow (223.82117ms)
+✔ durable grant revocation after replay bytes prevents completion marker and release (263.055626ms)
+✖ create: actual canonical XLSX and PDF retain full labels, currency, formulas and literals (4386.70917ms)
+✖ revise: actual canonical XLSX and PDF retain full labels, currency, formulas and literals (3765.774891ms)
+✔ bounded widths survive changed long literals and formula source is not treated as its display value (1101.728362ms)
+✔ exact original workbook recalculates stale cached2050 total with unchanged formula and literal cells (1926.836746ms)
+✔ independent workbook preserves styled literals and formulas while computing arithmetic (2269.906566ms)
+✔ fixed XLSX profile is private and cannot be supplied by document arguments (62.117249ms)
+✔ DOCX conversion keeps exact arguments and does not install XLSX configuration (55.200976ms)
+✔ failed owned process removes recalculation profile/workspace (65.517019ms)
+✔ cancelled parked process closes its group and removes XLSX profile (63.080519ms)
+✔ unsupported conversion refuses without leaving an owned workspace (3.305467ms)
+✖ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (1648.721256ms)
+✖ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (1651.461616ms)
+✔ Word argument contract remains exact and unsupported transform is rejected (2.014352ms)
+✔ xlsx profile configuration stays fixed and isolated from the borrowed temp root (39.960132ms)
+✔ docx profile configuration stays fixed and isolated from the borrowed temp root (41.30556ms)
+✔ child failure removes owned XLSX profile/input/output and preserves borrowed root (48.622484ms)
+✔ pre-cancelled XLSX conversion cleans prepared profile without starting a child (5.357751ms)
+✔ real policy/boundary/owner settles exact pending output snapshot and byte sum (248.947134ms)
+✔ canonical actor mismatch denies before accounting (12.263929ms)
+✔ canonical grant mismatch denies before accounting (10.709386ms)
+✔ canonical subject decision mismatch denies before accounting (8.828212ms)
+✔ source authorization false denies before admission or native effects (7.837549ms)
+✔ admission receiptSha256 substitution leaves UNKNOWN without native dispatch (11.501964ms)
+✔ admission manifestSha256 substitution leaves UNKNOWN without native dispatch (13.141625ms)
+✔ admission imageDigest substitution leaves UNKNOWN without native dispatch (13.081798ms)
+✔ admission intentSha256 substitution leaves UNKNOWN without native dispatch (28.822479ms)
+✔ extra output output cannot produce a completion marker (12.830486ms)
+✔ different scope output cannot produce a completion marker (12.485474ms)
+✔ wrong immutable image output cannot produce a completion marker (9.34259ms)
+✔ oversized total output cannot produce a completion marker (13.844112ms)
+✔ fabricated publication output cannot produce a completion marker (13.118292ms)
+✔ borrowed native result mutation during later policy await cannot alter accounted outputs (16.248846ms)
+✔ raw request and configured admission detached before parked admission resumes (12.720798ms)
+✔ changed same-delivery program or admission never regenerates (18.404856ms)
+✔ lost prepare ACK uses explicit historical reconciliation only (7.687291ms)
+✔ lost reserve ACK uses explicit historical reconciliation only (13.865854ms)
+✔ lost marker ACK uses explicit historical reconciliation only (17.61319ms)
+✔ lost settle ACK uses explicit historical reconciliation only (16.726073ms)
+✔ outer cancellation during reserve retains observation and original cause (21.708632ms)
+✔ outer cancellation during marker retains observation and original cause (13.51952ms)
+✔ outer cancellation during settle retains observation and original cause (15.573579ms)
+✔ native port cancellation leaves output unknown and makes no completion claim (10.450752ms)
+✔ post-settlement authority rejection preserves confirmed settlement without result release (16.738773ms)
+✔ admission expiry survives parked marker without silently changing native intent (15.339858ms)
+✔ current output ceiling refuses immutable input rather than rewriting it (7.523102ms)
+✔ current shorter run deadline refuses original intent before reserve (8.020928ms)
+✔ no constructor effects, no exposed bypass or raw program code authority (5.998581ms)
+✔ late returned native receipt remains unknown without marker or success (11.907553ms)
+✔ oversized response metadata preserves validated tuples without false settlement (10.392443ms)
+✔ revocation while reserve is parked prevents subsequent native dispatch (8.534657ms)
+✔ revocation while admission is parked prevents subsequent native dispatch (8.242062ms)
+✔ changed current deadline during admission refuses immutable intent before dispatch (10.984281ms)
+✔ changed current bytes during admission refuses immutable intent before dispatch (8.681504ms)
+✔ valid selected subject drift during admission cannot start a different-scope effect (9.305756ms)
+✔ concurrent rejected reservation cannot inherit another delivery dispatch uncertainty (19.731369ms)
+✔ real current-authority + artifact + canonical owner hashes committed record, not delivery (179.357353ms)
+✔ fresh decision ID may rotate while stable selected subject is unchanged (14.131246ms)
+✔ canonical policy refuses decision actor before budget reservation (7.151975ms)
+✔ canonical policy refuses subject actor before budget reservation (5.698811ms)
+✔ canonical policy refuses missing grant before budget reservation (9.099276ms)
+✔ canonical policy refuses decision policy before budget reservation (5.546959ms)
+✔ canonical policy refuses unmatched decision ID before budget reservation (5.606147ms)
+✔ canonical authority refuses current writer fence without effects (5.58087ms)
+✔ canonical authority refuses expired capability without effects (8.380586ms)
+✔ canonical authority refuses disabled source without effects (11.485351ms)
+✔ canonical authority refuses missing source without effects (7.085735ms)
+✔ subject change after reserve refuses execution and leaves UNKNOWN, never refund (15.986598ms)
+✔ artifact resource digest mismatch cannot borrow canonical policy permission (9.244146ms)
+✔ changed trusted scopes cannot be substituted by otherwise valid current policy (8.45546ms)
+✔ current revocation after settlement prevents release but preserves charged version (21.892222ms)
+✔ resource release expiry while marker ACK parked refuses now, reconciles historical completion (14.981737ms)
+✔ wrong commit acknowledgement cannot publish durable completion (17.544198ms)
+✔ wrong immutable readback forbids version commit while retaining object uncertainty (14.12173ms)
+✔ late returned object write is retained as UNKNOWN and never starts version commit (12.500467ms)
+✔ late version acknowledgement cannot become a completion marker (11.878835ms)
+✔ borrowed receivers survive create and revise with exact base object and intent (28.523661ms)
+✔ snapshot of delivery remains exact while generation is parked (15.930757ms)
+✔ lost reserve ACK cannot regenerate, only canonical reconciliation (18.564844ms)
+✔ lost marker ACK cannot regenerate, only canonical reconciliation (20.265086ms)
+✔ lost settle ACK cannot regenerate, only canonical reconciliation (23.739637ms)
+✔ same delivery plus changed parent conflicts before read or regeneration (15.454991ms)
+✔ wrong producer task binding cannot reuse a bound grant (3.926828ms)
+✔ no startup pool calls or invocation bypass; default disabled before prepare (4.047067ms)
+✔ postpublication response ceiling reports exact committed uncertainty (15.051752ms)
+✔ generator exception preserves original cause and durable UNKNOWN without marker (14.508783ms)
+✔ outer cancellation during putHook retains explicit effect uncertainty (28.571807ms)
+✔ outer cancellation during commitHook retains explicit effect uncertainty (18.558847ms)
+✔ outer cancellation after reservation persistence exposes budget identity without artifact effects (8.775439ms)
+✔ concurrent rejected delivery cannot steal pending call effect identity (19.613067ms)
+✔ outer cancellation during marker preserves already confirmed version commit (16.289507ms)
+✔ outer cancellation during settle preserves already confirmed version commit (15.327883ms)
+✔ schema-valid selected entity change is refused by adapter stable-subject check (10.450631ms)
+✖ retained fixed input documents the original clipped PDF without modifying input bytes (1248.558249ms)
+✖ canonical creation and typed revision render complete labels while retaining formulas and literal text (3515.496517ms)
+✔ column bounds do not truncate long literals or turn formula-like strings into formulas (1016.236366ms)
+✔ chart rebuild keeps chart and formulas while applying bounded table widths (1002.262838ms)
+ℹ tests 301
+ℹ suites 0
+ℹ pass 293
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22854.928885
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-adapters-independent.test.mjs:1:1
+✖ apps/artifacts/test/artifact-adapters-independent.test.mjs (44.003441ms)
+  'test failed'
+
+test at apps/artifacts/test/artifact-execution.test.mjs:1:1
+✖ apps/artifacts/test/artifact-execution.test.mjs (206.174559ms)
+  'test failed'
+
+test at apps/artifacts/test/office-columns.test.mjs:31:40
+✖ create: actual canonical XLSX and PDF retain full labels, currency, formulas and literals (4386.70917ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/artifacts/test/office-columns.test.mjs:37:19)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 13084, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 192, stderrBytes: 68, stdoutRetainedBytes: 192, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: '3fd7293f8c9451092ea84833dea7a3151afcac073ca2b45d01447cda31b124ae', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 6f 66 66 69 63 65 2d 63 6f 6c 75 6d 6e 73 2d ... 142 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }
+
+test at apps/artifacts/test/office-columns.test.mjs:31:40
+✖ revise: actual canonical XLSX and PDF retain full labels, currency, formulas and literals (3765.774891ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/artifacts/test/office-columns.test.mjs:37:19)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 13236, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 192, stderrBytes: 68, stdoutRetainedBytes: 192, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: 'c720ebed793228bb460705fef6295a1ae3e5ae4fa6ebff873938dc662539a619', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 6f 66 66 69 63 65 2d 63 6f 6c 75 6d 6e 73 2d ... 142 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }
+
+test at apps/artifacts/test/office-recalc.test.mjs:20:49
+✖ actual LibreOffice recalculates original XLSX while preserving formulas and literal cells (1648.721256ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.transform (file:///home/user/meri-fable-resume/apps/artifacts/office-transform.mjs:33:17)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/artifacts/test/office-recalc.test.mjs:23:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 13362, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 226, stderrBytes: 68, stdoutRetainedBytes: 226, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: '8d8c40cd825c77a02195465dcc04df9f96259092ed7b0b27577feaaa6fee1842', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 6f 66 66 69 63 65 2d 72 65 63 61 6c 63 2d 4e ... 176 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }
+
+test at apps/artifacts/test/office-recalc.test.mjs:20:49
+✖ actual LibreOffice recalculates independent XLSX while preserving formulas and literal cells (1651.461616ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.transform (file:///home/user/meri-fable-resume/apps/artifacts/office-transform.mjs:33:17)
+      at async TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/artifacts/test/office-recalc.test.mjs:23:18)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 13478, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 226, stderrBytes: 68, stdoutRetainedBytes: 226, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: 'ac29a91e2b4a6c3f41906e4b0bf8e9be30a0158311b330f42886fe127a5c188b', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 6f 66 66 69 63 65 2d 72 65 63 61 6c 63 2d 77 ... 176 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }
+
+test at apps/artifacts/test/workbook-columns-independent.test.mjs:46:1
+✖ retained fixed input documents the original clipped PDF without modifying input bytes (1248.558249ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async render (file:///home/user/meri-fable-resume/apps/artifacts/test/workbook-columns-independent.test.mjs:36:12)
+      at async file:///home/user/meri-fable-resume/apps/artifacts/test/workbook-columns-independent.test.mjs:47:102
+      at async owned (file:///home/user/meri-fable-resume/apps/artifacts/test/workbook-columns-independent.test.mjs:27:115)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 13514, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 226, stderrBytes: 68, stdoutRetainedBytes: 226, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: '4a3c71716aa31a28d888a4b3747b80bc950f144d6cace4f2549d3a91e5fbee8d', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 63 6f 6c 75 6d 6e 73 2d 72 65 76 69 65 77 2d ... 176 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }
+
+test at apps/artifacts/test/workbook-columns-independent.test.mjs:52:1
+✖ canonical creation and typed revision render complete labels while retaining formulas and literal text (3515.496517ms)
+  Error: ARTIFACT_CLEANUP_FAILED
+      at error (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///home/user/meri-fable-resume/apps/artifacts/process.mjs:29:106)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async render (file:///home/user/meri-fable-resume/apps/artifacts/test/workbook-columns-independent.test.mjs:36:12)
+      at async file:///home/user/meri-fable-resume/apps/artifacts/test/workbook-columns-independent.test.mjs:59:11
+      at async owned (file:///home/user/meri-fable-resume/apps/artifacts/test/workbook-columns-independent.test.mjs:27:115)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    code: 'ARTIFACT_CLEANUP_FAILED',
+    receipt: { pid: 13659, exitCode: 0, signal: null, spawnError: null, stdoutBytes: 196, stderrBytes: 68, stdoutRetainedBytes: 196, stderrRetainedBytes: 68, hashScope: 'retained bytes', stdoutSha256: '1163150b6b1fef68c5c41f98953626e5f764458f74f7dccafd74f3a2f0eeb1b7', stderrSha256: '5dacd3568f64c55f742e85aabf51b6ec588447027c2a17c137ce8a6618dc33e4', stdoutEnded: true, stderrEnded: true, streamErrors: [], leaderClosed: true, groupKillAttempted: true, groupAbsent: false, sandboxQualified: false },
+    stdout: <Buffer 63 6f 6e 76 65 72 74 20 2f 68 6f 6d 65 2f 6d 65 72 69 2f 72 65 73 75 6d 65 2d 74 6d 70 2f 6d 65 72 69 2d 63 6f 6c 75 6d 6e 73 2d 72 65 76 69 65 77 2d ... 146 more bytes>,
+    stderr: <Buffer 57 61 72 6e 69 6e 67 3a 20 66 61 69 6c 65 64 20 74 6f 20 6c 61 75 6e 63 68 20 6a 61 76 61 6c 64 78 20 2d 20 6a 61 76 61 20 6d 61 79 20 6e 6f 74 20 66 ... 18 more bytes>
+  }

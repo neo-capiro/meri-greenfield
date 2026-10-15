@@ -1,0 +1,1745 @@
+✔ fixed bridge transport and canonical current-run join produce one exact client scope (300.455808ms)
+✔ refuses native identity principal substitution (27.165558ms)
+✔ refuses native identity revision substitution (32.951894ms)
+✔ refuses native client substitution (22.348757ms)
+✔ refuses native expired substitution (21.242593ms)
+✔ refuses native extra field substitution (14.103768ms)
+✔ refuses stale current run and mismatched hints before native context call (15.975652ms)
+✔ disabled mount is inert and owned close does not dispose borrowed services (19.119221ms)
+✔ parked native body is cancelled at original cutoff with no later context port (45.44567ms)
+✔ actual mounted HTTP obtains action session then query/draft/proposal/refusal/approved once/replay/revocation (569.854153ms)
+✔ native credential requests explicitly omit ambient credentials and disable caches (21.785464ms)
+✔ authority independent default disabled is inert through invocation (2.145687ms)
+✔ authority independent explicit client uses only fixed origin/path and bearer (6.550617ms)
+✔ authority independent context request preserves only exact selectors/hash (4.582822ms)
+✔ authority independent refuses unsafe origin http://authority.invalid (0.297845ms)
+✔ authority independent refuses unsafe origin https://u:p@authority.invalid (0.204994ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/path (0.226157ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/?x=1 (0.133563ms)
+✔ authority independent refuses unsafe origin https://authority.invalid/#x (2.958337ms)
+✔ authority independent extra identity receipt refuses (1.93708ms)
+✔ authority independent principal identity receipt refuses (1.600568ms)
+✔ authority independent redirect refusal never retries (0.931554ms)
+✔ authority independent content type refusal never retries (1.25088ms)
+✔ authority independent invalid JSON refusal never retries (1.64285ms)
+✔ authority independent invalid UTF8 refusal never retries (1.243643ms)
+✔ authority independent body cap refusal never retries (1.110742ms)
+✔ authority independent cancellation while fetch is parked does not release late receipt (14.873451ms)
+✔ authority independent caller cutoff is enforced after response acquisition (1.001856ms)
+✔ authority independent hostile input/configuration is inert (0.754415ms)
+✔ authority independent fetch explicitly omits ambient credentials and cache (0.867227ms)
+✔ authority independent previously redirected native Response is refused (40.536938ms)
+✔ authority independent late fetch body is physically cancelled after caller abort (1.820815ms)
+✔ authority independent parked response body is cancelled at the original cutoff (15.542468ms)
+✔ context independent joins actual HTTP receipts with canonical currentRun only (335.040223ms)
+✔ context independent conversationId hint cannot select another configured owner (33.906433ms)
+✔ context independent runId hint cannot select another configured owner (25.485616ms)
+✔ context independent clientId hint cannot select another configured owner (24.189766ms)
+✔ context independent native hash substitution refuses (25.505324ms)
+✔ context independent native identity revision substitution refuses (15.579837ms)
+✔ context independent native conversation substitution refuses (17.411827ms)
+✔ context independent native client substitution refuses (16.396971ms)
+✔ context independent native extra scope substitution refuses (20.26665ms)
+✔ context independent currentRun tenant refuses (21.402222ms)
+✔ context independent currentRun fence refuses (25.778331ms)
+✔ context independent currentRun expired refuses (32.414289ms)
+✔ context independent currentRun stale refuses (28.440682ms)
+✔ context independent currentRun extra refuses (25.835178ms)
+✔ context independent cancellation while canonical run owner is parked cannot release context (34.062018ms)
+✔ mount independent disabled refuses without native or current calls (19.120568ms)
+✔ mount independent session issuance reaches actual query/proposal/separate approved execution (368.902689ms)
+✔ mount independent fresh identityRevision change revokes retained session (38.923022ms)
+✔ mount independent fresh contextRevision change revokes retained session (27.607622ms)
+✔ mount independent fresh writerFence change revokes retained session (21.562992ms)
+✔ context independent stale identity refuses before run authority (18.439518ms)
+✔ context independent future identity refuses before run authority (19.242814ms)
+✔ context independent expired identity refuses before run authority (18.890361ms)
+✔ context independent other actor identity refuses before run authority (18.36104ms)
+✔ context independent changed policy around native context denies release (18.344695ms)
+✔ context independent a later longer run deadline cannot widen original context expiry (17.510739ms)
+✔ context independent principal mismatch with coherent hash echo still refuses (17.623629ms)
+✔ mount independent close owns session only and leaves borrowed client callable (21.835251ms)
+✔ trusted selector pins one verified binding for both current-run reads (22.155536ms)
+✔ trusted selector can select latest without any browser run hint (20.649802ms)
+✔ trusted selector refuses browser conversationId substitution before selection (22.864992ms)
+✔ trusted selector refuses browser clientId substitution before selection (20.74211ms)
+✔ trusted selector refuses browser tenantId substitution before selection (22.199783ms)
+✔ trusted selector refuses browser actorId substitution before selection (13.876262ms)
+✔ historical browser run hint cannot revive the configured old run (19.965378ms)
+✔ trusted selector tenant fact refuses before current-run checks (14.559272ms)
+✔ trusted selector actor fact refuses before current-run checks (15.650525ms)
+✔ trusted selector conversation fact refuses before current-run checks (18.243875ms)
+✔ trusted selector expired fact refuses before current-run checks (14.149725ms)
+✔ trusted selector stale fact refuses before current-run checks (14.060716ms)
+✔ trusted selector future fact refuses before current-run checks (21.474971ms)
+✔ trusted selector policy fact refuses before current-run checks (13.407601ms)
+✔ trusted selector extra authority fact refuses before current-run checks (16.756873ms)
+✔ trusted selection cannot bypass current-run rejection of historical target (13.494871ms)
+✔ trusted selection cannot change policy before first current-run check (12.865674ms)
+✔ trusted selected policy revocation during native read refuses context release (14.111608ms)
+✔ trusted selection requires verified principal before entering selector (13.41505ms)
+✔ trusted selection cannot silently reselect when current run changes during native read (19.679702ms)
+✔ trusted selected context still refuses native revocation and client substitution (38.213567ms)
+✔ trusted selector cancellation prevents parked selection from releasing context (43.215002ms)
+✔ trusted selector deadline bounds parked selection even when port ignores signal (499.816385ms)
+✔ trusted selected receipt preserves shortest original identity deadline (16.560259ms)
+✔ trusted selected receipt preserves shortest original selector deadline (38.135717ms)
+✔ trusted selected receipt preserves shortest original before deadline (26.781304ms)
+✔ trusted selected receipt preserves shortest original native deadline (23.715067ms)
+✔ trusted selected receipt preserves shortest original after deadline (27.147235ms)
+✔ transition target context proves original backend lineage without checking historical source currentness (22.890139ms)
+✔ same scopes and policy do not permit changed native backend context revision (22.710389ms)
+✔ forged original context hash cannot authorize target context (21.393001ms)
+✔ transition source identity substitution refuses before target selection (19.680199ms)
+✔ transition target conversation substitution refuses before target selection (26.350888ms)
+✔ transition target actor substitution refuses before target selection (20.967531ms)
+✔ transition target tenant substitution refuses before target selection (23.142367ms)
+✔ transition historical target substitution refuses before target selection (20.41316ms)
+✔ transition worker reuse substitution refuses before target selection (20.38489ms)
+✔ transition client substitution refuses before target selection (28.029709ms)
+✔ transition scopes substitution cannot release backend context (20.241857ms)
+✔ transition policy substitution cannot release backend context (19.436976ms)
+✔ fixed-conversation transition resolver refuses fork without expanding configured authority (23.568505ms)
+✔ transition target race never falls back to querying source currentness (10.962126ms)
+✔ absent selector refuses transition to another binding while ordinary fixed context still works (32.710396ms)
+✔ transition backend revocation and expired original identity refuse context release (32.197942ms)
+✔ transition context parked native read aborts at caller cutoff (20.856383ms)
+✔ transition source-context getters are not evaluated (11.113642ms)
+✖ independent exact Git source manifest and AST-selected implementations match received metadata (338.267232ms)
+✖ independent actual middleware/provider/context pipeline emits closed canonical receipts (40.075694ms)
+✖ independent actual Capiro owners refuse foreign tenant grant (21.75653ms)
+✖ independent actual Capiro owners refuse foreign actor grant (28.976732ms)
+✖ independent actual Capiro owners refuse foreign client grant (31.698794ms)
+✖ independent actual Capiro owners refuse missing wall grant (29.538388ms)
+✖ independent actual Capiro owners refuse foreign conversation tenant (32.064502ms)
+✖ independent actual Capiro owners refuse foreign conversation actor (29.680692ms)
+✖ independent actual Capiro owners refuse changed selected client (23.317923ms)
+✖ independent actual Capiro owners refuse null selected client (23.645427ms)
+✖ independent actual Capiro owners refuse archived conversation (26.238426ms)
+✖ independent actual Capiro owners refuse inactive conversation (24.402024ms)
+✖ independent actual Capiro owners refuse foreign tenant client (25.55997ms)
+✖ independent actual Capiro owners refuse archived client (22.207543ms)
+✖ independent actual Capiro owners refuse inactive membership (25.26956ms)
+✖ independent actual Capiro owners refuse inactive tenant (24.86212ms)
+✖ independent actual Capiro owners refuse unknown role (27.316834ms)
+✖ independent actual Capiro owners refuse lower role (18.115949ms)
+✖ independent actual Capiro owners refuse revoked online session (20.051961ms)
+✖ independent actual Capiro owners refuse invalid native token (27.48582ms)
+✖ independent wall false legitimately works without grant and tenant predicate remains explicit (28.852204ms)
+✖ independent headers and body do not supply identity or scope authority (30.470162ms)
+✖ independent context hash echo grants no authority and canonical join rejects a different echo (25.632823ms)
+✖ independent canonical receiver/join rejects forged native principal (23.570719ms)
+✖ independent canonical receiver/join rejects forged native revision (23.513282ms)
+✖ independent canonical receiver/join rejects forged native extra (23.344072ms)
+✖ independent canonical receiver/join rejects forged native future clock (29.527375ms)
+✖ independent canonical receiver/join rejects forged native expired clock (24.877343ms)
+✖ independent asynchronous online recheck re-evaluates revoked wall grant (19.694224ms)
+✖ independent final local membership recheck catches role change after context reads (20.441736ms)
+✖ independent expiry never refreshes after activity and token/session expiry bounds all receipts (17.955653ms)
+✖ independent changed Meri policy/fence between native context reads refuses current join (42.73219ms)
+✖ independent caller deadline refuses parked online session and consumes late completion (27.584096ms)
+✖ independent application flow retains exact pending proposal and separate approval with one effect/replay/revocation (16.505206ms)
+✔ independent production catalog remains unavailable with original scope (0.355173ms)
+✖ exact published commit/tree/eight source hashes and compiler are admitted (6.773594ms)
+✖ actual middleware and separate provider issue canonical closed identity/context receipts (253.724478ms)
+✖ activity and lastSeen writes do not fabricate identity revision or renewed expiry (35.079931ms)
+✖ actual endpoint refuses foreign tenant wall grant (27.747385ms)
+✖ actual endpoint refuses no wall grant (30.566982ms)
+✖ actual endpoint refuses other actor wall grant (25.221857ms)
+✖ actual endpoint refuses archived client (24.262598ms)
+✖ actual endpoint refuses foreign conversation (31.482113ms)
+✖ actual endpoint refuses null bound client (33.829318ms)
+✖ actual endpoint refuses closed conversation (40.577662ms)
+✖ actual endpoint refuses archived conversation (25.906041ms)
+✖ actual endpoint refuses online revoked session (23.966468ms)
+✖ actual endpoint refuses online session substitution (24.335823ms)
+✖ actual endpoint refuses membership revision change (22.648622ms)
+✖ actual endpoint refuses principal membership change (25.065059ms)
+✖ actual endpoint refuses lower role (17.594113ms)
+✖ a foreign wall grant cannot authorize even with correct selected input and identity hash (22.122306ms)
+✖ wall revocation during online recheck is observed by second context pass (22.478301ms)
+✖ local membership change during final context reads fails final identity recheck (14.932991ms)
+✖ Capiro hash echo does not authorize a foreign Meri current run (23.844454ms)
+✖ closed request contract rejects additional authority fields (27.450112ms)
+✖ original native token expiry refuses without adapter refresh (21.343529ms)
+✖ actual pinned endpoint -> opaque Meri session -> query/draft/pending/approved once/replay/revocation (16.222292ms)
+✔ host independent actual Fetch query/draft/prepare/pending/approved effect and replay (567.789289ms)
+✔ host independent fresh query identities and event reservations come from host owner (86.18966ms)
+✔ host independent body tenant is not authority (20.622665ms)
+✔ host independent request client is not authority (26.719384ms)
+✔ host independent header identity cannot override authenticated principal (34.439027ms)
+✔ host independent absent credential refuses without any owner calls (22.500003ms)
+✔ host independent auth expired refuses before owner read (19.787006ms)
+✔ host independent auth stale refuses before owner read (26.481908ms)
+✔ host independent current stale refuses before owner read (42.398717ms)
+✔ host independent current expired refuses before owner read (27.732736ms)
+✔ host independent auth hash substitution refuses before owner read (23.974852ms)
+✔ host independent tenant substitution refuses before owner read (12.673707ms)
+✔ host independent actor substitution refuses before owner read (17.955072ms)
+✔ host independent run substitution refuses before owner read (18.120477ms)
+✔ host independent selected client outside scopes refuses before owner read (18.852365ms)
+✔ host independent reserve receipt binds exact fresh authentication (23.535013ms)
+✔ host independent credential receipt binds exact fresh authentication (14.773855ms)
+✔ host independent changed revision during same request refuses (14.442921ms)
+✔ host independent changed binding during same request refuses (15.499744ms)
+✔ host independent changed client during same request refuses (17.254034ms)
+✔ host independent changed scopes during same request refuses (15.895885ms)
+✔ host independent abort parked authBefore starts no later domain work (26.280145ms)
+✔ host independent abort parked currentBefore starts no later domain work (19.623912ms)
+✔ host independent shrink-only expiry crosses metadata boundary (63.251309ms)
+✔ host independent query acknowledged then revoked is RESULT_NOT_RELEASED (45.275264ms)
+✔ host independent query uncertain ACK remains UNKNOWN with no redispatch (29.798799ms)
+✔ host independent actual metadata revoked insertion retains STORED_NOT_RELEASED (69.907988ms)
+✔ host independent actual metadata unknown insertion retains UNKNOWN (69.150143ms)
+✔ host independent observed command denied host release is RESULT_NOT_RELEASED (80.61408ms)
+✔ host independent changed execution receipt binding refuses before effect (66.475893ms)
+✔ host independent hostile getter receipt is inert (20.84638ms)
+✔ host independent hostile proxy receipt is inert (24.11702ms)
+✔ actual host application query/draft/proposal/explicit approval executes once and replays (594.11308ms)
+✔ host denies receipt hash before reservation/effect (18.375634ms)
+✔ host denies actor before reservation/effect (18.226247ms)
+✔ host denies client before reservation/effect (15.765733ms)
+✔ host denies scopes before reservation/effect (19.750445ms)
+✔ host denies expired before reservation/effect (13.519871ms)
+✔ host denies stale before reservation/effect (15.487791ms)
+✔ credential receipt cannot substitute actor or stale authentication (29.725334ms)
+✔ host mutation during reservation is refused before credential issuance (15.361701ms)
+✔ fresh host revocation after actual stored query preserves result liability (30.40023ms)
+✔ metadata ACK followed by host revocation preserves stored proposal (40.268632ms)
+✔ parked authentication cancellation cannot begin reservation (13.906747ms)
+✔ host snapshots configured command binding rather than retaining caller alias (39.084149ms)
+✔ host own-data receipts reject getters without executing them (28.00129ms)
+✔ independent construction borrows resources and makes no SQL or source calls (53.154966ms)
+✔ independent pending refusal then explicit approval and reconstruction retains exactly one charge/effect (223.280769ms)
+✔ independent reconstructed metadata owner reads immutable proposal before effect (43.633362ms)
+✔ independent default-disabled command refuses without SQL preparation or effect (8.267278ms)
+✔ independent current read denial still applies after lookup reconstruction (225.715205ms)
+✔ independent current preparation revocation survives reconstruction (13.560571ms)
+✔ independent current capability revocation prevents reconstructed execution (13.167915ms)
+✔ independent current approval revocation prevents reconstructed execution (21.885789ms)
+✔ independent rehashed command substitution cannot reuse immutable metadata (17.024069ms)
+✔ independent lost prepare ACK keeps identity/liability without automatic re-effect (14.405027ms)
+✔ independent lost reserve ACK keeps identity/liability without automatic re-effect (40.171909ms)
+✔ independent lost marker ACK keeps identity/liability without automatic re-effect (44.654252ms)
+✔ independent lost settle ACK keeps identity/liability without automatic re-effect (56.267083ms)
+✔ independent lost journal completion ACK preserves retained outcome and never repeats effect (33.158959ms)
+✔ independent cancelled marker retains hold and late ACK cannot resume live settlement (71.790367ms)
+✔ independent retained command read needs fresh authority after reconstruction (54.73623ms)
+✔ independent expired approval/metadata cannot authorize reconstructed execution (8.213922ms)
+✔ independent disabled assembly refuses new lookup before SQL but retained reads still require current authority (21.130235ms)
+✔ independent closed configuration rejects accessors before execution (3.155678ms)
+✔ independent producer and metadata binding mismatch refuses before SQL (3.718394ms)
+✔ independent changing caller data after construction cannot change retained command context (6.763405ms)
+✔ independent stale current fence denies reconstructed command before effects (17.396459ms)
+✔ independent disabled canonical outcome read remains unavailable without journal access (3.93537ms)
+✔ pending approval creates no debit/effect, later approval and reconstructed owners replay one durable command (544.145115ms)
+✔ reconstructed lookup read uses retained concrete store and current authority (56.477767ms)
+✔ default disabled refuses new lookup before SQL and command before budget while preserving authorized lookup read (65.873166ms)
+✔ fresh approval revocation refuses reconstructed replay without a new effect or debit (71.727828ms)
+✔ lost prepare acknowledgement preserves canonical stage and never repeats effects (57.376534ms)
+✔ lost reserve acknowledgement preserves canonical stage and never repeats effects (59.904659ms)
+✔ lost marker acknowledgement preserves canonical stage and never repeats effects (57.219574ms)
+✔ lost settle acknowledgement preserves canonical stage and never repeats effects (54.232132ms)
+✔ lost command completion ACK retains completed journal and exact charged result across reconstruction (62.865132ms)
+✔ construction is inert, keeps borrowed pools open and rejects altered task descriptor/context (27.843126ms)
+✔ new lookup uses actual governed gateway HTTP adapter and durable read accounting before retained current read (69.387323ms)
+✔ independent shared allocation: read executes through actual owned budget while command stays inaccessible actions.query (252.575203ms)
+✔ independent shared allocation: read executes through actual owned budget while command stays inaccessible create_task (43.251983ms)
+✔ independent shared allocation refuses command only (17.267796ms)
+✔ independent shared allocation refuses extra operation (8.295025ms)
+✔ independent shared allocation refuses wrong command version (14.974554ms)
+✔ independent shared allocation refuses different second operation (10.524801ms)
+✔ independent shared allocation refuses duplicate read (7.264156ms)
+✔ independent shared ledger: exact pending proposal, one charge per effect, fresh-pool retained replay and revocation over HTTP/public receiver (691.421923ms)
+✔ independent runner refuses borrowed initial pool returned as fresh without disposing it (153.533932ms)
+✔ independent runner closes owned fresh pool when asynchronous graph construction rejects (113.381657ms)
+✔ independent runner bounds late fresh-pool acquisition and eventually closes the owned arrival (843.985357ms)
+✔ independent runner original cutoff bounds final accounting connect without late queries or false success (1054.498298ms)
+✔ independent direct readback: original cutoff after parked budget lock prevents new clock/read SQL (106.423339ms)
+✔ actual shared allocation and pool graph executes one query and one approved task, then replays over fresh pool facades (624.723258ms)
+✔ lost setup acknowledgement is terminal and exposes only owned identifiers (5.074144ms)
+✔ committed seed with lost acknowledgement remains terminal and never reseeds (11.33816ms)
+✔ independent async graph: query refusal closes listener then owned graph once (89.99135ms)
+✔ independent async graph: invalid graph credential still closes acquired ownership (1.279828ms)
+✔ independent async graph: total cutoff refuses parked acquisition and closes late graph exactly once (62.208498ms)
+✔ independent async graph: rejected acquisition starts no listener or approval (4.720437ms)
+✔ independent async graph: cleanup failure is surfaced and borrowed application is not disposed (16.865533ms)
+✔ independent async graph: uncooperative cleanup cannot park caller forever (1018.90309ms)
+✔ actual three host recovery keeps same proposal and accounting across reconstruction (808.660013ms)
+✔ help and invalid arguments are inert and closed (0.731413ms)
+✖ independent: runner total deadline settles while approve ignores cancellation (451.280216ms)
+✖ independent: runner total deadline settles while revoke ignores cancellation (386.145483ms)
+✔ independent: unaccelerated thirty-second cutoff closes listeners and settles parked approve (30002.888288ms)
+✔ independent actual graph: same retained selection and proposal across three HTTP hosts, one effect and fresh revocation (995.083171ms)
+✔ independent actual runner closes all three owned sockets and reports only synthetic recovery (177.45258ms)
+✔ independent runner failure closes listener without retrying or changing proposals (9.966366ms)
+✔ independent CLI import/help/invalid are inert and explicit run is finite and secret-free (1222.776634ms)
+✔ independent session HTTP refuses method before owner (8.837363ms)
+✔ independent session HTTP refuses query before owner (1.333589ms)
+✔ independent session HTTP refuses fragment before owner (1.572023ms)
+✔ independent session HTTP refuses extra authority before owner (5.278578ms)
+✔ independent session HTTP refuses duplicate auth before owner (1.575338ms)
+✔ independent session HTTP refuses length mismatch before owner (2.613513ms)
+✔ independent session HTTP refuses oversized stream before owner (1.703848ms)
+✔ independent session HTTP refuses invalid utf8 before owner (3.736706ms)
+✔ independent session HTTP must not execute own Request accessors (3.097079ms)
+✔ independent session HTTP rejects Proxy Request without traps (0.928628ms)
+✔ independent session HTTP parked body is cancelled before issuance at finite deadline (82.13078ms)
+✔ independent session constructor rejects borrowed issue getter without executing it (0.57484ms)
+✔ independent actual HTTP opaque issuance reaches same accepted graph/proposal; native bearer, forged proposal and revoked session cannot execute (752.533046ms)
+✔ independent issuance HTTP never reflects extra owner fields or response accessors (1.530704ms)
+✔ independent short HTTP cutoff reaches both real session-owner authorization ports (2.950648ms)
+✔ independent opaque sessions: inert constructor and exact detached public context, fresh canonical owner receipts (14.837445ms)
+✔ independent hints are selectors only: reject mismatched conversationId (1.745419ms)
+✔ independent hints are selectors only: reject mismatched runId (0.814759ms)
+✔ independent hints are selectors only: reject mismatched clientId (0.877226ms)
+✔ independent issuance rejects current owner identity hash (0.906747ms)
+✔ independent issuance rejects current owner tenant (0.787141ms)
+✔ independent issuance rejects current owner actor (0.834639ms)
+✔ independent issuance rejects current owner missing selected scope (1.263129ms)
+✔ independent issuance rejects current owner stale (1.146453ms)
+✔ independent issuance rejects current owner expired (1.467608ms)
+✔ independent current revision change invalidates issued token (1.267995ms)
+✔ independent current contextRevision change invalidates issued token (0.804615ms)
+✔ independent issued receipt cannot be forged or exchanged across session records (1.141768ms)
+✔ independent capacity is bounded and explicit revocation frees only its issued record (2.157168ms)
+✔ independent late revocation refuses in-flight authenticateSession (2.095633ms)
+✔ independent late revocation refuses in-flight readCurrentState (2.374531ms)
+✔ independent parked issue cancellation/close cannot leak a session after late owner return (11.527666ms)
+✔ independent hostile receipt and rejection are refused without traps or secret reflection (0.882566ms)
+✔ independent caller cutoff is passed unchanged or earlier to both owner ports (1.014241ms)
+✔ empty hints resolve current context; native token is not an action session; revisions and revocation fail closed (22.698312ms)
+✔ explicit substituted hints and hostile getters do not issue sessions (1.484911ms)
+✔ bounded registry expires records and close invalidates all credentials (2.96385ms)
+✔ Fetch issuance is closed, bounded and content-free on refusal (13.659976ms)
+✔ actual HTTP session issuance composes shared-pool host query draft prepare and approved execute (671.48063ms)
+✔ revocation while native verification is parked refuses receipt and skips the later context port (1.503818ms)
+✔ HTTP original cutoff reaches native identity and current context ports (1.55528ms)
+✔ issuance response remains minimal and bounded even for injected malformed owners (4.211589ms)
+✔ native Request accessors and inert issue descriptors prevent caller code during routing (1.946816ms)
+✔ resume transition verifies trusted mapping without repinning original session (16.440801ms)
+✔ fork transition verifies trusted mapping without repinning original session (5.262463ms)
+✔ absent optional ports keeps fixed authentication and refuses transition verification (3.144727ms)
+✔ optional transition ports must be paired callable inert properties (1.456509ms)
+✔ DISPATCHING/dispatch-start enforces purpose inside session owner (4.019943ms)
+✔ DISPATCHING/dispatch-continued enforces purpose inside session owner (3.066644ms)
+✔ DISPATCHING/commit-applied enforces purpose inside session owner (2.106733ms)
+✔ DISPATCHING/receipt-readback enforces purpose inside session owner (1.325912ms)
+✔ APPLIED/dispatch-start enforces purpose inside session owner (1.93675ms)
+✔ APPLIED/dispatch-continued enforces purpose inside session owner (4.867349ms)
+✔ APPLIED/commit-applied enforces purpose inside session owner (9.046369ms)
+✔ APPLIED/receipt-readback enforces purpose inside session owner (0.987873ms)
+✔ UNKNOWN/dispatch-start enforces purpose inside session owner (0.907993ms)
+✔ UNKNOWN/receipt-readback enforces purpose inside session owner (0.681696ms)
+✔ PENDING/dispatch-start enforces purpose inside session owner (0.780592ms)
+✔ fork cannot authorize source continued notification (0.886477ms)
+✔ APPLIED readback and shorter rolling deadlines preserve immutable equality (2.877915ms)
+✔ state change to APPLIED during context read cannot authorize another dispatch (6.91907ms)
+✔ trusted source substitution refuses without repinning (1.659674ms)
+✔ trusted target substitution refuses without repinning (5.360843ms)
+✔ trusted tenant substitution refuses without repinning (3.30527ms)
+✔ trusted actor substitution refuses without repinning (1.790837ms)
+✔ trusted conversation substitution refuses without repinning (5.171882ms)
+✔ trusted worker reuse substitution refuses without repinning (1.177015ms)
+✔ trusted control substitution refuses without repinning (4.411491ms)
+✔ trusted admission substitution refuses without repinning (1.441591ms)
+✔ trusted retirement substitution refuses without repinning (2.263593ms)
+✔ trusted client substitution refuses without repinning (1.252179ms)
+✔ trusted scopes substitution refuses without repinning (1.283757ms)
+✔ trusted policy substitution refuses without repinning (1.309023ms)
+✔ trusted checkpoint digest substitution refuses without repinning (1.282046ms)
+✔ trusted target session substitution refuses without repinning (1.29678ms)
+✔ trusted extra authority substitution refuses without repinning (1.167253ms)
+✔ immutable inputSha256 drift across backend read refuses (1.213812ms)
+✔ immutable checkpointId drift across backend read refuses (2.042497ms)
+✔ immutable checkpointSha256 drift across backend read refuses (0.844768ms)
+✔ immutable sourceRequestSha256 drift across backend read refuses (0.927965ms)
+✔ immutable contextSha256 drift across backend read refuses (0.801202ms)
+✔ immutable resumeSessionAt drift across backend read refuses (1.02475ms)
+✔ effective identity deadline cannot widen (1.130496ms)
+✔ effective target deadline cannot widen (1.064174ms)
+✔ effective admission deadline cannot widen (0.999694ms)
+✔ effective retirement deadline cannot widen (0.820429ms)
+✔ effective reader deadline cannot widen (1.87873ms)
+✔ effective caller deadline cannot widen (0.927045ms)
+✔ effective original deadline cannot widen (0.847059ms)
+✔ invalid current native principal invalidates retained session (0.804644ms)
+✔ invalid current native identityRevision invalidates retained session (0.475546ms)
+✔ invalid current native expiresAtMs invalidates retained session (0.578909ms)
+✔ current target context identity hash refusal invalidates session (0.820064ms)
+✔ current target context binding refusal invalidates session (0.836864ms)
+✔ current target context scopes refusal invalidates session (0.669248ms)
+✔ current target context client refusal invalidates session (0.785173ms)
+✔ current target context stale refusal invalidates session (0.772277ms)
+✔ current target context expired refusal invalidates session (0.670222ms)
+✔ expired original record cannot be revived by longer native and target receipts (0.64513ms)
+✔ revocation during final journal check cannot release verified facts (3.333852ms)
+✔ concurrent verifications do not mutate session revision or original expiry (3.195147ms)
+✔ revocation while trusted reader is parked cannot release transition facts (1.177549ms)
+✔ cancellation of parked target context refuses and aborts owned signal (23.893051ms)
+✔ parked trusted port is bounded by original effective deadline (23.482519ms)
+✔ historical ordinary authentication still refuses and cannot recreate a transition session (1.936458ms)
+✔ unknown purpose, forged credential and active input getters have no trusted effects (0.653537ms)
+✔ hostile signal and coercible deadline are rejected before identity or reader ports (0.918866ms)
+✔ cancelled identity verification preserves live original session for effect-free APPLIED readback (2.910715ms)
+✔ cancelled target verification preserves live original session for effect-free APPLIED readback (2.019051ms)
+✔ operation timeout preserves original session while fresh readback still rechecks identity (22.22886ms)
+ℹ tests 386
+ℹ suites 0
+ℹ pass 327
+ℹ fail 59
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41909.011706
+
+✖ failing tests:
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:16:1
+✖ independent exact Git source manifest and AST-selected implementations match received metadata (338.267232ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13893,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:24:1
+✖ independent actual middleware/provider/context pipeline emits closed canonical receipts (40.075694ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13894,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse foreign tenant grant (21.75653ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13895,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse foreign actor grant (28.976732ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13896,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse foreign client grant (31.698794ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13897,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse missing wall grant (29.538388ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13898,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse foreign conversation tenant (32.064502ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13899,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse foreign conversation actor (29.680692ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13900,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse changed selected client (23.317923ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13901,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse null selected client (23.645427ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13902,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse archived conversation (26.238426ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13903,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse inactive conversation (24.402024ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13904,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse foreign tenant client (25.55997ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13905,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse archived client (22.207543ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13906,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse inactive membership (25.26956ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13907,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse inactive tenant (24.86212ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13908,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse unknown role (27.316834ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13909,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse lower role (18.115949ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13916,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse revoked online session (20.051961ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13918,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:29:3
+✖ independent actual Capiro owners refuse invalid native token (27.48582ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13919,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:30:1
+✖ independent wall false legitimately works without grant and tenant predicate remains explicit (28.852204ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13920,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:31:1
+✖ independent headers and body do not supply identity or scope authority (30.470162ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13921,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:32:1
+✖ independent context hash echo grants no authority and canonical join rejects a different echo (25.632823ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13922,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:33:268
+✖ independent canonical receiver/join rejects forged native principal (23.570719ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13923,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:33:268
+✖ independent canonical receiver/join rejects forged native revision (23.513282ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13924,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:33:268
+✖ independent canonical receiver/join rejects forged native extra (23.344072ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13925,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:33:268
+✖ independent canonical receiver/join rejects forged native future clock (29.527375ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13926,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:33:268
+✖ independent canonical receiver/join rejects forged native expired clock (24.877343ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13927,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:34:1
+✖ independent asynchronous online recheck re-evaluates revoked wall grant (19.694224ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13928,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:35:1
+✖ independent final local membership recheck catches role change after context reads (20.441736ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13929,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:36:1
+✖ independent expiry never refreshes after activity and token/session expiry bounds all receipts (17.955653ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13930,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:37:1
+✖ independent changed Meri policy/fence between native context reads refuses current join (42.73219ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13931,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:38:1
+✖ independent caller deadline refuses parked online session and consumes late completion (27.584096ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13932,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:41:1
+✖ independent application flow retains exact pending proposal and separate approval with one effect/replay/revocation (16.505206ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async fixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo-independent/integration-independent.test.mjs:13:35) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13933,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:10:1
+✖ exact published commit/tree/eight source hashes and compiler are admitted (6.773594ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:10:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13942,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:11:1
+✖ actual middleware and separate provider issue canonical closed identity/context receipts (253.724478ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13943,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:12:1
+✖ activity and lastSeen writes do not fabricate identity revision or renewed expiry (35.079931ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13944,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses foreign tenant wall grant (27.747385ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13945,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses no wall grant (30.566982ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13946,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses other actor wall grant (25.221857ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13947,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses archived client (24.262598ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13948,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses foreign conversation (31.482113ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13950,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses null bound client (33.829318ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13951,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses closed conversation (40.577662ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13952,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses archived conversation (25.906041ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13953,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses online revoked session (23.966468ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13954,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses online session substitution (24.335823ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13955,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses membership revision change (22.648622ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13956,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses principal membership change (25.065059ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13957,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:15:3
+✖ actual endpoint refuses lower role (17.594113ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13958,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:16:1
+✖ a foreign wall grant cannot authorize even with correct selected input and identity hash (22.122306ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13959,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:17:1
+✖ wall revocation during online recheck is observed by second context pass (22.478301ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13960,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:18:1
+✖ local membership change during final context reads fails final identity recheck (14.932991ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13961,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:19:1
+✖ Capiro hash echo does not authorize a foreign Meri current run (23.844454ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13962,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:20:1
+✖ closed request contract rejects additional authority fields (27.450112ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13963,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:21:1
+✖ original native token expiry refuses without adapter refresh (21.343529ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13964,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:22:1
+✖ actual pinned endpoint -> opaque Meri session -> query/draft/pending/approved once/replay/revocation (16.222292ms)
+  Error: Command failed: git -c gc.auto=0 --git-dir=/tmp/capiro-endpoint-integration-source-20261013.git rev-parse 60cf2e51129f8358e6afe5fc600ffcdb6de01759^{tree}
+  fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'
+  
+      at genericNodeError (node:internal/errors:986:15)
+      at wrappedFn (node:internal/errors:540:14)
+      at checkExecSyncError (node:child_process:942:11)
+      at execFileSync (node:child_process:978:15)
+      at git (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:12:18)
+      at readPinnedSource (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/source.mjs:13:5)
+      at createPinnedEndpoint (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/endpoint.mjs:7:15)
+      at createPinnedCapiroEndpointFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/fixture.mjs:39:17)
+      at createCrossRepoMeriFixture (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/meri-fixture.mjs:10:71)
+      at async setup (file:///home/user/meri-fable-resume/apps/control/action-host/application-adapters/cross-repo/integration.test.mjs:9:33) {
+    status: 128,
+    signal: null,
+    output: [ null, '', "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n" ],
+    pid: 13965,
+    stdout: '',
+    stderr: "fatal: not a git repository: '/tmp/capiro-endpoint-integration-source-20261013.git'\n"
+  }
+
+test at apps/control/action-host/local/recovery-independent.test.mjs:24:40
+✖ independent: runner total deadline settles while approve ignores cancellation (451.280216ms)
+  AssertionError [ERR_ASSERTION]: aborted whole-run deadline must stop awaiting the borrowed callback
+  + actual - expected
+  
+  + 'pending'
+  - 'refused'
+  
+      at TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/control/action-host/local/recovery-independent.test.mjs:32:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'pending',
+    expected: 'refused',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/action-host/local/recovery-independent.test.mjs:24:40
+✖ independent: runner total deadline settles while revoke ignores cancellation (386.145483ms)
+  AssertionError [ERR_ASSERTION]: aborted whole-run deadline must stop awaiting the borrowed callback
+  + actual - expected
+  
+  + 'pending'
+  - 'refused'
+  
+      at TestContext.<anonymous> (file:///home/user/meri-fable-resume/apps/control/action-host/local/recovery-independent.test.mjs:32:10)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'pending',
+    expected: 'refused',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

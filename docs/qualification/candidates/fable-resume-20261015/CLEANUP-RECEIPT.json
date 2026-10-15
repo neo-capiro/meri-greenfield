@@ -1,0 +1,24 @@
+{
+ "schema": "meri.cleanup-receipt.v1",
+ "at": "2026-10-15T02:24:23Z",
+ "clusters": {
+  "dataDirectory": "/tmp/meri-resume-pg-20261015",
+  "stopCommand": "provision-postgres.sh stop --data /tmp/meri-resume-pg-20261015",
+  "brokerSocketEntries": "0",
+  "kickoffSocketEntries": "0",
+  "postgresProcesses": "2"
+ },
+ "testUserProcesses": "0",
+ "privateTmpEntries": "meri-lifecycle-test-097Em4\nmeri-lifecycle-test-2QV3g5\nmeri-lifecycle-test-6q0oqI\nmeri-lifecycle-test-7m4EYE\nmeri-lifecycle-test-GslDH1\nmeri-lifecycle-test-NAtxVY\nmeri-lifecycle-test-P3acZV\nmeri-lifecycle-test-as4Pp8\nmeri-lifecycle-test-eZtzJ1\nmeri-lifecycle-test-j7WGW6\nmeri-lifecycle-test-nO57hm\nmeri-lifecycle-test-pmgys9\nmeri-lifecycle-test-wqZcW5\nmeri-r2-reconciliation-GrHX2d\nmeri-r2-reconciliation-xx0YqE\nmeri-ws-QVYFGl\nnode-compile-cache",
+ "codexShim": {
+  "python3": "/usr/bin/python3",
+  "soffice": "/usr/bin/soffice",
+  "nodeDirectoryExists": false
+ },
+ "hostTrust": {
+  "extraCaInstalled": false,
+  "hostsMapping": "0"
+ },
+ "scratch": "session scratchpad holds the untrusted wheelhouse and the host-profile venv only",
+ "worktreeClean": false
+}

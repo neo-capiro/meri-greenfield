@@ -1,0 +1,156 @@
+{
+ "schema": "meri.candidate-file-manifest.v1",
+ "commit": "fable/meri-resume-20261015",
+ "retrieval": {
+  "route": "public repository, no credential needed",
+  "urlPrefix": "https://raw.githubusercontent.com/neo-capiro/meri-greenfield/fable/meri-resume-20261015/docs/qualification/candidates/fable-resume-20261015/",
+  "verify": "sha256sum of the fetched file must equal sha256 below"
+ },
+ "files": [
+  {
+   "path": "CLEANUP-RECEIPT.json",
+   "bytes": 1134,
+   "sha256": "4a8ce2a7c259172cf056ed22fcbd46ab6288feb053e60c36b91dbf92505044ca"
+  },
+  {
+   "path": "DENIED-OPERATIONS.md",
+   "bytes": 8863,
+   "sha256": "9f98950c8935ec5e51fccfcd7c2837d78948dc4d1e4df399a1a63cb54d514246"
+  },
+  {
+   "path": "README.md",
+   "bytes": 16925,
+   "sha256": "0eaaa81576a536524c7a88afb5926de12023d9e3c96856590652dd85f29d37ad"
+  },
+  {
+   "path": "artifact/pip-install-host.log",
+   "bytes": 5748,
+   "sha256": "177e7ee046f1f91956bda9392c91634787fce308b696c6a76ccc3916406d44fb"
+  },
+  {
+   "path": "artifact/python-readback-host.json",
+   "bytes": 2311,
+   "sha256": "a0e036e4a9b61cd13472f0008d21cd5e343e06531954962377f9c5e5bce3f530"
+  },
+  {
+   "path": "artifact/wheel-payload-verification.json",
+   "bytes": 7671,
+   "sha256": "82bdce58f8841bd6d35ee80315b55cfc12f142bdcb4e4d5dd2754a35aaa3a5e1"
+  },
+  {
+   "path": "checks/RESULTS-baseline-first-run.json",
+   "bytes": 19925,
+   "sha256": "76deb487cf635b6cce69f792e398ddde131e68a88d0d290eb2cf768f2cd934f0"
+  },
+  {
+   "path": "checks/RESULTS-conversations-isolated.json",
+   "bytes": 4038,
+   "sha256": "5e70b8448fcc0bc082356134b1d490534f25cd3c1fb2a181f79cb3872949639f"
+  },
+  {
+   "path": "checks/RESULTS-worker-control-rerun.json",
+   "bytes": 5112,
+   "sha256": "5939aa10476b34e8551fe70a097ae6444ac92669a590e2431e5cf33685a94a50"
+  },
+  {
+   "path": "checks/process.test.log",
+   "bytes": 856,
+   "sha256": "3fc0d6370802b75ac4a399d55c191b9d0d369e4af47fe81c9c8c25513a82b03d"
+  },
+  {
+   "path": "checks/runtime-process.test.log",
+   "bytes": 1706,
+   "sha256": "d05e8246fdf335e7c253ec9007398041609ec59eeb92b4bfdc27f88305d366ee"
+  },
+  {
+   "path": "checks/source-proof.test.log",
+   "bytes": 747,
+   "sha256": "128fa1326dcb7d0d6b059807a3a59b6cb9a82bd20146c5cc111830681debf7d0"
+  },
+  {
+   "path": "full-baseline/RESULTS.json",
+   "bytes": 88237,
+   "sha256": "5f825b65f41b65a758e3e4106b711c8ed6ad3d8bdd66fc510ccecf991d93eeed"
+  },
+  {
+   "path": "full-baseline/artifacts.stdout.txt",
+   "bytes": 42069,
+   "sha256": "02a0d4cbc95e935eb7ae8d8faa8219afa3ff62cded0081940923f4cc00a43b34"
+  },
+  {
+   "path": "full-baseline/contracts-package-check.stdout.txt",
+   "bytes": 1785,
+   "sha256": "d2f31c1bca4f90e05ee4a464a662b7e34250fdf6210ad0397f63bb7a6542e4af"
+  },
+  {
+   "path": "full-baseline/control-action-host.stdout.txt",
+   "bytes": 138693,
+   "sha256": "c9fd8f4104939ca70d2b046a34db700b16f5e6de80b27d0fb2b5ae75a71a3dec"
+  },
+  {
+   "path": "full-baseline/native-authority.stdout.txt",
+   "bytes": 37863,
+   "sha256": "eb1f4b699c32e59abf829b0572d86b1d2711fe591222752311a1987737a26c64"
+  },
+  {
+   "path": "full-baseline/rerun-office-recalc.test.mjs.log",
+   "bytes": 4403,
+   "sha256": "0e6248503322791cab4efb9ee0b3d0d4bed50e54e8c4b5af16d1be16bb4ed70c"
+  },
+  {
+   "path": "full-baseline/rerun-recovery-independent.test.mjs.log",
+   "bytes": 884,
+   "sha256": "465d7592365d327199f0759ab31682fcc158e44ef224525fe9ca0951456a0d53"
+  },
+  {
+   "path": "manifest.mjs",
+   "bytes": 1231,
+   "sha256": "183cf5255db3ff76dda637229b396ab11a4e3bf9d24a56c564ff22ff1acb5d05"
+  },
+  {
+   "path": "node-zlib/node24-gzwrite-comparison.json",
+   "bytes": 3195,
+   "sha256": "7089c10677ba37b5f7d3fa47bf93def2ead82edea8f641f678d607c0c52d018c"
+  },
+  {
+   "path": "rehearsal/composed-at-pin.json",
+   "bytes": 6468,
+   "sha256": "7c1f1372ba92bf62ab5a24dc57869adf7250839fb319bf75bb9a42b51ce9d401"
+  },
+  {
+   "path": "rehearsal/composed-at-pin.stdout.txt",
+   "bytes": 537,
+   "sha256": "20ee701274abc19987638aaf54ef648fbcca3dc8e6f3a9d50074515ac2d9d078"
+  },
+  {
+   "path": "rehearsal/composed-refactored.json",
+   "bytes": 6467,
+   "sha256": "1d93c7f6ce96773c935cf150c39485243185dbbd25c93cbe1352f90d0de73029"
+  },
+  {
+   "path": "rehearsal/composed-refactored.stdout.txt",
+   "bytes": 545,
+   "sha256": "1e91ff3e6e3bcc49fd11d08f62ab37820f424c3bcff4edb16ab97a3e5ab0b67e"
+  },
+  {
+   "path": "rehearsal/next-turn-1.json",
+   "bytes": 3942,
+   "sha256": "0834658ac55de7dee20467937ceacfea0627d0a0da20dea665435620accdfbfb"
+  },
+  {
+   "path": "rehearsal/next-turn-1.stdout.txt",
+   "bytes": 1348,
+   "sha256": "6d31fffdda3b50e8b1852df9daf8f26379dcc5498987243bcae15ca0d80676ed"
+  },
+  {
+   "path": "rehearsal/next-turn-preflight.json",
+   "bytes": 1855,
+   "sha256": "1c52d6aa84649022eac17d4b7ea8dd55934fd233c7891aab835a48c05de79995"
+  },
+  {
+   "path": "rehearsal/next-turn-preflight.stdout.txt",
+   "bytes": 1424,
+   "sha256": "87052aad24561d561af57cf8c389e55932e8aee51ea78c70d323e8f4d3e63244"
+  }
+ ]
+}
