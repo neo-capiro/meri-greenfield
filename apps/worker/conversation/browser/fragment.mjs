@@ -14,13 +14,14 @@ export const EXPOSED_UNADMITTED_TOOLS=Object.freeze(['browser_console_messages',
 const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});};
 /** `binding`, `cwd` and `policy` must already be validated (an enabled `validateBrowserPolicy` result). Installation
  * and source scopes are trusted runtime facts; receipts are always required, artifacts only when downloads are on,
- * approvals only for interaction tools (without it every interaction is denied). */
-export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,now}){
+ * approvals only for interaction tools (without it every interaction is denied). `approvalDeadlineMs` is an optional
+ * trusted runtime setting inside APPROVAL_DEADLINE_MS (default 120 s). */
+export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now}){
  const installation=validateBrowserInstallation(rawInstallation);
  if(policy?.enabled!==true||typeof receipts?.record!=='function'||policy.downloads.enabled&&typeof artifacts?.ingest!=='function')fail();
  const sourceScopes=policy.downloads.enabled?validateSourceScopes(rawScopes,binding):Object.freeze([]),paths=browserPaths(cwd);
  const name=t=>`mcp__${BROWSER_SERVER_NAME}__${t}`;
- const gate=createPermissionGate({binding,policy,server:BROWSER_SERVER_NAME,approvals});
+ const gate=createPermissionGate({binding,policy,server:BROWSER_SERVER_NAME,approvals,now,approvalDeadlineMs});
  const unadmitted=[...EXPOSED_UNADMITTED_TOOLS,...BROWSER_TOOLS.filter(t=>!policy.tools.includes(t))];
  const matcher=`mcp__${BROWSER_SERVER_NAME}__.*`;
  return Object.freeze({enabled:true,activation:'open',policy,paths,status:Object.freeze({...browserStatus(policy),activation:'open'}),

@@ -6,12 +6,35 @@
  *   For interaction tools it returns `ask`, which forces the SDK permission flow even if a rule elsewhere would
  *   pre-approve the tool; with no permission surface an `ask` is terminal, so the call is refused.
  * - `canUseTool`: interaction tools are never in `allowedTools`, so they reach this callback, which asks the injected
- *   approvals port and allows only an explicit approval for this exact tool-use id. Missing port, error, abort,
- *   timeout or any other answer denies.
+ *   approvals port and allows only an explicit approval for this exact tool-use id AND the canonical SHA-256 digest of
+ *   the exact input that will run (the allowed `updatedInput` is the digested copy). The port call is raced against
+ *   the run's AbortSignal and a bounded approval deadline owned here (`APPROVAL_DEADLINE_MS`): expiry denies with
+ *   BROWSER_APPROVAL_EXPIRED, abort with BROWSER_APPROVAL_UNAVAILABLE, the port's signal is aborted on either, and an
+ *   answer that arrives after the race is settled is ignored. Missing port, error or any other answer denies.
  *
+ * This fragment does not make an approval durable or single-use: authenticating the approver, binding the run/attempt
+ * and fence, revocation, one-time consumption and replay belong to the canonical approval owner behind the port.
  * Neither a PostToolUse hook nor a receipt can stop an action; they only record it. */
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {INTERACTION_TOOLS,checkBrowserUrl} from './policy.mjs';
 const MAX_APPROVAL_INPUT=16384;
+/** Approval deadline bounds in milliseconds; the runtime may configure a value inside them. */
+export const APPROVAL_DEADLINE_MS=Object.freeze({default:120000,min:1000,max:900000});
+export const APPROVAL_REQUEST_SCHEMA='meri-browser-approval-request/2';
+const EXPIRED=Symbol('approval-expired'),ABORTED=Symbol('approval-aborted');
+/** Races `approvals.decide` against `signal` and the deadline; returns the port's answer, EXPIRED or ABORTED. */
+async function decideWithin(approvals,request,signal,deadlineMs){
+ const expiry=new AbortController(),portSignal=signal?AbortSignal.any([signal,expiry.signal]):expiry.signal;
+ let timer,onAbort;
+ const stopped=new Promise(resolve=>{
+  timer=setTimeout(()=>{expiry.abort(new Error('BROWSER_APPROVAL_EXPIRED'));resolve(EXPIRED);},deadlineMs);
+  if(signal){onAbort=()=>resolve(ABORTED);signal.addEventListener('abort',onAbort,{once:true});}
+ });
+ const answer=Promise.resolve().then(()=>approvals.decide(request,{signal:portSignal}));
+ answer.catch(()=>{});// a rejection after the race is settled is ignored, not unhandled
+ try{return await Promise.race([answer,stopped]);}
+ finally{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);}
+}
 const deny=reason=>({hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:reason}});
 const ask=reason=>({hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'ask',permissionDecisionReason:reason}});
 /** URL a navigation-capable tool would load, or undefined when the tool loads none. `browser_tabs` loads a URL only
@@ -28,7 +51,8 @@ function browserAdmission({policy,tools},action,input){
  if(target){const decision=checkBrowserUrl(policy,target.url,{allowBlank:true});if(!decision.ok)return decision.code;}
  return null;
 }
-export function createPermissionGate({binding,policy,server,approvals}){
+export function createPermissionGate({binding,policy,server,approvals,now,approvalDeadlineMs=APPROVAL_DEADLINE_MS.default}){
+ if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  const prefix=`mcp__${server}__`,tools=policy.tools,interactions=tools.filter(t=>INTERACTION_TOOLS.includes(t));
  const actionOf=name=>typeof name==='string'&&name.startsWith(prefix)?name.slice(prefix.length):null;
  const preToolUse=async(input,toolUseID,options)=>{
@@ -52,11 +76,14 @@ export function createPermissionGate({binding,policy,server,approvals}){
    if(refused)return refusal(refused);
    if(!interactions.includes(action))return {behavior:'allow',updatedInput:input};
    if(typeof approvals?.decide!=='function'||typeof options.toolUseID!=='string'||options.signal?.aborted)return refusal('BROWSER_APPROVAL_UNAVAILABLE');
-   const request={schema:'meri-browser-approval-request/1',binding:structuredClone(binding),toolUseId:options.toolUseID,action,input:structuredClone(input??{})};
-   if(JSON.stringify(request.input).length>MAX_APPROVAL_INPUT)return refusal('BROWSER_APPROVAL_INPUT_LIMIT');
-   const answer=await approvals.decide(request,{signal:options.signal});
-   if(options.signal?.aborted)return refusal('BROWSER_APPROVAL_UNAVAILABLE');
-   if(answer?.decision==='approve'&&answer.toolUseId===options.toolUseID)return {behavior:'allow',updatedInput:input,toolUseID:options.toolUseID};
+   const approvedInput=structuredClone(input??{});
+   if(JSON.stringify(approvedInput).length>MAX_APPROVAL_INPUT)return refusal('BROWSER_APPROVAL_INPUT_LIMIT');
+   const inputDigest=canonicalSha256(approvedInput);
+   const request={schema:APPROVAL_REQUEST_SCHEMA,binding:structuredClone(binding),toolUseId:options.toolUseID,action,input:structuredClone(approvedInput),inputDigest,expiresAtMs:now()+approvalDeadlineMs};
+   const answer=await decideWithin(approvals,request,options.signal,approvalDeadlineMs);
+   if(answer===EXPIRED||now()>request.expiresAtMs)return refusal('BROWSER_APPROVAL_EXPIRED');
+   if(answer===ABORTED||options.signal?.aborted)return refusal('BROWSER_APPROVAL_UNAVAILABLE');
+   if(answer?.decision==='approve'&&answer.toolUseId===options.toolUseID&&answer.inputDigest===inputDigest)return {behavior:'allow',updatedInput:approvedInput,toolUseID:options.toolUseID};
    return refusal('BROWSER_APPROVAL_DENIED');
   }catch{return refusal('BROWSER_APPROVAL_UNAVAILABLE');}
  };

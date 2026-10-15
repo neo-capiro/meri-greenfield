@@ -17,7 +17,7 @@ export function recorders(){
  const receipts=[],ingested=[],approvalRequests=[];
  return {receipts,ingested,approvalRequests,receiptPort:{async record(r){receipts.push(structuredClone(r));}},
   artifactPort:{async ingest(request){ingested.push({...request,bytes:request.bytes.length});return {versionId:`00000099-b0a1-4000-8000-${String(ingested.length).padStart(12,'0')}`,sha256:request.sha256,bytes:request.bytes.length};}},
-  approvals:decision=>({async decide(request){approvalRequests.push(structuredClone(request));return {decision,toolUseId:request.toolUseId};}})};
+  approvals:decision=>({async decide(request){approvalRequests.push(structuredClone(request));return {decision,toolUseId:request.toolUseId,inputDigest:request.inputDigest};}})};
 }
 export const clock=()=>1760486400000;
 /** The open (activation-gated) fragment, built the way index.mjs would build it once the gate opens. */
