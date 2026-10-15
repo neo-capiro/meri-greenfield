@@ -4,6 +4,8 @@ import {assertLifecycleCommand,assertWorkerControl,assertContinuationEnvelope,as
 import {assertWorkspacePaths,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {closeSequenceRange} from '../sequence-ranges.mjs';
+/** The single worker failure a control hold admits (see failUncheckpointedHold); run.status reasonCode is free-form in the frozen UIEvent contract. */
+export const HOLD_CHECKPOINT_FAILED='HOLD_CHECKPOINT_FAILED';
 const selectRun=async(c,b)=>{const r=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows[0];return r;};
 export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthority,now=Date.now}){
  const validateProof=(proof,p)=>{own(proof,['checkpoint','checkpointSha256','sourceRequestSha256','contextSha256','resumeSessionAt','readReceiptId']);uuid(proof.readReceiptId);if(proof.resumeSessionAt!==null)uuid(proof.resumeSessionAt);validateShape('Checkpoint',proof.checkpoint);assertWorkspacePaths(proof.checkpoint.workspace);const cp=proof.checkpoint;if(hash(cp)!==proof.checkpointSha256||!same(cp.binding,p.sourceBinding)||!same(cp.workspace.binding,p.sourceBinding)||!same(cp.scopes,p.scopes)||!same(cp.workspace.scopes,p.scopes)||!same(cp.opaqueSession.scopes,p.scopes)||!same(cp.versions,p.versions)||hash(cp.workspace)!==cp.workspaceSha256||proof.sourceRequestSha256!==p.sourceRequestSha256||proof.contextSha256!==p.contextSha256||cp.lastEventSequence>p.captureSequence||cp.workspace.entries.some(e=>e.object.scopes.some(s=>!p.scopes.some(parent=>same(parent,s)))))fail('STORE_CORRUPT');};
@@ -36,6 +38,13 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   let sequence=Number(r.last_sequence);for(const raw of events){const e={...raw,binding:b,scopes,sequence:++sequence};if(e.type==='run.status')e.data={state:p.input.intent==='pause'?'paused':'waiting-for-approval',reasonCode:'CONTROL_CHECKPOINTED'};validateShape('UIEvent',e);await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,e.sequence,e.eventId,e,hash(e)]);}
   const projection={...r.projection,state:p.input.intent==='pause'?'paused':'waiting-for-approval'};await c.query('UPDATE meri_conversations.runs SET projection=$4,projection_sha256=$5,last_sequence=$6 WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3',[b.tenantId,b.conversationId,b.runId,projection,hash(projection),sequence]);
   const next={...p,state:'APPLIED',proof,checkpointId:proof.checkpoint.checkpointId};delete next.controlSequence;await save(c,b,next);return {...next,controlSequence:p.controlSequence};});}
+ /** Reused inside the store's locked publication transaction; never starts a nested transaction.
+  * A worker that cannot checkpoint the hold it was fenced by records an explicit failure instead of
+  * leaving the run running-and-held: only an unapplied pause/approval.wait hold on this exact running
+  * run qualifies, and its control becomes the UNKNOWN barrier (never re-dispatched or re-claimed). */
+ async function failUncheckpointedHold(c,b,r,check){const p=await lookup(c,b,r.hold_control_id);check();
+  if(!p||!same(p.sourceBinding,b)||!['pause','approval.wait'].includes(p.input.intent)||!['PENDING','DISPATCHING','UNKNOWN'].includes(p.state)||p.proof||p.checkpointId!==null||r.projection.state!=='running')fail('RUN_HELD');
+  if(p.state!=='UNKNOWN'){const next={...p,state:'UNKNOWN'};delete next.controlSequence;await save(c,b,next);}}
  // Reused inside the existing locked transaction; never starts a nested transaction.
  async function checkpointOwner(c,b,r,scopes,selectedClientId,checkpointId,check){
   const row=(await c.query('SELECT * FROM meri_conversations.checkpoints WHERE tenant_id=$1 AND checkpoint_id=$2',[b.tenantId,checkpointId])).rows[0];check();
@@ -100,5 +109,5 @@ export function createLifecycleJournal({tx,rowRun,cancelAppend,transitionAuthori
   });
  }
  const readTransition=(value,check)=>transitionFacts(value,check),finishTransition=(value,check)=>transitionFacts(value,check,true);
- return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,cancel:cancelAppend});
+ return Object.freeze({begin,change,get,controls,claim,checkpoint,readCheckpoint,execution,continuation,readTransition,finishTransition,failUncheckpointedHold,cancel:cancelAppend});
 }
