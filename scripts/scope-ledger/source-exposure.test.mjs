@@ -16,15 +16,15 @@ function synthetic(){return {catalog:structuredClone(catalog),bindings:CATALOG_O
  adapters:[{operations:[...registered],paths:['synthetic adapter path']}],skills:[],admittedSkills:[],provenance:{}};}
 const refuses=work=>assert.throws(work,error=>error.code==='SOURCE_EXPOSURE_INVALID');
 
-test('96 selected and43 excluded are reconciled separately from21 registered operations',()=>{
+test('96 selected and43 excluded are reconciled separately from23 registered operations',()=>{
  assert.equal(snapshot.rows.length,96);assert.equal(snapshot.counts.selectedSourceReads,82);assert.equal(snapshot.counts.selectedProductOrGoverned,14);
- assert.equal(snapshot.counts.registeredGeneralOperations,21);assert.equal(snapshot.counts.registeredFamilies,15);
- assert.equal(snapshot.counts.generalSelectedSourceReads,19);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
+ assert.equal(snapshot.counts.registeredGeneralOperations,23);assert.equal(snapshot.counts.registeredFamilies,16);
+ assert.equal(snapshot.counts.generalSelectedSourceReads,21);assert.equal(snapshot.counts.generalSelectedProductStateReads,1);assert.equal(snapshot.counts.generalHistoricalOperations,1);
  assert.equal(snapshot.counts.excludedCapabilities,43);assert.equal(snapshot.counts.live,0);
 });
-test('every existing selected source adapter already has general exposure; remaining63 are genuine adapter gaps',()=>{
+test('every existing selected source adapter already has general exposure; remaining61 are genuine adapter gaps',()=>{
  assert.deepEqual(snapshot.existingAdaptersWithoutGeneralExposure,[]);assert.equal(snapshot.counts.existingSourceAdaptersWithoutGeneralExposure,0);
- assert.equal(snapshot.counts.missingSourceAdapters,63);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,39);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,24);
+ assert.equal(snapshot.counts.missingSourceAdapters,61);assert.equal(snapshot.counts.missingAdaptersDeclaredBySkills,38);assert.equal(snapshot.counts.missingAdaptersWithoutSkillDeclaration,23);
  const gaps=snapshot.rows.filter(row=>row.kind==='source-read'&&row.state==='adapter-missing');
  for(const gap of gaps){assert.deepEqual(gap.adapterPaths,[]);assert.deepEqual(gap.generalOperations,[]);assert.deepEqual(gap.sourceAdmittedSkills,[]);assert.ok(Array.isArray(gap.requiredContextKeys));}
  assert.deepEqual(snapshot.missingAdapterFamilies.flatMap(row=>row.operations).sort(),gaps.map(row=>row.operation).sort());
@@ -51,6 +51,22 @@ test('read-only product state is counted separately; writes and other product op
 });
 test('all43 exclusions remain absent from both selected mappings and general registration',()=>{
  for(const original of catalog.originals.filter(row=>row.disposition==='deferred')){assert.equal(row(original.id),undefined);assert.equal(registered.includes(original.id),false);}
+});
+
+test('all63 reviewed producer records correlate exact operations, context keys and immutable report pointers',()=>{
+ const mapped=snapshot.rows.filter(row=>row.backendProducer);assert.equal(mapped.length,63);assert.equal(snapshot.counts.mappedBackendProducers,63);
+ assert.equal(new Set(mapped.map(row=>row.operation)).size,63);assert.equal(new Set(mapped.map(row=>row.family)).size,33);
+ assert.equal(snapshot.backendProducerEvidence.backend.commit,'b525032222515d636b0dae2d46e40c7c3d8b5528');
+ assert.equal(snapshot.backendProducerEvidence.reviewedIndex.sha256,'c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def');
+ assert.equal(snapshot.backendProducerEvidence.reviewedIndex.originalLocalV2Sha256,'5a498e4cd2e06a118d54bae3e0caba44e9418c524b57f9d27481a51c37c2dad8');
+ assert.equal(snapshot.backendProducerEvidence.publication.commit,'384325afaaf7ad34aeb9ff9b2f183d667ee17343');
+ for(const entry of mapped){assert.deepEqual(entry.requiredContextKeys,entry.backendProducer.requiredContextKeys);assert.match(entry.backendProducer.evidence.sha256,/^[a-f0-9]{64}$/);}
+ assert.match(row('get_acquisition_person').backendProducer.currentContext.join(' '),/ctx.role/);
+ assert.ok(snapshot.backendProducerEvidence.constraints.some(value=>value.includes('audit rows')));
+ const base=JSON.parse(readFileSync(new URL('./backend-producers.json',import.meta.url),'utf8'));
+ for(const mutate of [m=>m.operations.pop(),m=>m.operations[1]=m.operations[0],m=>m.operations[0].requiredContextKeys=['modelAuthority'],m=>m.operations[0].evidence.sha256='0'.repeat(64)]){
+  const input=synthetic();input.backendMapping=structuredClone(base);mutate(input.backendMapping);refuses(()=>reconcileSourceExposure(input));
+ }
 });
 test('current source provenance measures declared canonical paths without claiming qualification',()=>{
  assert.match(snapshot.note,/No qualification/);assert.equal(Object.keys(snapshot.provenance).some(path=>path.includes('node_modules')),false);

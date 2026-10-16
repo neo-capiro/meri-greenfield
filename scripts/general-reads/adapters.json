@@ -21,6 +21,14 @@
   },
   "adapters": [
     {
+      "path": "apps/gateway/sources/bill-text",
+      "family": "bill-text",
+      "declaredIn": ["apps/gateway/sources/bill-text/handler.mjs"],
+      "operations": ["search_congress_bills", "read_bill_text"],
+      "adapterChecks": ["canonical retained-call/current decision coherence", "flat native POST arguments and explicit canonical-query bridge", "native user and internal service credentials required from genuine CONTROL owner", "unchanged frozen DTO validation; unavailable current revision is UNAVAILABLE"],
+      "subject": "current authorized tenant/user; captured CONTROL defaultCongress; public stored bills"
+    },
+    {
       "path": "apps/gateway/sources/mail",
       "family": "mail",
       "declaredIn": ["apps/gateway/sources/mail/request-context.mjs"],

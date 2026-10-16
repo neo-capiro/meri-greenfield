@@ -10,6 +10,7 @@ import {fixture,uuid} from '../../test/fixtures.mjs';
 import {setup as researchFixture} from '../../test/research-evidence-fixtures.mjs';
 import {nativeScopedPage,id as actionId} from '../../../../docs/qualification/candidates/task-slice-20261012/action-source-author/accepted-action-fixture.mjs';
 import {retainedCase} from './retained-cases.mjs';
+import {billTextCase} from '../../sources/bill-text/test/fixture.mjs';
 export const CASES=Object.freeze([
  ['meeting-source','meeting.list_upcoming_meetings'],['meeting-source','meeting.query_debriefs'],['meeting-source','meeting.read_client_meetings'],
  ['action-items-complete','actions.query'],['operational-reads','query_tasks'],['operational-reads','query_action_items'],
@@ -17,6 +18,7 @@ export const CASES=Object.freeze([
  ['client-documents','read_client_documents'],['client-knowledge-memory','search_memory'],['client-knowledge-monday','read_monday_client_boards'],
  ['dataset-metadata','list_global_datasets'],['memory-proposals','memory.list_own_proposals'],['research-portfolio-evidence','get_research_evidence'],
  ['research-portfolio','get_research_portfolio'],['research-portfolio','get_research_portfolio_changes'],['florida-budget','get_florida_budget_project'],
+ ['bill-text','search_congress_bills'],['bill-text','read_bill_text'],
 ]);
 const POLICY='b'.repeat(64);
 function policy(value,seen=new Set()){
@@ -33,6 +35,7 @@ function authority(f,operation){
 const pins=p=>{const {input,deadlineMs,signal,...rest}=p;return {...structuredClone(rest),bearerToken:'SYNTHETIC',serviceSecret:'SYNTHETIC',expiresAtMs:deadlineMs};};
 const response=page=>new Response(JSON.stringify(page),{headers:{'content-type':'application/json'}});
 export function familyCase(family,id){
+ if(family==='bill-text')return billTextCase(id);
  if(['research-portfolio','florida-budget'].includes(family))return retainedCase(id);
  const operation={id,version:'0.2.0'};let a,args,transport,page;
  if(family==='meeting-source'){

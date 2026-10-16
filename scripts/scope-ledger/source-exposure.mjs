@@ -12,7 +12,7 @@ const unique=values=>[...new Set(values)].sort();
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 
 /** Derive every selected row; fixture inputs can narrow or corrupt source facts without loading SDK/provider code. */
-export function reconcileSourceExposure({catalog,bindings,families,adapters,skills,admittedSkills,provenance}){
+export function reconcileSourceExposure({catalog,bindings,families,adapters,skills,admittedSkills,provenance,backendMapping}){
  const byOperation=new Map(bindings.map(binding=>[binding.id,binding]));
  if(byOperation.size!==bindings.length)fail('Duplicate canonical operation binding');
  const selected=catalog.originals.filter(row=>row.disposition==='selected'),excluded=catalog.originals.filter(row=>row.disposition==='deferred');
@@ -42,10 +42,20 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
    state:adapterByOperation.has(operation)?'adapter-present':productGroups.has(binding.group)?'separate-product-path':'adapter-missing'};
  });
  const sourceReads=rows.filter(row=>row.kind==='source-read'),missing=sourceReads.filter(row=>row.state==='adapter-missing');
+ if(backendMapping){
+  if(backendMapping.schema!=='meri-core-producer-source-map/1'||backendMapping.operations.length!==63)fail('Incomplete backend producer mapping');
+  const seen=new Set();
+  for(const producer of backendMapping.operations){
+   const row=sourceReads.find(row=>row.operation===producer.operation);
+   if(!row||seen.has(producer.operation)||row.family!==producer.family||JSON.stringify(unique(row.requiredContextKeys))!==JSON.stringify(unique(producer.requiredContextKeys)))fail(`Backend producer correlation changed: ${producer.operation}`);
+   if(!/^#[/]/u.test(producer.evidence?.jsonPointer)||!backendMapping.sourceFiles.some(file=>file.file===producer.evidence.file&&file.sha256===producer.evidence.sha256))fail(`Unpinned backend producer: ${producer.operation}`);
+   seen.add(producer.operation);row.backendProducer=producer;
+  }
+ }
  const unexposed=sourceReads.filter(row=>row.state==='adapter-present'&&!row.generalOperations.includes(row.operation));
  const groupRows=rows=>unique(rows.map(row=>row.family)).map(family=>({family,operations:rows.filter(row=>row.family===family).map(row=>row.operation).sort()}));
  return {schema:'meri-selected-source-exposure/1',note:'Source paths and manifest declarations are evidence only. No qualification, authority, credential, native producer or live availability is inferred.',
-  provenance,counts:{selectedCapabilities:rows.length,excludedCapabilities:excluded.length,selectedSourceReads:sourceReads.length,
+  provenance,...(backendMapping?{backendProducerEvidence:Object.fromEntries(Object.entries(backendMapping).filter(([key])=>key!=='operations'))}:{}),counts:{selectedCapabilities:rows.length,excludedCapabilities:excluded.length,selectedSourceReads:sourceReads.length,
    selectedProductOrGoverned:rows.length-sourceReads.length,registeredGeneralOperations:registered.size,registeredFamilies:Object.keys(families).length,
    generalSelectedSourceReads:sourceReads.filter(row=>row.generalOperations.includes(row.operation)).length,
    generalSelectedProductStateReads:rows.filter(row=>row.kind==='product-or-governed'&&row.generalOperations.includes(row.operation)).length,
@@ -56,7 +66,7 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
    sourceReadsWithAdmittedSkillSourceRoute:sourceReads.filter(row=>row.sourceAdmittedSkills.length).length,
    existingSourceAdaptersWithoutGeneralExposure:unexposed.length,missingSourceAdapters:missing.length,
    missingAdaptersDeclaredBySkills:missing.filter(row=>row.declaredBySkills.length).length,
-   missingAdaptersWithoutSkillDeclaration:missing.filter(row=>!row.declaredBySkills.length).length,live:0},
+   missingAdaptersWithoutSkillDeclaration:missing.filter(row=>!row.declaredBySkills.length).length,mappedBackendProducers:sourceReads.filter(row=>row.backendProducer).length,live:0},
   admittedSkills:[...admittedSkills],generalRegistration:groupRows(operations.map(descriptor=>({family:byOperation.get(descriptor.operation.id).group,operation:descriptor.operation.id}))),
   existingAdaptersWithoutGeneralExposure:unexposed.map(row=>row.id),missingAdapterFamilies:groupRows(missing),
   missingAdapterAction:'Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.',
@@ -69,6 +79,7 @@ export function loadSourceExposure(root){
  const read=path=>{const absolute=resolve(root,path);if(relative(root,absolute).startsWith('..')||!existsSync(absolute))fail(`Missing/outside source ${path}`);
   const bytes=readFileSync(absolute);provenance[path]=sha(bytes);return bytes.toString('utf8');};
  const catalog=JSON.parse(read('packages/contracts/retrieval-0.2/catalog.json'));
+ const backendMapping=JSON.parse(read('scripts/scope-ledger/backend-producers.json'));
  read('packages/contracts/retrieval-0.2/catalog-validation.mjs');read('apps/worker/conversation/reads/families.mjs');
  read('apps/worker/conversation/reads/server.mjs');read('apps/gateway/general-reads/registration.mjs');
  const integration=read('apps/gateway/general-reads/integration.mjs'),declared=JSON.parse(read('scripts/general-reads/adapters.json'));
@@ -96,5 +107,5 @@ export function loadSourceExposure(root){
   return {id:manifest.skillId,operations:manifest.allowedOperations.map(operation=>operation.id)};
  });
  const admittedSkills=parseAdmittedSkills(read('apps/worker/conversation/skills/mcp.mjs'));
- return reconcileSourceExposure({catalog,bindings:CATALOG_OPERATION_BINDINGS,families:READ_FAMILIES,adapters,skills,admittedSkills,provenance});
+ return reconcileSourceExposure({catalog,bindings:CATALOG_OPERATION_BINDINGS,families:READ_FAMILIES,adapters,skills,admittedSkills,provenance,backendMapping});
 }

@@ -1,0 +1,1387 @@
+{
+  "schema": "meri-core-producer-source-map/1",
+  "backend": {
+    "commit": "b525032222515d636b0dae2d46e40c7c3d8b5528",
+    "tree": "16723770a8e111fc66bcf70d36ff32ab71eb9928"
+  },
+  "ledgerInputCommit": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
+  "reviewedIndex": {
+    "file": "MAPPING-HANDOFF-v2.json",
+    "sha256": "c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def",
+    "reviewFile": "PUBLICATION-REVIEW.md",
+    "reviewSha256": "ceb7df958e5eb2f9971af7bd8ac093d6785d18543f5611d5149ebc1b8c4fb3ab",
+    "originalLocalV2Sha256": "5a498e4cd2e06a118d54bae3e0caba44e9418c524b57f9d27481a51c37c2dad8",
+    "originalReviewSha256": "53c2504919ea0742ba6b83f584649393f5af4a98515c70cc21fd2db3c164c01a",
+    "supersedes": "Sanitized docs-only publication derives the reviewed local v2; original premature index and prior evidence preserved by Core."
+  },
+  "sourceFiles": [
+    {
+      "file": "federal-producers.json",
+      "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+      "bytes": 84012,
+      "originalSha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+      "originalBytes": 84429
+    },
+    {
+      "file": "market-producers.json",
+      "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+      "bytes": 128238,
+      "originalSha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+      "originalBytes": 128371
+    },
+    {
+      "file": "state-research-producers.json",
+      "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+      "bytes": 92196,
+      "originalSha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+      "originalBytes": 92492
+    },
+    {
+      "file": "scoped-producers.json",
+      "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+      "bytes": 82635,
+      "originalSha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+      "originalBytes": 82796
+    }
+  ],
+  "constraints": [
+    "Source provenance only: mapping does not grant credentials, authority, DTO compatibility, effect-free execution, qualification or availability.",
+    "Existing finite native tool POSTs require actual current native user JWT plus internal-service-secret in CONTROL. ALL3 CapiroRetained protocol grants neither. No generic endpoint or credential fallback.",
+    "Bill SEARCH uses captured defaultCongress to canonicalize a direct designation before HTTP; receiving checks keep the original request. Native Date objects must serialize to JSON ISO strings.",
+    "Acquisition list AND detail write audit rows. Exact current Core ctx.role controls capiro_admin PII; model role and greenfield IDs cannot establish native authority.",
+    "State designation fallback may call LegiScan, write quota state and upsert bills. Stored-ID-only reuse needs an explicit existing producer/context decision.",
+    "query_global_data has a best-effort audit write; certification and public web use live provider HTTP.",
+    "Funding/SAM use stored rails but SQL/current wall clocks differ from captured asOf; client-registry/federal-market actor-wall provenance remains unproven.",
+    "No native provider/HTTP execution or trust activation occurred for this mapping. Retained3 producer qualification remains separate from source mapping."
+  ],
+  "operations": [
+    {
+      "operation": "get_acquisition_person",
+      "family": "acquisition-personnel",
+      "requiredContextKeys": [
+        "actorRole"
+      ],
+      "producer": "MeriToolsService.getAcquisitionPerson -> AcquisitionPersonnelReadService.getPersonDetail(ctx,id).",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/8"
+      },
+      "currentContext": [
+        "Exact current ctx.role capiro_admin owns contact/private metadata exposure; current tenant/user own audit context."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_acquisition_personnel",
+      "family": "acquisition-personnel",
+      "requiredContextKeys": [
+        "actorRole"
+      ],
+      "producer": "MeriToolsService.searchAcquisitionPersonnel -> AcquisitionPersonnelReadService.listPersonnel(ctx).",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/7"
+      },
+      "currentContext": [
+        "actorRole must be exact current Core ctx.role; only capiro_admin sees email/phone/parentOffice/department.",
+        "Current tenant/user used for withTenant query/audit. User-provided role is a personnel filter, never caller role."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "read_bill_text",
+      "family": "bill-text",
+      "requiredContextKeys": [
+        "defaultCongress"
+      ],
+      "producer": "MeriToolsService.readBillText and locatedBillText; federal_evidence_current joined to federal_evidence_revision, present/current complete bill text only.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/1"
+      },
+      "currentContext": [
+        "Global public evidence, authenticated native caller required.",
+        "required trusted defaultCongress used for noncanonical bill designations; frozen receiving normalization already sends canonical billId.",
+        "Cursor is an encoded selector, not an authorization token; native verifies bill/version/revision/hash/offset against current candidates."
+      ],
+      "receivingCompatibility": "Source compared against frozen validator cbe0ff527e847ab66a970adf550800e711b7c0d2/schema82836c8462cb0ff780e2a9e81bc2c1ff8f5aeabe; genuine HTTP JSON serialization required; no native execution qualification."
+    },
+    {
+      "operation": "search_congress_bills",
+      "family": "bill-text",
+      "requiredContextKeys": [
+        "defaultCongress"
+      ],
+      "producer": "MeriToolsService.searchCongressBills; text mode uses BILL_TEXT_PASSAGE_SEARCH_SQL over stored current federal evidence; metadata direct bill lookup or LdaIntelService.getCongressBills.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/0"
+      },
+      "currentContext": [
+        "Native authenticated ctx establishes caller but these are global public rows, not a client-grant projection.",
+        "required defaultCongress must be server-owned; this producer resolves designation queries with shared currentCongress() (local year-only), not the Jan-3 UTC helper."
+      ],
+      "receivingCompatibility": "Source compared against frozen validator cbe0ff527e847ab66a970adf550800e711b7c0d2/schema82836c8462cb0ff780e2a9e81bc2c1ff8f5aeabe; genuine HTTP JSON serialization required; no native execution qualification."
+    },
+    {
+      "operation": "get_business_development_context",
+      "family": "business-development",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriToolsService -> optional MeriBizDevToolsService.getContext",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2812,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s38",
+            "line": 196,
+            "purpose": "tool producer"
+          },
+          {
+            "source": "s38",
+            "line": 163,
+            "purpose": "shared scope owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/11"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_business_development_evidence",
+      "family": "business-development",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriBizDevToolsService.getEvidence -> BizDevDossierService.prospectDossier(ctx,prospectId,undefined,true)",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2813,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s38",
+            "line": 397,
+            "purpose": "producer"
+          },
+          {
+            "source": "s05",
+            "line": 750,
+            "purpose": "canonical dossier owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/12"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_business_development_recent_changes",
+      "family": "business-development",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriBizDevToolsService.getRecentChanges -> BizDevWatchService.listProspectAlerts",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2814,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s38",
+            "line": 626,
+            "purpose": "actual producer"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/13"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_certification_status",
+      "family": "certification-status",
+      "requiredContextKeys": [
+        "comparisonLocale"
+      ],
+      "producer": [
+        "s018"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "query_knowledge_graph",
+      "family": "client-knowledge-search",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriToolsService.queryKnowledgeGraph -> loadGraphForCtx",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2637,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 3273,
+            "purpose": "tool owner"
+          },
+          {
+            "source": "s49",
+            "line": 3157,
+            "purpose": "graph source owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/2"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_client_knowledge",
+      "family": "client-knowledge-search",
+      "requiredContextKeys": [
+        "asOf"
+      ],
+      "producer": {
+        "owner": "MeriToolsService.searchClientKnowledge -> ClientKbService.search",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2634,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 2274,
+            "purpose": "wrapper"
+          },
+          {
+            "source": "s24",
+            "line": 654,
+            "purpose": "search owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/1"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "lookup_client_registry",
+      "family": "client-registry",
+      "requiredContextKeys": [],
+      "producer": [
+        "s110"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/9"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_capiro_data",
+      "family": "data-search",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriToolsService -> searchCapiroData -> MeriContextPlaneService.searchToolData",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2631,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s43",
+            "line": 83,
+            "purpose": "canonical wrapper"
+          },
+          {
+            "source": "s41",
+            "line": 89,
+            "purpose": "shared plane owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_fara_registrations",
+      "family": "disclosures",
+      "requiredContextKeys": [],
+      "producer": [
+        "s060"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/4"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_lda_filings",
+      "family": "disclosures",
+      "requiredContextKeys": [],
+      "producer": [
+        "s030"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/1"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_sec_filings",
+      "family": "disclosures",
+      "requiredContextKeys": [],
+      "producer": [
+        "s055"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/3"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_district_nexus_changes",
+      "family": "district-nexus",
+      "requiredContextKeys": [
+        "binding",
+        "subject"
+      ],
+      "producer": {
+        "owner": "MeriToolsService -> optional R5MeriDistrictTools.getChanges",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2677,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s20",
+            "line": 64,
+            "purpose": "actual changes owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/6"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_district_nexus_context",
+      "family": "district-nexus",
+      "requiredContextKeys": [
+        "binding",
+        "subject"
+      ],
+      "producer": {
+        "owner": "MeriToolsService -> optional R5MeriDistrictTools.getContext -> R5DistrictContextService.getContext",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2669,
+            "purpose": "active optional registry"
+          },
+          {
+            "source": "s20",
+            "line": 52,
+            "purpose": "tool owner"
+          },
+          {
+            "source": "s16",
+            "line": 50,
+            "purpose": "canonical R5 context owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/5"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_representation",
+      "family": "facility-representation",
+      "requiredContextKeys": [
+        "binding",
+        "subject"
+      ],
+      "producer": {
+        "owner": "MeriToolsService.getRepresentation -> RepresentationResolverService.representationForClient; same resolver as GET /api/clients/:clientId/representation",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2662,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 6070,
+            "purpose": "tool projection"
+          },
+          {
+            "source": "s13",
+            "line": 8,
+            "purpose": "related native controller"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/4"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_bill_status",
+      "family": "federal-legislation",
+      "requiredContextKeys": [
+        "defaultCongress"
+      ],
+      "producer": "MeriToolsService.getBillStatus; congressBill status plus action, vote and governing-rule relations.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/2"
+      },
+      "currentContext": [
+        "Global public rows; defaultCongress from canonical server parser is required for implicit designations; no client authority inferred."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_floor_votes",
+      "family": "federal-legislation",
+      "requiredContextKeys": [
+        "defaultCongress"
+      ],
+      "producer": "MeriToolsService.searchFloorVotes; stored Congress vote/member-vote rows.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/3"
+      },
+      "currentContext": [
+        "Global public rows; implicit bill defaultCongress server-owned; member must resolve stored identity before scoped vote query."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_district_federal_market",
+      "family": "federal-market",
+      "requiredContextKeys": [],
+      "producer": [
+        "s147",
+        "s173"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/19"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_contract_vehicles",
+      "family": "federal-market",
+      "requiredContextKeys": [],
+      "producer": [
+        "s147",
+        "s165"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/17"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_federal_contract_awards",
+      "family": "federal-market",
+      "requiredContextKeys": [],
+      "producer": [
+        "s147",
+        "s148"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/15"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_federal_subawards",
+      "family": "federal-market",
+      "requiredContextKeys": [],
+      "producer": [
+        "s147",
+        "s161"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/16"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_procurement_forecasts",
+      "family": "federal-market",
+      "requiredContextKeys": [],
+      "producer": [
+        "s147",
+        "s158"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/18"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_funding_opportunity",
+      "family": "funding-opportunities",
+      "requiredContextKeys": [
+        "asOf"
+      ],
+      "producer": [
+        "s133"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/12"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_funding_opportunity_requirements",
+      "family": "funding-opportunities",
+      "requiredContextKeys": [
+        "asOf"
+      ],
+      "producer": [
+        "s127"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/11"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_opportunity_client_context",
+      "family": "funding-opportunities",
+      "requiredContextKeys": [
+        "asOf"
+      ],
+      "producer": [
+        "s138"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/13"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_opportunity_government_landscape",
+      "family": "funding-opportunities",
+      "requiredContextKeys": [
+        "asOf"
+      ],
+      "producer": [
+        "s142"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/14"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_funding_opportunities",
+      "family": "funding-opportunities",
+      "requiredContextKeys": [
+        "asOf"
+      ],
+      "producer": [
+        "s117"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/10"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "query_intelligence",
+      "family": "intelligence-summary",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriToolsService.queryIntelligence(input), no TenantContext argument",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2636,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 3498,
+            "purpose": "aggregate producer"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/3"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_committee_roster",
+      "family": "legislative-directory",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.getCommitteeRoster dispatches federalCommitteeRoster/stateCommitteeRoster; global stored canonical registries/membership.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/15"
+      },
+      "currentContext": [
+        "Current native admission; explicit jurisdiction/state selector controls domain resolution, not caller client grant."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "list_members",
+      "family": "legislative-directory",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.listMembers; current CongressMember registry isCurrent:true, filtered by state and/or chamber, canonical order.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/16"
+      },
+      "currentContext": [
+        "Public global current directory; native user context required."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "query_outreach",
+      "family": "outreach-query",
+      "requiredContextKeys": [
+        "clientResolution"
+      ],
+      "producer": {
+        "owner": "MeriToolsService.queryOutreach -> EngagementService.getOutreachRecord OR listCampaigns",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2741,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 8848,
+            "purpose": "branch owner"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/10"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_pe_bills",
+      "family": "pe-references",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.getPeBills -> ProgramElementReadService.getBills.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/13"
+      },
+      "currentContext": [
+        "Global public PE/bill evidence; current native admission required."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_pe_contractors",
+      "family": "pe-references",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.getPeContractors -> ProgramElementReadService.getContractors.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/12"
+      },
+      "currentContext": [
+        "Current native standard user; public PE/award evidence with explicit provenance and as-of cutoff inside owner."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_pe_report_language",
+      "family": "pe-references",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.getPeReportLanguage -> ProgramElementReadService.getProvisionsForPe; reportLanguageNoteForModel.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/14"
+      },
+      "currentContext": [
+        "Global stored provision linkage; accepted direct PE vs program-level candidate attribution remains distinct."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_pe_budget_timeline",
+      "family": "program-elements",
+      "requiredContextKeys": [
+        "evidenceAccuracyMode"
+      ],
+      "producer": "MeriToolsService.getPeBudgetTimeline -> ProgramElementReadService.getTimeline, then model-safe funding years/claim and optional lineage.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/11"
+      },
+      "currentContext": [
+        "Server current tenant chat evidenceAccuracyMode; global stored PE and year/milestone source values."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_program_element",
+      "family": "program-elements",
+      "requiredContextKeys": [
+        "evidenceAccuracyMode"
+      ],
+      "producer": "MeriToolsService.getProgramElementDetail -> ProgramElementReadService.getProgramElement plus model funding and optional lineage.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/10"
+      },
+      "currentContext": [
+        "Tenant/surface evidence mode resolved server-side; current ctx supplies user watch.",
+        "Public global cached base detail keyed PE; current-user watch injected separately."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_program_elements",
+      "family": "program-elements",
+      "requiredContextKeys": [
+        "evidenceAccuracyMode"
+      ],
+      "producer": "MeriToolsService.searchProgramElements -> ProgramElementReadService.listProgramElements, followed by model funding-line projection.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/9"
+      },
+      "currentContext": [
+        "evidenceAccuracyMode is server rollout resolver resolveEvidenceAccuracyModeForTenant(ctx.tenantId,'chat'), not model input.",
+        "Native ctx tenant/user controls current-user watch facts; public PE/budget rows are global."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "query_economic_data",
+      "family": "public-data",
+      "requiredContextKeys": [],
+      "producer": [
+        "s082"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/7"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_federal_awards",
+      "family": "public-data",
+      "requiredContextKeys": [
+        "evidenceAccuracyMode"
+      ],
+      "producer": [
+        "s074"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/6"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_federal_grants",
+      "family": "public-data",
+      "requiredContextKeys": [
+        "evidenceAccuracyMode"
+      ],
+      "producer": [
+        "s065"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/5"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_committee_hearings",
+      "family": "public-domain-hearings",
+      "requiredContextKeys": [
+        "tenantId",
+        "clientResolution"
+      ],
+      "producer": "MeriToolsService.searchCommitteeHearings -> MeriContextPlaneService.searchToolData -> governed hearings retrieval / published record owner.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/17"
+      },
+      "currentContext": [
+        "tenantId is current ctx.tenantId, never model body.",
+        "clientResolution must use ensureClientVisible/current canonical server security envelope; selected client must remain currently visible.",
+        "security envelope freshly reads unwalled-or-granted client IDs and mailbox IDs; retrieval adds archive/visibility constraints and current caller identity."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "query_global_data",
+      "family": "public-domain-query",
+      "requiredContextKeys": [
+        "defaultAsOf"
+      ],
+      "producer": [
+        "s041"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/2"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_cbo_cost_estimates",
+      "family": "public-reports",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.searchCboCostEstimates; global cboCostEstimate rows ordered pubDate descending.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/4"
+      },
+      "currentContext": [
+        "Current native authenticated principal; no caller-supplied actorRole/client scope needed for these global public records."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_crs_reports",
+      "family": "public-reports",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.searchCrsReports; Prisma.withSystem active:true global crsReport findMany/count.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/6"
+      },
+      "currentContext": [
+        "Current native authenticated context; no model actor/client selector establishes authority."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_gao_reports",
+      "family": "public-reports",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService.searchGaoReports; Prisma.withSystem global gaoReport findMany/count.",
+      "evidence": {
+        "file": "federal-producers.json",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+        "jsonPointer": "#/operations/5"
+      },
+      "currentContext": [
+        "Current native user/tenant admission remains required although public data query is system-scoped."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "scrape_web_page",
+      "family": "public-web",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriToolsService.scrapeWebPage -> hardenedWebTransport",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2686,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 6586,
+            "purpose": "producer"
+          },
+          {
+            "source": "s36",
+            "line": 59,
+            "purpose": "guarded transport"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/8"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_public_web",
+      "family": "public-web",
+      "requiredContextKeys": [],
+      "producer": {
+        "owner": "MeriToolsService.searchPublicWeb(input), no ctx",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2685,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 6539,
+            "purpose": "producer"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/7"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "query_regulatory_dockets",
+      "family": "regulatory-dockets",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService registry -> queryRegulatoryDockets(input) -> RegulatoryDocketService.listDockets or getUpcomingDeadlines",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/3/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_research_sources",
+      "family": "research-legal-candidates",
+      "requiredContextKeys": [
+        "clientResolution"
+      ],
+      "producer": "MeriToolsService registry -> searchResearchSources(ctx,input)",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/4/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_legal_reference",
+      "family": "research-legal-legislation",
+      "requiredContextKeys": [
+        "clientResolution",
+        "citationResolution"
+      ],
+      "producer": "Fixed Intel read route: input.view rules -> ResearchService.rules; versions -> versions; otherwise references. Model schema limits view statutes/rules/versions, but runtime route falls through other values to references.",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/5/operations/1"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_legislative_research",
+      "family": "research-legal-legislation",
+      "requiredContextKeys": [
+        "clientResolution",
+        "citationResolution"
+      ],
+      "producer": "MeriToolsService.legiwatchTool -> fixed Intel read route -> ResearchService.search(ctx,input)",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/5/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_legiwatch_news",
+      "family": "research-legal-news",
+      "requiredContextKeys": [
+        "clientResolution",
+        "effectiveScope",
+        "windowAsOf",
+        "defaultYear",
+        "owner"
+      ],
+      "producer": "KeywordMeriController fixed read branch: view source -> Phase8EvidenceService.run+exact; personnel -> personnel; monitors -> monitors; otherwise news. Model schema advertises articles/monitors/personnel/source but runtime has a default news path.",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/6/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_state_rule_status",
+      "family": "rule-status",
+      "requiredContextKeys": [
+        "stageAsOf",
+        "commentAsOf"
+      ],
+      "producer": "MeriToolsService registry -> getStateRuleStatus(input) -> formatRuleStatus(jurisdiction,row)",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/2/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_sam_opportunities",
+      "family": "sam-opportunities",
+      "requiredContextKeys": [
+        "asOf",
+        "evidenceAccuracyMode",
+        "sourceStatusAsOf",
+        "sourceHealthAsOf"
+      ],
+      "producer": [
+        "s092"
+      ],
+      "evidence": {
+        "file": "market-producers.json",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+        "jsonPointer": "#/operations/8"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_state_legislator",
+      "family": "state-legislation",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService registry -> getStateLegislator(input); no ctx argument.",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/0/operations/1"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_state_bills",
+      "family": "state-legislation",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService registry -> searchStateBills(input); ctx is not passed into this producer.",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/0/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "get_state_bill_status",
+      "family": "state-status-votes",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService registry -> getStateBillStatus(input)",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/1/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_state_floor_votes",
+      "family": "state-status-votes",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService registry -> searchStateFloorVotes(input)",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/1/operations/1"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_intel_articles",
+      "family": "stored-intelligence",
+      "requiredContextKeys": [],
+      "producer": "MeriToolsService registry -> searchIntelArticles(input), no ctx argument",
+      "evidence": {
+        "file": "state-research-producers.json",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+        "jsonPointer": "#/families/7/operations/0"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    },
+    {
+      "operation": "search_tracked_bills",
+      "family": "tracked-bills",
+      "requiredContextKeys": [
+        "binding",
+        "subject",
+        "clientReference"
+      ],
+      "producer": {
+        "owner": "MeriToolsService.searchTrackedBills -> IntelligenceService.listTrackedBills -> manual bill tracking owner",
+        "refs": [
+          {
+            "source": "s49",
+            "line": 2735,
+            "purpose": "active registry"
+          },
+          {
+            "source": "s49",
+            "line": 8405,
+            "purpose": "native wrapper"
+          },
+          {
+            "source": "s33",
+            "line": 296,
+            "purpose": "manual-list facade"
+          },
+          {
+            "source": "s31",
+            "line": 36,
+            "purpose": "actual canonical read"
+          }
+        ]
+      },
+      "evidence": {
+        "file": "scoped-producers.json",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+        "jsonPointer": "#/operations/9"
+      },
+      "currentContext": [
+        "Exact native current-authority and required-context owners are recorded at the pinned evidence pointer; adapter composition must implement them explicitly."
+      ],
+      "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
+    }
+  ],
+  "publication": {
+    "commit": "384325afaaf7ad34aeb9ff9b2f183d667ee17343",
+    "tree": "06f3be30d464e261214bd08d9123ede13e2c4b7d",
+    "directory": "docs/retained-read-producer-mapping-20261016",
+    "url": "https://github.com/neo-capiro/capiro-backend/blob/384325afaaf7ad34aeb9ff9b2f183d667ee17343/docs/retained-read-producer-mapping-20261016/MAPPING-HANDOFF-v2.json"
+  }
+}

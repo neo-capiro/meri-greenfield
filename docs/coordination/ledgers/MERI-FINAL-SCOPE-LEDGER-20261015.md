@@ -1,5 +1,22 @@
 # Meri final scope ledger
 
+Next adapter batch, base `fb708d231c7273f86b1462c72a72e70ccc36a3d6`:
+all 63 missing names have actual retained Core dispatches at
+`b525032222515d636b0dae2d46e40c7c3d8b5528`, tree
+`16723770a8e111fc66bcf70d36ff32ab71eb9928`; source existence does not clear
+native effects, context or credentials. Core's per-operation mapping supplements
+the concrete source facts. State designation fallback, global-query auditing,
+live certification, clock divergence and unproven client walls remain holds.
+The initial independent family is bill-text: fixed flat native POST bodies,
+canonical query bridge from captured `defaultCongress`, unchanged frozen DTOs,
+existing bounded retained transport and gateway authority/budget/release owners.
+CONTROL must separately own genuine native-user and internal-service credentials;
+the three-operation delegated envelope grants neither. New family source remains
+unavailable without that owner and current installation/discovery. Root owns only
+its new family/context modules and narrow existing registration/context/envelope
+seams. Focused tests use genuine HTTP JSON serialization with synthetic transport;
+no backend, provider, credential, frozen contract or activation change is implied.
+
 Current-source reconciliation, 16 October 2026: the generated `sourceExposure`
 snapshot below supersedes historical proposal claims about server/adapter presence;
 it does not change scope decisions, frozen contracts, the audit CSV, qualification
@@ -161,12 +178,13 @@ This is source reconciliation only. The historical proposal tables below retain 
 | --- | --- |
 | Selected capabilities / continued exclusions | 96 / 43 |
 | Selected source reads / separate product or governed capabilities | 82 / 14 |
-| Single meri_reads registry | 21 operations / 15 families |
-| Registry accounting | 19 selected source reads + 1 product-state read + 1 historical contract |
+| Single meri_reads registry | 23 operations / 16 families |
+| Registry accounting | 21 selected source reads + 1 product-state read + 1 historical contract |
 | Selected source reads declared in skill manifests | 52 current contracts + 1 historical-only contract |
 | Selected source reads reachable through admitted skill source | 11 |
 | Existing source adapters lacking general-conversation registration | 0 |
-| Selected source reads lacking adapters | 63 (39 declared by skills; 24 without a skill declaration) |
+| Selected source reads lacking adapters | 61 (38 declared by skills; 23 without a skill declaration) |
+| Pinned actual Core producer mappings (not qualification) | 63 |
 | Live | 0 |
 
 Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical `query_action_items` and successor `actions.query` represent one selected capability. `memory.list_own_proposals` is a product-state read; product writes and effects remain on their separate governed route.
@@ -179,6 +197,7 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | Registered family | Exact operations |
 | --- | --- |
 | `action-items-complete` | `actions.query` |
+| `bill-text` | `read_bill_text`, `search_congress_bills` |
 | `client-documents` | `read_client_documents` |
 | `client-knowledge-memory` | `search_memory` |
 | `client-knowledge-monday` | `read_monday_client_boards` |
@@ -194,12 +213,11 @@ Only `quick_skill.relationship_brief`, `quick_skill.commitments_audit` are admit
 | `research-portfolio-evidence` | `get_research_evidence` |
 | `tenant-contacts` | `find_contacts` |
 
-Every canonical source adapter already present is exposed by the agreed phase-1 plus retained-three cut. The remaining selected source reads are outside that cut and lack an adapter; contract mapping alone does not implement them. Their exact unresolved families and operations are:
+Every canonical source adapter already present is exposed. The new bill-text source family adds two fixed native producers, retaining all receiving-contract truth limits. The remaining selected source reads lack an adapter; producer mapping alone does not implement them. Their exact unresolved families and operations are:
 
 | Missing adapter family | Selected operations |
 | --- | --- |
 | `acquisition-personnel` | `get_acquisition_person`, `search_acquisition_personnel` |
-| `bill-text` | `read_bill_text`, `search_congress_bills` |
 | `business-development` | `get_business_development_context`, `get_business_development_evidence`, `get_business_development_recent_changes` |
 | `certification-status` | `get_certification_status` |
 | `client-knowledge-search` | `query_knowledge_graph`, `search_client_knowledge` |
@@ -233,6 +251,17 @@ Every canonical source adapter already present is exposed by the agreed phase-1 
 | `tracked-bills` | `search_tracked_bills` |
 
 Canonical gateway family adapter and operation-specific trusted dispatch/current-resource context, plus an admitted exact producer/endpoint protocol. A schema/normalizer binding or skill declaration is not a producer. No guessed endpoint, default credential or permissive generic query is allocated.
+
+The 63 producer mappings pin Core `b525032222515d636b0dae2d46e40c7c3d8b5528` / tree `16723770a8e111fc66bcf70d36ff32ab71eb9928`. [Sanitized repository publication](https://github.com/neo-capiro/capiro-backend/blob/384325afaaf7ad34aeb9ff9b2f183d667ee17343/docs/retained-read-producer-mapping-20261016/MAPPING-HANDOFF-v2.json) is pinned at `384325afaaf7ad34aeb9ff9b2f183d667ee17343`. Its reviewed v2 index SHA is `c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def`; publication review SHA `ceb7df958e5eb2f9971af7bd8ac093d6785d18543f5611d5149ebc1b8c4fb3ab`. Every mapped operation in JSON retains its exact scoped report hash/pointer, required receiving context and compatibility status. Original local v2 and superseded evidence remain preserved by their owner.
+
+- Source provenance only: mapping does not grant credentials, authority, DTO compatibility, effect-free execution, qualification or availability.
+- Existing finite native tool POSTs require actual current native user JWT plus internal-service-secret in CONTROL. ALL3 CapiroRetained protocol grants neither. No generic endpoint or credential fallback.
+- Bill SEARCH uses captured defaultCongress to canonicalize a direct designation before HTTP; receiving checks keep the original request. Native Date objects must serialize to JSON ISO strings.
+- Acquisition list AND detail write audit rows. Exact current Core ctx.role controls capiro_admin PII; model role and greenfield IDs cannot establish native authority.
+- State designation fallback may call LegiScan, write quota state and upsert bills. Stored-ID-only reuse needs an explicit existing producer/context decision.
+- query_global_data has a best-effort audit write; certification and public web use live provider HTTP.
+- Funding/SAM use stored rails but SQL/current wall clocks differ from captured asOf; client-registry/federal-market actor-wall provenance remains unproven.
+- No native provider/HTTP execution or trust activation occurred for this mapping. Retained3 producer qualification remains separate from source mapping.
 
 ### Historical accounting bridge (audit CSV versus p3 inventory)
 
