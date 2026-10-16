@@ -1,6 +1,6 @@
-param([switch]$Help,[switch]$Supplemental,[switch]$MemoryScope,[switch]$ModelGrants,[switch]$IntentDdl)
-if($Help) { Write-Output 'Usage: run-controls.ps1 [-Supplemental | -MemoryScope | -ModelGrants | -IntentDdl] [-Help]. Runs synthetic controls serially; temporarily reverts owned source and restores exact bytes. Supplemental runs adapter/DDL controls only. MemoryScope runs retained-firm-scope before/after controls only. ModelGrants runs issuer/store/purpose controls only. IntentDdl runs canonical journal and allocated DDL controls only. Exit 0: expected outcomes; exit 1: check/setup failure. No infrastructure or dependency installation.'; return }
-if(@(@($Supplemental,$MemoryScope,$ModelGrants,$IntentDdl) | Where-Object { $_.IsPresent }).Count -gt 1) { throw 'Choose one focused control mode' }
+param([switch]$Help,[switch]$Supplemental,[switch]$MemoryScope,[switch]$ModelGrants,[switch]$IntentDdl,[switch]$ModelFence)
+if($Help) { Write-Output 'Usage: run-controls.ps1 [-Supplemental | -MemoryScope | -ModelGrants | -IntentDdl | -ModelFence] [-Help]. Runs synthetic controls serially; temporarily reverts owned source and restores exact bytes. Supplemental runs adapter/DDL controls only. MemoryScope runs retained-firm-scope before/after controls only. ModelGrants runs issuer/store/purpose controls only. IntentDdl runs canonical journal and allocated DDL controls only. Exit 0: expected outcomes; exit 1: check/setup failure. No infrastructure or dependency installation.'; return }
+if(@(@($Supplemental,$MemoryScope,$ModelGrants,$IntentDdl,$ModelFence) | Where-Object { $_.IsPresent }).Count -gt 1) { throw 'Choose one focused control mode' }
 $ErrorActionPreference = 'Stop'
 $evidenceRoot = $PSScriptRoot
 $repoRoot = (Resolve-Path (Join-Path $evidenceRoot '../../../..')).Path
@@ -48,6 +48,14 @@ function Baseline([string]$path,[string]$ref='eca78d458acb46cbfd54a94cf870841d99
 }
 $common=@('--max-old-space-size=128','--experimental-test-module-mocks','--import',$seam,'--test','--test-isolation=none','--test-concurrency=1')
 try {
+ if($ModelFence) {
+  $modelCommon=@('--max-old-space-size=128','--experimental-test-module-mocks','--import','./docs/qualification/candidates/dot-budget-planner-20261016/model-grant-dependency-seams.mjs','--test','--test-isolation=none','--test-concurrency=1')
+  With-Source @{'apps/runtime/prepared-run-issuance-postgres.mjs'=(Baseline 'apps/runtime/prepared-run-issuance-postgres.mjs' 'cf639d4707df0060524218c65d941834ed7ea2e3')} {
+   Invoke-Control 'model-fence-before' $nodePath ($modelCommon+@('--test-name-pattern=terminal replay requires','apps/runtime/test/model-grant-store.test.mjs')) $true
+  }
+  Invoke-Control 'model-fence-after' $nodePath ($modelCommon+@('apps/runtime/test/model-grant-store.test.mjs'))
+  return
+ }
  if($IntentDdl) {
   Invoke-Control 'intent-ddl-after' $nodePath ($common+@('apps/control/intents/test/postgres-journal.test.mjs','apps/control/intents/test/migration-source.test.mjs'))
   return
@@ -95,7 +103,7 @@ try {
  Invoke-Control 'model-grant-after' $nodePath @('--max-old-space-size=128','--test','--test-isolation=none','apps/runtime/test/run-model-grant.test.mjs')
  Invoke-Control 'source-proof' $nodePath @('--max-old-space-size=128','--test','--test-isolation=none','scripts/qualification/assembled-image/source-proof.test.mjs')
 } finally {
- $resultFile=if($IntentDdl){'intent-ddl-controls.json'}elseif($ModelGrants){'model-grant-controls.json'}elseif($MemoryScope){'memory-scope-controls.json'}elseif($Supplemental){'supplemental-controls.json'}else{'controls.json'}
- $note=if($ModelGrants){'Model controls mock canonical JSON/schema and artifact/native validator imports; execute real issuer/store code with fixed synthetic material and scripted ports. No live qualification.'}else{'memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.'}
+ $resultFile=if($ModelFence){'model-fence-controls.json'}elseif($IntentDdl){'intent-ddl-controls.json'}elseif($ModelGrants){'model-grant-controls.json'}elseif($MemoryScope){'memory-scope-controls.json'}elseif($Supplemental){'supplemental-controls.json'}else{'controls.json'}
+ $note=if($ModelGrants -or $ModelFence){'Model controls mock canonical JSON/schema and artifact/native validator imports; execute real issuer/store code with fixed synthetic material and scripted ports. No live qualification.'}else{'memory/intent controls mock hash/schema/preparer dependency seams; remaining controls use built-ins and scripted ports. No live qualification.'}
  @{base='eca78d458acb46cbfd54a94cf870841d999ef6b1';synthetic=$true;note=$note;runs=$runs;restorations=$restorations} | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $evidenceRoot $resultFile) -Encoding utf8
 }

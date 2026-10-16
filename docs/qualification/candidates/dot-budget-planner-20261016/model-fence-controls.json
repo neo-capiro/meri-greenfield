@@ -1,0 +1,55 @@
+{
+  "note": "Model controls mock canonical JSON/schema and artifact/native validator imports; execute real issuer/store code with fixed synthetic material and scripted ports. No live qualification.",
+  "synthetic": true,
+  "runs": [
+    {
+      "stderr": "model-fence-before.stderr.txt",
+      "elapsedMs": 171.4482,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/model-grant-dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "--test-name-pattern=terminal replay requires",
+        "apps/runtime/test/model-grant-store.test.mjs"
+      ],
+      "sampledPeakWorkingSetBytes": 42086400,
+      "exitCode": 1,
+      "name": "model-fence-before",
+      "negative": true,
+      "stdout": "model-fence-before.stdout.txt",
+      "timedOut": false
+    },
+    {
+      "stderr": "model-fence-after.stderr.txt",
+      "elapsedMs": 152.27,
+      "arguments": [
+        "--max-old-space-size=128",
+        "--experimental-test-module-mocks",
+        "--import",
+        "./docs/qualification/candidates/dot-budget-planner-20261016/model-grant-dependency-seams.mjs",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "apps/runtime/test/model-grant-store.test.mjs"
+      ],
+      "sampledPeakWorkingSetBytes": 45539328,
+      "exitCode": 0,
+      "name": "model-fence-after",
+      "negative": false,
+      "stdout": "model-fence-after.stdout.txt",
+      "timedOut": false
+    }
+  ],
+  "base": "eca78d458acb46cbfd54a94cf870841d999ef6b1",
+  "restorations": [
+    {
+      "path": "apps\\runtime\\prepared-run-issuance-postgres.mjs",
+      "byteExact": true,
+      "sha256": "27369cc0406812a95b6f2e09cadbf58e2ff32b8feaab84ba3b48de3bebf44d6b"
+    }
+  ]
+}

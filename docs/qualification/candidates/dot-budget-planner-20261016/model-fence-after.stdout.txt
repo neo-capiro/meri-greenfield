@@ -1,0 +1,15 @@
+✔ model and task share a binding-derived key but never a SQL row; existing task identity/facts behavior is preserved (2.5901ms)
+✔ model completion requires original claim fence and version CAS, then refuses identity/intent/ref/expiry changes (1.5741ms)
+✔ model compare-and-set race cannot complete over a changed version (0.3302ms)
+✔ model terminal replay requires the original claim fence even for the identical issued identity (0.3768ms)
+✔ canonical issuer over scripted model SQL handles claim lost ACK without second material (1.4746ms)
+✔ canonical issuer over scripted model SQL handles complete lost ACK without second material (3.8958ms)
+✔ allocated model DDL fixes namespace, purpose, immutable intent/fence/identity and non-reusable keys without execution (0.762ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.2713

@@ -45,8 +45,9 @@ function issuanceStore(pool,table,model){
   if(!hex64(v.issuanceKey)||!uuid(v.grantId)||!hex64(v.capabilitySha256)||typeof v.materialRef!=='string'||v.materialRef.length<1||v.materialRef.length>1024||v.claimFence!==undefined&&!uuid(v.claimFence))fail('INVALID');
   if(model&&(!uuid(v.claimFence)||v.materialRef!=='model-material:v1:'+v.issuanceKey))fail('INVALID');
   const current=await readRow(v.issuanceKey);if(!current)fail('NOT_CLAIMED');
+  if(model&&current.claimFence!==v.claimFence)fail('CLAIM_FENCED');
   if(current.state==='ISSUED'){if(current.grantId!==v.grantId||current.capabilitySha256!==v.capabilitySha256||current.materialRef!==v.materialRef)fail('ISSUED_CONFLICT');return current;}
-  if(v.claimFence!==undefined&&current.claimFence!==v.claimFence)fail('CLAIM_FENCED');
+  if(!model&&v.claimFence!==undefined&&current.claimFence!==v.claimFence)fail('CLAIM_FENCED');
   const r=await query(`UPDATE ${table} SET state='ISSUED',grant_id=$2,capability_sha256=$3,material_ref=$4,issued_at=now(),version=version+1 WHERE issuance_key=$1 AND state='CLAIMED' AND version=$5${model?' AND claim_fence=$6':''} RETURNING ${COLUMNS}`,[v.issuanceKey,v.grantId,v.capabilitySha256,v.materialRef,current.version,...(model?[v.claimFence]:[])]);
   if(r.rows[0])return decode(r.rows[0]);
   const after=await readRow(v.issuanceKey);if(after?.state==='ISSUED'){if(after.grantId!==v.grantId||after.capabilitySha256!==v.capabilitySha256||after.materialRef!==v.materialRef)fail('ISSUED_CONFLICT');return after;}fail('UNAVAILABLE');}
