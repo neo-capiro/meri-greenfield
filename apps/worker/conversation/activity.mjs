@@ -16,6 +16,7 @@ import {createProgressProjector} from './capabilities/progress.mjs';
 import {createGeneralReadRuntime,continuationSessionId} from './reads/runtime.mjs';
 import {createIntentRuntime} from './intents/runtime.mjs';
 import {prepareBrowserRun} from './browser/runtime.mjs';
+import {attemptCleanup,cleanupConversation,CLEANUP_ATTEMPT_MS} from './cleanup.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=code=>Object.assign(new Error(code),{code});
 // Trusted runtime-preparation facts the capability layer consumes; run data never supplies them.
@@ -23,8 +24,9 @@ const CAPABILITY_RUNTIME_FACTS=Object.freeze(['skillPluginDirectory','bashSandbo
 /** Acknowledgement bound for one terminal publication attempt: the control service's default per-request bound. Terminal
  * settlement makes at most two rounds over the (at most two) candidate events, so it is finite (here at most 12 s). */
 export const TERMINAL_ATTEMPT_MS=3000;
-export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,terminalAttemptMs=TERMINAL_ATTEMPT_MS}){
+export function createConversationActivity({runOwner,prepareRuntime,query=sdkQuery,heartbeat=()=>{},now=Date.now,newId=randomUUID,lifecycle,selectedSkills,generalReads,governedIntents,browser,terminalAttemptMs=TERMINAL_ATTEMPT_MS,cleanupAttemptMs=CLEANUP_ATTEMPT_MS}){
  if(['load','append'].some(k=>typeof runOwner?.[k]!=='function')||typeof prepareRuntime!=='function'||typeof query!=='function'||typeof heartbeat!=='function'||!Number.isSafeInteger(terminalAttemptMs)||terminalAttemptMs<1||terminalAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
+ if(!Number.isSafeInteger(cleanupAttemptMs)||cleanupAttemptMs<1||cleanupAttemptMs>30000)throw fault('ACTIVITY_CONFIGURATION');
  if(lifecycle!==undefined)assertLifecycleConfiguration(lifecycle,runOwner);
  if(selectedSkills!==undefined&&typeof selectedSkills.prepare!=='function')throw fault('SKILL_ACTIVITY_CONFIGURATION');
  // Trusted gateway general-read port (`apps/gateway/general-reads/mount.mjs`); absent means no general read.
@@ -78,7 +80,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
    capabilities?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}if(controls?.canCaptureCompletion())await controls.captureCompletion();else await publish('run.status',{state:'completed',reasonCode:null});return {state:'completed',...(skillOutput===undefined?{}:{output:skillOutput})};
-  }catch(error){failure=error;controller.abort();clearInterval(heartbeatTimer);try{await closeQuery();}catch{}const cancelled=signal?.aborted||life?.signal.aborted;browserOutcome=cancelled?'cancelled':'failed';life?.close();preparation?.close();
+  }catch(error){failure=error;controller.abort();clearInterval(heartbeatTimer);await attemptCleanup(closeQuery,{now,timeoutMs:cleanupAttemptMs});const cancelled=signal?.aborted||life?.signal.aborted;browserOutcome=cancelled?'cancelled':'failed';life?.close();preparation?.close();
    // A denied/unknown starting claimant cannot terminalize another admitted activity.
    // A held run refuses the ordinary terminal event and admits only the explicit uncheckpointed-hold failure, which
    // the store verifies against this run's unapplied pause/approval control (and refuses without one). The local
@@ -90,8 +92,8 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     const terminal=async event=>{const attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});try{await attempt.run(signal=>runOwner.append({binding,event,signal}));return true;}catch{return false;}finally{attempt.close();}};
     settle:for(let round=0;round<2;round++)for(const event of candidates)if(await terminal(event))break settle;}
    throw fault(cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED');
-  }finally{clearInterval(heartbeatTimer);controller.abort(failure);let unknown=false;try{await skillRuntime?.close();await readRuntime?.close();await intentRuntime?.close();await controls?.finish();controls?.close();input?.close();await closeQuery();}catch{unknown=true;}
-   // Browser cleanup runs after the query is closed and even when another cleanup failed (browser/lifecycle.mjs).
-   try{await browserRun?.settle({outcome:browserOutcome});}catch{unknown=true;}finally{life?.close();preparation?.close();}if(unknown)throw fault('SDK_CLEANUP_UNKNOWN');}
+  }finally{clearInterval(heartbeatTimer);controller.abort(failure);let known=false;
+   try{known=await cleanupConversation({skillRuntime,readRuntime,intentRuntime,controls,input,closeQuery,browserRun,browserOutcome,now,timeoutMs:cleanupAttemptMs});}
+   finally{life?.close();preparation?.close();}if(!known)throw fault('SDK_CLEANUP_UNKNOWN');}
  };
 }
