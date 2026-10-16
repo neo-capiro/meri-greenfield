@@ -51,9 +51,26 @@ test('revocation after successful claim prevents positive release; later exact r
 });
 test('changed current context is refused before claim',async()=>{const f=fixture();f.state.onCurrent=()=>{if(f.state.authReads===2)f.state.context.scopes[0].policyRevision='changed';};await assert.rejects(f.allocate(),/SESSION_CHANGED/);assert.equal(f.allocations.size,0);});
 test('changed current scope or client cannot recover the original allocation',async()=>{const f=fixture();await f.allocate();f.state.context.scopes[0].policyRevision='changed';await assert.rejects(f.allocate(),/INITIAL_INPUT_CONFLICT/);assert.equal(f.allocations.size,1);assert.equal(f.state.runs.size,0);});
-test('next-turn admission never reads, claims or accepts an original-input allocation',async()=>{
- const f=fixture({wrapStore:s=>({...s,findRequest:async()=>null,initialInputs:{claim(){throw Error('ORIGINAL_USED');},read(){throw Error('ORIGINAL_USED');},accept(){throw Error('ORIGINAL_USED');}},nextRuns:{readTarget:async()=>({state:'RESERVED'}),async accept({run,request}){return {run,request,lastSequence:7,replayed:false};}}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};
+for(const state of ['RESERVED','ACCEPTED'])test('next-turn '+state+' admission never reads, claims or accepts an original-input allocation',async()=>{
+ const f=fixture({wrapStore:s=>({...s,findRequest:async()=>null,initialInputs:{claim(){throw Error('ORIGINAL_USED');},read(){throw Error('ORIGINAL_USED');},accept(){throw Error('ORIGINAL_USED');}},nextRuns:{readTarget:async target=>({target,state}),async accept({run,request}){return {run,request,lastSequence:7,replayed:state==='ACCEPTED'};}}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};
  const out=await f.admit();assert.equal(out.lastSequence,7);assert.equal(out.run.binding.writerFence,2);assert.equal(f.allocations.size,0);await assert.rejects(f.allocate(),/INITIAL_INPUT_CONFLICT/);
+});
+for(const writerFence of [2,9])test('higher fence '+writerFence+' without a reservation refuses both new admission and submit with zero writes or starts',async()=>{
+ let legacyAccepts=0,nextAccepts=0;const f=fixture({wrapStore:s=>({...s,accept(...args){legacyAccepts++;return s.accept(...args);},nextRuns:{...s.nextRuns,accept(...args){nextAccepts++;return s.nextRuns.accept(...args);}}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence};
+ for(const fn of [f.admit,f.submit])await assert.rejects(fn(),e=>e.code==='NEXT_RUN_NOT_RESERVED');
+ assert.equal(legacyAccepts,0);assert.equal(nextAccepts,0);assert.equal(f.allocations.size,0);assert.equal(f.state.conversations.size,0);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(f.state.nextRuns.size,0);assert.equal(f.state.starts.length,0);assert.equal(f.state.calls.some(sql=>/^(INSERT|UPDATE)/u.test(sql)),false);
+});
+test('a different target reservation is not positive admission evidence',async()=>{
+ let accepts=0;const f=fixture({wrapStore:s=>({...s,nextRuns:{readTarget:async target=>({target:{...target,runId:id(93)},state:'RESERVED'}),accept(){accepts++;throw Error('MISMATCH_ACCEPTED');}}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};
+ for(const fn of [f.admit,f.submit])await assert.rejects(fn(),e=>e.code==='NEXT_RUN_NOT_RESERVED');assert.equal(accepts,0);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(f.state.starts.length,0);
+});
+test('missing next-run ports cannot fall back to original accept',async()=>{
+ let legacyAccepts=0;const f=fixture({wrapStore:s=>({...s,nextRuns:undefined,accept(...args){legacyAccepts++;return s.accept(...args);}})});f.state.context.binding={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2};
+ for(const fn of [f.admit,f.submit])await assert.rejects(fn(),e=>e.code==='CONTROL_CONFIGURATION');assert.equal(legacyAccepts,0);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(f.state.starts.length,0);
+});
+test('positive retained higher-fence legacy input remains recoverable without a next-run reservation',async()=>{
+ const f=fixture({wrapStore:s=>({...s,nextRuns:{readTarget(){throw Error('RETAINED_MUST_NOT_LOOKUP_RESERVATION');},accept(){throw Error('RETAINED_MUST_NOT_ACCEPT');}}})}),higher={...binding,runId:id(90),attemptId:id(91),workerId:id(92),writerFence:2},p=await f.proposal({input:intent});p.acceptance.run.binding=higher;p.acceptance.event.binding=higher;
+ await f.store.accept(p.acceptance,()=>{});f.state.context.binding=higher;const admitted=await f.admit(),submitted=await f.submit();assert.equal(admitted.replayed,true);assert.equal(submitted.replayed,true);assert.equal(f.state.runs.size,1);assert.equal(queued(f).length,1);assert.equal(f.state.starts.length,1);assert.equal(f.allocations.size,0);
 });
 test('preexisting positive original request remains recoverable without claiming it fresh',async()=>{
  const f=fixture(),p=await f.proposal({input:intent});await f.store.accept(p.acceptance,()=>{});const out=await f.admit();assert.equal(out.replayed,true);assert.equal(f.allocations.size,0);await assert.rejects(f.allocate(),/INITIAL_INPUT_ALREADY_EXISTS/);assert.equal(queued(f).length,1);

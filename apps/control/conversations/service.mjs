@@ -62,14 +62,18 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    if(typeof store.findRequest!=='function')fail('CONTROL_CONFIGURATION');const retained=await life.run(()=>store.findRequest(b,i.requestId,life.check));
    const originalPorts=b.writerFence===1?initialPorts():null,allocation=originalPorts?await life.run(()=>originalPorts.read(b,life.check)):null,original=allocation?pinOriginal(allocation,context,i,life):null;
    if(retained){const selected=i.skill?selectSkill(i.skill.skillId,i.skill.skillVersion):null;if(i.skill)own(i.skill,['skillId','skillVersion']);if(!same(retained.run.scopes,context.scopes))fail('SCOPE_REFUSED');if(!same(retained.run.versions,versions)||retained.request.prompt!==i.prompt||!same(retained.request.windowRequest??null,i.windowRequest??null)||!same(retained.request.skill,selected?.pin??null))fail('REQUEST_REPLAY_REFUSED');return release(retained);}
+   if(!originalPorts){
+    if(typeof store.nextRuns?.readTarget!=='function'||typeof store.nextRuns.accept!=='function')fail('CONTROL_CONFIGURATION');
+    const candidate=await life.run(()=>store.nextRuns.readTarget(b,life.check)),reservation=candidate?bounded(candidate):null;
+    if(!reservation||!['RESERVED','ACCEPTED'].includes(reservation.state)||!same(reservation.target,b))fail('NEXT_RUN_NOT_RESERVED');
+   }
    if(originalPorts&&!original)fail('INITIAL_INPUT_REQUIRED');const createdAt=new Date(original?.allocatedAtMs??now()).toISOString(),request=prepareInput(i,createdAt),run={binding:b,state:'queued',scopes:context.scopes,createdAt,policyRevision:context.scopes[0].policyRevision,versions};
    if(original)assertOriginalInputAcceptance(original,{run,request,selectedClientId:context.selectedClientId});
    const conversation={conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes:context.scopes,createdAt,policyRevision:run.policyRevision};
    await admit(request);
-   // A session bound to a reserved next run accepts its new prompt through the next-run journal: same conversation, continued sequence base, never the old prompt.
-   const reservation=!originalPorts&&typeof store.nextRuns?.readTarget==='function'?await life.run(()=>store.nextRuns.readTarget(b,life.check)):null;
+   // Both paths have positive journal authority. The journal rechecks the exact mapping atomically, including an ACCEPTED duplicate race.
    await fresh();
-   const saved=await life.run(()=>(originalPorts?originalPorts.accept:reservation?store.nextRuns.accept:store.accept)({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null}),...(originalPorts?{selectedClientId:context.selectedClientId}:{})},life.check));
+   const saved=await life.run(()=>(originalPorts?originalPorts.accept:store.nextRuns.accept)({conversation,run,request,event:event(b,context.scopes,'run.status',{state:'queued',reasonCode:null}),...(originalPorts?{selectedClientId:context.selectedClientId}:{})},life.check));
    // Durable request precedes Temporal start. A repeated submission recovers a lost start acknowledgement using the exact workflow ID.
    return release(saved);});
  }
