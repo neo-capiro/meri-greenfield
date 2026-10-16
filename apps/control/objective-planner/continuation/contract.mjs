@@ -1,7 +1,7 @@
 /** Fixed Core19ac contract conventions, not a public/frozen wire registration. No authorization is conferred by data/hash checks. */
 import {createHash} from 'node:crypto';
 import {own,data,canonical,uuid,digest,integer,instant,text,fail} from '../identity.mjs';
-import {materializationObservation} from '../core-receipts.mjs';
+import {canonicalMaterializationObservation} from '../core-receipts.mjs';
 export {own,data,fail};
 export const OPERATION='objective.plan.prepare',APPLICATIONS_PATH='/internal/objective-canonical/planner-applications';
 export function coreDigest(value){
@@ -22,7 +22,7 @@ export function materializationSource(value){const w=continuationWork(value),c=w
 function strings(v,validate=text){if(!Array.isArray(v))fail('INVALID_RECEIPT');v.forEach(validate);if(new Set(v).size!==v.length)fail('INVALID_RECEIPT');}
 export function creationObservation(raw,value){
  const w=continuationWork(value),r=data(own(raw,['schemaVersion','applicationRequestId','creation','current']));if(r.schemaVersion!==1||r.applicationRequestId!==w.applicationRequestId)fail('INVALID_RECEIPT');
- const current=materializationObservation(r.current,{requestId:w.applicationRequestId,source:materializationSource(w)}),p=own(r.creation,['availability','ack','sha256']);
+ const current=canonicalMaterializationObservation(r.current,{requestId:w.applicationRequestId,source:materializationSource(w)}),p=own(r.creation,['availability','ack','sha256']);
  // Core's canonical frozen tuple is stricter than the retained legacy projection decoder.
  for(const {output:o} of [...current.projects,...current.tasks])if(o.availability==='unavailable'?o.id!==null||o.currentVersion!==null:o.id===null||o.currentVersion===null)fail('INVALID_RECEIPT');
  if(p.availability==='unavailable'){if(p.ack!==null||p.sha256!==null)fail('INVALID_RECEIPT');return data({kind:'unavailable'});}

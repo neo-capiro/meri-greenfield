@@ -21,8 +21,15 @@ function output(value){const o=own(value,['availability','id','createdVersion','
 export function plannerObservation(raw,value){
  const w=work(value);return materializationObservation(raw,{requestId:w.plannerRequestId,source:expectedSource(w)});
 }
-/** Same Core-owned projection decoder, shared by legacy compatibility and the fixed canonical receiving envelope. */
+/** Legacy browser materialization: every projected output was created by this request. */
 export function materializationObservation(raw,expected){
+ return decodeMaterialization(raw,expected,false);
+}
+/** Canonical regeneration reuses existing outputs; creation counts report only actual new rows. */
+export function canonicalMaterializationObservation(raw,expected){
+ return decodeMaterialization(raw,expected,true);
+}
+function decodeMaterialization(raw,expected,reusesOutputs){
  const e=data(own(expected,['requestId','source'])),r=data(own(raw,['requestId','status','replayed','recordedAt','observedAt','source','projects','tasks','context','edges','exclusions','issues','counts']));
  if(r.requestId!==e.requestId||!['prepared','prepared_with_issues','partial'].includes(r.status)||typeof r.replayed!=='boolean')fail('INVALID_RECEIPT');instant(r.recordedAt);instant(r.observedAt);
  own(r.source,['generationJobId','generationRequestId','clientId','objectiveId','objectiveVersion','objectiveRevisionId','strategyId','strategyVersionId','snapshotDigest']);
@@ -36,7 +43,7 @@ export function materializationObservation(raw,expected){
  for(const e of r.edges){own(e,['sourceNodeId','dependsOnSourceNodeId','disposition']);uuid(e.sourceNodeId);uuid(e.dependsOnSourceNodeId);if(!nodes.has(e.sourceNodeId)||!nodes.has(e.dependsOnSourceNodeId)||!['task_dependency','context_only','archived_source'].includes(e.disposition))fail('INVALID_RECEIPT');}
  for(const i of r.issues){own(i,['code','sourceNodeIds','message']);text(i.code);text(i.message);strings(i.sourceNodeIds,uuid);}
  const counts=own(r.counts,['savedNodes','actionableNodes','contextNodes','archivedNodes','createdProjects','createdTasks']);
- if(Object.values(counts).some(n=>!Number.isSafeInteger(n)||n<0)||counts.createdProjects!==r.projects.length||counts.createdTasks!==r.tasks.length||counts.actionableNodes!==r.tasks.length||counts.contextNodes!==r.context.length||counts.archivedNodes!==r.exclusions.length||counts.savedNodes!==nodes.size)fail('INVALID_RECEIPT');
+ if(Object.values(counts).some(n=>!Number.isSafeInteger(n)||n<0)||(reusesOutputs?counts.createdProjects>r.projects.length||counts.createdTasks>r.tasks.length:counts.createdProjects!==r.projects.length||counts.createdTasks!==r.tasks.length)||counts.actionableNodes!==r.tasks.length||counts.contextNodes!==r.context.length||counts.archivedNodes!==r.exclusions.length||counts.savedNodes!==nodes.size)fail('INVALID_RECEIPT');
  // Current groups/version/availability may change after application. Never overwrite human edits or recreate missing outputs.
  return r;
 }
