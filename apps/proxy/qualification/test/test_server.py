@@ -1,7 +1,11 @@
 """Assembled ASGI caller controls; actual socket/TLS/ECS/LiteLLM not proven."""
 import asyncio
+import json
+import sys
 import time
+import types
 import unittest
+from unittest.mock import patch
 
 from apps.proxy.qualification.runtime.ingress import PeerLease
 from apps.proxy.qualification.runtime.lifetime import LifetimeLimits, _current_lifetime_check
@@ -12,13 +16,13 @@ LIMITS = LifetimeLimits(poll_seconds=.01, check_seconds=.05, cleanup_seconds=.02
 
 
 class ServerTests(unittest.IsolatedAsyncioTestCase):
-    def make(self, upstream, *, deadline=None, observer=None, limits=LIMITS):
+    def make(self, upstream, *, deadline=None, observer=None, limits=LIMITS, count_tokens_app=None):
         store, admission, scope = fixture()
         async def observe():
             return PeerLease("10.77.0.9", time.monotonic(), BINDING, GRANT)
         def resolve(actual_scope):
             return TrustedRequest(admission, observer or observe, deadline or time.monotonic()+1)
-        app = create_app(upstream, resolve, limits)
+        app = create_app(upstream, resolve, limits, count_tokens_app=count_tokens_app)
         queue = asyncio.Queue()
         queue.put_nowait({"type": "http.request", "body": b"{}", "more_body": False})
         sends = []
@@ -42,6 +46,31 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(_current_lifetime_check())
         self.assertTrue(app.ready)
 
+    async def test_complete_original_bytes_and_direct_peer_are_available_only_inside_lifetime(self):
+        from apps.proxy.product.direct_ingress import create_direct_ingress_observer
+        binding = {"tenantId": "tenant", "actorId": "actor", "conversationId": BINDING.run_id,
+                   "runId": BINDING.run_id, "attemptId": BINDING.run_id,
+                   "workerId": BINDING.run_id, "writerFence": BINDING.fence}
+        observe = create_direct_ingress_observer(binding)
+        with self.assertRaises(Exception):
+            await observe()
+        observations = []
+        async def upstream(scope, receive, send):
+            self.assertEqual((await receive())["body"], b"{}")
+            observations.append(await observe())
+            await send({"type": "http.response.start", "status": 200})
+            await send({"type": "http.response.body", "body": b"ok", "more_body": False})
+        store, scope, app, queue, sends, send = self.make(upstream)
+        await app(scope, queue.get, send)
+        self.assertEqual(len(observations), 1)
+        self.assertEqual(observations[0]["rawRequestBody"], b"{}")
+        self.assertEqual(observations[0]["peer"]["taskArn"], BINDING.worker_arn)
+        self.assertEqual(observations[0]["proxyCredential"],
+                         scope["headers"][0][1][7:].decode("ascii"))
+        self.assertGreaterEqual(store.calls, 2)
+        with self.assertRaises(Exception):
+            await observe()
+
     async def test_routes_headers_keys_denied_before_upstream_or_body(self):
         calls = []
         async def upstream(*args):
@@ -56,13 +85,54 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(sends[0]["status"], 403)
         self.assertEqual(calls, [])
 
+    async def test_count_tokens_preflight_dispatches_only_after_shared_admission(self):
+        from apps.proxy.product.cli_count_tokens import create_cli_count_tokens_app
+        inference, counted = [], []
+        async def upstream(*args):
+            inference.append(1)
+        async def count(request):
+            counted.append(request)
+            return 7
+        count_app = create_cli_count_tokens_app(count, model="meri-sonnet-qualification")
+        store, scope, app, queue, sends, send = self.make(upstream, count_tokens_app=count_app)
+        scope.update(path="/v1/messages/count_tokens", raw_path=b"/v1/messages/count_tokens")
+        scope["headers"].extend([(b"anthropic-version", b"2023-06-01"),
+                                 (b"anthropic-beta", b"claude-code-20250219,token-counting-2024-11-01")])
+        queue.get_nowait()
+        queue.put_nowait({"type": "http.request", "body": json.dumps({
+            "model": "meri-sonnet-qualification", "messages": [{"role": "user", "content": "synthetic"}],
+            "tools": []}).encode(), "more_body": False})
+        await app(scope, queue.get, send)
+        self.assertEqual(inference, [])
+        self.assertEqual(len(counted), 1)
+        self.assertEqual(sends[0]["status"], 200)
+        self.assertEqual(json.loads(sends[1]["body"]), {"input_tokens": 7})
+        self.assertGreater(store.calls, 0)
+
+    async def test_unmounted_count_tokens_route_never_falls_into_inference(self):
+        inference = []
+        async def upstream(*args):
+            inference.append(1)
+        _, scope, app, queue, sends, send = self.make(upstream)
+        scope.update(path="/v1/messages/count_tokens", raw_path=b"/v1/messages/count_tokens")
+        await app(scope, queue.get, send)
+        self.assertEqual(inference, [])
+        self.assertEqual(sends[0]["status"], 403)
+
     async def test_actual_caller_private_context_explicitly_wires_native_guard(self):
         # Real guard constructed INSIDE actual caller; no HTTP context injection.
         import hashlib
         import json
         import httpx
         from apps.proxy.qualification.runtime.bedrock_body import COUNT_MODEL_ID
-        from apps.proxy.qualification.runtime.bedrock_transport import BedrockSendGuard, CountObservation
+        # This case exercises the native guard hook, not the LiteLLM handler.
+        # Keep it runnable when the pinned upstream package is absent locally.
+        modules = {name: types.ModuleType(name) for name in
+                   ("litellm", "litellm.llms", "litellm.llms.custom_httpx",
+                    "litellm.llms.custom_httpx.http_handler")}
+        modules["litellm.llms.custom_httpx.http_handler"].AsyncHTTPHandler = object
+        with patch.dict(sys.modules, modules):
+            from apps.proxy.qualification.runtime.bedrock_transport import BedrockSendGuard, CountObservation
         from apps.proxy.qualification.state.pricing import StateDenied
         observed = []
         class Counter:

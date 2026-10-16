@@ -1,0 +1,89 @@
+{
+  "candidateVersion": "strategy-candidate/20261015.2",
+  "operation": "strategy.draft",
+  "requestId": "00000000-0000-4000-8000-000000000001",
+  "jobId": "00000000-0000-4000-8000-000000000002",
+  "requestSha256": "81b37569198b2056708e5e64099ea89c630114f547d9d3d8dcbbe3a2cc2c0fd2",
+  "inputSha256": "c3ab140f34a06cba0563c713b6b3c2ff6cb2cee067d5fb479d4781629c42e8ac",
+  "sourceSha256": "5236552e8fa951d4727e8d0e745a66bf9bd1d8faf3d3d2a69d8064f148b4e1bf",
+  "contextSha256": "415585f066c0448d6220402dcca39bc034a52b4bd318ab01175252e7a88d672a",
+  "basisSha256": null,
+  "binding": {
+    "tenantId": "synthetic-tenant",
+    "actorId": "00000000-0000-4000-8000-000000000003",
+    "conversationId": "00000000-0000-4000-8000-000000000014",
+    "runId": "00000000-0000-4000-8000-000000000015",
+    "attemptId": "00000000-0000-4000-8000-000000000016",
+    "workerId": "00000000-0000-4000-8000-000000000017",
+    "writerFence": 1
+  },
+  "execution": {
+    "provider": "synthetic-provider",
+    "model": "synthetic-trusted-model",
+    "receiptRef": "00000000-0000-4000-8000-000000000019",
+    "receiptSha256": "59dbb5a5e6bfc999237b70015dca45ef9a604e4909b3fe8cd9207de36d589c27",
+    "bindingSha256": "4895ade0590ae401839d626611073692a01518eb4fbe9ad3cec1ea645a97758e"
+  },
+  "resultRef": "00000000-0000-4000-8000-000000000018",
+  "completedAtMs": 1792065601000,
+  "state": "succeeded",
+  "payload": {
+    "type": "authorization",
+    "rationale": "Synthetic proposal only",
+    "summary": "Review the evidence",
+    "nodes": [
+      {
+        "sourceNodeKey": "review",
+        "kind": "action",
+        "subject": "deliverable",
+        "title": "Review sources",
+        "note": null,
+        "status": "suggested",
+        "ownerRef": null,
+        "startsOn": "2026-10-17",
+        "endsOn": null,
+        "openEnded": false,
+        "sources": [
+          {
+            "section": "synthetic",
+            "ref": "evidence:accepted"
+          }
+        ],
+        "dependsOn": []
+      },
+      {
+        "sourceNodeKey": "decision",
+        "kind": "decision",
+        "subject": "outcome",
+        "title": "Choose route",
+        "note": null,
+        "status": "suggested",
+        "ownerRef": null,
+        "startsOn": "2026-10-18",
+        "endsOn": null,
+        "openEnded": false,
+        "sources": [],
+        "dependsOn": [
+          "review"
+        ]
+      }
+    ],
+    "coverage": {
+      "complete": false,
+      "omitted": [
+        "Unqualified live sources"
+      ],
+      "assumptions": [],
+      "sources": [
+        {
+          "section": "synthetic",
+          "ref": "evidence:accepted"
+        }
+      ],
+      "pendingSources": []
+    }
+  },
+  "payloadSha256": "2cf496ff8dd73a3c37c65a761d3e8640f9f2e9ca875158ee3b82473388270a35",
+  "issues": [],
+  "resultSha256": "b77a80f61b33249a3019c3b1fa714674198dc294c6d5aba86dc73e773bebda35"
+}

@@ -125,6 +125,19 @@ class IngressTests(unittest.IsolatedAsyncioTestCase):
         await ingress.authorize(scope)
         self.assertEqual(store.calls, 1)
 
+    async def test_pinned_cli_count_tokens_uses_the_same_peer_bearer_and_current_grant(self):
+        store, ingress, scope = fixture()
+        scope.update(path="/v1/messages/count_tokens",
+                     raw_path=b"/v1/messages/count_tokens")
+        await ingress.authorize(scope)
+        self.assertEqual(store.calls, 1)
+        store, ingress, scope = fixture()
+        scope.update(path="/v1/messages/count_tokens",
+                     raw_path=b"/v1/messages/count_tokens")
+        store.grant["state"] = "REVOKED"
+        with self.assertRaises(StateDenied):
+            await ingress.authorize(scope)
+
     async def test_query_contract_is_closed_including_empty_query(self):
         queries = (b"", b"beta=false", b"beta=TRUE", b"Beta=true", b"beta", b"beta=",
                    b"beta=true&beta=true", b"beta=true&", b"&beta=true", b"beta=true&x=1",
@@ -142,7 +155,7 @@ class IngressTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(store.calls, 0)
 
     async def test_beta_query_admits_no_other_route_or_path_spelling(self):
-        for change in ({"path": "/v1/messages/count_tokens", "raw_path": b"/v1/messages/count_tokens"},
+        for change in ({"path": "/v1/messages/count_tokens/", "raw_path": b"/v1/messages/count_tokens/"},
                        {"path": "/v1/messages/", "raw_path": b"/v1/messages/"},
                        {"path": "/v1/complete", "raw_path": b"/v1/complete"},
                        {"raw_path": b"/v1/messages?beta=true"},
@@ -279,6 +292,20 @@ class IngressTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(StateDenied):
             async for _ in ingress.stream(scope, source()): self.fail("unauthorized publication")
         self.assertEqual(entered, []); self.assertEqual(store.calls, 0)
+
+    async def test_count_route_cannot_borrow_inference_stream(self):
+        store, ingress, scope = fixture()
+        scope.update(path="/v1/messages/count_tokens",
+                     raw_path=b"/v1/messages/count_tokens")
+        entered = []
+        async def source():
+            entered.append(True)
+            yield "never"
+        with self.assertRaisesRegex(StateDenied, "INFERENCE_STREAM_ROUTE_REQUIRED"):
+            async for _ in ingress.stream(scope, source()):
+                self.fail("count route published inference")
+        self.assertEqual(entered, [])
+        self.assertEqual(store.calls, 0)
 
     async def test_production_poll_and_state_bounds_are_fixed(self):
         from apps.proxy.qualification.runtime import ingress

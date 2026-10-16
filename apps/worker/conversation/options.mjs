@@ -16,8 +16,8 @@ import {assertIntentOptions,mergeIntentOptions,intentPromptSentence} from './int
 import {composeBrowserOptions} from './browser/options.mjs';
 /** @returns {never} */
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
-/** @param {any} value @param {AbortController} abortController @param {unknown} [continuationContext] @param {unknown} [skillOptions] @param {unknown} [capabilityFragment] @param {unknown} [readOptions] @param {unknown} [intentOptions] @param {unknown} [browserFragment] @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
-export function buildConversationOptions(value,abortController,continuationContext,skillOptions,capabilityFragment,readOptions,intentOptions,browserFragment){
+/** @param {any} value @param {AbortController} abortController @param {unknown} [continuationContext] @param {unknown} [skillOptions] @param {unknown} [capabilityFragment] @param {unknown} [readOptions] @param {unknown} [intentOptions] @param {unknown} [browserFragment] @param {unknown} [objectiveOutputFormat] @returns {import('@anthropic-ai/claude-agent-sdk').Options} */
+export function buildConversationOptions(value,abortController,continuationContext,skillOptions,capabilityFragment,readOptions,intentOptions,browserFragment,objectiveOutputFormat){
  const r=own(value,['binding','versions','cwd','proxyUrl','proxyCredential','model','sessionStore','deadlineMs','maxTurns','maxCostMicroUSD','maxOutputBytes'],[...(continuationContext===undefined?[]:['restoreReceipt']),'sdkConfigDirectory','sdkSecureStorageDirectory','skillPluginDirectory','bashSandbox']);
  // Per-task SDK configuration directories come only from the admitted preparation intent (remote task path); both or neither.
  const directories=[r.sdkConfigDirectory,r.sdkSecureStorageDirectory];if(directories.some(d=>d!==undefined)){if(directories.some(d=>typeof d!=='string'||!isAbsolute(d)||d.includes('/../')||d.endsWith('/')||d.includes('\0'))||r.sdkConfigDirectory===r.sdkSecureStorageDirectory||r.sdkConfigDirectory.startsWith(r.sdkSecureStorageDirectory+'/')||r.sdkSecureStorageDirectory.startsWith(r.sdkConfigDirectory+'/'))fail();}
@@ -31,6 +31,7 @@ export function buildConversationOptions(value,abortController,continuationConte
  let continuation={};if(continuationContext!==undefined){const c=own(continuationContext,['request','sourceRequest','scopes','started','now'],['continuation','nextTurn']);if((c.continuation===undefined)===(c.nextTurn===undefined))fail();
   continuation=c.nextTurn===undefined?buildContinuationOptions(c.continuation,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest}):buildNextTurnOptions(c.nextTurn,{binding:r.binding,versions:r.versions,scopes:c.scopes,request:c.request,sourceRequest:c.sourceRequest});
   assertRestoreReceipt(r.restoreReceipt,{continuation:c.nextTurn??c.continuation,binding:r.binding,request:c.request,scopes:c.scopes,started:c.started,now:c.now});}
+ /** @type {Partial<import('@anthropic-ai/claude-agent-sdk').Options>} */
  let mounted={};if(skillOptions!==undefined){const s=own(skillOptions,['mcpServers','allowedTools','canUseTool'],['outputFormat','hooks']);own(s.mcpServers,['meri_original_reads']);
   if(s.mcpServers.meri_original_reads.type!=='sdk'||s.mcpServers.meri_original_reads.name!=='meri_original_reads'||typeof s.mcpServers.meri_original_reads.instance?.close!=='function'||typeof s.canUseTool!=='function'||!Array.isArray(s.allowedTools)||s.allowedTools.length>11||!s.allowedTools.length||new Set(s.allowedTools).size!==s.allowedTools.length||s.allowedTools.some(t=>typeof t!=='string'||!/^mcp__meri_original_reads__[a-z_]+$/u.test(t)))fail();
   if(s.hooks!==undefined){own(s.hooks,['PreToolUse']);if(!Array.isArray(s.hooks.PreToolUse)||s.hooks.PreToolUse.length!==1||s.hooks.PreToolUse[0].matcher!=='mcp__meri_original_reads__.*'||s.hooks.PreToolUse[0].hooks.length!==1||typeof s.hooks.PreToolUse[0].hooks[0]!=='function')fail();}
@@ -41,6 +42,8 @@ export function buildConversationOptions(value,abortController,continuationConte
  // Governed write requests (`intents/runtime.mjs`): mounted only when the run's policy enables them and an owner can prepare one.
  // They only prepare proposals or drafts; the existing approval control and fresh authority gate every effect.
  if(intentOptions!==undefined)mounted=mergeIntentOptions(mounted,assertIntentOptions(intentOptions));
+ // The trusted original Objective owner supplies the exact candidate ModelOutcome schema; never replace a selected skill format.
+ if(objectiveOutputFormat!==undefined){const f=data(own(objectiveOutputFormat,['type','schema']));if(f.type!=='json_schema'||mounted.outputFormat!==undefined||continuationContext!==undefined)fail();mounted={...mounted,outputFormat:f};}
  // Capability fragment: validated own keys only; allowedTools union, hooks by event name, permission callbacks chained. Absent → unchanged output.
  // `settings` and `env` extend the fixed base (never replace it): permission rules/locks and the subprocess credential scrub only.
  const fragment=capabilityFragment===undefined?undefined:assertCapabilityFragment(capabilityFragment);

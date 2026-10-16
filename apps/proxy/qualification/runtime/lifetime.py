@@ -61,6 +61,8 @@ class RequestLifetime:
         self.denied = asyncio.Event()
         self.reason = None
         self.tasks, self.threads = set(), set()
+        self.original_body = None
+        self.proxy_credential = None
         self.check()
 
     def deny(self, reason):
@@ -134,6 +136,11 @@ class RequestLifetime:
 
     async def start(self, scope):
         self.admission.validate_scope(scope)
+        # This is read only after the direct TLS peer, exact route and bearer
+        # have passed ingress validation. The complete body is captured by the
+        # sole ASGI receive owner, never from a worker attribution header.
+        self.proxy_credential = next(value[7:] for name, value in scope["headers"]
+                                     if name == b"authorization")
         await self.refresh()
         self.spawn(self._watch(), mandatory="ADMISSION_WATCH_STOPPED")
 
@@ -149,6 +156,8 @@ class RequestLifetime:
 
     async def close(self):
         self.deny("REQUEST_CLOSED")
+        self.original_body = None
+        self.proxy_credential = None
         tasks = set(self.tasks)
         for task in tasks - self.threads:
             task.cancel()

@@ -5,6 +5,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 from .pricing import StateDenied
+from .sql import locked_budget
 
 
 class CommitUncertain(StateDenied):
@@ -91,11 +92,4 @@ class PostgresStore:
 
     @staticmethod
     def budget(cursor):
-        cursor.execute("SELECT * FROM meri_qualification.budget WHERE id=1 FOR UPDATE")
-        row = cursor.fetchone()
-        if row is None:
-            raise StateDenied("BUDGET_UNAVAILABLE")
-        # Evaluate expiry AFTER the lock wait, not in a pre-lock target list.
-        cursor.execute("SELECT clock_timestamp() AS now")
-        row["now"] = cursor.fetchone()["now"]
-        return row
+        return locked_budget(cursor)

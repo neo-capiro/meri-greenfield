@@ -8,6 +8,7 @@ import {compileNativeBrokerPlan} from '../native-authority/broker-stack.mjs';
 import {capabilityDigest} from '../native-authority/task-verifier.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {id} from '../../control/conversations/test/application-fixture.mjs';
+import {NATIVE_READS_SCHEMA_VERSION,nativeReadOperations} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 function fixture(){
  const f=candidateFixture(),c=f.configuration.nativeCandidate,binding={...f.binding,runId:id(500),attemptId:id(501),workerId:id(502),writerFence:2},stats={prepare:0,allocate:0,close:0,verify:0},state={reservation:'ACCEPTED',run:'queued',unknown:false,closed:false,changeRequest:false},token='synthetic-target-token';
  for(const k of ['workspace','configParentDirectory','secureStorageDirectory'])c.preparationIntent[k]=normalize(c.preparationIntent[k]);c.preparationIntent.launchTemplate.command=normalize(c.preparationIntent.launchTemplate.command);c.preparationIntent.launchTemplate.env.CLAUDE_SECURESTORAGE_CONFIG_DIR=c.preparationIntent.secureStorageDirectory;
@@ -54,6 +55,13 @@ test('late owned controller settlement after close is contained exactly once',as
  await assert.rejects(registry.close());gate.resolve();for(let i=0;i<10;i++)await settle();assert.equal(f.stats.allocate,1);assert.equal(f.stats.close,1);assert.equal(await entry.application.handle(new Request('https://task.invalid/')),null);
 });
 const post=(path,body,credential,headers={})=>new Request('https://control.synthetic.invalid'+path,{method:'POST',headers:{authorization:'Bearer '+credential,'content-type':'application/json',...headers},body:JSON.stringify(body)});
+test('registry forwards borrowed factory only with real per-entry READS metadata at lazy allocation',async()=>{
+ const f=fixture(),factory=()=>assert.fail('allocator fixture must not fabricate the native verifier');f.facts.approvedReads={schemaVersion:NATIVE_READS_SCHEMA_VERSION,enabled:true,operations:JSON.parse(f.facts.allocationJson).manifest.allowedOperations,maxExecuteMs:1000,maxRequestBytes:65536,maxResponseBytes:1048576};f.facts.operations=[...new Set([...f.facts.operations,...nativeReadOperations])];f.options.approvedReads=f.facts.approvedReads;f.options.createReadsRuntime=factory;f.options.sourceEnabled=true;f.options.issuance.readIssuance=async()=>f.issued.issuance;
+ const allocate=f.options.allocate;let seen;f.options.allocate=options=>{seen=options;return allocate(options);};const registry=f.create();try{const entry=await registry.ensure({binding:f.binding});assert.equal(seen,undefined);await kickoff(entry);assert.equal(seen.createReadsRuntime,factory);assert.equal(seen.taskCapability,f.token);assert.deepEqual(seen.approvedReads,f.facts.approvedReads);assert.equal(typeof seen.readCurrentEntry,'function');assert.equal(seen.issuanceFactsSha256,f.issued.factsSha256);assert.equal(seen.runRequestSha256,f.issued.issuance.requestSha256);}finally{await registry.close();}
+});
+test('registry rejects competing prebuilt/factory composition before issuance or allocation',()=>{
+ const f=fixture();f.options.generalReads={readAvailability(){},execute(){}};f.options.createReadsRuntime=()=>f.options.generalReads;assert.throws(()=>f.create(),/CONFIGURATION/);assert.equal(f.stats.prepare,0);assert.equal(f.stats.allocate,0);
+});
 test('HTTP kickoff authenticates and validates closed request before any issuance',async()=>{
  const f=fixture(),registry=f.create(),body={binding:f.binding,executionKey:hash(f.binding)};try{
   assert.equal((await registry.handle(post('/v1/execution/kickoff',body,f.token))).status,403);

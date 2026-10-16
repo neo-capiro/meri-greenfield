@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import re
 import uuid
 from .pricing import StateDenied, digest, utc
+from .sql import budget_tables
 
 WORKER = re.compile(r"arn:aws:ecs:us-east-1:967807252336:task/[A-Za-z0-9_-]{1,255}/[0-9a-f]{32}\Z")
 
@@ -95,7 +96,7 @@ class Grants:
         self.store.transact(operation)
 
     @staticmethod
-    def _current(cursor,binding):
-        cursor.execute("SELECT * FROM meri_qualification.runs WHERE run_id=%s",(binding.run_id,));row=cursor.fetchone()
+    def _current(cursor,binding,*,namespace="qualification"):
+        cursor.execute(f"SELECT * FROM {budget_tables(namespace)['runs']} WHERE run_id=%s",(binding.run_id,));row=cursor.fetchone()
         if not row or not same_binding(row,binding):
             raise StateDenied("STALE_RUN_BINDING")

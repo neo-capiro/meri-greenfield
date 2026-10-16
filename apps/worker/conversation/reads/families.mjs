@@ -1,7 +1,7 @@
 // @ts-check
 /** Read families the general `meri_reads` server can construct, keyed by the canonical contract binding `group`
  * (`resolveOperationContract(op).binding.group`). A family is added here only when its adapter, trusted dispatch
- * context and tests exist (FABLE-GENERAL-READ-TOOLS-20261015 §6). Phase1, retained three and bill-text are constructible. Being listed constructs
+ * context and tests exist (FABLE-GENERAL-READ-TOOLS-20261015 §6). Phase1, retained three, bill-text, public reports and acquisition are constructible. Being listed constructs
  * nothing by itself: every availability gate (`availability.mjs`) still applies and, with no current native
  * installation receipt, no read is available.
  *
@@ -26,6 +26,9 @@ export const READ_FAMILIES=Object.freeze({mail:Object.freeze({clientScope:'optio
  'research-portfolio':Object.freeze({clientScope:'optional'}),
  'florida-budget':Object.freeze({clientScope:'optional'}),
  'bill-text':Object.freeze({clientScope:'optional'}),
+ 'public-reports':Object.freeze({clientScope:'optional'}),
+ 'acquisition-personnel':Object.freeze({clientScope:'optional'}),
+ 'disclosures':Object.freeze({clientScope:'optional'}),
 });
 /** The `readFamilies` policy universe (PROPOSAL P8). */
 export const READ_FAMILY_IDS=Object.freeze(Object.keys(READ_FAMILIES));

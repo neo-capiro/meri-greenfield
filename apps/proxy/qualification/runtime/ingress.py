@@ -19,13 +19,15 @@ from ..state.pricing import StateDenied
 PEER_LEASE_SECONDS = 30.0
 STATE_TIMEOUT_SECONDS = 5.0
 POLL_SECONDS = 5.0
-# Closed inference route contract. The pinned Claude Code CLI 2.1.295, which the
-# Agent SDK drives, sends exactly POST /v1/messages?beta=true (receipt
-# docs/qualification/candidates/fable-resume-20261015/rehearsal/
-# standin-probes-20261015.json, probe C1b). Exactly that one query is admitted:
+# Closed pinned CLI routes. The Agent SDK's CLI 2.1.295 sends both inference
+# POST /v1/messages?beta=true and preflight token counting
+# POST /v1/messages/count_tokens?beta=true. The latter is dispatched only to
+# the separate no-inference CountTokens app after this same admission. Exactly
+# one query is admitted on either route:
 # an empty query (the unobserved, ambiguous non-beta form), another parameter,
 # value, case, order, repetition, separator or percent-encoding is refused.
 INFERENCE_PATH = "/v1/messages"
+COUNT_TOKENS_PATH = "/v1/messages/count_tokens"
 INFERENCE_QUERY = b"beta=true"
 _PRIVATE = tuple(ipaddress.ip_network(x) for x in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"))
 
@@ -69,9 +71,9 @@ class IngressAdmission:
         """Validate only routing/credential metadata, before upstream body parsing."""
         if (type(scope) is not dict or scope.get("type") != "http"
             or scope.get("scheme") != "https" or scope.get("method") != "POST"
-            or scope.get("path") != INFERENCE_PATH
+            or scope.get("path") not in (INFERENCE_PATH, COUNT_TOKENS_PATH)
             or type(scope.get("raw_path")) is not bytes
-            or scope.get("raw_path") != INFERENCE_PATH.encode()
+            or scope.get("raw_path") != scope["path"].encode()
             or type(scope.get("query_string")) is not bytes
             or scope.get("query_string") != INFERENCE_QUERY):
             raise StateDenied("INFERENCE_ROUTE_REQUIRED")
@@ -127,6 +129,11 @@ class IngressAdmission:
         refunds UNKNOWN nor settles
         usage. Scheduler/DB/thread/transport shutdown need real runtime qualification.
         """
+        # This stream wrapper is for inference only. CountTokens shares the
+        # admission check, but must never borrow an inference source iterator.
+        if (type(scope) is not dict or scope.get("path") != INFERENCE_PATH
+                or scope.get("raw_path") != INFERENCE_PATH.encode()):
+            raise StateDenied("INFERENCE_STREAM_ROUTE_REQUIRED")
         iterator = aiter(source)
         pending = None
         try:
