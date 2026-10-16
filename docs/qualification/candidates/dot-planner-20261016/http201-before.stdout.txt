@@ -1,0 +1,202 @@
+✖ inert construction creates no effects or credential; fixed routes retain the same request identity (4.8248ms)
+✔ missing, stale or unavailable current observation never proves no effect: 404 (0.9334ms)
+✔ missing, stale or unavailable current observation never proves no effect: 409 (0.4242ms)
+✔ missing, stale or unavailable current observation never proves no effect: 503 (0.8249ms)
+✔ lost POST acknowledgement retains UNKNOWN and performs no automatic retry (0.7785ms)
+✖ malformed or oversized201 post-effect observation cannot be released as an application receipt (0.5804ms)
+✔ method-specific success refuses read status201 (0.3453ms)
+✖ method-specific success refuses apply status200 (1.4869ms)
+✔ revoked read authority withholds current data (0.4576ms)
+✔ deadline aborts a parked transport and closes owned lifecycle without retry (22.0441ms)
+✔ cancelled caller or invalid source never reaches transport (0.6921ms)
+✔ actual ObjectiveReceipt shape binds requested revision and actual saved StrategyVersion, not model completion (0.7306ms)
+✔ Strategy source mismatch refuses: clientId (0.3093ms)
+✔ Strategy source mismatch refuses: objectiveId (0.229ms)
+✔ Strategy source mismatch refuses: objectiveRevisionId (0.2102ms)
+✔ Strategy source mismatch refuses: objectiveVersion (0.2336ms)
+✔ uncorrelated Strategy result refuses: sourceDigest (0.3169ms)
+✔ uncorrelated Strategy result refuses: coverageDigest (0.2448ms)
+✔ uncorrelated Strategy result refuses: inputDigest (0.2346ms)
+✔ uncorrelated Strategy result refuses: contextPacketId (0.2118ms)
+✔ incomplete context, stale failure, provider envelopes and invalid timestamps refuse (1.0819ms)
+✔ canonical intent + original actor retain one request/workflow identity when job/version changes (0.4473ms)
+✔ caller selection cannot supply actor, outputs, authority, credentials or a model result (0.2256ms)
+✔ noncanonical Strategy, changed effect ID and unsupported epoch refuse before effect selection (0.6989ms)
+✔ materializer input is exactly existing saved-version request with no model query, group cap or reservation alias (0.258ms)
+✔ Planner observation pins actual source: generationJobId (0.4017ms)
+✔ Planner observation pins actual source: generationRequestId (0.5643ms)
+✔ Planner observation pins actual source: clientId (0.3252ms)
+✔ Planner observation pins actual source: objectiveId (0.4011ms)
+✔ Planner observation pins actual source: objectiveVersion (0.3037ms)
+✔ Planner observation pins actual source: objectiveRevisionId (0.3517ms)
+✔ Planner observation pins actual source: strategyId (0.3967ms)
+✔ Planner observation pins actual source: strategyVersionId (0.33ms)
+✔ Planner observation pins actual source: snapshotDigest (0.6524ms)
+✔ current human edits, task regrouping and unavailable outputs are retained without recreation (0.9398ms)
+✔ closed nested observation rejects injected authority, duplicate outputs and inconsistent source counts (2.468ms)
+✔ context-only plan retains its issues and project without inventing actionable tasks (0.4221ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 34
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.9137
+
+✖ failing tests:
+
+test at apps\control\objective-planner\test\materializer.test.mjs:7:1
+✖ inert construction creates no effects or credential; fixed routes retain the same request identity (4.8248ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'unconfirmed'
+  - 'observed'
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/test/materializer.test.mjs:10:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'unconfirmed',
+    expected: 'observed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\test\materializer.test.mjs:19:1
+✖ malformed or oversized201 post-effect observation cannot be released as an application receipt (0.5804ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/test/materializer.test.mjs:20:263)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function (anonymous)],
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps\control\objective-planner\test\materializer.test.mjs:22:59
+✖ method-specific success refuses apply status200 (1.4869ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   observation: {
+  +     context: [
+  +       {
+  +         dependsOnSourceNodeIds: [],
+  +         kind: 'gate',
+  +         note: null,
+  +         sourceNodeId: '00000022-0000-4000-8000-000000000000',
+  +         title: 'Synthetic approval'
+  +       }
+  +     ],
+  +     counts: {
+  +       actionableNodes: 2,
+  +       archivedNodes: 0,
+  +       contextNodes: 1,
+  +       createdProjects: 1,
+  +       createdTasks: 2,
+  +       savedNodes: 3
+  +     },
+  +     edges: [
+  +       {
+  +         dependsOnSourceNodeId: '00000022-0000-4000-8000-000000000000',
+  +         disposition: 'context_only',
+  +         sourceNodeId: '00000021-0000-4000-8000-000000000000'
+  +       }
+  +     ],
+  +     exclusions: [],
+  +     issues: [
+  +       {
+  +         code: 'CONTEXT_ONLY_DEPENDENCY',
+  +         message: 'Synthetic context dependency',
+  +         sourceNodeIds: [
+  +           '00000021-0000-4000-8000-000000000000',
+  +           '00000022-0000-4000-8000-000000000000'
+  +         ]
+  +       }
+  +     ],
+  +     observedAt: '2026-10-16T00:00:00.000Z',
+  +     projects: [
+  +       {
+  +         groupKey: 'default',
+  +         name: 'Synthetic plan',
+  +         originalNodeIds: [
+  +           '00000020-0000-4000-8000-000000000000',
+  +           '00000021-0000-4000-8000-000000000000'
+  +         ],
+  +         output: {
+  +           availability: 'available',
+  +           createdVersion: 1,
+  +           currentVersion: 1,
+  +           id: '00000030-0000-4000-8000-000000000000'
+  +         }
+  +       }
+  +     ],
+  +     recordedAt: '2026-10-16T00:00:00.000Z',
+  +     replayed: false,
+  +     requestId: '56e0ed15-7dc9-85e4-a01f-1288d4015a68',
+  +     source: {
+  +       clientId: '00000003-0000-4000-8000-000000000000',
+  +       generationJobId: '00000011-0000-4000-8000-000000000000',
+  +       generationRequestId: '00000009-0000-4000-8000-000000000000',
+  +       objectiveId: '00000004-0000-4000-8000-000000000000',
+  +       objectiveRevisionId: '00000008-0000-4000-8000-000000000000',
+  +       objectiveVersion: 1,
+  +       snapshotDigest: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  +       strategyId: '00000005-0000-4000-8000-000000000000',
+  +       strategyVersionId: '00000010-0000-4000-8000-000000000000'
+  +     },
+  +     status: 'prepared_with_issues',
+  +     tasks: [
+  +       {
+  +         currentGroupKeys: [
+  +           'default'
+  +         ],
+  +         originalGroupKeys: [
+  +           'default'
+  +         ],
+  +         output: {
+  +           availability: 'available',
+  +           createdVersion: 1,
+  +           currentVersion: 1,
+  +           id: '00000031-0000-4000-8000-000000000000'
+  +         },
+  +         sourceNodeId: '00000020-0000-4000-8000-000000000000'
+  +       },
+  +       {
+  +         currentGroupKeys: [
+  +           'default'
+  +         ],
+  +         originalGroupKeys: [
+  +           'default'
+  +         ],
+  +         output: {
+  +           availability: 'available',
+  +           createdVersion: 1,
+  +           currentVersion: 1,
+  +           id: '00000032-0000-4000-8000-000000000000'
+  +         },
+  +         sourceNodeId: '00000021-0000-4000-8000-000000000000'
+  +       }
+  +     ]
+  +   },
+  +   state: 'observed'
+  -   state: 'unconfirmed'
+    }
+  
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/test/materializer.test.mjs:23:185)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

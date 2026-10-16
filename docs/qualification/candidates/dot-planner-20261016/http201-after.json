@@ -1,0 +1,63 @@
+{
+  "sourceParent": "c8c48227157e813097a737ddb3822227d8861b3a",
+  "hardWallMs": 30000,
+  "limitStopped": false,
+  "synthetic": true,
+  "ports": [],
+  "exitCode": 0,
+  "sourceFiles": [
+    {
+      "sha256": "d1d63856c19ff28dcd7126316e626541d17cf38467358cbfe5d9122a161b60e0",
+      "path": "apps\\control\\objective-planner\\core-receipts.mjs"
+    },
+    {
+      "sha256": "0202d1e929b4aa804cac990d3725828578d940fb5a7bb96dac668d1893298bb2",
+      "path": "apps\\control\\objective-planner\\identity.mjs"
+    },
+    {
+      "sha256": "7e87621bc2eae19aff70d28ffbd355e4fcfdd955636797c104f27259b17350f3",
+      "path": "apps\\control\\objective-planner\\materializer.mjs"
+    },
+    {
+      "sha256": "4e75f902b95fc85da72549aff4be296a88255d09b46babf707ec5477120a5ff1",
+      "path": "apps\\control\\objective-planner\\test\\fixtures.mjs"
+    },
+    {
+      "sha256": "25d7bc332d3191a8f7e226e7f9d03a1c90737c0c9b552adfff4b0fb68c28c4df",
+      "path": "apps\\control\\objective-planner\\test\\materializer.test.mjs"
+    },
+    {
+      "sha256": "7ba538a532e80ecbdb399e5be5b0b1f560184be1303f6932a2d44e49a49c3d8d",
+      "path": "apps\\control\\objective-planner\\test\\receipts.test.mjs"
+    }
+  ],
+  "memory": {
+    "freeBytes": 11689480192,
+    "totalBytes": 33632079872,
+    "rssBytes": 35033088
+  },
+  "finishedAt": "2026-10-16T03:23:09.9105553+00:00",
+  "sampledPeakWorkingSetBytes": 49246208,
+  "elapsedMs": 171,
+  "note": "Real production source, fixed synthetic receipts/transport; hash-only dependency stub. Actual canonicalize/Ajv, Core authority/stored custody/Temporal/provider/DB UNRUN.",
+  "startedAt": "2026-10-16T03:23:09.5295798+00:00",
+  "heapMiB": 128,
+  "processCount": 1,
+  "workingSetLimitBytes": 268435456,
+  "cleanup": {
+    "portsCreated": 0,
+    "servicesCreated": 0,
+    "ownedProcessExited": true
+  },
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--import",
+    "./docs/qualification/candidates/dot-planner-20261016/dependency-seams.mjs",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/control/objective-planner/test/receipts.test.mjs",
+    "apps/control/objective-planner/test/materializer.test.mjs"
+  ]
+}
