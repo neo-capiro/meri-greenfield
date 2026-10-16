@@ -1,8 +1,8 @@
 // Scripted Temporal client only; real Temporal1.24 transport/server/replay are UNRUN.
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createObjectivePlannerDispatcher} from './dispatcher.mjs';
-import {coreDigest as hash,continuationWorkflowId as workflowId} from './contract.mjs';
-import {fixture as receipts,id,clone,now} from './fixtures.mjs';
+import {createObjectivePlannerDispatcher} from '../objective-planner-dispatch.mjs';
+import {coreDigest as hash,continuationWorkflowId as workflowId} from '../../objective-planner/continuation/contract.mjs';
+import {fixture as receipts,id,clone,now} from '../../objective-planner/continuation/fixtures.mjs';
 function fixture({lost=false,park=false}={}){
  const work=receipts().work,entries=new Map(),state={starts:0,created:0,signals:0,queries:0,deadline:null,signal:null};
  const client={connection:{withDeadline(deadline,fn){state.deadline=deadline;return fn();},withAbortSignal(signal,fn){state.signal=signal;return fn();}},workflow:{async start(name,options){state.starts++;assert.equal(name,'meriObjectivePlannerWorkflow');assert.equal(options.workflowIdReusePolicy,'REJECT_DUPLICATE');assert.equal(options.workflowIdConflictPolicy,'USE_EXISTING');if(park)return new Promise(()=>{});if(!entries.has(options.workflowId)){entries.set(options.workflowId,{input:options.args[0],state:{phase:'reading',prepareAttempted:false,stopRequested:false,ack:null}});state.created++;}if(lost)throw Error('synthetic start ACK lost');},getHandle(id){return{async query(name){state.queries++;const entry=entries.get(id);if(!entry)throw Error('synthetic not found');if(name==='meriObjectivePlannerIdentity')return entry.input.workSha256;if(name==='meriObjectivePlannerState')return entry.state;throw Error('unknown query');},async signal(name){assert.equal(name,'meriObjectivePlannerStop');state.signals++;entries.get(id).state.stopRequested=true;}};}}};

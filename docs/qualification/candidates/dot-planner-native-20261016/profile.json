@@ -1,0 +1,29 @@
+{
+  "status": "PREPARED_UNRUN_REQUIRES_SHIPPING_SLOT",
+  "source": "Pass the exact reviewed integrated 40-hex commit as ExpectedSource; no author-branch acceptance inferred.",
+  "engine": "Node >=24 <25; author host observed v24.19.0. Record actual executable/version per run.",
+  "dependencies": "Existing exact package-lock installs in this candidate only; no install, borrowed node_modules, resolver shim or credential generation.",
+  "stages": {
+    "modules": {
+      "heapMiB": 256, "hardWallMs": 120000, "workingSetLimitMiB": 768, "expectedTests": 59,
+      "argv": ["--max-old-space-size=256", "--test", "--test-isolation=none", "--test-concurrency=1", "apps/control/objective-planner/continuation/contract.test.mjs", "apps/control/objective-planner/continuation/core-client.test.mjs", "apps/control/objective-planner/continuation/admission.test.mjs", "apps/control/conversations/test/objective-planner-dispatch.test.mjs", "apps/runtime/test/objective-planner-activities.test.mjs", "apps/runtime/test/objective-planner-startup.test.mjs", "apps/control/objective-planner/continuation/server.test.mjs", "apps/control/objective-planner/continuation/registration.test.mjs"]
+    },
+    "workflow": {
+      "heapMiB": 256, "hardWallMs": 120000, "workingSetLimitMiB": 768, "expectedTests": 8,
+      "argv": ["--max-old-space-size=256", "--test", "--test-isolation=none", "--test-concurrency=1", "apps/control/conversations/test/objective-planner-workflow.test.mjs"]
+    },
+    "types": {
+      "heapMiB": 512, "hardWallMs": 120000, "workingSetLimitMiB": 1536, "expectedTests": 0,
+      "argv": ["--max-old-space-size=512", "apps/control/conversations/node_modules/typescript/bin/tsc", "--noEmit", "-p", "apps/control/conversations/tsconfig.json"]
+    },
+    "bundle": {
+      "heapMiB": 512, "hardWallMs": 120000, "workingSetLimitMiB": 1536, "expectedTests": 1,
+      "argv": ["--max-old-space-size=512", "--test", "--test-isolation=none", "--test-concurrency=1", "apps/runtime/test/objective-planner-bundle.test.mjs"]
+    }
+  },
+  "processes": 1, "services": 0, "ports": [], "postgresConnections": 0, "postgresBuffersMiB": 0,
+  "memoryNote": "Working-set limits and heap are requested ceilings, not measured results. Fresh free memory must exceed the selected working-set ceiling plus 1GiB; Shipping separately admits aggregate host load.",
+  "cleanup": "One owned Node process; kill process tree on timeout/memory breach, verify exit and dispose handle. SDK Activator has no server or physical timer; each case resets its activator. Bundle creates no Worker/NativeConnection. No service or owned port exists.",
+  "realDependencies": ["root: ajv8.20.0, ajv-formats3.0.1, canonicalize5.1.0", "apps/control/conversations: @temporalio/client,workflow,common1.24.0; typescript5.9.3", "apps/runtime: @temporalio/activity,client,worker1.24.0 and existing locked runtime dependencies", "bundle only: every existing Docker npm-ci prefix/alias and verified pre-materialized SWC runtime artifact"],
+  "exclusions": "No installer, test-server download/start, Temporal endpoint, DB, browser, provider/model, AWS/cloud, new credential, artifact publication or source mutation. Actual Temporal service/history/restart, real producer trust and native task admission are separate unrun stages."
+}

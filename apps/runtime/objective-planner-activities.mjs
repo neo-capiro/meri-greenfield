@@ -1,5 +1,5 @@
 /** The write activity has one attempt. Actual Core independently authenticates every write/read and owns durable creation custody. */
-import {own,data,continuationWork,coreDigest,fail} from './contract.mjs';
+import {own,data,continuationWork,coreDigest,fail} from '../control/objective-planner/continuation/contract.mjs';
 import {Context} from '@temporalio/activity';
 export function createObjectivePlannerActivities({client,admission,context=()=>Context.current(),now=Date.now,maxRequestMs=15000}){
  if(typeof client?.inspect!=='function'||typeof client?.prepare!=='function'||typeof admission?.check!=='function'||typeof context!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');

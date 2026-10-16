@@ -1,6 +1,6 @@
 /** Opt-in server workflow. SDK/control retain the original run; this workflow schedules no model execution. */
 import {proxyActivities,defineQuery,defineSignal,setHandler,condition} from '@temporalio/workflow';
-import {drivePlannerContinuation} from './driver.mjs';
+import {drivePlannerContinuation} from '../objective-planner/continuation/driver.mjs';
 interface Input {work:unknown;workSha256:string}
 interface Outcome {kind:'ack'|'unavailable'|'refused';ack?:unknown}
 interface Activities {inspectObjectivePlanner(input:Input):Promise<Outcome>;prepareObjectivePlanner(input:Input):Promise<Outcome>}

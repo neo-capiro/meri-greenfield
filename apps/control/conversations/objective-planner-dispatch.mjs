@@ -1,9 +1,9 @@
 /** Existing Temporal1.24 client scope pattern; original workflow identity survives start ACK loss and browser closure. */
 import {WorkflowIdReusePolicy,WorkflowIdConflictPolicy} from '@temporalio/client';
-import {own,data,continuationWork as work,continuationWorkflowId as workflowId,coreDigest as hash,fail} from './contract.mjs';
-import {nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
-import {ProductError,productFailure} from '../../product-access/errors.mjs';
+import {own,data,continuationWork as work,continuationWorkflowId as workflowId,coreDigest as hash,fail} from '../objective-planner/continuation/contract.mjs';
+import {nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {ProductError,productFailure} from '../product-access/errors.mjs';
 export function createObjectivePlannerDispatcher({client,taskQueue,now=Date.now,maxRequestMs=3000}){
  if(typeof client?.workflow?.start!=='function'||typeof client?.workflow?.getHandle!=='function'||typeof taskQueue!=='string'||!taskQueue||taskQueue.length>256||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONFIGURATION');
  async function call(mode,value){

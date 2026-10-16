@@ -10,4 +10,4 @@ export async function meriConversationWorkflow(input:{binding:Binding}):Promise<
 export {meriConversationLifecycleWorkflow} from './lifecycle/workflow.ts';
 
 // Separate server continuation; scheduling remains opt-in through its authenticated Core owner.
-export {meriObjectivePlannerWorkflow} from '../objective-planner/continuation/workflow.ts';
+export {meriObjectivePlannerWorkflow} from './objective-planner-workflow.ts';

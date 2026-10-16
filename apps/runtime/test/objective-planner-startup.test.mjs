@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createObjectivePlannerContinuation} from './composition.mjs';import {fixture,now} from './fixtures.mjs';
-import {coreDigest} from './contract.mjs';import {drivePlannerContinuation} from './driver.mjs';
-import {canonicalSha256 as meriHash} from '../../../../packages/contracts/validate.mjs';
+import {createObjectivePlannerContinuation} from '../objective-planner-startup.mjs';import {fixture,now} from '../../control/objective-planner/continuation/fixtures.mjs';
+import {coreDigest} from '../../control/objective-planner/continuation/contract.mjs';import {drivePlannerContinuation} from '../../control/objective-planner/continuation/driver.mjs';
+import {canonicalSha256 as meriHash} from '../../../packages/contracts/validate.mjs';
 test('actual source composition stays disabled without genuine producer or transport issuer; no effects on import/construction',async()=>{let calls=0;const no=()=>{calls++;throw Error('NO_EFFECT');},composition=createObjectivePlannerContinuation({core:{origin:'https://core.synthetic.invalid',fetchImpl:no},runs:{readOptional:no},temporalClient:{workflow:{start:no,getHandle:no}},taskQueue:'existing-synthetic-queue'});assert.equal(composition.available(),false);assert.deepEqual(Object.keys(composition.activities),['inspectObjectivePlanner','prepareObjectivePlanner']);await assert.rejects(composition.server.start({work:fixture().work}),/PRODUCER_UNAVAILABLE/);assert.equal(calls,0);});
 test('coherent admitted source joins actual driver/activities/Core client/custody/server; lost POST ACK recovers one application after caller leaves',async()=>{
  const f=fixture(),accepted={run:{binding:f.sourceBinding,state:'completed'},request:{prompt:'Synthetic canonical accepted request'}},state={starts:0,posts:0,committed:false,entry:null};let composition;
