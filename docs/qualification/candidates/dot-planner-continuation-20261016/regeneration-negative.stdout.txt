@@ -1,0 +1,96 @@
+✔ fixed server request has exactly nine Core fields and no actor/groups/model/credential payload (4.055ms)
+✔ exact source pins change request/work digest while application identity stays fixed (1.7297ms)
+✔ Core sorted JSON hash preserves array order, scalar escapes and lexical numeric keys (0.1881ms)
+✔ application UUID uses Core namespace/version8/variant8 and native actor; workflow separately pins original consent/control (1.1336ms)
+✔ creation ACK has separate whole-owner receipt hash and actual canonical default project ID (1.8214ms)
+✔ mutable current human edits/regrouping/replay do not change immutable creation custody (1.9393ms)
+✔ original consent/control must echo even when historical current authority has advanced (6.9754ms)
+✔ withheld ACK yields no output references; cached or malformed substitution is refused (1.419ms)
+✔ ACK envelope/content/hash/output identity and source integrity are closed (5.1945ms)
+✔ UUIDs and digests reject a final newline despite the regular expression end-anchor allowance (3.4092ms)
+✔ canonical tuple rejects available creation ACK when an unavailable current output retains any ID/version (5.1675ms)
+✔ canonical tuple rejects archived-null outputs, including withheld creation observations (2.7757ms)
+✔ canonical archived outputs retain their authorized IDs and human-edited current versions/groups (1.6543ms)
+✖ canonical regeneration retains real original output identities and human versions with zero newly-created counts (1.5046ms)
+✖ canonical mixed regeneration counts newly-created tasks independently from returned original rows (0.7283ms)
+✖ canonical reused context-only project does not fabricate newly-created project or actionable task counts (1.7008ms)
+✔ canonical counts cannot exceed actual returned rows or admit negative/fractional/unsafe creation counts (5.7814ms)
+✔ legacy browser compatibility retains its original all-created count contract (0.7324ms)
+✔ actual ObjectiveReceipt shape binds requested revision and actual saved StrategyVersion, not model completion (0.6214ms)
+✔ Strategy source mismatch refuses: clientId (0.3559ms)
+✔ Strategy source mismatch refuses: objectiveId (0.1726ms)
+✔ Strategy source mismatch refuses: objectiveRevisionId (0.1508ms)
+✔ Strategy source mismatch refuses: objectiveVersion (0.16ms)
+✔ uncorrelated Strategy result refuses: sourceDigest (0.218ms)
+✔ uncorrelated Strategy result refuses: coverageDigest (0.4184ms)
+✔ uncorrelated Strategy result refuses: inputDigest (0.2464ms)
+✔ uncorrelated Strategy result refuses: contextPacketId (0.165ms)
+✔ incomplete context, stale failure, provider envelopes and invalid timestamps refuse (0.7041ms)
+✔ canonical intent + original actor retain one request/workflow identity when job/version changes (0.3375ms)
+✔ caller selection cannot supply actor, outputs, authority, credentials or a model result (0.188ms)
+✔ noncanonical Strategy, changed effect ID and unsupported epoch refuse before effect selection (0.7376ms)
+✔ materializer input is exactly existing saved-version request with no model query, group cap or reservation alias (0.2114ms)
+✔ Planner observation pins actual source: generationJobId (0.5471ms)
+✔ Planner observation pins actual source: generationRequestId (0.2937ms)
+✔ Planner observation pins actual source: clientId (0.2716ms)
+✔ Planner observation pins actual source: objectiveId (0.2707ms)
+✔ Planner observation pins actual source: objectiveVersion (0.2363ms)
+✔ Planner observation pins actual source: objectiveRevisionId (0.2287ms)
+✔ Planner observation pins actual source: strategyId (0.2313ms)
+✔ Planner observation pins actual source: strategyVersionId (0.221ms)
+✔ Planner observation pins actual source: snapshotDigest (0.447ms)
+✔ current human edits, task regrouping and unavailable outputs are retained without recreation (0.4182ms)
+✔ closed nested observation rejects injected authority, duplicate outputs and inconsistent source counts (2.2336ms)
+✔ context-only plan retains its issues and project without inventing actionable tasks (0.3113ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 41
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.5176
+
+✖ failing tests:
+
+test at apps\control\objective-planner\continuation\contract.test.mjs:21:1
+✖ canonical regeneration retains real original output identities and human versions with zero newly-created counts (1.5046ms)
+  ProductError: OBJECTIVE_PLANNER_INVALID_RECEIPT
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at fail (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/identity.mjs:6:35)
+      at materializationObservation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/core-receipts.mjs:39:305)
+      at creationObservation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.mjs:25:16)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.test.mjs:21:762)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps\control\objective-planner\continuation\contract.test.mjs:22:1
+✖ canonical mixed regeneration counts newly-created tasks independently from returned original rows (0.7283ms)
+  ProductError: OBJECTIVE_PLANNER_INVALID_RECEIPT
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at fail (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/identity.mjs:6:35)
+      at materializationObservation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/core-receipts.mjs:39:305)
+      at creationObservation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.mjs:25:16)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.test.mjs:22:275)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at apps\control\objective-planner\continuation\contract.test.mjs:23:1
+✖ canonical reused context-only project does not fabricate newly-created project or actionable task counts (1.7008ms)
+  ProductError: OBJECTIVE_PLANNER_INVALID_RECEIPT
+      at refuse (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/product-access/errors.mjs:10:50)
+      at fail (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/identity.mjs:6:35)
+      at materializationObservation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/core-receipts.mjs:39:305)
+      at creationObservation (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.mjs:25:16)
+      at TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-6/meri-budget-planner/apps/control/objective-planner/continuation/contract.test.mjs:23:479)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)

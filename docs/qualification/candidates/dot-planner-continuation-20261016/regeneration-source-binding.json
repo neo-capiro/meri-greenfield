@@ -1,0 +1,218 @@
+{
+  "source": "41322393f814057792a32e3f6eff7c4ddc4eb03f",
+  "tree": "d7df02ebba532cbc559958ffd0810e16c34e803e",
+  "proof": "regeneration-fixed.json",
+  "allMatched": true,
+  "files": [
+    {
+      "path": "apps\\control\\objective-planner\\core-receipts.mjs",
+      "expected": "f4e35a49de08506e69b9c00a6f1b5a303238fba02524c4949cd0894495b2c623",
+      "actual": "f4e35a49de08506e69b9c00a6f1b5a303238fba02524c4949cd0894495b2c623",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\identity.mjs",
+      "expected": "f2427933375c5169c72bec1936c60678aa1519443407a801305dea5e67b06dec",
+      "actual": "f2427933375c5169c72bec1936c60678aa1519443407a801305dea5e67b06dec",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\materializer.mjs",
+      "expected": "7e87621bc2eae19aff70d28ffbd355e4fcfdd955636797c104f27259b17350f3",
+      "actual": "7e87621bc2eae19aff70d28ffbd355e4fcfdd955636797c104f27259b17350f3",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\admission.mjs",
+      "expected": "7b63393ac1505c6e3b4275c131d5ef336b7840820268852f6dbbf492b0dfaa2d",
+      "actual": "7b63393ac1505c6e3b4275c131d5ef336b7840820268852f6dbbf492b0dfaa2d",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\admission.test.mjs",
+      "expected": "e03b7b0a642abef44f58bdfdddfdc590bc02bbfba9eb091ed8bfdef049f38c67",
+      "actual": "e03b7b0a642abef44f58bdfdddfdc590bc02bbfba9eb091ed8bfdef049f38c67",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\contract.mjs",
+      "expected": "6e9730a99cef7cb61396709f7394f7a805211eca11ed2dad9a4a77bb6f7c5bc3",
+      "actual": "6e9730a99cef7cb61396709f7394f7a805211eca11ed2dad9a4a77bb6f7c5bc3",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\contract.test.mjs",
+      "expected": "20fe3935e5da6f68c9fc83978d505732cd740ad7a3385b5699458ac577c92c64",
+      "actual": "20fe3935e5da6f68c9fc83978d505732cd740ad7a3385b5699458ac577c92c64",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-client.mjs",
+      "expected": "73d7b94c10d9671cbb730a6650c18e276f53bc9f6b57a855eb592625cb21fe07",
+      "actual": "73d7b94c10d9671cbb730a6650c18e276f53bc9f6b57a855eb592625cb21fe07",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-client.test.mjs",
+      "expected": "0376a69def82f0a5fdee0f19c2745c209c41f73a656667011356521a73aef8c1",
+      "actual": "0376a69def82f0a5fdee0f19c2745c209c41f73a656667011356521a73aef8c1",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-http.mjs",
+      "expected": "62446a9a8ce12ccf70dd411887ebb793b1b4285e2a8d49a56ee3a049fac32d20",
+      "actual": "62446a9a8ce12ccf70dd411887ebb793b1b4285e2a8d49a56ee3a049fac32d20",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-producer.mjs",
+      "expected": "2f58a9397159d7ca1042c42780dc1ee65f37ecb64ed807bce53ea88b6647f0f5",
+      "actual": "2f58a9397159d7ca1042c42780dc1ee65f37ecb64ed807bce53ea88b6647f0f5",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\core-producer.test.mjs",
+      "expected": "46f7b33def9fdab7bbde1822b4b3009f9d3d1c0210fe0b742c4e9a361a32c092",
+      "actual": "46f7b33def9fdab7bbde1822b4b3009f9d3d1c0210fe0b742c4e9a361a32c092",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\driver.mjs",
+      "expected": "1d1bf47be87664444f5de22ea712e2a100969c280ec5a5519ed305ddfdf6c3bc",
+      "actual": "1d1bf47be87664444f5de22ea712e2a100969c280ec5a5519ed305ddfdf6c3bc",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\driver.test.mjs",
+      "expected": "fc5d88c2662cdb020555af589745675f90680f2105b9e907a129cc96cdb35da0",
+      "actual": "fc5d88c2662cdb020555af589745675f90680f2105b9e907a129cc96cdb35da0",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\fixtures.mjs",
+      "expected": "32f64c09e907f949bc4f130625038aba423a5914ba4e20c07d3c7221877d4a4c",
+      "actual": "32f64c09e907f949bc4f130625038aba423a5914ba4e20c07d3c7221877d4a4c",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\registration.mjs",
+      "expected": "7d27d06cb19bb5d4baeedc92e7275501a6a55e826b06bc1fde13e5e2dc2621c1",
+      "actual": "7d27d06cb19bb5d4baeedc92e7275501a6a55e826b06bc1fde13e5e2dc2621c1",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\registration.test.mjs",
+      "expected": "4c7ed90c33a3ffd0356c323094c9fe2c8e379a04f1ddd71def1252d5d5764d53",
+      "actual": "4c7ed90c33a3ffd0356c323094c9fe2c8e379a04f1ddd71def1252d5d5764d53",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\server.mjs",
+      "expected": "a4019e3d73aa59192f0b06f8e221b1497d7488125dca5f8048df43d579ab3f46",
+      "actual": "a4019e3d73aa59192f0b06f8e221b1497d7488125dca5f8048df43d579ab3f46",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\continuation\\server.test.mjs",
+      "expected": "6073eb636c21706dbc5850555c8402145a1828a5558bbe7becb8bb7b12417af3",
+      "actual": "6073eb636c21706dbc5850555c8402145a1828a5558bbe7becb8bb7b12417af3",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\test\\fixtures.mjs",
+      "expected": "4e75f902b95fc85da72549aff4be296a88255d09b46babf707ec5477120a5ff1",
+      "actual": "4e75f902b95fc85da72549aff4be296a88255d09b46babf707ec5477120a5ff1",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\test\\materializer.test.mjs",
+      "expected": "25d7bc332d3191a8f7e226e7f9d03a1c90737c0c9b552adfff4b0fb68c28c4df",
+      "actual": "25d7bc332d3191a8f7e226e7f9d03a1c90737c0c9b552adfff4b0fb68c28c4df",
+      "match": true
+    },
+    {
+      "path": "apps\\control\\objective-planner\\test\\receipts.test.mjs",
+      "expected": "7ba538a532e80ecbdb399e5be5b0b1f560184be1303f6932a2d44e49a49c3d8d",
+      "actual": "7ba538a532e80ecbdb399e5be5b0b1f560184be1303f6932a2d44e49a49c3d8d",
+      "match": true
+    },
+    {
+      "path": "apps/control/conversations/workflow.ts",
+      "expected": "e0496b772af601ba70cec25fdcc2d5b34750ae0ef178bebd14916872d41f6947",
+      "actual": "e0496b772af601ba70cec25fdcc2d5b34750ae0ef178bebd14916872d41f6947",
+      "match": true
+    },
+    {
+      "path": "apps/runtime/temporal-worker.mjs",
+      "expected": "19258b6c522bf0eec2a6348feff468e7fedfd579c59b22679f7c9260cfe9b322",
+      "actual": "19258b6c522bf0eec2a6348feff468e7fedfd579c59b22679f7c9260cfe9b322",
+      "match": true
+    },
+    {
+      "path": "apps/runtime/objective-planner-activities.mjs",
+      "expected": "35d0da105f9a274ff18dcc0c7b3d4e8ca62405444925f50e413996a35376d823",
+      "actual": "35d0da105f9a274ff18dcc0c7b3d4e8ca62405444925f50e413996a35376d823",
+      "match": true
+    },
+    {
+      "path": "apps/runtime/objective-planner-startup.mjs",
+      "expected": "a19ce84a4e144d9e75b9941c0fae3339859fdf861158161e861ceb2747623a9d",
+      "actual": "a19ce84a4e144d9e75b9941c0fae3339859fdf861158161e861ceb2747623a9d",
+      "match": true
+    },
+    {
+      "path": "apps/runtime/test/objective-planner-activities.test.mjs",
+      "expected": "ef36098ddbc30ae68de149aec367ba35c678b347b1c8f22e47e6a26767c9a160",
+      "actual": "ef36098ddbc30ae68de149aec367ba35c678b347b1c8f22e47e6a26767c9a160",
+      "match": true
+    },
+    {
+      "path": "apps/runtime/test/objective-planner-startup.test.mjs",
+      "expected": "95ecdca7761d25b6fe0f96b3f7923212286605801c101daf1137f5b80eff1c94",
+      "actual": "95ecdca7761d25b6fe0f96b3f7923212286605801c101daf1137f5b80eff1c94",
+      "match": true
+    },
+    {
+      "path": "apps/control/conversations/objective-planner-dispatch.mjs",
+      "expected": "2b89f6490453d7e5e6e7e1a3af365d6ccf5e70dd9725ca2069e0e2ac5479ed01",
+      "actual": "2b89f6490453d7e5e6e7e1a3af365d6ccf5e70dd9725ca2069e0e2ac5479ed01",
+      "match": true
+    },
+    {
+      "path": "apps/control/conversations/objective-planner-workflow.ts",
+      "expected": "3d42a350e926cebd3b3f26bfb9040cf6bb793424571c9fbee96ae5e0280e86a2",
+      "actual": "3d42a350e926cebd3b3f26bfb9040cf6bb793424571c9fbee96ae5e0280e86a2",
+      "match": true
+    },
+    {
+      "path": "apps/control/conversations/test/objective-planner-dispatch.test.mjs",
+      "expected": "9dd7e55ec0ded67061de3174351b3d2b667629e7221e4cac8489939e47f3a627",
+      "actual": "9dd7e55ec0ded67061de3174351b3d2b667629e7221e4cac8489939e47f3a627",
+      "match": true
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/dependency-seams.mjs",
+      "expected": "995b95ffc809a91c25d49650b3d5379beb5f537664fe6ba714f50fc233516723",
+      "actual": "995b95ffc809a91c25d49650b3d5379beb5f537664fe6ba714f50fc233516723",
+      "match": true
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/temporal-client-shim.mjs",
+      "expected": "f010514d51ebdac2f22b6cb0ab2435b0568c691d2903a8ec4cc01ca3952372e1",
+      "actual": "f010514d51ebdac2f22b6cb0ab2435b0568c691d2903a8ec4cc01ca3952372e1",
+      "match": true
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/temporal-activity-shim.mjs",
+      "expected": "441a840323e149e425b1eabc1939df8c0243c29d0d3b4ea402f41853e805f12f",
+      "actual": "441a840323e149e425b1eabc1939df8c0243c29d0d3b4ea402f41853e805f12f",
+      "match": true
+    },
+    {
+      "path": "docs/qualification/candidates/dot-planner-continuation-20261016/run-controls.ps1",
+      "expected": "8dd4f00f61ffc4efddb50dadc19b36e64196742c1f347720b54f1b68f596234e",
+      "actual": "8dd4f00f61ffc4efddb50dadc19b36e64196742c1f347720b54f1b68f596234e",
+      "match": true
+    }
+  ]
+}
