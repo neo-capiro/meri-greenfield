@@ -1,18 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createActionSessionOwner} from './owner.mjs';
+import {createMembershipGate} from '../../product-access/membership.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
 const copy=structuredClone,turn=()=>new Promise(resolve=>setImmediate(resolve));
 function gate(){let enter,release;return {entered:new Promise(r=>enter=r),blocked:new Promise(r=>release=r),enter:()=>enter(),release:()=>release()};}
-async function fixture({intent='resume',ports=true,originalExpiry=4500}={}){
+async function fixture({intent='resume',ports=true,originalExpiry=4500,membership=false}={}){
  let at=1000;const sourceBinding={tenantId:'tenant-a',actorId:'actor-a',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
  const targetBinding={...sourceBinding,conversationId:intent==='fork'?id(20):id(1),runId:id(21),attemptId:id(22),workerId:id(23),writerFence:intent==='fork'?1:2};
  const scopes=[{kind:'client',tenantId:sourceBinding.tenantId,resourceId:id(5),policyRevision:'policy-a'}],principal={tenantId:sourceBinding.tenantId,actorId:sourceBinding.actorId};
- const hooks={},calls={identity:[],reader:[],target:[],ordinary:[]},state={ordinaryCurrent:true,identityRevision:'identity-a',identityExpiry:originalExpiry,ordinaryExpiry:originalExpiry,readerState:'DISPATCHING'};
+ const hooks={},calls={identity:[],reader:[],target:[],ordinary:[]},state={ordinaryCurrent:true,identityRevision:'identity-a',identityExpiry:originalExpiry,ordinaryExpiry:originalExpiry,readerState:'DISPATCHING',member:{tenantId:sourceBinding.tenantId,actorId:sourceBinding.actorId,status:'active',role:'member',permissions:[],clientIds:[id(5)],membershipRevision:'m1'}};
  const mapping={controlId:id(30),intent,inputSha256:'a'.repeat(64),sourceBinding,targetBinding,scopes,selectedClientId:id(5),policyRevision:'policy-a',admissionReceiptId:id(31),retirementReceiptId:intent==='resume'?id(32):null,checkpointId:id(33),checkpointSha256:'b'.repeat(64),sourceRequestSha256:'c'.repeat(64),contextSha256:'d'.repeat(64),targetSessionId:intent==='fork'?id(34):null,resumeSessionAt:null};
- const config={mode:'process-local',now:()=>at,limits:{maxSessions:8,maxRequestMs:500,maxTtlMs:5000,maxFactBytes:65536},
+ const gate=membership?createMembershipGate({now:()=>at,limits:{maxRequestMs:500,maxFactBytes:65536},
+  verifyToken:async()=>({tenantId:sourceBinding.tenantId,actorId:sourceBinding.actorId,checkedAtMs:at,expiresAtMs:at+3000}),
+  readMembership:async()=>({...state.member,checkedAtMs:at,expiresAtMs:at+3000})}):undefined;
+ const config={mode:'process-local',now:()=>at,limits:{maxSessions:8,maxRequestMs:500,maxTtlMs:5000,maxFactBytes:65536},...(gate?{membership:{admit:gate.admit,recheck:gate.recheck}}:{}),
   async verifyIdentity(call){calls.identity.push(call);let v={principal,identityRevision:state.identityRevision,checkedAtMs:at,expiresAtMs:state.identityExpiry};if(hooks.identity)v=await hooks.identity(v,call);return v;},
   async resolveContext(call){calls.ordinary.push(call);if(!state.ordinaryCurrent)throw Error('historical source');return {identitySha256:call.identitySha256,binding:sourceBinding,scopes,selectedClientId:id(5),contextRevision:'source-context-a',checkedAtMs:at,expiresAtMs:state.ordinaryExpiry};},
   ...(ports?{async readTransition(call){calls.reader.push(call);let v={...copy(mapping),state:state.readerState,admissionExpiresAtMs:4000,retirementExpiresAtMs:intent==='resume'?3500:null,targetExpiresAtMs:4200,checkedAtMs:at,expiresAtMs:4400};if(hooks.reader)v=await hooks.reader(v,call);return v;},
@@ -53,6 +57,15 @@ test('revocation while trusted reader is parked cannot release transition facts'
 test('cancellation of parked target context refuses and aborts owned signal',async t=>{const f=await fixture(),g=gate(),abort=new AbortController();t.after(()=>f.owner.close());let signal;f.hooks.target=async(v,call)=>{signal=call.signal;g.enter();await g.blocked;return v;};const pending=f.verify({signal:abort.signal});await g.entered;abort.abort();await assert.rejects(pending);assert.equal(signal.aborted,true);g.release();await turn();});
 test('parked trusted port is bounded by original effective deadline',async t=>{const f=await fixture();t.after(()=>f.owner.close());let signal;f.hooks.reader=async(v,call)=>{signal=call.signal;return new Promise(()=>{});};await assert.rejects(f.verify({deadlineMs:1020}));assert.equal(signal.aborted,true);assert.equal(f.calls.target.length,0);});
 test('historical ordinary authentication still refuses and cannot recreate a transition session',async t=>{const f=await fixture();t.after(()=>f.owner.close());f.state.ordinaryCurrent=false;await f.verify();await assert.rejects(f.owner.authenticateSession({credential:f.input.credential}));await assert.rejects(f.verify());assert.equal(f.owner.status().sessions,0);});
+test('membership revision change refuses transition before reading the journal',async t=>{
+ const f=await fixture({membership:true});t.after(()=>f.owner.close());assert.equal(f.issued.expiresAtMs,4000);f.state.member.membershipRevision='m2';
+ await assert.rejects(f.verify(),{code:'SESSION_REFUSED'});assert.equal(f.calls.reader.length,0);assert.equal(f.owner.status().sessions,0);
+});
+test('client removal during final transition read withholds verified facts',async t=>{
+ const f=await fixture({membership:true});t.after(()=>f.owner.close());let reads=0;
+ f.hooks.reader=value=>{if(++reads===2)f.state.member.clientIds=[];return value;};
+ await assert.rejects(f.verify(),{code:'SESSION_REFUSED'});assert.equal(f.calls.reader.length,2);assert.equal(f.calls.target.length,1);assert.equal(f.owner.status().sessions,0);
+});
 test('unknown purpose, forged credential and active input getters have no trusted effects',async t=>{const f=await fixture();t.after(()=>f.owner.close());const identities=f.calls.identity.length;await assert.rejects(f.verify({purpose:'history'}));await assert.rejects(f.verify({credential:'forged'}));let reads=0;await assert.rejects(f.owner.verifyTransition({...f.input,get sourceBinding(){reads++;throw Error('getter');}}));assert.equal(reads,0);assert.equal(f.calls.reader.length,0);assert.equal(f.calls.identity.length,identities);});
 test('hostile signal and coercible deadline are rejected before identity or reader ports',async t=>{const f=await fixture();t.after(()=>f.owner.close());let reads=0;const signal={get aborted(){reads++;throw Error('getter');}},before=f.calls.identity.length;await assert.rejects(f.verify({signal}));await assert.rejects(f.verify({deadlineMs:'1400'}));assert.equal(reads,0);assert.equal(f.calls.identity.length,before);assert.equal(f.calls.reader.length,0);});
 for(const port of ['identity','target'])test(`cancelled ${port} verification preserves live original session for effect-free APPLIED readback`,async t=>{const f=await fixture(),g=gate(),abort=new AbortController();t.after(()=>f.owner.close());const before=await f.owner.authenticateSession({credential:f.input.credential});f.state.readerState='APPLIED';f.hooks[port]=async v=>{g.enter();await g.blocked;return v;};const work=f.verify({purpose:'receipt-readback',signal:abort.signal});await g.entered;abort.abort();await assert.rejects(work);assert.equal(f.owner.status().sessions,1);delete f.hooks[port];g.release();await turn();const read=await f.verify({purpose:'receipt-readback'});assert.equal(read.transitionSha256,hash(f.mapping));const after=await f.owner.authenticateSession({credential:f.input.credential});assert.equal(after.sessionRevision,before.sessionRevision);assert.equal(after.expiresAtMs,before.expiresAtMs);});
