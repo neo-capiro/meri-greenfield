@@ -1,0 +1,28 @@
+{
+  "source": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+  "stage": 5,
+  "argv": [
+    "--max-old-space-size=128",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "test/conversation-history-public.test.mjs"
+  ],
+  "hardSeconds": 45,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 12271316992,
+    "commitTotal": 33632079872,
+    "commitAvailable": 3086057472
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "ownedPid": 10936,
+  "ownedExited": true,
+  "finishedAtUtc": "2026-10-16T03:31:06.4555397Z",
+  "wallMs": 535,
+  "sampledParentRssBytes": 106409984,
+  "preservedBytes": true,
+  "childNote": "None; offline temp consumer removed in finally"
+}

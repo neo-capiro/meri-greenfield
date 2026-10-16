@@ -1,0 +1,11 @@
+/** Synthetic transport facts, never membership/provider/session authority. */
+export const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`,bytes=value=>new TextEncoder().encode(JSON.stringify(value));
+export const binding={tenantId:'synthetic',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
+export const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:id(5),policyRevision:'p1'}],createdAt='2026-10-16T12:00:00.000Z';
+export const run={binding,scopes,state:'queued',policyRevision:'p1',createdAt,versions:{imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'}};
+export const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt,policyRevision:'p1'};
+export const event={contractVersion:'0.1.0',eventId:id(8),binding,scopes,sequence:1,createdAt,type:'run.status',data:{state:'queued',reasonCode:null}};
+export function transcript(){return structuredClone({schema:'meri.conversation-transcript/1',conversation,latestRun:run,latestSequenceBase:0,turns:[{run,request:{requestId:id(6),prompt:'Synthetic prompt',skill:null,window:null,windowRequest:null},promptLineage:{kind:'submission',logicalRequestId:id(6),sourceBinding:null,sourceRequestId:null},sequenceBase:0,sequenceEnd:null,lastSequence:1}],events:[{sequence:1,event}],nextSequence:1,lastSequence:1,hasMore:false,pendingTurn:null});}
+export function resumed(){const page=transcript(),source=page.turns[0],target={...binding,runId:id(20),attemptId:id(21),workerId:id(22),writerFence:2};source.run.state='paused';source.sequenceEnd=1;
+ const run2={...structuredClone(run),binding:target},request2={...source.request,requestId:id(23)};page.latestRun=run2;page.latestSequenceBase=1;page.turns.push({run:run2,request:request2,promptLineage:{kind:'resume',logicalRequestId:id(6),sourceBinding:binding,sourceRequestId:id(6)},sequenceBase:1,sequenceEnd:null,lastSequence:1});
+ page.events.push({sequence:2,event:{...structuredClone(event),eventId:id(24),binding:target}});page.nextSequence=2;page.lastSequence=2;return page;}

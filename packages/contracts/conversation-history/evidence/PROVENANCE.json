@@ -1,0 +1,255 @@
+{
+  "schema": "meri.conversation-history.artifact-provenance/1",
+  "packageName": "@capiro/meri-contracts",
+  "packageVersion": "0.1.6",
+  "historyVersion": "1.0.0",
+  "acceptedGeneratorSource": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+  "typeFixtureSource": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+  "generatorInputsUnchangedFromAcceptedSource": true,
+  "artifactReview": "PENDING_INDEPENDENT_EXACT_ARTIFACT_ACCEPTANCE",
+  "archive": {
+    "path": "capiro-meri-contracts-0.1.6.tgz",
+    "bytes": 467014,
+    "unpackedBytes": 5567692,
+    "sha256": "050ce4a5a0facb0c3df4dbc14c2dedb5b49bfdfe618c4f88148f7779300313a4",
+    "integrity": "sha512-cscsnPoKIF2CCCIzXyOSQQZcOiHCbx0gfkGCqfcjfdJ41K96eUz61UDjtBKNSCSNJQWspZDqXprKj9nTyvQSWw==",
+    "entries": 31
+  },
+  "outputs": [
+    {
+      "path": "dist/conversation-history.d.ts",
+      "bytes": 16247,
+      "sha256": "668f9c89df2e71e53a39ec6de163f75eef6c4fc826e3ffc88454ba9f0f250d1a"
+    },
+    {
+      "path": "dist/conversation-history.metadata.json",
+      "bytes": 3500,
+      "sha256": "3d34fbfa650b80c223c02535ad759f8de46e0ce7164bb65dcc82e6c13409212d"
+    },
+    {
+      "path": "dist/conversation-history.mjs",
+      "bytes": 1028381,
+      "sha256": "1a1b4b0950ca8c328983d397cbb17730bbe597ddba8140ae82fb59f86a2f790c"
+    },
+    {
+      "path": "dist/conversation-history.schema.json",
+      "bytes": 46086,
+      "sha256": "64507f94d5b71e5730996ea85054d9310cb6ac92cc3dc5d3c137e8c259fec927"
+    }
+  ],
+  "preservedPriorInputs": 25,
+  "preservedPriorInputsManifestSha256": "0f0cd1771eaf11b68c48f339aff0ffdf5f026e0d9a29e41c10feae8317e950d4",
+  "stages": [
+    {
+      "source": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+      "stage": 1,
+      "argv": [
+        "--max-old-space-size=256",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "hardSeconds": 120,
+      "memoryBefore": {
+        "physicalTotal": 33632079872,
+        "physicalAvailable": 11940945920,
+        "commitTotal": 33632079872,
+        "commitAvailable": 3081912320
+      },
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "timedOut": false,
+      "ownedExited": true,
+      "wallMs": 11886,
+      "sampledParentRssBytes": 140894208,
+      "preservedBytes": true,
+      "childNote": "No lifecycle children; registry dependency install only"
+    },
+    {
+      "source": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+      "stage": 2,
+      "argv": [
+        "--max-old-space-size=384",
+        "generate-history.mjs"
+      ],
+      "hardSeconds": 90,
+      "memoryBefore": {
+        "physicalTotal": 33632079872,
+        "physicalAvailable": 12012093440,
+        "commitTotal": 33632079872,
+        "commitAvailable": 3145846784
+      },
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "timedOut": false,
+      "ownedExited": true,
+      "wallMs": 789,
+      "sampledParentRssBytes": 101933056,
+      "preservedBytes": true,
+      "childNote": "One owned esbuild native service; finally esbuild.stop; watchdog taskkill owned tree only"
+    },
+    {
+      "source": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+      "stage": 3,
+      "argv": [
+        "--max-old-space-size=384",
+        "generate-history.mjs",
+        "--check"
+      ],
+      "hardSeconds": 90,
+      "memoryBefore": {
+        "physicalTotal": 33632079872,
+        "physicalAvailable": 11966484480,
+        "commitTotal": 33632079872,
+        "commitAvailable": 3128000512
+      },
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "timedOut": false,
+      "ownedExited": true,
+      "wallMs": 614,
+      "sampledParentRssBytes": 108781568,
+      "preservedBytes": true,
+      "childNote": "One owned esbuild native service; finally esbuild.stop; watchdog taskkill owned tree only"
+    },
+    {
+      "source": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+      "stage": 4,
+      "argv": [
+        "--max-old-space-size=256",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "--target",
+        "ES2022",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "test/conversation-history-public-types.ts"
+      ],
+      "hardSeconds": 60,
+      "memoryBefore": {
+        "physicalTotal": 33632079872,
+        "physicalAvailable": 12274806784,
+        "commitTotal": 33632079872,
+        "commitAvailable": 3091632128
+      },
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "timedOut": false,
+      "ownedPid": 33264,
+      "ownedExited": true,
+      "finishedAtUtc": "2026-10-16T03:31:05.6955849Z",
+      "wallMs": 577,
+      "sampledParentRssBytes": 181600256,
+      "preservedBytes": true,
+      "childNote": "None; only focused new fixture"
+    },
+    {
+      "source": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+      "stage": 5,
+      "argv": [
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "test/conversation-history-public.test.mjs"
+      ],
+      "hardSeconds": 45,
+      "memoryBefore": {
+        "physicalTotal": 33632079872,
+        "physicalAvailable": 12271316992,
+        "commitTotal": 33632079872,
+        "commitAvailable": 3086057472
+      },
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "timedOut": false,
+      "ownedPid": 10936,
+      "ownedExited": true,
+      "finishedAtUtc": "2026-10-16T03:31:06.4555397Z",
+      "wallMs": 535,
+      "sampledParentRssBytes": 106409984,
+      "preservedBytes": true,
+      "childNote": "None; offline temp consumer removed in finally"
+    },
+    {
+      "source": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+      "stage": 6,
+      "argv": [
+        "--max-old-space-size=128",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "pack",
+        "--ignore-scripts",
+        "--json",
+        "--pack-destination",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\history-package"
+      ],
+      "hardSeconds": 30,
+      "memoryBefore": {
+        "physicalTotal": 33632079872,
+        "physicalAvailable": 12083728384,
+        "commitTotal": 33632079872,
+        "commitAvailable": 3029188608
+      },
+      "primaryExit": 0,
+      "cleanupExit": 0,
+      "timedOut": false,
+      "ownedPid": 15240,
+      "ownedExited": true,
+      "finishedAtUtc": "2026-10-16T03:31:41.5787637Z",
+      "wallMs": 1434,
+      "sampledParentRssBytes": 98496512,
+      "preservedBytes": true,
+      "childNote": "No lifecycle children; offline tarball only"
+    }
+  ],
+  "failedTypeAttempt": {
+    "source": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+    "stage": 4,
+    "argv": [
+      "--max-old-space-size=256",
+      "node_modules/typescript/bin/tsc",
+      "--noEmit",
+      "--strict",
+      "--skipLibCheck",
+      "--target",
+      "ES2022",
+      "--module",
+      "NodeNext",
+      "--moduleResolution",
+      "NodeNext",
+      "test/conversation-history-public-types.ts"
+    ],
+    "hardSeconds": 60,
+    "memoryBefore": {
+      "physicalTotal": 33632079872,
+      "physicalAvailable": 11958206464,
+      "commitTotal": 33632079872,
+      "commitAvailable": 3071369216
+    },
+    "primaryExit": 2,
+    "cleanupExit": 0,
+    "timedOut": false,
+    "ownedExited": true,
+    "wallMs": 606,
+    "sampledParentRssBytes": 178401280,
+    "preservedBytes": true,
+    "childNote": "None; only focused new fixture"
+  },
+  "archiveVerification": {
+    "primaryExit": 0,
+    "cleanupExit": 0,
+    "pid": 28740,
+    "ownedExited": true,
+    "wallMs": 282,
+    "sampledParentRssBytes": 5369856
+  },
+  "node": "v24.19.0",
+  "lockfileVersion": "0.1.5 (unchanged dependency lock; authorized package metadata0.1.6)",
+  "evidenceClass": "SYNTHETIC byte/typing/offline package checks; no browser/provider/Core/DB/live acceptance"
+}

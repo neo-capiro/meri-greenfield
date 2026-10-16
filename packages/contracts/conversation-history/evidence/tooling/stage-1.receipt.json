@@ -1,0 +1,27 @@
+{
+  "source": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+  "stage": 1,
+  "argv": [
+    "--max-old-space-size=256",
+    "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "hardSeconds": 120,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11940945920,
+    "commitTotal": 33632079872,
+    "commitAvailable": 3081912320
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "ownedExited": true,
+  "wallMs": 11886,
+  "sampledParentRssBytes": 140894208,
+  "preservedBytes": true,
+  "childNote": "No lifecycle children; registry dependency install only"
+}
