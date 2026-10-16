@@ -2,6 +2,7 @@
 import {S3Client,PutObjectCommand,GetObjectCommand,HeadObjectCommand,GetBucketVersioningCommand} from '@aws-sdk/client-s3';
 import {Readable} from 'node:stream';
 import {v,own,data,fail,sha,uuid,digest,scopeFacts,storageLifetime,configuration,storageMethod,bucketIdentity} from './boundary.mjs';
+import {createAllocationLookup} from './allocation-lookup.mjs';
 const retire=body=>{try{if(body instanceof Readable)body.destroy();else if(body instanceof ReadableStream)Promise.resolve(body.cancel()).catch(()=>{});}catch{}};
 const nativeVersion=value=>{if(typeof value!=='string'||value==='null'||!value.length||Buffer.byteLength(value)>1024||!value.isWellFormed())fail('ARTIFACT_S3_VERSION');return value;};
 export function createS3ArtifactObjects(options){
@@ -9,7 +10,7 @@ export function createS3ArtifactObjects(options){
  configuration(now,maxRequestMs);const send=storageMethod(client,'send');bucketIdentity(bucket,expectedBucketOwner);if(
   typeof prefix!=='string'||! /^[A-Za-z0-9][A-Za-z0-9/_-]{0,127}$/u.test(prefix)||prefix.endsWith('/')||prefix.includes('//')||
   typeof kmsKeyId!=='string'||! /^arn:aws(?:-us-gov|-cn)?:kms:[a-z0-9-]+:[0-9]{12}:key\/[a-f0-9-]{36}$/u.test(kmsKeyId)||!Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>8388608)fail('ARTIFACT_STORAGE_CONFIGURATION');
- const key=o=>`${prefix}/${v.hash(o.scopes)}/${o.objectId}/${o.sha256}`,args=o=>({Bucket:bucket,Key:key(o),ExpectedBucketOwner:expectedBucketOwner});
+ const prefixFor=o=>`${prefix}/${v.hash(o.scopes)}/${o.objectId}/`,key=o=>`${prefixFor(o)}${o.sha256}`,args=o=>({Bucket:bucket,Key:key(o),ExpectedBucketOwner:expectedBucketOwner});
  const checksum=o=>Buffer.from(o.sha256,'hex').toString('base64');
  async function versioned(life){const result=await life.run(signal=>send(new GetBucketVersioningCommand({Bucket:bucket,ExpectedBucketOwner:expectedBucketOwner}),{abortSignal:signal}));
   if(result.Status!=='Enabled')fail('ARTIFACT_S3_VERSIONING_REQUIRED');life.check();}
@@ -41,7 +42,8 @@ export function createS3ArtifactObjects(options){
     if(count>object.bytes||count>maxBytes)fail('ARTIFACT_S3_BODY_LIMIT');chunks.push(Buffer.from(part.value));}}finally{try{Promise.resolve(iterator.return?.()).catch(()=>{});}catch{}retire(response.Body);}
    const bytes=Buffer.concat(chunks);if(bytes.length!==object.bytes||sha(bytes)!==object.sha256)fail('ARTIFACT_S3_MISMATCH');life.check();return bytes;
   }finally{retire(acquired);life.close();}}
- return Object.freeze({put,get});
+ const observeAllocation=createAllocationLookup({send,bucket,expectedBucketOwner,prefixFor,verifyVersion:head,versioned,now,maxRequestMs});
+ return Object.freeze({put,get,observeAllocation});
 }
 /** Explicit owned client, with required injected credentials and no ambient chain. */
 export function createConfiguredS3ArtifactObjects(options){const {region,credentials,endpoint,...storage}=own(options,['region','credentials','bucket','prefix','expectedBucketOwner','kmsKeyId','now'],['endpoint','maxRequestMs','maxBytes']);
