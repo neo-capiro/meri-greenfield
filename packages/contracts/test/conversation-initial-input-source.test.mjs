@@ -32,7 +32,7 @@ test('allocation request remains genuine for accepted old submit receiver and al
 test('exact retained intent permits genuine created:false recovery and an actual old branded input view',async()=>{
  const f=fixture(),allocated=await receive(200,{...f.receipt,created:false},f.request,{...f.context}),result=await bridge(200,bytes(f.admitted),f.request,{...f.context},allocated);
  assert.deepEqual(result,f.admitted);const view=conversationInputView(result);assert.deepEqual(view.request,f.retained);
- const page=await receiveConversationResponse('history',200,bytes({...f.admitted,events:[],nextSequence:1,hasMore:false}),receiveConversationRequest('history',bytes({after:1})),view);assert.deepEqual(page.request,f.retained);
+ const page=await receiveConversationResponse('history',200,bytes({run:f.admitted.run,request:f.admitted.request,events:[],nextSequence:1,lastSequence:1,hasMore:false}),receiveConversationRequest('history',bytes({after:1})),view);assert.deepEqual(page.request,f.retained);
 });
 test('proof requires the exact original request and receipt objects, including after brand-valid re-admission',async()=>{
  const f=fixture(),allocated=await receive(200,f.receipt,f.request,f.context);
