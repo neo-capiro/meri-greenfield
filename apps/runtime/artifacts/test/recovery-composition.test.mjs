@@ -68,7 +68,7 @@ test('absent capability leaves the existing optional callback absent; invalid en
 });
 test('document composition uses the SAME canonical versions and preview owners and refuses a competing preview store',()=>{
  const x=fixture(),compose=createRuntimeDocumentOptionsComposer({storage:x.storage,executor:{},budgetPool:{},sessions:{},now});
- const output=compose({selectedClientId:'synthetic',credential:'synthetic',limits:{},artifactOptions:{pool:{},allocationJson:{},producerContext:{},descriptor:{},context:{},validators:artifactValidators,authority:{},authorize:unused,versions:{},objects:{},executor:{},now,ids:{},newReservationId:unused,limits:{}});
+ const output=compose({selectedClientId:'synthetic',credential:'synthetic',limits:{},artifactOptions:{pool:{},allocationJson:{},producerContext:{},descriptor:{},context:{},validators:artifactValidators,authority:{},authorize:unused,versions:{},objects:{},executor:{},now,ids:{},newReservationId:unused,limits:{}}});
  assert.equal(output.artifactOptions.versions,x.storage.versions);assert.equal(output.previewOptions.previews,x.storage.previews);
  assert.throws(()=>createRuntimeDocumentOptionsComposer({storage:x.storage,executor:{},budgetPool:{},sessions:{},now,previews:{}}),/ARTIFACT_RUNTIME_CONFIGURATION/);
 });
