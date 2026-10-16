@@ -12,6 +12,7 @@ export function createBillTextHandlers(configuration,operations){
  return operations.map(operation=>{
   if(operation.version!=='0.2.0'||!Object.hasOwn(ROUTES,operation.id))deny('GATEWAY_CONFIGURATION');
   return {operation,async execute(call){try{
+   if(call?.authority?.claims?.audience!=='meri-gateway')deny('ACCESS_DENIED');
    const context=retainedCall(operation,call,c.now),a=context.authority;
    if(context.contract.binding.group!=='bill-text')deny('GATEWAY_CONFIGURATION');
    validateShape('AuthorizationDecision',a.decision);

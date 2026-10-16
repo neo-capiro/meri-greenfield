@@ -7,7 +7,8 @@ import {prepareBillTextReadContext} from '../../../dispatch/bill-text-context.mj
 import {durableFamilyFixture} from '../../../general-reads/test/durable-fixture.mjs';
 import {billTextCase,origin,cursor} from './fixture.mjs';
 const code=expected=>error=>error.message===expected&&!error.message.includes('SYNTHETIC');
-const execute=f=>createBillTextHandlers(f.transport,[f.operation])[0].execute;
+const configuration=f=>({...f.transport,now:f.now});
+const execute=f=>createBillTextHandlers(configuration(f),[f.operation])[0].execute;
 for(const id of ['search_congress_bills','read_bill_text']){
  test(`${id}: fixed flat POST with both native credentials; actual JSON DTO dates`,async()=>{
   const f=billTextCase(id),result=JSON.parse(await execute(f)(f.call()));
@@ -59,8 +60,8 @@ test('HTTP200 unavailable revision is explicit UNAVAILABLE and a malformed tool 
  f.state.unavailable=false;f.state.resultMutator=value=>{value.error='synthetic failure';};await assert.rejects(execute(f)(f.call()),code('INVALID_RESULT'));
 });
 test('missing credential owner and forbidden delegated mode cannot reach a native route',async()=>{
- const f=billTextCase(),{getCredentials,...missing}=f.transport;await assert.rejects(createBillTextHandlers(missing,[f.operation])[0].execute(f.call()),code('UNAVAILABLE'));assert.equal(f.wire.length,0);
- assert.throws(()=>createBillTextHandlers({...f.transport,delegatedTransport:{read(){}}},[f.operation]));
+ const f=billTextCase(),{getCredentials,...missing}=configuration(f);await assert.rejects(createBillTextHandlers(missing,[f.operation])[0].execute(f.call()),code('UNAVAILABLE'));assert.equal(f.wire.length,0);
+ assert.throws(()=>createBillTextHandlers({...configuration(f),delegatedTransport:{read(){}}},[f.operation]));
 });
 for(const mutation of ['secret','binding','expiry'])test(`native ${mutation} proof mismatch refuses before fetch`,async()=>{
  const f=billTextCase();f.state.credentialMutator=value=>{if(mutation==='secret')delete value.serviceSecret;else if(mutation==='binding')value.binding.writerFence++;else value.expiresAtMs=f.now();};
@@ -80,7 +81,7 @@ test('pre-abort and original deadline do not start native work',async()=>{
  f.state.now=f.authority.deadlineMs;await assert.rejects(execute(f)(f.call()),code('DEADLINE'));assert.equal(f.wire.length,0);
 });
 test('no endpoint or operation selector can widen the finite family',()=>{
- const f=billTextCase();assert.throws(()=>createBillTextHandlers(f.transport,[{id:'create_word',version:'0.2.0'}]),code('GATEWAY_CONFIGURATION'));
- assert.throws(()=>createBillTextHandlers({...f.transport,origin:'https://native-core.example.invalid/other'},[f.operation]),code('GATEWAY_CONFIGURATION'));
+ const f=billTextCase();assert.throws(()=>createBillTextHandlers(configuration(f),[{id:'create_word',version:'0.2.0'}]),code('GATEWAY_CONFIGURATION'));
+ assert.throws(()=>createBillTextHandlers({...configuration(f),origin:'https://native-core.example.invalid/other'},[f.operation]),code('GATEWAY_CONFIGURATION'));
  const entry={contract:f.contract};assert.throws(()=>prepareBillTextReadContext({entry,authority:f.authority,identity:{claims:f.claims}}),code('UNAVAILABLE'));
 });
