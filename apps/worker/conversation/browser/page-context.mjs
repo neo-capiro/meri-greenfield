@@ -1,10 +1,10 @@
 /** The page a consequential browser action acts on: the origin of the current page as last reported by Playwright MCP
  * tool responses (`- Page URL: …`), tracked per tool-use so an approval can bind the origin the call starts from.
  *
- * The origin is known only between calls. Each admitted call `begin`s (the origin it starts from is captured, then the
- * current origin becomes unknown until its result reports one); `end` records the reported origin from the call's
- * response, or unknown when the call failed or reported none; `cancel` (the call was refused before it ran) restores
- * the captured origin. While two calls overlap, every origin is unknown. Unknown always means "no approval can bind
+ * Each admitted call `begin`s and captures the origin it starts from: the last reported one when no other call is in
+ * flight, otherwise unknown. `end` records the origin the call's response reports, or unknown when the call failed or
+ * reported none, once no call is in flight; `cancel` (the call was refused before it ran) restores the captured
+ * origin. While two calls overlap, every origin is unknown. Unknown always means "no approval can bind
  * a page", so the tracker can only refuse more, never authorize. It parses tool responses only for the page URL. */
 import {classifyWebUrl} from './public-web.mjs';
 const PAGE_URL=/^- Page URL: (\S+)$/mu;
@@ -22,7 +22,7 @@ export function createPageContext(){
   /** A call was admitted and may run. Returns false (and forgets the page) when the id is reused or too many overlap. */
   begin(id){
    if(typeof id!=='string'||inFlight.has(id)||inFlight.size>=MAX_IN_FLIGHT){current=null;return false;}
-   inFlight.set(id,inFlight.size?null:current);current=null;return true;
+   inFlight.set(id,inFlight.size?null:current);return true;
   },
   /** The origin call `id` starts from, or null when unknown. */
   originFor:id=>inFlight.get(id)??null,

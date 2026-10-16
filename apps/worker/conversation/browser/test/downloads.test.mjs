@@ -18,6 +18,15 @@ test('downloads reach the artifact owner with canonical MIME, checksum and sourc
  assert.equal(r.receipts.at(-1).kind,'browser.download');assert.equal(r.receipts.at(-1).reference,stored.versionId);assert.ok(!JSON.stringify(r.receipts).includes('SECRET'));
  await assert.rejects(access(join(output,'notice.pdf')));
 }));
+test('the artifact owner must echo the idempotency key: a different or missing key is an ingest failure and the slot stays used',()=>within(async({cwd,output})=>{
+ for(const idempotencyKey of [undefined,'0'.repeat(64)]){
+  const r=recorders(),artifacts={async ingest(request){r.ingested.push(request.idempotencyKey);return {versionId:'00000099-b0a1-4000-8000-000000000001',sha256:request.sha256,bytes:request.bytes.length,...(idempotencyKey?{idempotencyKey}:{})};}};
+  const {cap}=openFragment({cwd,r,artifacts});await writeFile(join(output,'a.pdf'),pdf());
+  await assert.rejects(cap.downloads.accept({filename:'a.pdf',url:src('a.pdf')}),e=>e.code==='BROWSER_DOWNLOAD_INGEST',String(idempotencyKey));
+  assert.equal(r.ingested.length,1);assert.equal(r.receipts.length,0,'no download receipt for an unconfirmed ingest');
+  await assert.rejects(cap.downloads.accept({filename:'a.pdf',url:src('a.pdf')}),e=>e.code==='BROWSER_DOWNLOAD_DUPLICATE','an attempted ingest keeps its claim');
+ }
+}));
 test('download sources follow the effective destination policy: allowlist only, platform limits always',()=>within(async({cwd,output})=>{
  const {cap,r}=openFragment({cwd});await writeFile(join(output,'ok.pdf'),pdf());
  const refuse=url=>assert.rejects(cap.downloads.accept({filename:'ok.pdf',url}),e=>e.code==='BROWSER_DOWNLOAD_SOURCE',String(url));
