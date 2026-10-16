@@ -48,10 +48,12 @@ export function createProductApplication(options){
    let body;try{body=await jsonBody({body:info.body,length:length===null?null:Number(length)},maxRequestBytes,lifetime,()=>lifetime.check());}
    catch(error){if(productFailure(error))throw error;refuse(String(error?.message)==='REQUEST_TOO_LARGE'?'REQUEST_TOO_LARGE':'INVALID_REQUEST');}
    const {principal,expiresAtMs}=await lifetime.run(signal=>gate.admit({credential:auth.slice(7),signal,deadlineMs}));
-   lifetime.limitDeadline(Math.min(deadlineMs,expiresAtMs));
-   const result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:Math.min(deadlineMs,expiresAtMs)});handled=true;return result;});
+   const accessDeadline=Math.min(deadlineMs,expiresAtMs);lifetime.limitDeadline(accessDeadline);
+   // The native bearer stays in this request closure. Domain owners receive only a bounded recheck callback, never the token.
+   const recheckMembership=()=>lifetime.run(signal=>gate.recheck({principal,credential:auth.slice(7),signal,deadlineMs:accessDeadline}));
+   const result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership});handled=true;return result;});
    // Stored data and effects are released only to a member who is still active at the admitted revision.
-   await lifetime.run(signal=>gate.recheck({principal,signal,deadlineMs}));
+   await recheckMembership();
    const text=JSON.stringify(result);if(Buffer.byteLength(text)>maxResponseBytes)refuse('PRODUCT_UNAVAILABLE');
    lifetime.check();return response(result,200);
   }catch(error){

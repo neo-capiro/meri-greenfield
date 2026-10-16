@@ -19,11 +19,11 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    return {...result,conversations:visible};
   }),
   transcript:guard(transcript),
-  nextTurn:guard(async({principal,request,signal,deadlineMs})=>{
+  nextTurn:guard(async({principal,request,signal,deadlineMs,recheckMembership})=>{
    if(typeof nextRunOwner?.admitTurn!=='function')refuse('CONVERSATION_TURN_UNAVAILABLE','NOT_DISPATCHED');
    const current=await transcript({principal,request:{conversationId:request.conversationId,after:0,limit:1},signal});
    if(current.latestRun.binding.runId===request.sourceRunId&&!terminal(current.latestRun.state))refuse('CONVERSATION_TURN_CONFLICT','NOT_DISPATCHED');
-   await gate.recheck({principal,signal,deadlineMs});
+   if(recheckMembership)await recheckMembership();else await gate.recheck({principal,signal,deadlineMs});
    let admitted;try{admitted=await nextRunOwner.admitTurn({principal:{tenantId:principal.tenantId,actorId:principal.actorId},...request,signal});}
    catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE','UNKNOWN');}
    try{await servable(principal,request.conversationId);}catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE','RESULT_NOT_RELEASED');}

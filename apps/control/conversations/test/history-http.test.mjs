@@ -22,8 +22,8 @@ async function fixture({lifecycle=false}={}){
  }};}};
  const store=createPostgresConversationStore({pool}),owner=createNextRunOwner({store,versions,newId:()=>id(serial++),retirement:{async verifyRetired(){throw Error('not admitted');}},revocation:{async verifyRevoked(){throw Error('not admitted');}}});
  state.member={tenantId:binding.tenantId,actorId:binding.actorId,status:'active',role:'member',permissions:[],clientIds:[id(5)],membershipRevision:'m1'};
- const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
-  readMembership:async()=>({...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000})});
+ state.memberCredentialReads=[];const gate=createMembershipGate({now:Date.now,limits:{maxRequestMs:1000,maxFactBytes:65536},verifyToken:async({credential})=>{if(credential!=='native')throw Error('invalid');return {tenantId:state.member.tenantId,actorId:state.member.actorId,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};},
+  readMembership:async({credential})=>{state.memberCredentialReads.push(credential);return {...state.member,checkedAtMs:Date.now(),expiresAtMs:Date.now()+30000};}});
  state.retentionChecks=0;const retention={async assertServable(){state.retentionChecks++;if(state.suppressed)throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
  const service=createConversationHistoryService({store,nextRunOwner:owner,gate,retention}),app=createConversationHistoryApplication({service,gate,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const post=(path,body,token='native')=>app.handle(new Request(`https://meri.invalid/api/conversations/${path}`,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(body)}));
@@ -58,6 +58,10 @@ test('lost turn ACK and later replay recover the same source mapping without a n
   assert.equal(accepted.state,'ACCEPTED');assert.deepEqual(accepted.targetBinding,first.admitted.targetBinding);assert.equal(f.state.nextRuns.size,3);
   await assert.rejects(f.owner.currentRun(accepted.targetBinding),/NEXT_RUN_NOT_LATEST/,'historical replay grants no writer authority');
  }finally{f.close();}
+});
+
+test('next-turn uses the same native bearer for membership before effect and final release',async()=>{
+ const f=await fixture();try{await f.turn(1);const response=await f.post('next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId});assert.equal(response.status,200);assert.deepEqual(f.state.memberCredentialReads,['native','native','native']);}finally{f.close();}
 });
 for(const field of ['tenant','actor','client'])test(`current ${field} denial prevents disclosure or next-turn effects`,async()=>{
  const f=await fixture();try{await f.turn(1);const before=f.state.nextRuns.size;
