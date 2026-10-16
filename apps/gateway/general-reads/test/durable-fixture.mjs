@@ -33,7 +33,8 @@ export async function durableFamilyFixture(scene){
    const r={binding,scopes,policyRevision,baseCatalogSha256:canonicalSha256(catalog),installationId:'71000000-0000-4000-8000-000000000080',
     executionCatalogSha256:'0'.repeat(64),operations:[{operation,descriptorSha256:canonicalSha256(resolveOperationContract(operation).descriptor),
      handlerSourceSha256:handlers.get(`${operation.id}@${operation.version}`).sourceSha256,qualificationReceiptId:'71000000-0000-4000-8000-000000000081'}],checkedAtMs:now(),expiresAtMs:expires};
-   r.executionCatalogSha256=executionCatalogSha256(r);return r;}});
+   state.installationMutator?.(r);
+   r.executionCatalogSha256=executionCatalogSha256(r);state.executionDigestMutator?.(r);return r;}});
  const ports={async verifyCapability(){if(state.revoked)throw Error('PRIVATE synthetic revocation');return JSON.stringify(claims);},
   async currentRun(){return JSON.stringify({binding,policyRevision,deadlineMs:expires,checkedAtMs:now()});},
   async authorizeBusiness({operation:op,requiredGrants,input}){
@@ -45,9 +46,9 @@ export async function durableFamilyFixture(scene){
  const mount=(changes={})=>createGeneralReadGatewayMount({pool,allocationJson,authority:createCurrentToolAuthority({ports,now,maxFactBytes:1048576}),
   limits:{maxRequestBytes:65536,maxResponseBytes:1048576,maxRequestMs:3000,maxCleanupMs:100},producerContext:grant,
   producer:{namespace:'general-reads',executionId:'synthetic-family-run'},credential,installationOwner,
-  discoveryOwner:{async readDiscoveryGrant(){return {binding,policyRevision,operations:[operation],checkedAtMs:now(),expiresAtMs:expires};}},
+  discoveryOwner:{async readDiscoveryGrant(){const r={binding,policyRevision,operations:[operation],checkedAtMs:now(),expiresAtMs:expires};state.discoveryMutator?.(r);return r;}},
   catalogJson:JSON.stringify(catalog),contracts:{resolveOperationContract},now,newId:randomUUID,sourceEnabled:true,defaultCongress:119,memoryContextPorts,
   ...(scene.retainedContextPorts?{retainedContextPorts:scene.retainedContextPorts}:{}),...changes});
- return {...scene,binding,scopes,policyRevision,handlers,mount,deadlineMs:expires,
+ return {...scene,binding,scopes,policyRevision,handlers,mount,deadlineMs:expires,installationOwner,allocationJson,grant,
   execute:(deliveryId='synthetic:read',args=scene.arguments)=>mount().execute({operation,arguments:args,deliveryId})};
 }
