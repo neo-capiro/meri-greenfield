@@ -19,7 +19,18 @@ test('runtime missing current owners refuses fixed product routes without remote
  await assert.rejects(ports.identityContext.verifyIdentity({}),{code:'NATIVE_AUTHORITY_UNAVAILABLE'});
  for(const path of ['/api/documents/create','/internal/conversations/selected/prepare','/v1/runner/session/load'])assert.equal((await app.handle(request(path))).status,503);
  assert.equal((await app.handle(request('/internal/conversations/selected/other'))).status,404);assert.equal((await app.handle(request('/v1/runner/session/other'))).status,404);
- assert.equal(app.handle(request('/api/conversations/history')),null);
+ assert.equal((await app.handle(request('/api/conversations/list'))).status,503);
+});
+test('saved history requires a captured read-only conversation currentness owner',async()=>{
+ let called=0,getters=0;
+ const owner={marker:'original',async assertCurrent(input){assert.equal(this.marker,'original');called++;return input;}};
+ assert.throws(()=>captureRuntimePorts({conversationCurrentness:{get assertCurrent(){getters++;return ()=>{};}}}));assert.equal(getters,0);
+ const ports=captureRuntimePorts({conversationCurrentness:owner});owner.assertCurrent=()=>{throw Error('caller replacement');};
+ assert.deepEqual(await ports.conversationCurrentness.assertCurrent({conversationId:'synthetic'}),{conversationId:'synthetic'});
+ assert.equal(called,1);assert.ok(Object.isFrozen(ports.conversationCurrentness));
+ const membership={async admit(){throw Error('unexpected admission');},async recheck(){throw Error('unexpected recheck');}};
+ const closed=createRuntimeProductApplications({configuration,sessions:{},ports:captureRuntimePorts({conversationMembership:membership}),conversationStore:{},now:Date.now});
+ assert.equal((await closed.handle(request('/api/conversations/list'))).status,503);
 });
 test('compiled ports are captured inertly with original receiver and sources remain disabled',async()=>{
  let getters=0,selected=0,sessions=0;const owner={marker:1,async load(){assert.equal(this.marker,1);sessions++;return {entries:null};},async register(){},async append(){},async listSubkeys(){}};

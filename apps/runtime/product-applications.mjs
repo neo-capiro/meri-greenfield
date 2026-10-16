@@ -17,7 +17,7 @@ const capturedArtifactRecovery=new WeakMap();
 export function readRuntimeArtifactRecovery(ports){if(!capturedPorts.has(ports))throw fault('PRODUCT_PORTS_CONFIGURATION');return capturedArtifactRecovery.get(ports.artifactStore)??null;}
 export function captureRuntimePorts(value={}){
  if(capturedPorts.has(value))return value;
- const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','conversationMembership','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
+ const c=own(value,[],['identityContext','transitionAuthority','continuationAdmission','approvals','actionApplication','conversationMembership','conversationCurrentness','conversationTurns','artifactOptionsOwner','selectedController','sdkSessionOwner','sdkSessionSnapshot','selectedSkillAdmission','selectedOutputPublication','artifactStore','retentionLedgerSink']);
  const methods=(port,names)=>Object.freeze(Object.fromEntries(names.map(name=>[name,storageMethod(port,name)])));
  const optionalMethod=(port,name)=>{let cursor=port;for(let depth=0;cursor!==null&&depth<32;depth++){if(types.isProxy(cursor))throw fault('PRODUCT_PORTS_CONFIGURATION');if(Object.getOwnPropertyDescriptor(cursor,name))return storageMethod(port,name);cursor=Object.getPrototypeOf(cursor);}if(cursor!==null)throw fault('PRODUCT_PORTS_CONFIGURATION');};
  const identity=c.identityContext===undefined?Object.freeze({verifyIdentity:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');},resolveContext:async()=>{throw fault('NATIVE_AUTHORITY_UNAVAILABLE');}}):methods(c.identityContext,['verifyIdentity','resolveContext']);
@@ -32,6 +32,7 @@ export function captureRuntimePorts(value={}){
   ...(c.approvals===undefined?{}:{approvals:methods(c.approvals,['read','readDecision'])}),
   ...(c.actionApplication===undefined?{}:{actionApplication:methods(c.actionApplication,['handle'])}),
   ...(c.conversationMembership===undefined?{}:{conversationMembership:methods(c.conversationMembership,['admit','recheck'])}),
+  ...(c.conversationCurrentness===undefined?{}:{conversationCurrentness:methods(c.conversationCurrentness,['assertCurrent'])}),
   ...(c.conversationTurns===undefined?{}:{conversationTurns:methods(c.conversationTurns,['admitTurn'])}),
   ...(c.artifactOptionsOwner===undefined?{}:{artifactOptionsOwner:methods(c.artifactOptionsOwner,['resolve'])}),
   ...(c.selectedController===undefined?{}:{selectedController:methods(c.selectedController,['handle'])}),
@@ -54,8 +55,8 @@ export function composeRuntimePorts(canonical,supplemental){
 }
 /** `suppression` is the retention serving `{journal,serving}` pair when declared; the download-link gate needs it to revoke links. */
 export function createRuntimeProductApplications({configuration,sessions,ports,now,retention,suppression,conversationStore}){
- const history=ports.conversationMembership&&conversationStore?createConversationHistoryApplication({
-  service:createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention}),gate:ports.conversationMembership,now,
+ const history=ports.conversationMembership&&ports.conversationCurrentness&&conversationStore?createConversationHistoryApplication({
+  service:createConversationHistoryService({store:conversationStore,gate:ports.conversationMembership,nextRunOwner:ports.conversationTurns,retention}),gate:ports.conversationMembership,currentness:ports.conversationCurrentness,now,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const canonicalDocuments=createRuntimeArtifactApplication({sessions,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},...(ports.artifactOptionsOwner?{optionsOwner:ports.artifactOptionsOwner}:{}),...(retention===undefined?{}:{retention})});
  // Signed download links mount over the canonical document routes behind a readiness gate that trusted startup opens (or leaves closed).

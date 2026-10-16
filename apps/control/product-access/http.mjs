@@ -14,8 +14,9 @@ const ROUTE=/^\/api\/(?:[a-z][a-z-]{0,31}\/){1,3}[a-z][a-z-]{0,31}$/u;
  * `effect:true` reports UNKNOWN when an invoked route has an indeterminate outcome, and RESULT_NOT_RELEASED when its returned
  * result is withheld. Starting a route is not proof of an effect or of physical cancellation; callers must reconcile by identity. */
 export function createProductApplication(options){
- const {gate,routes,now=Date.now,limits}=options??{};
+ const {gate,routes,now=Date.now,limits,conversationCurrentness}=options??{};
  if(!gate||['admit','recheck'].some(k=>typeof gate[k]!=='function')||typeof now!=='function'||!routes||typeof routes!=='object')throw new ProductError('PRODUCT_CONFIGURATION');
+ if(conversationCurrentness!==undefined&&typeof conversationCurrentness?.assertCurrent!=='function')throw new ProductError('PRODUCT_CONFIGURATION');
  const {maxRequestMs,maxRequestBytes,maxResponseBytes}=limits??{};
  if(!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>1048576||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>16777216)throw new ProductError('PRODUCT_CONFIGURATION');
  const table=new Map();
@@ -51,7 +52,8 @@ export function createProductApplication(options){
    const accessDeadline=Math.min(deadlineMs,expiresAtMs);lifetime.limitDeadline(accessDeadline);
    // The native bearer stays in this request closure. Domain owners receive only a bounded recheck callback, never the token.
    const recheckMembership=()=>lifetime.run(signal=>gate.recheck({principal,credential:auth.slice(7),signal,deadlineMs:accessDeadline}));
-   const result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership});handled=true;return result;});
+   const recheckConversation=conversationCurrentness===undefined?undefined:({conversationId,scopes})=>lifetime.run(signal=>conversationCurrentness.assertCurrent({credential:auth.slice(7),principal,conversationId,scopes,signal,deadlineMs:accessDeadline}));
+   const result=await lifetime.run(async signal=>{started=true;const result=await route.handle({principal,body,signal,deadlineMs:accessDeadline,recheckMembership,recheckConversation});handled=true;return result;});
    // Stored data and effects are released only to a member who is still active at the admitted revision.
    await recheckMembership();
    const text=JSON.stringify(result);if(Buffer.byteLength(text)>maxResponseBytes)refuse('PRODUCT_UNAVAILABLE');
