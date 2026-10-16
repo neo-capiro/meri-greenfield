@@ -7,31 +7,41 @@
   "ledgerInputCommit": "fb708d231c7273f86b1462c72a72e70ccc36a3d6",
   "reviewedIndex": {
     "file": "MAPPING-HANDOFF-v2.json",
-    "sha256": "5a498e4cd2e06a118d54bae3e0caba44e9418c524b57f9d27481a51c37c2dad8",
-    "reviewFile": "MAPPING-REVIEW.md",
-    "reviewSha256": "53c2504919ea0742ba6b83f584649393f5af4a98515c70cc21fd2db3c164c01a",
-    "supersedes": "Original128cc624 index prematurely pinned scoped report33ae; historical original retained by Core. v2 pins final61fc978b."
+    "sha256": "c6ebaf2987015db466e88b9d4c550ab77878582ab7142ab256d298ae16ed0def",
+    "reviewFile": "PUBLICATION-REVIEW.md",
+    "reviewSha256": "ceb7df958e5eb2f9971af7bd8ac093d6785d18543f5611d5149ebc1b8c4fb3ab",
+    "originalLocalV2Sha256": "5a498e4cd2e06a118d54bae3e0caba44e9418c524b57f9d27481a51c37c2dad8",
+    "originalReviewSha256": "53c2504919ea0742ba6b83f584649393f5af4a98515c70cc21fd2db3c164c01a",
+    "supersedes": "Sanitized docs-only publication derives the reviewed local v2; original premature index and prior evidence preserved by Core."
   },
   "sourceFiles": [
     {
       "file": "federal-producers.json",
-      "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
-      "bytes": 84429
+      "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
+      "bytes": 84012,
+      "originalSha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+      "originalBytes": 84429
     },
     {
       "file": "market-producers.json",
-      "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
-      "bytes": 128371
+      "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
+      "bytes": 128238,
+      "originalSha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+      "originalBytes": 128371
     },
     {
       "file": "state-research-producers.json",
-      "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
-      "bytes": 92492
+      "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
+      "bytes": 92196,
+      "originalSha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+      "originalBytes": 92492
     },
     {
       "file": "scoped-producers.json",
-      "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
-      "bytes": 82796
+      "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
+      "bytes": 82635,
+      "originalSha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+      "originalBytes": 82796
     }
   ],
   "constraints": [
@@ -54,7 +64,7 @@
       "producer": "MeriToolsService.getAcquisitionPerson -> AcquisitionPersonnelReadService.getPersonDetail(ctx,id).",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/8"
       },
       "currentContext": [
@@ -71,7 +81,7 @@
       "producer": "MeriToolsService.searchAcquisitionPersonnel -> AcquisitionPersonnelReadService.listPersonnel(ctx).",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/7"
       },
       "currentContext": [
@@ -89,7 +99,7 @@
       "producer": "MeriToolsService.readBillText and locatedBillText; federal_evidence_current joined to federal_evidence_revision, present/current complete bill text only.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/1"
       },
       "currentContext": [
@@ -108,7 +118,7 @@
       "producer": "MeriToolsService.searchCongressBills; text mode uses BILL_TEXT_PASSAGE_SEARCH_SQL over stored current federal evidence; metadata direct bill lookup or LdaIntelService.getCongressBills.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/0"
       },
       "currentContext": [
@@ -143,7 +153,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/11"
       },
       "currentContext": [
@@ -177,7 +187,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/12"
       },
       "currentContext": [
@@ -206,7 +216,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/13"
       },
       "currentContext": [
@@ -225,7 +235,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/0"
       },
       "currentContext": [
@@ -259,7 +269,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/2"
       },
       "currentContext": [
@@ -295,7 +305,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/1"
       },
       "currentContext": [
@@ -312,7 +322,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/9"
       },
       "currentContext": [
@@ -346,7 +356,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/0"
       },
       "currentContext": [
@@ -363,7 +373,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/4"
       },
       "currentContext": [
@@ -380,7 +390,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/1"
       },
       "currentContext": [
@@ -397,7 +407,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/3"
       },
       "currentContext": [
@@ -429,7 +439,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/6"
       },
       "currentContext": [
@@ -466,7 +476,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/5"
       },
       "currentContext": [
@@ -503,7 +513,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/4"
       },
       "currentContext": [
@@ -520,7 +530,7 @@
       "producer": "MeriToolsService.getBillStatus; congressBill status plus action, vote and governing-rule relations.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/2"
       },
       "currentContext": [
@@ -537,7 +547,7 @@
       "producer": "MeriToolsService.searchFloorVotes; stored Congress vote/member-vote rows.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/3"
       },
       "currentContext": [
@@ -555,7 +565,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/19"
       },
       "currentContext": [
@@ -573,7 +583,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/17"
       },
       "currentContext": [
@@ -591,7 +601,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/15"
       },
       "currentContext": [
@@ -609,7 +619,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/16"
       },
       "currentContext": [
@@ -627,7 +637,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/18"
       },
       "currentContext": [
@@ -646,7 +656,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/12"
       },
       "currentContext": [
@@ -665,7 +675,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/11"
       },
       "currentContext": [
@@ -684,7 +694,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/13"
       },
       "currentContext": [
@@ -703,7 +713,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/14"
       },
       "currentContext": [
@@ -722,7 +732,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/10"
       },
       "currentContext": [
@@ -751,7 +761,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/3"
       },
       "currentContext": [
@@ -766,7 +776,7 @@
       "producer": "MeriToolsService.getCommitteeRoster dispatches federalCommitteeRoster/stateCommitteeRoster; global stored canonical registries/membership.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/15"
       },
       "currentContext": [
@@ -781,7 +791,7 @@
       "producer": "MeriToolsService.listMembers; current CongressMember registry isCurrent:true, filtered by state and/or chamber, canonical order.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/16"
       },
       "currentContext": [
@@ -812,7 +822,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/10"
       },
       "currentContext": [
@@ -827,7 +837,7 @@
       "producer": "MeriToolsService.getPeBills -> ProgramElementReadService.getBills.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/13"
       },
       "currentContext": [
@@ -842,7 +852,7 @@
       "producer": "MeriToolsService.getPeContractors -> ProgramElementReadService.getContractors.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/12"
       },
       "currentContext": [
@@ -857,7 +867,7 @@
       "producer": "MeriToolsService.getPeReportLanguage -> ProgramElementReadService.getProvisionsForPe; reportLanguageNoteForModel.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/14"
       },
       "currentContext": [
@@ -874,7 +884,7 @@
       "producer": "MeriToolsService.getPeBudgetTimeline -> ProgramElementReadService.getTimeline, then model-safe funding years/claim and optional lineage.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/11"
       },
       "currentContext": [
@@ -891,7 +901,7 @@
       "producer": "MeriToolsService.getProgramElementDetail -> ProgramElementReadService.getProgramElement plus model funding and optional lineage.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/10"
       },
       "currentContext": [
@@ -909,7 +919,7 @@
       "producer": "MeriToolsService.searchProgramElements -> ProgramElementReadService.listProgramElements, followed by model funding-line projection.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/9"
       },
       "currentContext": [
@@ -927,7 +937,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/7"
       },
       "currentContext": [
@@ -946,7 +956,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/6"
       },
       "currentContext": [
@@ -965,7 +975,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/5"
       },
       "currentContext": [
@@ -983,7 +993,7 @@
       "producer": "MeriToolsService.searchCommitteeHearings -> MeriContextPlaneService.searchToolData -> governed hearings retrieval / published record owner.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/17"
       },
       "currentContext": [
@@ -1004,7 +1014,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/2"
       },
       "currentContext": [
@@ -1019,7 +1029,7 @@
       "producer": "MeriToolsService.searchCboCostEstimates; global cboCostEstimate rows ordered pubDate descending.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/4"
       },
       "currentContext": [
@@ -1034,7 +1044,7 @@
       "producer": "MeriToolsService.searchCrsReports; Prisma.withSystem active:true global crsReport findMany/count.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/6"
       },
       "currentContext": [
@@ -1049,7 +1059,7 @@
       "producer": "MeriToolsService.searchGaoReports; Prisma.withSystem global gaoReport findMany/count.",
       "evidence": {
         "file": "federal-producers.json",
-        "sha256": "19aa0a0a3daef6dfcab37541a08b6d9f3aeccadaaa016982e2495719a1b6806e",
+        "sha256": "61e2dccc226548abe41ab6103c054fccb87f198386a601f19cbf1f1bc46b2ce5",
         "jsonPointer": "#/operations/5"
       },
       "currentContext": [
@@ -1083,7 +1093,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/8"
       },
       "currentContext": [
@@ -1112,7 +1122,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/7"
       },
       "currentContext": [
@@ -1127,7 +1137,7 @@
       "producer": "MeriToolsService registry -> queryRegulatoryDockets(input) -> RegulatoryDocketService.listDockets or getUpcomingDeadlines",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/3/operations/0"
       },
       "currentContext": [
@@ -1144,7 +1154,7 @@
       "producer": "MeriToolsService registry -> searchResearchSources(ctx,input)",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/4/operations/0"
       },
       "currentContext": [
@@ -1162,7 +1172,7 @@
       "producer": "Fixed Intel read route: input.view rules -> ResearchService.rules; versions -> versions; otherwise references. Model schema limits view statutes/rules/versions, but runtime route falls through other values to references.",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/5/operations/1"
       },
       "currentContext": [
@@ -1180,7 +1190,7 @@
       "producer": "MeriToolsService.legiwatchTool -> fixed Intel read route -> ResearchService.search(ctx,input)",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/5/operations/0"
       },
       "currentContext": [
@@ -1201,7 +1211,7 @@
       "producer": "KeywordMeriController fixed read branch: view source -> Phase8EvidenceService.run+exact; personnel -> personnel; monitors -> monitors; otherwise news. Model schema advertises articles/monitors/personnel/source but runtime has a default news path.",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/6/operations/0"
       },
       "currentContext": [
@@ -1219,7 +1229,7 @@
       "producer": "MeriToolsService registry -> getStateRuleStatus(input) -> formatRuleStatus(jurisdiction,row)",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/2/operations/0"
       },
       "currentContext": [
@@ -1241,7 +1251,7 @@
       ],
       "evidence": {
         "file": "market-producers.json",
-        "sha256": "0a4458bfaf3e277a5f5bdce2d0bb7619e6d1aad6d4c557e8cad8257a4671b6aa",
+        "sha256": "ddb07f7fb31968a654a836713eacf0e53a3b259b2a0fb4a495a02783c1c416fb",
         "jsonPointer": "#/operations/8"
       },
       "currentContext": [
@@ -1256,7 +1266,7 @@
       "producer": "MeriToolsService registry -> getStateLegislator(input); no ctx argument.",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/0/operations/1"
       },
       "currentContext": [
@@ -1271,7 +1281,7 @@
       "producer": "MeriToolsService registry -> searchStateBills(input); ctx is not passed into this producer.",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/0/operations/0"
       },
       "currentContext": [
@@ -1286,7 +1296,7 @@
       "producer": "MeriToolsService registry -> getStateBillStatus(input)",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/1/operations/0"
       },
       "currentContext": [
@@ -1301,7 +1311,7 @@
       "producer": "MeriToolsService registry -> searchStateFloorVotes(input)",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/1/operations/1"
       },
       "currentContext": [
@@ -1316,7 +1326,7 @@
       "producer": "MeriToolsService registry -> searchIntelArticles(input), no ctx argument",
       "evidence": {
         "file": "state-research-producers.json",
-        "sha256": "d294db825ee3e7c03a873489d091b69cab54bff6f7dec579b23d3fdcf2cd5b9f",
+        "sha256": "f2e95feccffdf5d6107b3d9b372ce6e64eb93ff534bda4c1a416a4a8c2e024b6",
         "jsonPointer": "#/families/7/operations/0"
       },
       "currentContext": [
@@ -1359,7 +1369,7 @@
       },
       "evidence": {
         "file": "scoped-producers.json",
-        "sha256": "61fc978bc31d651372340b7c15ebde71317a06716ce79974a9afc7d213c10255",
+        "sha256": "2b929c4b8ebe3c06e43b31c8e8a13b4896876dc70e32a2a13208fcad02653cc5",
         "jsonPointer": "#/operations/9"
       },
       "currentContext": [
@@ -1367,5 +1377,11 @@
       ],
       "receivingCompatibility": "Not established by producer mapping; fieldwise frozen receiving compatibility remains required."
     }
-  ]
+  ],
+  "publication": {
+    "commit": "384325afaaf7ad34aeb9ff9b2f183d667ee17343",
+    "tree": "06f3be30d464e261214bd08d9123ede13e2c4b7d",
+    "directory": "docs/retained-read-producer-mapping-20261016",
+    "url": "https://github.com/neo-capiro/capiro-backend/blob/384325afaaf7ad34aeb9ff9b2f183d667ee17343/docs/retained-read-producer-mapping-20261016/MAPPING-HANDOFF-v2.json"
+  }
 }
