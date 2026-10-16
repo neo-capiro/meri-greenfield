@@ -8,7 +8,7 @@
  * a page", so the tracker can only refuse more, never authorize. It parses tool responses only for the page URL. */
 import {classifyWebUrl} from './public-web.mjs';
 const PAGE_URL=/^- Page URL: (\S+)$/mu;
-const MAX_IN_FLIGHT=64;
+const MAX_TOOL_USES=4096;
 /** Text blocks of an SDK tool response (MCP content array, `{content}` or plain string). */
 export const responseText=response=>{const blocks=Array.isArray(response)?response:Array.isArray(response?.content)?response.content:typeof response==='string'?[{type:'text',text:response}]:[];
  return blocks.filter(b=>b?.type==='text'&&typeof b.text==='string').map(b=>b.text).join('\n');};
@@ -17,19 +17,25 @@ export const reportedPageUrl=text=>PAGE_URL.exec(text)?.[1]??null;
 /** Public origin of a reported page URL, or null (about:blank, non-web, non-public or absent). */
 const originOf=response=>{const url=reportedPageUrl(responseText(response));const c=url===null?null:classifyWebUrl(url);return c?.ok&&!c.blank?c.origin:null;};
 export function createPageContext(){
- let current=null;const inFlight=new Map();
+ let current=null,generation=0;const inFlight=new Map(),used=new Set();
+ const invalidate=()=>{current=null;generation++;for(const call of inFlight.values())call.abort.abort();};
  return Object.freeze({
-  /** A call was admitted and may run. Returns false (and forgets the page) when the id is reused or too many overlap. */
+  /** A call was admitted and may run. Reuse, overlap or exhausted tracking invalidates the active generation. */
   begin(id){
-   if(typeof id!=='string'||inFlight.has(id)||inFlight.size>=MAX_IN_FLIGHT){current=null;return false;}
-   inFlight.set(id,inFlight.size?null:current);return true;
+   if(typeof id!=='string'||used.has(id)||used.size>=MAX_TOOL_USES){invalidate();return false;}
+   // Refuse the competing call as well: an already released tool may still be executing.
+   if(inFlight.size){invalidate();return false;}
+   const abort=new AbortController(),token=Object.freeze({generation,origin:current,signal:abort.signal});
+   inFlight.set(id,{token,abort});used.add(id);return true;
   },
   /** The origin call `id` starts from, or null when unknown. */
-  originFor:id=>inFlight.get(id)??null,
+  originFor:id=>{const call=inFlight.get(id);return call&&!call.abort.signal.aborted?call.token.origin:null;},
+  capture:id=>{const call=inFlight.get(id);return call&&!call.abort.signal.aborted&&call.token.origin!==null?call.token:null;},
+  isCurrent:(id,token)=>Boolean(token&&inFlight.size===1&&inFlight.get(id)?.token===token&&token.generation===generation&&!token.signal.aborted),
   /** Call `id` was refused before it ran: nothing changed on the page. */
-  cancel(id){if(!inFlight.has(id))return;const before=inFlight.get(id);inFlight.delete(id);current=inFlight.size?null:before;},
+  cancel(id){const call=inFlight.get(id);if(!call)return;inFlight.delete(id);current=!inFlight.size&&!call.abort.signal.aborted?call.token.origin:null;generation++;call.abort.abort();},
   /** Call `id` finished: `response` is its tool response, or null when it failed. */
-  end(id,response){const known=inFlight.delete(id);current=known&&!inFlight.size?originOf(response):null;},
+  end(id,response){const call=inFlight.get(id);if(!call){invalidate();return;}inFlight.delete(id);current=!call.abort.signal.aborted&&!inFlight.size?originOf(response):null;generation++;call.abort.abort();},
   current:()=>current,
  });
 }

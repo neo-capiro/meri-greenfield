@@ -51,3 +51,26 @@ Synthetic verification on Node 24.19.0, one process, 128 MiB heap, no DB:
 The local watermark port's `minimumSequence` option is an intentional internal
 adapter change. Real PostgreSQL and multi-process restore orchestration remain
 UNRUN, pending a bounded heavy-test slot and the unapplied watermark schema.
+
+## R4-BRW-1 implemented, pending independent review
+
+Page context now owns one active operation generation and an internal identity
+token/AbortSignal. A competing or duplicate operation invalidates the first and
+is itself refused by PreToolUse. This also fences navigation while an already
+approved operation is executing. Approval waits are cancelled on invalidation;
+the gate rechecks the exact captured token immediately before allowing execution.
+Invalidated cancellation/completion never restores the stale origin. Fresh page
+observation is required afterward. Tool-use tracking is bounded at 4096 per run.
+
+Synthetic permission/page-generation/egress-control checks: **22 pass, 0 fail,
+0 skip**, exit 0. Five focused safety tests against exact-base page-context and
+permission source: **0 pass, 5 fail**; restored source: **5/5 pass**. These cover
+both interactions in overlap, navigation during pending approval, duplicate IDs,
+tab changes during approved execution, and reentrant invalidation during receipt
+validation. The existing scripted SDK helper now
+uses unique default tool-use IDs; its prior competing-call expectation changes
+to an explicit denial. An initial missing-saxes import was resolved by reusing
+the pinned installed library; no npm install. One baseline attempt was cancelled
+because an early test assertion left the old approval timer pending; the test
+now settles its synthetic port before asserting, and the recorded negative exits
+in 178 ms. No real browser, SDK query, activation-gate change or P2b retry.

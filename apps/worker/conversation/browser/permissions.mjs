@@ -53,7 +53,7 @@ function browserAdmission({policy,tools},action,input){
 }
 /** `pages` is the run's page tracker (`createPageContext`); `policySha256` the digest of the effective policy. */
 export function createPermissionGate({binding,policy,policySha256,server,approvals,pages,now,approvalDeadlineMs=APPROVAL_DEADLINE_MS.default}){
- if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function'||typeof pages?.begin!=='function'||typeof policySha256!=='string')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
+ if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function'||['begin','capture','isCurrent','cancel'].some(m=>typeof pages?.[m]!=='function')||typeof policySha256!=='string')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  const prefix=`mcp__${server}__`,tools=policy.tools,interactions=tools.filter(t=>INTERACTION_TOOLS.includes(t)),ledger=createReplayLedger();
  const actionOf=name=>typeof name==='string'&&name.startsWith(prefix)?name.slice(prefix.length):null;
  const preToolUse=async(input,toolUseID,options)=>{
@@ -62,7 +62,7 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
    if(options?.signal?.aborted||input?.hook_event_name!=='PreToolUse'||!action||typeof input.tool_use_id!=='string'||toolUseID!==undefined&&toolUseID!==input.tool_use_id)return deny('BROWSER_PERMISSION_INPUT');
    const refused=browserAdmission({policy,tools},action,input.tool_input);
    if(refused)return deny(refused);
-   pages.begin(input.tool_use_id);
+   if(!pages.begin(input.tool_use_id))return deny('BROWSER_PAGE_CONTEXT_INVALID');
    return interactions.includes(action)?ask('BROWSER_APPROVAL_REQUIRED'):{};
   }catch{return deny('BROWSER_PERMISSION_INPUT');}
  };
@@ -71,16 +71,20 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   if(typeof approvals?.decide!=='function'||typeof options.toolUseID!=='string'||options.signal?.aborted)return refusal('BROWSER_APPROVAL_UNAVAILABLE');
   const approvedInput=structuredClone(input??{});
   if(JSON.stringify(approvedInput).length>MAX_APPROVAL_INPUT)return refusal('BROWSER_APPROVAL_INPUT_LIMIT');
-  const pageOrigin=pages.originFor(options.toolUseID);if(pageOrigin===null)return refusal('BROWSER_APPROVAL_PAGE_UNKNOWN');
+  const captured=pages.capture(options.toolUseID),pageOrigin=captured?.origin;
+  if(!captured||!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_UNKNOWN');
   const page=checkBrowserUrl(policy,pageOrigin);if(!page.ok)return refusal(page.code);
   const requestedAtMs=now(),subject=approvalSubject({binding,server,action,toolUseId:options.toolUseID,input:approvedInput,pageOrigin,policySha256});
   const request=approvalRequest({subject,input:approvedInput,requestedAtMs,expiresAtMs:requestedAtMs+approvalDeadlineMs});
   // The port gets its own copy: nothing it does can change the subject this call is checked against.
-  const answer=await decideWithin(approvals,structuredClone(request),options.signal,approvalDeadlineMs);
+  const signal=options.signal?AbortSignal.any([options.signal,captured.signal]):captured.signal;
+  const answer=await decideWithin(approvals,structuredClone(request),signal,approvalDeadlineMs);
+  if(!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_CHANGED');
   if(answer===EXPIRED||now()>request.expiresAtMs)return refusal('BROWSER_APPROVAL_EXPIRED');
   if(answer===ABORTED||options.signal?.aborted)return refusal('BROWSER_APPROVAL_UNAVAILABLE');
   const refused=receiptRefusal(answer,request,now());if(refused)return refusal(refused);
   if(!ledger.claim(answer))return refusal('BROWSER_APPROVAL_REPLAY');
+  if(!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_CHANGED');
   return {behavior:'allow',updatedInput:approvedInput,toolUseID:options.toolUseID};
  }
  /** Composable SDK `canUseTool`: returns undefined for tools that are not this server's. A refused call never ran,
