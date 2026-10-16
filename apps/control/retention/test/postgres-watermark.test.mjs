@@ -40,9 +40,17 @@ test('lease faults: a lost COMMIT acknowledgement is unknown and retires the lea
 });
 
 test('through the watermarked journal, an advance whose commit is unknown leaves the projection standing and closes the serving fence',async()=>{
- const {store}=compose({faults:{COMMIT:'throw'}}),fence=createServingFence();fence.enable({watermark:{sequence:0,entrySha256:null}});
+ const faults={}, {store}=compose({faults}),fence=createServingFence();fence.enable({watermark:{sequence:0,entrySha256:null}});
  const writes=[];const inner={async get(){return null;},async set(key,row){writes.push(key);return row;},async keys(){return [];},async exclusive(fn){return fn();}};
  const tracked=watermarkedJournal({journal:inner,watermark:store,fence});const key=`tenant-a:conversation:${randomUUID()}`;
+ const set=inner.set;inner.set=async(...args)=>{const result=await set(...args);faults.COMMIT='throw';return result;};
  await tracked.set(key,{state:'SUPPRESSED',ledgerSequence:1,entrySha256:'1'.repeat(64)});
  assert.deepEqual(writes,[key]);assert.equal(fence.isEnabled(),false);assert.equal(fence.state().reason,'RETENTION_WATERMARK_UNKNOWN');assert.equal(fence.state().highWater,0,'an unacknowledged advance is not observed');
+});
+
+test('synthetic SQL: a guarded advance refuses a restored row in the same locked transaction',async()=>{
+ const {pool,store}=compose();await store.advance(3);pool.row={sequence:'0',entry_sha256:null};
+ await assert.rejects(store.advance(4,{minimumSequence:3}),/RETENTION_WATERMARK_STALE/);
+ assert.equal(pool.row.sequence,'0');const queries=pool.made.flatMap(c=>c.queries);
+ assert.ok(queries.includes('ROLLBACK'));assert.ok(pool.made.every(c=>c.releases.every(e=>e===undefined)));
 });

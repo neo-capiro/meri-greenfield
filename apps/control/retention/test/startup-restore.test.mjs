@@ -15,6 +15,60 @@ const day=86400000;
 const suppress=(f,s)=>f.startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});
 const refused=(f,s)=>assert.rejects(f.startup.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');
 
+test('synthetic: a new suppression cannot conceal a restore before the first read',async()=>{
+ const f=composeStartup(),lost=subjectOf(),next=subjectOf();await f.startup.start();
+ const backup=f.backup();await suppress(f,lost);f.restore(backup);
+ await assert.rejects(suppress(f,next),/RETENTION_WATERMARK_STALE/);
+ assert.equal((await f.sink.read()).length,1,'no new decision on the stale projection');
+ assert.equal(f.watermark.snapshot().sequence,0,'the restore was not hidden by an advance');
+ assert.equal(await f.journal.get(subjectKey(next)),null);
+ await refused(f,lost);assert.equal(f.startup.state().reason,'RETENTION_WATERMARK_STALE');
+ await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
+ await suppress(f,next);assert.equal(f.watermark.snapshot().sequence,2);
+});
+
+test('synthetic: restore after ledger acknowledgement is caught before projection and watermark advance',async()=>{
+ const f=composeStartup(),lost=subjectOf(),next=subjectOf();let restore=null;
+ const sink={read:()=>f.sink.read(),async append(row){const ack=await f.sink.append(row);if(restore){f.restore(restore);restore=null;}return ack;}};
+ f.startup=createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:sink,ownership,purge:{enabled:false},now:f.clock.now});
+ await f.startup.start();const backup=f.backup();await suppress(f,lost);restore=backup;
+ await assert.rejects(suppress(f,next),/RETENTION_PROJECTION_FAILED/);
+ assert.equal(f.watermark.snapshot().sequence,0);assert.equal(await f.journal.get(subjectKey(next)),null);
+ assert.equal((await f.sink.read()).length,2,'the acknowledged decision must be recovered');
+ await f.startup.recover();for(const s of [lost,next])await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+});
+
+test('synthetic: exclusive recovery still appends a replan while ordinary writes are fenced',async()=>{
+ const f=composeStartup({purge:true}),s=subjectOf();await f.startup.start();
+ const inv=enumerateReferences(snapshot(s));f.current.inventories.set(subjectKey(s),inv);
+ await suppress(f,s);f.clock.advance(30*day);
+ f.current.liabilities.set(subjectKey(s),[{runId:randomUUID(),kind:'UNKNOWN'}]);
+ await f.startup.purge.recordBlocked(planFrom(f,s,await f.startup.journal.get(subjectKey(s))));
+ f.current.liabilities.clear();const before=(await f.sink.read()).length;
+ const recovered=await f.startup.recover();assert.deepEqual(recovered.replanned,[subjectKey(s)]);
+ assert.equal((await f.sink.read()).length,before+1);assert.equal(f.startup.state().enabled,true);
+ assert.equal((await f.startup.journal.get(subjectKey(s))).purge.state,'PLANNED');
+});
+
+test('synthetic: release as the first post-restore operation cannot advance over a lost suppression',async()=>{
+ const f=composeStartup(),a=subjectOf(),lost=subjectOf();await f.startup.start();await suppress(f,a);
+ const saved=f.backup();await suppress(f,lost);f.restore(saved);
+ await assert.rejects(f.startup.suppression.release({principal:f.principal,subject:a,reason:'release'}),/RETENTION_WATERMARK_STALE/);
+ assert.equal(f.watermark.snapshot().sequence,1);assert.equal((await f.sink.read()).length,2);
+ await f.startup.recover();for(const s of [a,lost])await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+});
+
+test('synthetic: atomic advance floor catches a restore after a successful guard read',async()=>{
+ const f=composeStartup(),lost=subjectOf(),next=subjectOf();let restore=null;
+ const watermark={...f.watermark,async read(){const result=await f.watermark.read();if(restore){f.restore(restore);restore=null;}return result;}};
+ f.startup=createRetentionStartup({journal:f.journal,watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
+ await f.startup.start();const backup=f.backup();await suppress(f,lost);
+ // Exercise the guarded journal directly so the restore lands between verification and advancement.
+ restore=backup;await f.startup.journal.set(subjectKey(next),{state:'SUPPRESSED',ledgerSequence:2,entrySha256:'1'.repeat(64)});
+ assert.equal(f.watermark.snapshot().sequence,0);assert.equal(f.startup.state().reason,'RETENTION_WATERMARK_STALE');
+ await refused(f,lost);await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
+});
+
 test('serving is fenced from construction: nothing is read or suppressed before startup reconciles, the plain enable is refused, and startup opens only with the read-back watermark',async()=>{
  const f=composeStartup(),s=subjectOf();
  assert.equal(f.startup.serving.isEnabled(),false);assert.equal(f.startup.state().reason,'RETENTION_STARTUP_FENCE');

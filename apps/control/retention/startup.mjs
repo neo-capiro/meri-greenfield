@@ -22,7 +22,7 @@ export function createRetentionStartup({journal,watermark=null,ledgerSink=null,o
  clock(now);const fence=createServingFence();
  const unavailable=ledgerSink===null?'RETENTION_LEDGER_UNAVAILABLE':watermark===null?'RETENTION_WATERMARK_UNAVAILABLE':null;
  const tracked=watermark?watermarkedJournal({journal,watermark,fence}):journal;
- const ledger=ledgerSink?acknowledgedLedger({ledger:createRetentionLedger({sink:ledgerSink,now}),fence}):null;
+ const ledger=ledgerSink?acknowledgedLedger({ledger:createRetentionLedger({sink:ledgerSink,now}),fence,watermark}):null;
  const projection=createRetentionReadGate({journal:tracked,serving:fence});
  /** The served read gate: every read first proves the persisted watermark is not behind what this process projected, so a restore
   * underneath a running process is refused from its first read (one extra single-row read), then consults the subject's projection. */

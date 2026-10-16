@@ -13,8 +13,13 @@ export function createPostgresWatermarkStore({journal}){
  const mode=options=>({exclusive:options?.exclusive===true});
  async function read(options){return journal.tx(async c=>decode((await c.query(`SELECT sequence,entry_sha256 FROM ${TABLE} WHERE singleton`)).rows[0]),mode(options));}
  /** Monotonic: a lower or equal position leaves the row unchanged; a higher one clears the recorded entry hash (only recovery records it). */
- async function advance(sequence,options){if(!Number.isSafeInteger(sequence)||sequence<0)fail('RETENTION_INVALID_REQUEST');
-  return journal.tx(async c=>decode((await c.query(`INSERT INTO ${TABLE}(singleton,sequence,entry_sha256) VALUES(true,$1,NULL) ON CONFLICT (singleton) DO UPDATE SET sequence=GREATEST(${TABLE}.sequence,EXCLUDED.sequence),entry_sha256=CASE WHEN EXCLUDED.sequence>${TABLE}.sequence THEN NULL ELSE ${TABLE}.entry_sha256 END RETURNING sequence,entry_sha256`,[sequence])).rows[0]),mode(options));}
+ async function advance(sequence,options){const minimumSequence=options?.minimumSequence??0;if(!Number.isSafeInteger(sequence)||sequence<0||!Number.isSafeInteger(minimumSequence)||minimumSequence<0)fail('RETENTION_INVALID_REQUEST');
+  return journal.tx(async c=>{
+   // Lock and compare in the same transaction as advancement, under the recovery lock.
+   await c.query("SELECT pg_advisory_xact_lock(hashtextextended('meri_retention_watermark',0))");
+   const current=decode((await c.query(`SELECT sequence,entry_sha256 FROM ${TABLE} WHERE singleton FOR UPDATE`)).rows[0]);
+   if(current.sequence<minimumSequence)fail('RETENTION_WATERMARK_STALE');
+   return decode((await c.query(`INSERT INTO ${TABLE}(singleton,sequence,entry_sha256) VALUES(true,$1,NULL) ON CONFLICT (singleton) DO UPDATE SET sequence=GREATEST(${TABLE}.sequence,EXCLUDED.sequence),entry_sha256=CASE WHEN EXCLUDED.sequence>${TABLE}.sequence THEN NULL ELSE ${TABLE}.entry_sha256 END RETURNING sequence,entry_sha256`,[sequence])).rows[0]);},mode(options));}
  /** Exact position recorded by a completed reconciliation pass. */
  async function record(position,options){if(!Number.isSafeInteger(position?.sequence)||position.sequence<0||position.entrySha256!==null&&!/^[a-f0-9]{64}$/u.test(position.entrySha256??''))fail('RETENTION_INVALID_REQUEST');
   return journal.tx(async c=>decode((await c.query(`INSERT INTO ${TABLE}(singleton,sequence,entry_sha256) VALUES(true,$1,$2) ON CONFLICT (singleton) DO UPDATE SET sequence=EXCLUDED.sequence,entry_sha256=EXCLUDED.entry_sha256 RETURNING sequence,entry_sha256`,[position.sequence,position.entrySha256])).rows[0]),mode(options));}
