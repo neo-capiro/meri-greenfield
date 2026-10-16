@@ -1,0 +1,38 @@
+✔ metadata supplies exact fixed transport limits, native auth, versions and statuses (1.2663ms)
+✔ shared Node/public list request shape and normalization agree (3.4951ms)
+✔ shared Node/public list request shape and normalization agree (0.2641ms)
+✔ shared Node/public transcript request shape and normalization agree (1.7754ms)
+✔ shared Node/public nextTurn request shape and normalization agree (1.429ms)
+✔ closed list refuses {"limit":null} (0.4355ms)
+✔ closed list refuses {"limit":"1"} (0.1623ms)
+✔ closed list refuses {"before":{"createdAt":"not-time","conversationId":"00000001-0000-4000-8000-000000000000"}} (0.2293ms)
+✔ closed list refuses {"tenantId":"forged"} (0.1052ms)
+✔ closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":null} (0.1211ms)
+✔ closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":-1} (0.0762ms)
+✔ closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","after":9007199254740992} (0.0819ms)
+✔ closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","limit":101} (0.0523ms)
+✔ closed transcript refuses {"conversationId":"00000001-0000-4000-8000-000000000000","clientId":"00000005-0000-4000-8000-000000000000"} (0.0418ms)
+✔ closed nextTurn refuses {"conversationId":"00000001-0000-4000-8000-000000000000","sourceRunId":null} (0.0759ms)
+✔ byte receiving rejects hostile objects, invalid UTF8/Unicode, prototype keys and fixed bound overflow (0.2959ms)
+✔ list receiving preserves suppression-short pages, ordering and exclusive cursor (2.9325ms)
+✔ transcript gives direct typed envelope, frozen canonical rows and distinct global/local sequences (91.5167ms)
+✔ transcript refuses foreign actor substitution (0.3902ms)
+✔ transcript refuses foreign scope substitution (0.3482ms)
+✔ transcript refuses global sequence substitution (0.4033ms)
+✔ transcript refuses local sequence substitution (0.3485ms)
+✔ transcript refuses tail cursor substitution (0.2709ms)
+✔ transcript refuses unrepresented turn substitution (0.4984ms)
+✔ transcript refuses request identity substitution (0.3572ms)
+✔ resume lineage cannot substitute source request/root while genuine same-text submission stays distinct (2.2521ms)
+✔ transcript refuses overlapping touched ranges and older overlap with an unrepresented latest run (1.094ms)
+✔ next-turn response is correlated to immutable source and exact next target fence (0.8513ms)
+✔ request provenance, route/status/error outcome and response bounds fail closed (0.5596ms)
+✔ browser distribution is self-contained and offline package resolves only public exports (125.4174ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 423.4137

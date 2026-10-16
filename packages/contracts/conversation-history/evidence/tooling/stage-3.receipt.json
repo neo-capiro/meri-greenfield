@@ -1,0 +1,24 @@
+{
+  "source": "b8322cdc86e4b113b326e357acdb148394ee39c3",
+  "stage": 3,
+  "argv": [
+    "--max-old-space-size=384",
+    "generate-history.mjs",
+    "--check"
+  ],
+  "hardSeconds": 90,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 11966484480,
+    "commitTotal": 33632079872,
+    "commitAvailable": 3128000512
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "ownedExited": true,
+  "wallMs": 614,
+  "sampledParentRssBytes": 108781568,
+  "preservedBytes": true,
+  "childNote": "One owned esbuild native service; finally esbuild.stop; watchdog taskkill owned tree only"
+}

@@ -1,0 +1,91 @@
+{
+  "source": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\meri-greenfield\\packages\\contracts",
+  "node": "C:\\Program Files\\nodejs\\node.exe",
+  "python": "C:\\Users\\neoma\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe",
+  "stages": [
+    {
+      "hardSeconds": 120,
+      "name": "locked dependencies",
+      "argv": [
+        "--max-old-space-size=256",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "children": "No lifecycle children; registry dependency install only",
+      "reserveBytes": 536870912
+    },
+    {
+      "hardSeconds": 90,
+      "name": "history generate",
+      "argv": [
+        "--max-old-space-size=384",
+        "generate-history.mjs"
+      ],
+      "children": "One owned esbuild native service; finally esbuild.stop; watchdog taskkill owned tree only",
+      "reserveBytes": 805306368
+    },
+    {
+      "hardSeconds": 90,
+      "name": "history deterministic check",
+      "argv": [
+        "--max-old-space-size=384",
+        "generate-history.mjs",
+        "--check"
+      ],
+      "children": "One owned esbuild native service; finally esbuild.stop; watchdog taskkill owned tree only",
+      "reserveBytes": 805306368
+    },
+    {
+      "hardSeconds": 60,
+      "name": "history declarations",
+      "argv": [
+        "--max-old-space-size=256",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--skipLibCheck",
+        "--target",
+        "ES2022",
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        "test/conversation-history-public-types.ts"
+      ],
+      "children": "None; only focused new fixture",
+      "reserveBytes": 536870912
+    },
+    {
+      "hardSeconds": 45,
+      "name": "history public synthetic bytes",
+      "argv": [
+        "--max-old-space-size=128",
+        "--test",
+        "--test-isolation=none",
+        "--test-concurrency=1",
+        "test/conversation-history-public.test.mjs"
+      ],
+      "children": "None; offline temp consumer removed in finally",
+      "reserveBytes": 402653184
+    },
+    {
+      "hardSeconds": 30,
+      "name": "offline package",
+      "argv": [
+        "--max-old-space-size=128",
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "pack",
+        "--ignore-scripts",
+        "--json",
+        "--pack-destination",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-15\\task-4\\history-package"
+      ],
+      "children": "No lifecycle children; offline tarball only",
+      "reserveBytes": 402653184
+    }
+  ]
+}

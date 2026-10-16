@@ -1,0 +1,2 @@
+test/conversation-history-public-types.ts(2,14): error TS2305: Module '"@capiro/meri-contracts"' has no exported member 'Run'.
+test/conversation-history-public-types.ts(2,18): error TS2305: Module '"@capiro/meri-contracts"' has no exported member 'Conversation'.

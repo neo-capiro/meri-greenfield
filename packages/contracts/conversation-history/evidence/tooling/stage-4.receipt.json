@@ -1,0 +1,35 @@
+{
+  "source": "89ea34976a451fde5387acdb39dc85caebb5faf8",
+  "stage": 4,
+  "argv": [
+    "--max-old-space-size=256",
+    "node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--strict",
+    "--skipLibCheck",
+    "--target",
+    "ES2022",
+    "--module",
+    "NodeNext",
+    "--moduleResolution",
+    "NodeNext",
+    "test/conversation-history-public-types.ts"
+  ],
+  "hardSeconds": 60,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 12274806784,
+    "commitTotal": 33632079872,
+    "commitAvailable": 3091632128
+  },
+  "primaryExit": 0,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "ownedPid": 33264,
+  "ownedExited": true,
+  "finishedAtUtc": "2026-10-16T03:31:05.6955849Z",
+  "wallMs": 577,
+  "sampledParentRssBytes": 181600256,
+  "preservedBytes": true,
+  "childNote": "None; only focused new fixture"
+}
