@@ -72,7 +72,11 @@ export function createCustodiedPostgresPreviewStore({journal,versions,custodyJou
   });},
   /** Only the canonical recovery owner calls this while it holds journal.exclusive. Sources/heads are not guessed from claims. */
   async replay(sourceRecovery,signal){const recover=storageMethod(sourceRecovery,'recover'),facts=await snapshot(signal);
-   for(const row of facts.rows){await recover(data(row.source),signal);await project(row,signal,true);}return certified(signal,true);},
+   // Concrete canonical source owner can restore a prerequisite batch before validating existing head lineage; otherwise keep
+   // the original single-record port. No historical preview packet is allowed to invent an authoritative head.
+   if(Object.hasOwn(sourceRecovery,'recoverAll'))await storageMethod(sourceRecovery,'recoverAll')(facts.rows.map(row=>data(row.source)),signal);
+   else for(const row of facts.rows)await recover(data(row.source),signal);
+   for(const row of facts.rows)await project(row,signal,true);return certified(signal,true);},
   ensureServing:signal=>certified(signal),
  });
 }
