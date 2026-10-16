@@ -16,19 +16,15 @@ const disabledPurge=Object.freeze({enabled:false,async execute(){fail('RETENTION
 /** `purge` is required: `{enabled:false}`, or `{enabled:true,storage,rows,facts,keyFor}` with every deletion owner bound. `ownership`
  * composes the suppression owner (trusted application ownership reader); without it only the read gate and recovery exist. */
 export function createRetentionStartup({journal,watermark=null,ledgerSink=null,ownership=null,authorization=refusingOwnerMediation,cancellation=null,purge,now=Date.now}){
- if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof purge?.enabled!=='boolean'||watermark!==null&&['read','advance','record'].some(m=>typeof watermark?.[m]!=='function')||ledgerSink!==null&&(typeof ledgerSink?.append!=='function'||typeof ledgerSink?.read!=='function'))fail('RETENTION_CONFIGURATION');
+ if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof purge?.enabled!=='boolean'||watermark!==null&&['read','advanceProjection','record'].some(m=>typeof watermark?.[m]!=='function')||ledgerSink!==null&&(typeof ledgerSink?.append!=='function'||typeof ledgerSink?.read!=='function'))fail('RETENTION_CONFIGURATION');
  const owners=purge.enabled?purge:{storage:null,rows:null,facts:null,keyFor:null};
  if(purge.enabled&&(typeof owners.storage?.deleteVersion!=='function'||typeof owners.rows?.purge!=='function'||typeof owners.facts!=='object'||owners.facts===null||typeof owners.keyFor!=='function'))fail('RETENTION_CONFIGURATION');
  clock(now);const fence=createServingFence();
  const unavailable=ledgerSink===null?'RETENTION_LEDGER_UNAVAILABLE':watermark===null?'RETENTION_WATERMARK_UNAVAILABLE':null;
  const tracked=watermark?watermarkedJournal({journal,watermark,fence}):journal;
  const ledger=ledgerSink?acknowledgedLedger({ledger:createRetentionLedger({sink:ledgerSink,now}),fence,watermark}):null;
- const projection=createRetentionReadGate({journal:tracked,serving:fence});
- /** The served read gate: every read first proves the persisted watermark is not behind what this process projected, so a restore
-  * underneath a running process is refused from its first read (one extra single-row read), then consults the subject's projection. */
- // Served refusals keep the public vocabulary (RETENTION_RECOVERY_BARRIER); the precise fence reason stays in state().
- const verified=async()=>{try{if(!watermark)fail(unavailable);await fence.verify(()=>watermark.read());}catch{fail('RETENTION_RECOVERY_BARRIER');}};
- const gate=Object.freeze({async isSuppressed(subject){await verified();return projection.isSuppressed(subject);},async assertServable(subject){await verified();return projection.assertServable(subject);}});
+ // Every ordinary tracked read brackets the projection with coherent persisted-watermark observations.
+ const gate=createRetentionReadGate({journal:tracked,serving:fence});
  const reconciler=ledger&&watermark?createRecoveryReconciler({ledger,journal:tracked,serving:fence,watermark,storage:owners.storage,keyFor:owners.keyFor,facts:owners.facts,rows:owners.rows,now}):null;
  const suppression=ledger&&ownership?createSuppressionOwner({ledger,journal:tracked,ownership,authorization,cancellation,serving:fence,now}):null;
  const executor=purge.enabled&&ledger?createPurgeExecutor({storage:owners.storage,ledger,journal:tracked,keyFor:owners.keyFor,facts:owners.facts,serving:fence,rows:owners.rows,enabled:true,now}):disabledPurge;

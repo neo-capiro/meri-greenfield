@@ -166,6 +166,49 @@ no seed, roles, grants or unrelated mutation. It remains source-review pending.
 The static SQL contract check is not PostgreSQL syntax or migration execution.
 No held schema path was authored, and no migration ran.
 
+## Retention follow-up: two restore windows reproduced at 338a04ec
+
+The earlier floor-only completeness claim above was incomplete. Independent
+review reopened two windows at `338a04ec82626382045f8b944a4b7ed4dd48ab27`:
+restore after projection ACK but before advancement could certify a missing
+projection; restore between the read gate's watermark check and projection read
+could release the first observation. The two focused regressions both fail that
+unchanged production source (**0 pass, 2 fail**). The separate initial after-set
+negative also failed (**0 pass, 1 fail**); it is the same first regression, not an
+additional distinct case. Evidence remains in `task-9/evidence` as
+`retention-windows-338a04ec-negative.tap` and
+`retention-after-set-338a04ec-negative.tap`.
+
+The internal port now requires
+`advanceProjection({key,projectionSha256,sequence,minimumSequence},{exclusive})`.
+Legacy blind sequence-only ports fail configuration closed. The PostgreSQL
+adapter proves that exact key/hash/sequence under the subject advisory lock and
+row lock, then advances the watermark within that same canonical journal
+transaction. Missing, altered or wrong-sequence rows cannot advance. A lost
+COMMIT keeps the existing UNKNOWN/retired-lease behavior. The memory adapter
+performs its synchronous exact-row proof and advance without yielding.
+
+Ordinary tracked reads bracket the projection read with persisted-watermark
+checks and require the same position/hash. A stale observation closes the fence;
+a concurrent healthy position change refuses that observation without disabling
+serving. Exclusive reconciliation retains its bypass, including ledger-only
+rebuild and replan append. Migration0013 and frozen contracts are unchanged.
+Qualification explicitly confirmed this internal correction is in the existing
+exclusive repair scope; independent source review/integration remains required.
+
+Focused fixed batch: **22 pass, 0 fail, 0 skip**, exit 0, **225 ms**. Exact argv:
+
+```
+node --max-old-space-size=128 --test --test-isolation=none apps/control/retention/test/startup-restore.test.mjs apps/control/retention/test/postgres-watermark.test.mjs
+```
+
+Evidence: `task-9/evidence/retention-coherence-batch.tap`. This batch supersedes
+the earlier two-file count; the historical broad counts below describe their
+earlier exact source, not a rerun on this follow-up. No real DB, driver, child
+test process or migration execution. Terminal process exit was observed, and
+further test launches are held for Shipping's READS stage. Retention remains
+**HOLD** until the exact follow-up source is independently reviewed.
+
 ## Proof and remaining gates
 
 The candidate-h source proof passes **5/5**. **Zero of its 45 rows changed**;

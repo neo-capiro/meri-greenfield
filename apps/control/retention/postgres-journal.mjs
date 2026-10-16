@@ -9,6 +9,7 @@
  * arrives after its deadline is discarded through `release(error)` so no later borrower inherits an unknown transaction or lock. */
 import {fail,hash,uuid,text,subject as parseSubject,subjectKey} from './boundary.mjs';
 import {rowClassSubjectKind} from './inventory.mjs';
+import {assertExactProjection} from './projection-proof.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
@@ -46,6 +47,10 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  /** Reads take the shared side of the recovery lock too, so a serving gate in any process waits for, or refuses during, a recovery pass
   * (bounded by lock_timeout); the recovery pass itself reads with `exclusive` on its own session. */
  async function get(key,{exclusive=false}={}){const k=parseKey(key);return tx(async c=>{const r=await readRow(c,k);if(!r)return null;const v=rowValue(r);if(v.state!==r.state||Number(r.ledger_sequence)!==v.ledgerSequence)fail('RETENTION_STORE_CORRUPT');return v;},{shared:!exclusive});}
+ /** Watermark advancement supplies its own bounded transaction. Keep the exact subject row locked until that same
+  * transaction commits both the proof and advancement; no independent get() transaction or read-back gap. */
+ async function assertProjection(c,proof){const k=parseKey(proof.key);await subjectLock(c,proof.key);const row=await readRow(c,k);
+  assertExactProjection(row?rowValue(row):null,proof);}
  /** Compare-and-set projection write under the subject advisory lock: `expected` null means the row must not exist (two writers that both
   * observed absence cannot both succeed); otherwise it must equal the current projection hash. */
  async function set(key,value,{expected,exclusive=false}={}){
@@ -119,6 +124,6 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
  async function ownerOf({tenantId,kind,subjectId}){if(!tables[kind])fail('RETENTION_INVALID_REQUEST');
   const rows=kind==='conversation'?(await pool.query('SELECT owner_actor_id AS owner FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2',[tenantId,subjectId])).rows:(await pool.query('SELECT actor_id AS owner FROM meri_artifacts.heads WHERE tenant_id=$1 AND artifact_id=$2',[tenantId,subjectId])).rows;
   return rows[0]?.owner??null;}
- return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,ownerOf,rowClasses:Object.freeze(Object.keys(rowWhere))});
+ return Object.freeze({get,set,keys,exclusive,planRows,rows,tx,assertProjection,ownerOf,rowClasses:Object.freeze(Object.keys(rowWhere))});
 }
 export {parseSubject};
