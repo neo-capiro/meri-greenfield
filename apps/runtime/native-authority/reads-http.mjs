@@ -8,7 +8,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const status={CONFIGURATION:503,INVALID_ARGUMENTS:400,ACCESS_DENIED:403,UNAVAILABLE:503,DEADLINE:408,CANCELLED:408,INVALID_RESULT:502,RESOURCE_LIMIT:413,BUDGET_UNCERTAIN:409};
 export function createNativeReadsApplication(configuration){
- const c=own(configuration,['owner','approvedReads'],['now']),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),handle=storageMethod(c.owner,'handle'),now=c.now??Date.now;if(typeof now!=='function')throw nativeReadFault('CONFIGURATION');
+ const c=own(configuration,['owner'],['approvedReads','now']),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),handle=storageMethod(c.owner,'handle'),now=c.now??Date.now;if(typeof now!=='function')throw nativeReadFault('CONFIGURATION');
  return Object.freeze({async handle(request){let info,life;try{
   if(!request||types.isProxy(request)||!(request instanceof Request))throw nativeReadFault('INVALID_ARGUMENTS');info=Object.fromEntries(Object.entries(get).map(([k,g])=>[k,g.call(request)]));
   const url=new URL(info.url),route=/^\/v1\/runner\/reads\/(availability|execute)$/u.exec(url.pathname);

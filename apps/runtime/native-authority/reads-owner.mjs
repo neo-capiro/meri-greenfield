@@ -13,7 +13,7 @@ const stableTask=({authorizationDecisionId,checkedAtMs,expiresAtMs,...facts})=>f
 const stableSnapshot=s=>({installation:{...s.installation,checkedAtMs:0,expiresAtMs:0},discovery:{...s.discovery,checkedAtMs:0,expiresAtMs:0}});
 const deferred=new Set(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
 export function createNativeReadsOwner(configuration){
- const c=own(configuration,['binding','approvedReads'],['taskVerifier','gateway','allocationSha256','policyRevision','scopes','now']),binding=data(c.binding),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),now=c.now??Date.now;
+ const c=own(configuration,['binding'],['approvedReads','taskVerifier','gateway','allocationSha256','policyRevision','scopes','now']),binding=data(c.binding),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),now=c.now??Date.now;
  validateShape('RunBinding',binding);if(typeof now!=='function')deny('CONFIGURATION');const ready=Boolean(config?.enabled&&c.taskVerifier&&c.gateway&&c.allocationSha256&&c.policyRevision&&c.scopes);
  const verify=ready?storageMethod(c.taskVerifier,'verify'):null,availability=ready?storageMethod(c.gateway,'readAvailability'):null,execute=ready?storageMethod(c.gateway,'execute'):null,scopes=ready?data(c.scopes):null;
  async function handle(operation,raw,capability,signal,operationDeadlineMs){let life,dispatched=false;try{

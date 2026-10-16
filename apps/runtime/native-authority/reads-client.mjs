@@ -8,7 +8,7 @@ import {createOperationLifetime} from '../../../packages/runtime/operation-lifet
 const get=Object.fromEntries(['status','headers','body','redirected','url'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 const fail=code=>{throw nativeReadFault(code);};
 export function createNativeReadsClient(configuration){
- const c=own(configuration,['origin','credential','binding','approvedReads','fetchImpl'],['now']),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),binding=data(c.binding),now=c.now??Date.now;let origin;
+ const c=own(configuration,['origin','credential','binding','fetchImpl'],['approvedReads','now']),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),binding=data(c.binding),now=c.now??Date.now;let origin;
  try{const u=new URL(c.origin);if(u.protocol!=='https:'||u.pathname!=='/'||u.username||u.password||u.search||u.hash||u.origin!==c.origin)fail('CONFIGURATION');origin=u.origin;}catch{fail('CONFIGURATION');}
  validateShape('RunBinding',binding);if(typeof c.credential!=='string'||!/^\S{1,8192}$/u.test(c.credential)||typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)||typeof now!=='function')fail('CONFIGURATION');const fetchImpl=c.fetchImpl,credential=c.credential;let pin;
  async function call(operation,fields,signal){if(!config?.enabled)fail('UNAVAILABLE');nativeSignal(signal);const full='runner/reads/'+operation,request=assertNativeReadRequest(full,{schemaVersion,binding,...fields}),body=JSON.stringify(request);if(Buffer.byteLength(body,'utf8')>config.maxRequestBytes)fail('RESOURCE_LIMIT');
