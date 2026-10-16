@@ -1,0 +1,26 @@
+✔ complete approved READS configuration and both operations reach trusted facts once without an original expiry window (4.0336ms)
+✔ disabled approved READS is preserved completely rather than stripped from immutable facts (0.6098ms)
+✔ READS request hash and current run binding/version/policy are checked before model issuance (1.0495ms)
+✔ legacy configuration without approved READS retains existing operations and output shape (0.2724ms)
+✔ actual accepted request and fixed original expiry reach the SAME canonical issuer; recreated helper never remints (4.4116ms)
+✔ missing accepted original refuses before issuer/material generation (0.4408ms)
+✔ caller cannot supply original binding, request hash or expiry (0.3271ms)
+✔ changed request under original issuance refuses without new material (1.9212ms)
+✔ recomputed original expiry conflicts and expired original cannot reach a port (1.2332ms)
+✔ already allocated static original never receives retrofitted canonical material (0.4649ms)
+✔ canonically issued allocated original replays only exact existing grant/facts/allocator identity (2.3006ms)
+✔ UNKNOWN original remains UNKNOWN until existing issuer reconciliation, never reminted (1.4401ms)
+✔ accepted request change across preparation withholds entry after durable issuance (0.685ms)
+✔ terminal or wrong-bound accepted run is never used to issue original material (0.3598ms)
+✔ an original becoming statically allocated during preparation withholds the new entry (1.2412ms)
+✔ stopOnly refuses before every owner port, including an absent original (0.8267ms)
+✔ stopOnly is a boolean and an aborted caller cannot start original preparation (0.5433ms)
+✔ a hanging accepted-run port is bounded and does not reach issuance (14.8347ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.8849

@@ -1,0 +1,19 @@
+✔ actual accepted request and fixed original expiry reach the SAME canonical issuer; recreated helper never remints (5.8006ms)
+✔ missing accepted original refuses before issuer/material generation (0.4885ms)
+✔ caller cannot supply original binding, request hash or expiry (0.2699ms)
+✔ changed request under original issuance refuses without new material (1.7582ms)
+✔ recomputed original expiry conflicts and expired original cannot reach a port (1.0729ms)
+✔ already allocated static original never receives retrofitted canonical material (0.3127ms)
+✔ canonically issued allocated original replays only exact existing grant/facts/allocator identity (1.697ms)
+✔ UNKNOWN original remains UNKNOWN until existing issuer reconciliation, never reminted (1.8198ms)
+✔ accepted request change across preparation withholds entry after durable issuance (0.7217ms)
+✔ terminal or wrong-bound accepted run is never used to issue original material (0.5837ms)
+✔ an original becoming statically allocated during preparation withholds the new entry (0.9317ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61.8027
