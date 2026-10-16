@@ -16,8 +16,8 @@ const decisionOf=out=>out?.hookSpecificOutput?.permissionDecision??'none';
  * response that reports the page. It is evidence about this fragment's decisions under that order, not live SDK
  * delivery. */
 function scriptedSdk(cap,{extraAllowed=[]}={}){
- const executed=[];let page='about:blank';
- async function call(tool,input,id='toolu_01'){
+ const executed=[];let page='about:blank',sequence=0;
+ async function call(tool,input,id=`toolu_auto_${++sequence}`){
   const name=T(tool);
   if(cap.disallowedTools.includes(name))return 'unavailable';
   let askRequired=false;
@@ -69,7 +69,7 @@ test('the PreToolUse gate fails closed on malformed input and the canUseTool gat
  const aborted=new AbortController();aborted.abort();
  for(const [input,id,opts] of [[{...pre('browser_snapshot'),hook_event_name:'PostToolUse'},'toolu_01',{}],[pre('browser_snapshot'),'toolu_other',{}],[{...pre('browser_snapshot'),tool_name:'mcp__other__browser_snapshot'},'toolu_01',{}],[pre('browser_snapshot'),'toolu_01',{signal:aborted.signal}],[null,'toolu_01',{}],[pre('browser_navigate',{url:42}),'toolu_01',{}]])
   assert.equal(decisionOf(await hook(input,id,opts)),'deny');
- assert.equal(decisionOf(await hook(pre('browser_click',{element:'x',target:'e1'}),'toolu_01',{})),'ask');assert.deepEqual(await hook(pre('browser_snapshot',{},'toolu_02'),'toolu_02',{}),{});
+ assert.equal(decisionOf(await hook(pre('browser_click',{element:'x',target:'e1'}),'toolu_01',{})),'ask');assert.equal(decisionOf(await hook(pre('browser_snapshot',{},'toolu_02'),'toolu_02',{})),'deny','a competing call invalidates the pending interaction');
  for(const [tool,id] of [['browser_click','toolu_01'],['browser_snapshot','toolu_02']])await runHooks(cap,'PostToolUseFailure',tool,{},id);
  assert.equal(await cap.canUseTool('Read',{file_path:'/x'},{toolUseID:'toolu_01'}),undefined,'not this server: defers to the chain (default deny)');
  const ask=async(id,over={})=>{await startFrom(cap,PAGE,'browser_click',{element:'x',target:'e1'},id);return cap.canUseTool(T('browser_click'),{element:'x',target:'e1'},{toolUseID:id,signal:new AbortController().signal,...over});};
