@@ -35,8 +35,9 @@ export function reconcileSourceExposure({catalog,bindings,families,adapters,skil
   const related=unique([operation,...bindings.filter(item=>item.supersededBy===operation).map(item=>item.id)]);
   const declared=skills.filter(skill=>skill.operations.some(id=>related.includes(id))).map(skill=>skill.id).sort();
   const admitted=skills.filter(skill=>admittedSkills.includes(skill.id)&&skill.operations.some(id=>related.includes(id)&&adapterByOperation.has(id))).map(skill=>skill.id).sort();
+  const skillOperations=related.filter(id=>adapterByOperation.has(id)&&skills.some(skill=>admittedSkills.includes(skill.id)&&skill.operations.includes(id)));
   return {id:original.id,operation,family:binding.group,kind:productGroups.has(binding.group)?'product-or-governed':'source-read',
-   currentContractDeclared:skills.some(skill=>skill.operations.includes(operation)),declaredBySkills:declared,sourceAdmittedSkills:admitted,generalOperations:related.filter(id=>registered.has(id)),
+   currentContractDeclared:skills.some(skill=>skill.operations.includes(operation)),declaredBySkills:declared,sourceAdmittedSkills:admitted,sourceAdmittedOperations:skillOperations,generalOperations:related.filter(id=>registered.has(id)),
    adapterPaths:adapterByOperation.get(operation)??[],requiredContextKeys:[...(binding.contextKeys??[])],
    state:adapterByOperation.has(operation)?'adapter-present':productGroups.has(binding.group)?'separate-product-path':'adapter-missing'};
  });

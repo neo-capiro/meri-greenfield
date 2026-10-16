@@ -57,6 +57,7 @@ function sourceExposure(snapshot) {
       ['Live',counts.live],
     ]), '',
     `Only ${snapshot.admittedSkills.map(code).join(', ')} are admitted by the original skill server. A declaration in another manifest is not source reachability. The historical \`query_action_items\` and successor \`actions.query\` represent one selected capability. \`memory.list_own_proposals\` is a product-state read; product writes and effects remain on their separate governed route.`, '',
+    table(['Source-admitted skill','Exact adapter-backed operations'],snapshot.admittedSkills.map(skill=>[code(skill),[...new Set(snapshot.rows.filter(row=>row.sourceAdmittedSkills.includes(skill)).flatMap(row=>row.sourceAdmittedOperations))].sort().map(code).join(', ')])), '',
     table(['Registered family','Exact operations'],snapshot.generalRegistration.map(row=>[code(row.family),row.operations.map(code).join(', ')])), '',
     'Every canonical source adapter already present is exposed by the agreed phase-1 plus retained-three cut. The remaining selected source reads are outside that cut and lack an adapter; contract mapping alone does not implement them. Their exact unresolved families and operations are:', '',
     table(['Missing adapter family','Selected operations'],snapshot.missingAdapterFamilies.map(row=>[code(row.family),row.operations.map(code).join(', ')])), '',
