@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: new allocation acknowledges one immutable slot without a run, queued event or dispatcher
+ok 1 - new allocation acknowledges one immutable slot without a run, queued event or dispatcher
+  ---
+  duration_ms: 30.6113
+  type: 'test'
+  ...
+# Subtest: missing allocation cannot admit or dispatch a new original input
+ok 2 - missing allocation cannot admit or dispatch a new original input
+  ---
+  duration_ms: 1.5993
+  type: 'test'
+  ...
+# Subtest: allocate then admit and exact submit uses one queued event and the unchanged Temporal workflow identity
+ok 3 - allocate then admit and exact submit uses one queued event and the unchanged Temporal workflow identity
+  ---
+  duration_ms: 58.7994
+  type: 'test'
+  ...
+# Subtest: concurrent exact claims acknowledge one creator and retain the same allocation
+ok 4 - concurrent exact claims acknowledge one creator and retain the same allocation
+  ---
+  duration_ms: 5.225
+  type: 'test'
+  ...
+# Subtest: different raw identity/body cannot replace the original slot: 00000061-0000-4000-8000-000000000000Original prompt
+ok 5 - different raw identity/body cannot replace the original slot: 00000061-0000-4000-8000-000000000000Original prompt
+  ---
+  duration_ms: 2.3676
+  type: 'test'
+  ...
+# Subtest: different raw identity/body cannot replace the original slot: 00000060-0000-4000-8000-000000000000Changed prompt
+ok 6 - different raw identity/body cannot replace the original slot: 00000060-0000-4000-8000-000000000000Changed prompt
+  ---
+  duration_ms: 2.0536
+  type: 'test'
+  ...
+# Subtest: lost allocation COMMIT acknowledgement recovers exactly and never relabels replay fresh
+ok 7 - lost allocation COMMIT acknowledgement recovers exactly and never relabels replay fresh
+  ---
+  duration_ms: 2.7785
+  type: 'test'
+  ...
+# Subtest: lost original acceptance acknowledgement leaves positive history and one event for exact recovery
+ok 8 - lost original acceptance acknowledgement leaves positive history and one event for exact recovery
+  ---
+  duration_ms: 5.8354
+  type: 'test'
+  ...
+# Subtest: allocation replay and delayed admission preserve original relative normalization across a calendar boundary
+ok 9 - allocation replay and delayed admission preserve original relative normalization across a calendar boundary
+  ---
+  duration_ms: 25.0675
+  type: 'test'
+  ...
+# Subtest: fresh authorization never extends expired original allocation, even after positive input recovery
+ok 10 - fresh authorization never extends expired original allocation, even after positive input recovery
+  ---
+  duration_ms: 5.8436
+  type: 'test'
+  ...
+# Subtest: shorter current cutoff during COMMIT releases no positive allocation and cannot refresh stored expiry
+ok 11 - shorter current cutoff during COMMIT releases no positive allocation and cannot refresh stored expiry
+  ---
+  duration_ms: 1.6861
+  type: 'test'
+  ...
+# Subtest: a shorter last pre-claim authorization expiry becomes the new immutable allocation expiry
+ok 12 - a shorter last pre-claim authorization expiry becomes the new immutable allocation expiry
+  ---
+  duration_ms: 1.2037
+  type: 'test'
+  ...
+# Subtest: revocation after allocation lookup prevents persistence
+ok 13 - revocation after allocation lookup prevents persistence
+  ---
+  duration_ms: 0.4205
+  type: 'test'
+  ...
+# Subtest: revocation after successful claim prevents positive release; later exact recovery remains created:false
+ok 14 - revocation after successful claim prevents positive release; later exact recovery remains created:false
+  ---
+  duration_ms: 2.2839
+  type: 'test'
+  ...
+# Subtest: changed current context is refused before claim
+ok 15 - changed current context is refused before claim
+  ---
+  duration_ms: 0.3853
+  type: 'test'
+  ...
+# Subtest: changed current scope or client cannot recover the original allocation
+ok 16 - changed current scope or client cannot recover the original allocation
+  ---
+  duration_ms: 1.2467
+  type: 'test'
+  ...
+# Subtest: next-turn RESERVED admission never reads, claims or accepts an original-input allocation
+ok 17 - next-turn RESERVED admission never reads, claims or accepts an original-input allocation
+  ---
+  duration_ms: 1.0088
+  type: 'test'
+  ...
+# Subtest: next-turn ACCEPTED admission never reads, claims or accepts an original-input allocation
+ok 18 - next-turn ACCEPTED admission never reads, claims or accepts an original-input allocation
+  ---
+  duration_ms: 0.7773
+  type: 'test'
+  ...
+# Subtest: higher fence 2 without a reservation refuses both new admission and submit with zero writes or starts
+ok 19 - higher fence 2 without a reservation refuses both new admission and submit with zero writes or starts
+  ---
+  duration_ms: 0.7369
+  type: 'test'
+  ...
+# Subtest: higher fence 9 without a reservation refuses both new admission and submit with zero writes or starts
+ok 20 - higher fence 9 without a reservation refuses both new admission and submit with zero writes or starts
+  ---
+  duration_ms: 0.4543
+  type: 'test'
+  ...
+# Subtest: a different target reservation is not positive admission evidence
+ok 21 - a different target reservation is not positive admission evidence
+  ---
+  duration_ms: 0.5467
+  type: 'test'
+  ...
+# Subtest: missing next-run ports cannot fall back to original accept
+ok 22 - missing next-run ports cannot fall back to original accept
+  ---
+  duration_ms: 0.5226
+  type: 'test'
+  ...
+# Subtest: positive retained higher-fence legacy input remains recoverable without a next-run reservation
+ok 23 - positive retained higher-fence legacy input remains recoverable without a next-run reservation
+  ---
+  duration_ms: 2.4343
+  type: 'test'
+  ...
+# Subtest: preexisting positive original request remains recoverable without claiming it fresh
+ok 24 - preexisting positive original request remains recoverable without claiming it fresh
+  ---
+  duration_ms: 2.4414
+  type: 'test'
+  ...
+# Subtest: HTTP positive allocate uses same current service and no-store closed receipt
+ok 25 - HTTP positive allocate uses same current service and no-store closed receipt
+  ---
+  duration_ms: 9.0065
+  type: 'test'
+  ...
+# Subtest: HTTP rejects method without claim
+ok 26 - HTTP rejects method without claim
+  ---
+  duration_ms: 0.4939
+  type: 'test'
+  ...
+# Subtest: HTTP rejects query without claim
+ok 27 - HTTP rejects query without claim
+  ---
+  duration_ms: 0.3447
+  type: 'test'
+  ...
+# Subtest: HTTP rejects bearer without claim
+ok 28 - HTTP rejects bearer without claim
+  ---
+  duration_ms: 0.3468
+  type: 'test'
+  ...
+# Subtest: HTTP rejects media without claim
+ok 29 - HTTP rejects media without claim
+  ---
+  duration_ms: 0.3563
+  type: 'test'
+  ...
+# Subtest: HTTP rejects cursor without claim
+ok 30 - HTTP rejects cursor without claim
+  ---
+  duration_ms: 0.3061
+  type: 'test'
+  ...
+# Subtest: HTTP rejects caller authority fields and malformed UTF8, with bounded input
+ok 31 - HTTP rejects caller authority fields and malformed UTF8, with bounded input
+  ---
+  duration_ms: 1.0687
+  type: 'test'
+  ...
+# Subtest: HTTP abort returns UNKNOWN with no permission or allocation
+ok 32 - HTTP abort returns UNKNOWN with no permission or allocation
+  ---
+  duration_ms: 0.5466
+  type: 'test'
+  ...
+# Subtest: HTTP bounded response failure gives no positive receipt; exact reconstruction is never fresh
+ok 33 - HTTP bounded response failure gives no positive receipt; exact reconstruction is never fresh
+  ---
+  duration_ms: 3.0446
+  type: 'test'
+  ...
+# Subtest: HTTP final authorization denial after CAS releases UNKNOWN rather than a false absence outcome
+ok 34 - HTTP final authorization denial after CAS releases UNKNOWN rather than a false absence outcome
+  ---
+  duration_ms: 1.9446
+  type: 'test'
+  ...
+# Subtest: new allocation errors never alter the existing admission error envelope
+ok 35 - new allocation errors never alter the existing admission error envelope
+  ---
+  duration_ms: 1.9347
+  type: 'test'
+  ...
+# Subtest: HTTP rejects limits beyond the accepted canonical allocation bounds
+ok 36 - HTTP rejects limits beyond the accepted canonical allocation bounds
+  ---
+  duration_ms: 0.2078
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1063.5122
