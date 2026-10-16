@@ -48,6 +48,13 @@ test('model compare-and-set race cannot complete over a changed version',async()
  const f=sqlFixture(),row=await f.model.claim(intent);f.s.race=true;await assert.rejects(f.model.complete({issuanceKey:intent.issuanceKey,...identity,claimFence:row.claimFence}),/ISSUANCE_STORE_UNAVAILABLE/);
  assert.equal((await f.model.read({issuanceKey:intent.issuanceKey})).state,'CLAIMED');
 });
+test('model terminal replay requires the original claim fence even for the identical issued identity',async()=>{
+ const f=sqlFixture(),row=await f.model.claim(intent),v={issuanceKey:intent.issuanceKey,...identity,claimFence:row.claimFence};
+ const retained=await f.model.complete(v),updates=f.s.calls.filter(c=>c.sql.startsWith('UPDATE')).length;
+ await assert.rejects(f.model.complete({...v,claimFence:id(998)}),/ISSUANCE_STORE_CLAIM_FENCED/);
+ assert.deepEqual(await f.model.complete(v),retained);assert.equal(f.s.calls.filter(c=>c.sql.startsWith('UPDATE')).length,updates);
+ assert.equal((await f.model.read({issuanceKey:intent.issuanceKey})).grantId,retained.grantId);
+});
 for(const boundary of ['claim','complete'])test('canonical issuer over scripted model SQL handles '+boundary+' lost ACK without second material',async()=>{
  const f=sqlFixture();f.s[boundary==='claim'?'loseClaim':'loseComplete']=true;let generated=0;const capability='synthetic-model-opaque-'+intent.issuanceKey;
  const authority=createModelMaterialAuthority({authority:{async generate(){generated++;assert.equal((await f.model.read({issuanceKey:intent.issuanceKey})).state,'CLAIMED');return {grantId:id(30),capability,materialRef:'material:'+intent.issuanceKey};},async retrieve(){return {state:'PRESENT',capability};},async status(){throw Error('no generation/reconcile on uncertainty');}}});
