@@ -1,0 +1,71 @@
+✔ new acknowledgement allocates exactly one immutable identity without a run, event or dispatch (29.2655ms)
+✔ concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it (2.0862ms)
+✔ concurrent different intents cannot overwrite the winner (1.7807ms)
+✔ lost allocation COMMIT acknowledgement yields UNKNOWN, and its recovered identity is never new (1.7474ms)
+✔ no allocation cannot be interpreted as acceptance permission (7.757ms)
+✔ acceptance atomically matches the allocation and preserves the original prompt/context on exact replay (44.3704ms)
+✔ acceptance refuses altered requestId before any run/event can be committed (1.3699ms)
+✔ acceptance refuses altered prompt before any run/event can be committed (1.2688ms)
+✔ acceptance refuses altered window before any run/event can be committed (1.0225ms)
+✔ acceptance refuses altered windowRequest before any run/event can be committed (0.9643ms)
+✔ acceptance refuses altered skill before any run/event can be committed (0.7955ms)
+✔ a different actor cannot recover or accept another original identity (0.9703ms)
+✔ a different run cannot recover or accept another original identity (0.7291ms)
+✔ a different attempt cannot recover or accept another original identity (0.7798ms)
+✔ a different worker cannot recover or accept another original identity (0.7694ms)
+✔ a different fence cannot recover or accept another original identity (0.6304ms)
+✔ a different scope cannot recover or accept another original identity (0.6976ms)
+✔ a different client cannot recover or accept another original identity (0.9212ms)
+✔ a different versions cannot recover or accept another original identity (0.6631ms)
+✔ a different rawIntent cannot recover or accept another original identity (0.6842ms)
+✔ a different preparedRequest cannot recover or accept another original identity (0.6966ms)
+✔ expired original identity cannot be renewed or accepted (0.9462ms)
+✔ failure after marking acceptance rolls back the allocation, run and event together (3.811ms)
+✖ authority check invalidated during acceptance refuses release and rolls back all three records (1.6904ms)
+✔ lost acceptance ACK reconstructs the same accepted input without a duplicate event (1.4822ms)
+✔ corrupt or inconsistent stored state never becomes fresh allocation evidence (1.0278ms)
+✔ any existing original input, conversation shell or successor journal refuses a new original claim (1.6462ms)
+✔ canonical public input/request correlation refuses an altered prepared prompt before store IO (0.5934ms)
+✔ expiry during claim COMMIT cannot release a positive acknowledgement (0.6945ms)
+✔ expiry during accept COMMIT cannot release a positive acknowledgement (1.0728ms)
+✔ request is immutable and replay survives owner reconstruction (1.5135ms)
+✔ events atomically advance state and stable IDs replay without duplicates (2.6147ms)
+✔ concurrent starting attempts serialize and allow one model admission (1.1803ms)
+✔ stored reads/writes deny foreign tenant (0.6186ms)
+✔ stored reads/writes deny foreign actor (0.6575ms)
+✔ stored reads/writes deny foreign conversation (0.5532ms)
+✔ stored reads/writes deny foreign run (0.523ms)
+✔ stored reads/writes deny foreign attempt (0.5828ms)
+✔ stored reads/writes deny foreign worker (0.5879ms)
+✔ stored reads/writes deny foreign fence (0.5613ms)
+✔ cancelled run refuses late text and completion but original events remain inspectable (1.6799ms)
+✔ lost COMMIT acknowledgement is unknown and exact retry recovers one saved request (0.5639ms)
+✔ retained event corruption and a sequence hole refuse reconnect (1.1488ms)
+✔ cursor after durable end and oversized publication refuse (1.1036ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 43
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 727.7144
+
+✖ failing tests:
+
+test at apps\control\conversations\test\initial-input.test.mjs:58:1
+✖ authority check invalidated during acceptance refuses release and rolls back all three records (1.6904ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /SYNTHETIC_AUTHORITY_REVOKED/. Input:
+  
+  'Error: STORE_UNAVAILABLE'
+  
+      at async TestContext.<anonymous> (file:///C:/Users/neoma/Documents/Codex/2026-10-15/task-4/meri-greenfield/apps/control/conversations/test/initial-input.test.mjs:60:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Error],
+    expected: /SYNTHETIC_AUTHORITY_REVOKED/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

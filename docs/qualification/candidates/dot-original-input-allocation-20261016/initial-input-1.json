@@ -1,0 +1,31 @@
+{
+  "name": "initial-input-1",
+  "head": "312ba765740fda36db7c0f4f541736b73b7a3d7c",
+  "argv": [
+    "--max-old-space-size=128",
+    "--experimental-test-module-mocks",
+    "--test",
+    "--test-isolation=none",
+    "--test-concurrency=1",
+    "apps/control/conversations/test/initial-input.test.mjs",
+    "apps/control/conversations/test/store.test.mjs"
+  ],
+  "hardSeconds": 120,
+  "heapMiB": 128,
+  "memoryBefore": {
+    "physicalTotal": 33632079872,
+    "physicalAvailable": 12052901888,
+    "commitTotal": 33632079872,
+    "commitAvailable": 2821541888
+  },
+  "primaryExit": 1,
+  "cleanupExit": 0,
+  "timedOut": false,
+  "pressure": false,
+  "ownedPid": 32344,
+  "ownedExited": true,
+  "wallMs": 862,
+  "sampledRssBytes": 114229248,
+  "children": "none: single Node process test-isolation=none",
+  "finishedAtUtc": "2026-10-16T05:15:31.9894628Z"
+}

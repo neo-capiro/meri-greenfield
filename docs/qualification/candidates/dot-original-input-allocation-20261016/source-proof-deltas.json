@@ -1,0 +1,49 @@
+{
+  "path": "apps/control/conversations/postgres-store.mjs",
+  "batchBefore": {
+    "commit": "a54239c5f252667b3aaaaa588ef1776219816075",
+    "blob": "b917916d27c9cd7b1d896021d0b72ad60f90abc8",
+    "bytes": 11100,
+    "sha256": "d385fd62d5cfb26bc184d26c2659298fde1ba8ba9c2d5ca3210429a8a3d03420"
+  },
+  "batchAfter": {
+    "commit": "55c20109ff4bb840088b1372a7fe04669041803a",
+    "blob": "a4449be9c283fefcfaee80fd379797b418c3d728",
+    "bytes": 12152,
+    "sha256": "96002cc66ed5658273af0cd4035e027efaaaa94708e020f28b79c22f1fc355a0"
+  },
+  "historicalManifestsModified": false,
+  "historicalRows": [
+    {
+      "manifest": "docs/qualification/candidates/dot-runtime-completion-fixture-20261015/source-proof.json",
+      "row": "unchangedRuntimeProofRows/2",
+      "originalPin": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa"
+    },
+    {
+      "manifest": "docs/qualification/candidates/dot-artifact-lock-20261015/source-proof.json",
+      "row": "unchangedRuntimeProofRows/2",
+      "originalPin": "831d870e797796840ce855d5d2adaae48efb74bdbdecb2f105943462d99590fa"
+    },
+    {
+      "manifest": "docs/qualification/candidates/workflow-batch-20261013/artifact-independent/source-binding.json",
+      "row": "protectedBlobs/apps/control/conversations/postgres-store.mjs",
+      "originalPin": "023ba4d404465b6aaa7a2a6ae6e6d9ee4795c091"
+    },
+    {
+      "manifest": "docs/qualification/candidates/native-execution-broker-20261014/independent/manifest.json",
+      "row": "records/9",
+      "originalPin": "418ec591fed4a00561376d528c5c5ba7270195cb4bca09a44ea22dbc1df1a9af"
+    },
+    {
+      "manifest": "docs/qualification/candidates/native-runnable-runtime-20261014/independent/manifest.json",
+      "row": "files/2",
+      "originalPin": "019047fdea7a7cd63a8d30991053d73eedae6fc35a75ce31e849af9d9abd662b"
+    },
+    {
+      "manifest": "docs/qualification/candidates/usable-request-20261013/lifecycle-source-independent/initial-source-audit.json",
+      "row": "candidateBindings/7",
+      "originalPin": "5e5b39b6d3e4c669751fddc7c79e0d4b1779769302ad2ab81019be49a2fd6c25"
+    }
+  ],
+  "meaning": "Historical pins remain their original evidence, including prior drift; none is silently retargeted to this source. This batch changes only the before/after row above."
+}

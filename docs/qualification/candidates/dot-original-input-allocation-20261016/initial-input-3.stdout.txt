@@ -1,0 +1,41 @@
+✔ new acknowledgement allocates exactly one immutable identity without a run, event or dispatch (29.478ms)
+✔ concurrent exact claims have one new acknowledgement; reconstruction and later lease proposals never refresh it (2.0064ms)
+✔ concurrent different intents cannot overwrite the winner (1.7102ms)
+✔ lost allocation COMMIT acknowledgement yields UNKNOWN, and its recovered identity is never new (1.4469ms)
+✔ no allocation cannot be interpreted as acceptance permission (6.7591ms)
+✔ acceptance atomically matches the allocation and preserves the original prompt/context on exact replay (41.3742ms)
+✔ acceptance refuses altered requestId before any run/event can be committed (1.1869ms)
+✔ acceptance refuses altered prompt before any run/event can be committed (1.267ms)
+✔ acceptance refuses altered window before any run/event can be committed (0.8735ms)
+✔ acceptance refuses altered windowRequest before any run/event can be committed (0.8574ms)
+✔ acceptance refuses altered skill before any run/event can be committed (0.7354ms)
+✔ a different actor cannot recover or accept another original identity (0.9057ms)
+✔ a different run cannot recover or accept another original identity (0.9178ms)
+✔ a different attempt cannot recover or accept another original identity (0.8215ms)
+✔ a different worker cannot recover or accept another original identity (0.7469ms)
+✔ a different fence cannot recover or accept another original identity (0.6116ms)
+✔ a different scope cannot recover or accept another original identity (0.6657ms)
+✔ a different client cannot recover or accept another original identity (0.7965ms)
+✔ a different versions cannot recover or accept another original identity (0.8688ms)
+✔ a different rawIntent cannot recover or accept another original identity (0.6764ms)
+✔ a different preparedRequest cannot recover or accept another original identity (0.6623ms)
+✔ expired original identity cannot be renewed or accepted (0.9101ms)
+✔ failure after marking acceptance rolls back the allocation, run and event together (3.9716ms)
+✔ authority check invalidated during acceptance refuses release and rolls back all three records (1.1078ms)
+✔ lost acceptance ACK reconstructs the same accepted input without a duplicate event (1.4752ms)
+✔ corrupt or inconsistent stored state never becomes fresh allocation evidence (0.8945ms)
+✔ any existing original input, conversation shell or successor journal refuses a new original claim (1.4468ms)
+✔ canonical public input/request correlation refuses an altered prepared prompt before store IO (0.5017ms)
+✔ expiry during claim COMMIT cannot release a positive acknowledgement (0.5811ms)
+✔ expiry during accept COMMIT cannot release a positive acknowledgement (1.078ms)
+✔ global request identity collision cannot create another tenant/conversation slot (0.9566ms)
+✔ original normalized calendar window is retained, never recomputed at acceptance or replay (18.1101ms)
+✔ current selected client must match the original allocation even if the run scope array is unchanged (1.5559ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 699.9304

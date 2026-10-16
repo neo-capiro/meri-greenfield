@@ -25,3 +25,24 @@ Service/session/HTTP/public-generation integration follows exact narrow wire rev
 ## Focused qualification plan
 
 Use the real store/journal/facts over the existing scripted PostgreSQL transaction fixture only. Cover concurrent same/different claims, one new acknowledgement, exact replay, UNKNOWN commit reconstruction, changed tenant/actor/run/fence/scopes/client/versions/input/prepared request, expiry/corruption, stale authorization check before commit, atomic acceptance failure and exact accepted retry. Check original normalized window/prompt and event count remain unchanged. One bounded Node process128MiB/120s after a fresh native memory check; no compiler/browser/install/database/provider/cloud children or calls. SQL source is reserved independently and not executed.
+
+## Delivered source and actual evidence
+
+Tested source55c20109ff4bb840088b1372a7fe04669041803a/tree79f660bcabbce12a50d86eeb02180fd089fd2dd0. Canonical store interface is `store.initialInputs.claim(facts,check)`, `.read(binding,check)`, `.accept({conversation,run,request,event,selectedClientId},check)`. Claim/accept reuse the original `ConversationStore.tx`, connection, advisory exclusion and queued-event writer; no second store, journal transport, pool, fence or dispatcher. The new helper is the allocated table's journal within that owner. The existing legacy accept/service/HTTP routes remain unchanged in behavior and have NOT been promoted to require/use this new interface yet. New readiness/source wiring and enforcing the allocation on the first-chat admission path are still pending exact public-wire review. A source-level allocation port is not a claim that every old route already enforces it.
+
+The source migration is centrally reserved0016, globally UNIQUErequest_id, immutable identity/context/digests/fixed expiry, RESERVED→ACCEPTED only, no delete/reclaim and no FK requiring an invented blank conversation. It was authored and read, never applied or tested with PostgreSQL. The fixture emulates only its protocol/transaction effects; it does not qualify real SQL constraints, current Core/session authorization, service cancellation, Temporal, restore infrastructure or provider delivery. No new credential, resource or live action occurred.
+
+Raw receipts/stdout/stderr for all four bounded attempts are retained under `docs/qualification/candidates/dot-original-input-allocation-20261016/`:
+
+| Attempt | Exact source | Actual result | Primary / cleanup | Wall / sampled RSS |
+| --- | --- | --- | --- | --- |
+| 1 | 312ba765740fda36db7c0f4f541736b73b7a3d7c | 43/44; one new test expected private callback text, whereas canonical tx correctly emits STORE_UNAVAILABLE. All14 existing store regressions passed. | 1 / 0 | 862ms /114,229,248B |
+| 2 | 01ceb9ed191a55ee41e394860e4fe2193803157d | 33/33 new controls; expectation corrected without weakening rollback checks; central global identity/normalized-window/client controls added. | 0 / 0 | 811ms /114,208,768B |
+| 3 | 575e0b482b6115817d3407f4b5badd80f6e9fc8f | 33/33 after adding prepared request digest to proposed positive receipt. | 0 / 0 | 835ms /116,178,944B |
+| 4 | 55c20109ff4bb840088b1372a7fe04669041803a | 34/34 after self-review caught the need to keep BOTH the old allocation expiry and a shorter current cutoff through replay COMMIT. New regression closes that gap. | 0 / 0 | 845ms /118,251,520B |
+
+Each used one Node process,128MiB V8,120s hard wall,256MiB sampled working-set stop threshold and fresh normal native available-commit observations. No timeout/pressure termination or child occurred; every owned PID exited. Sampling is observed, not a guaranteed peak. Existing14 store tests were not repeated after they passed; their store body/blob stays unchanged in later attempts. Attempt4 is exact-source evidence for all34 allocation tests. Earlier pass/fail records remain independently pinned and are not relabeled as current release proof.
+
+Only one existing source proof row changes versus accepteda542: `postgres-store.mjs` blobb917916d27c9cd7b1d896021d0b72ad60f90abc8→a4449be9c283fefcfaee80fd379797b418c3d728. `source-proof-deltas.json` records exact Git-source SHA256/bytes and six located historical rows that refer to older store pins; their manifests stay untouched, including earlier unrelated drift. They do not qualify this candidate. Frozen contracts, all distribution bytes, package metadata and locks equal a542.
+
+Parent/Input/UI review target is the additive wire and genuine0.1.7 full-pin bridge described above, not a migration-number wait. Public schema/receiver/export/generation/version and actual authenticated service/startup composition remain PENDING review/implementation; the new positive receipt must not be fabricated by the UI. SQL/live resource execution remains unperformed. Qualification retains sole accepted-source integration; apply the narrow a542-relative source delta, not this branch's entire accepted artifact ancestry.
