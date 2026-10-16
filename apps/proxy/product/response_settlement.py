@@ -31,6 +31,16 @@ _CHUNK_HEADERS = {
 _MAX_MONEY = (1 << 63) - 1
 
 
+class SettlementCommitUncertain(RuntimeError):
+    """Authenticated bridge saw canonical settlement COMMIT acknowledgement loss.
+
+    The host may raise this only for the canonical owner's
+    BudgetCommitUncertain after completion validation and SQL dispatch.
+    Ordinary bridge, capture, validation and transport errors are not
+    reconcilable as a successful settlement.
+    """
+
+
 @dataclass(frozen=True)
 class SettlementContext:
     """Stable, trusted startup facts; final native values are learned at send."""
@@ -150,7 +160,7 @@ class _ObservedResponseStream(httpx.AsyncByteStream):
                 # A failed/uncertain callback leaves the durable hold UNKNOWN.
                 try:
                     await self.complete(self.binding.request_id, result)
-                except Exception as settlement_error:
+                except SettlementCommitUncertain as settlement_error:
                     # The transaction may have committed before its ACK was
                     # lost. Reconcile only through the canonical owner's
                     # readOutcome; never retry inference or release UNKNOWN.

@@ -10,7 +10,9 @@ import zlib
 
 import httpx
 
-from apps.proxy.product.response_settlement import NativeSettlementTransport, SettlementContext
+from apps.proxy.product.response_settlement import (
+    NativeSettlementTransport, SettlementCommitUncertain, SettlementContext,
+)
 from apps.proxy.qualification.runtime.bedrock_body import NativeBody
 from apps.proxy.qualification.runtime.native_usage import UsageBinding
 
@@ -218,7 +220,7 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_lost_ack_reads_committed_settlement_without_second_inference(self):
         async def lost_ack():
-            raise RuntimeError("synthetic lost settlement acknowledgement")
+            raise SettlementCommitUncertain("synthetic lost settlement acknowledgement")
         reads = []
         async def read_outcome(slot):
             reads.append(slot)
@@ -232,7 +234,7 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_unresolved_or_mismatched_read_outcome_preserves_failure(self):
         async def lost_ack():
-            raise RuntimeError("synthetic lost settlement acknowledgement")
+            raise SettlementCommitUncertain("synthetic lost settlement acknowledgement")
         for outcome in ({"requestId": BINDING.request_id, "state": "UNKNOWN", "actualMicroUSD": None},
                         {"requestId": "other", "state": "SETTLED", "actualMicroUSD": "42"},
                         {"requestId": BINDING.request_id, "state": "SETTLED", "actualMicroUSD": None}):
@@ -244,6 +246,20 @@ class SettlementTests(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaisesRegex(RuntimeError, "lost settlement acknowledgement"):
                     await self.call(transport)
                 self.assertEqual(inner.sends, 1)
+
+    async def test_validation_refusal_cannot_be_masked_by_old_settled_outcome(self):
+        async def refused():
+            raise RuntimeError("synthetic completion validation refused")
+        reads = []
+        async def read_outcome(slot):
+            reads.append(slot)
+            return {"requestId": slot, "state": "SETTLED", "actualMicroUSD": "42"}
+        inner, transport = self.setup_transport([raw(message())], callback=refused,
+                                                 read_outcome=read_outcome)
+        with self.assertRaisesRegex(RuntimeError, "completion validation refused"):
+            await self.call(transport)
+        self.assertEqual(reads, [])
+        self.assertEqual(inner.sends, 1)
 
 
 if __name__ == "__main__":

@@ -15,6 +15,9 @@ complete native usage and invokes the canonical historical settlement owner.
 It derives its usage binding after the guarded send is armed from the validated
 UNKNOWN receipt, final native bytes, AWS count and retained original-request
 hash; it cannot precompute those values at transport construction.
+The private one-shot JavaScript settlement adapter compares the Python usage
+result with an independent complete-response host capture, then delegates to
+the canonical historical settlement/readOutcome owner for the original slot.
 
 The bridge has no public route, listener, credential creation or provider client.
 The deployable host must still provide an authenticated cross-process transport
@@ -24,6 +27,11 @@ observed ECS task lease. It must also carry complete response evidence to the
 canonical settlement owner. If any owner is absent, the
 proxy cannot be mounted for product traffic. CountTokens preflight from the pinned
 CLI is a separate exact read route and never substitutes for final native counting.
+The cross-process codec must convert the bounded Python UsageResult dataclass
+and its tool-name frozenset to the exact JavaScript value shape without changing
+request or response bytes. It may map only the canonical owner's
+`BudgetCommitUncertain` to Python `SettlementCommitUncertain`; validation or
+capture refusals cannot be reconciled by a prior SETTLED outcome.
 
 Focused checks cover digest, route, count and hold binding; the existing budget
 tests cover current allocation, fence, revocation, caps and uncertain commits.
