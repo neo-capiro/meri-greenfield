@@ -1,5 +1,17 @@
 # Meri final scope ledger
 
+Current-source reconciliation, 16 October 2026: the generated `sourceExposure`
+snapshot below supersedes historical proposal claims about server/adapter presence;
+it does not change scope decisions, frozen contracts, the audit CSV, qualification
+receipts or live availability. The generator joins the actual canonical bindings,
+single `meri_reads` family list, lane-owned family composition, existing adapter
+directories and indexed skill manifests. It distinguishes manifest declarations
+from the two source-admitted original skills and distinguishes selected source
+reads from product operations and the retained historical action-items contract.
+Missing producers/dispatch context remain explicit; no endpoint or permissive
+placeholder is inferred from a mapped contract. Verification covers this source
+mapping and refusal boundaries only, without re-running accepted runtime suites.
+
 Date: 15 October 2026. Lane: Fable `scope-ledger`, branch `fable/a5-scope-ledger-20261015`, base `e76189da` (`fable/p3-general-reads-design-20261015`). Documentation and source-evidence only: no product code, contract, catalog, lockfile, migration, credential or deployment is changed. **Nothing in this ledger is live, enabled, qualified or accepted.** Every gate below is open. dot independently verifies exact commits and records ACCEPT or HOLD.
 
 This ledger answers the comprehensive audit's request ([README "Corrected tool and scope accounting"](https://github.com/neo-capiro/meri-greenfield/blob/82a015083f1965851ffddbc05d4f181bb90ecac2/docs/coordination/audits/meri-comprehensive-20261015/README.md) and [product-integration "End-goal scope accounting"](https://github.com/neo-capiro/meri-greenfield/blob/82a015083f1965851ffddbc05d4f181bb90ecac2/docs/coordination/audits/meri-comprehensive-20261015/meri-audit-product-integration.md)) for one reconciled final scope ledger that names every inclusion, every continued exclusion, its owner and its acceptance gate, without silently perpetuating the 43 historical exclusions.
