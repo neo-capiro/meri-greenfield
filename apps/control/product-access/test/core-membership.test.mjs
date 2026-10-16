@@ -24,6 +24,15 @@ test('construction is inert; fixed request uses the current native bearer and or
  assert.deepEqual(result.principal,{tenantId:'tenant-A',actorId:'actor-A',role:'standard_user',permissions:[],clientIds:[CLIENT],membershipRevision:'m1'});
  assert.equal(result.expiresAtMs,NOW+100);assert.equal(Object.isFrozen(result.principal),true);
 });
+for(const role of ['standard_user','user_admin','capiro_admin'])test(`current active ${role} retains actual role`,async()=>{
+ const f=fixture();f.state.respond=()=>Response.json({...f.receipt('A'),role});
+ const access=await f.gate.admit({credential:'A'});assert.equal(access.principal.role,role);
+ assert.equal((await f.gate.recheck({...access,credential:'A',deadlineMs:access.expiresAtMs})).role,role);
+});
+test('Core portal role is below the product floor',async()=>{
+ const f=fixture();f.state.respond=()=>Response.json({...f.receipt('A'),role:'client_portal_user'});
+ await code(f.gate.admit({credential:'A'}),'ACCESS_DENIED');
+});
 test('overlapping admissions and later rechecks never exchange request credentials',async()=>{
  const f=fixture();const results=await Promise.all(['A','B'].map(credential=>f.gate.admit({credential})));
  await Promise.all(results.map((r,i)=>f.gate.recheck({principal:r.principal,credential:['A','B'][i],deadlineMs:r.expiresAtMs})));

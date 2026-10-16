@@ -8,6 +8,7 @@ import {jsonBody} from '../action-application/http.mjs';
 import {createMembershipGate} from './membership.mjs';
 import {ProductError,asProductError,refuse} from './errors.mjs';
 const path='/api/clio/application-authority/membership';
+const admittedRoles=new Set(['standard_user','user_admin','capiro_admin']);
 const getters=Object.fromEntries(['status','headers','body','redirected'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 const credentialOk=v=>typeof v==='string'&&/^[A-Za-z0-9._~+/-]{1,8192}={0,2}$/u.test(v);
 function cancel(response){try{if(response&&!types.isProxy(response)&&response instanceof Response){const body=getters.body.call(response);if(body)Promise.resolve(body.cancel()).catch(()=>{});}}catch{}}
@@ -44,6 +45,7 @@ export function createCoreMembershipGate(configuration){
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!body||
     length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>limits.maxFactBytes))refuse('CONVERSATION_UNAVAILABLE');
    const result=await jsonBody({body,length:length===null?null:Number(length)},limits.maxFactBytes,life,life.check);life.check();
+   if(!result||typeof result!=='object'||!admittedRoles.has(result.role))refuse('ACCESS_DENIED');
    return result; // Shape, freshness, exact principal and rights remain owned by createMembershipGate.
   }catch(error){throw asProductError(error,'CONVERSATION_UNAVAILABLE');}finally{cancel(response);life?.close();}
  }
