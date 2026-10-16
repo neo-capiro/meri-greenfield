@@ -20,16 +20,16 @@ result with an independent complete-response host capture, then delegates to
 the canonical historical settlement/readOutcome owner for the original slot.
 
 The bridge has no public route, listener, credential creation or provider client.
-The deployable host must still provide an authenticated cross-process transport
-and codec that preserves exact bytes, captures the direct peer independently,
+The versioned private Python-to-JavaScript value codec preserves the original
+and native request bytes and converts complete typed usage results. It grants
+no authority by itself. The deployable host must still provide an authenticated
+cross-process transport that captures the direct peer independently,
 and binds the same guarded CountTokens observation, plus an independently
 observed ECS task lease. It must also carry complete response evidence to the
 canonical settlement owner. If any owner is absent, the
 proxy cannot be mounted for product traffic. CountTokens preflight from the pinned
 CLI is a separate exact read route and never substitutes for final native counting.
-The cross-process codec must convert the bounded Python UsageResult dataclass
-and its tool-name frozenset to the exact JavaScript value shape without changing
-request or response bytes. It may map only the canonical owner's
+The host transport may map only the canonical owner's
 `BudgetCommitUncertain` to Python `SettlementCommitUncertain`; validation or
 capture refusals cannot be reconciled by a prior SETTLED outcome.
 
