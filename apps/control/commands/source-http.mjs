@@ -1,4 +1,6 @@
-/** Fixed governed command routes. No ambient credentials, redirects or retries. */
+/** Fixed governed command routes. Preparation reads credentials/metadata only. Attachment registration belongs to execute,
+ * after the canonical executor has claimed the command, reserved its budget and rechecked current effect authority.
+ * No ambient credentials, redirects or retries. */
 import {types} from 'node:util';
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
@@ -25,6 +27,17 @@ export function createCommandHttpSource(options){
    own(credentials,['binding','bearerToken','serviceSecret','expiresAtMs']);
    if(!same(credentials.binding,authority.binding)||!Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=now()||![credentials.bearerToken,credentials.serviceSecret].every(s=>typeof s==='string'&&s.length>0&&s.length<=8192&&/^[\x21-\x7e]+$/.test(s)))deny('COMMAND_SOURCE_IDENTITY_REFUSED');
    deadlineMs=Math.min(deadlineMs,credentials.expiresAtMs);life.limitDeadline(deadlineMs);
+   life.check();if(life.signal.aborted)deny('CANCELLED');
+   const token=Object.freeze({deadlineMs});retained.set(token,{command,context,authority,credentials,tool});return token;
+  }catch(error){throw safe(error);}finally{life.close();}
+ }
+ async function execute(token,value){
+  if(!retained.has(token))deny('COMMAND_SOURCE_PREPARATION_REFUSED');const prepared=retained.get(token);retained.delete(token);
+  const c=own(value,['authority','signal']),authority=data(c.authority);
+  if(!same(authority.binding,prepared.authority.binding)||authority.policyRevision!==prepared.authority.policyRevision||authority.claims.capabilityId!==prepared.authority.claims.capabilityId)deny('COMMAND_SOURCE_IDENTITY_REFUSED');
+  const life=lifetime(Math.min(token.deadlineMs,authority.deadlineMs),c.signal);let body,reader;
+  try{
+   const {command,context}=prepared;let deadlineMs=Math.min(token.deadlineMs,authority.deadlineMs);
    let attachments=[];
    if(command.action==='artifact.file'){
     if(typeof resolveAttachments!=='function')deny('COMMAND_SOURCE_VERSION_UNAVAILABLE');
@@ -38,20 +51,10 @@ export function createCommandHttpSource(options){
     }
     attachments=fact.objects;deadlineMs=Math.min(deadlineMs,fact.expiresAtMs);life.limitDeadline(deadlineMs);
    }
-   const body=JSON.stringify(commandSourceBody(command,attachments));if(Buffer.byteLength(body)>maxResponseBytes)deny('COMMAND_RESOURCE_LIMIT');
-   life.check();if(life.signal.aborted)deny('CANCELLED');
-   const token=Object.freeze({deadlineMs});retained.set(token,{command,authority,credentials,attachments,body,tool});return token;
-  }catch(error){throw safe(error);}finally{life.close();}
- }
- async function execute(token,value){
-  if(!retained.has(token))deny('COMMAND_SOURCE_PREPARATION_REFUSED');const prepared=retained.get(token);retained.delete(token);
-  const c=own(value,['authority','signal']),authority=data(c.authority);
-  if(!same(authority.binding,prepared.authority.binding)||authority.policyRevision!==prepared.authority.policyRevision||authority.claims.capabilityId!==prepared.authority.claims.capabilityId)deny('COMMAND_SOURCE_IDENTITY_REFUSED');
-  const life=lifetime(Math.min(token.deadlineMs,authority.deadlineMs),c.signal);let body,reader;
-  try{
+   const requestBody=JSON.stringify(commandSourceBody(command,attachments));if(Buffer.byteLength(requestBody)>maxResponseBytes)deny('COMMAND_RESOURCE_LIMIT');
    const response=await life.run(async signal=>{
     const r=await fetchImpl(new URL(`/clio/tools/${prepared.tool}`,base).href,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
-     headers:{authorization:`Bearer ${prepared.credentials.bearerToken}`,'x-internal-service-secret':prepared.credentials.serviceSecret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:prepared.body});
+     headers:{authorization:`Bearer ${prepared.credentials.bearerToken}`,'x-internal-service-secret':prepared.credentials.serviceSecret,'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:requestBody});
     try{life.check();if(life.signal.aborted)deny('CANCELLED');return r;}catch(error){try{cancel(responseGet(r,'body'));}catch{}throw error;}
    });
    body=responseGet(response,'body');const headers=responseGet(response,'headers');
@@ -60,8 +63,8 @@ export function createCommandHttpSource(options){
    if(!body)deny('INVALID_SOURCE_RESULT');reader=body.getReader();let bytes=0,text='';const decoder=new TextDecoder('utf-8',{fatal:true});
    for(;;){const part=await life.run(()=>reader.read());if(part.done)break;if(!(part.value instanceof Uint8Array))deny('INVALID_SOURCE_RESULT');bytes+=part.value.byteLength;if(bytes>maxResponseBytes)deny('COMMAND_RESOURCE_LIMIT');text+=decoder.decode(part.value,{stream:true});}
    text+=decoder.decode();if(length!==null&&bytes!==Number(length))deny('INVALID_SOURCE_RESULT');life.check();if(life.signal.aborted)deny('CANCELLED');
-   return commandSourceResult(JSON.parse(text),prepared.command,prepared.attachments);
-  }catch(error){throw safe(error);}finally{if(reader){try{Promise.resolve(reader.cancel()).catch(()=>{});}catch{}try{reader.releaseLock();}catch{}}else cancel(body);life.close();}
+   return commandSourceResult(JSON.parse(text),prepared.command,attachments);
+  }catch(error){if(error?.code==='ARTIFACT_EFFECT_UNKNOWN')deny('COMMAND_OUTCOME_UNKNOWN');throw safe(error);}finally{if(reader){try{Promise.resolve(reader.cancel()).catch(()=>{});}catch{}try{reader.releaseLock();}catch{}}else cancel(body);life.close();}
  }
  return Object.freeze({prepare,execute});
 }

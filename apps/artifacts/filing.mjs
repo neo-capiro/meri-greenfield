@@ -1,5 +1,5 @@
 /** Exact-version filing attachments, owned by the artifact service: the `resolveAttachments` port that the governed filing
- * command source (`apps/control/commands/source-http.mjs`, action `artifact.file`) requires before it calls the source's
+ * command source (`apps/control/commands/source-http.mjs`, action `artifact.file`) invokes inside its claimed execution before it calls the source's
  * save_chat_attachments route. For each selected immutable object, in order:
  *   1. the trusted version store resolves which version of this tenant conversation holds exactly that object;
  *   2. the canonical artifact read (`artifact.download` authorization, retention gate, current bytes) returns its bytes, and

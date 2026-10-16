@@ -22,7 +22,7 @@ for(const [name,mutate] of [
 });
 test('attachment broker must bind exact immutable version and unique native ID',async()=>{
  for(const bad of ['version','destination','extra']){
-  const f=fixture('artifact.file');f.state.hooks.attachments=()=>{const fact={binding:f.execution.executorBinding,destination:f.context.destination,expiresAtMs:NOW+1000,objects:[{object:structuredClone(f.command.attachments[0]),attachmentId:id(25)}]};if(bad==='version')fact.objects[0].object.versionId='substituted';if(bad==='destination')fact.destination={...fact.destination,clientId:id(90)};if(bad==='extra')fact.objects.push(structuredClone(fact.objects[0]));return fact;};await assert.rejects(f.make().execute(f.value,'synthetic'));assert.equal(f.state.effects,0);assert.equal(f.calls.includes('insert'),false);
+  const f=fixture('artifact.file');f.state.hooks.attachments=()=>{const fact={binding:f.execution.executorBinding,destination:f.context.destination,expiresAtMs:NOW+1000,objects:[{object:structuredClone(f.command.attachments[0]),attachmentId:id(25)}]};if(bad==='version')fact.objects[0].object.versionId='substituted';if(bad==='destination')fact.destination={...fact.destination,clientId:id(90)};if(bad==='extra')fact.objects.push(structuredClone(fact.objects[0]));return fact;};await assert.rejects(f.make().execute(f.value,'synthetic'),/COMMAND_OUTCOME_UNKNOWN/);assert.equal(f.state.effects,0);assert.equal(f.calls.includes('insert'),true,'registration runs only after durable claim');assert.equal(f.calls.includes('unknown'),true);assert.equal((await f.make().execute(f.value,'synthetic')).status,'indeterminate');
  }
 });
 test('native per-file IDs bind source observations to exact selected immutable objects',async()=>{
